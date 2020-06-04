@@ -1,0 +1,62 @@
+[
+  {
+    "pk": 1,
+    "model": "api.timeseries_meta",
+    "fields": {
+      "name": "Demand 1",
+      "original_filename": "demand-1.csv",
+      "original_timestamp_col": 0,
+      "original_value_col": 1,
+      "model_id": "1",
+      "file_uuid": "dac8030c-c9b5-48db-8550-cc78312ddabb"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "api.timeseries_meta",
+    "fields": {
+      "name": "Demand 2",
+      "original_filename": "demand-2.csv",
+      "original_timestamp_col": 0,
+      "original_value_col": 1,
+      "model_id": "1",
+      "file_uuid": "f97df022-1dc7-4f59-bb15-3e0d94f4ba9d"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "api.timeseries_meta",
+    "fields": {
+      "name": "CSP 1-1",
+      "original_filename": "csp_resource.csv",
+      "original_timestamp_col": 0,
+      "original_value_col": 1,
+      "model_id": "1",
+      "file_uuid": "141a6e6c-e47f-4363-85ed-8d40b525ac77"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "api.timeseries_meta",
+    "fields": {
+      "name": "CSP 1-2",
+      "original_filename": "csp_resource.csv",
+      "original_timestamp_col": 0,
+      "original_value_col": 2,
+      "model_id": "1",
+      "file_uuid": "50fa074e-9279-4b3f-bead-7762fe1643f3"
+    }
+  },
+  {
+    "pk": 5,
+    "model": "api.timeseries_meta",
+    "fields": {
+      "name": "CSP 1-3",
+      "original_filename": "csp_resource.csv",
+      "original_timestamp_col": 0,
+      "original_value_col": 3,
+      "model_id": "1",
+      "file_uuid": "4de803f7-1d36-4155-8cdb-9dc52946b6b7"
+    }
+  }
+]

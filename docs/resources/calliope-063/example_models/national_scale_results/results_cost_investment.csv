@@ -1,0 +1,7 @@
+region1-1,csp,monetary,93017.3236381924
+region1-2,csp,monetary,0.0
+region1-3,csp,monetary,8986.07268705283
+region1,ac_transmission:region2,monetary,487.527364645806
+region1,ccgt,monetary,33955.9126613078
+region2,ac_transmission:region1,monetary,487.527364645806
+region2,battery,monetary,1581.36339825403

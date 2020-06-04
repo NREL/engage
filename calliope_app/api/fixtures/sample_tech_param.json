@@ -1,0 +1,758 @@
+[
+  {
+    "pk": 1,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "1",
+      "year": "0",
+      "parameter_id": "2",
+      "value": "Combined cycle gas turbine",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "1",
+      "year": "0",
+      "parameter_id": "3",
+      "value": "#E37A72",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "1",
+      "year": "0",
+      "parameter_id": "1",
+      "value": "supply",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "1",
+      "year": "0",
+      "parameter_id": "4",
+      "value": "Power",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 5,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "1",
+      "year": "0",
+      "parameter_id": "28",
+      "value": "inf",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 6,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "1",
+      "year": "0",
+      "parameter_id": "18",
+      "value": "0.5",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 7,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "1",
+      "year": "0",
+      "parameter_id": "12",
+      "value": "100000",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 8,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "1",
+      "year": "0",
+      "parameter_id": "21",
+      "value": "0.8",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 9,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "1",
+      "year": "0",
+      "parameter_id": "25",
+      "value": "25",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 10,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "1",
+      "year": "0",
+      "parameter_id": "57",
+      "value": "0.10",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 11,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "1",
+      "year": "0",
+      "parameter_id": "53",
+      "value": "750",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 12,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "1",
+      "year": "0",
+      "parameter_id": "60",
+      "value": "0.02",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 13,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "2",
+      "year": "0",
+      "parameter_id": "2",
+      "value": "Concentrating solar power",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 14,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "2",
+      "year": "0",
+      "parameter_id": "3",
+      "value": "#F9CF22",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 15,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "2",
+      "year": "0",
+      "parameter_id": "1",
+      "value": "supply_plus",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 16,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "2",
+      "year": "0",
+      "parameter_id": "4",
+      "value": "Power",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 17,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "2",
+      "year": "0",
+      "parameter_id": "42",
+      "value": "614033",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 18,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "2",
+      "year": "0",
+      "parameter_id": "8",
+      "value": "1",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 19,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "2",
+      "year": "0",
+      "parameter_id": "46",
+      "value": "0.002",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 20,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "2",
+      "year": "0",
+      "parameter_id": "40",
+      "value": "energy_per_area",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 21,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "2",
+      "year": "0",
+      "parameter_id": "18",
+      "value": "0.4",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 22,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "2",
+      "year": "0",
+      "parameter_id": "27",
+      "value": "0.9",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 23,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "2",
+      "year": "0",
+      "parameter_id": "30",
+      "value": "inf",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 24,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "2",
+      "year": "0",
+      "parameter_id": "11",
+      "value": "10000",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 25,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "2",
+      "year": "0",
+      "parameter_id": "25",
+      "value": "25",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 26,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "2",
+      "year": "0",
+      "parameter_id": "57",
+      "value": "0.10",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 27,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "2",
+      "year": "0",
+      "parameter_id": "65",
+      "value": "50",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 28,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "2",
+      "year": "0",
+      "parameter_id": "63",
+      "value": "200",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 29,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "2",
+      "year": "0",
+      "parameter_id": "64",
+      "value": "200",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 30,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "2",
+      "year": "0",
+      "parameter_id": "53",
+      "value": "1000",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 31,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "2",
+      "year": "0",
+      "parameter_id": "61",
+      "value": "0.002",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 32,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "3",
+      "year": "0",
+      "parameter_id": "2",
+      "value": "Battery storage",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 33,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "3",
+      "year": "0",
+      "parameter_id": "3",
+      "value": "#3B61E3",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 34,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "3",
+      "year": "0",
+      "parameter_id": "1",
+      "value": "storage",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 35,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "3",
+      "year": "0",
+      "parameter_id": "4",
+      "value": "Power",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 36,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "3",
+      "year": "0",
+      "parameter_id": "11",
+      "value": "1000",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 37,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "3",
+      "year": "0",
+      "parameter_id": "42",
+      "value": "inf",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 38,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "3",
+      "year": "0",
+      "parameter_id": "8",
+      "value": "4",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 39,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "3",
+      "year": "0",
+      "parameter_id": "18",
+      "value": "0.95",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 40,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "3",
+      "year": "0",
+      "parameter_id": "46",
+      "value": "0",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 41,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "3",
+      "year": "0",
+      "parameter_id": "25",
+      "value": "25",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 42,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "3",
+      "year": "0",
+      "parameter_id": "57",
+      "value": "0.10",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 43,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "3",
+      "year": "0",
+      "parameter_id": "65",
+      "value": "200",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 44,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "4",
+      "year": "0",
+      "parameter_id": "2",
+      "value": "Power demand",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 45,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "4",
+      "year": "0",
+      "parameter_id": "3",
+      "value": "#072486",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 46,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "4",
+      "year": "0",
+      "parameter_id": "1",
+      "value": "demand",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 47,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "4",
+      "year": "0",
+      "parameter_id": "4",
+      "value": "Power",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 48,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "5",
+      "year": "0",
+      "parameter_id": "2",
+      "value": "AC power transmission",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 49,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "5",
+      "year": "0",
+      "parameter_id": "3",
+      "value": "#8465A9",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 50,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "5",
+      "year": "0",
+      "parameter_id": "1",
+      "value": "transmission",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 51,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "5",
+      "year": "0",
+      "parameter_id": "4",
+      "value": "Power",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 52,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "5",
+      "year": "0",
+      "parameter_id": "18",
+      "value": "0.85",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 53,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "5",
+      "year": "0",
+      "parameter_id": "25",
+      "value": "25",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 54,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "5",
+      "year": "0",
+      "parameter_id": "57",
+      "value": "0.10",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 55,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "5",
+      "year": "0",
+      "parameter_id": "53",
+      "value": "200",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 56,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "5",
+      "year": "0",
+      "parameter_id": "61",
+      "value": "0.002",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 57,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "6",
+      "year": "0",
+      "parameter_id": "2",
+      "value": "Local power transmission",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 58,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "6",
+      "year": "0",
+      "parameter_id": "3",
+      "value": "#6783E3",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 59,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "6",
+      "year": "0",
+      "parameter_id": "1",
+      "value": "transmission",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 60,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "6",
+      "year": "0",
+      "parameter_id": "4",
+      "value": "Power",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 61,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "6",
+      "year": "0",
+      "parameter_id": "11",
+      "value": "inf",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 62,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "6",
+      "year": "0",
+      "parameter_id": "18",
+      "value": "1.0",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 63,
+    "model": "api.tech_param",
+    "fields": {
+      "technology_id": "6",
+      "year": "0",
+      "parameter_id": "61",
+      "value": "0",
+      "timeseries": "False",
+      "model_id": "1"
+    }
+  }
+]

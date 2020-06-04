@@ -1,0 +1,338 @@
+[
+  {
+    "pk": 1,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "model",
+      "user_visibility": "False",
+      "can_evolve": "False",
+      "name": "calliope_version",
+      "pretty_name": "Calliope version",
+      "default_value": "0.6.3",
+      "description": "Calliope framework version this model is intended for",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "model",
+      "user_visibility": "True",
+      "can_evolve": "True",
+      "name": "group_share",
+      "pretty_name": "Group share",
+      "default_value": "",
+      "description": "Optional settings for the group_share constraint. Configurable in JSON format (e.g. {\"pv,wind,bio\":{\"energy_prod_min\": 0.5}})",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "model",
+      "user_visibility": "True",
+      "can_evolve": "False",
+      "name": "name",
+      "pretty_name": "Model Name",
+      "default_value": "",
+      "description": "Model name",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "model",
+      "user_visibility": "False",
+      "can_evolve": "False",
+      "name": "random_seed",
+      "pretty_name": "Random seed",
+      "default_value": "",
+      "description": "Seed for random number generator used during clustering",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 5,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "model",
+      "user_visibility": "True",
+      "can_evolve": "False",
+      "name": "reserve_margin",
+      "pretty_name": "Reserve margin",
+      "default_value": "",
+      "description": "Per-carrier system-wide reserve margins",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 6,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "model",
+      "user_visibility": "False",
+      "can_evolve": "False",
+      "name": "subset_time",
+      "pretty_name": "Subset time",
+      "default_value": "",
+      "description": "Subset of timesteps as a two-element list giving the range, e.g. [\u20182005-01-01\u2019, \u20182005-01-05\u2019], or a single string, e.g. \u20182005-01\u2019",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 7,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "model",
+      "user_visibility": "True",
+      "can_evolve": "False",
+      "name": "time",
+      "pretty_name": "Time",
+      "default_value": "",
+      "description": "Optional settings to adjust time resolution, see Time resolution adjustment for the available options",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 8,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "model",
+      "user_visibility": "False",
+      "can_evolve": "False",
+      "name": "timeseries_data_path",
+      "pretty_name": "Timeseries data path",
+      "default_value": ".",
+      "description": "Path to time series data",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 9,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "model",
+      "user_visibility": "False",
+      "can_evolve": "False",
+      "name": "timeseries_data",
+      "pretty_name": "Timeseries data",
+      "default_value": "",
+      "description": "Dict of dataframes with time series data (when passing in dicts rather than YAML files to Model constructor)",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 10,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "model",
+      "user_visibility": "False",
+      "can_evolve": "False",
+      "name": "timeseries_dateformat",
+      "pretty_name": "Timeseries date format",
+      "default_value": "%Y-%m-%d %H:%M:%S",
+      "description": "Timestamp format of all time series data when read from file",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 11,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "run",
+      "user_visibility": "False",
+      "can_evolve": "False",
+      "name": "backend",
+      "pretty_name": "Run: Backend",
+      "default_value": "pyomo",
+      "description": "Backend to use to build and solve the model. As of v0.6.0, only pyomo is available",
+      "choices": "[\"pyomo\"]"
+    }
+  },
+  {
+    "pk": 12,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "run",
+      "user_visibility": "True",
+      "can_evolve": "False",
+      "name": "bigM",
+      "pretty_name": "Unmet demand cost",
+      "default_value": "1000000000",
+      "description": "Used for unmet demand, but should be of a similar order of magnitude as the largest cost that the model could achieve. Too high and the model will not converge",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 13,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "run",
+      "user_visibility": "True",
+      "can_evolve": "False",
+      "name": "cyclic_storage",
+      "pretty_name": "Cyclic storage",
+      "default_value": "True",
+      "description": "If True, storage in the last timestep of the timeseries is considered to be the \u2018previous timestep\u2019 in the first timestep of the timeseries",
+      "choices": "[\"True\",\"False\"]"
+    }
+  },
+  {
+    "pk": 14,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "run",
+      "user_visibility": "True",
+      "can_evolve": "False",
+      "name": "ensure_feasibility",
+      "pretty_name": "Ensure feasibility",
+      "default_value": "True",
+      "description": "If True, unmet_demand will be a decision variable, to account for an ability to meet demand with the available supply. If False and a mismatch occurs, the optimisation will fail due to infeasibility",
+      "choices": "[\"True\",\"False\"]"
+    }
+  },
+  {
+    "pk": 15,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "run",
+      "user_visibility": "True",
+      "can_evolve": "False",
+      "name": "mode",
+      "pretty_name": "Optimization mode",
+      "default_value": "plan",
+      "description": "Which mode to run the model in: \u2018plan\u2019 or \u2018operate\u2019",
+      "choices": "[\"plan\",\"operate\"]"
+    }
+  },
+  {
+    "pk": 16,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "run",
+      "user_visibility": "False",
+      "can_evolve": "False",
+      "name": "objective_options",
+      "pretty_name": "Objective options",
+      "default_value": "",
+      "description": "Arguments to pass to objective function. If cost-based objective function in use, should include \u2018cost_class\u2019 and \u2018sense\u2019 (maximize/minimize)",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 17,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "run",
+      "user_visibility": "False",
+      "can_evolve": "False",
+      "name": "objective",
+      "pretty_name": "Objective",
+      "default_value": "minmax_cost_optimization",
+      "description": "Internal objective function to use, currently only min/max cost-based optimisation is available",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 18,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "run.operation",
+      "user_visibility": "True",
+      "can_evolve": "False",
+      "name": "horizon",
+      "pretty_name": "Operation horizon",
+      "default_value": "48",
+      "description": "Setting for operation mode that specifies how far into the future the control algorithm optimises in each iteration",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 19,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "run.operation",
+      "user_visibility": "True",
+      "can_evolve": "False",
+      "name": "window",
+      "pretty_name": "Operation window",
+      "default_value": "24",
+      "description": "Setting for operation mode that specifies how many of the hours within horizon are actually used",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 20,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "run",
+      "user_visibility": "False",
+      "can_evolve": "False",
+      "name": "save_logs",
+      "pretty_name": "Save logs",
+      "default_value": "",
+      "description": "Directory into which to save logs and temporary files. Also turns on symbolic solver labels in the Pyomo back- end",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 21,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "run",
+      "user_visibility": "False",
+      "can_evolve": "False",
+      "name": "solver_io",
+      "pretty_name": "",
+      "default_value": "",
+      "description": "What method the Pyomo backend should use to communicate with the solver",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 22,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "run",
+      "user_visibility": "False",
+      "can_evolve": "False",
+      "name": "solver_options",
+      "pretty_name": "Solver options",
+      "default_value": "",
+      "description": "A list of options, which are passed on to the chosen solver, and are therefore solver-dependent",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 23,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "run",
+      "user_visibility": "True",
+      "can_evolve": "False",
+      "name": "solver",
+      "pretty_name": "Solver",
+      "default_value": "amplxpress",
+      "description": "Which solver to use",
+      "choices": "[\"glpk\",\"amplxpress\"]"
+    }
+  },
+  {
+    "pk": 24,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "run",
+      "user_visibility": "True",
+      "can_evolve": "False",
+      "name": "zero_threshold",
+      "pretty_name": "Zero threshold",
+      "default_value": "1.00E-10",
+      "description": "Any value coming out of the backend that is smaller than this threshold (due to floating point errors, probably) will be set to zero",
+      "choices": "[]"
+    }
+  }
+]

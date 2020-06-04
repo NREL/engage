@@ -1,0 +1,8 @@
+region1-2,free_transmission:region1,region1::free_transmission:region1-2
+region1,ac_transmission:region2,region2::ac_transmission:region1
+region1,free_transmission:region1-3,region1-3::free_transmission:region1
+region1,free_transmission:region1-1,region1-1::free_transmission:region1
+region1-3,free_transmission:region1,region1::free_transmission:region1-3
+region1,free_transmission:region1-2,region1-2::free_transmission:region1
+region2,ac_transmission:region1,region1::ac_transmission:region2
+region1-1,free_transmission:region1,region1::free_transmission:region1-1

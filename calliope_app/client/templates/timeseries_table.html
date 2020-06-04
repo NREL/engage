@@ -1,0 +1,39 @@
+{% load i18n %}
+{% load tz %}
+
+{% load humanize %}
+{% if timeseries %}
+    <table id="timeseries_list" class="table table-hover table-sm">
+        <tbody>
+        {% for ts in timeseries %}
+            <!-- File Row -->
+            <tr data-timeseries_id="{{ ts.id }}" class="{%  if ts.is_uploading == False %}{%  if ts.failure == False %} timeseries-row {% endif %}{% endif %}">
+                <td>
+                    {% if ts.is_uploading %}
+                    <i class="fas fa-sync fa-spin" style="color: green"></i>
+                    {% elif ts.failure == True %}
+                    <i class="fa fa-exclamation-triangle" style="color:red" data-toggle="tooltip" data-placement="left" title="{{ ts.message }}"></i>
+                    {% else %}
+                    <i class="fas fa-check-circle" style="color:green"></i>
+                    {% endif %}
+                </td>
+                <td class="text-sm">
+                    <h5><b>{{ ts.name }}</b></h5>
+                </td>
+                <td class="text-sm">
+                    {{ ts.original_filename }}<br/>
+                    {{ ts.original_value_col|add:1|ordinal }} column
+                </td>
+                <td class="text-sm">
+                    {% if user.is_authenticated %}{{ ts.created|timezone:user.user_profile.timezone }}{% else %}{{ ts.created }}{% endif %}
+                </td>
+                <td class="centered">
+                    <button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-sm btn-outline-danger timeseries-delete" title="{% trans 'Delete timeseries' %}"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <br>{% trans "No timeseries have been created yet." %}
+{% endif %}

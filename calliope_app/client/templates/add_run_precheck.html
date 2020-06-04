@@ -1,0 +1,41 @@
+{% load i18n %}
+
+<!-- Previous Runs -->
+<div class="row">
+	{% if prev_dates %}
+	<div class="col-12 centered">
+		<h5>Recent:</h5>
+	</div>
+	{% for prev_date in prev_dates %}
+	<div class="col-4 offset-4 centered selection_tile text-sm" data-start_date="{{ prev_date.0 }}" data-end_date="{{ prev_date.1 }}">
+		<b>{{ prev_date.2 }}</b>
+	</div>
+	{% endfor %}
+	<div class="col-12 centered"><br><br></div>
+	{% else %}
+	<div class="col-12"><br></div>
+	{% endif %}
+</div>
+<!-- Alerts for Unassigned Timeseries -->
+{% if missing_timseries %}
+{% for ts in missing_timseries %}
+	<div class="alert alert-danger" role="alert">
+	  <i class="fa fa-exclamation-triangle" style="color:red"></i>&nbsp;&nbsp;{% trans "Timeseries is missing for" %} <a href="{% url ts.0 model.uuid %}?tech_id={{ ts.1 }}&loc_tech_id={{ ts.2 }}" style="color:#0021da"><b>{{ ts.3 }}</b></a> {% trans "for parameter" %} <b>{{ ts.4 }}</b>
+	</div>
+	<br>
+{% endfor %}
+{% endif %}
+<!-- Alert for NO Timeseries -->
+{% if timeseries == '[]' %}
+	<div class="alert alert-danger" role="alert">
+	  <i class="fa fa-exclamation-triangle" style="color:red"></i>&nbsp;&nbsp;{% trans "No timeseries data has been configured" %}!!
+	</div>
+	<br>
+{% endif %}
+<!-- Timeseries Gantt Chart -->
+<div class="row">
+	<div class="col-12 centered">
+		<h5>{% trans "Timeseries Coverage" %}:</h5>
+	</div>
+	<div class="col-12 centered" id="timeseries_gantt" data-timeseries="{{ timeseries }}"></div>
+</div>

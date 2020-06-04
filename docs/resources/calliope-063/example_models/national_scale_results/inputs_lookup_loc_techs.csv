@@ -1,0 +1,15 @@
+region1,ccgt,region1::ccgt::power
+region1-2,free_transmission:region1,region1-2::free_transmission:region1::power
+region2,battery,region2::battery::power
+region1-3,csp,region1-3::csp::power
+region1,ac_transmission:region2,region1::ac_transmission:region2::power
+region2,demand_power,region2::demand_power::power
+region1,free_transmission:region1-3,region1::free_transmission:region1-3::power
+region1,free_transmission:region1-1,region1::free_transmission:region1-1::power
+region1-3,free_transmission:region1,region1-3::free_transmission:region1::power
+region1,demand_power,region1::demand_power::power
+region1-1,csp,region1-1::csp::power
+region1,free_transmission:region1-2,region1::free_transmission:region1-2::power
+region1-2,csp,region1-2::csp::power
+region2,ac_transmission:region1,region2::ac_transmission:region1::power
+region1-1,free_transmission:region1,region1-1::free_transmission:region1::power

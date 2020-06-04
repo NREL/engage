@@ -1,0 +1,86 @@
+[
+  {
+    "pk": 1,
+    "model": "api.technology",
+    "fields": {
+      "abstract_tech_id": "1",
+      "name": "combined_cycle_gas_turbine",
+      "pretty_name": "Combined Cycle Gas Turbine (CCGT)",
+      "tag": "capacity_expansion",
+      "pretty_tag": "Capacity Expansion",
+      "is_linear": true,
+      "is_expansion": true,
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "api.technology",
+    "fields": {
+      "abstract_tech_id": "2",
+      "name": "concentrating_solar_power",
+      "pretty_name": "Concentrating Solar Power (CSP)",
+      "tag": "capacity_expansion",
+      "pretty_tag": "Capacity Expansion",
+      "is_linear": true,
+      "is_expansion": true,
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "api.technology",
+    "fields": {
+      "abstract_tech_id": "4",
+      "name": "battery_storage",
+      "pretty_name": "Battery Storage",
+      "tag": "capacity_expansion",
+      "pretty_tag": "Capacity Expansion",
+      "is_linear": true,
+      "is_expansion": true,
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "api.technology",
+    "fields": {
+      "abstract_tech_id": "3",
+      "name": "power_demand",
+      "pretty_name": "Power Demand",
+      "tag": "capacity_expansion",
+      "pretty_tag": "Capacity Expansion",
+      "is_linear": null,
+      "is_expansion": null,
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 5,
+    "model": "api.technology",
+    "fields": {
+      "abstract_tech_id": "5",
+      "name": "ac_power_transmission",
+      "pretty_name": "AC Power Transmission",
+      "tag": "capacity_expansion",
+      "pretty_tag": "Capacity Expansion",
+      "is_linear": true,
+      "is_expansion": true,
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 6,
+    "model": "api.technology",
+    "fields": {
+      "abstract_tech_id": "5",
+      "name": "local_power_transmission",
+      "pretty_name": "Local Power Transmission",
+      "tag": "capacity_expansion",
+      "pretty_tag": "Capacity Expansion",
+      "is_linear": true,
+      "is_expansion": true,
+      "model_id": "1"
+    }
+  }
+]

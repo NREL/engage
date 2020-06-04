@@ -1,0 +1,14 @@
+
+Dear {{ first_name }},
+
+Welcome to ENGAGE!
+
+To verify your email and activate your account, please click the link below:
+
+{{ activation_url }}
+
+If clicking the link above doesn't work, please copy and paste the URL in a new browser
+window instead.
+
+Sincerely,
+The NREL Engage Team

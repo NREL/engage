@@ -1,0 +1,233 @@
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+	{% load static %}
+
+	<!-- 3rd Party -->
+	<script type="text/javascript" src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/jquery.serializejson.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/plotly-1.50.0.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/popper-1.12.9.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/spectrum.js' %}"></script>
+	<link rel='stylesheet' type="text/css" href="{% static 'css/spectrum.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-5.7.2/css/all.min.css' %}">
+
+	<!-- <link rel="stylesheet" type="text/css" href="{% static 'leaflet/leaflet.css' %}">
+	<script type="text/javascript" src="{% static 'leaflet/leaflet.js' %}"></script> -->
+	
+	{% if mapbox_token %}
+	<!-- Load MapBox -->
+	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.js'></script>
+	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
+	<script type="text/javascript">
+		mapboxgl.accessToken = "{{ mapbox_token }}";
+	</script>
+	{% endif %}
+	
+	<script type="text/javascript" src="{% static 'js/select2-4.0.6.min.js' %}"></script>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/select2-4.0.6.min.css' %}">
+	
+	<!-- Internal -->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+	<script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/data_imports.js' %}"></script>
+	<link rel="shortcut icon" type="image/png" href="{% static 'images/engage-logo-16.ico' %}"/>
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-92269730-3"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-92269730-3');
+	</script>
+	{% if pvwatts_api_key %}
+	<script type="text/javascript">
+		var pvwatts_api_key = "{{ pvwatts_api_key }}";
+		var test = 'test';
+	</script>
+	{% endif %}
+
+	{% csrf_token %}
+
+	{% block head %}
+	{% endblock %}
+
+</head>
+
+<body>
+
+	{% if messages %}
+		{% include '_messages.html' %}
+	{% endif %}
+  
+	<div id="header" class="container-fluid" data-model_uuid="{{ model.uuid }}{{ last_model.uuid }}">
+		<div class="row">
+			<div class="col-12" style="font-size:20px;height:36px;padding:0">
+
+				<!-- Home -->
+				&nbsp;&nbsp;
+				<a href="{% url 'home' %}" style="text-decoration: none">
+					<button class="btn btn-sm" style="height:100%;padding:1px;">
+						&nbsp;&nbsp;
+						<img src="{% static 'images/engage-logo-horiz-sm.png' %}" height="100%" />
+					</button>
+				</a>
+
+				<!-- Help -->
+				<button class="btn btn-sm" data-toggle="modal" data-target="#helpModal" style="height:100%;"><i class="fas fa-question-circle"></i>&nbsp;&nbsp; {% trans "Help" %}</button>
+
+				{% if user.is_authenticated %}
+					<!-- Model Sharing -->
+					<a href="{% url 'settings' %}"><button class="btn btn-sm" style="height:100%;"><i class="fas fa-users"></i>&nbsp;&nbsp;{% trans "Share" %}</button></a>
+				{% endif %}
+
+				<a href="https://www.nrel.gov/" target="_blank">
+					<div style="float:right">&nbsp;&nbsp;&nbsp;<img src="{% static 'images/nrel_logo_full.jpg' %}" height="36px" />&nbsp;&nbsp;&nbsp;</div>
+				</a>
+
+				<!-- Languages -->
+				<!-- <div class="btn-group" style="height:30px;margin-top:3px;float:right">
+					<form style="font-size:13px;" action="{% url 'set_language' %}" method="post" >{% csrf_token %}
+						<input name="next" type="hidden" value="{{ redirect_to }}">
+						<select name="language" onchange="this.form.submit()" class="btn-default" style="margin-left:3px;width:60px;height:30px !important;border-radius:0;">
+							{% get_current_language as LANGUAGE_CODE %}
+							{% get_available_languages as LANGUAGES %}
+							{% get_language_info_list for LANGUAGES as languages %}
+							<option disabled>Select your language...</option>
+							{% for language in languages %}
+								<option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+									{{ language.name_local }} ({{ language.code }})
+								</option>
+							{% endfor %}
+						</select>
+					</form>
+				</div> -->
+				{% get_current_language as LANGUAGE_CODE %}
+				<script type="application/javascript">
+					var LANGUAGE_CODE = '{{ LANGUAGE_CODE }}';
+				</script>
+
+				{% if user.is_authenticated %}
+					<!-- Timezone -->
+					{% if timezones %}
+					<div class="btn-group" style="height:30px;margin-top:3px;float:right">
+						<form style="font-size:13px;" action="{% url 'set_timezone' %}" method="post" >{% csrf_token %}
+							<input name="next" type="hidden" value="{{ request.path }}">
+							<select name="timezone" onchange="this.form.submit()" class="btn-default" style="margin-left:3px;width:60px;height:30px !important;border-radius:0;">
+								<option disabled>Select your timezone...</option>
+								{% for timezone in timezones %}
+									<option value="{{ timezone }}"{% if timezone == user.user_profile.timezone %} selected{% endif %}>
+										{{ timezone }}
+									</option>
+								{% endfor %}
+							</select>
+						</form>
+					</div>
+					{% endif %}
+
+				
+					<!-- User -->
+					<div class="btn-group" style="height:30px;margin-top:3px;float:right">
+						<button class="btn-primary dropdown-toggle text-sm" type="button" data-toggle="dropdown">&nbsp;&nbsp;<i class="fas fa-user"></i>&nbsp;&nbsp;{{ user.first_name }}&nbsp;&nbsp;
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu dropdown-menu-left">
+							<li>&nbsp;&nbsp;{{ user.first_name }} {{ user.last_name }}<br>&nbsp;&nbsp;<span class="text-sm">{{ user.email }}<br>&nbsp;&nbsp;{{ user.user_profile.organization }}</span><br><br></li>
+							<li><a href="/settings/password/"><h6>&nbsp;&nbsp;<i class="fa fa-key"></i>&nbsp;&nbsp;{% trans "Change Password" %}</a>&nbsp;&nbsp;</h6></a></li>
+							<li><a href="/logout/?next=/login/"><h6>&nbsp;&nbsp;<i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;{% trans "Log out" %}</a>&nbsp;&nbsp;</h6></a></li>
+						</ul>
+					</div>
+				{% else %}
+					<!-- Login -->
+					<a href="{% url 'home' %}"><button class="btn-primary text-sm" style="height:30px;margin-top:3px;float:right">&nbsp;&nbsp;<i class="fas fa-user"></i>&nbsp;&nbsp;{% trans "LOGIN" %}&nbsp;&nbsp;</button></a>
+				{% endif %}
+
+				{% if model %}
+					<!-- Model -->
+					<div class="btn-group" style="height:30px;margin-top:3px;float:right">
+						<button class="btn-dark dropdown-toggle text-sm" type="button" data-toggle="dropdown">
+							&nbsp;&nbsp;<b><i class="fas fa-cogs"></i>&nbsp;&nbsp;{{ model }}&nbsp;&nbsp;</b>
+							{% if can_edit == False %}<span class="text-sm" style="background-color:yellow;color:black;">&nbsp;<b>{% trans "VIEW ONLY" %}</b>&nbsp;</span>{% endif %}
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu dropdown-menu-right">
+							<li><a href="{% url 'model' model.uuid %}"><h5>&nbsp;&nbsp;<i class="far fa-comments"></i>&nbsp;&nbsp;{% trans "Activity" %}</a>&nbsp;&nbsp;</h5></a></li>
+							<li><a href="{% url 'timeseries' model.uuid %}"><h5>&nbsp;&nbsp;<i class="far fa-clock"></i>&nbsp;&nbsp;{% trans "Timeseries" %}</a>&nbsp;&nbsp;</h5></a></li>
+						</ul>
+					</div>
+				{% endif %}
+
+			</div>
+		</div>
+	</div>
+
+	<div id="content" class="mt-4 container-fluid">
+		<div id="overlay-back"></div>
+		{% block body %}
+		{% endblock %}
+	</div>
+	
+	<!-- Data Source Modal -->
+	{% if model %}
+	<div id="data-source-modal">
+	  	<div id="data-source-modal-content">
+	  		{% include "pvwatts_form.html" %}
+	  	</div>
+	</div>
+	{% endif %}
+
+	<!-- Modal -->
+	<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalTitle" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="helpModalTitle">{% trans "Help Guide" %}</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+
+	      	<!-- Header -->
+			<img src="{% static 'images/engage-logo-horiz-lrg.png' %}" width="40%" />
+			<br><br>
+			OPEN ACCESS ENERGY SYSTEM PLANNING<br>
+			<b>BETA VERSION</b> (Supported on Modern <a href="https://www.google.com/chrome"><i class="fab fa-chrome"></i> Chrome</a> and <a href="https://www.firefox.com/"><i class="fab fa-firefox"></i> Firefox</a> Browsers)</p>
+
+	      	<!-- Assistance -->
+	      	<b>{% trans "Project Assistance" %}:</b>&nbsp;
+			<a href = "mailto: Tom.Harris@nrel.gov"><i class="fas fa-envelope"></i> Tom Harris</a>
+			<br>
+			<b>{% trans "Technical Assistance" %}:</b>&nbsp;
+			<a href = "mailto: Robert.Spencer@nrel.gov"><i class="fas fa-envelope"></i> Rob Spencer</a>
+	      	<hr>
+
+	      	<!-- Calliope Documentation -->
+	      	<a href="https://www.callio.pe/" target="_blank">
+				<img src="{% static 'images/calliope_logo.png' %}" height="36px" style="margin-top:-4px" />
+			</a>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	      	<a href="https://calliope.readthedocs.io/en/v0.6.3/" target="_blank"><b>Calliope {% trans "Documentation" %}</b></a>
+	      	<hr>
+
+	      	<!-- Contextual Content -->
+	      	{{ help_content }}
+
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+</body>
+</html>

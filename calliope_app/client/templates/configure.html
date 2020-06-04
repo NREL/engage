@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block config_mode %}disabled{% endblock %}
+
+{% block body %}
+<div id="subheader">
+	<div class="row">
+		<div class="col-1 tab" style="background-color:#dedede;z-index:-1;padding:0;z-index: 451;">
+			<button id="master-cancel" {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-danger master-btn hide"><b>{% trans "Cancel" %}</b></button>
+			<button id="master-settings" {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-info master-btn hide">{% trans "Settings" %}</button>
+		</div>
+		
+		<div class="col-2 centered tab {% block config_1_tab %}{% endblock %}">
+		{% block config_locations %}
+			<a href="{% url 'locations' model.uuid %}" style="color:black;"><div style="height:100%"><h6><i class="fas fa-map-marker-alt"></i>&nbsp;&nbsp;{% trans "Locations" %}</h6></div></a>
+		{% endblock %}
+		</div>
+		
+		<div class="col-2 centered tab {% block config_2_tab %}{% endblock %}">
+		{% block config_technologies %}
+			<a href="{% url 'technologies' model.uuid %}" style="color:black;"><div style="height:100%"><h6><i class="fas fa-cog"></i>&nbsp;&nbsp;{% trans "Technologies" %}</h6></div></a>
+		{% endblock %}
+		</h6></div>
+		
+		<div class="col-2 centered tab {% block config_3_tab %}{% endblock %}">
+		{% block config_loc_techs %}
+			<a href="{% url 'loc_techs' model.uuid %}" style="color:black;"><div style="height:100%"><h6><i class="fas fa-map-marker-alt"></i>&nbsp;<i class="fas fa-cog"></i>&nbsp;&nbsp; {% trans "Nodes" %}</h6></div></a>
+		{% endblock %}
+		</h6></div>
+		
+		<div class="col-2 centered tab {% block config_4_tab %}{% endblock %}">
+		{% block config_scenarios %}
+			<a href="{% url 'scenarios' model.uuid %}" style="color:black;"><div style="height:100%"><h6><i class="fas fa-code-branch"></i>&nbsp;&nbsp;{% trans "Scenarios" %}</h6></div></a>
+		{% endblock %}
+		</h6></div>
+		
+		<div class="col-2 centered tab {% block config_5_tab %}{% endblock %}">
+		{% block config_runs %}
+			<a href="{% url 'runs' model.uuid %}" style="color:black;"><div style="height:100%"><h6><i class="fas fa-play"></i>&nbsp;&nbsp;{% trans "Runs" %}</h6></div></a>
+		{% endblock %}
+		</h6></div>
+		
+		<div class="col-1 tab" style="background-color:#dedede;z-index:-1;padding:0;z-index: 451;">
+			<button id="master-save" {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-warning master-btn hide"><b>{% trans "Save" %}</b></button>
+			<button id="master-new" {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-success master-btn hide"><i class="fas fa-plus"></i>&nbsp;&nbsp;{% trans "New" %}</button>
+		</div>
+	</div>
+
+	<div class="row config-navigation">
+		<div class="col-1"></div>
+		<div class="col-2 centered">
+			<a href="{% url 'locations' model.uuid %}"><div>
+				<span class="fa-stack">
+				  <i class="fa fa-circle fa-stack-2x"></i>
+				  <strong class="fa-stack-1x text-light">{% block config_1_sync %}1{% endblock %}</strong>
+				</span>
+			</div></a>
+		</div>
+		<div class="col-2 centered">
+			<a href="{% url 'technologies' model.uuid %}"><div>
+				<span class="fa-stack">
+				  <i class="fa fa-circle fa-stack-2x"></i>
+				  <strong class="fa-stack-1x text-light">{% block config_2_sync %}2{% endblock %}</strong>
+				</span>
+			</div></a>
+		</div>
+		<div class="col-2 centered">
+			<a href="{% url 'loc_techs' model.uuid %}"><div>
+				<span class="fa-stack">
+				  <i class="fa fa-circle fa-stack-2x"></i>
+				  <strong class="fa-stack-1x text-light">{% block config_3_sync %}3{% endblock %}</strong>
+				</span>
+			</div></a>
+		</div>
+		<div class="col-2 centered">
+			<a href="{% url 'scenarios' model.uuid %}"><div>
+				<span class="fa-stack">
+				  <i class="fa fa-circle fa-stack-2x"></i>
+				  <strong class="fa-stack-1x text-light">{% block config_4_sync %}4{% endblock %}</strong>
+				</span>
+			</div></a>
+		</div>
+		<div class="col-2 centered">
+			<a href="{% url 'runs' model.uuid %}"><div>
+				<span class="fa-stack">
+				  <i class="fa fa-circle fa-stack-2x"></i>
+				  <strong class="fa-stack-1x text-light">{% block config_5_sync %}5{% endblock %}</strong>
+				</span>
+			</div></a>
+		</div>
+		<div class="col-1"></div>
+	</div>
+</div>
+{% block content %}
+{% endblock %}
+{% endblock %}

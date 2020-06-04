@@ -1,0 +1,75 @@
+{% extends 'configure.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+<title>Engage | {{ model.name }} | Add Technology</title>
+<script type="text/javascript" src="{% static 'js/add_technology.js' %}"></script>
+{% endblock %}
+
+{% block config_technologies %}<h5><i class="fas fa-cog"></i>&nbsp;&nbsp;<b>{% trans "Technologies" %}</b></h5>{% endblock %}
+{% block config_2_sync %}<i class="fas fa-sync"></i>{% endblock %}
+{% block config_2_tab %}tab-active{% endblock %}
+
+{% block content %}
+<form id="form_data" method="post" action="" accept-charset="utf-8" onsubmit="return false;">
+	<div id="subheader2" class="row content_navigation">
+		<input {% if not can_edit %}disabled{% endif %} id="technology" class="nav-dropdown centered" type="text" autocomplete="off" placeholder="{% trans 'Name of new technology' %}..."/>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-1"></div>
+		<div class="col-10">
+			<div class="row">
+				<div class="col-12 centered">
+					<h5>1. <u>{% trans "Name" %}</u> {% trans "the new technology" %} <b>{% trans "above" %}</b><br><br>2. <u>{% trans "Choose" %}</u> {% trans "the technology type" %} <b>{% trans "below" %}</b></h5><br>
+					<a href="{% static 'docs/Summary.xlsx' %}" target="_blank" style="font-size:0.8em"><i class="fas fa-info"></i>&nbsp;&nbsp;Download Documentation on Template Technologies</a>
+					<br>
+				</div>
+			</div>
+			{% for abstract in abstract_techs %}
+			<div class="row" style="border:solid black 2px;height:350px;">
+				<div class="col-6 centered" style="height:100%;overflow-y: scroll">
+					<br>
+					<h3>{{ abstract.icon|safe }}&nbsp;&nbsp;{{ abstract.pretty_name }}</h3>
+					<br>
+					{% with 'images/technologies/'|add:abstract.name|add:'.png' as image_static %}
+					<img width="100%" src="{% static image_static %}">
+					<br>
+					{{ abstract.description|safe }}
+					<br><br>
+					{% endwith %}
+				</div>
+				<div class="col-6 centered" style="height:100%;overflow-y: scroll">
+					<!-- Start from Scratch -->
+					<br>{% trans "Build from" %} <b>{% trans "scratch" %}</b>:
+					<div class="selection_tile" data-abstract_tech="{{ abstract.name }}"><h5><b>{{ abstract.pretty_name }}</b></h5>{% trans "Abstract" %}</div>
+					<!-- Build from Existing -->
+					{% if my_techs %}
+					<br>{% trans "Build from" %} <b>{% trans "existing" %}</b>:
+					{% for tech in my_techs %}
+					{% if tech.abstract_tech == abstract %}
+					<div class="selection_tile" data-abstract_tech="{{ tech.abstract_tech.name }}" data-technology_id="{{ tech.id }}"><b>{{ tech.pretty_name }}</b>{% if tech.pretty_tag %} - {{ tech.pretty_tag }}{% endif %}<br>{{ tech.model.name }}</div>
+					{% endif %}
+					{% endfor %}
+					{% endif %}
+					<!-- Build from Public -->
+					{% if public_techs %}
+					<br>{% trans "Build from" %} <b>{% trans "publicly available" %}</b>:
+					{% for tech in public_techs %}
+					{% if tech.abstract_tech == abstract %}
+					<div class="selection_tile" data-abstract_tech="{{ tech.abstract_tech.name }}" data-technology_id="{{ tech.id }}"><b>{{ tech.pretty_name }}</b>{% if tech.pretty_tag %} - {{ tech.pretty_tag }}{% endif %}<br>{{ tech.model.name }}</div>
+					{% endif %}
+					{% endfor %}
+					{% endif %}
+					<br>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+		<div class="col-1"></div>
+	</div>
+	<br><br><br><br>
+</form>
+{% endblock %}

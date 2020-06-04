@@ -1,0 +1,79 @@
+[
+  {
+    "pk": 1,
+    "model": "api.abstract_tech",
+    "fields": {
+      "name": "supply",
+      "pretty_name": "Supply",
+      "image": "data/images/supply.png",
+      "description": "Supplies energy to a carrier, has a positive resource.",
+      "icon": "<i class=\"fas fa-bolt\"></i>"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "api.abstract_tech",
+    "fields": {
+      "name": "supply_plus",
+      "pretty_name": "Supply + Storage",
+      "image": "data/images/supply_plus.png",
+      "description": "Supplies energy to a carrier, has a positive resource. Additional possible constraints, including efficiencies and storage, distinguish this from\u00a0supply.",
+      "icon": "<i class=\"fas fa-battery-three-quarters\"></i> <i class=\"fas fa-bolt\"></i>"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "api.abstract_tech",
+    "fields": {
+      "name": "demand",
+      "pretty_name": "Demand",
+      "image": "data/images/demand.png",
+      "description": "Demands energy from a carrier, has a negative resource.",
+      "icon": "<i class=\"far fa-building\"></i>"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "api.abstract_tech",
+    "fields": {
+      "name": "storage",
+      "pretty_name": "Storage",
+      "image": "data/images/storage.png",
+      "description": "Stores energy.",
+      "icon": "<i class=\"fas fa-battery-three-quarters\"></i>"
+    }
+  },
+  {
+    "pk": 5,
+    "model": "api.abstract_tech",
+    "fields": {
+      "name": "transmission",
+      "pretty_name": "Transmission",
+      "image": "data/images/transmission.png",
+      "description": "Transmits energy from one location to another.",
+      "icon": "<i class=\"fas fa-exchange-alt\"></i>"
+    }
+  },
+  {
+    "pk": 6,
+    "model": "api.abstract_tech",
+    "fields": {
+      "name": "conversion",
+      "pretty_name": "Conversion",
+      "image": "data/images/conversion.png",
+      "description": "Converts energy from one carrier to another.",
+      "icon": "<i class=\"fab fa-nintendo-switch\"></i>"
+    }
+  },
+  {
+    "pk": 7,
+    "model": "api.abstract_tech",
+    "fields": {
+      "name": "conversion_plus",
+      "pretty_name": "Conversion Plus",
+      "image": "data/images/conversion_plus.png",
+      "description": "Converts energy from one carrier to another.",
+      "icon": "<i class=\"fab fa-nintendo-switch\"></i> <i class=\"fas fa-plus\"></i>"
+    }
+  }
+]

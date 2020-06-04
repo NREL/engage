@@ -1,0 +1,11 @@
+
+Dear {{ user_name }},
+
+Congratulations!
+
+Your model, "{{ model_name }}", has run SUCCESSFULLY. Please check the results in the dashboard.
+
+https://engage.nrel.gov/{{ model_uuid }}/runs/
+
+Sincerely,
+The NREL Engage Team

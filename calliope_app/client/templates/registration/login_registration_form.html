@@ -1,0 +1,28 @@
+{% load i18n %}
+
+<form id="registration_form" class="hide" method="post" data-action="{% url 'user_registration' %}" onsubmit="registration(); return false;">
+	{% csrf_token %}
+	<div class="form-group">
+		<label for="email"><b>{% trans "Email" %}:</b></label>
+		<input required class="form-control" type="email" name="email" placeholder="{% trans 'Email' %}">
+	</div>
+	<div class="form-group">
+		<label for="password"><b>{% trans "Password" %}:</b></label>
+		<input required class="form-control" type="password" name="password" placeholder="{% trans 'Password' %}">
+	</div>
+	<div class="form-group">
+		<label for="first_name"><b>{% trans "First Name" %}:</b></label>
+		<input required class="form-control" type="text" name="first_name" placeholder="{% trans 'First Name' %}">
+	</div>
+	<div class="form-group">
+		<label for="last_name"><b>{% trans "Last Name" %}:</b></label>
+		<input required class="form-control" type="text" name="last_name" placeholder="{% trans 'Last Name' %}">
+	</div>
+	<div class="form-group">
+		<label for="organization"><b>{% trans "Organization" %}:</b></label>
+		<input required class="form-control" type="text" name="organization" placeholder="{% trans 'Organization' %}">
+	</div>
+<br>
+<input type="submit" class="btn btn-sm btn-success" name="" value="{% trans 'Submit Registration' %}">
+<br><br>
+</form>

@@ -1,0 +1,13 @@
+
+Dear {{ user_name }},
+
+Your model, "{{ model_name }}", has FAILED to run. Please correct the error below and try again,
+
+*****
+ERROR: {{ error_message }}.
+*****
+
+https://engage.nrel.gov/{{ model_uuid }}/runs/
+
+Sincerely,
+The NREL Engage Team

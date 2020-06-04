@@ -1,0 +1,27 @@
+{% load i18n %}
+
+<tr><td colspan=5><br><h5>{% trans "Sample Models" %}</h5></td></tr>
+{% if public_models %}
+	{% for public_model in public_models %}
+	<tr class="table-secondary table-hover">
+		<!-- Model Name -->
+		<td style="text-overflow:ellipsis;white-space:nowrap;overflow:hidden;">
+			<h4 style="display:inline;"><a href="{% url 'model' public_model.uuid %}">&nbsp;{{ public_model.name }}&nbsp;</a></h4>
+			&nbsp;&nbsp;
+		</td>
+		<!-- Notifications -->
+		<td></td>
+		<!-- Collaborators -->
+		<td>
+			<i class="fa fa-globe"></i>&nbsp;&nbsp;{% trans "Public" %}
+		</td>
+		<!-- Permissions -->
+		<td>
+			<span style="padding:4px;border:solid 1px;background-color:yellow">&nbsp;{% trans "VIEW ONLY" %}&nbsp;</span>
+		</td>
+		<td></td>
+	</tr>
+	{% endfor %}
+{% else %}
+	<tr class="table-danger"><td colspan=4 class="centered">{% trans "There are no public models" %}</td></tr>
+{% endif %}

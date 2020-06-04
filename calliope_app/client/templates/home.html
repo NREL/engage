@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>Engage | Home</title>
+<script type="text/javascript" src="{% static 'js/home.js' %}"></script>
+<style>
+	.mapboxgl-ctrl-top-right {
+		display: none;
+	}
+	.mapboxgl-canvas-container.mapboxgl-interactive {
+		cursor: pointer;
+	}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="row centered" style="margin-top:-22px;background-color: silver;box-shadow: inset 0px 0px 20px rgba(0,0,0,0.5)">
+	<div class="col-6" style="padding:0;">
+		{% if last_model %}
+		<a href="{% url 'model' last_model.uuid %}">
+			<div style="width:100%;height:100%;border:solid black 1px" id="map"></div>
+		</a>
+		{% endif %}
+	</div>
+	<div class="col-6" style="padding-top:5px">
+		<iframe width="276" height="156" src="https://www.youtube.com/embed/NkJ0p8O5ziM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+		<iframe width="276" height="156" src="https://www.youtube.com/embed/kBwBf2bYzsE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+	</div>
+</div>
+<div class="row centered">
+	<div class="col-6">
+		<b>{{ last_model.name }}</b>
+	</div>
+	<div class="col-6">
+		<b>Videos</b>
+	</div>
+</div>
+<div class="row">
+	<div class="col-12">
+		<form action="#">
+			<table class="table table-sm">
+				<!-- Create a new model -->
+				{% include 'home_new_model.html' %}
+				<!-- My Models -->
+				{% include 'home_my_models.html' %}
+				<!-- Sample Models -->
+				{% include 'home_public_models.html' %}
+			</table>
+		</form>
+	</div>
+</div>
+<br><br><br><br><br><br><br><br>
+{% endblock %}

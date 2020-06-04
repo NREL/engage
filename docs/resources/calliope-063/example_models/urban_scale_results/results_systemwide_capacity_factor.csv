@@ -1,0 +1,15 @@
+supply_gas,heat,0.0
+supply_gas,gas,0.5840977663687312
+supply_gas,electricity,0.0
+chp,heat,0.5885039148738787
+chp,gas,0.0
+chp,electricity,0.7356298935923477
+supply_grid_power,heat,0.0
+supply_grid_power,gas,0.0
+supply_grid_power,electricity,0.0787373463118271
+boiler,heat,0.15375982968319818
+boiler,gas,0.0
+boiler,electricity,0.0
+pv,heat,0.0
+pv,gas,0.0
+pv,electricity,0.20185729186145832

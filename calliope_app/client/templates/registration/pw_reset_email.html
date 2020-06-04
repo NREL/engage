@@ -1,0 +1,13 @@
+{% load i18n %}
+
+{% autoescape off %}
+{% trans "To initiate the password reset process for your ENGAGE Account" %},
+{% trans "click the link below" %}:
+
+{{ protocol }}://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}
+
+{% trans "If clicking the link above doesn't work, please copy and paste the URL in a new browser window instead." %}
+
+{% trans "Sincerely" %},
+{% trans "The NREL Engage Team" %}
+{% endautoescape %}

@@ -1,0 +1,7 @@
+region1,ccgt,25.0
+region2,battery,25.0
+region1-3,csp,25.0
+region1,ac_transmission:region2,25.0
+region1-1,csp,25.0
+region1-2,csp,25.0
+region2,ac_transmission:region1,25.0

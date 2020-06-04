@@ -1,0 +1,102 @@
+{% extends 'configure.html' %}
+
+{% load static %}
+{% load i18n %}
+{% load tz %}
+
+{% block head %}
+<title>Engage | {{ model.name }} | Timeseries</title>
+<script type="text/javascript" src="{% static 'js/timeseries.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<br>
+<div class="row">
+	<div id="timeseries-content" class="col-12"></div>
+	<div id="chart-0" class="col-12 centered timeseries_viz"></div>
+</div>
+<br>
+<div class="row">
+	<div class="col-6">
+		<div class="row">
+			<div class="col-6">
+				<h5>
+					<i class="fas fa-file-csv"></i>&nbsp;&nbsp;{% trans "CSV Files" %}&nbsp;&nbsp;&nbsp;&nbsp;
+				</h5>
+			</div>
+			<div class="col-6 text-right">
+				<button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-success btn-sm file-add" title="{% trans 'Add a file' %}"><i class="fas fa-plus"></i> {% trans "Add File" %}</button>
+			</div>
+		</div>
+		<div id="file_container">
+				<table id="file_list" class="table table-hover table-sm">
+					<tbody>
+						
+						
+						<form method="post" enctype="multipart/form-data" action="/{{ LANGUAGE_CODE }}/api/upload_file/">
+						{% csrf_token %}
+						<!-- Add File -->
+						<tr class="table-warning file-add-row hide">
+							<!-- File Name -->
+							<td>
+								<input {% if not can_edit %}disabled{% endif %} name="myfile" type="file" class="file-edit-name" style="padding-top: 10px;" placeholder="{% trans 'New file name' %}...">
+								<input {% if not can_edit %}disabled{% endif %} type="hidden" name="model_uuid" value="{{ model.uuid }}" />
+							</td>
+							<!-- File Description -->
+							<td class="text-sm">
+								<textarea name="file-description" class="file-edit-description"  placeholder="{% trans 'New file description' %}..."></textarea>
+							</td>
+							<!-- Edit Buttons -->
+							<td class="centered">
+								<button {% if not can_edit %}disabled{% endif %} type="submit" class="file-save btn btn-warning"><b>{% trans "Save" %}</b></button>
+							</td>
+						</tr>
+						</form>
+					
+				{% if files %}
+					{% for file in files %}
+						<!-- File Row -->
+						<tr data-file_id={{ file.id }} class="file-row">
+							<td class="text-sm">
+								<h5><b>{{ file.simple_filename }}</b></h5>
+								{% if file.description %}{{ file.description }}{% endif %}
+							</td>
+							<td class="text-sm">
+								{% if user.is_authenticated %}{{ file.created|timezone:user.user_profile.timezone }}{% else %}{{ file.created }}{% endif %}
+							</td>
+							<!-- Edit Buttons -->
+							<td class="centered">
+								<button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-sm btn-outline-danger file-delete" title="{% trans 'Delete file' %}"><i class="fas fa-trash"></i></button>
+							</td>
+						</tr>
+					{% endfor %}
+					
+					
+				{% else %}
+					<tr><td>{% trans "No files have been uploaded yet" %}.<td></tr>
+				{% endif %}
+				
+					</tbody>
+				</table>
+		</div>
+	</div>
+	<div class="col-6">
+		<div class="row">
+			<div class="col-6">
+				<h5>
+					<i class="far fa-clock"></i>&nbsp;&nbsp;{% trans "Timeseries" %}&nbsp;&nbsp;&nbsp;&nbsp;
+				</h5>
+			</div>
+			<div class="col-6 text-right">
+				<button id="timeseries_new_btn" {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-success btn-sm" title="{% trans 'Create a new timeseries' %}"><i class="fas fa-plus"></i> {% trans "Create Timeseries" %}</button>
+			</div>
+		</div>
+		
+		<div id="timeseries-container-new" class="hide"><br><b>{% trans "Choose a file from the left!" %}</b></div>
+		
+		<div id="timeseries-container">
+			{% include 'timeseries_table.html' %}
+		</div>
+	</div>
+</div>
+{% endblock %}

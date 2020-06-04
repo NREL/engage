@@ -1,0 +1,10 @@
+calliope==0.6.3
+django==2.2.12
+django-environ>=0.4.5
+psycopg2==2.7.6
+boto3==1.9.145
+celery[redis]==4.3.0
+flower==0.9.2
+tornado==5.1.1
+pyyaml==5.1.1
+django-modeltranslation==0.14.2

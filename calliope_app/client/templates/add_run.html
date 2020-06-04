@@ -1,0 +1,49 @@
+{% extends 'configure.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+<title>Engage | {{ model.name }} | Runs</title>
+<script type="text/javascript" src="{% static 'js/add_run.js' %}"></script>
+<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+{% endblock %}
+
+{% block config_runs %}<h5><i class="fas fa-play"></i>&nbsp;&nbsp;<b>{% trans "Runs" %}</b></h5>{% endblock %}
+{% block config_5_sync %}<i class="fas fa-sync"></i>{% endblock %}
+{% block config_5_tab %}tab-active{% endblock %}
+
+{% block content %}
+<form id="form_data" method="post" action="" accept-charset="utf-8" onsubmit="return false;">
+	<div id="subheader2" class="row content_navigation">
+		<span id="scenario" class="nav-dropdown centered" style="cursor:default;padding-top:15px;font-size:1.4em" data-scenario_id="{{ scenario.id }}"><i class="fas fa-code-branch"></i>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{ scenario.name }}</b></span>
+	</div>
+	<br>
+	<!-- Time Period Selection -->
+	<div class="row">
+		<div class="col-12 centered"><h5><u>{% trans "Select" %}</u> {% trans "a time period" %} <b>{% trans "below" %}</b></h5><br></div>
+		<div class="col-12 centered">
+			<h5>
+			{% trans "Start Date" %}
+			&nbsp;&nbsp;
+			<input {% if not can_edit %}disabled{% endif %} id="start_date" class="centered" style="background-color: #d9ebff;" type="date" autocomplete="off" />
+			&nbsp;&nbsp;
+			<b><i class="fas fa-angle-double-left"></i>&nbsp;&nbsp;<i class="fas fa-calendar-alt"></i>&nbsp;&nbsp;<i class="fas fa-angle-double-right"></i></b>
+			&nbsp;&nbsp;
+			<input {% if not can_edit %}disabled{% endif %} id="end_date" class="centered" style="background-color: #d9ebff;" type="date" autocomplete="off" />
+			&nbsp;&nbsp;
+			{% trans "End Date" %}
+			</h5>
+		</div>
+	</div>
+	<div id="add_run_precheck">
+		<br>
+		<div class="d-flex justify-content-center">
+			<div class="spinner-border" style="width: 5rem; height: 5rem;" role="status">
+			  <span class="sr-only">{% trans "Loading" %}...</span>
+			</div>
+		</div>
+	</div>
+	<br>
+</form>
+{% endblock %}

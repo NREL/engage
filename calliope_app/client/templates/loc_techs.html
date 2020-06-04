@@ -1,0 +1,23 @@
+{% extends 'configure.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+<title>Engage | {{ model.name }} | Nodes</title>
+<script type="text/javascript" src="{% static 'js/loc_techs.js' %}"></script>
+{% endblock %}
+
+{% block config_loc_techs %}<h5><i class="fas fa-map-marker-alt"></i>&nbsp;<i class="fas fa-cog"></i>&nbsp;&nbsp;<b>{% trans "Nodes" %}</b></h5>{% endblock %}
+{% block config_3_sync %}<i class="fas fa-sync"></i>{% endblock %}
+{% block config_3_tab %}tab-active{% endblock %}
+
+{% block content %}
+<div id="subheader2" class="row content_navigation">
+	{% include "technology_selector.html" %}
+</div>
+<form id="form_data" method="post" action="" accept-charset="utf-8">
+	<div class="row" id="tech_essentials"></div>
+	<div class="row" id="tech_parameters" data-power_units="{{ power_units }}"></div>
+</form>
+{% endblock %}

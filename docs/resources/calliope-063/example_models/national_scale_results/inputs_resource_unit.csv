@@ -1,0 +1,5 @@
+region1-3,csp,energy_per_area
+region2,demand_power,energy
+region1,demand_power,energy
+region1-1,csp,energy_per_area
+region1-2,csp,energy_per_area

@@ -1,0 +1,112 @@
+[
+  {
+    "pk": 1,
+    "model": "api.loc_tech",
+    "fields": {
+      "location_1_id": "1",
+      "location_2_id": null,
+      "technology_id": "4",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "api.loc_tech",
+    "fields": {
+      "location_1_id": "1",
+      "location_2_id": null,
+      "technology_id": "1",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "api.loc_tech",
+    "fields": {
+      "location_1_id": "2",
+      "location_2_id": null,
+      "technology_id": "4",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "api.loc_tech",
+    "fields": {
+      "location_1_id": "2",
+      "location_2_id": null,
+      "technology_id": "3",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 5,
+    "model": "api.loc_tech",
+    "fields": {
+      "location_1_id": "3",
+      "location_2_id": null,
+      "technology_id": "2",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 6,
+    "model": "api.loc_tech",
+    "fields": {
+      "location_1_id": "4",
+      "location_2_id": null,
+      "technology_id": "2",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 7,
+    "model": "api.loc_tech",
+    "fields": {
+      "location_1_id": "5",
+      "location_2_id": null,
+      "technology_id": "2",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 8,
+    "model": "api.loc_tech",
+    "fields": {
+      "location_1_id": "1",
+      "location_2_id": "2",
+      "technology_id": "5",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 9,
+    "model": "api.loc_tech",
+    "fields": {
+      "location_1_id": "1",
+      "location_2_id": "3",
+      "technology_id": "6",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 10,
+    "model": "api.loc_tech",
+    "fields": {
+      "location_1_id": "1",
+      "location_2_id": "4",
+      "technology_id": "6",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 11,
+    "model": "api.loc_tech",
+    "fields": {
+      "location_1_id": "1",
+      "location_2_id": "5",
+      "technology_id": "6",
+      "model_id": "1"
+    }
+  }
+]

@@ -1,0 +1,6 @@
+X1,supply_gas,monetary,0.025
+X1,supply_grid_power,monetary,0.1
+X2,boiler,monetary,0.004
+X2,supply_gas,monetary,0.025
+X3,boiler,monetary,0.004
+X3,supply_gas,monetary,0.025

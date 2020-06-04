@@ -1,0 +1,101 @@
+[
+  {
+    "pk": 1,
+    "model": "api.scenario_loc_tech",
+    "fields": {
+      "scenario_id": "1",
+      "loc_tech_id": "1",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "api.scenario_loc_tech",
+    "fields": {
+      "scenario_id": "1",
+      "loc_tech_id": "2",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "api.scenario_loc_tech",
+    "fields": {
+      "scenario_id": "1",
+      "loc_tech_id": "3",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "api.scenario_loc_tech",
+    "fields": {
+      "scenario_id": "1",
+      "loc_tech_id": "4",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 5,
+    "model": "api.scenario_loc_tech",
+    "fields": {
+      "scenario_id": "1",
+      "loc_tech_id": "5",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 6,
+    "model": "api.scenario_loc_tech",
+    "fields": {
+      "scenario_id": "1",
+      "loc_tech_id": "6",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 7,
+    "model": "api.scenario_loc_tech",
+    "fields": {
+      "scenario_id": "1",
+      "loc_tech_id": "7",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 8,
+    "model": "api.scenario_loc_tech",
+    "fields": {
+      "scenario_id": "1",
+      "loc_tech_id": "8",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 9,
+    "model": "api.scenario_loc_tech",
+    "fields": {
+      "scenario_id": "1",
+      "loc_tech_id": "9",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 10,
+    "model": "api.scenario_loc_tech",
+    "fields": {
+      "scenario_id": "1",
+      "loc_tech_id": "10",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 11,
+    "model": "api.scenario_loc_tech",
+    "fields": {
+      "scenario_id": "1",
+      "loc_tech_id": "11",
+      "model_id": "1"
+    }
+  }
+]

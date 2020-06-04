@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+<title>Engage | Model Sharing</title>
+<script type="text/javascript" src="{% static 'js/settings.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+<div class="row">
+	<div class="col-12"><br></div>
+	<div class="col-12 centered">
+		<h1><i class="fas fa-users"></i>&nbsp;&nbsp; {% trans "Model Sharing" %}</h1>
+	</div>
+</div>
+<form action="#">
+<div class="row">
+	<div class="col-4"></div>
+	<div class="col-4 centered">
+		<br>
+		<h5><b>Add a Collaborator:</b></h5>
+		<span id="collaborator_message" class="hide" style="color:red;">{% trans "Error" %}</span>
+		<select id="model_uuid" class="model-dropdown-search form-control" placeholder="{% trans 'Select a model' %}..." data-placeholder="Select a model..." style="width:100%" required>
+			<option value="" selected disabled>{%trans "Select a model" %}...</option>
+			{% for user_model in user_models %}
+			{% if user_model.can_edit %}
+			<option value="{{ user_model.model.uuid }}" data-id='{{ user_model.model.uuid }}' data-name='{{ user_model.model }}' {% if selected_model_uuid == user_model.model.get_uuid %}selected="selected"{% endif %}>{{ user_model.model }}</option>
+			{% endif %}
+			{% endfor %}
+		</select>
+		<br><br>
+		<select id="collaborator_email" class="collaborator-dropdown-search form-control" placeholder="{% trans 'Select a user' %}..." data-placeholder="Select a user..." style="width:100%" required>
+			<option value="" disabled selected>{% trans "Select a user" %}...</option>
+			{% for user in users %}
+		  	<option value='{{ user.email }}' data-id='{{ user.id }}' data-name='<i class="fas fa-user"></i>&nbsp;&nbsp;{{ user.first_name }} {{ user.last_name }}'>{{ user.first_name }} {{ user.last_name }}</option>
+		  	{% endfor %}
+		</select>
+		<br><br>
+		<script type="text/javascript">
+			function formatState (state) {
+			  if (!state.id) {
+			    return state.text;
+			  }
+			  var $state = $(
+			    '<div class="row"><div class="col-12 centered">' + state.element.dataset.name + '</div></div></div>'
+			  );
+			  return $state;
+			};
+			$(".collaborator-dropdown-search").select2({
+			  templateResult: formatState,
+			  templateSelection: formatState
+			});
+			$(".model-dropdown-search").select2({
+			  templateResult: formatState,
+			  templateSelection: formatState
+			});
+		</script>
+		<input id="remove_collaborator_btn" style="width:33%;float:left;border-color:black" class="btn btn-outline-danger" type="submit" value="Remove">
+		<input id="add_collaborator_btn_view_only" style="width:33%;float:left;background-color:yellow;border-color:black" class="btn btn-warning" type="submit" data-collaborator_can_edit=0 value="View Only">
+		<input id="add_collaborator_btn" style="width:33%" class="btn btn-success" type="submit" data-collaborator_can_edit=1 value="Can Edit">
+		<br><br><br>
+	</div>
+	<div class="col-4"></div>
+</div>
+</form>
+<div class="row">
+	<div class="col-2"></div>
+	<div class="col-8 centered">
+		<table class="table table-hover table-sm" style="background-color: #f3f3f3;">
+		{% for user_model in user_models %}
+			<tr class="tbl-header colab-row" data-uuid="{{ user_model.model.uuid }}">
+				<th colspan=4><b>{% if user_model.model.public is True %}<i class="fa fa-globe"></i>&nbsp;&nbsp;&nbsp;{% endif %}{{ user_model.model }}:</b></th>
+			</tr>
+			{% for collaborator in user_model.model.collaborators %}
+			<tr class="colab-row" data-uuid="{{ user_model.model.uuid }}">
+				<td>{% if collaborator.user.is_staff %}<span style="color:green;">Administrator</span>{% endif %}</td>
+				<td>{{ collaborator.user.first_name }} {{ collaborator.user.last_name }}</td>
+				<td>{{ collaborator.user.user_profile.organization }}</td>
+				<td>{% if collaborator.can_edit %}<span style="padding:4px;background-color:green;color:white">&nbsp;&nbsp;<i class="fas fa-tools"></i>&nbsp;&nbsp;Can Edit&nbsp;&nbsp;</span>{% else %}<span style="padding:4px;background-color:yellow;border:solid 1px;">&nbsp;<i class="fas fa-eye"></i>&nbsp;View Only&nbsp;</span>{% endif %}</td>
+			</tr>
+			{% endfor %}
+		{% endfor %}
+		</table>
+	</div>
+	<div class="col-2"></div>
+</div>
+{% endblock %}

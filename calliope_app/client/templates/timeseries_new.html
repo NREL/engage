@@ -1,0 +1,57 @@
+{% load i18n %}
+
+<script type="text/javascript">
+	var letters = [{% for letter in letters %}'{{ letter }}',{% endfor %}];
+	var columns = [{% for col in columns %}'{{ col }}',{% endfor %}];
+	$(function() {
+		$('[data-toggle="tooltip"]').tooltip();
+	});
+</script>
+
+<div class="row centered">
+	<div class="col-12 my-2 h5">
+		{% trans "Create timeseries from file" %}:
+		<strong>{{ filename }}</strong>
+	</div>
+</div>
+
+<div class="row centered">
+	<div class="col-12 my-2">
+		<input checked="checked" {% if not can_edit %}disabled{% endif %} type="checkbox" id="has_header" class="form-check-input" name="has_header" value="true" />
+		<label class="form-check-label" for="has_header" data-toggle="tooltip"
+			title="{% trans 'If this box is checked, the first line of the file will be ignored. If a header exists and this box is unchecked, the header will be interpreted as data and will result in an error.' %}">
+			{% trans "The first row of this CSV file is a header row." %}
+		</label>
+	</div>
+	{% if columns is not None %}
+	<div class="col-6">
+		<h6>Choose timestamp column:</h6>
+		<select {% if not can_edit %}disabled{% endif %} class="form-control" id="timestamp_col" style="width:100%">
+			{% for col in columns %}
+			<option {% if forloop.counter0 == 0 %}selected{% endif %} value="{{ col }}">{{ col }}</option>
+			{% endfor %}
+		</select>
+	</div>
+	<div class="col-6">
+		<h6>{% trans "Choose value column" %}:</h6>
+		<select {% if not can_edit %}disabled{% endif %} class="form-control" id="value_col" style="width:100%">
+			{% for col in columns %}
+			<option {% if forloop.counter0 == 1 %}selected{% endif %} value="{{ col }}">{{ col }}</option>
+			{% endfor %}
+		</select>
+	</div>
+	<div class="col-12">
+		<br>
+		<input {% if not can_edit %}disabled{% endif %} class="form-control" id='timeseries_name' type="text" style="width:100%" placeholder="{% trans 'Name of timeseries' %}..."></input>
+	</div>
+	{% else %}
+	<div class="col-12">
+		{% trans "Could not read CSV file" %}
+	</div>
+	{% endif %}
+	<div class="col-12">
+		<span id="error-message" style="color:red"></span><br>
+		<button {% if not can_edit %}disabled{% endif %} id='upload_timeseries' type="button" class="btn btn-success btn-sm" style="width:100%">{% trans "Create Timeseries" %}</button>
+	</div>
+</div>
+<br><br>

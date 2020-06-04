@@ -1,0 +1,9 @@
+X2,demand_electricity,True
+X1,pv,True
+X3,demand_electricity,True
+X1,demand_electricity,True
+X2,pv,True
+X2,demand_heat,True
+X1,demand_heat,True
+X3,pv,True
+X3,demand_heat,True

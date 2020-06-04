@@ -1,0 +1,91 @@
+{% extends 'configure.html' %}
+
+{% load static %}
+{% load i18n %}
+{% load tz %}
+
+{% block head %}
+<title>Engage | {{ model.name }} | Comments</title>
+<script type="text/javascript" src="{% static 'js/model.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<br>
+<div class="row" id="comments_dashboard">
+	<div class="col-12">
+		<h2 style="float:left;display:inline;width:200px;margin-right:5px"><i class="far fa-comments"></i>&nbsp;&nbsp;{% trans "Activity" %}</h2>
+		{% if can_edit == True %}
+		<input id="snapshot_model_btn" class="btn btn-sm btn-warning" type="submit" value="{% trans 'Create Snapshot' %}">
+		<button disabled id='snapping' type="button" class="btn btn-sm btn-warning hide"><i class="fas fa-sync fa-spin"></i></button>
+		<button disabled id='snap_fail' type="button" class="btn btn-sm btn-danger hide"><i class="fas fa-exclamation"></i> {% trans "Contact Administrator" %}</button>
+		<span id="comment_message" class="hide" style="color:red;">{% trans "Error" %}</span>
+		<form action="#">
+			<table class="table table-sm">
+				<tr>
+					<td style="width:200px;border:none">
+						<b>{{ user.first_name }} {{ user.last_name }}</b>
+						<br>
+						<input id="add_model_comment_btn" class="btn btn-success" style="width:100%;margin-top:5px;" type="submit" value="{% trans 'Add Comment' %}">
+					</td>
+					<td style="border:none">
+						<textarea id="model_comment" class="form-control" style="text-align:left" placeholder="{% trans 'Comment' %}..." required></textarea>
+					</td>
+				</tr>
+			</table>
+		</form>
+		{% endif %}
+	</div>
+</div>
+<div class="row">
+	<table class="table table-hover table-sm">
+	{% for comment in comments %}
+		{% ifchanged comment.created|date:"M Y" %}
+		<!-- Header Row  -->
+		<tr class="activity-header hiding_rows">
+			<th colspan=2>
+				Edits in <b>{{ comment.created|date:"M Y" }}</b>
+			</th>
+			<th style="white-space:nowrap;">
+				<i class="fas fa-caret-down"> {% trans "more" %}</i>
+				<i class="fas fa-caret-up hide"> {% trans "less" %}</i>
+			</th>
+		</tr>
+		{% endifchanged %}
+		{% if comment.user %}
+			<tr class="comment-activity" style="background-color:#dfeeff;">
+				<td style="width:200px;">
+					<b>{{ comment.user.first_name }} {{ comment.user.last_name }}</b>
+					<br>
+					<span style="font-size:0.7em">{% if user.is_authenticated %}{{ comment.created|timezone:user.user_profile.timezone }}{% else %}{{ comment.created }}{% endif %}</span>
+				</td>
+				<td>
+					<span>{{ comment.icon }}&nbsp;&nbsp;&nbsp;&nbsp;{{ comment.safe_comment }}</span>
+				</td>
+				<td></td>
+			</tr>
+		{% elif comment.type == 'version' %}
+			<tr class="version-activity table-warning">
+				<td style="width:200px;padding-top:0;padding-bottom:0;">
+					<span style="font-size:0.7em">{% if user.is_authenticated %}{{ comment.created|timezone:user.user_profile.timezone }}{% else %}{{ comment.created }}{% endif %}</span>
+				</td>
+				<td style="padding-top:0;padding-bottom:0;">
+					<span>{{ comment.icon }}&nbsp;&nbsp;&nbsp;&nbsp;{{ comment.safe_comment }}</span>
+				</td>
+				<td></td>
+			</tr>
+		{% else %}
+			<tr class="edit-activity hide">
+				<td style="width:200px;padding-top:0;padding-bottom:0;">
+					<span style="font-size:0.7em">{% if user.is_authenticated %}{{ comment.created|timezone:user.user_profile.timezone }}{% else %}{{ comment.created }}{% endif %}</span>
+				</td>
+				<td style="padding-top:0;padding-bottom:0;">
+					<span style="font-size:0.7em">{{ comment.icon }}&nbsp;&nbsp;&nbsp;&nbsp;{{ comment.safe_comment }}</span>
+				</td>
+				<td></td>
+			</tr>
+		{% endif %}
+	{% endfor %}
+	</table>
+</div>
+<br><br>
+{% endblock %}

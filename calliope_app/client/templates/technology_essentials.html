@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+{% load i18n %}
+
+{% load return_item %}
+<div class="col-6" style="border:solid 1px;height:350px;overflow-y:scroll">
+	<div class="row">
+		<div class="col-2 centered">
+			<br>
+			<button id="technology-delete" {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i></button>
+		</div>
+		<div class="col-8 centered">
+			<br>
+			<h3>{% trans "Technology Definition" %}:</h3>
+			<br>
+		</div>
+		<div class="col-2 centered">
+			<br>
+			<input {% if not can_edit %}disabled{% endif %} id="tech_color" type='text' name='essentials[3]' value='{{ essentials.3.value }}' />
+		</div>
+
+		<!-- Name -->
+		<div class="col-5">
+			<b>{% trans "Name" %}:</b>
+		</div>
+		<div class="col-7">
+			<input {% if not can_edit %}disabled{% endif %} id="tech_name" style="width:100%" type="text" name='essentials[tech_name]' value="{{ technology.pretty_name }}">
+		</div>
+
+		<!-- Scenario Tag -->
+		<div class="col-5" data-toggle="tooltip" data-placement="left" title="{% trans 'Scenario tags are used to differentiate multiple versions of the same technology' %}">
+			<b>{% trans "Scenario Tag" %}:</b>
+		</div>
+		<div class="col-7">
+			<input {% if not can_edit %}disabled{% endif %} id="tech_tag" style="width:100%" type="text" name='essentials[tech_tag]' value="{% if technology.pretty_tag %}{{ technology.pretty_tag }}{% endif %}">
+		</div>
+
+		<!-- Capacity Optimization -->
+		{% if technology.abstract_tech.name != 'demand' %}
+
+			<div class="col-5" data-toggle="tooltip" data-placement="left" title="{% trans 'These settings filter the constraint parameters below' %}">
+				<b>Capacity Optimization:</b>
+			</div>
+			<div class="col-7">
+				<select {% if not can_edit %}disabled{% endif %} id="tech_is_linear" style="width:49%" type="text" name='is_linear' >
+					<option disabled {% if not technology.is_linear %}selected{% endif %} value=""></option>
+					<option {% if technology.is_linear is True %}selected{% endif %} value=1>{% trans "Linear" %}</option>
+					<option {% if technology.is_linear is False %}selected{% endif %} value=0>{% trans "Units" %}</option>
+				</select>
+				<select {% if not can_edit %}disabled{% endif %} id="tech_is_expansion" style="width:49%" type="text" name='is_expansion' >
+					<option disabled {% if not technology.is_expansion %}selected{% endif %} value=""></option>
+					<option {% if technology.is_expansion is True %}selected{% endif %} value=1>{% trans "Expansion" %}</option>
+					<option {% if technology.is_expansion is False %}selected{% endif %} value=0>{% trans "Fixed" %}</option>
+				</select>
+			</div>
+
+		{% endif %}
+
+		<!-- Carriers -->
+		{% if technology.abstract_tech.name != 'conversion_plus' %}
+			<!-- Required Carriers (Simple) -->
+			{% for carrier_id in required_carrier_ids %}
+				{% with essentials|return_item:carrier_id as carrier %}
+				{% if carrier %}
+					{% include 'carrier_form_simple.html' %}
+				{% endif %}
+				{% endwith %}
+			{% endfor %}
+		{% else %}
+			<!-- Required Carriers (Conversion Plus) -->
+			<div class="col-12">
+			{% for carrier_id in required_carrier_ids %}
+				{% with essentials|return_item:carrier_id as carrier %}
+				{% with True as required %}
+				{% if carrier %}
+					{% include 'carrier_form_complex.html' %}
+				{% endif %}
+				{% endwith %}
+				{% endwith %}
+			{% endfor %}
+			</div>
+			<!-- Optional Carriers (Conversion Plus) -->
+			<div class="col-12">
+			{% for carrier_id in cplus_carrier_ids %}
+				{% with essentials|return_item:carrier_id as carrier %}
+				{% with False as required %}
+				{% if carrier %}
+					{% include 'carrier_form_complex.html' %}
+				{% endif %}
+				{% endwith %}
+				{% endwith %}
+			{% endfor %}
+			</div>
+
+		{% endif %}
+
+		<!-- Carriers List -->
+		<datalist id="carriers_list">
+			{% for carrier in carriers %}
+			<option value="{{ carrier }}">{{ carrier }}</option>
+			{% endfor %}
+		</datalist>
+	</div>
+	<div class="row">
+		<div class="col-12">
+			<b>{% trans "Description" %}:</b><br>
+			<textarea {% if not can_edit %}disabled{% endif %} name="essentials[tech_description]" id="tech_description">{% if technology.description %}{{ technology.description }}{% endif %}</textarea>
+		</div>
+	</div>
+</div>
+<div class="col-6 centered" style="border:solid 1px;height:350px;overflow-y:scroll;">
+	<br>
+	<h3>{{ technology.abstract_tech.icon|safe }}&nbsp;&nbsp;{{ technology.abstract_tech.pretty_name }}</h3>
+	<br>
+	{% with 'images/technologies/'|add:technology.abstract_tech.name|add:'.png' as image_static %}
+	<img width="100%" src="{% static image_static %}">
+	<br>
+	{{ technology.abstract_tech.description|safe }}
+	<br><br>
+	{% endwith %}
+</div>

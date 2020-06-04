@@ -1,0 +1,42 @@
+{% extends 'configure.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+<title>Engage | {{ model.name }} | Scenarios</title>
+<script type="text/javascript" src="{% static 'js/add_scenario.js' %}"></script>
+{% endblock %}
+
+{% block config_scenarios %}<h5><i class="fas fa-code-branch"></i>&nbsp;&nbsp;<b>{% trans "Scenarios" %}</b></h5>{% endblock %}
+{% block config_4_sync %}<i class="fas fa-sync"></i>{% endblock %}
+{% block config_4_tab %}tab-active{% endblock %}
+
+{% block content %}
+<form id="form_data" method="post" action="" accept-charset="utf-8" onsubmit="return false;">
+	<div id="subheader2" class="row content_navigation">
+		<input {% if not can_edit %}disabled{% endif %} id="scenario" class="nav-dropdown centered" type="text" autocomplete="off" placeholder="{% trans 'Name of new scenario' %}..."/>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-1"></div>
+		<div class="col-10">
+			<div class="row">
+				<div class="col-12 centered"><h5>1. <u>{% trans "Name" %}</u> {% trans "the new scenario" %} <b>{% trans "above" %}</b><br><br>2. <u>{% trans "Choose" %}</u> {% trans "an existing scenario to duplicate" %} <b>{% trans "below" %}</b> [OPTIONAL]</h5><br><br><h2>{% trans "Existing" %}:</h2><br></div>
+				{% if scenarios %}
+				{% for scenario in scenarios %}
+				<div class="col-12 centered selection_tile" data-scenario_id="{{ scenario.id }}">
+					<h4><i class="fas fa-code-branch"></i>&nbsp;&nbsp;{{ scenario.name }}</h4>
+				</div>
+				{% endfor %}
+				{% else %}
+				<div class="col-12 centered">
+					{% trans "No other scenarios exist yet" %}.
+				</div>
+				{% endif %}
+			</div>
+		</div>
+		<div class="col-1"></div>
+	</div>
+</form>
+{% endblock %}

@@ -1,0 +1,9 @@
+X1,chp,electricity,in,1.0
+X1,chp,electricity,out,1.0
+X1,chp,electricity,out_2,1.0
+X1,chp,gas,in,1.0
+X1,chp,gas,out,1.0
+X1,chp,gas,out_2,1.0
+X1,chp,heat,in,1.0
+X1,chp,heat,out,1.0
+X1,chp,heat,out_2,0.8

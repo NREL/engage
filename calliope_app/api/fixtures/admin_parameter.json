@@ -1,0 +1,1370 @@
+[
+  {
+    "pk": 1,
+    "model": "api.parameter",
+    "fields": {
+      "root": "essentials",
+      "category": "Essentials",
+      "name": "parent",
+      "pretty_name": "Parent Technology",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "",
+      "description": "Name of the base technology group (supply, supply_plus, demand, storage, transmission, conversion, conversion_plus)",
+      "is_essential": true,
+      "is_carrier": false,
+      "choices": "[\"supply\",\"supply_plus\",\"demand\",\"storage\",\"transmission\",\"conversion\",\"conversion_plus\"]"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "api.parameter",
+    "fields": {
+      "root": "essentials",
+      "category": "Essentials",
+      "name": "name",
+      "pretty_name": "Name",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "",
+      "description": "Name of the technology",
+      "is_essential": true,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "api.parameter",
+    "fields": {
+      "root": "essentials",
+      "category": "Essentials",
+      "name": "color",
+      "pretty_name": "Color",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "hex color code",
+      "description": "Representative color for visualizations",
+      "is_essential": true,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "api.parameter",
+    "fields": {
+      "root": "essentials",
+      "category": "Essentials",
+      "name": "carrier",
+      "pretty_name": "Energy carrier",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "",
+      "description": "[Required] Energy carrier (electricity, heat, gas, etc.)",
+      "is_essential": true,
+      "is_carrier": true,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 5,
+    "model": "api.parameter",
+    "fields": {
+      "root": "essentials",
+      "category": "Essentials",
+      "name": "carrier_in",
+      "pretty_name": "Input Carrier",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "",
+      "description": "[Required] Input energy carrier (electricity, heat, gas, etc.)",
+      "is_essential": true,
+      "is_carrier": true,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 6,
+    "model": "api.parameter",
+    "fields": {
+      "root": "essentials",
+      "category": "Essentials",
+      "name": "carrier_out",
+      "pretty_name": "Output Carrier",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "",
+      "description": "[Required] Output energy carrier (electricity, heat, gas, etc.)",
+      "is_essential": true,
+      "is_carrier": true,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 7,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "carrier_ratios",
+      "pretty_name": "Carrier ratios",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "<sub>ABC</sub>",
+      "description": "[Optional] Ratio of summed output of carriers in [\u2018out_2\u2019, \u2018out_3\u2019] / [\u2018in_2\u2019, \u2018in_3\u2019] to the summed output of carriers in \u2018out\u2019 / \u2018in\u2019. given in a nested dictionary.",
+      "is_essential": true,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 8,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Storage",
+      "name": "charge_rate",
+      "pretty_name": "Charge rate",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "%<sub>/100</sub> /hour",
+      "description": "ratio of maximum charge/discharge ([[power]]) for a given maximum storage capacity ([[power]]h).",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 9,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "energy_cap_equals",
+      "pretty_name": "Installed energy capacity",
+      "timeseries_enabled": "False",
+      "is_linear": true,
+      "is_expansion": false,
+      "is_systemwide": false,
+      "units": "[[power]]",
+      "description": "fixes maximum/minimum if decision variables\u00a0carrier_prod/carrier_con and overrides\u00a0_max/\u00a0_min\u00a0constraints.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 10,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "energy_cap_equals_systemwide",
+      "pretty_name": "Installed energy capacity (System-wide)",
+      "timeseries_enabled": "False",
+      "is_linear": true,
+      "is_expansion": false,
+      "is_systemwide": true,
+      "units": "[[power]]",
+      "description": "fixes the sum to a maximum/minimum, for a particular technology, of the decision variables\u00a0carrier_prod/carrier_conover all locations.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 11,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "energy_cap_max",
+      "pretty_name": "Maximum installed energy capacity",
+      "timeseries_enabled": "False",
+      "is_linear": true,
+      "is_expansion": true,
+      "is_systemwide": false,
+      "units": "[[power]]",
+      "description": "Limits decision variables\u00a0carrier_prod/carrier_con\u00a0to a maximum/minimum.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 12,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "energy_cap_max_systemwide",
+      "pretty_name": "Maximum installed energy capacity (System-wide)",
+      "timeseries_enabled": "False",
+      "is_linear": true,
+      "is_expansion": true,
+      "is_systemwide": true,
+      "units": "[[power]]",
+      "description": "Limits the sum to a maximum/minimum, for a particular technology, of the decision variables\u00a0carrier_prod/carrier_conover all locations.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 13,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "energy_cap_min",
+      "pretty_name": "Minimum installed energy capacity",
+      "timeseries_enabled": "False",
+      "is_linear": true,
+      "is_expansion": true,
+      "is_systemwide": false,
+      "units": "[[power]]",
+      "description": "Limits decision variables\u00a0carrier_prod/carrier_con\u00a0to a minimum/maximum.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 14,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "energy_cap_min_use",
+      "pretty_name": "Minimum operating use of capacity",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "%<sub>/100</sub>",
+      "description": "Set to a value between 0 and 1 to force minimum carrer production as a fraction of the technology maximum energy capacity. If non-zero and technology is not defined by\u00a0units, this will force the technology to operate above its minimum value at every timestep.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 15,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "energy_cap_per_unit",
+      "pretty_name": "Energy capacity per purchased unit",
+      "timeseries_enabled": "False",
+      "is_linear": false,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "[[power]]/unit",
+      "description": "Set the capacity of each integer unit of a technology purchased",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 16,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "energy_cap_scale",
+      "pretty_name": "Energy capacity scale factor",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "&#8593;",
+      "description": "Scale all\u00a0energy_capmin/max/equals/total_max/total_equals constraints by this value",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 17,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "energy_con",
+      "pretty_name": "Allow energy consumption",
+      "timeseries_enabled": "True",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "<sup>T</sup>/<sub>F</sub>",
+      "description": "Allow this technology to consume energy from the carrier (static boolean, or from file as timeseries).",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[\"True\",\"False\"]"
+    }
+  },
+  {
+    "pk": 18,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "energy_eff",
+      "pretty_name": "Energy efficiency",
+      "timeseries_enabled": "True",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "%<sub>/100</sub>",
+      "description": "conversion efficiency (static, or from file as timeseries), from\u00a0resource/storage/carrier_in\u00a0(tech dependent) to\u00a0carrier_out.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 19,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "energy_eff_per_distance",
+      "pretty_name": "Energy efficiency per distance",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "%<sub>/100</sub> /distance",
+      "description": "Set as value between 1 (no loss) and 0 (all energy lost).",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 20,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "energy_prod",
+      "pretty_name": "Allow energy production",
+      "timeseries_enabled": "True",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "<sup>T</sup>/<sub>F</sub>",
+      "description": "Allow this technology to supply energy to the carrier (static boolean, or from file as timeseries).",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[\"True\",\"False\"]"
+    }
+  },
+  {
+    "pk": 21,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "energy_ramping",
+      "pretty_name": "Ramping rate",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "%<sub>/100</sub> /hour",
+      "description": "Set to\u00a0False\u00a0to disable ramping constraints, otherwise limit maximum carrier production to a fraction of maximum capacity, which increases by that fraction at each timestep.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 22,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "export_cap",
+      "pretty_name": "Export capacity",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "[[power]]",
+      "description": "Maximum allowed export of produced energy carrier for a technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 23,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "export_carrier",
+      "pretty_name": "Export carrier",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "<sub>ABC</sub>",
+      "description": "Name of carrier to be exported. Must be an output carrier of the technology",
+      "is_essential": false,
+      "is_carrier": true,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 24,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Resource",
+      "name": "force_resource",
+      "pretty_name": "Force all resource",
+      "timeseries_enabled": "True",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "<sup>T</sup>/<sub>F</sub>",
+      "description": "Forces this technology to use all available\u00a0resource, rather than making it a maximum upper boundary (for production) or minimum lower boundary (for consumption). Static boolean, or from file as timeseries",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[\"True\",\"False\"]"
+    }
+  },
+  {
+    "pk": 25,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "lifetime",
+      "pretty_name": "Technology lifetime",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "years",
+      "description": "Must be defined if fixed capital costs are defined. A reasonable value for many technologies is around 20-25 years.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 26,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "one_way",
+      "pretty_name": "One way transmission",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "<sup>T</sup>/<sub>F</sub>",
+      "description": "Transmission may only go from Location 1 to Location 2",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[\"True\",\"False\"]"
+    }
+  },
+  {
+    "pk": 27,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "parasitic_eff",
+      "pretty_name": "Plant parasitic efficiency",
+      "timeseries_enabled": "True",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "%<sub>/100</sub>",
+      "description": "Additional losses as energy gets transferred from the plant to the carrier (static, or from file as timeseries), e.g. due to plant parasitic consumption",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 28,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Resource",
+      "name": "resource",
+      "pretty_name": "Available resource: supply(+) or demand(-)",
+      "timeseries_enabled": "True",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "[[power]]h",
+      "description": "Maximum available resource (static, or from file as timeseries). Unit dictated by resource_unit. Demand data must be negative.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 29,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Resource",
+      "name": "resource_area_equals",
+      "pretty_name": "Installed area",
+      "timeseries_enabled": "False",
+      "is_linear": true,
+      "is_expansion": false,
+      "is_systemwide": false,
+      "units": "m<sup>2</sup>",
+      "description": "",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 30,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Resource",
+      "name": "resource_area_max",
+      "pretty_name": "Maximum installed area",
+      "timeseries_enabled": "False",
+      "is_linear": true,
+      "is_expansion": true,
+      "is_systemwide": false,
+      "units": "m<sup>2</sup>",
+      "description": "Set to False by default in order to disable this constraint",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 31,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Resource",
+      "name": "resource_area_min",
+      "pretty_name": "Minimum installed area",
+      "timeseries_enabled": "False",
+      "is_linear": true,
+      "is_expansion": true,
+      "is_systemwide": false,
+      "units": "m<sup>2</sup>",
+      "description": "",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 32,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Resource",
+      "name": "resource_area_per_energy_cap",
+      "pretty_name": "Ratio of resource area to energy capacity",
+      "timeseries_enabled": "False",
+      "is_linear": true,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "m<sup>2</sup>/[[power]]",
+      "description": "If set, forces\u00a0resource_area\u00a0to follow\u00a0energy_cap\u00a0with the given numerical ratio (e.g. setting to 1.5 means that\u00a0resource_area\u00a0==\u00a01.5\u00a0*energy_cap)",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 33,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Resource",
+      "name": "resource_cap_equals",
+      "pretty_name": "Installed resource consumption capacity",
+      "timeseries_enabled": "False",
+      "is_linear": true,
+      "is_expansion": false,
+      "is_systemwide": false,
+      "units": "[[power]]",
+      "description": "overrides\u00a0_max\u00a0and\u00a0_min\u00a0constraints.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 34,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Resource",
+      "name": "resource_cap_equals_energy_cap",
+      "pretty_name": "Resource capacity equals energy capacity",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "<sup>T</sup>/<sub>F</sub>",
+      "description": "If True,\u00a0resource_cap\u00a0is forced to equal\u00a0energy_cap",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[\"True\",\"False\"]"
+    }
+  },
+  {
+    "pk": 35,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Resource",
+      "name": "resource_cap_max",
+      "pretty_name": "Maximum installed resource consumption capacity",
+      "timeseries_enabled": "False",
+      "is_linear": true,
+      "is_expansion": true,
+      "is_systemwide": false,
+      "units": "[[power]]",
+      "description": "",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 36,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Resource",
+      "name": "resource_cap_min",
+      "pretty_name": "Minimum installed resource consumption capacity",
+      "timeseries_enabled": "False",
+      "is_linear": true,
+      "is_expansion": true,
+      "is_systemwide": false,
+      "units": "[[power]]",
+      "description": "",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 37,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Resource",
+      "name": "resource_eff",
+      "pretty_name": "Resource efficiency",
+      "timeseries_enabled": "True",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "%<sub>/100</sub>",
+      "description": "Efficiency (static, or from file as timeseries) in capturing resource before it reaches storage (if storage is present) or conversion to carrier.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 38,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Resource",
+      "name": "resource_min_use",
+      "pretty_name": "Minimum resource consumption",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "%<sub>/100</sub>",
+      "description": "Set to a value between 0 and 1 to force minimum resource consumption for production technologies",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 39,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Resource",
+      "name": "resource_scale",
+      "pretty_name": "Resource scale factor",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "&#8593;",
+      "description": "Scale resource (either static value or all values in timeseries) by this value",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 40,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Resource",
+      "name": "resource_unit",
+      "pretty_name": "Resource unit",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "<sub>ABC</sub>",
+      "description": "Sets the unit of\u00a0resource\u00a0to either\u00a0energy\u00a0(i.e. [[power]]h),\u00a0energy_per_area(i.e. [[power]]h/m2), or\u00a0energy_per_cap\u00a0(i.e. [[power]]h/[[power]]).\u00a0energy_per_area\u00a0uses the\u00a0resource_area\u00a0decision variable to scale the available resource while\u00a0energy_per_cap\u00a0uses the\u00a0energy_capdecision variable.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[\"energy\",\"energy_per_area\",\"energy_per_cap\"]"
+    }
+  },
+  {
+    "pk": 41,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Storage",
+      "name": "storage_cap_equals",
+      "pretty_name": "Storage capacity",
+      "timeseries_enabled": "False",
+      "is_linear": true,
+      "is_expansion": false,
+      "is_systemwide": false,
+      "units": "[[power]]h",
+      "description": "If not defined,\u00a0energy_cap_equals\u00a0*\u00a0charge_rate\u00a0will be used as the capacity and overrides\u00a0_max\u00a0and\u00a0_min\u00a0constraints.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 42,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Storage",
+      "name": "storage_cap_max",
+      "pretty_name": "Maximum storage capacity",
+      "timeseries_enabled": "False",
+      "is_linear": true,
+      "is_expansion": true,
+      "is_systemwide": false,
+      "units": "[[power]]h",
+      "description": "If not defined,\u00a0energy_cap_max\u00a0*\u00a0charge_rate\u00a0will be used as the capacity.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 43,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Storage",
+      "name": "storage_cap_min",
+      "pretty_name": "Minimum storage capacity",
+      "timeseries_enabled": "False",
+      "is_linear": true,
+      "is_expansion": true,
+      "is_systemwide": false,
+      "units": "[[power]]h",
+      "description": "",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 44,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Storage",
+      "name": "storage_cap_per_unit",
+      "pretty_name": "Storage capacity per purchased unit",
+      "timeseries_enabled": "False",
+      "is_linear": false,
+      "is_expansion": false,
+      "is_systemwide": false,
+      "units": "[[power]]h/unit",
+      "description": "Set the storage capacity of each integer unit of a technology purchased.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 45,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Storage",
+      "name": "storage_initial",
+      "pretty_name": "Initial storage level",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "[[power]]h",
+      "description": "Set stored energy in device at the first timestep",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 46,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Storage",
+      "name": "storage_loss",
+      "pretty_name": "Storage loss rate",
+      "timeseries_enabled": "True",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "%<sub>/100</sub> /hour",
+      "description": "rate of storage loss per hour (static, or from file as timeseries), used to calculate lost stored energy as\u00a0(1\u00a0-storage_loss)^hours_per_timestep",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 47,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Storage",
+      "name": "storage_time_max",
+      "pretty_name": "Maximum storage time",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "hour",
+      "description": "Maximum storage time",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 48,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "units_equals",
+      "pretty_name": "Number of purchased units",
+      "timeseries_enabled": "False",
+      "is_linear": false,
+      "is_expansion": false,
+      "is_systemwide": false,
+      "units": "units",
+      "description": "Turns the model from LP to MILP.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 49,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "units_equals_systemwide",
+      "pretty_name": "Number of purchased units (System-wide)",
+      "timeseries_enabled": "False",
+      "is_linear": false,
+      "is_expansion": false,
+      "is_systemwide": true,
+      "units": "units",
+      "description": "fixes the sum to a specific value, for a particular technology, of the decision variables\u00a0carrier_prod/carrier_conover all locations.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 50,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "units_max",
+      "pretty_name": "Maximum number of purchased units",
+      "timeseries_enabled": "False",
+      "is_linear": false,
+      "is_expansion": true,
+      "is_systemwide": false,
+      "units": "units",
+      "description": "Turns the model from LP to MILP.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 51,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "units_max_systemwide",
+      "pretty_name": "Maximum number of purchased units (System-wide)",
+      "timeseries_enabled": "False",
+      "is_linear": false,
+      "is_expansion": true,
+      "is_systemwide": true,
+      "units": "units",
+      "description": "Limits the sum to a maximum/minimum, for a particular technology, of the decision variables\u00a0carrier_prod/carrier_conover all locations.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 52,
+    "model": "api.parameter",
+    "fields": {
+      "root": "constraints",
+      "category": "Constraints: Technology",
+      "name": "units_min",
+      "pretty_name": "Minimum number of purchased units",
+      "timeseries_enabled": "False",
+      "is_linear": false,
+      "is_expansion": true,
+      "is_systemwide": false,
+      "units": "units",
+      "description": "Turns the model from LP to MILP.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 53,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.monetary",
+      "category": "Costs: Monetary",
+      "name": "energy_cap",
+      "pretty_name": "Cost of energy capacity",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "$/[[power]]\u00a0gross",
+      "description": "",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 54,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.monetary",
+      "category": "Costs: Monetary",
+      "name": "energy_cap_per_distance",
+      "pretty_name": "Cost of energy capacity, per unit distance",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "$/[[power]]\u00a0gross",
+      "description": "Applied to transmission links only",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 55,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.monetary",
+      "category": "Costs: Monetary",
+      "name": "export",
+      "pretty_name": "Carrier export cost",
+      "timeseries_enabled": "True",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "$/[[power]]h",
+      "description": "Usually used in the negative sense, as a subsidy.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 56,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.monetary",
+      "category": "Costs: Monetary",
+      "name": "depreciation_rate",
+      "pretty_name": "Depreciation rate",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "$/year",
+      "description": "",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 57,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.monetary",
+      "category": "Costs: Monetary",
+      "name": "interest_rate",
+      "pretty_name": "Interest rate",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "%<sub>/100</sub>",
+      "description": "Used when computing levelized costs",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 58,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.monetary",
+      "category": "Costs: Monetary",
+      "name": "om_annual",
+      "pretty_name": "Yearly O&M costs",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "$/[[power]]",
+      "description": "",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 59,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.monetary",
+      "category": "Costs: Monetary",
+      "name": "om_annual_investment_fraction",
+      "pretty_name": "Fractional yearly O&M costs (of total investment)",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "%<sub>/100</sub>",
+      "description": "",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 60,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.monetary",
+      "category": "Costs: Monetary",
+      "name": "om_con",
+      "pretty_name": "Carrier consumption cost",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "$/[[power]]h",
+      "description": "Applied to carrier consumption of a technology",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 61,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.monetary",
+      "category": "Costs: Monetary",
+      "name": "om_prod",
+      "pretty_name": "Carrier production cost",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "$/[[power]]h",
+      "description": "Applied to carrier production of a technology",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 62,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.monetary",
+      "category": "Costs: Monetary",
+      "name": "purchase",
+      "pretty_name": "Purchase cost",
+      "timeseries_enabled": "False",
+      "is_linear": false,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "$/unit",
+      "description": "Triggers a binary variable for that technology to say that it has been purchased or is applied to integer variable\u00a0units",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 63,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.monetary",
+      "category": "Costs: Monetary",
+      "name": "resource_area",
+      "pretty_name": "Cost of resource area",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "$/m<sup>2</sup>",
+      "description": "",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 64,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.monetary",
+      "category": "Costs: Monetary",
+      "name": "resource_cap",
+      "pretty_name": "Cost of resource consumption capacity",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "$/[[power]]",
+      "description": "",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 65,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.monetary",
+      "category": "Costs: Monetary",
+      "name": "storage_cap",
+      "pretty_name": "Cost of storage capacity",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "$/[[power]]h",
+      "description": "",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 66,
+    "model": "api.parameter",
+    "fields": {
+      "root": "essentials",
+      "category": "Essentials",
+      "name": "carrier_in_2",
+      "pretty_name": "Input Carrier 2",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "",
+      "description": "[Optional] Second input energy carrier (electricity, heat, gas, etc.)",
+      "is_essential": true,
+      "is_carrier": true,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 67,
+    "model": "api.parameter",
+    "fields": {
+      "root": "essentials",
+      "category": "Essentials",
+      "name": "carrier_out_2",
+      "pretty_name": "Output Carrier 2",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "",
+      "description": "[Optional] Second output energy carrier (electricity, heat, gas, etc.)",
+      "is_essential": true,
+      "is_carrier": true,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 68,
+    "model": "api.parameter",
+    "fields": {
+      "root": "essentials",
+      "category": "Essentials",
+      "name": "carrier_in_3",
+      "pretty_name": "Input Carrier 3",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "",
+      "description": "[Optional] Third input energy carrier (electricity, heat, gas, etc.)",
+      "is_essential": true,
+      "is_carrier": true,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 69,
+    "model": "api.parameter",
+    "fields": {
+      "root": "essentials",
+      "category": "Essentials",
+      "name": "carrier_out_3",
+      "pretty_name": "Output Carrier 3",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "",
+      "description": "[Optional] Third output energy carrier (electricity, heat, gas, etc.)",
+      "is_essential": true,
+      "is_carrier": true,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 70,
+    "model": "api.parameter",
+    "fields": {
+      "root": "essentials",
+      "category": "Costs: Monetary",
+      "name": "primary_carrier_in",
+      "pretty_name": "Primary Input Carrier",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "",
+      "description": "Primary input energy carrier (electricity, heat, gas, etc.)",
+      "is_essential": false,
+      "is_carrier": true,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 71,
+    "model": "api.parameter",
+    "fields": {
+      "root": "essentials",
+      "category": "Costs: Monetary",
+      "name": "primary_carrier_out",
+      "pretty_name": "Primary Output Carrier",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "",
+      "description": "Primary output energy carrier (electricity, heat, gas, etc.)",
+      "is_essential": false,
+      "is_carrier": true,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 72,
+    "model": "api.parameter",
+    "fields": {
+      "root": "",
+      "category": "Constraints: Technology",
+      "name": "distance",
+      "pretty_name": "Distance",
+      "timeseries_enabled": "False",
+      "is_linear": null,
+      "is_expansion": null,
+      "is_systemwide": false,
+      "units": "km",
+      "description": "Exact distance of transmission line from Location 1 to Location 2",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  }
+]

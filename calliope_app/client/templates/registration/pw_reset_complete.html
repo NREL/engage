@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block head %}
+<title>Engage | Password</title>
+{% endblock %}
+
+{% block body %}
+<div class="row">
+  <div class="col-12 centered">
+    <br><br>
+    <h1>{% trans "Password Reset" %}:</h1>
+	  <p>
+	    {% trans "Your password has been set. You may go ahead and" %} <a href="{% url 'login' %}">{% trans "log in" %}</a> {% trans "now" %}.
+	  </p>
+  </div>
+</div>
+{% endblock %}

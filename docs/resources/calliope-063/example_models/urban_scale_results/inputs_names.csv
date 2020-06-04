@@ -1,0 +1,9 @@
+demand_electricity,Electrical demand
+supply_gas,Natural gas import
+chp,Combined heat and power
+demand_heat,Heat demand
+supply_grid_power,National grid import
+boiler,Natural gas boiler
+pv,Solar photovoltaic power
+power_lines,Electrical power distribution
+heat_pipes,District heat distribution

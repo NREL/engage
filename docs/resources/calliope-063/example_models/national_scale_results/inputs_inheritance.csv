@@ -1,0 +1,6 @@
+ac_transmission,transmission
+demand_power,demand
+csp,supply_plus
+battery,storage
+free_transmission,transmission
+ccgt,supply

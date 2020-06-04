@@ -1,0 +1,4 @@
+X2,boiler,in,X2::boiler::gas
+X2,boiler,out,X2::boiler::heat
+X3,boiler,in,X3::boiler::gas
+X3,boiler,out,X3::boiler::heat

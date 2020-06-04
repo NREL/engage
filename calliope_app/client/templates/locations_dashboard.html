@@ -1,0 +1,112 @@
+{% load i18n %}
+
+<table id="location_table" class="table table-hover table-sm">
+	<tbody>
+		{% for location in locations %}
+			<!-- Location Row -->
+			<tr class="table-info location-meta-row" data-location_id="{{ location.id }}">
+				<!-- Location Name -->
+				<td>
+					<b><span class="location-name"><b>{{ location.pretty_name }}</b></span></b>
+					<input {% if not can_edit %}disabled{% endif %} type="text" class="location-edit-name hide" style="text-align: left" value="{{ location.pretty_name }}">
+				</td>
+				<!-- Location Latitude -->
+				<td>
+					<b><span class="location-lat">{{ location.latitude }}</span></b>
+					<input {% if not can_edit %}disabled{% endif %} type="number" min="-90" max="90" class="location-edit-lat hide" style="text-align: left; max-width: 200px;" value="{{ location.latitude }}">
+					&#176; N
+				</td>
+				<!-- Location Longitude -->
+				<td>
+					<b><span class="location-long">{{ location.longitude }}</span></b>
+					<input {% if not can_edit %}disabled{% endif %} type="number" min="-180" max="180" class="location-edit-long hide" style="text-align: left; max-width: 200px;" value="{{ location.longitude }}">
+					&#176; E
+				</td>
+				<!-- Location Available Area -->
+				<td>
+					<b><span class="location-area">{% if location.available_area >= 0 %}{{ location.available_area }}{% else %}&#8734;{% endif %}</span></b>
+					<input {% if not can_edit %}disabled{% endif %} type="number" min="0" class="location-edit-area hide" style="text-align: left; max-width: 200px;" value="{% if location.available_area >= 0 %}{{ location.available_area }}{% endif %}">
+					km<sup>2</sup>
+				</td>
+				<!-- Location Description -->
+				<td style="max-width:200px" class="text-sm">
+					<span class="location-description">{% if location.description %}{{ location.description }}{% endif %}</span>
+					<textarea {% if not can_edit %}disabled{% endif %} class="location-edit-description hide" placeholder="{% trans 'Location description' %}...">{% if location.description %}{{ location.description }}{% endif %}</textarea>
+				</td>
+				<!-- Edit Buttons -->
+				<td class="centered">
+					<button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default btn-sm transparent location-edit" title="{% trans 'Edit location' %}"><i class="fas fa-edit"></i>&nbsp;&nbsp;{% trans "Edit" %}</button>
+				</td>
+				<td class="centered">
+					<button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-sm btn-outline-danger location-delete"><i class="fas fa-trash" title="{% trans 'Delete location' %}"></i></button>
+					<button {% if not can_edit %}disabled{% endif %} type="button" class="location-save btn btn-warning hide"><b>{% trans "Save" %}</b></button>
+				</td>
+			</tr>
+			{% if location.location_1.all %}
+			<tr class="location-technologies-row" data-location_id="{{ location.id }}">
+				<!-- Location Technologies -->
+				<td colspan=7 class="text-sm">
+					<i class="fas fa-cog"></i> {% trans "Technologies" %}: 
+					<span class="location-technologies">
+						{% for loc_tech in location.location_1.all %}
+						<a class="btn-sm btn-outline-secondary" href="{% url 'loc_techs' model.uuid %}?tech_id={{ loc_tech.technology_id }}&loc_tech_id={{ loc_tech.id }}">
+							<b>{{ loc_tech.technology.pretty_name }}</b>
+							{% if loc_tech.technology.pretty_tag %} [{{ loc_tech.technology.pretty_tag }}]{% endif %}
+						</a>
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						{% endfor %}</span>
+				</td>
+			</tr>
+			{% endif %}
+			<tr class="location-data_sources-row" data-location_id="{{ location.id }}">
+				<!-- Data Sources -->
+				<td colspan=7 class="text-sm">
+					<i class="fas fa-database"></i> {% trans "Datasets" %}: 
+					<span class="pvwatts btn-sm btn-outline-danger" style="cursor: pointer">
+						NREL's PVWatts®
+					</span>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+				</td>
+			</tr>
+		{% endfor %}
+		<!-- Add location -->
+		<tr class="table-warning table-info location-add-row hide">
+			<!-- Location Name -->
+			<td>
+				<b><span class="location-name hide"></span></b>
+				<input {% if not can_edit %}disabled{% endif %} type="text" class="location-edit-name" style="text-align: left" placeholder="{% trans 'New location name' %}...">
+			</td>
+			<!-- Location Latitude -->
+			<td>
+				<b><span class="location-lat hide"></span></b>
+				<input {% if not can_edit %}disabled{% endif %} type="number" min="-90" max="90" class="location-edit-lat" style="text-align: left; max-width: 200px;" placeholder="{% trans 'Latitude' %}...">
+				&#176; N
+			</td>
+			<!-- Location Longitude -->
+			<td>
+				<b><span class="location-long hide"></span></b>
+				<input {% if not can_edit %}disabled{% endif %} type="number" min="-90" max="90" class="location-edit-long" style="text-align: left; max-width: 200px;" placeholder="{% trans 'Longitude' %}...">
+				&#176; E
+			</td>
+			<!-- Location Available Area -->
+			<td>
+				<b><span class="location-area hide"></span></b>
+				<input {% if not can_edit %}disabled{% endif %} type="number" min="0" class="location-edit-area" style="text-align: left; max-width: 200px;" placeholder="{% trans 'Available area' %}...">
+				km<sup>2</sup>
+			</td>
+			<!-- Location Description -->
+			<td class="text-sm">
+				<span class="location-description hide"></span>
+				<textarea {% if not can_edit %}disabled{% endif %} class="location-edit-description"  placeholder="{% trans 'New location description' %}..."></textarea>
+			</td>
+			<!-- Edit Buttons -->
+			<td class="centered">
+				<button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-danger bg-danger btn-sm location-edit" title="{% trans 'Cancel new location' %}"><i class="fas fa-times"></i>&nbsp;&nbsp;{% trans "Cancel" %}</button>
+			</td>
+			<td class="centered">
+				<button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-sm btn-outline-danger location-delete hide"><i class="fas fa-trash" title="{% trans 'Delete location' %}"></i></button>
+				<button {% if not can_edit %}disabled{% endif %} type="button" class="location-save btn btn-warning"><b>{% trans "Save" %}</b></button>
+			</td>
+		</tr>
+	</tbody>
+</table>

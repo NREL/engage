@@ -1,0 +1,15 @@
+heat,supply_gas,monetary,inf
+heat,chp,monetary,0.021027417529577222
+heat,supply_grid_power,monetary,inf
+heat,boiler,monetary,0.008231331635851158
+heat,pv,monetary,inf
+gas,supply_gas,monetary,0.025021531094061213
+gas,chp,monetary,inf
+gas,supply_grid_power,monetary,inf
+gas,boiler,monetary,inf
+gas,pv,monetary,inf
+electricity,supply_gas,monetary,inf
+electricity,chp,monetary,0.016821934023661795
+electricity,supply_grid_power,monetary,0.11597242545973846
+electricity,boiler,monetary,inf
+electricity,pv,monetary,0.04489627357568572

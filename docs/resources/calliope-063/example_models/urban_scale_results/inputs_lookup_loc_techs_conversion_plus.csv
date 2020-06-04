@@ -1,0 +1,3 @@
+X1,chp,in,X1::chp::gas
+X1,chp,out,X1::chp::electricity
+X1,chp,out_2,X1::chp::heat

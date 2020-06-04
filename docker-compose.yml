@@ -1,0 +1,97 @@
+version: "3"
+
+volumes:
+  data:
+
+services:
+
+  redis:
+    image: "redis:alpine"
+    container_name: calliope-redis
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: "postgres:12.2-alpine"
+    container_name: calliope-postgres
+    restart: always
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
+
+  short_worker:
+    build:
+      context: calliope_app
+      dockerfile: compose/Dockerfile
+    image: calliope-short-worker
+    container_name: calliope-short-worker
+    restart: on-failure
+    env_file:
+      - .envs/.local
+    volumes:
+      - ./calliope_app:/www
+      - ./data:/data
+    depends_on:
+      - redis
+    command: ["compose/run-short-worker.sh"]
+
+  long_worker:
+    build:
+      context: calliope_app
+      dockerfile: compose/Dockerfile
+    image: calliope-long-worker
+    container_name: calliope-long-worker
+    restart: on-failure
+    env_file:
+      - .envs/.local
+    volumes:
+      - ./calliope_app:/www
+      - ./data:/data
+    depends_on:
+      - redis
+    command: ["compose/run-long-worker.sh"]
+
+  celery_flower:
+    build:
+      context: calliope_app
+      dockerfile: compose/Dockerfile
+    image: calliope-celery-flower
+    container_name: calliope-celery-flower
+    restart: on-failure
+    env_file:
+      - .envs/.local
+    ports:
+      - "5555:5555"
+    volumes:
+      - ./calliope_app:/www
+      - ./data:/data
+    depends_on:
+      - redis
+      - short_worker
+      - long_worker
+    command: ["compose/run-celery-flower.sh"]
+
+  app:
+    build: 
+      context: calliope_app
+      dockerfile: compose/Dockerfile
+    image: calliope-app
+    container_name: calliope-app
+    restart: on-failure
+    env_file:
+      - .envs/.local
+    volumes:
+      - ./calliope_app:/www
+      - ./data:/data
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+      - short_worker
+      - long_worker
+      - celery_flower
+    command: ["./wait-for-postgres.sh", "compose/run-calliope-app.sh"]

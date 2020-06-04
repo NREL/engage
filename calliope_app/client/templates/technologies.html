@@ -1,0 +1,28 @@
+{% extends 'configure.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+<title>Engage | {{ model.name }} | Technologies</title>
+<script type="text/javascript" src="{% static 'js/technologies.js' %}"></script>
+{% endblock %}
+
+{% block config_technologies %}<h5><i class="fas fa-cog"></i>&nbsp;&nbsp;<b>{% trans "Technologies" %}</b></h5>{% endblock %}
+{% block config_2_sync %}<i class="fas fa-sync"></i>{% endblock %}
+{% block config_2_tab %}tab-active{% endblock %}
+
+{% block content %}
+<div id="subheader2" class="row content_navigation">
+	{% include "technology_selector.html" %}
+</div>
+
+<!-- Essentials -->
+<form id="form_data_1" method="post" action="" accept-charset="utf-8" autocomplete="off">
+	<div class="row" id="tech_essentials"></div>
+</form>
+
+<!-- Parameters -->
+<form id="form_data_2" method="post" action="" accept-charset="utf-8" autocomplete="off">
+	<div class="row" id="tech_parameters" data-power_units="{{ power_units }}"></div>
+</form>
+{% endblock %}

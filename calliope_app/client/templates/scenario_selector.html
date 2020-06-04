@@ -1,0 +1,28 @@
+{% load i18n %}
+
+<select id="scenario" class="scenario-dropdown-search nav-dropdown" data-placeholder="{% trans 'Select a Scenario' %}">
+	{% for scenario in scenarios %}
+  	<option value='{{ scenario.name }}' data-id='{{ scenario.id }}' {% if session_scenario.id == scenario.id %}selected="selected"{% endif %}>{{ scenario.name }}</option>
+  	{% endfor %}
+</select>
+<script type="text/javascript">
+	function formatState (state) {
+	  if (!state.id) {
+	    return state.text;
+	  }
+	  var $state = $(
+	    '<div class="row"><div class="col-12 centered"><i class="fas fa-code-branch"></i>&nbsp;&nbsp;&nbsp;&nbsp;<b>' + state.text + '</b></div></div>'
+	  );
+	  return $state;
+	};
+	$(".scenario-dropdown-search").select2({
+	  templateResult: formatState,
+	  templateSelection: formatState
+	});
+	$('.scenario-dropdown-search').on('select2:open', function (e) {
+    	$('#overlay-back').fadeIn(500);
+	});
+	$('.scenario-dropdown-search').on('select2:close', function () {
+    	$('#overlay-back').fadeOut(500);
+	});
+</script>

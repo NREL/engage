@@ -1,0 +1,10 @@
+X1,power_lines:X2,10.0
+N1,heat_pipes:X1,3.0
+X1,heat_pipes:N1,3.0
+X1,power_lines:X3,5.0
+X3,heat_pipes:N1,4.0
+X2,power_lines:X1,10.0
+X3,power_lines:X1,5.0
+X2,heat_pipes:N1,3.0
+N1,heat_pipes:X2,3.0
+N1,heat_pipes:X3,4.0

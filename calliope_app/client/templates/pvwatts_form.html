@@ -1,0 +1,56 @@
+{% load static %}
+{% load i18n %}
+<form id="pvwatts_form" method="post" onsubmit="return false;">
+	<div class="centered">
+		<a href="https://pvwatts.nrel.gov/" target="_blank">
+			<img src="{% static 'images/pvwatts.png' %}" width="80%" />
+		</a>
+	</div>
+	<br>
+	<div class="form-row">
+		<!-- Latitude -->
+		<div class="form-group col-md-3">
+			<label for="pvwatts_lat"><b>{% trans "Latitude" %} (&#176;N):</b></label>
+			<input {% if not can_edit %}disabled{% endif %} type="number" step="0.001" min="-90" max="90" class="form-control" name="pvwatts_lat" id="pvwatts_lat" placeholder="{% trans 'Latitude' %}">
+		</div>
+		<!-- Longitude -->
+		<div class="form-group col-md-3">
+			<label for="pvwatts_lon"><b>{% trans "Longitude" %} (&#176;E):</b></label>
+			<input {% if not can_edit %}disabled{% endif %} type="number" step="0.001" min="-180" max="180" class="form-control" name="pvwatts_lon" id="pvwatts_lon" placeholder="{% trans 'Longitude' %}">
+		</div>
+		<!-- Tilt -->
+		<div class="form-group col-md-3">
+			<label for="pvwatts_tilt"><b>{% trans "Tilt" %} (&#176;):</b></label>
+			<input {% if not can_edit %}disabled{% endif %} type="number" step="0.1" min="0" max="90" class="form-control" name="pvwatts_tilt" id="pvwatts_tilt" placeholder="{% trans 'Tilt' %}">
+		</div>
+		<!-- Azimuth -->
+		<div class="form-group col-md-3">
+			<label for="pvwatts_azimuth"><b>{% trans "Azimuth" %} (&#176;):</b></label>
+			<input {% if not can_edit %}disabled{% endif %} type="number" step="0.1" min="0" max="360" class="form-control" name="pvwatts_azimuth" id="pvwatts_azimuth" placeholder="{% trans 'Azimuth' %}">
+		</div>
+		<div class="form-group col-md-4">
+			<input id="check_availability" type="submit" class="btn btn-sm btn-warning" name="" value="{% trans 'Check Availability' %}">
+		</div>
+		<div class="form-group col-md-4">
+			<span id="available_src_data" class="hide" style="color:limegreen"><i class="fas fa-circle"></i>&nbsp;&nbsp;{% trans 'Data Available' %}</span>
+			<span id="checking_src_data" class="hide" style="color:orange"><i class="fas fa-circle"></i>&nbsp;&nbsp;{% trans 'Data Available' %}</span>
+			<span id="not_available_src_data" class="hide" style="color:red"><i class="fas fa-circle"></i>&nbsp;&nbsp;{% trans 'Data Not Available' %}</span>
+		</div>
+	</div>
+	<hr>
+	<div class="form-row">
+		<!-- Timeseries Name -->
+		<div class="form-group col-md-6">
+			<label for="pvwatts_name"><b>{% trans "New Timeseries Name" %}:</b></label>
+			<input required {% if not can_edit %}disabled{% endif %} type="text" class="form-control" id="pvwatts_name" name="pvwatts_name" placeholder="{% trans 'New Timeseries Name' %}">
+		</div>
+		<div class="form-group col-md-6"></div>
+		<div class="form-group col-md-12">
+			<input id="import_data" disabled type="submit" class="btn btn-sm btn-success" name="" value="{% trans 'Import Data' %}">
+		</div>
+	</div>
+	<span style="font-size: 0.8em"><i class="fas fa-info"></i> {% trans 'Requested data will appear on the Timeseries page located in the model dropdown menu in the toolbar above' %}</span>
+	<br>
+	<a href="{% url 'timeseries' model.uuid %}">{% trans 'Timeseries Page' %}</a>
+	<br><br>
+</form>

@@ -1,0 +1,210 @@
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+{% load return_item %}
+{% load add_commas %}
+
+<table id="param_table" class="table table-hover table-sm" style="white-space:nowrap">
+	<tbody>
+		{% for param in parameters %}
+			{% if param.level != "1_tech" %}{% if param.level != "2_loc_tech" %}
+				{% ifchanged param.parameter_category %}
+				<!-- Category Header Row  -->
+					<tr class="tbl-header">
+						<th class="centered">
+							{% if param.parameter_category == "Costs: Monetary" %}
+							<i class="fas fa-dollar-sign"></i>
+							{% else %}
+							<i class="fas fa-link"></i>
+							{% endif %}
+						</th>
+						<th colspan=6 class="text-sm">
+							{{ param.parameter_category }}
+						</th>
+						<th class="centered">
+							<i class="fas fa-caret-down"></i>
+							<i class="fas fa-caret-up hide"></i>
+						</th>
+					</tr>
+				{% endifchanged %}
+			{% endif %}{% endif %}
+			{% with parameters|return_item:forloop.counter as next_param %}
+			{% ifchanged param.parameter_name %}
+				<!-- Parameter Master Row -->
+				<tr class="{% if next_param.parameter_id == param.parameter_id %}param_header{% endif %} {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% else %}table-info{% endif %}{% else %}table-default{% endif %}" data-param_id={{ param.parameter_id }}>
+					<!-- Favorite Buttons -->
+					{% if param.parameter_category == "Costs: Monetary" %}
+					<td class="table-success centered"><i {% if not can_edit %}disabled{% endif %} class="fas fa-star" data-toggle="tooltip" data-placement="right" title="{% trans 'Mark parameter as favorite' %}"></i></td>
+					<td class="table-success">&nbsp;<i class="fas fa-dollar-sign"></i>&nbsp;&nbsp;&nbsp;{{ param.parameter_category }}</td>
+					{% else %}
+					<td class="table-info centered"><i {% if not can_edit %}disabled{% endif %} class="fas fa-star" data-toggle="tooltip" data-placement="right" title="{% trans 'Mark parameter as favorite' %}"></i></td>
+					<td class="table-info"><i class="fas fa-link"></i>&nbsp;&nbsp;{{ param.parameter_category }}</td>
+					{% endif %}
+					<!-- Parameter Names -->
+					<td style="cursor:help" data-toggle="tooltip" data-placement="bottom" title="{{ param.parameter_root }}.{{ param.parameter_name }}: {{ param.parameter_description }}">
+						&nbsp;&nbsp;
+						<span class="text-sm"></span><b>{{ param.parameter_pretty_name }}</b>
+					</td>
+					<!-- Parameter Timeseries Indicator -->
+					<td class="centered">
+						{% if param.timeseries_enabled %}
+						<button type="button" {% if not can_edit %}{% if param.timeseries == False %}disabled{% endif %}{% endif %} class="btn {% if param.timeseries == True %}btn-info param_row_toggle{% else %}btn-outline-info convert-to-timeseries{% endif %}" style="width:100%" data-toggle="tooltip" data-placement="right" title="{% if param.timeseries == True %}Show timeseries{% else %}Convert to timeseries{% endif %}">
+							<i class='far fa-clock parameter-year' aria-hidden="true"></i>
+							&nbsp;&nbsp;{% trans "Timeseries" %}
+						</button>
+						{% endif %}
+					</td>
+					<!-- Parameter Value (or Expand) -->
+					{% if param.timeseries == True %}
+					<td class="centered" data-param_id={{ param.parameter_id }}>
+						<select {% if not can_edit %}disabled{% endif %} data-ts_id="{{ param.timeseries_meta_id }}" class="form-control parameter-value-existing timeseries" name="edit[timeseries][{{ param.parameter_id }}]" value="{{ param.timeseries_meta_id }}">
+							<option disabled selected value> -- select a timeseries -- </option>
+							{% for ts in timeseries %}
+							<option value="{{ ts.id }}" {% if ts.id == param.timeseries_meta_id|add:"0" %}selected{% endif %}>{{ ts }}</option>
+							{% endfor %}
+						</select>
+					</td>
+					{% elif next_param.parameter_id != param.parameter_id and param.year == 0 %}
+					<td class="head_value centered" data-param_id={{ param.parameter_id }}>
+						{% if param.choices or param.parameter_is_carrier %}
+						<select {% if not can_edit %}disabled{% endif %} class="static_inputs form-control parameter-value parameter-value-existing" name="edit[parameter][{{ param.parameter_id }}]">
+							<option value="{{ param.value }}" selected disabled>{{ param.value }}</option>
+							<option value="" disabled></option>
+							{% if param.choices %}
+								{% for choice in param.choices %}
+								<option value="{{ choice }}">{{ choice }}</option>
+								{% endfor %}
+							{% else %}
+								{% for choice in carriers %}
+								<option value="{{ choice }}">{{ choice }}</option>
+								{% endfor %}
+							{% endif %}
+						</select>
+						{% else %}
+						<input {% if not can_edit %}disabled{% endif %} type="{% if param.units == '<sub>ABC</sub>' %}text{% else %}number{% endif %}" class="static_inputs form-control parameter-value parameter-value-existing" placeholder="{{ param.value|add_commas }}" name="edit[parameter][{{ param.parameter_id }}]">
+						{% endif %}
+						<button {% if not can_edit %}disabled{% endif %} type="button" class="view_rows hide btn btn-light" title="view-data-btn" style="width: 100%;"><i class="fas fa-bars"></i>&nbsp;&nbsp;{% trans "Show" %}</button>
+						<button {% if not can_edit %}disabled{% endif %} type="button" class="hide_rows hide btn btn-light" title="view-data-btn" style="width: 100%;"><i class="fas fa-bars"></i>&nbsp;&nbsp;{% trans "Hide" %}</button>
+					</td>
+					{% else %}
+					<td class="param_row_toggle centered" data-param_id={{ param.parameter_id }}>
+						<div class="view_rows"><i class="fas fa-bars"></i>&nbsp;&nbsp;{% trans "Show" %}</div>
+						<div class="hide_rows hide"><i class="fas fa-bars"></i>&nbsp;&nbsp;{% trans "Hide" %}</div>
+					</td>
+					{% endif %}
+					<!-- Parameter Units -->
+					<td class="text-sm">{{ param.units|safe }}</td>
+					<!-- Parameter Edit Buttons -->
+					<td class="centered">
+						<button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default btn-sm transparent parameter-reset hide"><i class="fas fa-undo"></i></button>
+						{% if param.level == level %}
+						<button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default transparent parameter-delete"><i class="fas fa-times"></i></button>
+						<input {% if not can_edit %}disabled{% endif %} style="display: none" class="check_delete" type="checkbox" name="delete[parameter][{{ param.parameter_id }}]">
+						{% else %}
+						<span class="text-sm">{% trans "Default" %}</span>
+						{% endif %}
+					</td>
+					{% if param.timeseries == False %}
+					<td style="background-color: white" data-toggle="tooltip" data-placement="left" title="{% trans 'Evolve this parameter by year' %}">
+						<button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default btn-sm transparent parameter-value-add"><i class="fas fa-plus"></i> {% trans "Row" %}</button>
+					</td>
+					{% else %}
+					<td style="background-color: white"></td>
+					{% endif %}
+				</tr>
+				{% if param.timeseries != True %}
+				<tr class="param_row param_row_min param_row_{{ param.parameter_id }}" data-param_id={{ param.parameter_id }}>
+					<td class="centered"><i class="fa fa-info-circle"></i></td>
+					<td colspan=2>{% trans "This parameter is configured to evolve over multiple years" %}.</td>
+					<td><b>{% trans "Year" %}:</b></td>
+					<td><b>{% trans "Value" %}:</b></td>
+					<td colspan=3></td>
+				</tr>
+				{% endif %}
+			{% endifchanged %}
+			<!-- Parameter Auxiliary Rows -->
+			{% if param.timeseries == True %}
+				<!-- Timeseries Visualization Row -->
+				<tr class="param_row param_row_min param_row_{{ param.parameter_id }} table-default" data-param_id={{ param.parameter_id }}>
+					<td colspan=8 style="background-color: white;">
+						<div id="chart-{{ param.parameter_id }}" class="row centered timeseries_viz"></div>
+					</td>
+				</tr>
+			{% else %}
+				<!-- Parameter Year - Value Row -->
+				<tr class="param_row param_row_min param_row_{{ param.parameter_id }} {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% else %}table-info{% endif %}{% else %}table-default{% endif %}" data-param_id={{ param.parameter_id }}>
+					<td colspan=3 style="background-color: white;"></td>
+					<!-- Year -->
+					<td class="">
+						<input {% if not can_edit %}disabled{% endif %} type="number" class="dynamic_year_input form-control parameter-year parameter-year-existing" placeholder="{{ param.year }}" {% if param.level == level %}name="edit[parameter_instance][{{ param.id }}][year]"{% else %}name="add[{{ param.parameter_id }}][year][]"{% endif %}>
+					</td>
+					<!-- Value -->
+					<td class="centered">
+						{% if param.choices or param.parameter_is_carrier %}
+						<select {% if not can_edit %}disabled{% endif %} class="dynamic_value_input form-control parameter-value parameter-value-existing" {% if param.level == level %}name="edit[parameter_instance][{{ param.id }}][value]"{% else %}name="add[{{ param.parameter_id }}][value][]"{% endif %}>
+							<option value="{{ param.value }}" selected disabled>{{ param.value }}</option>
+							<option value="" disabled></option>
+							{% if param.choices %}
+								{% for choice in param.choices %}
+								<option value="{{ choice }}">{{ choice }}</option>
+								{% endfor %}
+							{% else %}
+								{% for choice in carriers %}
+								<option value="{{ choice }}">{{ choice }}</option>
+								{% endfor %}
+							{% endif %}
+						</select>
+						{% else %}
+						<input {% if not can_edit %}disabled{% endif %} type="{% if param.units == '<sub>ABC</sub>' %}text{% else %}number{% endif %}" class="dynamic_value_input form-control parameter-value parameter-value-existing" placeholder="{{ param.value|add_commas }}" {% if param.level == level %}name="edit[parameter_instance][{{ param.id }}][value]"{% else %}name="add[{{ param.parameter_id }}][value][]"{% endif %}>
+						{% endif %}
+					</td>
+					<!-- Units -->
+					<td class="text-sm">{{ param.units|safe }}</td>
+					<!-- Edit Buttons -->
+					<td class="centered">
+						<button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default btn-sm transparent parameter-reset hide"><i class="fas fa-undo"></i></button>
+						{% if param.level == level %}
+						<button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default transparent parameter-value-delete"><i class="fas fa-times"></i></button>
+						<input {% if not can_edit %}disabled{% endif %} style="display: none" class="check_delete" type="checkbox" name="delete[parameter_instance][{{ param.id }}]">
+						{% endif %}
+					</td>
+					<td style="background-color: white"></td>
+				</tr>
+			{% endif %}
+			<!-- Parameter Add Row (Always Hidden) -->
+			{% if next_param.parameter_id != param.parameter_id and param.timeseries == False %}
+				<tr class="param_row add_param_row_min param_row_min add_param_row_{{ param.parameter_id }} param_row_{{ param.parameter_id }}" data-param_id={{ param.parameter_id }}>
+					<td colspan=3 style="background-color: white;"></td>
+					<td class="centered">
+						<input {% if not can_edit %}disabled{% endif %} type="number" class="form-control parameter-year parameter-year-new" placeholder="YYYY" name="add[{{ param.parameter_id }}][year][]">
+					</td>
+					<td class="centered">
+						{% if param.choices or param.parameter_is_carrier %}
+						<select {% if not can_edit %}disabled{% endif %} class="form-control parameter-value parameter-value-new" name="add[{{ param.parameter_id }}][value][]">
+							<option selected disabled value=""></option>
+							{% if param.choices %}
+								{% for choice in param.choices %}
+								<option value="{{ choice }}">{{ choice }}</option>
+								{% endfor %}
+							{% else %}
+								{% for choice in carriers %}
+								<option value="{{ choice }}">{{ choice }}</option>
+								{% endfor %}
+							{% endif %}
+						</select>
+						{% else %}
+						<input {% if not can_edit %}disabled{% endif %} type="{% if param.units == '<sub>ABC</sub>' %}text{% else %}number{% endif %}" class="form-control parameter-value parameter-value-new" name="add[{{ param.parameter_id }}][value][]">
+						{% endif %}
+					</td>
+					<td class="text-sm">{{ param.units|safe }}</td>
+					<td class="centered">
+						<button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default transparent parameter-value-remove" title="{% trans 'Remove a row' %}"><i class="fas fa-minus"></i></button>
+					</td>
+					<td style="background-color: white"></td>
+				</tr>
+			{% endif %}
+			{% endwith %}
+		{% endfor %}
+	</tbody>
+</table>

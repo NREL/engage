@@ -1,0 +1,27 @@
+{% extends 'configure.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+<title>Engage | {{ model.name }} | Scenarios</title>
+<script type="text/javascript" src="{% static 'js/scenarios.js' %}"></script>
+{% endblock %}
+
+{% block config_scenarios %}<h5><i class="fas fa-code-branch"></i>&nbsp;&nbsp;<b>Scenarios</b></h5>{% endblock %}
+{% block config_4_sync %}<i class="fas fa-sync"></i>{% endblock %}
+{% block config_4_tab %}tab-active{% endblock %}
+
+{% block content %}
+<div id="subheader2" class="row content_navigation">
+	{% include "scenario_selector.html" %}
+</div>
+<div class="row">
+	<div class="col-12" id="map" style="height:350px;border:solid;"></div>
+</div>
+<form id="form_scenario_settings" method="post" action="" accept-charset="utf-8">
+	<div class="row hide" id="scenario_settings"><div style="color:red" class="col-12 centered"><br>{% trans "Oops, an error occurred" %}.<br><br></div></div>
+</form>
+<!-- <form id="form_scenario_configuration" method="post" action="" accept-charset="utf-8"> -->
+	<div class="row" id="scenario_configuration"></div>
+<!-- </form> -->
+{% endblock %}

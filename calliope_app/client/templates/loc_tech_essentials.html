@@ -1,0 +1,79 @@
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<div class="col-6" style="border: solid 1px; height:350px;">
+	<div class="row">
+		<div class="col-12 centered">
+			<br>
+			<h3>{% trans "Technology Locations" %}:</h3>
+		</div>
+		<div class="col-12 location-list" style="height:230px; overflow:scroll">
+			<table class="table table-hover table-sm">
+				{% for loc_tech in loc_techs %}
+				<tr class="loc_tech_row {% if session_loc_tech_id == loc_tech.id %}table-primary{% endif %}" data-loc_tech_id="{{ loc_tech.id }}" data-loc_id="{{ loc_tech.location_1_id }}">
+					<td>
+						<div class="row">
+							<div class="col-9">
+								<i class="fas fa-map-marker-alt"></i>&nbsp;
+								{{ loc_tech.location_1.pretty_name }}
+								{% if loc_tech.location_2 %}
+								&nbsp;&nbsp;<i class="fas fa-exchange-alt"></i>&nbsp;&nbsp;
+								{{ loc_tech.location_2.pretty_name }}
+								{% endif %}
+							</div>
+							<div class="col-3">
+								<button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-sm btn-outline-danger loc_tech-delete" title="{% trans 'Delete node' %}"><i class="fas fa-trash"></i></button>
+							</div>
+					</td>
+				</tr>
+				{% endfor %}
+			</table>
+		</div>
+		<div class="col-3">
+			<b>{% trans "New Locations" %}:</b>
+		</div>
+		{% if technology.abstract_tech.pretty_name == 'Transmission' %}
+		<div class="col-3 no-pad">
+			<div class="form-group">
+			  <select {% if not can_edit %}disabled{% endif %} class="form-control" id="loc_tech-add-1">
+			  	<option value="" disabled selected>{% trans "Location" %} 1...</option>
+			  	{% for location in locations %}
+			    <option value="{{ location.id }}">{{ location.pretty_name }}</option>
+			    {% endfor %}
+			  </select>
+			</div>
+		</div>
+		<div class="col-3 no-pad">
+			<div class="form-group">
+			  <select {% if not can_edit %}disabled{% endif %} class="form-control" id="loc_tech-add-2">
+			  	<option value="" disabled selected>{% trans "Location" %} 2...</option>
+			  	{% for location in locations %}
+			    <option value="{{ location.id }}">{{ location.pretty_name }}</option>
+			    {% endfor %}
+			  </select>
+			</div>
+		</div>
+		{% else %}
+		<div class="col-6 no-pad">
+			<div class="form-group">
+			  <select {% if not can_edit %}disabled{% endif %} class="form-control" id="loc_tech-add-1">
+			  	<option value="" disabled selected>{% trans "Location" %}...</option>
+			  	{% for location in locations %}
+			    <option value="{{ location.id }}">{{ location.pretty_name }}</option>
+			    {% endfor %}
+			  </select>
+			</div>
+		</div>
+		{% endif %}
+		<div class="col-3" style="margin-top:-2px;">
+			<button {% if not can_edit %}disabled{% endif %} class="btn btn-success btn-sm loc_tech-add" type="button">
+			    {% trans "Add Node" %}
+			</button>
+		</div>
+	</div>
+</div>
+<div class="col-6 centered" style="padding:0">
+	<div id="map" style="height:350px;border:solid 1px;"></div>
+</div>

@@ -1,0 +1,2234 @@
+[
+  {
+    "pk": 1,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "1",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 2,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "2",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 3,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "3",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 4,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "4",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 5,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "56",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 6,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "53",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 7,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "55",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 8,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "57",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 9,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "58",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 10,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "59",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 11,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "60",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 12,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "61",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 13,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "62",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 14,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "63",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 15,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "9",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 16,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "10",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 17,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "11",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 18,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "12",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 19,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "13",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 20,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "14",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 21,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "15",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 22,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "16",
+      "default_value": "1"
+    }
+  },
+  {
+    "pk": 23,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "18",
+      "default_value": "1"
+    }
+  },
+  {
+    "pk": 24,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "20",
+      "default_value": "True"
+    }
+  },
+  {
+    "pk": 25,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "21",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 26,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "22",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 27,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "23",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 28,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "24",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 29,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "25",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 30,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "28",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 31,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "29",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 32,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "30",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 33,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "31",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 34,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "32",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 35,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "38",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 36,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "39",
+      "default_value": "1"
+    }
+  },
+  {
+    "pk": 37,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "40",
+      "default_value": "energy"
+    }
+  },
+  {
+    "pk": 38,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "48",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 39,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "49",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 40,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "50",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 41,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "51",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 42,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "52",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 43,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "1",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 44,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "2",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 45,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "3",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 46,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "4",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 47,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "56",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 48,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "53",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 49,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "55",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 50,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "57",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 51,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "58",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 52,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "59",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 53,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "60",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 54,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "61",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 55,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "62",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 56,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "63",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 57,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "64",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 58,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "65",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 59,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "8",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 60,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "9",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 61,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "10",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 62,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "11",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 63,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "12",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 64,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "13",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 65,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "14",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 66,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "15",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 67,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "16",
+      "default_value": "1"
+    }
+  },
+  {
+    "pk": 68,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "18",
+      "default_value": "1"
+    }
+  },
+  {
+    "pk": 69,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "20",
+      "default_value": "True"
+    }
+  },
+  {
+    "pk": 70,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "21",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 71,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "22",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 72,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "23",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 73,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "24",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 74,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "25",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 75,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "27",
+      "default_value": "1"
+    }
+  },
+  {
+    "pk": 76,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "28",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 77,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "29",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 78,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "30",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 79,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "31",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 80,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "32",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 81,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "33",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 82,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "34",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 83,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "35",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 84,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "36",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 85,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "37",
+      "default_value": "1"
+    }
+  },
+  {
+    "pk": 86,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "38",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 87,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "39",
+      "default_value": "1"
+    }
+  },
+  {
+    "pk": 88,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "40",
+      "default_value": "energy"
+    }
+  },
+  {
+    "pk": 89,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "41",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 90,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "42",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 91,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "43",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 92,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "44",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 93,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "45",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 94,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "46",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 95,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "48",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 96,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "49",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 97,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "50",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 98,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "51",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 99,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "52",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 100,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "3",
+      "parameter_id": "1",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 101,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "3",
+      "parameter_id": "2",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 102,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "3",
+      "parameter_id": "3",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 103,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "3",
+      "parameter_id": "4",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 104,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "3",
+      "parameter_id": "17",
+      "default_value": "True"
+    }
+  },
+  {
+    "pk": 105,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "3",
+      "parameter_id": "24",
+      "default_value": "True"
+    }
+  },
+  {
+    "pk": 106,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "3",
+      "parameter_id": "28",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 107,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "3",
+      "parameter_id": "29",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 108,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "3",
+      "parameter_id": "39",
+      "default_value": "1"
+    }
+  },
+  {
+    "pk": 109,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "3",
+      "parameter_id": "40",
+      "default_value": "energy"
+    }
+  },
+  {
+    "pk": 110,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "1",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 111,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "2",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 112,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "3",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 113,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "4",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 114,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "56",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 115,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "53",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 116,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "55",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 117,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "57",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 118,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "58",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 119,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "59",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 120,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "61",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 121,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "62",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 122,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "65",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 123,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "8",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 124,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "9",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 125,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "10",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 126,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "11",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 127,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "12",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 128,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "13",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 129,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "14",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 130,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "15",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 131,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "16",
+      "default_value": "1"
+    }
+  },
+  {
+    "pk": 132,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "17",
+      "default_value": "True"
+    }
+  },
+  {
+    "pk": 133,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "18",
+      "default_value": "1"
+    }
+  },
+  {
+    "pk": 134,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "20",
+      "default_value": "True"
+    }
+  },
+  {
+    "pk": 135,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "21",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 136,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "22",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 137,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "23",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 138,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "25",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 139,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "41",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 140,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "42",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 141,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "43",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 142,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "44",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 143,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "45",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 144,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "46",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 145,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "47",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 146,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "48",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 147,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "49",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 148,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "50",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 149,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "51",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 150,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "52",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 151,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "1",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 152,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "2",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 153,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "3",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 154,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "4",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 155,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "56",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 156,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "53",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 157,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "54",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 158,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "57",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 159,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "58",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 160,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "59",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 161,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "61",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 162,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "62",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 163,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "9",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 164,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "11",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 165,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "15",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 166,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "16",
+      "default_value": "1"
+    }
+  },
+  {
+    "pk": 167,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "17",
+      "default_value": "True"
+    }
+  },
+  {
+    "pk": 168,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "18",
+      "default_value": "1"
+    }
+  },
+  {
+    "pk": 169,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "19",
+      "default_value": "1"
+    }
+  },
+  {
+    "pk": 170,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "20",
+      "default_value": "True"
+    }
+  },
+  {
+    "pk": 171,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "25",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 172,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "26",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 173,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "1",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 174,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "2",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 175,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "3",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 176,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "5",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 177,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "6",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 178,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "56",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 179,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "53",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 180,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "55",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 181,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "57",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 182,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "58",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 183,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "59",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 184,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "60",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 185,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "61",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 186,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "62",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 187,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "9",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 188,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "10",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 189,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "11",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 190,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "12",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 191,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "13",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 192,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "14",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 193,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "15",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 194,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "16",
+      "default_value": "1"
+    }
+  },
+  {
+    "pk": 195,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "17",
+      "default_value": "True"
+    }
+  },
+  {
+    "pk": 196,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "18",
+      "default_value": "1"
+    }
+  },
+  {
+    "pk": 197,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "20",
+      "default_value": "True"
+    }
+  },
+  {
+    "pk": 198,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "21",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 199,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "22",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 200,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "23",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 201,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "25",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 202,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "48",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 203,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "49",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 204,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "50",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 205,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "51",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 206,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "52",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 207,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "1",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 208,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "2",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 209,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "3",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 210,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "5",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 211,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "6",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 212,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "56",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 213,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "53",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 214,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "55",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 215,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "57",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 216,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "58",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 217,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "59",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 218,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "60",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 219,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "61",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 220,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "62",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 221,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "9",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 222,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "10",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 223,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "11",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 224,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "12",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 225,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "13",
+      "default_value": "0"
+    }
+  },
+  {
+    "pk": 226,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "14",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 227,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "15",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 228,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "16",
+      "default_value": "1"
+    }
+  },
+  {
+    "pk": 229,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "17",
+      "default_value": "True"
+    }
+  },
+  {
+    "pk": 230,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "18",
+      "default_value": "1"
+    }
+  },
+  {
+    "pk": 231,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "20",
+      "default_value": "True"
+    }
+  },
+  {
+    "pk": 232,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "21",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 233,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "22",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 234,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "23",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 235,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "25",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 236,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "48",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 237,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "49",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 238,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "50",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 239,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "51",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 240,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "52",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 241,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "7",
+      "default_value": "False"
+    }
+  },
+  {
+    "pk": 242,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "66",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 243,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "67",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 244,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "68",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 245,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "69",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 246,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "70",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 247,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "71",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 248,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "72",
+      "default_value": ""
+    }
+  }
+]

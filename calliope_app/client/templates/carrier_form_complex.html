@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load return_item %}
+<div class="row">
+	<div class="col-5">
+		{% if not carrier.value.0 and required %}<i class="fas fa-exclamation-triangle"></i>&nbsp;{% endif %}
+		<b data-toggle="tooltip" data-placement="left" title="{{ carrier.description }}">{{ carrier.name }}:</b>
+		<button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-default btn-sm transparent carrier-value-add"><i class="fas fa-plus"></i></button>
+	</div>
+	<div class="col-7">
+		{% for val in carrier.value %}
+		<input {% if not can_edit %}disabled{% endif %} list="carriers_list" style="width:80%" class="tech_carrier {% if not val and required %}table-danger{% elif not val %}table-secondary{% endif %}" type="text" name='essentials[cplus_carrier][{{ carrier_id }}][]' value="{{ val }}" data-val="{{ val }}">
+		<input {% if not can_edit %}disabled{% endif %} style="width:18%" class="tech_carrier_ratio {% if not val %}table-secondary{% endif %}" type="number" min=0 name='essentials[cplus_ratio][{{ carrier_id }}][]' value="{% if carrier.ratios|return_item:val >= 0 %}{{ carrier.ratios|return_item:val }}{% else %}1.0{% endif %}">
+		{% endfor %}
+		<div class="new_carrier_form hide">
+			<input {% if not can_edit %}disabled{% endif %} list="carriers_list" style="width:80%" class="tech_carrier" type="text" name='essentials[cplus_carrier][{{ carrier_id }}][]'>
+			<input {% if not can_edit %}disabled{% endif %} style="width:18%" class="tech_carrier_ratio" type="number" min=0 name='essentials[cplus_ratio][{{ carrier_id }}][]' value="1.0">
+		</div>
+	</div>
+</div>

@@ -1,0 +1,13 @@
+X2,boiler,0.85
+X1,chp,0.405
+X1,power_lines:X2,0.98
+X1,power_lines:X3,0.98
+X2,power_lines:X1,0.98
+X2,heat_pipes:N1,0.9268593749999999
+X3,boiler,0.85
+N1,heat_pipes:X1,0.9268593749999999
+X1,heat_pipes:N1,0.9268593749999999
+X3,heat_pipes:N1,0.9036878906249999
+X3,power_lines:X1,0.98
+N1,heat_pipes:X2,0.9268593749999999
+N1,heat_pipes:X3,0.9036878906249999

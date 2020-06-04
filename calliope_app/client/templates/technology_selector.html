@@ -1,0 +1,26 @@
+<select id="technology" class="tech-dropdown-search nav-dropdown" data-placeholder="Select a Technology">
+	{% for technology in technologies %}
+  	<option value='{{ technology.pretty_name }}' data-id='{{ technology.id }}' data-tag='{% if technology.pretty_tag %}{{ technology.pretty_tag }}{% endif %}' data-icon='{{ technology.abstract_tech.icon }}' data-color='{{ technology.get_color }}' {% if session_technology.id == technology.id %}selected="selected"{% endif %}>{{ technology.pretty_name }}</option>
+  	{% endfor %}
+</select>
+<script type="text/javascript">
+	function formatState (state) {
+	  if (!state.id) {
+	    return state.text;
+	  }
+	  var $state = $(
+	    '<div class="row"><div class="col-6 text-overflow_ellipsis" style="text-align:right;"><b>' + state.text + '&nbsp;&nbsp;&nbsp;&nbsp;' + state.element.dataset.icon + '&nbsp;&nbsp;</b></div><div class="col-6 text-overflow_ellipsis">&nbsp;&nbsp;&nbsp;&nbsp;<i class="fas fa-tag"></i>&nbsp;&nbsp;&nbsp;&nbsp;' + state.element.dataset.tag + '</div></div>'
+	  );
+	  return $state;
+	};
+	$(".tech-dropdown-search").select2({
+	  templateResult: formatState,
+	  templateSelection: formatState
+	});
+	$('.tech-dropdown-search').on('select2:open', function (e) {
+    	$('#overlay-back').fadeIn(500);
+	});
+	$('.tech-dropdown-search').on('select2:close', function () {
+    	$('#overlay-back').fadeOut(500);
+	});
+</script>

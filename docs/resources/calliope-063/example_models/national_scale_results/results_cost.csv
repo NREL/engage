@@ -1,0 +1,13 @@
+region1-1,csp,monetary,94434.2486353552
+region1-1,free_transmission:region1,monetary,0.0
+region1-2,csp,monetary,0.0
+region1-2,free_transmission:region1,monetary,0.0
+region1-3,csp,monetary,9013.12138917048
+region1-3,free_transmission:region1,monetary,0.0
+region1,ac_transmission:region2,monetary,487.527364645806
+region1,ccgt,monetary,170465.086341621
+region1,free_transmission:region1-1,monetary,0.0
+region1,free_transmission:region1-2,monetary,0.0
+region1,free_transmission:region1-3,monetary,0.0
+region2,ac_transmission:region1,monetary,1067.17247444747
+region2,battery,monetary,1581.36339825403

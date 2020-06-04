@@ -1,0 +1,13 @@
+[
+  {
+    "pk": 1,
+    "model": "api.model",
+    "fields": {
+      "uuid": "71615b3d-7056-417e-aa0a-2a00e2468b83",
+      "name": "Example Model: National Scale",
+      "power_units": "kW",
+      "temporal_resolution": "hourly",
+      "public": "True"
+    }
+  }
+]

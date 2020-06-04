@@ -1,0 +1,28 @@
+<table id="file_data" data-file_size="{{ file_size }}" class="table table-hover table-sm">
+		<!-- Header Rows -->
+	<thead class="thead-dark">
+		<tr class="csv-header">
+			{% for key, value in file_data.0.items %}
+			<th>{{ value }}</th>
+			{% endfor %}
+		</tr>
+		<tr class="letter-header" style="display: none">
+			{% for letter in letters %}
+			<th>{{ letter }}</th>
+			{% endfor %}
+		</tr>
+	</thead>
+	<tbody>
+		{% for record_row in file_data %}
+		<!-- Record Row -->
+		<tr{% if forloop.counter == 1 %} class="letter-header" style="display: none"{% endif %}>
+			<!-- Data Cell -->
+			{% for key, value in record_row.items %}
+			<td>
+				{{ value }}
+			</td>
+			{% endfor %}
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>

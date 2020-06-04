@@ -1,0 +1,37 @@
+{% load i18n %}
+
+<tr><td style="border-top:none" colspan=5><br><h5>{% trans "Create a new model" %}</h5></td></tr>
+<tr class="table-success">
+	<!-- New Model Name -->
+	<td>
+		<input type="text" style="text-align:left;height:31px;margin-top:1px" class="form-control" maxlength="30" id="model_name" placeholder="{% trans 'New model name' %}..." required>
+	</td>
+	<!-- New Model Template -->
+	<td colspan=3 class="centered">
+		<select id="add_model_template" class="form-control btn btn-light" placeholder="{% trans 'Model' %}?" style="margin-top:2px">
+			<option value="" selected disabled>{% trans "Add Model" %}:</option>
+			<option value="">&nbsp;&nbsp;&nbsp;&nbsp;{% trans "Blank Model" %}</option>
+			<option value="" disabled></option>
+			<option value="" disabled>{% trans "Create from My Models" %}:</option>
+			{% for user_model in user_models %}
+			<option value="{{ user_model.model.uuid }}">&nbsp;&nbsp;&nbsp;&nbsp;{{ user_model.model }}</option>
+			{% endfor %}
+			<option value="" disabled></option>
+			<option value="" disabled>{% trans "Create from Sample Models" %}:</option>
+			{% for public_model in public_models %}
+			<option value="{{ public_model.uuid }}">&nbsp;&nbsp;&nbsp;&nbsp;{{ public_model }}</option>
+			{% endfor %}
+			<option value="" disabled></option>
+			<option value="" disabled>{% trans "Create from Snapshots" %}:</option>
+			{% for snapshot in snapshots %}
+			<option value="{{ snapshot.uuid }}">&nbsp;&nbsp;&nbsp;&nbsp;{{ snapshot }}</option>
+			{% endfor %}
+		</select>
+		<br><span id="add_model_message" class="hide text-sm" style="color:red;">{% trans "Error" %}</span>
+	</td>
+	<!-- New Model Create -->
+	<td class="centered">
+		<button id='add_model_btn' type="button" class="btn btn-outline-success" style="width:100%;margin-top:3px;">{% trans "Create" %}</button>
+		<button disabled id='adding' type="button" class="btn btn hide"><i class="fas fa-sync fa-spin"></i></button>
+	</td>
+</tr>

@@ -1,0 +1,57 @@
+[
+  {
+    "pk": 1,
+    "model": "api.location",
+    "fields": {
+      "name": "region_1",
+      "pretty_name": "Region 1",
+      "latitude": "40",
+      "longitude": "-2",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "api.location",
+    "fields": {
+      "name": "region_2",
+      "pretty_name": "Region 2",
+      "latitude": "40",
+      "longitude": "-8",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "api.location",
+    "fields": {
+      "name": "region_1-1",
+      "pretty_name": "Region 1-1",
+      "latitude": "41",
+      "longitude": "-2",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "api.location",
+    "fields": {
+      "name": "region_1-2",
+      "pretty_name": "Region 1-2",
+      "latitude": "39",
+      "longitude": "-1",
+      "model_id": "1"
+    }
+  },
+  {
+    "pk": 5,
+    "model": "api.location",
+    "fields": {
+      "name": "region_1-3",
+      "pretty_name": "Region 1-3",
+      "latitude": "39",
+      "longitude": "-2",
+      "model_id": "1"
+    }
+  }
+]

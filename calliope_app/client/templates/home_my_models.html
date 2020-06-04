@@ -1,0 +1,52 @@
+{% load i18n %}
+
+<tr><td colspan=5><br><h5>{% trans "My Models" %}</h5></td></tr>
+<tr class="table-secondary">
+	<th>{% trans "Model Name" %}</th>
+	<th>{% trans "Activity" %}</th>
+	<th>{% trans "Collaborators" %}</th>
+	<th>{% trans "Permissions" %}</th>
+	<th></th>
+</tr>
+{% if user_models %}
+	{% for user_model in user_models %}
+	<tr class="table-info table-hover">
+		<!-- Model Name -->
+		<td style="text-overflow:ellipsis;white-space:nowrap;overflow:hidden;">
+			<h4 style="display:inline;"><a href="{% url 'model' user_model.model.uuid %}">&nbsp;{{ user_model.model.name }}&nbsp;</a></h4>
+			&nbsp;&nbsp;
+		</td>
+		<!-- Notifications -->
+		<td>
+		{% if user_model.notifications > 0 %}
+			<span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="right" title="{% trans 'Notifications' %}">{{ user_model.notifications }}</span>
+		{% endif %}
+		</td>
+		<!-- Collaborators -->
+		<td data-toggle="tooltip" data-placement="right" title="{% if user_model.model.public is False %}{% trans 'Collaborators' %}: {% for model_user in user_model.model.model_user_set.all %}{{ model_user.user.first_name }} {{ model_user.user.last_name }}, {% endfor %}{% endif %}">
+			<a href="{% url 'settings' %}?model_uuid={{ user_model.model.uuid }}">
+			{% if user_model.model.model_user_set.count > 1 %}
+			<i class="fas fa-users"></i>&nbsp;&nbsp;
+			<b>{{ user_model.model.model_user_set.count }}</b> {% trans "Collaborators" %}
+			{% elif user_model.can_edit %}
+			{% trans "Share" %}
+			{% else %}
+			{% endif %}
+			</a>
+		</td>
+		<!-- Permissions -->
+		<td>
+			{% if user_model.can_edit %}
+			<span style="padding:4px;">&nbsp;&nbsp;&nbsp;{% trans "CAN EDIT" %}&nbsp;&nbsp;</span>
+			{% else %}
+			<span style="padding:4px;border:solid 1px;background-color:yellow">&nbsp;{% trans "VIEW ONLY" %}&nbsp;</span>
+			{% endif %}
+		</td>
+		<td>
+			<button tabindex="-1" type="button" class="btn btn-default transparent model-remove text-sm" title="{% trans 'Remove model' %}" data-model_uuid="{{ user_model.model.uuid }}"><i class="fas fa-times"></i>&nbsp;&nbsp;{% trans "Remove model" %}</button>
+		</td>
+	</tr>
+	{% endfor %}
+{% else %}
+	<tr class="table-danger"><td colspan=4 class="centered">{% trans "You do not have any models" %}</td></tr>
+{% endif %}

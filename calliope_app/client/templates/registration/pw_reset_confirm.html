@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block head %}
+<title>Engage | Password</title>
+{% endblock %}
+
+{% block body %}
+<div class="row">
+  <div class="col-12 centered">
+    <br><br>
+    <h1>{% trans "Password Reset" %}:</h1>
+    {% if validlink %}
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">{% trans "Change password" %}</button>
+      </form>
+    {% else %}
+      <p>
+        {% trans "The password reset link was invalid, possibly because it has already been used." %}
+        {% trans "Please request a new password" %} <a href="{% url 'password_reset' %}">{% trans "RESET" %}</a>.
+      </p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

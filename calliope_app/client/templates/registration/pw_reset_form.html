@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block head %}
+<title>Engage | Password</title>
+{% endblock %}
+
+{% block body %}
+<div class="row">
+	<div class="col-12 centered">
+		<br><br>
+		<h1>{% trans "Password Reset" %}:</h1>
+		<p>{% trans "Enter your email address below, and we'll email instructions for setting a new one." %}</p>
+		<form method="post">
+			{% csrf_token %}
+			{{ form.as_p }}
+		<button type="submit" class="btn btn-primary">{% trans "Reset my password" %}</button>
+		</form>
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+X2,demand_electricity,energy
+X1,pv,energy_per_area
+X3,demand_electricity,energy
+X1,demand_electricity,energy
+X2,pv,energy_per_area
+X2,demand_heat,energy
+X1,demand_heat,energy
+X3,pv,energy_per_area
+X3,demand_heat,energy

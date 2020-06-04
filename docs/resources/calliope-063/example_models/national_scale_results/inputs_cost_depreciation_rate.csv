@@ -1,0 +1,7 @@
+region1-1,csp,monetary,0.11016807219002081
+region1-2,csp,monetary,0.11016807219002081
+region1-3,csp,monetary,0.11016807219002081
+region1,ac_transmission:region2,monetary,0.11016807219002081
+region1,ccgt,monetary,0.11016807219002081
+region2,ac_transmission:region1,monetary,0.11016807219002081
+region2,battery,monetary,0.11016807219002081

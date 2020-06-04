@@ -1,0 +1,42 @@
+{% extends 'configure.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+<title>Engage | {{ model.name }} | Runs</title>
+<script type="text/javascript" src="{% static 'js/run.js' %}"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jeditable.js/2.0.13/jquery.jeditable.min.js"></script>
+<style media="screen">
+	#updates_paused {
+		display: none;
+	}
+</style>
+
+{% endblock %}
+
+{% block config_runs %}<h5><i class="fas fa-play"></i>&nbsp;&nbsp;<b>{% trans "Runs" %}</b></h5>{% endblock %}
+{% block config_5_sync %}<i class="fas fa-sync"></i>{% endblock %}
+{% block config_5_tab %}tab-active{% endblock %}
+
+{% block content %}
+<div id="subheader2" class="row content_navigation">
+	{% include "scenario_selector.html" %}
+</div>
+<div class="row">
+	<div class="col-12" id="map" style="height:350px;border:solid;"></div>
+</div>
+<div id="updates_paused" class="row">
+	<div class="col-12 alert alert-warning">
+		<button class="btn btn-sm btn-warning" onClick="window.location.reload();">{% trans "Refresh" %}</button> {% trans "Dashboard updates have been paused for" %} <span id="pause_time" class="font-weight-bold">0 {% trans "seconds" %}</span>.
+	</div>
+</div>
+<div class="row centered"><span id="build-error" style="color:red"></span></div>
+</div>
+<div class="row" id="run_dashboard"></div>
+<br>
+<div id="viz_outputs_container"></div>
+<div class="row"><div id="viz_logs_container" class="rounded col-12" style="display: none; max-height:300px;overflow-y:scroll;background-color:black;color:white"></div></div>
+<br><br>
+{% endblock %}

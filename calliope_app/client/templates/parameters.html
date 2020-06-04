@@ -1,0 +1,58 @@
+{% extends 'configure.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+<title>Engage | {{ model.name }} | {{ parameter.pretty_name }}</title>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-1"></div>
+	<div class="col-10">
+		<div class="row">
+			<div class="col-6 centered hide">
+				<a href="{% url 'technologies' model.uuid %}" style="color:#0021da; width:100%"><b><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;{% trans "Back to Technologies" %}</b></a>
+			</div>
+		</div>
+	</div>
+	<div class="col-1"></div>
+</div>
+<div class="row">
+	<div class="col-1"></div>
+	<div class="col-10">
+		<div id="subheader2" class="row content_navigation">
+			<div class="col-12 centered" style="padding:4px">
+				<h3>{{ parameter.pretty_name }}</h3>
+				{{ parameter.root }}.{{ parameter.name }}
+			</div>
+			<div class="col-5 hide">
+				<input {% if not can_edit %}disabled{% endif %} id="location" class="nav-dropdown centered" type="text" list="locations" autocomplete="off" placeholder="{% trans 'Select a location' %}" {% if session_location %}value="{{ session_location.name }}"{% endif %} />
+				<datalist id="locations">
+				  	{% for location in locations %}
+				  	<option value="{{ location.name }}" data-value="{{ location.id }}">{{ location.name }}</option>
+				    {% endfor %}
+				</datalist>
+			</div>
+			<div class="col-1 centered hide">
+				<button {% if not can_edit %}disabled{% endif %} id='saved' type="button" class="btn btn-outline-success" disabled>{% trans "Saved" %}</button>
+				<button {% if not can_edit %}disabled{% endif %} id='save' type="button" class="btn btn-warning hide"><b>{% trans "Save" %}</b></button>
+			</div>
+		</div>
+	</div>
+	<div class="col-1"></div>
+</div>
+<br>
+<div class="row">
+	<div class="col-2"></div>
+	<div class="col-8 centered">{{ parameter.description }}</div>
+	<div class="col-2"></div>
+</div>
+<form id="form_data" method="post" action="" accept-charset="utf-8">
+	<br>
+	<div class="row" id="tech_essentials"></div>
+	<br>
+	<div class="row" id="tech_parameters" data-power_units="{{ power_units }}"></div>
+</form>
+{% endblock %}

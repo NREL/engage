@@ -1,0 +1,9 @@
+demand_electricity,demand
+supply_gas,supply
+chp,conversion_plus
+demand_heat,demand
+supply_grid_power,supply
+boiler,conversion
+pv,supply_power_plus.supply_plus
+power_lines,transmission
+heat_pipes,transmission

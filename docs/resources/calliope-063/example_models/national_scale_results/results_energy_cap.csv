@@ -1,0 +1,15 @@
+region1,ccgt,30000.0
+region1-2,free_transmission:region1,0.0
+region2,battery,1000.0
+region1-3,csp,2533.76209150327
+region1,ac_transmission:region2,3230.47294117647
+region2,demand_power,2909.836
+region1,free_transmission:region1-3,2280.38588235294
+region1,free_transmission:region1-1,9000.0
+region1-3,free_transmission:region1,2280.38588235294
+region1,demand_power,39033.52
+region1-1,csp,10000.0
+region1,free_transmission:region1-2,0.0
+region1-2,csp,0.0
+region2,ac_transmission:region1,3230.47294117647
+region1-1,free_transmission:region1,9000.0

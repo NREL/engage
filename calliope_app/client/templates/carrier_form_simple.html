@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="en">
+<div class="col-5" data-toggle="tooltip" data-placement="left" title="{{ carrier.description }}">
+	{% if not carrier.value.0 %}<i class="fas fa-exclamation-triangle"></i>&nbsp;{% endif %}
+	<b>{{ carrier.name }}:</b>
+</div>
+<div class="col-7">
+	<input {% if not can_edit %}disabled{% endif %} list="carriers_list" style="width:100%" class="tech_carrier {% if not carrier.value.0 %}table-danger{% endif %}" type="text" name='essentials[{{ carrier_id }}]' value="{{ carrier.value.0 }}" data-val="{{ carrier.value.0 }}">
+</div>

@@ -1,0 +1,10 @@
+
+Dear Admin,
+
+The user {{ user_name }} failed to run the model "{{ model_name }}" with an error,
+
+*****
+ERROR: {{ error_message }}.
+*****
+
+Task ID: {{ task_id }}

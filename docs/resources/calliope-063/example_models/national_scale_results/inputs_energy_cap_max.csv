@@ -1,0 +1,13 @@
+region1,ccgt,30000.0
+region1-2,free_transmission:region1,inf
+region2,battery,1000.0
+region1-3,csp,10000.0
+region1,ac_transmission:region2,10000.0
+region1,free_transmission:region1-3,inf
+region1,free_transmission:region1-1,inf
+region1-3,free_transmission:region1,inf
+region1-1,csp,10000.0
+region1,free_transmission:region1-2,inf
+region1-2,csp,10000.0
+region2,ac_transmission:region1,10000.0
+region1-1,free_transmission:region1,inf
