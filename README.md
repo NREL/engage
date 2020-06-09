@@ -19,4 +19,5 @@ https://nrel.github.io/engage/index.html
 and the developer guide to contribute to Enage project.
 
 ## License
-Add license to this repo.
+BSD 3-Clause License
+https://github.com/NREL/engage/blob/master/LICENSE
