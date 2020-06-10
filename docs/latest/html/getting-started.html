@@ -1,0 +1,253 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Getting Started &#8212; Engage 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Developer Guide" href="developer-guide.html" />
+    <link rel="prev" title="Welcome to Engage’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>This page is about how to setup Engage development environment on machine. Docker provides a
+way to run applications securely isolated in containers packaged with all dependencies and libraries.
+We use Docker in this project. In the following sections, we’ll focus on how to setup development
+environment using Docker.</p>
+<p>Before step into environment setup, please make sure <cite>Docker</cite> and <cite>Docker Compose</cite> are
+installed. If not, please follow the official documentation for installation.</p>
+<ul class="simple">
+<li><p>Docker: Please refer to <a class="reference external" href="https://docs.docker.com/get-docker/">Docker Documentation</a>.</p></li>
+<li><p>Docker Compose: Please refer to <a class="reference external" href="https://docs.docker.com/compose/">Docker Compose</a>.</p></li>
+</ul>
+<div class="section" id="fork-project">
+<h2>Fork Project<a class="headerlink" href="#fork-project" title="Permalink to this headline">¶</a></h2>
+<p>Please fork this project to your own account on GitHub, and then clone it from there.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/<span class="o">{</span>your-account<span class="o">}</span>/engage.git
+</pre></div>
+</div>
+</div>
+<div class="section" id="environment-variables">
+<h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Permalink to this headline">¶</a></h2>
+<p>Create a folder <code class="docutils literal notranslate"><span class="pre">.envs</span></code> in the root directory of project, then within <code class="docutils literal notranslate"><span class="pre">.envs</span></code> create a file
+<code class="docutils literal notranslate"><span class="pre">.local</span></code> with following environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Django</span>
+<span class="nv">DJANGO_SECRET_KEY</span><span class="o">=</span>YN3ZBsDH8r7r0QBjWc7nSmGqU5Cr0tMHdLufTQNl
+
+<span class="c1"># PostgreSQL</span>
+<span class="nv">POSTGRES_HOST</span><span class="o">=</span>engage-postgres
+<span class="nv">POSTGRES_PORT</span><span class="o">=</span><span class="m">5432</span>
+<span class="nv">POSTGRES_DB</span><span class="o">=</span>postgres
+<span class="nv">POSTGRES_USER</span><span class="o">=</span>postgres
+<span class="nv">POSTGRES_PASSWORD</span><span class="o">=</span>
+
+<span class="c1"># Celery</span>
+<span class="nv">CELERY_BROKER_URL</span><span class="o">=</span>redis://redis:6379/0
+
+<span class="c1"># Mapbox</span>
+<span class="nv">MAPBOX_TOKEN</span><span class="o">=</span>
+
+<span class="c1"># PVWatts</span>
+<span class="nv">PVWATTS_API_KEY</span><span class="o">=</span>
+</pre></div>
+</div>
+<p># <a class="reference external" href="https://www.mapbox.com/">MapBox</a> is used to render interactive maps throughout the application’s user interface.
+Must obtain a mapbox token for accessing the Mapbox basemap resources.To obtain a <cite>Mapbox Token</cite>,
+please refer to <a class="reference external" href="https://docs.mapbox.com/help/tutorials/get-started-tokens-api/">get-started-tokens-api</a>.</p>
+<p># PVWatts is used to import PV solar capacity factor timeseries in the Locations tab of the user interface.
+Must obtain a PVWatts token for accessing the PVWatts API resources.
+To obtain a <code class="docutils literal notranslate"><span class="pre">PVWATTS_API_KEY</span></code>, please refer to NRREL’s <a class="reference external" href="https://developer.nrel.gov/docs/api-key/">api-key</a>.</p>
+<p>The following environment variables about <cite>AWS SES</cite> are optional.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># AWS SES (Optional)</span>
+<span class="nv">AWS_ACCESS_KEY_ID</span><span class="o">=</span>
+<span class="nv">AWS_SECRET_ACCESS_KEY</span><span class="o">=</span>
+<span class="nv">AWS_SES_REGION_NAME</span><span class="o">=</span>
+<span class="nv">AWS_SES_REGION_ENDPOINT</span><span class="o">=</span>
+<span class="nv">AWS_SES_FROM_EMAIL</span><span class="o">=</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="build-images">
+<h2>Build Images<a class="headerlink" href="#build-images" title="Permalink to this headline">¶</a></h2>
+<p>Make sure you’re on the root directory of the project, then run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker-compose build
+</pre></div>
+</div>
+<p>Go to grap a drink, it’ll take a few minutes to build the related images.</p>
+</div>
+<div class="section" id="start-services">
+<h2>Start Services<a class="headerlink" href="#start-services" title="Permalink to this headline">¶</a></h2>
+<p>After the images are built, to start docker container services and run in background,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker-compose up --detach
+</pre></div>
+</div>
+</div>
+<div class="section" id="setup-database">
+<h2>Setup Database<a class="headerlink" href="#setup-database" title="Permalink to this headline">¶</a></h2>
+<p>Execute the <code class="docutils literal notranslate"><span class="pre">app</span></code> service, and enter the docker container.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker-compose up --detach
+$ docker-compose exec app bash
+</pre></div>
+</div>
+<p>Next, we need to migreate django models, create a superuser and load sample data into database.</p>
+<ul class="simple">
+<li><p>Migrate Django Models</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">migrate</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Create a Superuser</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">createsuperuser</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Load Admin Data</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">loaddata</span> <span class="o">--</span><span class="n">app</span> <span class="n">api</span> \
+  <span class="n">admin_run_parameter</span><span class="o">.</span><span class="n">json</span> \
+  <span class="n">admin_parameter</span><span class="o">.</span><span class="n">json</span> \
+  <span class="n">admin_abstract_tech</span><span class="o">.</span><span class="n">json</span> \
+  <span class="n">admin_abstract_tech_param</span><span class="o">.</span><span class="n">json</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Load Sample Model (Optional)</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">loaddata</span> <span class="o">--</span><span class="n">app</span> <span class="n">api</span> \
+  <span class="n">sample_model</span><span class="o">.</span><span class="n">json</span> \
+  <span class="n">sample_location</span><span class="o">.</span><span class="n">json</span> \
+  <span class="n">sample_technology</span><span class="o">.</span><span class="n">json</span> \
+  <span class="n">sample_tech_param</span><span class="o">.</span><span class="n">json</span> \
+  <span class="n">sample_loc_tech</span><span class="o">.</span><span class="n">json</span> \
+  <span class="n">sample_loc_tech_param</span><span class="o">.</span><span class="n">json</span> \
+  <span class="n">sample_timeseries_meta</span><span class="o">.</span><span class="n">json</span> \
+  <span class="n">sample_scenario</span><span class="o">.</span><span class="n">json</span> \
+  <span class="n">sample_scenario_loc_tech</span><span class="o">.</span><span class="n">json</span> \
+  <span class="n">sample_scenario_param</span><span class="o">.</span><span class="n">json</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="web-server">
+<h2>Web Server<a class="headerlink" href="#web-server" title="Permalink to this headline">¶</a></h2>
+<p>The development web server in docker is running on port 8000 at the IP address 0.0.0.0,
+please visit: <a class="reference external" href="http://0.0.0.0:8000">http://0.0.0.0:8000</a></p>
+<p>If you want to bring container services to front with live logs on terminal, please run</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker-compose up
+</pre></div>
+</div>
+<p>Done! Now, the docker development environment gets setup successfully, you can get start the
+development of Engage.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Engage</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#fork-project">Fork Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build-images">Build Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#start-services">Start Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setup-database">Setup Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#web-server">Web Server</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developer-guide.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimization-solvers.html">Optimization Solvers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="language-translation.html">Language Translation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing-to-engage.html">Contributing to Engage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nrel-deployment.html">NREL Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release-notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to Engage’s documentation!</a></li>
+      <li>Next: <a href="developer-guide.html" title="next chapter">Developer Guide</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, NREL.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/getting-started.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

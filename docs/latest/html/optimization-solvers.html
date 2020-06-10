@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Optimization Solvers &#8212; Engage 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Language Translation" href="language-translation.html" />
+    <link rel="prev" title="Developer Guide" href="developer-guide.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="optimization-solvers">
+<h1>Optimization Solvers<a class="headerlink" href="#optimization-solvers" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="glpk">
+<h2>GLPK<a class="headerlink" href="#glpk" title="Permalink to this headline">¶</a></h2>
+<p>Engage uses a free and open-source solver <a class="reference external" href="https://www.gnu.org/software/glpk/">GLPK</a>
+for development purpose, and it is already built into the docker image.</p>
+<p>GLPK supports the GNU MathProg modeling language - subset of the AMPL language, and include
+a variety of components, for detailed information, please refer to <a class="reference external" href="https://www.gnu.org/software/glpk/">https://www.gnu.org/software/glpk/</a>.</p>
+<p>However, it takes too much time and memory for solving large Calliope models.</p>
+</div>
+<div class="section" id="scip">
+<h2>SCIP<a class="headerlink" href="#scip" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://scip.zib.de/">SCIP</a> is currently one of the fastest non-commercial solvers for mixed integer programming (MIP)
+and mixed integer nonlinear programming (MINLP). It is also a framework for constraint integer
+programming and branch-cut-and-price. It allows for total control of the solution process and
+the access of detailed information down to the guts of the solver.</p>
+<p>However we didn’t provide in docker environment for development purpose, if you need, here are the steps for installing SCIP solver,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ <span class="nb">cd</span> ~/scipoptsuite-5.0.0/ <span class="o">&amp;&amp;</span> make
+$ <span class="nb">cd</span> ~/scipoptsuite-5.0.0/scip/interfaces/ampl/ <span class="o">&amp;&amp;</span> ./get.ASL -y
+$ <span class="nb">cd</span> ~/scipoptsuite-5.0.0/scip/interfaces/ampl/solvers/ <span class="o">&amp;&amp;</span> sh configurehere <span class="o">&amp;&amp;</span> make
+$ <span class="nb">cd</span> ~/scipoptsuite-5.0.0/scip/interfaces/ampl/ <span class="o">&amp;&amp;</span> make
+$ cp ~/scipoptsuite-5.0.0/scip/interfaces/ampl/bin/scipampl /usr/local/bin/
+</pre></div>
+</div>
+</div>
+<div class="section" id="xpress">
+<h2>XPRESS<a class="headerlink" href="#xpress" title="Permalink to this headline">¶</a></h2>
+<p>In the deployed Engage application at NREL, it uses commercial <a class="reference external" href="https://www.fico.com/en/products/fico-xpress-optimization">FICO XPRESS</a>
+to solve Calliope models with fast speed and large memory in compute node.</p>
+</div>
+<div class="section" id="more-choice">
+<h2>More Choice<a class="headerlink" href="#more-choice" title="Permalink to this headline">¶</a></h2>
+<p>In behind, Calliope interfaces to <a class="reference external" href="http://www.pyomo.org/">Pyomo</a>  - a Python-based, open-source optimization modeling language with
+a diverse set of optimization capabilities. With the <a class="reference external" href="https://calliope.readthedocs.io/en/v0.6.3/api/api.html#api-backend-interface">API interface</a>
+provided by Calliope, you can specify the customized solver options.</p>
+<p>For more solver choice, please refer to <a class="reference external" href="https://calliope.readthedocs.io/en/stable/user/advanced_features.html#specifying-custom-solver-options">specifying-custom-solver-options</a></p>
+<p>Refer to <a class="reference external" href="https://calliope.readthedocs.io/en/stable/user/troubleshooting.html#influence-of-solver-choice-on-speed">influence-of-solver-choice-on-speed</a>
+for more information about problem solving speed with different solvers.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Engage</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer-guide.html">Developer Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Optimization Solvers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#glpk">GLPK</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scip">SCIP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xpress">XPRESS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#more-choice">More Choice</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="language-translation.html">Language Translation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing-to-engage.html">Contributing to Engage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nrel-deployment.html">NREL Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release-notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="developer-guide.html" title="previous chapter">Developer Guide</a></li>
+      <li>Next: <a href="language-translation.html" title="next chapter">Language Translation</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, NREL.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/optimization-solvers.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
