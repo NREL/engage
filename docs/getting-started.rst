@@ -12,7 +12,7 @@ installed. If not, please follow the official documentation for installation.
 * Docker: Please refer to `Docker Documentation <https://docs.docker.com/get-docker/>`_.
 * Docker Compose: Please refer to `Docker Compose <https://docs.docker.com/compose/>`_.
 
-Fork Project 
+Fork Project
 ------------
 
 Please fork this project to your own account on GitHub, and then clone it from there.
@@ -33,7 +33,7 @@ Create a folder ``.envs`` in the root directory of project, then within ``.envs`
     DJANGO_SECRET_KEY=YN3ZBsDH8r7r0QBjWc7nSmGqU5Cr0tMHdLufTQNl
 
     # PostgreSQL
-    POSTGRES_HOST=engage-postgres
+    POSTGRES_HOST=calliope-postgres
     POSTGRES_PORT=5432
     POSTGRES_DB=postgres
     POSTGRES_USER=postgres
