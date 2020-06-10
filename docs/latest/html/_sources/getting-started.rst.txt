@@ -1,0 +1,151 @@
+Getting Started
+===============
+
+This page is about how to setup Engage development environment on machine. Docker provides a 
+way to run applications securely isolated in containers packaged with all dependencies and libraries.
+We use Docker in this project. In the following sections, we'll focus on how to setup development
+environment using Docker.
+
+Before step into environment setup, please make sure `Docker` and `Docker Compose` are 
+installed. If not, please follow the official documentation for installation.
+
+* Docker: Please refer to `Docker Documentation <https://docs.docker.com/get-docker/>`_.
+* Docker Compose: Please refer to `Docker Compose <https://docs.docker.com/compose/>`_.
+
+Fork Project 
+------------
+
+Please fork this project to your own account on GitHub, and then clone it from there.
+
+.. code-block:: bash
+
+    git clone https://github.com/{your-account}/engage.git
+
+Environment Variables
+---------------------
+
+Create a folder ``.envs`` in the root directory of project, then within ``.envs`` create a file 
+``.local`` with following environment variables:
+
+.. code-block:: bash
+
+    # Django
+    DJANGO_SECRET_KEY=YN3ZBsDH8r7r0QBjWc7nSmGqU5Cr0tMHdLufTQNl
+
+    # PostgreSQL
+    POSTGRES_HOST=engage-postgres
+    POSTGRES_PORT=5432
+    POSTGRES_DB=postgres
+    POSTGRES_USER=postgres
+    POSTGRES_PASSWORD=
+
+    # Celery
+    CELERY_BROKER_URL=redis://redis:6379/0
+
+    # Mapbox
+    MAPBOX_TOKEN=
+
+    # PVWatts
+    PVWATTS_API_KEY=
+
+# `MapBox <https://www.mapbox.com/>`_ is used to render interactive maps throughout the application's user interface. 
+Must obtain a mapbox token for accessing the Mapbox basemap resources.To obtain a `Mapbox Token`, 
+please refer to `get-started-tokens-api <https://docs.mapbox.com/help/tutorials/get-started-tokens-api/>`_.
+
+# PVWatts is used to import PV solar capacity factor timeseries in the Locations tab of the user interface. 
+Must obtain a PVWatts token for accessing the PVWatts API resources. 
+To obtain a ``PVWATTS_API_KEY``, please refer to NRREL's `api-key <https://developer.nrel.gov/docs/api-key/>`_.
+
+The following environment variables about `AWS SES` are optional.
+
+.. code-block:: bash
+
+    # AWS SES (Optional)
+    AWS_ACCESS_KEY_ID=
+    AWS_SECRET_ACCESS_KEY=
+    AWS_SES_REGION_NAME=
+    AWS_SES_REGION_ENDPOINT=
+    AWS_SES_FROM_EMAIL=
+
+Build Images
+------------
+
+Make sure you're on the root directory of the project, then run:
+
+.. code-block:: 
+
+    $ docker-compose build
+
+Go to grap a drink, it'll take a few minutes to build the related images.
+
+Start Services
+--------------
+After the images are built, to start docker container services and run in background,
+
+.. code-block::
+
+    $ docker-compose up --detach
+
+Setup Database
+--------------
+
+Execute the ``app`` service, and enter the docker container.
+
+.. code-block::
+
+    $ docker-compose up --detach
+    $ docker-compose exec app bash
+
+Next, we need to migreate django models, create a superuser and load sample data into database.
+
+* Migrate Django Models
+
+.. code-block::
+
+    python manage.py migrate
+
+* Create a Superuser
+
+.. code-block::
+
+    python manage.py createsuperuser
+
+* Load Admin Data
+
+.. code-block::
+
+    python3 manage.py loaddata --app api \
+      admin_run_parameter.json \
+      admin_parameter.json \
+      admin_abstract_tech.json \
+      admin_abstract_tech_param.json
+
+* Load Sample Model (Optional)
+
+.. code-block::
+
+    python3 manage.py loaddata --app api \
+      sample_model.json \
+      sample_location.json \
+      sample_technology.json \
+      sample_tech_param.json \
+      sample_loc_tech.json \
+      sample_loc_tech_param.json \
+      sample_timeseries_meta.json \
+      sample_scenario.json \
+      sample_scenario_loc_tech.json \
+      sample_scenario_param.json
+
+Web Server
+----------
+The development web server in docker is running on port 8000 at the IP address 0.0.0.0,
+please visit: http://0.0.0.0:8000
+
+If you want to bring container services to front with live logs on terminal, please run
+
+.. code-block:: bash
+
+    docker-compose up
+
+Done! Now, the docker development environment gets setup successfully, you can get start the 
+development of Engage.
