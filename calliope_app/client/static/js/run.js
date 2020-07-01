@@ -112,7 +112,7 @@ function updatePauseTime() {
 }
 
 function bindEditable() {
-	$(".run-description").editable("/api/update_run_description/", {
+	$(".run-description").editable("/" + LANGUAGE_CODE + "/api/update_run_description/", {
 			type: "textarea",
 			event: "dblclick",
 			before: function() {
