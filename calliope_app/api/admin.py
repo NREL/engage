@@ -33,8 +33,7 @@ class Abstract_Tech_Param_Admin(admin.ModelAdmin):
 
 
 class Model_Admin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'snapshot_version', 'snapshot_base',
-                    'power_units', 'temporal_resolution', 'uuid',
+    list_display = ['id', 'name', 'snapshot_version', 'snapshot_base', 'uuid',
                     'public', 'created', 'updated']
 
 

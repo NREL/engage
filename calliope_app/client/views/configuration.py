@@ -124,7 +124,6 @@ def technologies_view(request, model_uuid):
         "model": model,
         "technologies": technologies,
         "session_technology": session_technology,
-        "power_units": model.power_units,
         "can_edit": can_edit,
         "help_content": Help_Guide.get_safe_html('technologies'),
     }
@@ -204,7 +203,6 @@ def loc_techs_view(request, model_uuid):
         "model": model,
         "technologies": technologies,
         "session_technology": session_technology,
-        "power_units": model.power_units,
         "can_edit": can_edit,
         "mapbox_token": os.getenv("MAPBOX_TOKEN", ""),
         "help_content": Help_Guide.get_safe_html('nodes'),
@@ -366,7 +364,6 @@ def parameters_view(request, model_uuid, parameter_name):
         "timezones": common_timezones,
         "model": model,
         "parameter": parameter,
-        "power_units": model.power_units,
         "can_edit": can_edit,
         "help_content": Help_Guide.get_safe_html('parameters'),
     }

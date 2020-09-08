@@ -34,8 +34,6 @@ class Model(models.Model):
     snapshot_version = models.IntegerField(blank=True, null=True)
     snapshot_base = models.ForeignKey(
         "self", on_delete=models.CASCADE, blank=True, null=True)
-    power_units = models.CharField(max_length=200, default='kW')
-    temporal_resolution = models.CharField(max_length=200, default='hourly')
     public = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)

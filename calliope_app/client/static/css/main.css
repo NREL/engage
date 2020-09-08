@@ -343,7 +343,10 @@ table .btn {
 .error-message {
 	color: red;
 }
-
+.invalid-value {
+  color: red !important;
+  background-color: pink !important;
+}
 .model-remove, .parameter-reset, .parameter-delete, .parameter-value-delete, .file-delete, .timeseries-delete {
 	color: #d20000;
 	text-shadow: 0px 0px 0px black;

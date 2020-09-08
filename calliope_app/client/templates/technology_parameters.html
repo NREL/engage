@@ -19,7 +19,7 @@
 							<i class="fas fa-link"></i>
 							{% endif %}
 						</th>
-						<th colspan=6 class="text-sm">
+						<th colspan=7 class="text-sm">
 							{{ param.parameter_category }}
 						</th>
 						<th class="centered">
@@ -32,14 +32,14 @@
 			{% with parameters|return_item:forloop.counter as next_param %}
 			{% ifchanged param.parameter_name %}
 				<!-- Parameter Master Row -->
-				<tr class="{% if next_param.parameter_id == param.parameter_id %}param_header{% endif %} {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% else %}table-info{% endif %}{% else %}table-default{% endif %}" data-param_id={{ param.parameter_id }}>
+				<tr class="{% if next_param.parameter_id == param.parameter_id %}param_header{% endif %} {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% else %}table-primary{% endif %}{% else %}table-default{% endif %}" data-param_id={{ param.parameter_id }}>
 					<!-- Favorite Buttons -->
 					{% if param.parameter_category == "Costs: Monetary" %}
 					<td class="table-success centered"><i {% if not can_edit %}disabled{% endif %} class="fas fa-star" data-toggle="tooltip" data-placement="right" title="{% trans 'Mark parameter as favorite' %}"></i></td>
 					<td class="table-success">&nbsp;<i class="fas fa-dollar-sign"></i>&nbsp;&nbsp;&nbsp;{{ param.parameter_category }}</td>
 					{% else %}
-					<td class="table-info centered"><i {% if not can_edit %}disabled{% endif %} class="fas fa-star" data-toggle="tooltip" data-placement="right" title="{% trans 'Mark parameter as favorite' %}"></i></td>
-					<td class="table-info"><i class="fas fa-link"></i>&nbsp;&nbsp;{{ param.parameter_category }}</td>
+					<td class="table-primary centered"><i {% if not can_edit %}disabled{% endif %} class="fas fa-star" data-toggle="tooltip" data-placement="right" title="{% trans 'Mark parameter as favorite' %}"></i></td>
+					<td class="table-primary"><i class="fas fa-link"></i>&nbsp;&nbsp;{{ param.parameter_category }}</td>
 					{% endif %}
 					<!-- Parameter Names -->
 					<td style="cursor:help" data-toggle="tooltip" data-placement="bottom" title="{{ param.parameter_root }}.{{ param.parameter_name }}: {{ param.parameter_description }}">
@@ -82,7 +82,7 @@
 							{% endif %}
 						</select>
 						{% else %}
-						<input {% if not can_edit %}disabled{% endif %} type="{% if param.units == '<sub>ABC</sub>' %}text{% else %}number{% endif %}" class="static_inputs form-control parameter-value parameter-value-existing" placeholder="{{ param.value|add_commas }}" name="edit[parameter][{{ param.parameter_id }}]">
+						<input {% if not can_edit %}disabled{% endif %} type="text" class="static_inputs form-control parameter-value parameter-value-existing {% if param.units == '<sub>ABC</sub>' %}text-value{% else %}float-value{% endif %}" placeholder="{{ param.value|add_commas }}" name="edit[parameter][{{ param.parameter_id }}]">
 						{% endif %}
 						<button {% if not can_edit %}disabled{% endif %} type="button" class="view_rows hide btn btn-light" title="view-data-btn" style="width: 100%;"><i class="fas fa-bars"></i>&nbsp;&nbsp;{% trans "Show" %}</button>
 						<button {% if not can_edit %}disabled{% endif %} type="button" class="hide_rows hide btn btn-light" title="view-data-btn" style="width: 100%;"><i class="fas fa-bars"></i>&nbsp;&nbsp;{% trans "Hide" %}</button>
@@ -93,8 +93,10 @@
 						<div class="hide_rows hide"><i class="fas fa-bars"></i>&nbsp;&nbsp;{% trans "Hide" %}</div>
 					</td>
 					{% endif %}
+					<!-- Parameter Values -->
+					<td class="parameter-target-value" style="text-align:right;" data-value="{{ param.value|add_commas }}">{{ param.value|add_commas }}</td>
 					<!-- Parameter Units -->
-					<td class="text-sm">{{ param.units|safe }}</td>
+					<td class="text-sm parameter-units" data-value="{{ param.units }}">{{ param.units|safe }}</td>
 					<!-- Parameter Edit Buttons -->
 					<td class="centered">
 						<button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default btn-sm transparent parameter-reset hide"><i class="fas fa-undo"></i></button>
@@ -133,7 +135,7 @@
 				</tr>
 			{% else %}
 				<!-- Parameter Year - Value Row -->
-				<tr class="param_row param_row_min param_row_{{ param.parameter_id }} {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% else %}table-info{% endif %}{% else %}table-default{% endif %}" data-param_id={{ param.parameter_id }}>
+				<tr class="param_row param_row_min param_row_{{ param.parameter_id }} {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% else %}table-primary{% endif %}{% else %}table-default{% endif %}" data-param_id={{ param.parameter_id }}>
 					<td colspan=3 style="background-color: white;"></td>
 					<!-- Year -->
 					<td class="">

@@ -24,14 +24,26 @@ function activate_table() {
 		if (ts_id) {
 			activate_charts(param_id, ts_id)
 		};
-		if (year || value) {
+		row.find('.parameter-reset').addClass('hide')
+		row.find('.parameter-delete, .parameter-value-delete').removeClass('hide')
+		row.removeClass('table-warning');
+		$(this).removeClass('invalid-value');
+		if ((value != '') & ($(this).hasClass('float-value') == true)) {
+			var units = row.find('.parameter-units').data('value'),
+				val = convert_units(value, units);
+			if (val != false) {
+				row.find('.parameter-target-value').html(numberWithCommas(val));
+				row.find('.parameter-reset').removeClass('hide')
+				row.find('.parameter-delete, .parameter-value-delete').addClass('hide')
+				row.addClass('table-warning');
+			} else {
+				row.find('.parameter-target-value').html(row.find('.parameter-target-value').data('value'));
+				$(this).addClass('invalid-value');
+			}
+		} else if (value || year) {
 			row.find('.parameter-reset').removeClass('hide')
 			row.find('.parameter-delete, .parameter-value-delete').addClass('hide')
 			row.addClass('table-warning');
-		} else {
-			row.find('.parameter-reset').addClass('hide')
-			row.find('.parameter-delete, .parameter-value-delete').removeClass('hide')
-			row.removeClass('table-warning');
 		};
 		check_unsaved();
 	});
@@ -227,7 +239,6 @@ function get_tech_parameters() {
 				$('#tech_parameters').data('favorites', data['favorites']);
 				$('#tech_essentials').data('technology_id', data['technology_id']);
 				activate_tech_delete();
-				replace_units();
 				activate_table();
 				activate_favorites();
 				collapse_parameter_library();
@@ -367,7 +378,6 @@ function get_loc_tech_parameters() {
 			success: function (data) {
 				$('#tech_parameters').html(data['html_parameters']);
 				$('#tech_parameters').data('favorites', data['favorites']);
-				replace_units();
 				activate_table();
 				activate_favorites();
 				collapse_parameter_library();
@@ -938,13 +948,6 @@ function render_map(locations, transmissions, draggable, loc_tech_id) {
 	map.jumpTo(camera);
 }
 
-function replace_units() {
-	var power_units = $('#tech_parameters').data('power_units');
-	$("#param_table").children().each(function () {
-	    $(this).html( $(this).html().replace(/\[\[power\]\]/g, power_units) );
-	});
-}
-
 function toggle_favorite($this, update_favorite) {
 	var model_uuid = $('#header').data('model_uuid'),
 		row = $this.parents('tr'),
@@ -1146,4 +1149,53 @@ function getCookie(cname) {
         }
     }
     return "";
+}
+
+math.createUnit('percent', {definition: '1', aliases: ['percent', 'percentage'], baseName: 'percent'});
+math.createUnit('dpercent', {definition: '100 percent', aliases: ['dpercent', 'dpercentage']});
+math.createUnit('dollar', {definition: '1', aliases: ['dollar', 'dollars'], baseName: 'dollar'});
+math.createUnit('cent', {definition: '0.01 dollar', aliases: ['c', 'cent', 'cents']});
+
+function convert_units(old_units, new_units, strict) {
+
+	old_units = clean_units(old_units);
+	new_units = clean_units(new_units);
+	try {
+	  	var val = math.evaluate(old_units);
+	  	if (val.isUnit == undefined) {
+	  		return val;
+	  	} else {
+	 		return val.toNumber(new_units);
+	 	}
+	}
+	catch(err) {
+		if (strict != true) {
+			result = convert_units(old_units.toLowerCase(), new_units, true);
+			if (result != false) { return result };
+			result = convert_units(old_units.toUpperCase(), new_units, true);
+			return result;
+		} else {
+			return false;
+		};
+	}
+}
+
+function clean_units(units) {
+	units = String(units);
+	units = units.replaceAll('$', 'dollar');
+	units = units.replaceAll(',', '');
+	units = units.replaceAll('%<sub>/100</sub>', 'dpercent').replaceAll('%', 'percent');
+	units = units.replaceAll('<sup>2</sup>', '^2');
+	return units;
+}
+
+function numberWithCommas(x) {
+
+    var parts = x.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    if (parts.length > 1) {
+    	if (parts[1].length > 3) { parts[1] = parts[1].slice(0, 3) };
+    };
+    return parts.join(".");
+
 }
