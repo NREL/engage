@@ -646,6 +646,7 @@ class Tech_Param(models.Model):
     year = models.IntegerField(default=0)
     parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE)
     value = models.CharField(max_length=200, blank=True, null=True)
+    raw_value = models.CharField(max_length=200, blank=True, null=True)
     timeseries = models.BooleanField(default=False)
     timeseries_meta = models.ForeignKey(Timeseries_Meta,
                                         on_delete=models.CASCADE,
@@ -654,6 +655,11 @@ class Tech_Param(models.Model):
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
+
+    @property
+    def placeholder(self):
+        """ Value to place in the HTML placeholder field """
+        return self.raw_value if self.raw_value else self.value
 
     @classmethod
     def _essentials(cls, technology, data):
@@ -750,19 +756,22 @@ class Tech_Param(models.Model):
                 years = value_dict['year']
                 values = value_dict['value']
                 num_records = np.min([len(years), len(values)])
-                cls.objects.bulk_create(
-                    [cls(
+                for i in range(num_records):
+                    vals = str(values[i]).split('||')
+                    cls.objects.create(
                         model_id=technology.model_id,
                         technology_id=technology.id,
                         year=years[i],
                         parameter_id=key,
-                        value=values[i]) for i in range(num_records)])
+                        value=vals[0],
+                        raw_value=vals[1] if len(vals) > 1 else vals[0])
 
     @classmethod
     def _edit(cls, technology, data):
         """ Edit a technology's parameters """
         if 'parameter' in data:
             for key, value in data['parameter'].items():
+                vals = str(value).split('||')
                 cls.objects.filter(
                     model_id=technology.model_id,
                     technology_id=technology.id,
@@ -771,7 +780,8 @@ class Tech_Param(models.Model):
                     model_id=technology.model_id,
                     technology_id=technology.id,
                     parameter_id=key,
-                    value=value)
+                    value=vals[0],
+                    raw_value=vals[1] if len(vals) > 1 else vals[0])
         if 'timeseries' in data:
             for key, value in data['timeseries'].items():
                 cls.objects.filter(
@@ -792,7 +802,10 @@ class Tech_Param(models.Model):
                     model_id=technology.model_id,
                     id=key)
                 if 'value' in value_dict:
-                    parameter_instance.update(value=value_dict['value'])
+                    vals = str(value_dict['value']).split('||')
+                    parameter_instance.update(
+                        value=vals[0],
+                        raw_value=vals[1] if len(vals) > 1 else vals[0])
                 if 'year' in value_dict:
                     parameter_instance.update(year=value_dict['year'])
 
@@ -893,6 +906,7 @@ class Loc_Tech_Param(models.Model):
     year = models.IntegerField(default=0)
     parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE)
     value = models.CharField(max_length=200, blank=True, null=True)
+    raw_value = models.CharField(max_length=200, blank=True, null=True)
     timeseries = models.BooleanField(default=False)
     timeseries_meta = models.ForeignKey(Timeseries_Meta,
                                         on_delete=models.CASCADE,
@@ -902,6 +916,11 @@ class Loc_Tech_Param(models.Model):
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
 
+    @property
+    def placeholder(self):
+        """ Value to place in the HTML placeholder field """
+        return self.raw_value if self.raw_value else self.value
+
     @classmethod
     def _add(cls, loc_tech, data):
         """ Add a new parameter to a location technology """
@@ -910,19 +929,22 @@ class Loc_Tech_Param(models.Model):
                 years = value_dict['year']
                 values = value_dict['value']
                 num_records = np.min([len(years), len(values)])
-                cls.objects.bulk_create(
-                    [cls(
+                for i in range(num_records):
+                    vals = str(values[i]).split('||')
+                    cls.objects.create(
                         model_id=loc_tech.model_id,
                         loc_tech_id=loc_tech.id,
                         year=years[i],
                         parameter_id=key,
-                        value=values[i]) for i in range(num_records)])
+                        value=vals[0],
+                        raw_value=vals[1] if len(vals) > 1 else vals[0])
 
     @classmethod
     def _edit(cls, loc_tech, data):
         """ Edit a location technology parameter """
         if 'parameter' in data:
             for key, value in data['parameter'].items():
+                vals = str(value).split('||')
                 cls.objects.filter(
                     model_id=loc_tech.model_id,
                     loc_tech_id=loc_tech.id,
@@ -931,7 +953,8 @@ class Loc_Tech_Param(models.Model):
                     model_id=loc_tech.model_id,
                     loc_tech_id=loc_tech.id,
                     parameter_id=key,
-                    value=value)
+                    value=vals[0],
+                    raw_value=vals[1] if len(vals) > 1 else vals[0])
         if 'timeseries' in data:
             for key, value in data['timeseries'].items():
                 cls.objects.filter(
@@ -952,7 +975,10 @@ class Loc_Tech_Param(models.Model):
                     model_id=loc_tech.model_id,
                     id=key)
                 if 'value' in value_dict:
-                    parameter_instance.update(value=value_dict['value'])
+                    vals = str(value_dict['value']).split('||')
+                    parameter_instance.update(
+                        value=vals[0],
+                        raw_value=vals[1] if len(vals) > 1 else vals[0])
                 if 'year' in value_dict:
                     parameter_instance.update(year=value_dict['year'])
 
@@ -1229,6 +1255,7 @@ class ParamsManager():
                 'parameter_is_essential': param.parameter.is_essential,
                 'parameter_is_carrier': param.parameter.is_carrier,
                 'units': param.parameter.units,
+                'placeholder': param.placeholder if 'placeholder' in dir(param) else param.default_value,
                 'choices': param.parameter.choices,
                 'timeseries_enabled': param.parameter.timeseries_enabled,
                 'timeseries': param.timeseries if 'timeseries' in dir(param) else False,

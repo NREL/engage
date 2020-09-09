@@ -58,7 +58,7 @@
 					<!-- Parameter Value (or Expand) -->
 					{% if param.timeseries == True %}
 					<td class="centered" data-param_id={{ param.parameter_id }}>
-						<select {% if not can_edit %}disabled{% endif %} data-ts_id="{{ param.timeseries_meta_id }}" class="form-control parameter-value-existing timeseries" name="edit[timeseries][{{ param.parameter_id }}]" value="{{ param.timeseries_meta_id }}">
+						<select {% if not can_edit %}disabled{% endif %} data-ts_id="{{ param.timeseries_meta_id }}" class="form-control parameter-value parameter-value-existing timeseries" name="edit[timeseries][{{ param.parameter_id }}]" value="{{ param.timeseries_meta_id }}">
 							<option disabled selected value> -- select a timeseries -- </option>
 							{% for ts in timeseries %}
 							<option value="{{ ts.id }}" {% if ts.id == param.timeseries_meta_id|add:"0" %}selected{% endif %}>{{ ts }}</option>
@@ -82,7 +82,7 @@
 							{% endif %}
 						</select>
 						{% else %}
-						<input {% if not can_edit %}disabled{% endif %} type="text" class="static_inputs form-control parameter-value parameter-value-existing {% if param.units == '<sub>ABC</sub>' %}text-value{% else %}float-value{% endif %}" placeholder="{{ param.value|add_commas }}" name="edit[parameter][{{ param.parameter_id }}]">
+						<input {% if not can_edit %}disabled{% endif %} type="text" class="static_inputs form-control parameter-value parameter-value-existing {% if param.units == '<sub>ABC</sub>' %}text-value{% else %}float-value{% endif %}" placeholder="{{ param.placeholder|add_commas }}" name="edit[parameter][{{ param.parameter_id }}]">
 						{% endif %}
 						<button {% if not can_edit %}disabled{% endif %} type="button" class="view_rows hide btn btn-light" title="view-data-btn" style="width: 100%;"><i class="fas fa-bars"></i>&nbsp;&nbsp;{% trans "Show" %}</button>
 						<button {% if not can_edit %}disabled{% endif %} type="button" class="hide_rows hide btn btn-light" title="view-data-btn" style="width: 100%;"><i class="fas fa-bars"></i>&nbsp;&nbsp;{% trans "Hide" %}</button>
@@ -94,7 +94,11 @@
 					</td>
 					{% endif %}
 					<!-- Parameter Values -->
+					{% if param.timeseries == False and not param.choices and not param.parameter_is_carrier %}
 					<td class="parameter-target-value" style="text-align:right;" data-value="{{ param.value|add_commas }}">{{ param.value|add_commas }}</td>
+					{% else %}
+					<td></td>
+					{% endif %}
 					<!-- Parameter Units -->
 					<td class="text-sm parameter-units" data-value="{{ param.units }}">{{ param.units|safe }}</td>
 					<!-- Parameter Edit Buttons -->
@@ -158,11 +162,17 @@
 							{% endif %}
 						</select>
 						{% else %}
-						<input {% if not can_edit %}disabled{% endif %} type="{% if param.units == '<sub>ABC</sub>' %}text{% else %}number{% endif %}" class="dynamic_value_input form-control parameter-value parameter-value-existing" placeholder="{{ param.value|add_commas }}" {% if param.level == level %}name="edit[parameter_instance][{{ param.id }}][value]"{% else %}name="add[{{ param.parameter_id }}][value][]"{% endif %}>
+						<input {% if not can_edit %}disabled{% endif %} type="text" class="dynamic_value_input form-control parameter-value parameter-value-existing {% if param.units == '<sub>ABC</sub>' %}text-value{% else %}float-value{% endif %}" placeholder="{{ param.placeholder|add_commas }}" {% if param.level == level %}name="edit[parameter_instance][{{ param.id }}][value]"{% else %}name="add[{{ param.parameter_id }}][value][]"{% endif %}>
 						{% endif %}
 					</td>
-					<!-- Units -->
-					<td class="text-sm">{{ param.units|safe }}</td>
+					<!-- Parameter Values -->
+					{% if param.timeseries == False and not param.choices and not param.parameter_is_carrier %}
+					<td class="parameter-target-value" style="text-align:right;" data-value="{{ param.value|add_commas }}">{{ param.value|add_commas }}</td>
+					{% else %}
+					<td></td>
+					{% endif %}
+					<!-- Parameter Units -->
+					<td class="text-sm parameter-units" data-value="{{ param.units }}">{{ param.units|safe }}</td>
 					<!-- Edit Buttons -->
 					<td class="centered">
 						<button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default btn-sm transparent parameter-reset hide"><i class="fas fa-undo"></i></button>
@@ -196,10 +206,15 @@
 							{% endif %}
 						</select>
 						{% else %}
-						<input {% if not can_edit %}disabled{% endif %} type="{% if param.units == '<sub>ABC</sub>' %}text{% else %}number{% endif %}" class="form-control parameter-value parameter-value-new" name="add[{{ param.parameter_id }}][value][]">
+						<input {% if not can_edit %}disabled{% endif %} type="text" class="form-control parameter-value parameter-value-new {% if param.units == '<sub>ABC</sub>' %}text-value{% else %}float-value{% endif %}" name="add[{{ param.parameter_id }}][value][]">
 						{% endif %}
 					</td>
-					<td class="text-sm">{{ param.units|safe }}</td>
+					{% if param.timeseries == False and not param.choices and not param.parameter_is_carrier %}
+					<td class="parameter-target-value" style="text-align:right;" data-value="{{ param.value|add_commas }}">{{ param.value|add_commas }}</td>
+					{% else %}
+					<td></td>
+					{% endif %}
+					<td class="text-sm parameter-units" data-value="{{ param.units }}">{{ param.units|safe }}</td>
 					<td class="centered">
 						<button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default transparent parameter-value-remove" title="{% trans 'Remove a row' %}"><i class="fas fa-minus"></i></button>
 					</td>

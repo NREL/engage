@@ -16,14 +16,9 @@ $( document ).ready(function() {
 
 		if (validate_params()) {
 
-			var form_data_1 = $("#form_data_1 :input")
-				.serializeJSON();
-			var form_data_2 = $("#form_data_2 :input")
-				.filter(function(index, element) {
-					return $(element).val() != '';
-				})
-				.serializeJSON();
-			var form_data = Object.assign({}, form_data_1, form_data_2)
+			var form_data_1 = $("#form_data_1 :input").serializeJSON();
+			var form_data_2 = filter_param_inputs($("#form_data_2 :input")).serializeJSON();
+			var form_data = Object.assign({}, form_data_1, form_data_2);
 
 			$.ajax({
 				url: '/' + LANGUAGE_CODE + '/api/update_tech_params/',

@@ -78,7 +78,7 @@ class Technology_Admin(admin.ModelAdmin):
 
 class Tech_Param_Admin(admin.ModelAdmin):
     list_display = ['id', 'technology', 'year', 'parameter', 'value',
-                    'timeseries', 'timeseries_meta', 'model',
+                    'raw_value', 'timeseries', 'timeseries_meta', 'model',
                     'created', 'updated']
 
 
@@ -89,7 +89,7 @@ class Loc_Tech_Admin(admin.ModelAdmin):
 
 class Loc_Tech_Param_Admin(admin.ModelAdmin):
     list_display = ['id', 'loc_tech', 'year', 'parameter', 'value',
-                    'timeseries', 'timeseries_meta', 'model',
+                    'raw_value', 'timeseries', 'timeseries_meta', 'model',
                     'created', 'updated']
 
 

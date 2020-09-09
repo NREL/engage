@@ -14,13 +14,13 @@ $(function() {
 function activate_table() {
 
 	// Detection of unsaved changes
-	$('.parameter-value-existing, .parameter-year-existing').unbind();
-	$('.parameter-value-existing, .parameter-year-existing').on('change keyup paste', function() {
+	$('.parameter-value-new, .parameter-value-existing, .parameter-year-existing').unbind();
+	$('.parameter-value-new, .parameter-value-existing, .parameter-year-existing').on('change keyup paste', function() {
 		var row = $(this).parents('tr'),
-			year = row.find('.parameter-year-existing').val(),
-			value = row.find('.parameter-value-existing').val(),
+			year = row.find('.parameter-year').val(),
+			value = row.find('.parameter-value').val(),
 			param_id = $(this).parents('tr').data('param_id'),
-			ts_id = row.find('.parameter-value-existing.timeseries').val();
+			ts_id = row.find('.parameter-value.timeseries').val();
 		if (ts_id) {
 			activate_charts(param_id, ts_id)
 		};
@@ -28,16 +28,17 @@ function activate_table() {
 		row.find('.parameter-delete, .parameter-value-delete').removeClass('hide')
 		row.removeClass('table-warning');
 		$(this).removeClass('invalid-value');
+		row.find('.parameter-target-value').html(row.find('.parameter-target-value').data('value'));
 		if ((value != '') & ($(this).hasClass('float-value') == true)) {
 			var units = row.find('.parameter-units').data('value'),
 				val = convert_units(value, units);
-			if (val != false) {
-				row.find('.parameter-target-value').html(numberWithCommas(val));
+			if (typeof(val) == 'number') {
+				$(this).attr('data-target_value', formatNumber(val, false));
+				row.find('.parameter-target-value').html(formatNumber(val, true));
 				row.find('.parameter-reset').removeClass('hide')
 				row.find('.parameter-delete, .parameter-value-delete').addClass('hide')
 				row.addClass('table-warning');
 			} else {
-				row.find('.parameter-target-value').html(row.find('.parameter-target-value').data('value'));
 				$(this).addClass('invalid-value');
 			}
 		} else if (value || year) {
@@ -1046,16 +1047,18 @@ function add_row($this) {
 		param_id = row.data('param_id');
 	row.addClass('param_header');
 	$('.param_row_'+param_id).removeClass('param_row_min');
-	head_value_cell = row.find('.head_value')
-	head_value_cell.removeClass('head_value').addClass('param_row_toggle')
-	head_value_cell.find('.static_inputs').remove()
-	row.find('.param_row_toggle').find('.hide_rows').removeClass('hide')
-	row.find('.param_row_toggle').find('.view_rows').addClass('hide')
+	head_value_cell = row.find('.head_value');
+	head_value_cell.removeClass('head_value').addClass('param_row_toggle');
+	head_value_cell.find('.static_inputs').remove();
+	row.find('.param_row_toggle').find('.hide_rows').removeClass('hide');
+	row.find('.param_row_toggle').find('.view_rows').addClass('hide');
 	var add_row = $('.add_param_row_'+param_id).last().clone();
 	add_row.find('.parameter-value-new').addClass('dynamic_value_input');
 	add_row.find('.parameter-year-new').addClass('dynamic_year_input');
 	add_row.removeClass('add_param_row_min').addClass('table-warning');
-	add_row.insertBefore($('.add_param_row_'+param_id).last())
+	add_row.insertBefore($('.add_param_row_'+param_id).last());
+	add_row.find('.parameter-target-value').html('');
+	add_row.find('.parameter-target-value').attr('data-value', '');
 	activate_table();
 	check_unsaved();
 	return add_row;
@@ -1178,6 +1181,7 @@ function convert_units(old_units, new_units, strict) {
 			return false;
 		};
 	}
+
 }
 
 function clean_units(units) {
@@ -1189,13 +1193,31 @@ function clean_units(units) {
 	return units;
 }
 
-function numberWithCommas(x) {
+function formatNumber(x, commas) {
 
     var parts = x.toString().split(".");
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    if (commas == true) {
+    	parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    };
     if (parts.length > 1) {
     	if (parts[1].length > 3) { parts[1] = parts[1].slice(0, 3) };
     };
     return parts.join(".");
+
+}
+
+function filter_param_inputs(query) {
+
+	return query.filter(function(index, element) {
+		var val = $(element).val(),
+			tval = $(element).attr('data-target_value');
+		if ((tval != undefined) & (tval != val)) {
+			$(element).val(tval + '||' + val);
+		};
+		var has_value = $(element).val() != '',
+			is_modified = $(element).parents('tr').hasClass('table-warning'),
+			is_delete = $(element).parents('tr').hasClass('table-danger');
+		return ((is_modified && has_value) || is_delete);
+	})
 
 }
