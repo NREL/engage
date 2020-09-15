@@ -2,6 +2,8 @@ var map_mode = 'loc_techs';
 
 $( document ).ready(function() {
 
+	initiate_units();
+
 	$('#master-new').remove();
 
 	$('#technology').on('change', function() {

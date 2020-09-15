@@ -1,5 +1,7 @@
 $( document ).ready(function() {
 
+	initiate_units();
+
 	$('#master-new').removeClass('hide');
 
 	if ($("#technology option").length == 0) {

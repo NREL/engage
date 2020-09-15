@@ -1087,6 +1087,26 @@ function check_unsaved() {
 	};
 }
 
+function filter_param_inputs(query) {
+
+	return query.filter(function(index, element) {
+		var val = $(element).val(),
+			tval = $(element).attr('data-target_value');
+		if ((tval != undefined) & (tval != val)) {
+			$(element).val(tval + '||' + val);
+
+		};
+		var has_value = $(element).val() != '',
+			is_modified = $(element).parents('tr').hasClass('table-warning'),
+			is_delete = $(element).parents('tr').hasClass('table-danger');
+		if (is_modified && has_value) {
+			$(element).css('background-color', '#28a745');
+		};
+		return ((is_modified && has_value) || is_delete);
+	})
+
+}
+
 function validate_params() {
 	var validated = true;
 	$('.param_row').each(function() {
@@ -1154,45 +1174,6 @@ function getCookie(cname) {
     return "";
 }
 
-math.createUnit('percent', {definition: '1', aliases: ['percent', 'percentage'], baseName: 'percent'});
-math.createUnit('dpercent', {definition: '100 percent', aliases: ['dpercent', 'dpercentage']});
-math.createUnit('dollar', {definition: '1', aliases: ['dollar', 'dollars'], baseName: 'dollar'});
-math.createUnit('cent', {definition: '0.01 dollar', aliases: ['c', 'cent', 'cents']});
-
-function convert_units(old_units, new_units, strict) {
-
-	old_units = clean_units(old_units);
-	new_units = clean_units(new_units);
-	try {
-	  	var val = math.evaluate(old_units);
-	  	if (val.isUnit == undefined) {
-	  		return val;
-	  	} else {
-	 		return val.toNumber(new_units);
-	 	}
-	}
-	catch(err) {
-		if (strict != true) {
-			result = convert_units(old_units.toLowerCase(), new_units, true);
-			if (result != false) { return result };
-			result = convert_units(old_units.toUpperCase(), new_units, true);
-			return result;
-		} else {
-			return false;
-		};
-	}
-
-}
-
-function clean_units(units) {
-	units = String(units);
-	units = units.replaceAll('$', 'dollar');
-	units = units.replaceAll(',', '');
-	units = units.replaceAll('%<sub>/100</sub>', 'dpercent').replaceAll('%', 'percent');
-	units = units.replaceAll('<sup>2</sup>', '^2');
-	return units;
-}
-
 function formatNumber(x, commas) {
 
     var parts = x.toString().split(".");
@@ -1203,21 +1184,5 @@ function formatNumber(x, commas) {
     	if (parts[1].length > 3) { parts[1] = parts[1].slice(0, 3) };
     };
     return parts.join(".");
-
-}
-
-function filter_param_inputs(query) {
-
-	return query.filter(function(index, element) {
-		var val = $(element).val(),
-			tval = $(element).attr('data-target_value');
-		if ((tval != undefined) & (tval != val)) {
-			$(element).val(tval + '||' + val);
-		};
-		var has_value = $(element).val() != '',
-			is_modified = $(element).parents('tr').hasClass('table-warning'),
-			is_delete = $(element).parents('tr').hasClass('table-danger');
-		return ((is_modified && has_value) || is_delete);
-	})
 
 }
