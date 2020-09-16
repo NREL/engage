@@ -58,7 +58,7 @@
 					<!-- Parameter Value (or Expand) -->
 					{% if param.timeseries == True %}
 					<td class="centered" data-param_id={{ param.parameter_id }}>
-						<select {% if not can_edit %}disabled{% endif %} data-ts_id="{{ param.timeseries_meta_id }}" class="form-control parameter-value parameter-value-existing timeseries" name="edit[timeseries][{{ param.parameter_id }}]" value="{{ param.timeseries_meta_id }}">
+						<select {% if not can_edit %}disabled{% endif %} data-ts_id="{{ param.timeseries_meta_id }}" class="form-control parameter-value parameter-value-existing timeseries" name="edit[timeseries][{{ param.parameter_id }}]" data-value="{{ param.timeseries_meta_id }}">
 							<option disabled selected value> -- select a timeseries -- </option>
 							{% for ts in timeseries %}
 							<option value="{{ ts.id }}" {% if ts.id == param.timeseries_meta_id|add:"0" %}selected{% endif %}>{{ ts }}</option>
@@ -68,24 +68,22 @@
 					{% elif next_param.parameter_id != param.parameter_id and param.year == 0 %}
 					<td class="head_value centered" data-param_id={{ param.parameter_id }}>
 						{% if param.choices or param.parameter_is_carrier %}
-						<select {% if not can_edit %}disabled{% endif %} class="static_inputs form-control parameter-value parameter-value-existing" name="edit[parameter][{{ param.parameter_id }}]">
-							<option value="{{ param.value }}" selected disabled>{{ param.value }}</option>
-							<option value="" disabled></option>
+						<select {% if not can_edit %}disabled{% endif %} class="static_inputs form-control parameter-value parameter-value-existing" name="edit[parameter][{{ param.parameter_id }}]" data-value="{{ param.value }}">
 							{% if param.choices %}
 								{% for choice in param.choices %}
-								<option value="{{ choice }}">{{ choice }}</option>
+								<option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
 								{% endfor %}
 							{% else %}
 								{% for choice in carriers %}
-								<option value="{{ choice }}">{{ choice }}</option>
+								<option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
 								{% endfor %}
 							{% endif %}
 						</select>
 						{% else %}
-						<input {% if not can_edit %}disabled{% endif %} type="text" class="static_inputs form-control parameter-value parameter-value-existing {% if param.units == '<sub>ABC</sub>' %}text-value{% else %}float-value{% endif %}" placeholder="{{ param.placeholder|add_commas }}" name="edit[parameter][{{ param.parameter_id }}]">
+						<input {% if not can_edit %}disabled{% endif %} type="text" class="static_inputs form-control parameter-value parameter-value-existing {% if param.units == '<sub>ABC</sub>' %}text-value{% else %}float-value{% endif %}" value="{{ param.placeholder|add_commas }}" data-value="{{ param.placeholder|add_commas }}" name="edit[parameter][{{ param.parameter_id }}]">
 						{% endif %}
-						<button {% if not can_edit %}disabled{% endif %} type="button" class="view_rows hide btn btn-light" title="view-data-btn" style="width: 100%;"><i class="fas fa-bars"></i>&nbsp;&nbsp;{% trans "Show" %}</button>
-						<button {% if not can_edit %}disabled{% endif %} type="button" class="hide_rows hide btn btn-light" title="view-data-btn" style="width: 100%;"><i class="fas fa-bars"></i>&nbsp;&nbsp;{% trans "Hide" %}</button>
+						<div class="view_rows hide"><i class="fas fa-bars"></i>&nbsp;&nbsp;{% trans "Show" %}</div>
+						<div class="hide_rows hide"><i class="fas fa-bars"></i>&nbsp;&nbsp;{% trans "Hide" %}</div>
 					</td>
 					{% else %}
 					<td class="param_row_toggle centered" data-param_id={{ param.parameter_id }}>
@@ -94,8 +92,10 @@
 					</td>
 					{% endif %}
 					<!-- Parameter Values -->
-					{% if param.timeseries == False and not param.choices and not param.parameter_is_carrier %}
-					<td class="parameter-target-value" style="text-align:right;" data-value="{{ param.value|add_commas }}">{{ param.value|add_commas }}</td>
+					{% if param.timeseries == False and not param.choices and not param.parameter_is_carrier and next_param.parameter_id != param.parameter_id and param.year == 0 %}
+					<td class="parameter-target-value" style="text-align:right;" data-value="{{ param.value|add_commas }}">
+						{{ param.value|add_commas }}
+					</td>
 					{% else %}
 					<td></td>
 					{% endif %}
@@ -143,26 +143,24 @@
 					<td colspan=3 style="background-color: white;"></td>
 					<!-- Year -->
 					<td class="">
-						<input {% if not can_edit %}disabled{% endif %} type="number" class="dynamic_year_input form-control parameter-year parameter-year-existing" placeholder="{{ param.year }}" {% if param.level == level %}name="edit[parameter_instance][{{ param.id }}][year]"{% else %}name="add[{{ param.parameter_id }}][year][]"{% endif %}>
+						<input {% if not can_edit %}disabled{% endif %} type="number" class="dynamic_year_input form-control parameter-year parameter-year-existing" value="{{ param.year }}" data-value="{{ param.year }}" {% if param.level == level %}name="edit[parameter_instance][{{ param.id }}][year]"{% else %}name="add[{{ param.parameter_id }}][year][]"{% endif %}>
 					</td>
 					<!-- Value -->
 					<td class="centered">
 						{% if param.choices or param.parameter_is_carrier %}
-						<select {% if not can_edit %}disabled{% endif %} class="dynamic_value_input form-control parameter-value parameter-value-existing" {% if param.level == level %}name="edit[parameter_instance][{{ param.id }}][value]"{% else %}name="add[{{ param.parameter_id }}][value][]"{% endif %}>
-							<option value="{{ param.value }}" selected disabled>{{ param.value }}</option>
-							<option value="" disabled></option>
+						<select {% if not can_edit %}disabled{% endif %} class="dynamic_value_input form-control parameter-value parameter-value-existing" {% if param.level == level %}name="edit[parameter_instance][{{ param.id }}][value]"{% else %}name="add[{{ param.parameter_id }}][value][]"{% endif %} data-value="{{ param.value }}">
 							{% if param.choices %}
 								{% for choice in param.choices %}
-								<option value="{{ choice }}">{{ choice }}</option>
+								<option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
 								{% endfor %}
 							{% else %}
 								{% for choice in carriers %}
-								<option value="{{ choice }}">{{ choice }}</option>
+								<option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
 								{% endfor %}
 							{% endif %}
 						</select>
 						{% else %}
-						<input {% if not can_edit %}disabled{% endif %} type="text" class="dynamic_value_input form-control parameter-value parameter-value-existing {% if param.units == '<sub>ABC</sub>' %}text-value{% else %}float-value{% endif %}" placeholder="{{ param.placeholder|add_commas }}" {% if param.level == level %}name="edit[parameter_instance][{{ param.id }}][value]"{% else %}name="add[{{ param.parameter_id }}][value][]"{% endif %}>
+						<input {% if not can_edit %}disabled{% endif %} type="text" class="dynamic_value_input form-control parameter-value parameter-value-existing {% if param.units == '<sub>ABC</sub>' %}text-value{% else %}float-value{% endif %}" value="{{ param.placeholder|add_commas }}" data-value="{{ param.placeholder|add_commas }}" {% if param.level == level %}name="edit[parameter_instance][{{ param.id }}][value]"{% else %}name="add[{{ param.parameter_id }}][value][]"{% endif %}>
 						{% endif %}
 					</td>
 					<!-- Parameter Values -->

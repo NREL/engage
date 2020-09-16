@@ -8,9 +8,8 @@ function initiate_units() {
 
 	user_defined_units.forEach(function(item) {
 		var pretty_name = item['name'],
-			name = item['name'].split('[')[0].replaceAll('_', '')
+			name = item['name'].split('[')[0].replaceAll('_', ''),
 			val = item['value'];
-		console.log(pretty_name, name, val);
 		math.createUnit(name, {definition: val, baseName: name});
 	})
 

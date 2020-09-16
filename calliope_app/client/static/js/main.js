@@ -15,21 +15,34 @@ function activate_table() {
 
 	// Detection of unsaved changes
 	$('.parameter-value-new, .parameter-value-existing, .parameter-year-existing').unbind();
+	$('.parameter-value-new, .parameter-value-existing, .parameter-year-existing').on('focusout', function() {
+		if ($(this).val() == '') { $(this).val( $(this).data('value') ) };
+	});
 	$('.parameter-value-new, .parameter-value-existing, .parameter-year-existing').on('change keyup paste', function() {
 		var row = $(this).parents('tr'),
 			year = row.find('.parameter-year').val(),
+			old_year = row.find('.parameter-year').data('value'),
 			value = row.find('.parameter-value').val(),
+			old_value = row.find('.parameter-value').data('value'),
 			param_id = $(this).parents('tr').data('param_id'),
 			ts_id = row.find('.parameter-value.timeseries').val();
+		// Convert to number if possible
+		if (+value) { value = +value };
+		if (+old_value) { old_value = +old_value };
+		// If it is a timeseries: render the charts
 		if (ts_id) {
 			activate_charts(param_id, ts_id)
 		};
+		// Reset the formatting of row
 		row.find('.parameter-reset').addClass('hide')
 		row.find('.parameter-delete, .parameter-value-delete').removeClass('hide')
 		row.removeClass('table-warning');
 		$(this).removeClass('invalid-value');
-		row.find('.parameter-target-value').html(row.find('.parameter-target-value').data('value'));
-		if ((value != '') & ($(this).hasClass('float-value') == true)) {
+
+		// Update Row based on Input
+		var update_val = (value != '') & (value != old_value),
+			update_year = (year != '') & (year != old_year);
+		if (update_val & ($(this).hasClass('float-value') == true)) {
 			var units = row.find('.parameter-units').data('value'),
 				val = convert_units(value, units);
 			if (typeof(val) == 'number') {
@@ -40,12 +53,15 @@ function activate_table() {
 				row.addClass('table-warning');
 			} else {
 				$(this).addClass('invalid-value');
+				row.find('.parameter-target-value').html(row.find('.parameter-target-value').data('value'));
 			}
-		} else if (value || year) {
+		} else if (update_val || update_year) {
 			row.find('.parameter-reset').removeClass('hide')
 			row.find('.parameter-delete, .parameter-value-delete').addClass('hide')
 			row.addClass('table-warning');
-		};
+		} else {
+			row.find('.parameter-target-value').html(row.find('.parameter-target-value').data('value'));
+		}
 		check_unsaved();
 	});
 	// Paste multiple values
@@ -65,18 +81,22 @@ function activate_table() {
 	$('.parameter-reset').on('click', function() {
 		var row = $(this).parents('tr'),
 			value_field = row.find('.parameter-value'),
+			old_value = value_field.data('value'),
 			year_field = row.find('.parameter-year'),
+			old_year = year_field.data('value'),
 			param_id = $(this).parents('tr').data('param_id'),
 			ts = row.find('.parameter-value-existing.timeseries'),
-			ts_id = +ts.data('ts_id');
-		$(ts).val(ts_id);
-		activate_charts(param_id, ts_id)
-		value_field.val(null).trigger('change');
-		year_field.val(null).trigger('change');
-		value_field.prop('selectedIndex',0);
-		row.removeClass('table-warning');
-		row.find('.parameter-reset').addClass('hide');
-		row.find('.parameter-delete, .parameter-value-delete').removeClass('hide');
+			ts_id = ts.data('ts_id');
+		if (ts_id != undefined) {
+			// Timeseries Fields
+			ts.val(+ts_id);
+			activate_charts(param_id, +ts_id)
+		} else {
+			// Input Fields
+			value_field.val(old_value);
+			year_field.val(old_year);
+		};
+		value_field.change();
 		check_unsaved();
 	});
 
@@ -162,6 +182,7 @@ function activate_table() {
 	// Show parameter rows and append another row
 	$('.parameter-value-add').unbind();
 	$('.parameter-value-add').on('click', function() {
+		$(this).parents('tr').find('.parameter-target-value').html('');
 		add_row($(this));
 	});
 	// Drop parameter row
@@ -884,8 +905,6 @@ function load_map(locations, transmissions, draggable, loc_tech_id) {
 			}
 		});
 	}
-	
-	// console.log(JSON.stringify(trans_data, null, 4));
 	
 	if (typeof map.getSource('transmission') === 'undefined') {
 		map.addLayer({
