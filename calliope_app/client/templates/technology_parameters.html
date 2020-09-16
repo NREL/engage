@@ -66,7 +66,7 @@
 						</select>
 					</td>
 					{% elif next_param.parameter_id != param.parameter_id and param.year == 0 %}
-					<td class="head_value centered" data-param_id={{ param.parameter_id }}>
+					<td class="head_value centered" style="position:relative;" data-param_id={{ param.parameter_id }}>
 						{% if param.choices or param.parameter_is_carrier %}
 						<select {% if not can_edit %}disabled{% endif %} class="static_inputs form-control parameter-value parameter-value-existing" name="edit[parameter][{{ param.parameter_id }}]" data-value="{{ param.value }}">
 							{% if param.choices %}

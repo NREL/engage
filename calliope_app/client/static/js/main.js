@@ -13,6 +13,10 @@ $(function() {
 
 function activate_table() {
 
+	$('.parameter-value.float-value').each(function() {
+		autocomplete_units(this);
+	});
+
 	// Detection of unsaved changes
 	$('.parameter-value-new, .parameter-value-existing, .parameter-year-existing').unbind();
 	$('.parameter-value-new, .parameter-value-existing, .parameter-year-existing').on('focusout', function() {
@@ -1049,7 +1053,7 @@ function activate_paste(class_name) {
 
 function activate_return(class_name) {
 	$(class_name).keydown(function (e) {
-		if (e.which === 13) {
+		if ((e.which === 13) && ($('.autocomplete-active').length == 0)) {
 			if (e.shiftKey) {
 				var shift = -1;
 			} else {
