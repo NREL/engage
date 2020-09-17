@@ -19,6 +19,7 @@ function autocomplete_units(inp) {
       a = document.createElement("DIV");
       a.setAttribute("id", this.id + "autocomplete-list");
       a.setAttribute("class", "autocomplete-items");
+      // var height = $(window).height() - ($(this.parentNode).offset().top - $(window).scrollTop())
       /*append the DIV element as a child of the autocomplete container:*/
       this.parentNode.appendChild(a);
       /*for each item in the array...*/

@@ -36,18 +36,18 @@
 					<!-- Favorite Buttons -->
 					{% if param.parameter_category == "Costs: Monetary" %}
 					<td class="table-success centered"><i {% if not can_edit %}disabled{% endif %} class="fas fa-star" data-toggle="tooltip" data-placement="right" title="{% trans 'Mark parameter as favorite' %}"></i></td>
-					<td class="table-success">&nbsp;<i class="fas fa-dollar-sign"></i>&nbsp;&nbsp;&nbsp;{{ param.parameter_category }}</td>
+					<td style="width:250px;" class="table-success">&nbsp;<i class="fas fa-dollar-sign"></i>&nbsp;&nbsp;&nbsp;{{ param.parameter_category }}</td>
 					{% else %}
 					<td class="table-primary centered"><i {% if not can_edit %}disabled{% endif %} class="fas fa-star" data-toggle="tooltip" data-placement="right" title="{% trans 'Mark parameter as favorite' %}"></i></td>
-					<td class="table-primary"><i class="fas fa-link"></i>&nbsp;&nbsp;{{ param.parameter_category }}</td>
+					<td style="width:250px;" class="table-primary"><i class="fas fa-link"></i>&nbsp;&nbsp;{{ param.parameter_category }}</td>
 					{% endif %}
 					<!-- Parameter Names -->
-					<td style="cursor:help" data-toggle="tooltip" data-placement="bottom" title="{{ param.parameter_root }}.{{ param.parameter_name }}: {{ param.parameter_description }}">
+					<td style="cursor:help;width:450px;" data-toggle="tooltip" data-placement="bottom" title="{{ param.parameter_root }}.{{ param.parameter_name }}: {{ param.parameter_description }}">
 						&nbsp;&nbsp;
 						<span class="text-sm"></span><b>{{ param.parameter_pretty_name }}</b>
 					</td>
 					<!-- Parameter Timeseries Indicator -->
-					<td class="centered">
+					<td style="width:200px;" class="centered">
 						{% if param.timeseries_enabled %}
 						<button type="button" {% if not can_edit %}{% if param.timeseries == False %}disabled{% endif %}{% endif %} class="btn {% if param.timeseries == True %}btn-info param_row_toggle{% else %}btn-outline-info convert-to-timeseries{% endif %}" style="width:100%" data-toggle="tooltip" data-placement="right" title="{% if param.timeseries == True %}Show timeseries{% else %}Convert to timeseries{% endif %}">
 							<i class='far fa-clock parameter-year' aria-hidden="true"></i>
@@ -100,9 +100,9 @@
 					<td></td>
 					{% endif %}
 					<!-- Parameter Units -->
-					<td class="text-sm parameter-units" data-value="{{ param.units }}">{{ param.units|safe }}</td>
+					<td style="width:80px;" class="text-sm parameter-units" data-value="{{ param.units }}">{{ param.units|safe }}</td>
 					<!-- Parameter Edit Buttons -->
-					<td class="centered">
+					<td style="width:100px;" class="centered">
 						<button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default btn-sm transparent parameter-reset hide"><i class="fas fa-undo"></i></button>
 						{% if param.level == level %}
 						<button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default transparent parameter-delete"><i class="fas fa-times"></i></button>
@@ -112,7 +112,7 @@
 						{% endif %}
 					</td>
 					{% if param.timeseries == False %}
-					<td style="background-color: white" data-toggle="tooltip" data-placement="left" title="{% trans 'Evolve this parameter by year' %}">
+					<td style="width:80px;" style="background-color: white" data-toggle="tooltip" data-placement="left" title="{% trans 'Evolve this parameter by year' %}">
 						<button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default btn-sm transparent parameter-value-add"><i class="fas fa-plus"></i> {% trans "Row" %}</button>
 					</td>
 					{% else %}

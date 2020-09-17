@@ -506,16 +506,17 @@ input:checked + .slider:before {
 
 .autocomplete-items {
   text-align: left;
-  max-height: 150px;
+  max-height: 175px;
   overflow-y: scroll;
   position: absolute;
   z-index: 5000;
   top: 100%;
   left: 0;
   border: solid 1px black;
+  font-size: 0.9em;
 }
 .autocomplete-items div {
-  padding: 10px;
+  padding: 4px;
   cursor: pointer;
   background-color: #ffffffeb;
   border-bottom: 1px solid #d4d4d4;
