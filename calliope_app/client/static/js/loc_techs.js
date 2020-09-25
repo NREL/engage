@@ -2,6 +2,8 @@ var map_mode = 'loc_techs';
 
 $( document ).ready(function() {
 
+	initiate_units();
+
 	$('#master-new').remove();
 
 	$('#technology').on('change', function() {
@@ -15,11 +17,7 @@ $( document ).ready(function() {
 
 		if (validate_params()) {
 
-			var form_data = $("#form_data :input")
-				.filter(function(index, element) {
-					return $(element).val() != '';
-				})
-				.serializeJSON();
+			var form_data = filter_param_inputs($("#form_data :input")).serializeJSON();
 
 			$.ajax({
 				url: '/' + LANGUAGE_CODE + '/api/update_loc_tech_params/',

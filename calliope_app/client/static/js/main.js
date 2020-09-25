@@ -13,26 +13,59 @@ $(function() {
 
 function activate_table() {
 
+	$('.parameter-value.float-value').each(function() {
+		autocomplete_units(this);
+	});
+
 	// Detection of unsaved changes
-	$('.parameter-value-existing, .parameter-year-existing').unbind();
-	$('.parameter-value-existing, .parameter-year-existing').on('change keyup paste', function() {
+	$('.parameter-value-new, .parameter-value-existing, .parameter-year-existing').unbind();
+	$('.parameter-value-new, .parameter-value-existing, .parameter-year-existing').on('focusout', function() {
+		if ($(this).val() == '') { $(this).val( $(this).data('value') ) };
+	});
+	$('.parameter-value-new, .parameter-value-existing, .parameter-year-existing').on('change keyup paste', function() {
 		var row = $(this).parents('tr'),
-			year = row.find('.parameter-year-existing').val(),
-			value = row.find('.parameter-value-existing').val(),
+			year = row.find('.parameter-year').val(),
+			old_year = row.find('.parameter-year').data('value'),
+			value = row.find('.parameter-value').val(),
+			old_value = row.find('.parameter-value').data('value'),
 			param_id = $(this).parents('tr').data('param_id'),
-			ts_id = row.find('.parameter-value-existing.timeseries').val();
+			ts_id = row.find('.parameter-value.timeseries').val();
+		// Convert to number if possible
+		if (+value) { value = +value };
+		if (+old_value) { old_value = +old_value };
+		// If it is a timeseries: render the charts
 		if (ts_id) {
 			activate_charts(param_id, ts_id)
 		};
-		if (year || value) {
+		// Reset the formatting of row
+		row.find('.parameter-reset').addClass('hide')
+		row.find('.parameter-delete, .parameter-value-delete').removeClass('hide')
+		row.removeClass('table-warning');
+		$(this).removeClass('invalid-value');
+
+		// Update Row based on Input
+		var update_val = (value != '') & (value != old_value),
+			update_year = (year != '') & (year != old_year);
+		if (update_val & ($(this).hasClass('float-value') == true)) {
+			var units = row.find('.parameter-units').data('value'),
+				val = convert_units(value, units);
+			if (typeof(val) == 'number') {
+				$(this).attr('data-target_value', formatNumber(val, false));
+				row.find('.parameter-target-value').html(formatNumber(val, true));
+				row.find('.parameter-reset').removeClass('hide')
+				row.find('.parameter-delete, .parameter-value-delete').addClass('hide')
+				row.addClass('table-warning');
+			} else {
+				$(this).addClass('invalid-value');
+				row.find('.parameter-target-value').html(row.find('.parameter-target-value').data('value'));
+			}
+		} else if (update_val || update_year) {
 			row.find('.parameter-reset').removeClass('hide')
 			row.find('.parameter-delete, .parameter-value-delete').addClass('hide')
 			row.addClass('table-warning');
 		} else {
-			row.find('.parameter-reset').addClass('hide')
-			row.find('.parameter-delete, .parameter-value-delete').removeClass('hide')
-			row.removeClass('table-warning');
-		};
+			row.find('.parameter-target-value').html(row.find('.parameter-target-value').data('value'));
+		}
 		check_unsaved();
 	});
 	// Paste multiple values
@@ -52,18 +85,22 @@ function activate_table() {
 	$('.parameter-reset').on('click', function() {
 		var row = $(this).parents('tr'),
 			value_field = row.find('.parameter-value'),
+			old_value = value_field.data('value'),
 			year_field = row.find('.parameter-year'),
+			old_year = year_field.data('value'),
 			param_id = $(this).parents('tr').data('param_id'),
 			ts = row.find('.parameter-value-existing.timeseries'),
-			ts_id = +ts.data('ts_id');
-		$(ts).val(ts_id);
-		activate_charts(param_id, ts_id)
-		value_field.val(null).trigger('change');
-		year_field.val(null).trigger('change');
-		value_field.prop('selectedIndex',0);
-		row.removeClass('table-warning');
-		row.find('.parameter-reset').addClass('hide');
-		row.find('.parameter-delete, .parameter-value-delete').removeClass('hide');
+			ts_id = ts.data('ts_id');
+		if (ts_id != undefined) {
+			// Timeseries Fields
+			ts.val(+ts_id);
+			activate_charts(param_id, +ts_id)
+		} else {
+			// Input Fields
+			value_field.val(old_value);
+			year_field.val(old_year);
+		};
+		value_field.change();
 		check_unsaved();
 	});
 
@@ -149,6 +186,7 @@ function activate_table() {
 	// Show parameter rows and append another row
 	$('.parameter-value-add').unbind();
 	$('.parameter-value-add').on('click', function() {
+		$(this).parents('tr').find('.parameter-target-value').html('');
 		add_row($(this));
 	});
 	// Drop parameter row
@@ -227,7 +265,6 @@ function get_tech_parameters() {
 				$('#tech_parameters').data('favorites', data['favorites']);
 				$('#tech_essentials').data('technology_id', data['technology_id']);
 				activate_tech_delete();
-				replace_units();
 				activate_table();
 				activate_favorites();
 				collapse_parameter_library();
@@ -367,7 +404,6 @@ function get_loc_tech_parameters() {
 			success: function (data) {
 				$('#tech_parameters').html(data['html_parameters']);
 				$('#tech_parameters').data('favorites', data['favorites']);
-				replace_units();
 				activate_table();
 				activate_favorites();
 				collapse_parameter_library();
@@ -874,8 +910,6 @@ function load_map(locations, transmissions, draggable, loc_tech_id) {
 		});
 	}
 	
-	// console.log(JSON.stringify(trans_data, null, 4));
-	
 	if (typeof map.getSource('transmission') === 'undefined') {
 		map.addLayer({
 			id: "transmission",
@@ -936,13 +970,6 @@ function render_map(locations, transmissions, draggable, loc_tech_id) {
 		maxZoom: 15
 	});
 	map.jumpTo(camera);
-}
-
-function replace_units() {
-	var power_units = $('#tech_parameters').data('power_units');
-	$("#param_table").children().each(function () {
-	    $(this).html( $(this).html().replace(/\[\[power\]\]/g, power_units) );
-	});
 }
 
 function toggle_favorite($this, update_favorite) {
@@ -1026,7 +1053,7 @@ function activate_paste(class_name) {
 
 function activate_return(class_name) {
 	$(class_name).keydown(function (e) {
-		if (e.which === 13) {
+		if ((e.which === 13) && ($('.autocomplete-active').length == 0)) {
 			if (e.shiftKey) {
 				var shift = -1;
 			} else {
@@ -1043,16 +1070,18 @@ function add_row($this) {
 		param_id = row.data('param_id');
 	row.addClass('param_header');
 	$('.param_row_'+param_id).removeClass('param_row_min');
-	head_value_cell = row.find('.head_value')
-	head_value_cell.removeClass('head_value').addClass('param_row_toggle')
-	head_value_cell.find('.static_inputs').remove()
-	row.find('.param_row_toggle').find('.hide_rows').removeClass('hide')
-	row.find('.param_row_toggle').find('.view_rows').addClass('hide')
+	head_value_cell = row.find('.head_value');
+	head_value_cell.removeClass('head_value').addClass('param_row_toggle');
+	head_value_cell.find('.static_inputs').remove();
+	row.find('.param_row_toggle').find('.hide_rows').removeClass('hide');
+	row.find('.param_row_toggle').find('.view_rows').addClass('hide');
 	var add_row = $('.add_param_row_'+param_id).last().clone();
 	add_row.find('.parameter-value-new').addClass('dynamic_value_input');
 	add_row.find('.parameter-year-new').addClass('dynamic_year_input');
 	add_row.removeClass('add_param_row_min').addClass('table-warning');
-	add_row.insertBefore($('.add_param_row_'+param_id).last())
+	add_row.insertBefore($('.add_param_row_'+param_id).last());
+	add_row.find('.parameter-target-value').html('');
+	add_row.find('.parameter-target-value').attr('data-value', '');
 	activate_table();
 	check_unsaved();
 	return add_row;
@@ -1079,6 +1108,26 @@ function check_unsaved() {
 			return true;
 		};
 	};
+}
+
+function filter_param_inputs(query) {
+
+	return query.filter(function(index, element) {
+		var val = $(element).val(),
+			tval = $(element).attr('data-target_value');
+		if ((tval != undefined) & (tval != val)) {
+			$(element).val(tval + '||' + val);
+
+		};
+		var has_value = $(element).val() != '',
+			is_modified = $(element).parents('tr').hasClass('table-warning'),
+			is_delete = $(element).parents('tr').hasClass('table-danger');
+		if (is_modified && has_value) {
+			$(element).css('background-color', '#28a745');
+		};
+		return ((is_modified && has_value) || is_delete);
+	})
+
 }
 
 function validate_params() {
@@ -1146,4 +1195,17 @@ function getCookie(cname) {
         }
     }
     return "";
+}
+
+function formatNumber(x, commas) {
+
+    var parts = x.toString().split(".");
+    if (commas == true) {
+    	parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    };
+    if (parts.length > 1) {
+    	if (parts[1].length > 3) { parts[1] = parts[1].slice(0, 3) };
+    };
+    return parts.join(".");
+
 }
