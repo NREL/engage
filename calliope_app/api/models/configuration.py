@@ -659,7 +659,7 @@ class Tech_Param(models.Model):
     @property
     def placeholder(self):
         """ Value to place in the HTML placeholder field """
-        return self.raw_value if self.raw_value else self.value
+        return self.raw_value or self.value
 
     @classmethod
     def _essentials(cls, technology, data):
@@ -756,15 +756,17 @@ class Tech_Param(models.Model):
                 years = value_dict['year']
                 values = value_dict['value']
                 num_records = np.min([len(years), len(values)])
+                new_objects = []
                 for i in range(num_records):
                     vals = str(values[i]).split('||')
-                    cls.objects.create(
+                    new_objects.append(cls(
                         model_id=technology.model_id,
                         technology_id=technology.id,
                         year=years[i],
                         parameter_id=key,
                         value=vals[0],
-                        raw_value=vals[1] if len(vals) > 1 else vals[0])
+                        raw_value=vals[1] if len(vals) > 1 else vals[0]))
+                cls.objects.bulk_create(new_objects)
 
     @classmethod
     def _edit(cls, technology, data):
@@ -929,15 +931,17 @@ class Loc_Tech_Param(models.Model):
                 years = value_dict['year']
                 values = value_dict['value']
                 num_records = np.min([len(years), len(values)])
+                new_objects = []
                 for i in range(num_records):
                     vals = str(values[i]).split('||')
-                    cls.objects.create(
+                    new_objects.append(cls(
                         model_id=loc_tech.model_id,
                         loc_tech_id=loc_tech.id,
                         year=years[i],
                         parameter_id=key,
                         value=vals[0],
-                        raw_value=vals[1] if len(vals) > 1 else vals[0])
+                        raw_value=vals[1] if len(vals) > 1 else vals[0]))
+                cls.objects.bulk_create(new_objects)
 
     @classmethod
     def _edit(cls, loc_tech, data):
@@ -1128,14 +1132,16 @@ class Scenario_Param(models.Model):
         for p_id in data:
             years = data[p_id]['years']
             values = data[p_id]['values']
+            new_objects = []
             for i in range(len(years)):
                 if values[i] != '':
-                    cls.objects.create(
+                    new_objects.append(cls(
                         run_parameter_id=p_id,
                         model_id=scenario.model_id,
                         scenario_id=scenario.id,
                         year=cls.int_or_zero(years[i]),
-                        value=values[i])
+                        value=values[i]))
+            cls.objects.bulk_create(new_objects)
 
     @classmethod
     def _edit(cls, scenario, data):
