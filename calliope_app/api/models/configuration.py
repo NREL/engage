@@ -483,7 +483,7 @@ class Timeseries_Meta(models.Model):
         start_date = "2019-01-01 00:00"
         end_date = "2019-12-31 23:00"
 
-        dates = pd.date_range(start_date, end_date, freq="1h")
+        dates = list(pd.date_range(start_date, end_date, freq="1h"))
         timeseries = pd.DataFrame(np.array([dates, values]).T,
                                   columns=['time', 'value'])
         timeseries = timeseries.set_index('time')

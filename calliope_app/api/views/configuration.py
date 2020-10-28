@@ -13,6 +13,12 @@ from api.tasks import task_status, upload_ts
 from taskmeta.models import CeleryTask
 
 import json
+import numpy as np
+from PySAM import Windpower
+from PySAM.ResourceTools import FetchResourceFiles
+
+NREL_API_EMAIL = 'engage@nrel.gov'
+NREL_API_KEY = 'jh3elray8wvgxaLMmneG2nIDO85XzeUNKJEHXLmK'
 
 
 # ------ Models ------
@@ -1197,5 +1203,50 @@ def upload_timeseries(request):
                 '"The first row of the selected CSV file is a header row."'
             )
         new_meta.delete()
+
+    return HttpResponse(json.dumps(payload), content_type="application/json")
+
+
+@csrf_protect
+def wtk_timeseries(request):
+    """
+    Pull timeseries from WTK (PySAM)
+
+    Parameters:
+    lat (float): required e.g. 32.22
+    lon (float): required e.g. -97.83
+
+    Returns (json): Data
+
+    Example:
+    POST: /api/wtk_timeseries/
+    """
+
+    latitude = request.POST["lat"]
+    longitude = request.POST["lon"]
+    COORDINATES = (longitude, latitude)
+
+    # Fetch wind resource data
+    wr = FetchResourceFiles(tech='wind',
+                            resource_year='tmy',
+                            nrel_api_email=NREL_API_EMAIL,
+                            nrel_api_key=NREL_API_KEY,
+                            resource_dir='wind_data')
+    wr.fetch([COORDINATES])
+
+    # --- Get resource data file path ---
+    wtk_path_dict = wr.resource_file_paths_dict
+    wtk_fp = wtk_path_dict[COORDINATES]
+
+    # --- Initialize generator ---
+    if wtk_fp is not None:
+        generator = Windpower.default('WindPowerNone')
+        generator.Resource.assign({'wind_resource_filename': wtk_fp})
+        generator.execute()
+        generation = np.array(generator.Outputs.gen)
+        cf_profile = generation / generator.Farm.system_capacity
+        payload = {"cf_profile": list(cf_profile)}
+    else:
+        payload = {"message": "Not Found"}
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
