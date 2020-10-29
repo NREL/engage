@@ -123,7 +123,7 @@
 					<div class="btn-group" style="height:30px;margin-top:3px;float:right">
 						<form style="font-size:13px;" action="{% url 'set_timezone' %}" method="post" >{% csrf_token %}
 							<input name="next" type="hidden" value="{{ request.path }}">
-							<select name="timezone" onchange="this.form.submit()" class="btn-default" style="margin-left:3px;width:60px;height:30px !important;border-radius:0;">
+							<select name="timezone" onchange="this.form.submit()" class="btn-default" style="margin-left:3px;width:100px;height:30px !important;border-radius:0;">
 								<option disabled>Select your timezone...</option>
 								{% for timezone in timezones %}
 									<option value="{{ timezone }}"{% if timezone == user.user_profile.timezone %} selected{% endif %}>
