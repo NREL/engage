@@ -1,8 +1,8 @@
 Developer Guide
 ===============
 
-How Enage Work
---------------
+How Engage Works
+----------------
 
 Architecture Diagram
 ---------------------
@@ -21,11 +21,11 @@ Database Schema
 
 The chart below shows the database schema.
 
-.. image:: resources/db-schema.png
+.. image:: resources/Database_Schema.png
 
 Here also provides download of the schema in pdf and pptx formats,
 
-* PDF: :download:`Database_Schema_v1.pdf <resources/Database_Schema_v1.pdf>`
+* PDF: :download:`Database_Schema.pdf <resources/Database_Schema.pdf>`
 * PPT: :download:`Database_Schema.pptx <resources/Database_Schema.pptx>`
 
 Django Apps

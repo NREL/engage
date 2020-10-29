@@ -14,9 +14,10 @@ Engage is a free, open-access energy system planning tool that allows multiple u
 
 Please refer to the documentation to setup development environment,
 
-https://nrel.github.io/engage/index.html
+https://nrel.github.io/engage
 
 and the developer guide to contribute to Enage project.
 
 ## License
-Add license to this repo.
+BSD 3-Clause License
+https://github.com/NREL/engage/blob/master/LICENSE

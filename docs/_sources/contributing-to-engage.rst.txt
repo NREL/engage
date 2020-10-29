@@ -29,3 +29,16 @@ Please follow the following steps to contribute to this project.
     operations during the development process. This feature is optional to setup.
 
 Thanks for Contribution!
+
+
+Update Documenttation
+---------------------
+To update the Sphinx documentation here, use command below:
+
+.. code-block:: bash
+
+    $ cd docs
+    $ make html
+    $ git push origin branch-name
+
+The updatetd documentation will display after `branch-name` merged into master.
