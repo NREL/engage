@@ -1308,6 +1308,6 @@ class ParamsManager():
 
     @staticmethod
     def simplify_name(name):
-        simple_name = name.replace(' ', '_').lower()
+        simple_name = name.replace(' ', '_')
         simple_name = re.sub('\W+', '', simple_name)
         return simple_name
