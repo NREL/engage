@@ -114,14 +114,14 @@ function request_pvwatts(location_id, lat, lon, tilt, azimuth, response) {
 	$('#pvwatts_import_data').attr('disabled', true);
 
 	var data = {}
-	data['api_key'] = pvwatts_api_key
+	data['api_key'] = nrel_api_key
 	data['lat'] = lat
 	data['lon'] = lon
 	data['tilt'] = tilt
 	data['azimuth'] = azimuth
 	// data['dataset'] = 'intl'
 
-	if (pvwatts_api_key != undefined) {
+	if (nrel_api_key != undefined) {
 		$.ajax({
 			url: 'https://developer.nrel.gov/api/pvwatts/v6.json?format=json&array_type=1&module_type=0&losses=10&system_capacity=1&timeframe=hourly',
 			type: 'GET',
