@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
@@ -79,11 +80,11 @@ def locations_view(request, model_uuid):
         return HttpResponseRedirect(reverse('home'))
 
     context = {
-        "pvwatts_api_key": os.getenv("PVWATTS_API_KEY", ""),
+        "nrel_api_key": settings.NREL_API_KEY,
         "timezones": common_timezones,
         "model": model,
         "locations": model.locations,
-        "mapbox_token": os.getenv("MAPBOX_TOKEN", ""),
+        "mapbox_token": settings.MAPBOX_TOKEN,
         "can_edit": can_edit,
         "help_content": Help_Guide.get_safe_html('locations'),
     }
@@ -204,7 +205,7 @@ def loc_techs_view(request, model_uuid):
         "technologies": technologies,
         "session_technology": session_technology,
         "can_edit": can_edit,
-        "mapbox_token": os.getenv("MAPBOX_TOKEN", ""),
+        "mapbox_token": settings.MAPBOX_TOKEN,
         "help_content": Help_Guide.get_safe_html('nodes'),
     }
 
@@ -243,7 +244,7 @@ def scenarios_view(request, model_uuid):
         "model": model,
         "scenarios": scenarios,
         "session_scenario": session_scenario,
-        "mapbox_token": os.getenv("MAPBOX_TOKEN", ""),
+        "mapbox_token": settings.MAPBOX_TOKEN,
         "can_edit": can_edit,
         "help_content": Help_Guide.get_safe_html('scenarios'),
     }
