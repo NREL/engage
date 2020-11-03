@@ -1,3 +1,7 @@
+import os
+from pytz import common_timezones
+
+from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AdminPasswordChangeForm
@@ -10,9 +14,6 @@ from django.urls import reverse
 
 from api.models.engage import Help_Guide
 from api.models.configuration import Model, Model_User
-
-import os
-from pytz import common_timezones
 
 
 @login_required
@@ -52,7 +53,7 @@ def home_view(request):
         "user_models": user_models,
         "public_models": public_models,
         "snapshots": snapshots,
-        "mapbox_token": os.getenv("MAPBOX_TOKEN", ""),
+        "mapbox_token": settings.MAPBOX_TOKEN,
         "help_content": Help_Guide.get_safe_html('home'),
     }
 
