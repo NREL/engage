@@ -5,6 +5,8 @@ import os
 import environ
 from django.contrib.messages import constants as messages
 
+env = environ.Env()
+
 ROOT_DIR = (environ.Path(__file__) - 4)
 
 # GENERAL
@@ -137,3 +139,10 @@ MODELTRANSLATION_TRANSLATION_FILES = (
 LOCALE_PATHS = (
     os.path.join(ROOT_DIR, 'calliope_app', 'locale'),
 )
+
+## NREL API Key
+NREL_API_EMAIL = env.str("NREL_API_EMAIL", "")
+NREL_API_KEY = env.str("NREL_API_KEY", "")
+
+## MAPBOX TOKEN
+MAPBOX_TOKEN = env.str("MAPBOX_TOKEN", "")

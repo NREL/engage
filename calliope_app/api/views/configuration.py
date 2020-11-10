@@ -1,8 +1,16 @@
+import functools
+import json
+import os
+
+import numpy as np
+from django.conf import settings
 from django.views.decorators.csrf import csrf_protect
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User
+from PySAM import Windpower
+from PySAM.ResourceTools import FetchResourceFiles
 
 from api.models.calliope import Abstract_Tech, Run_Parameter
 from api.models.configuration import Location, Technology, Tech_Param, \
@@ -11,11 +19,6 @@ from api.models.configuration import Location, Technology, Tech_Param, \
     Model_Favorite, User_File, Model_User
 from api.tasks import task_status, upload_ts
 from taskmeta.models import CeleryTask
-
-import json
-
-
-# ------ Models ------
 
 
 @csrf_protect
@@ -1199,3 +1202,56 @@ def upload_timeseries(request):
         new_meta.delete()
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
+
+
+@csrf_protect
+def wtk_timeseries(request):
+    """
+    Pull timeseries from WTK (PySAM)
+
+    Parameters:
+    lat (float): required e.g. 32.22
+    lon (float): required e.g. -97.83
+
+    Returns (json): Data
+
+    Example:
+    POST: /api/wtk_timeseries/
+    """
+    latitude = request.POST["lat"]
+    longitude = request.POST["lon"]
+    coordinate = (longitude, latitude)
+
+    # Fetch wind resource data
+    wtk_fp = wtk_fetch_resource_files(coordinate)
+
+    # --- Initialize generator ---
+    if wtk_fp is not None:
+        generator = Windpower.default('WindPowerNone')
+        generator.Resource.assign({'wind_resource_filename': wtk_fp})
+        generator.execute()
+        generation = np.array(generator.Outputs.gen)
+        cf_profile = generation / generator.Farm.system_capacity
+        payload = {"cf_profile": list(cf_profile)}
+    else:
+        payload = {"message": "Not Found"}
+
+    return HttpResponse(json.dumps(payload), content_type="application/json")
+
+
+def wtk_fetch_resource_files(coordinate):
+    """Fetch wind resource data"""
+    wr = FetchResourceFiles(
+        tech='wind',
+        resource_year='tmy',
+        nrel_api_email=settings.NREL_API_EMAIL,
+        nrel_api_key=settings.NREL_API_KEY,
+        resource_dir=os.path.join(settings.DATA_STORAGE, 'wind-data')
+    )
+    wr.fetch([coordinate])
+
+    # --- Get resource data file path ---
+    wtk_path_dict = wr.resource_file_paths_dict
+    wtk_fp = wtk_path_dict[coordinate]
+
+    return wtk_fp

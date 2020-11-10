@@ -3,6 +3,7 @@
 <form id="pvwatts_form" method="post" onsubmit="return false;">
 	<div class="centered">
 		<a href="https://pvwatts.nrel.gov/" target="_blank">
+			<h2>Solar Resource Data [NSRDB]</h2>
 			<img src="{% static 'images/pvwatts.png' %}" width="80%" />
 		</a>
 	</div>
@@ -29,12 +30,12 @@
 			<input {% if not can_edit %}disabled{% endif %} type="number" step="0.1" min="0" max="360" class="form-control" name="pvwatts_azimuth" id="pvwatts_azimuth" placeholder="{% trans 'Azimuth' %}">
 		</div>
 		<div class="form-group col-md-4">
-			<input id="check_availability" type="submit" class="btn btn-sm btn-warning" name="" value="{% trans 'Check Availability' %}">
+			<input id="pvwatts_check_availability" type="submit" class="btn btn-sm btn-warning" name="" value="{% trans 'Check Availability' %}">
 		</div>
 		<div class="form-group col-md-4">
-			<span id="available_src_data" class="hide" style="color:limegreen"><i class="fas fa-circle"></i>&nbsp;&nbsp;{% trans 'Data Available' %}</span>
-			<span id="checking_src_data" class="hide" style="color:orange"><i class="fas fa-circle"></i>&nbsp;&nbsp;{% trans 'Data Available' %}</span>
-			<span id="not_available_src_data" class="hide" style="color:red"><i class="fas fa-circle"></i>&nbsp;&nbsp;{% trans 'Data Not Available' %}</span>
+			<span id="pvwatts_available_src_data" class="hide" style="color:limegreen"><i class="fas fa-circle"></i>&nbsp;&nbsp;{% trans 'Data available here!' %}</span>
+			<span id="pvwatts_checking_src_data" class="hide" style="color:orange"><i class="fas fa-circle"></i>&nbsp;&nbsp;{% trans 'Checking location...' %}</span>
+			<span id="pvwatts_not_available_src_data" class="hide" style="color:red"><i class="fas fa-circle"></i>&nbsp;&nbsp;{% trans 'Data not available here.' %}</span>
 		</div>
 	</div>
 	<hr>
@@ -46,7 +47,7 @@
 		</div>
 		<div class="form-group col-md-6"></div>
 		<div class="form-group col-md-12">
-			<input id="import_data" disabled type="submit" class="btn btn-sm btn-success" name="" value="{% trans 'Import Data' %}">
+			<input id="pvwatts_import_data" disabled type="submit" class="btn btn-sm btn-success" name="" value="{% trans 'Import Data' %}">
 		</div>
 	</div>
 	<span style="font-size: 0.8em"><i class="fas fa-info"></i> {% trans 'Requested data will appear on the Timeseries page located in the model dropdown menu in the toolbar above' %}</span>

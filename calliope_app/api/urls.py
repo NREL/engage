@@ -101,6 +101,9 @@ urlpatterns = [
     path('delete_timeseries/',
          configuration_views.delete_timeseries,
          name='delete_timeseries'),
+    path('wtk_timeseries/',
+         configuration_views.wtk_timeseries,
+         name='wtk_timeseries'),
 
     # Runs
     path('build/',

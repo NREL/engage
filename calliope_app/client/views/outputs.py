@@ -41,7 +41,7 @@ def runs_view(request, model_uuid):
         "scenarios": scenarios,
         "session_scenario": session_scenario,
         "can_edit": can_edit,
-        "mapbox_token": os.getenv("MAPBOX_TOKEN", ""),
+        "mapbox_token": settings.MAPBOX_TOKEN,
         "help_content": Help_Guide.get_safe_html('runs'),
     }
 
@@ -97,7 +97,7 @@ def map_viz_view(request, model_uuid, run_id):
         "model": model,
         "run": run,
         "scenario": run.scenario,
-        "mapbox_token": os.getenv("MAPBOX_TOKEN", ""),
+        "mapbox_token": settings.MAPBOX_TOKEN,
         "can_edit": can_edit,
         "run_min_date": run_min_date,
         "run_max_date": run_max_date
