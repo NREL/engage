@@ -146,3 +146,18 @@ NREL_API_KEY = env.str("NREL_API_KEY", "")
 
 ## MAPBOX TOKEN
 MAPBOX_TOKEN = env.str("MAPBOX_TOKEN", "")
+
+
+# AWS
+# --------------------------------------------------------------------------------
+# AWS Credentials
+AWS_ACCESS_KEY_ID = env.str('AWS_ACCESS_KEY_ID', '')
+AWS_SECRET_ACCESS_KEY = env.str('AWS_SECRET_ACCESS_KEY', '')
+
+# SES EMAIL
+AWS_SES_REGION_NAME = env.str('AWS_SES_REGION_NAME', '')
+AWS_SES_REGION_ENDPOINT = env.str('AWS_SES_REGION_ENDPOINT', '')
+AWS_SES_FROM_EMAIL = env.str('AWS_SES_FROM_EMAIL', '')
+
+# S3 BUCKET
+AWS_S3_BUCKET_NAME = env.str('AWS_S3_BUCKET_NAME', '')

@@ -94,9 +94,11 @@ def zip_folder(path, keep_folder=True):
     path : str
         folder path to be zipped
     """
-    root_dir = os.path.dirname(path)
-    base_dir = "./" + os.path.basename(path)
-    zip_file = shutil.make_archive(path, "zip", root_dir, base_dir=base_dir)
+    zip_file = path + ".zip"
+    if not os.path.exists(zip_file):
+        root_dir = os.path.dirname(path)
+        base_dir = "./" + os.path.basename(path)
+        shutil.make_archive(path, "zip", root_dir, base_dir=base_dir)
 
     if not keep_folder:
         shutil.rmtree(path)
