@@ -12,7 +12,7 @@ var total_radius = 40,
         return 1 + Math.log10(link_counts[d.loc])
     },
     mapbox_styles = {
-        '"Cali Terrain"': 'tgrushka-nrel/ck1jmcnyb0lb81cmtfgqv9hv3',
+        '"Cali Terrain"': 'nrel-engage/ckikrkl8y17rb17phvuxgz6sg',
         'Streets': 'mapbox/streets-v11',
         'Satellite': 'mapbox/satellite-v9',
         'Satellite + Streets': 'mapbox/satellite-streets-v9',

@@ -773,7 +773,7 @@ function add_marker(name, id, type, draggable, coordinates) {
 }
 
 var mapbox_styles = {
-	'"Cali Terrain"': 'tgrushka-nrel/ck1jmcnyb0lb81cmtfgqv9hv3',
+	'"Cali Terrain"': 'nrel-engage/ckikrkl8y17rb17phvuxgz6sg',
 	'Streets': 'mapbox/streets-v11',
 	'Satellite': 'mapbox/satellite-v9',
 	'Satellite + Streets': 'mapbox/satellite-streets-v9',
