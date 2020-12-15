@@ -151,8 +151,8 @@ MAPBOX_TOKEN = env.str("MAPBOX_TOKEN", "")
 # AWS
 # --------------------------------------------------------------------------------
 # AWS Credentials
-AWS_ACCESS_KEY_ID = env.str('AWS_ACCESS_KEY_ID', '')
-AWS_SECRET_ACCESS_KEY = env.str('AWS_SECRET_ACCESS_KEY', '')
+AWS_ACCESS_KEY_ID = env.str('AWS_ACCESS_KEY_ID', None)
+AWS_SECRET_ACCESS_KEY = env.str('AWS_SECRET_ACCESS_KEY', None)
 
 # SES EMAIL
 AWS_SES_REGION_NAME = env.str('AWS_SES_REGION_NAME', '')
