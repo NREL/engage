@@ -273,6 +273,34 @@ function activate_runs() {
 		};
 	});
 
+	$('.run-cambium').unbind();
+	$('.run-cambium').on('click', function() {
+		var url = 'https://cambium.nrel.gov/?project=' + $('#header').data('model_uuid');
+		var win = window.open(url, '_blank');
+		if (win) { win.focus() } else { alert('Please allow popups for this website') };
+	});
+
+	$('.run-publish').unbind();
+	$('.run-publish').on('click', function() {
+		var run_id = $(this).data('run_id');
+		var confirmation = confirm('Are you sure you want to publish these results?\nAnyone with the link will be able to access this data!');
+		if (confirmation) {
+			$.ajax({
+				url: '/' + LANGUAGE_CODE + '/api/publish_run/',
+				type: 'POST',
+				data: {
+					'model_uuid': $('#header').data('model_uuid'),
+					'run_id': run_id,
+					'csrfmiddlewaretoken': getCookie('csrftoken'),
+				},
+				dataType: 'json',
+				complete: function (data) {
+					console.log(data);
+				}
+			});
+		};
+	});
+
 }
 
 

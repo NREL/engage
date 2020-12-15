@@ -30,6 +30,7 @@ class Run(models.Model):
     model = models.ForeignKey(Model, on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)
     deprecated = models.BooleanField(default=False)
+    published = models.BooleanField(default=False, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)

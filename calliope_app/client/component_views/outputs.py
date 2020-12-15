@@ -2,6 +2,7 @@ from django.http import HttpResponse, JsonResponse, Http404
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 from django.utils.html import mark_safe
+from django.conf import settings
 
 from api.models.configuration import Model
 from api.models.outputs import Run
@@ -44,7 +45,8 @@ def run_dashboard(request):
         "model": model,
         "runs": runs,
         "can_edit": can_edit,
-        "task_status": task_status
+        "task_status": task_status,
+        "bucket_configured": bool(settings.AWS_S3_BUCKET_NAME)
     }
     html = list(render(request, 'run_dashboard.html', context))[0]
 
