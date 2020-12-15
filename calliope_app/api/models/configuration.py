@@ -480,6 +480,7 @@ class Timeseries_Meta(models.Model):
         """ Creates an hourly (8760) timeseries for a full year
         Using arbitrary year of 2019, and has no other significance """
 
+        # TODO: year as argument
         start_date = "2019-01-01 00:00"
         end_date = "2019-12-31 23:00"
 
