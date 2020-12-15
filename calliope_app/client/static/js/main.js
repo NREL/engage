@@ -325,7 +325,7 @@ function get_loc_techs() {
 					get_loc_tech_parameters();
 				});
 				
-				$('#loc_tech-add-1,#loc_tech-add-2').on('change', function() {
+				$('#loc_tech-add-1, #loc_tech-add-2').on('change', function() {
 					var id = $(this).val();
 					blink_location(id, 'marker', true);
 				});
@@ -632,21 +632,14 @@ function blink_location(id, what_to_blink, pan_to_marker) {
 		
 		if (what_to_blink == 'row' || what_to_blink == 'both') {
 			var row = $('#location_table tr[data-location_id="' + id + '"]');
-			var dash = $('#locations_dashboard');
-			var top = row.position().top;
-			var height = row.height();
-			if (row.length == 1 && (top < dash.scrollTop() || top > (dash.scrollTop() + dash.height() - height))) {
-				$('#locations_dashboard').animate({
-					scrollTop: top
-				}, {
-					duration: 500,
-					complete: function() {
-						blink_element(row);
-					}
-				});
-			} else {
-				blink_element(row);
-			}
+			$('#locations_dashboard').animate({
+				scrollTop: row.position().top
+			}, {
+				duration: 500,
+				complete: function() {
+					blink_element(row);
+				}
+			});
 		}
 	}, 10);
 }
@@ -755,8 +748,8 @@ function add_marker(name, id, type, draggable, coordinates) {
 				}, 20);
 			} else {
 				blink_location(marker.id);
+				toggle_location_edit(marker.id, true);
 				var row = $("tr[data-location_id='" + marker.id + "']");
-				toggle_location_edit(row, true);
 				row.find('.location-edit-lat').val(new_lnglat.lat.toFixed(3))
 				row.find('.location-edit-long').val(new_lnglat.lng.toFixed(3))
 				marker.lat = new_lnglat.lat;

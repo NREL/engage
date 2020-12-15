@@ -4,7 +4,7 @@
 	<tbody>
 		{% for location in locations %}
 			<!-- Location Row -->
-			<tr class="table-info location-meta-row" data-location_id="{{ location.id }}">
+			<tr class="table-primary location-meta-row" data-location_id="{{ location.id }}">
 				<!-- Location Name -->
 				<td>
 					<b><span class="location-name"><b>{{ location.pretty_name }}</b></span></b>
@@ -61,7 +61,7 @@
 			<tr class="location-data_sources-row" data-location_id="{{ location.id }}">
 				<!-- Data Sources -->
 				<td colspan=7 class="text-sm">
-					<i class="fas fa-database"></i> {% trans "Datasets" %}: 
+					<i class="fas fa-database"></i> {% trans "Datasets" %}:
 					<span class="pvwatts btn-sm btn-outline-danger" style="cursor: pointer">
 						<b>Solar</b> [NSRDB]
 					</span>
@@ -74,7 +74,7 @@
 			</tr>
 		{% endfor %}
 		<!-- Add location -->
-		<tr class="table-warning table-info location-add-row hide">
+		<tr class="table-warning table-primary location-add-row hide">
 			<!-- Location Name -->
 			<td>
 				<b><span class="location-name hide"></span></b>
@@ -110,6 +110,20 @@
 			<td class="centered">
 				<button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-sm btn-outline-danger location-delete hide"><i class="fas fa-trash" title="{% trans 'Delete location' %}"></i></button>
 				<button {% if not can_edit %}disabled{% endif %} type="button" class="location-save btn btn-warning"><b>{% trans "Save" %}</b></button>
+			</td>
+		</tr>
+		<tr class="location-data_sources-row location-add-data_sources-row hide">
+			<!-- Data Sources -->
+			<td colspan=7 class="text-sm">
+				<i class="fas fa-database"></i> {% trans "Datasets" %}:
+				<span class="pvwatts btn-sm btn-outline-danger" style="cursor: pointer">
+					<b>Solar</b> [NSRDB]
+				</span>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<span class="wtk btn-sm btn-outline-danger" style="cursor: pointer">
+					<b>Wind</b> [WTK]
+				</span>
+				&nbsp;&nbsp;&nbsp;&nbsp;
 			</td>
 		</tr>
 	</tbody>

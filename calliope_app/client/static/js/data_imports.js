@@ -106,7 +106,6 @@ function get_loc_meta(location_id) {
 }
 
 function request_pvwatts(location_id, lat, lon, tilt, azimuth, response) {
-	console.log('PVWatts')
 
 	$('#pvwatts_checking_src_data').show();
 	$('#pvwatts_available_src_data').hide();
@@ -138,7 +137,6 @@ function request_pvwatts(location_id, lat, lon, tilt, azimuth, response) {
 };
 
 function request_wtk(location_id, lat, lon, response) {
-	console.log('WTK')
 
 	$('#wtk_checking_src_data').show();
 	$('#wtk_available_src_data').hide();
@@ -165,19 +163,20 @@ function request_wtk(location_id, lat, lon, response) {
 };
 
 function update_availability(location_id, data, source) {
+	var row = $('tr.location-data_sources-row[data-location_id="' + location_id + '"]'),
+		indicator = row.find('.' + source);
 	if (data != undefined) {
-		var row = $('tr.location-data_sources-row[data-location_id="' + location_id + '"]'),
-			pvwatts = row.find('.' + source);
-		pvwatts.removeClass('btn-outline-danger').addClass('btn-outline-success');
-		pvwatts.css('font-weight', 'bold');
+		indicator.removeClass('btn-outline-danger').addClass('btn-outline-success');
 		$('#' + source + '_checking_src_data').hide();
 		$('#' + source + '_available_src_data').show();
 		$('#' + source + '_not_available_src_data').hide();
 		$('#' + source + '_import_data').attr('disabled', false);
 	} else {
+		indicator.addClass('btn-outline-danger').removeClass('btn-outline-success');
 		$('#' + source + '_checking_src_data').hide();
 		$('#' + source + '_available_src_data').hide();
 		$('#' + source + '_not_available_src_data').show();
+		$('#' + source + '_import_data').attr('disabled', true);
 	}
 };
 
@@ -199,7 +198,6 @@ function import_pvwatts(location_id, data) {
 };
 
 function import_wtk(location_id, data) {
-	console.log(data)
 	var name = $("#wtk_name").val().trim();
 
 	if (name == '') {
