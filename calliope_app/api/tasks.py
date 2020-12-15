@@ -4,6 +4,8 @@ Celery task module
 import os
 import shutil
 
+import boto3
+import botocore
 import pandas as pd
 import numpy as np
 from dateutil.parser import parse as date_parse
@@ -22,7 +24,8 @@ from api.engage import aws_ses_configured
 from api.models.configuration import Model, Scenario, Scenario_Loc_Tech, \
     Tech_Param, Loc_Tech_Param, Timeseries_Meta, User_File
 from api.models.outputs import Run
-from api.utils import list_to_yaml, load_timeseries_from_csv, get_model_logger
+from api.utils import list_to_yaml, load_timeseries_from_csv, get_model_logger, \
+    zip_folder
 from api.calliope_utils import get_model_yaml_set, get_location_meta_yaml_set
 from api.calliope_utils import get_techs_yaml_set, get_loc_techs_yaml_set
 
@@ -433,12 +436,21 @@ class CalliopeModelRunTask(Task):
         run.plots_path = retval["save_plots"]
         run.save()
 
-        # Send success notification to user
-        # if aws_ses_configured():
-        #     try:
-        #         self.notify_user(run, kwargs["user_id"], success=True)
-        #     except Exception as err:
-        #         pass
+        # Upload model_outputs to S3
+        if not settings.AWS_S3_BUCKET_NAME:
+            return
+
+        client = boto3.client(
+            service_name="s3",
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
+        )
+        zip_file = zip_folder(retval["save_outputs"])
+        key = "engage" + zip_file.replace(settings.DATA_STORAGE, '')
+        client.upload_file(zip_file, settings.AWS_S3_BUCKET_NAME, key)
+        
+        run.outputs_key = key
+        run.save()
 
 
 @app.task(

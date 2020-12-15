@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, Http404
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate
 
@@ -364,28 +364,40 @@ def download(request):
 
     Parameters:
     model_uuid (uuid): required
-    path (str): required
+    run_id (int): required
 
     Returns (json): Action Confirmation
 
     Example:
     GET: /api/download/
     """
-
-    path = request.GET['path']
     model_uuid = request.GET['model_uuid']
+    run_id = request.GET['run_id']
+    download_type = request.GET['type']
 
     model = Model.by_uuid(model_uuid)
     model.handle_view_access(request.user)
-
+    
+    try:
+        run = Run.objects.get(id=run_id)
+    except Exception:
+        raise Http404
+    
+    if download_type == 'inputs':
+        path = run.inputs_path
+    elif download_type == "outputs":
+        path = run.outputs_path
+    else:
+        raise Http404
+    
     if os.path.exists(path):
         file_path = zip_folder(path)
         with open(file_path, 'rb') as fh:
-            response = HttpResponse(fh.read(),
-                                    content_type="application/text")
-            response['Content-Disposition'] = \
-                'inline; filename=' + os.path.basename(file_path)
+            response = HttpResponse(fh.read(), content_type="application/text")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
             return response
 
-    return HttpResponse(json.dumps({"message": "Not Found!"}, indent=4),
-                        content_type="application/json")
+    return HttpResponse(
+        json.dumps({"message": "Not Found!"}, indent=4),
+        content_type="application/json"
+    )

@@ -161,10 +161,3 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE if USE_TZ else None
 CELERY_TRACK_STARTED = True
-
-# AWS
-# --------------------------------------------------------------------------------
-# SES EMAIL
-AWS_SES_REGION_NAME = env.str('AWS_SES_REGION_NAME', '')
-AWS_SES_REGION_ENDPOINT = env.str('AWS_SES_REGION_ENDPOINT', '')
-AWS_SES_FROM_EMAIL = env.str('AWS_SES_FROM_EMAIL', '')

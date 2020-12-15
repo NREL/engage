@@ -25,6 +25,7 @@ class Run(models.Model):
     inputs_path = models.TextField(blank=True)
     logs_path = models.TextField(blank=True)
     outputs_path = models.TextField(blank=True)
+    outputs_key = models.TextField(blank=True)
     plots_path = models.TextField(blank=True)
     model = models.ForeignKey(Model, on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)

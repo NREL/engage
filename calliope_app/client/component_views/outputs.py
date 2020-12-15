@@ -1,9 +1,10 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 from django.utils.html import mark_safe
 
 from api.models.configuration import Model
+from api.models.outputs import Run
 from api.tasks import task_status
 
 import os
@@ -116,7 +117,7 @@ def show_logs(request):
 
     Parameters:
     model_uuid (uuid): required
-    logs_path (str): required
+    run_id (int): required
 
     Returns: HttpResponse
 
@@ -125,12 +126,17 @@ def show_logs(request):
     """
 
     model_uuid = request.POST['model_uuid']
-    plots_path = request.POST['logs_path']
-
+    run_id = request.POST['run_id']
+    
     model = Model.by_uuid(model_uuid)
     model.handle_view_access(request.user)
-
-    with open(plots_path) as f:
+    
+    try:
+        run = Run.objects.get(id=run_id)
+    except Exception:
+        raise Http404
+    
+    with open(run.logs_path) as f:
         html = f.read()
 
     return HttpResponse(html, content_type="text/html")
@@ -143,7 +149,7 @@ def plot_outputs(request):
 
     Parameters:
     model_uuid (uuid): required
-    plots_path (str): required
+    run_id (int): required
 
     Returns: HttpResponse
 
@@ -151,13 +157,18 @@ def plot_outputs(request):
     POST: /component/plot_outputs/
     """
 
-    model_uuid = request.POST['model_uuid']
-    plots_path = request.POST['plots_path']
+    model_uuid = request.POST["model_uuid"]
+    run_id = request.POST["run_id"]
 
     model = Model.by_uuid(model_uuid)
     model.handle_view_access(request.user)
+    
+    try:
+        run = Run.objects.get(id=run_id)
+    except Exception:
+        raise Http404
 
-    with open(plots_path) as f:
+    with open(run.plots_path) as f:
         html = f.read()
 
     return HttpResponse(html, content_type="text/html")

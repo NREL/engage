@@ -37,8 +37,9 @@ $( document ).ready(function() {
 });
 
 function add_location(lng, lat, blink) {
-	var add_row = $('.location-add-row').first().clone();
-	var rows = $('#location_table').find('tr').not('.tbl-header');
+	var add_row = $('.location-add-row').first().clone(),
+		add_row_ds = $('.location-add-data_sources-row').first().clone(),
+		rows = $('#location_table').find('tr').not('.tbl-header');
 	new_id ++;
 	var id = 'new_' + new_id;
 	add_row.attr({
@@ -46,6 +47,7 @@ function add_location(lng, lat, blink) {
 		'data-new': true,
 		'data-dirty': true
 	});
+	add_row_ds.attr('data-location_id', id);
 	var center = map.getCenter();
 	if (typeof lng === 'undefined') lng = center.lng;
 	if (typeof lat === 'undefined') lat = center.lat;
@@ -61,29 +63,33 @@ function add_location(lng, lat, blink) {
 	blink_location(id, blink);
 	add_row.find('.location-edit-long').attr('value', coordinates[0].toFixed(3)).trigger('change');
 	add_row.find('.location-edit-lat').attr('value', coordinates[1].toFixed(3)).trigger('change');
-	add_row.removeClass('location-add-row').removeClass('hide');
+	add_row.removeClass('location-add-row').addClass('location-meta-row').removeClass('hide');
+	add_row_ds.removeClass('location-add-data_sources-row').addClass('location-data_sources-row').removeClass('hide');
 	// add_row.find('.parameter-year-new').addClass('dynamic_year_input');
 	// add_row.removeClass('add_param_row_min').addClass('table-warning');
 	add_row.insertBefore(rows.first())
+	add_row_ds.insertAfter(add_row)
 	add_row.find('.location-edit-name').focus();
 	// location-add-row
 	activate_location_elements();
 }
 
-function toggle_location_edit($row, edit) {
-	var toggle = true;
+function toggle_location_edit(location_id, edit) {
+	var rows = $('#location_table tr[data-location_id="' + location_id + '"]'),
+		row = $(rows[0])
+		toggle = true;
 	
-	if ((edit==true) & ($row.hasClass('table-warning'))) {
+	if ((edit==true) & (row.hasClass('table-warning'))) {
 		toggle = false;
-	} else if ((edit==false) & (!$row.hasClass('table-warning'))) {
+	} else if ((edit==false) & (!row.hasClass('table-warning'))) {
 		toggle = false;
 	};
 	
 	if (toggle == true) {
-		if ($row.hasClass('table-warning')) {
-			var id = $row.data('location_id');
+		if (row.hasClass('table-warning')) {
+			var id = row.data('location_id');
 			
-			if ($row.data('new') == true) {
+			if (row.data('new') == true) {
 				var l = locations.findIndex(function(l) { return l.id == id } );
 				if (l > -1) locations.splice(l, 1);
 				var m = markers.findIndex(function(m) { return m.id == id } );
@@ -91,25 +97,25 @@ function toggle_location_edit($row, edit) {
 					markers[m].remove();
 					markers.splice(m, 1);
 				}
-				$row.remove();
+				row.remove();
 				return;
 			}
 			
-			$row.find('input').each(function() {
+			row.find('input').each(function() {
 				$(this).val($(this).attr('value'));
 			});
-			$row.find('.location-edit').toggleClass('btn-danger bg-danger').html('<i class="fas fa-edit"></i> Edit');
+			row.find('.location-edit').toggleClass('btn-danger bg-danger').html('<i class="fas fa-edit"></i> Edit');
 			var marker = markers.find(function(m) { return m.id == id });
 			var location = locations.find(function(l) { return l.id == id });
 			marker.getPopup().setHTML('<h4>' + location['pretty_name'] + '</h4>');
 			marker.setLngLat([location.longitude, location.latitude]);
-			$row.attr('data-dirty', '');
+			row.attr('data-dirty', '');
 		} else {
-			$row.attr('data-dirty', true);
-			$row.find('.location-edit').toggleClass('btn-danger bg-danger').html('<i class="fas fa-times"></i> Cancel');
+			row.attr('data-dirty', true);
+			row.find('.location-edit').toggleClass('btn-danger bg-danger').html('<i class="fas fa-times"></i> Cancel');
 		}
-		$row.toggleClass('table-warning');
-		$row.find('.location-save, .location-delete, .location-name, .location-lat, .location-long, .location-area, .location-description, .location-edit-name, .location-edit-lat, .location-edit-long, .location-edit-area, .location-edit-description').toggleClass('hide');
+		row.toggleClass('table-warning');
+		row.find('.location-save, .location-delete, .location-name, .location-lat, .location-long, .location-area, .location-description, .location-edit-name, .location-edit-lat, .location-edit-long, .location-edit-area, .location-edit-description').toggleClass('hide');
 	}
 };
 
@@ -154,11 +160,14 @@ function activate_location_elements() {
 	$('.location-edit').unbind();
 	$('.location-edit').on('click', function(e) {
 		e.stopPropagation();
-		var row = $(this).parents('tr');
-		toggle_location_edit(row, null);
+		var row = $(this).parents('tr'),
+			location_id = row.attr('data-location_id');
+		toggle_location_edit(location_id, null);
 		if ($('.table-warning').length < 2) {
 			$('#master-cancel').addClass('hide');
-		};
+		} else {
+			$('#master-cancel').removeClass('hide');
+		}
 		
 		if ($('#location_table tr[data-location_id]').length == 0) {
 			$('#locations_dashboard').prepend('<div id="create_location_notice" class="col-12 text-center"><br/><br/><h4>Create a location (initially at the center of the map) by clicking the "+ New" button above!</h4></div>');
@@ -170,6 +179,7 @@ function activate_location_elements() {
 		if (typeof e !== 'undefined') e.stopPropagation();
 		var row = $(this).parents('tr'),
 			location_id = row.data('location_id'),
+			rows = $('#location_table tr[data-location_id="' + location_id + '"]'),
 			location_name = row.find('.location-edit-name').val(),
 			location_lat = row.find('.location-edit-lat').val(),
 			location_long = row.find('.location-edit-long').val(),
@@ -236,14 +246,20 @@ function activate_location_elements() {
 					row.find('.location-edit-description')[0].defaultValue = data['location_description']
 
 					row.data('new', false);
-					row.attr('data-location_id', id);
-					row.data('location_id', id);
+					rows.each(function() {
+						$(this).attr('data-location_id', id);
+						$(this).data('location_id', id);
+					})
 					marker.id = id;
-					toggle_location_edit(row, false);
+					toggle_location_edit(id, false);
 					blink_location(id, 'marker');
 					if ($('.table-warning').length < 2) {
 						$('#master-cancel').addClass('hide');
 					};
+					// PVWatts & WTK
+					var meta = get_loc_meta(id);
+					request_pvwatts(id, meta[1], meta[2], 40, 180, update_availability);
+					request_wtk(id, meta[1], meta[2], update_availability);
 				}
 			});
 		} else {

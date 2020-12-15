@@ -189,14 +189,14 @@ function activate_runs() {
 
 	$('.btn-viz-logs').unbind();
 	$('.btn-viz-logs').on('click', function() {
-		var logs_path = $(this).data('path');
+		var run_id = $(this).data('run_id');
 
 		$.ajax({
 			url: '/' + LANGUAGE_CODE + '/component/show_logs/',
 			type: 'POST',
 			data: {
 				'model_uuid': $('#header').data('model_uuid'),
-				'logs_path': logs_path,
+				'run_id': run_id,
 				'csrfmiddlewaretoken': getCookie('csrftoken'),
 			},
 			dataType: 'json',
@@ -212,14 +212,14 @@ function activate_runs() {
 
 	$('.btn-viz-outputs').unbind();
 	$('.btn-viz-outputs').on('click', function() {
-		var plots_path = $(this).data('path')
+		var run_id = $(this).data('run_id')
 
 		$.ajax({
 			url: '/' + LANGUAGE_CODE + '/component/plot_outputs/',
 			type: 'POST',
 			data: {
 				'model_uuid': $('#header').data('model_uuid'),
-				'plots_path': plots_path,
+				'run_id': run_id,
 				'csrfmiddlewaretoken': getCookie('csrftoken'),
 			},
 			dataType: 'json',

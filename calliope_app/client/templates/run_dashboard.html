@@ -62,19 +62,19 @@
 						<!-- Inputs -->
 						<td class="centered">
 							{% if run.inputs_path %}
-							<a href="/api/download/?model_uuid={{ model.uuid }}&path={{ run.inputs_path }}"><button tabindex="-1" type="button" class="btn btn-primary btn-download" style="width:100%;"><i class="fa fa-download" aria-hidden="true"></i></button></a>
+							<a href="/api/download/?model_uuid={{ model.uuid }}&run_id={{ run.id }}&type=inputs"><button tabindex="-1" type="button" class="btn btn-primary btn-download" style="width:100%;"><i class="fa fa-download" aria-hidden="true"></i></button></a>
 							{% endif %}
 						</td>
 						<!-- Logs -->
 						<td class="centered" data-toggle="tooltip" data-placement="right" title="{{ run.message }}">
                             {% if run.logs_path %}
-                            <button data-path="{{ run.logs_path }}" tabindex="-1" type="button" class="btn btn-warning btn-viz-logs" style="width:100%;"><i class="fa fa-bars" aria-hidden="true"></i></button>
+                            <button data-run_id="{{ run.id }}" tabindex="-1" type="button" class="btn btn-warning btn-viz-logs" style="width:100%;"><i class="fa fa-bars" aria-hidden="true"></i></button>
                             {% endif %}
 						</td>
 						<!-- Plots -->
 						<td class="centered">
 							{% if run.plots_path %}
-							<button data-path="{{ run.plots_path }}" tabindex="-1" type="button" class="btn btn-success btn-viz-outputs" style="width:100%;"><i class="fa fa-chart-line" aria-hidden="true"></i></button>
+							<button data-run_id="{{ run.id }}" tabindex="-1" type="button" class="btn btn-success btn-viz-outputs" style="width:100%;"><i class="fa fa-chart-line" aria-hidden="true"></i></button>
 							{% elif run.outputs_path %}
 							<i class="fa fa-exclamation-triangle" data-toggle="tooltip" data-placement="left" title="{% trans 'Preview not available' %}" style="color:red"></i>
 							{% endif %}
@@ -89,7 +89,7 @@
 						<!-- Outputs -->
 						<td class="centered">
 							{% if run.outputs_path %}
-							<a href="/api/download/?model_uuid={{ model.uuid }}&path={{ run.outputs_path }}"><button tabindex="-1" type="button" class="btn btn-success btn-download" style="width:100%;"><i class="fa fa-download" aria-hidden="true"></i></button></a>
+							<a href="/api/download/?model_uuid={{ model.uuid }}&run_id={{ run.id }}&type=outputs"><button tabindex="-1" type="button" class="btn btn-success btn-download" style="width:100%;"><i class="fa fa-download" aria-hidden="true"></i></button></a>
 							{% endif %}
 						</td>
 						<!-- Deprecated -->
