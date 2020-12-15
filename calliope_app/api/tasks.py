@@ -446,8 +446,11 @@ class CalliopeModelRunTask(Task):
             aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
         )
         zip_file = zip_folder(retval["save_outputs"])
-        key = "engage" + zip_file
+        key = "engage" + zip_file.replace(settings.DATA_STORAGE, '')
         client.upload_file(zip_file, settings.AWS_S3_BUCKET_NAME, key)
+        
+        run.outputs_key = key
+        run.save()
 
 
 @app.task(
