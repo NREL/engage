@@ -5,7 +5,7 @@ from django.utils.html import mark_safe
 from django.conf import settings
 
 from api.models.configuration import Model
-from api.models.outputs import Run
+from api.models.outputs import Run, Cambium
 from api.tasks import task_status
 
 import os
@@ -40,6 +40,10 @@ def run_dashboard(request):
     can_edit = model.handle_view_access(request.user)
 
     runs = model.runs.filter(scenario_id=scenario_id)
+
+    # Check for any publication updates
+    for run in runs.filter(published=None):
+        Cambium.push_run(run)
 
     context = {
         "model": model,

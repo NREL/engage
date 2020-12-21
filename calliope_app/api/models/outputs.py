@@ -7,6 +7,7 @@ from taskmeta.models import CeleryTask
 import pandas as pd
 import numpy as np
 import os
+import requests
 
 
 class Run(models.Model):
@@ -55,6 +56,43 @@ class Run(models.Model):
 
     def __str__(self):
         return '%s (%s) @ %s' % (self.model, self.subset_time, self.updated)
+
+
+class Cambium():
+
+    @staticmethod
+    def push_run(run):
+        if not run.outputs_key:
+            data = {
+                'filename': run.outputs_key,
+                'processor': 'engage',
+                'project_name': run.model.name,
+                'project_uuid': run.model_uuid,
+                'project_source': 'Engage',
+                'extras': {"scenario": run.scenario.name, "year": run.year}
+            }
+            try:
+                # Cambium Request
+                url = 'https://cambium.nrel.gov/api/ingest_data/'
+                response = requests.post(url, data=data)
+                msg = response['message']
+
+                # Handle Response
+                if msg == "SUCCESS":
+                    run.model.run_set.filter(
+                        year=run.year,
+                        scenario_id=run.scenario_id).update(published=False)
+                    run.published = True
+                elif msg in ["SUBMITTED", "RECEIVED", "STARTED", "PENDING"]:
+                    run.published = None
+                elif msg in ["FAILURE"]:
+                    run.published = False
+                run.save()
+                return msg
+            except Exception as e:
+                return str(e)
+        else:
+            return 'Data has not been transferred to S3 bucket'
 
 
 class Haven():

@@ -25,7 +25,7 @@
 				{% endifchanged %}
 				{% with runs|return_item:forloop.counter as next_run %}
 				<!-- Run Row -->
-					<tr class="table-default {% ifchanged run.year %}{% else %}{% if run.deprecated %}hidden hide{% endif %}{% endifchanged %}">
+					<tr class="table-default">
 						<!-- Run Status Indicator -->
 						{% if run.status == task_status.BUILDING %}
 						<td class="centered table-warning" style="width:100px;" data-toggle="tooltip" data-placement="left" title="{{ run.status }} @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
@@ -98,9 +98,9 @@
 						<!-- Deprecated -->
 						<td class="centered">
 							{% if run.deprecated %}
-							<button class="run-version btn btn-sm btn-outline-danger" style="font-size:0.7em;">{% trans "OUT OF DATE" %}</button>
+							<button class="run-version btn btn-sm btn-outline-danger" style="font-size:0.7em;" disabled>{% trans "OUT OF DATE" %}</button>
 							{% else %}
-							<button class="run-version btn btn-sm btn-outline-success" style="font-size:0.7em;">{% trans "UP TO DATE" %}</button>
+							<button class="run-version btn btn-sm btn-outline-success" style="font-size:0.7em;" disabled>{% trans "UP TO DATE" %}</button>
 							{% endif %}
 						</td>
 						<!-- Edit Buttons -->

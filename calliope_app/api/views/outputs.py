@@ -2,7 +2,6 @@ import base64
 import os
 import json
 from datetime import datetime, timedelta
-import requests
 
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.conf import settings
@@ -12,7 +11,7 @@ from django.contrib.auth import authenticate
 
 from api.exceptions import ModelNotExistException
 from api.models.outputs import Run
-from api.models.outputs import Haven
+from api.models.outputs import Haven, Cambium
 from api.tasks import run_model, task_status, build_model
 from api.models.configuration import Model, ParamsManager, Model_User
 from api.utils import zip_folder
@@ -234,35 +233,8 @@ def publish_run(request):
     model.handle_edit_access(request.user)
 
     run = model.runs.filter(id=run_id).first()
-
-    if not run.outputs_key:
-        data = {
-            'filename': run.outputs_key,
-            'processor': 'engage',
-            'project_name': model.name,
-            'project_uuid': model_uuid,
-            'project_source': 'Engage',
-            'extras': {"scenario": run.scenario.name, "year": run.year}
-        }
-        try:
-            # Cambium Request
-            url = 'https://cambium.nrel.gov/api/ingest_data/'
-            response = requests.post(url, data=data)
-            msg = response['message']
-            # Handle Response
-            if msg == "Complete":
-                model.run_set.filter(
-                    year=run.year,
-                    scenario_id=run.scenario_id).update(published=False)
-                run.published = True
-            elif msg == "Processing":
-                run.published = None
-            run.save()
-            payload = {'message': msg}
-        except Exception:
-            payload = {'message': 'Error connecting with Cambium'}
-    else:
-        payload = {'message': 'Data has not been transferred to S3 bucket'}
+    msg = Cambium.push_run(run)
+    payload = {'message': msg}
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
 
