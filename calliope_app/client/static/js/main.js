@@ -766,12 +766,11 @@ function add_marker(name, id, type, draggable, coordinates) {
 }
 
 var mapbox_styles = {
+	'Dark': 'mapbox/dark-v10',
+	'Light': 'mapbox/light-v10',
 	'Streets': 'mapbox/streets-v11',
 	'Satellite': 'mapbox/satellite-v9',
-	'Satellite + Streets': 'mapbox/satellite-streets-v9',
-	'Outdoors': 'mapbox/outdoors-v11',
-	'Light': 'mapbox/light-v10',
-	'Dark': 'mapbox/dark-v10'
+	'Satellite + Streets': 'mapbox/satellite-streets-v9'
 }
 
 var map_style = localStorage.getItem("mapstyle") || Object.values(mapbox_styles)[0];
