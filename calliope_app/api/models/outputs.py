@@ -67,7 +67,7 @@ class Cambium():
                 'filename': run.outputs_key,
                 'processor': 'engage',
                 'project_name': run.model.name,
-                'project_uuid': run.model_uuid,
+                'project_uuid': run.model.uuid,
                 'project_source': 'Engage',
                 'extras': {"scenario": run.scenario.name, "year": run.year}
             }
