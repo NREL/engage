@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 from api.models.utils import EngageManager
 from api.models.configuration import Model, Scenario
@@ -69,7 +70,8 @@ class Cambium():
                 'project_name': run.model.name,
                 'project_uuid': run.model.uuid,
                 'project_source': 'Engage',
-                'extras': {"scenario": run.scenario.name, "year": run.year}
+                'extras': {"scenario": run.scenario.name, "year": run.year},
+                'private_key': settings.CAMBIUM_API_KEY
             }
             try:
                 # Cambium Request
