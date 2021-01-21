@@ -618,10 +618,6 @@ function blink_location(id, what_to_blink, pan_to_marker) {
 				map.once('moveend', function() {
 					blink_element($(ele));
 				});
-				markers.forEach(function(m) {
-					if (m.getPopup().isOpen()) m.togglePopup();
-				});
-				marker.togglePopup();
 				map.flyTo({
 					center: marker.getLngLat(),
 					zoom: map.getZoom(),
@@ -645,39 +641,29 @@ function blink_location(id, what_to_blink, pan_to_marker) {
 }
 
 function add_marker(name, id, type, draggable, coordinates) {
-	var popup = new mapboxgl.Popup({
-			closeButton: false,
-			closeOnClick: true
-		})
-		.setMaxWidth('auto')
-		.setHTML('<h4>' + name + '</h4>');
+	var description = '<h4>' + name + '</h4>';
 	if (typeof loc_techs !== 'undefined') {
-		var techs_html = '<h4 class="text-center">' + name + '</h4><table>';
 		var has_techs = false;
 		var has_trans = false;
-		// var trans_html = '<div class="font-weight-bold">Transmissions</div><table>';
-		var trans_html = '<hr class="m-0 my-2"/><table>';
+		var techs_html = '';
+		var trans_html = '<hr>';
 		for (var i = 0; i < loc_techs.length; i ++) {
 			if (name == loc_techs[i].location_1 || name == loc_techs[i].location_2) {
 				if (loc_techs[i].location_2 == null) {
 					has_techs = true;
-					techs_html += '<tr class="text-nowrap text-left" style="line-height: 1em"><td class="text-center" style="color: ' + loc_techs[i].color + '; padding-right: 10px;">' + loc_techs[i].icon + '</td><td>' +
-						loc_techs[i].technology + '</tr>';
+					techs_html += '<br><span style="color: ' + loc_techs[i].color + '; padding-right: 10px;">' + loc_techs[i].icon + '</span>' + loc_techs[i].technology;
 				} else {
 					has_trans = true;
-					trans_html += '<tr class="text-nowrap text-left" style="line-height: 1em"><td class="text-center" style="color: ' + loc_techs[i].color + '; padding-right: 10px;">' + loc_techs[i].icon + '</td><td>' +
-						loc_techs[i].technology + '</td><td>&nbsp;&rarr;&nbsp;' +
-						loc_techs[i].location_2 + '</td></tr>';
+					if (loc_techs[i].location_2 == name) { var loc = loc_techs[i].location_1 } else { var loc = loc_techs[i].location_2 };
+					console.log(name, loc_techs[i].location_1, loc_techs[i].location_2, loc)
+					trans_html += '<span style="color: ' + loc_techs[i].color + '; padding-right: 10px;">' + loc_techs[i].icon + '</span>' + loc_techs[i].technology + '&nbsp;&rarr;&nbsp;' + loc + '<br>';
 				}
 			}
 		}
-		techs_html += '</table>';
-		trans_html += '</table>';
 		if (has_techs || has_trans) {
-			var html = techs_html;
-			if (!has_techs) html += '<span style="color: red">No techs</span>';
-			if (has_trans) html += trans_html;
-			popup.setHTML('<div class="text-center">' + html + '</div>');
+			description += techs_html;
+			if (!has_techs) description += '<span style="color: red">No techs</span>';
+			if (has_trans) description += trans_html;
 		}
 	}
 	var el = document.createElement('div');
@@ -688,29 +674,24 @@ function add_marker(name, id, type, draggable, coordinates) {
 	var marker = new mapboxgl.Marker(el)
 		.setDraggable(draggable)
 		.setLngLat(coordinates)
-		.setPopup(popup)
 		.addTo(map);
 	marker.id = id;
 	marker.el = el;
 	marker.lat = coordinates[0];
 	marker.lon = coordinates[1];
+	marker.description = description;
 	marker._element._marker = marker;
 	marker._element.addEventListener('mouseenter', function(e) {
-		markers.forEach(function(m) {
-			if (m.getPopup().isOpen()) m.togglePopup();
-		});
 		var m = e.target._marker;
-		if (!m.getPopup().isOpen()) m.togglePopup();
+		$('#map-legend').html(m.description).css('display', 'inline-block');
 	});
-	// marker._element.addEventListener('mouseleave', function(e) {
-	// 	var m = e.target._marker;
-	// 	if (m.getPopup().isOpen()) m.togglePopup();
-	// });
+	marker._element.addEventListener('mouseleave', function(e) {
+		$('#map-legend').hide();
+	});
 	marker._element.addEventListener('mouseup', function(e) {
 		// if (!draggable) e.stopPropagation();
 		var m = e.target._marker;
 		setTimeout(function() {
-			if (!m.getPopup().isOpen()) m.togglePopup();
 			set_location(m.id);
 			blink_location(m.id, 'row');
 			if ($('#loc_tech-add-2').length == 1 && set_loc_clicked == 1) {
@@ -742,7 +723,6 @@ function add_marker(name, id, type, draggable, coordinates) {
 			
 			if (dist < 4) {
 				setTimeout(function() {
-					if (!that.getPopup().isOpen()) that.togglePopup();
 					blink_location(marker.id, 'row');
 					marker.setLngLat([marker.lon, marker.lat]);
 				}, 20);
