@@ -13,16 +13,16 @@
 {% block config_2_tab %}tab-active{% endblock %}
 
 {% block content %}
-<form id="form_data" method="post" action="" accept-charset="utf-8" onsubmit="return false;">
+<form id="form_data" style="height: 100%" method="post" action="" accept-charset="utf-8" onsubmit="return false;">
 	<div id="subheader2" class="row content_navigation">
 		<input {% if not can_edit %}disabled{% endif %} id="technology" class="nav-dropdown centered" type="text" autocomplete="off" placeholder="{% trans 'Name of new technology' %}..."/>
 	</div>
-	<br>
-	<div class="row">
+	<div class="row" style="overflow-y: scroll; height: calc(100% - 145px);">
 		<div class="col-1"></div>
 		<div class="col-10">
 			<div class="row">
 				<div class="col-12 centered">
+					<br><br>
 					<h5>1. <u>{% trans "Name" %}</u> {% trans "the new technology" %} <b>{% trans "above" %}</b><br><br>2. <u>{% trans "Choose" %}</u> {% trans "the technology type" %} <b>{% trans "below" %}</b></h5><br>
 					<a href="{% static 'docs/Summary.xlsx' %}" target="_blank" style="font-size:0.8em"><i class="fas fa-info"></i>&nbsp;&nbsp;Download Documentation on Template Technologies</a>
 					<br>

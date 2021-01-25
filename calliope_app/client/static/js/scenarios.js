@@ -15,14 +15,16 @@ $( document ).ready(function() {
 		$('#master-save').removeClass('hide')
 		$('#master-cancel').removeClass('hide')
 
-		$('#scenario_settings').removeClass('hide')
+		$('#form_scenario_settings').removeClass('hide')
+		$('#scenario_configuration').addClass('hide')
 	});
 
 	$('#master-save').on('click', function() {
 		$('.master-btn').addClass('hide')
 		$('#master-settings').removeClass('hide');
 
-		$('#scenario_settings').addClass('hide');
+		$('#form_scenario_settings').addClass('hide');
+		$('#scenario_configuration').removeClass('hide')
 		save_scenario_settings();
 	});
 

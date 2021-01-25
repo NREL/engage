@@ -5,6 +5,12 @@
 {% block head %}
 <title>Engage | {{ model.name }} | Technologies</title>
 <script type="text/javascript" src="{% static 'js/technologies.js' %}"></script>
+<style>
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+</style>
 {% endblock %}
 
 {% block config_technologies %}<h5><i class="fas fa-cog"></i>&nbsp;&nbsp;<b>{% trans "Technologies" %}</b></h5>{% endblock %}
@@ -22,7 +28,7 @@
 </form>
 
 <!-- Parameters -->
-<form id="form_data_2" method="post" action="" accept-charset="utf-8" autocomplete="off">
-	<div class="row" id="tech_parameters"></div>
+<form id="form_data_2" style="height:100%" method="post" action="" accept-charset="utf-8" autocomplete="off">
+	<div class="row" style="overflow-y: scroll; height: calc(100% - 495px);" id="tech_parameters"></div>
 </form>
 {% endblock %}

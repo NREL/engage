@@ -2,114 +2,112 @@
 {% load i18n %}
 {% load tz %}
 
-<div class="col-12">
-	<table id="run_table" class="table table-hover table-sm">
-		<tbody>
-			{% for run in runs %}
-				{% ifchanged run.year %}
-				<!-- Scenarios Header Row  -->
-					<tr class="tbl-header" style="font-size:0.9em;background-color:#ececec;">
-						<td class="centered" style="padding-top:10px"><b>{% trans "Status" %}</b></td>
-						<td style="font-size:1.3em"><b>{{ run.year }}</b></td>
-						<td style="padding-top:10px"><b>{% trans "Notes" %}</b> (double-click to edit)</td>
-						<td class="centered" style="padding-top:10px"><b>{% trans "Inputs" %}</b></td>
-						<td class="centered" style="padding-top:10px"><b>{% trans "Logs" %}</b></td>
-						<td class="centered" style="padding-top:10px"><b>{% trans "Plots" %}</b></td>
-						<td class="centered" style="padding-top:10px"><b>{% trans "Map Viz" %}</b></td>
-						<td class="centered" style="padding-top:10px"><b>{% trans "Outputs" %}</b></td>
-						<td colspan=2 class="centered" style="padding-top:10px"><b>{% trans "Versions" %}</b></td>
-					</tr>
-				{% endifchanged %}
-				{% with runs|return_item:forloop.counter as next_run %}
-				<!-- Run Row -->
-					<tr class="table-default {% ifchanged run.year %}{% else %}{% if run.deprecated %}hidden hide{% endif %}{% endifchanged %}">
-						<!-- Run Status Indicator -->
-						{% if run.status == task_status.BUILDING %}
-						<td class="centered table-warning" style="width:100px;" data-toggle="tooltip" data-placement="left" title="{{ run.status }} @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
-							<i class="fa fa-cog fa-spin" style="color:green"></i>
-						</td>
-                        {% elif run.status == task_status.BUILT or run.status == 'Built' %}
-						<td class="centered table-success" style="width:100px;" data-toggle="tooltip" data-placement="left" title="{{ run.status }} (ready to run) @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
-							<button {% if not can_edit %}disabled{% endif %} data-run_id="{{ run.id }}" tabindex="-1" type="button" class="btn btn-outline-success btn-run-inputs" style="width:100%;"><i class="fas fa-play"></i>&nbsp;&nbsp;{% trans "Run" %}</button>
-						</td>
-                        {% elif run.status == task_status.QUEUED %}
-						<td class="centered table-warning" style="width:100px;" data-toggle="tooltip" data-placement="left" title="{{ run.status }} @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
-							<i class="fa fa-clock" style="color:green"></i>
-						</td>
-                        {% elif run.status == task_status.RUNNING or run.status == 'Running...' %}
-						<td class="centered table-warning" style="width:100px;" data-toggle="tooltip" data-placement="left" title="{{ run.status }} @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
-							<i class="fa fa-sync fa-spin" style="color:green"></i>
-						</td>
-						{% elif run.status == task_status.SUCCESS or run.status == 'Finished' %}
-						<td class="centered table-success" style="width:100px;" data-toggle="tooltip" data-placement="left" title="{{ run.status }} @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
-							<i class="fas fa-check-circle" style="color:green"></i>
-						</td>
-						{% elif run.status == task_status.FAILURE or run.status == 'Failed' %}
-						<td class="centered table-danger" style="width:100px;" data-toggle="tooltip" data-placement="left" title="{{ run.status }} (see logs) @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
-							<i class="fa fa-exclamation-triangle" style="color:red"></i>
-						</td>
-						{% else %}
-						<td class="centered" data-toggle="tooltip" data-placement="left" title="{{ run.status }} @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
-							{{ run.status }}
-						</td>
+<table id="run_table" class="table table-hover table-sm">
+	<tbody>
+		{% for run in runs %}
+			{% ifchanged run.year %}
+			<!-- Scenarios Header Row  -->
+				<tr class="tbl-header" style="font-size:0.9em;background-color:#ececec;">
+					<td class="centered" style="padding-top:10px"><b>{% trans "Status" %}</b></td>
+					<td style="font-size:1.3em"><b>{{ run.year }}</b></td>
+					<td style="padding-top:10px"><b>{% trans "Notes" %}</b> (double-click to edit)</td>
+					<td class="centered" style="padding-top:10px"><b>{% trans "Inputs" %}</b></td>
+					<td class="centered" style="padding-top:10px"><b>{% trans "Logs" %}</b></td>
+					<td class="centered" style="padding-top:10px"><b>{% trans "Plots" %}</b></td>
+					<td class="centered" style="padding-top:10px"><b>{% trans "Map Viz" %}</b></td>
+					<td class="centered" style="padding-top:10px"><b>{% trans "Outputs" %}</b></td>
+					<td colspan=2 class="centered" style="padding-top:10px"><b>{% trans "Versions" %}</b></td>
+				</tr>
+			{% endifchanged %}
+			{% with runs|return_item:forloop.counter as next_run %}
+			<!-- Run Row -->
+				<tr class="table-default {% ifchanged run.year %}{% else %}{% if run.deprecated %}hidden hide{% endif %}{% endifchanged %}">
+					<!-- Run Status Indicator -->
+					{% if run.status == task_status.BUILDING %}
+					<td class="centered table-warning" style="width:100px;" data-toggle="tooltip" data-placement="left" title="{{ run.status }} @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
+						<i class="fa fa-cog fa-spin" style="color:green"></i>
+					</td>
+                    {% elif run.status == task_status.BUILT or run.status == 'Built' %}
+					<td class="centered table-success" style="width:100px;" data-toggle="tooltip" data-placement="left" title="{{ run.status }} (ready to run) @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
+						<button {% if not can_edit %}disabled{% endif %} data-run_id="{{ run.id }}" tabindex="-1" type="button" class="btn btn-outline-success btn-run-inputs" style="width:100%;"><i class="fas fa-play"></i>&nbsp;&nbsp;{% trans "Run" %}</button>
+					</td>
+                    {% elif run.status == task_status.QUEUED %}
+					<td class="centered table-warning" style="width:100px;" data-toggle="tooltip" data-placement="left" title="{{ run.status }} @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
+						<i class="fa fa-clock" style="color:green"></i>
+					</td>
+                    {% elif run.status == task_status.RUNNING or run.status == 'Running...' %}
+					<td class="centered table-warning" style="width:100px;" data-toggle="tooltip" data-placement="left" title="{{ run.status }} @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
+						<i class="fa fa-sync fa-spin" style="color:green"></i>
+					</td>
+					{% elif run.status == task_status.SUCCESS or run.status == 'Finished' %}
+					<td class="centered table-success" style="width:100px;" data-toggle="tooltip" data-placement="left" title="{{ run.status }} @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
+						<i class="fas fa-check-circle" style="color:green"></i>
+					</td>
+					{% elif run.status == task_status.FAILURE or run.status == 'Failed' %}
+					<td class="centered table-danger" style="width:100px;" data-toggle="tooltip" data-placement="left" title="{{ run.status }} (see logs) @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
+						<i class="fa fa-exclamation-triangle" style="color:red"></i>
+					</td>
+					{% else %}
+					<td class="centered" data-toggle="tooltip" data-placement="left" title="{{ run.status }} @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
+						{{ run.status }}
+					</td>
+					{% endif %}
+					<!-- Subset Time -->
+					<td><div class="text-sm">{{ run.subset_time }}</div></td>
+					<!-- Notes -->
+					<td style="width: 40%">
+						<div class="run-description" style="cursor:copy" id="{{ run.id }}">{{ run.description|default:"" }}</div>
+					</td>
+					<!-- Inputs -->
+					<td class="centered">
+						{% if run.inputs_path %}
+						<a href="/api/download/?model_uuid={{ model.uuid }}&run_id={{ run.id }}&type=inputs"><button tabindex="-1" type="button" class="btn btn-primary btn-download" style="width:100%;"><i class="fa fa-download" aria-hidden="true"></i></button></a>
 						{% endif %}
-						<!-- Subset Time -->
-						<td><div class="text-sm">{{ run.subset_time }}</div></td>
-						<!-- Notes -->
-						<td style="width: 40%">
-							<div class="run-description" style="cursor:copy" id="{{ run.id }}">{{ run.description|default:"" }}</div>
-						</td>
-						<!-- Inputs -->
-						<td class="centered">
-							{% if run.inputs_path %}
-							<a href="/api/download/?model_uuid={{ model.uuid }}&run_id={{ run.id }}&type=inputs"><button tabindex="-1" type="button" class="btn btn-primary btn-download" style="width:100%;"><i class="fa fa-download" aria-hidden="true"></i></button></a>
-							{% endif %}
-						</td>
-						<!-- Logs -->
-						<td class="centered" data-toggle="tooltip" data-placement="right" title="{{ run.message }}">
-                            {% if run.logs_path %}
-                            <button data-run_id="{{ run.id }}" tabindex="-1" type="button" class="btn btn-warning btn-viz-logs" style="width:100%;"><i class="fa fa-bars" aria-hidden="true"></i></button>
-                            {% endif %}
-						</td>
-						<!-- Plots -->
-						<td class="centered">
-							{% if run.plots_path %}
-							<button data-run_id="{{ run.id }}" tabindex="-1" type="button" class="btn btn-success btn-viz-outputs" style="width:100%;"><i class="fa fa-chart-line" aria-hidden="true"></i></button>
-							{% elif run.outputs_path %}
-							<i class="fa fa-exclamation-triangle" data-toggle="tooltip" data-placement="left" title="{% trans 'Preview not available' %}" style="color:red"></i>
-							{% endif %}
-						</td>
-						<!-- Nodal Map Viz -->
-						<td class="centered">
-							{% if run.outputs_path %}
-							<!-- <button data-run_id="{{ run.id }}" tabindex="-1" type="button" class="btn btn-success btn-map-outputs" style="width:100%;"><i class="fa fa-map" aria-hidden="true"></i></button> -->
-							<a title="{% trans 'Open Map Viz in a new window' %}" href="/{{ model.uuid }}/{{ run.id }}/map_viz/" tabindex="-1" class="btn btn-success btn-map-outputs" style="width:100%;"><i class="fa fa-map" aria-hidden="true"></i></a>
-							{% endif %}
-						</td>
-						<!-- Outputs -->
-						<td class="centered">
-							{% if run.outputs_path %}
-							<a href="/api/download/?model_uuid={{ model.uuid }}&run_id={{ run.id }}&type=outputs"><button tabindex="-1" type="button" class="btn btn-success btn-download" style="width:100%;"><i class="fa fa-download" aria-hidden="true"></i></button></a>
-							{% endif %}
-						</td>
-						<!-- Deprecated -->
-						<td class="centered">
-							{% if run.deprecated %}
-							<button class="run-version btn btn-sm btn-outline-danger" style="font-size:0.7em;">{% trans "OUT OF DATE" %}</button>
-							{% else %}
-							<button class="run-version btn btn-sm btn-outline-success" style="font-size:0.7em;">{% trans "UP TO DATE" %}</button>
-							{% endif %}
-						</td>
-						<!-- Edit Buttons -->
-						<td class="centered">
-							{% if False %}
-							<button {% if not can_edit %}disabled{% endif %} data-run_id="{{ run.id }}" tabindex="-1" type="button" class="btn btn-outline-success btn-sm text-sm"  data-toggle="tooltip" data-placement="left" title="{% trans 'FEATURE UNDER DEVELOPMENT' %}">{% trans "Diff" %}</button>
-							{% endif %}
-							<button {% if not can_edit %}disabled{% endif %} data-run_id="{{ run.id }}" type="button" class="btn btn-sm btn-outline-danger run-delete" title="{% trans 'Delete run' %}"><i class="fas fa-trash"></i></button>
-						</td>
-					</tr>
-				{% endwith %}
-			{% endfor %}
-		</tbody>
-	</table>
-</div>
+					</td>
+					<!-- Logs -->
+					<td class="centered" data-toggle="tooltip" data-placement="right" title="{{ run.message }}">
+                        {% if run.logs_path %}
+                        <button data-run_id="{{ run.id }}" tabindex="-1" type="button" class="btn btn-warning btn-viz-logs" style="width:100%;"><i class="fa fa-bars" aria-hidden="true"></i></button>
+                        {% endif %}
+					</td>
+					<!-- Plots -->
+					<td class="centered">
+						{% if run.plots_path %}
+						<button data-run_id="{{ run.id }}" tabindex="-1" type="button" class="btn btn-success btn-viz-outputs" style="width:100%;"><i class="fa fa-chart-line" aria-hidden="true"></i></button>
+						{% elif run.outputs_path %}
+						<i class="fa fa-exclamation-triangle" data-toggle="tooltip" data-placement="left" title="{% trans 'Preview not available' %}" style="color:red"></i>
+						{% endif %}
+					</td>
+					<!-- Nodal Map Viz -->
+					<td class="centered">
+						{% if run.outputs_path %}
+						<!-- <button data-run_id="{{ run.id }}" tabindex="-1" type="button" class="btn btn-success btn-map-outputs" style="width:100%;"><i class="fa fa-map" aria-hidden="true"></i></button> -->
+						<a title="{% trans 'Open Map Viz in a new window' %}" href="/{{ model.uuid }}/{{ run.id }}/map_viz/" tabindex="-1" class="btn btn-success btn-map-outputs" style="width:100%;"><i class="fa fa-map" aria-hidden="true"></i></a>
+						{% endif %}
+					</td>
+					<!-- Outputs -->
+					<td class="centered">
+						{% if run.outputs_path %}
+						<a href="/api/download/?model_uuid={{ model.uuid }}&run_id={{ run.id }}&type=outputs"><button tabindex="-1" type="button" class="btn btn-success btn-download" style="width:100%;"><i class="fa fa-download" aria-hidden="true"></i></button></a>
+						{% endif %}
+					</td>
+					<!-- Deprecated -->
+					<td class="centered">
+						{% if run.deprecated %}
+						<button class="run-version btn btn-sm btn-outline-danger" style="font-size:0.7em;">{% trans "OUT OF DATE" %}</button>
+						{% else %}
+						<button class="run-version btn btn-sm btn-outline-success" style="font-size:0.7em;">{% trans "UP TO DATE" %}</button>
+						{% endif %}
+					</td>
+					<!-- Edit Buttons -->
+					<td class="centered">
+						{% if False %}
+						<button {% if not can_edit %}disabled{% endif %} data-run_id="{{ run.id }}" tabindex="-1" type="button" class="btn btn-outline-success btn-sm text-sm"  data-toggle="tooltip" data-placement="left" title="{% trans 'FEATURE UNDER DEVELOPMENT' %}">{% trans "Diff" %}</button>
+						{% endif %}
+						<button {% if not can_edit %}disabled{% endif %} data-run_id="{{ run.id }}" type="button" class="btn btn-sm btn-outline-danger run-delete" title="{% trans 'Delete run' %}"><i class="fas fa-trash"></i></button>
+					</td>
+				</tr>
+			{% endwith %}
+		{% endfor %}
+	</tbody>
+</table>

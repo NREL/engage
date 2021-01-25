@@ -6,7 +6,14 @@
 {% block head %}
 <title>NREL Engage | {{ model.name }} | Locations</title>
 <script type="text/javascript" src="{% static 'js/locations.js' %}"></script>
+<style>
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+</style>
 {% endblock %}
+
 
 {% block config_locations %}<h5><i class="fas fa-map-marker-alt"></i>&nbsp;&nbsp;<b>{% trans "Locations" %}</b></h5>{% endblock %}
 {% block config_1_sync %}<i class="fas fa-sync"></i>{% endblock %}
@@ -17,10 +24,10 @@
 	<span class="nav-dropdown centered" style="cursor:default;padding-top:15px;font-size:1.4em"><b>{% trans "All Locations" %}</b></span>
 </div>
 <div class="row">
-	<div class="col-12" id="map" style="height:350px;border:solid;"></div>
+	<div class="col-12" id="map" style="height:350px; border:solid;"></div>
     <div class="col-12" id="map-legend-container"><div id="map-legend"></div></div>
 </div>
-<div class="row" style="overflow-y: auto; height: 50vh; max-height: 50vh;" id="locations_dashboard">
+<div class="row" style="overflow-y: scroll; height: calc(100% - 495px);" id="locations_dashboard">
 	{% include "locations_dashboard.html" %}
 </div>
 {% endblock %}

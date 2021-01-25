@@ -23,6 +23,28 @@
   width: 800px; /* Could be more or less, depending on screen size */
 }
 
+.viz-spinner {
+  display: none;
+  height: 100px;
+  width: 100px;
+  font-size: 40px;
+  color: #c5c5c5;
+  margin-top: 40px;
+  margin-left: -75px;
+  position: absolute;
+  left: 50%;
+  z-index: 1000;
+}
+#build-error {
+  text-align: center;
+  width: 100%;
+  font-size: 20px;
+  color: red;
+  margin-top: 40px;
+  position: absolute;
+  z-index: 1000;
+}
+
 .debug {
   border: 2px solid blue;
 }
@@ -332,8 +354,8 @@ textarea {
  .timeseries_viz {
  	max-height: 280px;
  }
- #timeseries-container, #timeseries-content, #file-container {
-  max-height: 280px;
+ #timeseries-container, #timeseries-content, #file_container {
+  max-height: calc(100% - 75px);
   overflow-y: scroll;
  }
 
@@ -404,11 +426,6 @@ table .btn {
 }
 #timeseries_list .timeseries-row {
   cursor: pointer;
-}
-
-#file_container {
-  max-height:500px;
-  overflow-y: scroll;
 }
 
 

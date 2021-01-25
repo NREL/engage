@@ -443,7 +443,8 @@ function activate_charts(param_id, ts_id) {
 				},
 				dataType: 'json',
 				success: function (data) {
-					draw_charts(div_id, data['timestamps'], data['values'])
+					draw_charts(div_id, data['timestamps'], data['values']);
+					$('#timeseries-placeholder').hide();
 				}
 			});
 		};

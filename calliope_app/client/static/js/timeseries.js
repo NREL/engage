@@ -38,14 +38,14 @@ $( document ).ready(function() {
 	// end of file functions
 	
 	active_timeseries_table_click();
-	refresh_timeseries_table();
+	refresh_timeseries_table(true);
 	setInterval(function () {
-		refresh_timeseries_table();
+		refresh_timeseries_table(false);
 	}, 2000);
 
 });
 
-function refresh_timeseries_table() {
+function refresh_timeseries_table(open_viz) {
 	var model_uuid = $('#header').data('model_uuid');
 	$.ajax({
 		url: '/' + LANGUAGE_CODE + '/' + model_uuid + '/timeseries_table/',
@@ -57,6 +57,15 @@ function refresh_timeseries_table() {
 			select_file(false);
 			select_timeseries(false);
 			active_timeseries_table_click();
+			if (open_viz == true) {
+				var tr = $('.timeseries-row').first(),
+					fr = $('.file-row').first();
+				if (tr.length == 0) {
+					fr.click();
+				} else {
+					tr.click();
+				};
+			};
 		}
 	});
 }
@@ -234,6 +243,7 @@ function timeseries_content(file_id) {
 			success: function (data) {
 				$('.timeseries_viz').addClass('hide');
 				$('#timeseries-content').html(data['html']);
+				$('#timeseries-placeholder').hide();
 			}
 		});
 	} else {
