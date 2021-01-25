@@ -7,7 +7,6 @@ from django.urls import reverse
 from api.models.engage import Help_Guide
 from api.models.configuration import Model
 
-import os
 import re
 from pytz import common_timezones
 

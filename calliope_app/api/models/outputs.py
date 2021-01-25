@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 from api.models.utils import EngageManager
 from api.models.configuration import Model, Scenario
@@ -7,6 +8,7 @@ from taskmeta.models import CeleryTask
 import pandas as pd
 import numpy as np
 import os
+import requests
 
 
 class Run(models.Model):
@@ -30,6 +32,7 @@ class Run(models.Model):
     model = models.ForeignKey(Model, on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)
     deprecated = models.BooleanField(default=False)
+    published = models.BooleanField(default=False, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
@@ -54,6 +57,44 @@ class Run(models.Model):
 
     def __str__(self):
         return '%s (%s) @ %s' % (self.model, self.subset_time, self.updated)
+
+
+class Cambium():
+
+    @staticmethod
+    def push_run(run):
+        if not run.outputs_key:
+            data = {
+                'filename': run.outputs_key,
+                'processor': 'engage',
+                'project_name': run.model.name,
+                'project_uuid': run.model.uuid,
+                'project_source': 'Engage',
+                'extras': {"scenario": run.scenario.name, "year": run.year},
+                'private_key': settings.CAMBIUM_API_KEY
+            }
+            try:
+                # Cambium Request
+                url = 'https://cambium.nrel.gov/api/ingest_data/'
+                response = requests.post(url, data=data)
+                msg = response['message']
+
+                # Handle Response
+                if msg == "SUCCESS":
+                    run.model.run_set.filter(
+                        year=run.year,
+                        scenario_id=run.scenario_id).update(published=False)
+                    run.published = True
+                elif msg in ["SUBMITTED", "RECEIVED", "STARTED", "PENDING"]:
+                    run.published = None
+                elif msg in ["FAILURE"]:
+                    run.published = False
+                run.save()
+                return msg
+            except Exception as e:
+                return str(e)
+        else:
+            return 'Data has not been transferred to S3 bucket'
 
 
 class Haven():

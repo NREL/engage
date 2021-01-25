@@ -118,7 +118,8 @@ class Run_Admin(admin.ModelAdmin):
     list_display = ['id', 'scenario', 'year', 'subset_time', 'status',
                     'message', 'description', 'created', 'updated',
                     'inputs_path', 'logs_path', 'outputs_path', 'outputs_key',
-                    'plots_path', 'model', 'build_task', 'run_task']
+                    'plots_path', 'model', 'build_task', 'run_task',
+                    'deprecated', 'published']
 
 
 admin.site.register(Help_Guide, Help_Guide_Admin)

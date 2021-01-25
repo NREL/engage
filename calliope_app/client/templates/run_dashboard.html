@@ -17,11 +17,14 @@
 					<td class="centered" style="padding-top:10px"><b>{% trans "Map Viz" %}</b></td>
 					<td class="centered" style="padding-top:10px"><b>{% trans "Outputs" %}</b></td>
 					<td colspan=2 class="centered" style="padding-top:10px"><b>{% trans "Versions" %}</b></td>
+					{% if bucket_configured %}
+					<td class="centered" style="padding-top:10px"><b>{% trans "Cambium" %}</b></td>
+					{% endif %}
 				</tr>
 			{% endifchanged %}
 			{% with runs|return_item:forloop.counter as next_run %}
 			<!-- Run Row -->
-				<tr class="table-default {% ifchanged run.year %}{% else %}{% if run.deprecated %}hidden hide{% endif %}{% endifchanged %}">
+				<tr class="table-default">
 					<!-- Run Status Indicator -->
 					{% if run.status == task_status.BUILDING %}
 					<td class="centered table-warning" style="width:100px;" data-toggle="tooltip" data-placement="left" title="{{ run.status }} @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
@@ -94,9 +97,9 @@
 					<!-- Deprecated -->
 					<td class="centered">
 						{% if run.deprecated %}
-						<button class="run-version btn btn-sm btn-outline-danger" style="font-size:0.7em;">{% trans "OUT OF DATE" %}</button>
+						<button class="run-version btn btn-sm btn-outline-danger" style="font-size:0.7em;" disabled>{% trans "OUT OF DATE" %}</button>
 						{% else %}
-						<button class="run-version btn btn-sm btn-outline-success" style="font-size:0.7em;">{% trans "UP TO DATE" %}</button>
+						<button class="run-version btn btn-sm btn-outline-success" style="font-size:0.7em;" disabled>{% trans "UP TO DATE" %}</button>
 						{% endif %}
 					</td>
 					<!-- Edit Buttons -->
@@ -106,6 +109,18 @@
 						{% endif %}
 						<button {% if not can_edit %}disabled{% endif %} data-run_id="{{ run.id }}" type="button" class="btn btn-sm btn-outline-danger run-delete" title="{% trans 'Delete run' %}"><i class="fas fa-trash"></i></button>
 					</td>
+					<!-- Publish Button -->
+					{% if bucket_configured %}
+					<td class="centered">
+						{% if run.published == True %}
+						<button type="button" class="btn btn-sm btn-success run-cambium" title="{% trans 'Published' %}"><b>Published</b></button>
+						{% elif run.published == False %}
+						<button {% if not can_edit %}disabled{% endif %} data-run_id="{{ run.id }}" type="button" class="btn btn-sm btn-warning run-publish" title="{% trans 'Publish run' %}"><b>Publish</b></button>
+						{% else %}
+						<button disabled data-run_id="{{ run.id }}" type="button" class="btn btn-sm btn-warning run-publishing" title="{% trans 'Publishing run' %}">&nbsp;&nbsp;<i class="fas fa-spinner fa-spin"></i>&nbsp;&nbsp;</button>
+						{% endif %}
+					</td>
+					{% endif %}
 				</tr>
 			{% endwith %}
 		{% endfor %}

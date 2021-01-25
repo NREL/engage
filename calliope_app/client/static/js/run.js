@@ -130,11 +130,9 @@ function bindEditable() {
 				$('.run-description').unbind();
 			},
 			callback: function(result, settings, submitdata) {
-				if (!$('.hidden').is(':visible')) {
-					hold_refresh = false;
-					clearInterval(pause_interval);
-					$('#updates_paused').slideUp();
-				};
+				hold_refresh = false;
+				clearInterval(pause_interval);
+				$('#updates_paused').slideUp();
 				bindEditable();
 			},
 			cssclass: '',
@@ -170,22 +168,6 @@ function activate_runs() {
 	
 	bindEditable();
 
-	$('.run-version').on('click', function() {
-		if ($('.hidden').is(':visible')) {
-			$('.hidden').toggle('hide')
-			hold_refresh = false;
-			clearInterval(pause_interval);
-			$('#updates_paused').slideUp();
-		} else {
-			$('.hidden').toggle('hide')
-			hold_refresh = true;
-			pause_start = new Date();
-			updatePauseTime();
-			pause_interval = setInterval(updatePauseTime, 1000);
-			$('#updates_paused').slideDown();
-		};
-	});
-
 	$('.btn-run-inputs').unbind();
 	$('.btn-run-inputs').on('click', function() {
 		var run_id = $(this).data('run_id')
@@ -200,6 +182,7 @@ function activate_runs() {
 			},
 			dataType: 'json',
 			success: function (data) {
+				refresh_run_dashboard();
 			}
 		});
 	});
@@ -289,6 +272,35 @@ function activate_runs() {
 				complete: function (data) {
 					$('#viz_logs_container').empty().hide();
 					$('#viz_outputs_container').empty().hide();
+				}
+			});
+		};
+	});
+
+	$('.run-cambium').unbind();
+	$('.run-cambium').on('click', function() {
+		var url = 'https://cambium.nrel.gov/?project=' + $('#header').data('model_uuid');
+		var win = window.open(url, '_blank');
+		if (win) { win.focus() } else { alert('Please allow popups for this website') };
+	});
+
+	$('.run-publish').unbind();
+	$('.run-publish').on('click', function() {
+		var run_id = $(this).data('run_id');
+		var confirmation = confirm('Are you sure you want to publish these results?\nAnyone with the link will be able to access this data!');
+		if (confirmation) {
+			$.ajax({
+				url: '/' + LANGUAGE_CODE + '/api/publish_run/',
+				data: {
+					'model_uuid': $('#header').data('model_uuid'),
+					'run_id': run_id,
+					'csrfmiddlewaretoken': getCookie('csrftoken'),
+				},
+				type: 'POST',
+				dataType: 'json',
+				success: function (data) {
+					console.log(data);
+					refresh_run_dashboard();
 				}
 			});
 		};
