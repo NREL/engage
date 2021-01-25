@@ -656,7 +656,6 @@ function add_marker(name, id, type, draggable, coordinates) {
 				} else {
 					has_trans = true;
 					if (loc_techs[i].location_2 == name) { var loc = loc_techs[i].location_1 } else { var loc = loc_techs[i].location_2 };
-					console.log(name, loc_techs[i].location_1, loc_techs[i].location_2, loc)
 					trans_html += '<span style="color: ' + loc_techs[i].color + '; padding-right: 10px;">' + loc_techs[i].icon + '</span>' + loc_techs[i].technology + '&nbsp;&rarr;&nbsp;' + loc + '<br>';
 				}
 			}

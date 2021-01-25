@@ -89,6 +89,11 @@ function get_scenario_configuration() {
 				retrieve_map(false, scenario_id, undefined);
 
 				$('.add_loc_tech').on('change', function(e) {
+					if ($(this).hasClass('disabled')) {
+						$(this).prop("checked", !$(this).is(":checked"));
+						alert('Unlock the table first to make edits!')
+						return false;
+					}
 					var loc_tech_id = $(this).parents('tr').data('loc_tech_id');
 					if (e.target.checked) {
 						toggle_scenario_loc_tech(loc_tech_id, true)
@@ -99,6 +104,11 @@ function get_scenario_configuration() {
 					}
 				})
 				$('#add_loc_techs').on('change', function(e) {
+					if ($(this).hasClass('disabled')) {
+						$(this).prop("checked", !$(this).is(":checked"));
+						alert('Unlock the table first to make edits!')
+						return false;
+					}
 					if (e.target.checked) {
 						var visible_loc_techs = $(".node").not(".hide").find(".add_loc_tech:not(:checked)");
 						visible_loc_techs.each( function() {
@@ -127,11 +137,11 @@ function get_scenario_configuration() {
 					if (is_unlocked) {
 						$('.fa-lock').removeClass('hide');
 						$('.fa-unlock').addClass('hide');
-						$('.add_loc_tech, #add_loc_techs').prop('disabled', true);
+						$('.add_loc_tech, #add_loc_techs').addClass('disabled');
 					} else {
 						$('.fa-lock').addClass('hide');
 						$('.fa-unlock').removeClass('hide');
-						$('.add_loc_tech, #add_loc_techs').prop('disabled', false);
+						$('.add_loc_tech, #add_loc_techs').removeClass('disabled');
 					}
 				})
 				if ($('#master-cancel').hasClass('hide')) {

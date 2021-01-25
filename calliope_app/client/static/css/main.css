@@ -1,7 +1,15 @@
 .modal-dialog {
   max-width: 700px;
 }
-
+th.sticky {
+  position: sticky;
+  top: -1px;
+  background-color: #c1c1c1;
+  z-index: 1000;
+}
+#config_table {
+  position: relative;
+}
 #data-source-modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */

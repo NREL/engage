@@ -6,11 +6,13 @@
 	<tbody>
 		<!-- Configuration Header Row  -->
 		<tr class="tbl-header" style="border-left: solid 20px grey">
-			<th colspan=2></th>
-			<th class="text-sm">{% trans "Technologies" %}</th>
-			<th class="text-sm">{% trans "Scenario Tag" %}</th>
-			<th class="text-sm">{% trans "Locations" %}</th>
-			<th class="text-sm centered"><button id="edit-scenario" {% if not can_edit %}disabled{% endif %} class="btn btn-light blink_me" data-toggle="tooltip" data-placement="left" title="Lock/unlock the scenario configuration."><i class="fas fa-lock" style="color:red"></i><i class="fas fa-unlock hide" style="color:green"></i></button></th>
+			<th class="sticky" colspan=2></th>
+			<th class="sticky text-sm">{% trans "Technologies" %}</th>
+			<th class="sticky text-sm">{% trans "Scenario Tag" %}</th>
+			<th class="sticky text-sm">{% trans "Locations" %}</th>
+			<th class="sticky text-sm centered">
+				<button id="edit-scenario" {% if not can_edit %}disabled{% endif %} class="btn btn-light blink_me" data-toggle="tooltip" data-placement="left" title="Lock/unlock the scenario configuration."><i class="fas fa-lock" style="color:red"></i><i class="fas fa-unlock hide" style="color:green"></i></button>
+			</th>
 		</tr>
 		<tr id="filter-row" class="tbl-header" style="border-left: solid 20px grey">
 			<th class="text-sm"></th>
@@ -41,7 +43,7 @@
 			</th>
 			<th class="text-sm centered">
 				<label class="switch">
-				  <input disabled id="add_loc_techs" type="checkbox">
+				  <input class="disabled" id="add_loc_techs" type="checkbox">
 				  <span class="slider round" style="border-radius: 11px;" data-toggle="tooltip" data-placement="left" title="{% trans 'Bulk toggle nodes activation for the current scenario.' %}"></span>
 				</label>
 			</th>
@@ -98,8 +100,8 @@
 				<!-- Scenario Loc Tech Edit Buttons -->
 				<td class="centered">
 					<label class="switch">
-					  <input disabled class="add_loc_tech" type="checkbox" {% if loc_tech.id in active_lt_ids %}checked{% endif %}>
-					  <span class="slider round" data-toggle="tooltip" data-placement="left" title="{% trans 'Toggle node activation for the current scenario.' %}"></span>
+					  <input class="add_loc_tech disabled" type="checkbox" {% if loc_tech.id in active_lt_ids %}checked{% endif %}>
+					  <span class="slider round" data-toggle="tooltip" data-placement="left" title="{% trans 'Toggle node activation.' %}"></span>
 					</label>
 				</td>
 			</tr>
