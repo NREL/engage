@@ -75,7 +75,7 @@ class Cambium():
             }
             try:
                 # Cambium Request
-                url = 'https://cambium.nrel.gov/api/ingest_data/'
+                url = os.path.join(settings.CAMBIUM_URL, 'api/ingest-data/')
                 response = requests.post(url, data=data)
                 msg = response['message']
 

@@ -50,7 +50,7 @@ def run_dashboard(request):
         "runs": runs,
         "can_edit": can_edit,
         "task_status": task_status,
-        "bucket_configured": bool(settings.AWS_S3_BUCKET_NAME)
+        "cambium_configured": bool(settings.CAMBIUM_API_KEY)
     }
     html = list(render(request, 'run_dashboard.html', context))[0]
 

@@ -17,7 +17,7 @@
 					<td class="centered" style="padding-top:10px"><b>{% trans "Map Viz" %}</b></td>
 					<td class="centered" style="padding-top:10px"><b>{% trans "Outputs" %}</b></td>
 					<td colspan=2 class="centered" style="padding-top:10px"><b>{% trans "Versions" %}</b></td>
-					{% if bucket_configured %}
+					{% if cambium_configured %}
 					<td class="centered" style="padding-top:10px"><b>{% trans "Cambium" %}</b></td>
 					{% endif %}
 				</tr>
@@ -110,7 +110,7 @@
 						<button {% if not can_edit %}disabled{% endif %} data-run_id="{{ run.id }}" type="button" class="btn btn-sm btn-outline-danger run-delete" title="{% trans 'Delete run' %}"><i class="fas fa-trash"></i></button>
 					</td>
 					<!-- Publish Button -->
-					{% if bucket_configured %}
+					{% if cambium_configured %}
 					<td class="centered">
 						{% if run.published == True %}
 						<button type="button" class="btn btn-sm btn-success run-cambium" title="{% trans 'Published' %}"><b>Published</b></button>

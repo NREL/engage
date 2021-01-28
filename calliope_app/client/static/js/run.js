@@ -279,7 +279,7 @@ function activate_runs() {
 
 	$('.run-cambium').unbind();
 	$('.run-cambium').on('click', function() {
-		var url = 'https://cambium.nrel.gov/?project=' + $('#header').data('model_uuid');
+		var url = $('#header').data('cambium_url');
 		var win = window.open(url, '_blank');
 		if (win) { win.focus() } else { alert('Please allow popups for this website') };
 	});
@@ -299,7 +299,6 @@ function activate_runs() {
 				type: 'POST',
 				dataType: 'json',
 				success: function (data) {
-					console.log(data);
 					refresh_run_dashboard();
 				}
 			});

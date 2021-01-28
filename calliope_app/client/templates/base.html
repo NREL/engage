@@ -70,7 +70,7 @@
 		{% include '_messages.html' %}
 	{% endif %}
   
-	<div id="header" class="container-fluid" data-model_uuid="{{ model.uuid }}{{ last_model.uuid }}">
+	<div id="header" class="container-fluid" data-model_uuid="{{ model.uuid }}{{ last_model.uuid }}" data-cambium_url="{{ cambium_url }}">
 		<div class="row">
 			<div class="col-12" style="font-size:20px;height:36px;padding:0">
 
@@ -203,7 +203,7 @@
 			<img src="{% static 'images/engage-logo-horiz-lrg.png' %}" width="40%" />
 			<br><br>
 			{% trans "OPEN ACCESS ENERGY SYSTEM PLANNING" %}<br>
-			Supported on Modern <a href="https://www.google.com/chrome"><i class="fab fa-chrome"></i> Chrome</a> and <a href="https://www.firefox.com/"><i class="fab fa-firefox"></i> Firefox</a> Browsers
+			{% trans "Supported on Modern" %} <a href="https://www.google.com/chrome"><i class="fab fa-chrome"></i> Chrome</a> {% trans "and" %} <a href="https://www.firefox.com/"><i class="fab fa-firefox"></i> Firefox</a> {% trans "Browsers" %}
 			<br><br>
 
 	      	<!-- Assistance -->
@@ -219,7 +219,7 @@
 				<img src="{% static 'images/calliope_logo.png' %}" height="36px" style="margin-top:-4px" />
 			</a>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	      	<a href="https://calliope.readthedocs.io/en/v0.6.3/" target="_blank"><b>Calliope {% trans "Documentation" %}</b></a>
+	      	<a href="https://calliope.readthedocs.io/en/v0.6.3/" target="_blank"><b>Calliope {% trans "Documentation" %} 0.6.3</b></a>
 	      	<hr>
 
 	      	<!-- Contextual Content -->
