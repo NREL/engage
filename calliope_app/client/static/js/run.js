@@ -74,11 +74,16 @@ function refresh_run_dashboard(open_viz) {
 				if (open_viz == true) {
 					var vo = $('.btn-viz-outputs').first(),
 						vl = $('.btn-viz-logs').first();
-					if (vo.length == 0) {
+					if (vo.length > 0) {
+						vo.click();
+					} else if (vl.length > 0) {
 						vl.click();
 					} else {
-						vo.click();
-					};
+						toggle_viz_spinner(false);
+						$('#viz_logs_container').empty().hide();
+						$('#viz_outputs_container').empty().show();
+						$('#build-error').html("No results yet...");
+					}
 				};
 			}
 		});
@@ -271,7 +276,8 @@ function activate_runs() {
 				dataType: 'json',
 				complete: function (data) {
 					$('#viz_logs_container').empty().hide();
-					$('#viz_outputs_container').empty().hide();
+					$('#viz_outputs_container').empty().show();
+					$('#build-error').html("Run deleted...");
 				}
 			});
 		};
@@ -299,6 +305,7 @@ function activate_runs() {
 				type: 'POST',
 				dataType: 'json',
 				success: function (data) {
+					console.log(data);
 					refresh_run_dashboard();
 				}
 			});

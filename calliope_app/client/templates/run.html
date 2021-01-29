@@ -26,11 +26,9 @@
 <div id="subheader2" class="row content_navigation">
 	{% include "scenario_selector.html" %}
 </div>
-<div class="row" style="overflow-y: scroll; height:350px; position: relative;">
+<div class="row" style="overflow-y: scroll; height:350px; border:solid; position: relative;">
 	<span id="build-error" style="color:red"></span>
-    <div id="viz_outputs_container" style="width: 100%;">
-    	<div class="centered" style="width: 100%; margin-top: 100px;"><h3>No results yet...</h3></div>
-    </div>
+    <div id="viz_outputs_container" style="width: 100%;"></div>
     <div id="viz_logs_container" class="rounded col-12" style="display: none; background-color: black; color: white;"></div>
 	<div class="viz-spinner centered">
 		<div class="spinner-grow" style="width: 10rem; height: 10rem;" role="status">

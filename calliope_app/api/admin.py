@@ -38,6 +38,7 @@ class Model_Admin(admin.ModelAdmin):
 
 
 class Model_User_Admin(admin.ModelAdmin):
+    list_filter = ['model']
     list_display = ['id', 'model', 'user', 'can_edit',
                     'last_access', 'notifications']
 
@@ -48,14 +49,17 @@ class User_Profile_Admin(admin.ModelAdmin):
 
 
 class Model_Comment_Admin(admin.ModelAdmin):
+    list_filter = ['model']
     list_display = ['id', 'model', 'user', 'type', 'comment', 'created']
 
 
 class Model_Favorite_Admin(admin.ModelAdmin):
+    list_filter = ['model']
     list_display = ['id', 'model', 'parameter']
 
 
 class User_File_Admin(admin.ModelAdmin):
+    list_filter = ['model']
     list_display = ['id', 'filename', 'description', 'model', 'created']
 
 
@@ -66,34 +70,40 @@ class Run_Parameter_Admin(admin.ModelAdmin):
 
 
 class Location_Admin(admin.ModelAdmin):
+    list_filter = ['model']
     list_display = ['id', 'pretty_name', 'name', 'latitude', 'longitude',
                     'available_area', 'model', 'created', 'updated']
 
 
 class Technology_Admin(admin.ModelAdmin):
+    list_filter = ['model']
     list_display = ['id', 'pretty_name', 'abstract_tech', 'name', 'tag',
                     'pretty_tag', 'is_linear', 'is_expansion', 'model',
                     'created', 'updated']
 
 
 class Tech_Param_Admin(admin.ModelAdmin):
+    list_filter = ['model', 'technology']
     list_display = ['id', 'technology', 'year', 'parameter', 'value',
                     'raw_value', 'timeseries', 'timeseries_meta', 'model',
                     'created', 'updated']
 
 
 class Loc_Tech_Admin(admin.ModelAdmin):
+    list_filter = ['model']
     list_display = ['id', 'location_1', 'location_2', 'technology',
                     'model', 'created', 'updated']
 
 
 class Loc_Tech_Param_Admin(admin.ModelAdmin):
+    list_filter = ['model', 'loc_tech']
     list_display = ['id', 'loc_tech', 'year', 'parameter', 'value',
                     'raw_value', 'timeseries', 'timeseries_meta', 'model',
                     'created', 'updated']
 
 
 class Timeseries_Meta_Admin(admin.ModelAdmin):
+    list_filter = ['model']
     list_display = ['id', 'name', 'model', 'file_uuid', 'created',
                     'start_date', 'end_date',
                     'original_filename', 'original_timestamp_col',
@@ -102,19 +112,23 @@ class Timeseries_Meta_Admin(admin.ModelAdmin):
 
 
 class Scenario_Admin(admin.ModelAdmin):
+    list_filter = ['model']
     list_display = ['id', 'name', 'model', 'created', 'updated']
 
 
 class Scenario_Loc_Tech_Admin(admin.ModelAdmin):
+    list_filter = ['model']
     list_display = ['id', 'scenario', 'loc_tech', 'model', 'created']
 
 
 class Scenario_Param_Admin(admin.ModelAdmin):
+    list_filter = ['model', 'scenario']
     list_display = ['id', 'scenario', 'run_parameter', 'year', 'value',
                     'model', 'created', 'updated']
 
 
 class Run_Admin(admin.ModelAdmin):
+    list_filter = ['model']
     list_display = ['id', 'scenario', 'year', 'subset_time', 'status',
                     'message', 'description', 'created', 'updated',
                     'inputs_path', 'logs_path', 'outputs_path', 'outputs_key',

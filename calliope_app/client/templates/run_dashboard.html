@@ -16,10 +16,11 @@
 					<td class="centered" style="padding-top:10px"><b>{% trans "Plots" %}</b></td>
 					<td class="centered" style="padding-top:10px"><b>{% trans "Map Viz" %}</b></td>
 					<td class="centered" style="padding-top:10px"><b>{% trans "Outputs" %}</b></td>
-					<td colspan=2 class="centered" style="padding-top:10px"><b>{% trans "Versions" %}</b></td>
+					<td class="centered" style="padding-top:10px"><b>{% trans "Version" %}</b></td>
 					{% if cambium_configured %}
 					<td class="centered" style="padding-top:10px"><b>{% trans "Cambium" %}</b></td>
 					{% endif %}
+					<td></td>
 				</tr>
 			{% endifchanged %}
 			{% with runs|return_item:forloop.counter as next_run %}
@@ -102,16 +103,10 @@
 						<button class="run-version btn btn-sm btn-outline-success" style="font-size:0.7em;" disabled>{% trans "UP TO DATE" %}</button>
 						{% endif %}
 					</td>
-					<!-- Edit Buttons -->
-					<td class="centered">
-						{% if False %}
-						<button {% if not can_edit %}disabled{% endif %} data-run_id="{{ run.id }}" tabindex="-1" type="button" class="btn btn-outline-success btn-sm text-sm"  data-toggle="tooltip" data-placement="left" title="{% trans 'FEATURE UNDER DEVELOPMENT' %}">{% trans "Diff" %}</button>
-						{% endif %}
-						<button {% if not can_edit %}disabled{% endif %} data-run_id="{{ run.id }}" type="button" class="btn btn-sm btn-outline-danger run-delete" title="{% trans 'Delete run' %}"><i class="fas fa-trash"></i></button>
-					</td>
 					<!-- Publish Button -->
 					{% if cambium_configured %}
 					<td class="centered">
+						{% if run.outputs_path %}
 						{% if run.published == True %}
 						<button type="button" class="btn btn-sm btn-success run-cambium" title="{% trans 'Published' %}"><b>Published</b></button>
 						{% elif run.published == False %}
@@ -119,8 +114,16 @@
 						{% else %}
 						<button disabled data-run_id="{{ run.id }}" type="button" class="btn btn-sm btn-warning run-publishing" title="{% trans 'Publishing run' %}">&nbsp;&nbsp;<i class="fas fa-spinner fa-spin"></i>&nbsp;&nbsp;</button>
 						{% endif %}
+						{% endif %}
 					</td>
 					{% endif %}
+					<!-- Edit Buttons -->
+					<td class="centered">
+						{% if False %}
+						<button {% if not can_edit %}disabled{% endif %} data-run_id="{{ run.id }}" tabindex="-1" type="button" class="btn btn-outline-success btn-sm text-sm"  data-toggle="tooltip" data-placement="left" title="{% trans 'FEATURE UNDER DEVELOPMENT' %}">{% trans "Diff" %}</button>
+						{% endif %}
+						<button {% if not can_edit %}disabled{% endif %} data-run_id="{{ run.id }}" type="button" class="btn btn-sm btn-outline-danger run-delete" title="{% trans 'Delete run' %}"><i class="fas fa-trash"></i></button>
+					</td>
 				</tr>
 			{% endwith %}
 		{% endfor %}
