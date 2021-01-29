@@ -443,7 +443,8 @@ function activate_charts(param_id, ts_id) {
 				},
 				dataType: 'json',
 				success: function (data) {
-					draw_charts(div_id, data['timestamps'], data['values'])
+					draw_charts(div_id, data['timestamps'], data['values']);
+					$('#timeseries-placeholder').hide();
 				}
 			});
 		};
@@ -655,7 +656,6 @@ function add_marker(name, id, type, draggable, coordinates) {
 				} else {
 					has_trans = true;
 					if (loc_techs[i].location_2 == name) { var loc = loc_techs[i].location_1 } else { var loc = loc_techs[i].location_2 };
-					console.log(name, loc_techs[i].location_1, loc_techs[i].location_2, loc)
 					trans_html += '<span style="color: ' + loc_techs[i].color + '; padding-right: 10px;">' + loc_techs[i].icon + '</span>' + loc_techs[i].technology + '&nbsp;&rarr;&nbsp;' + loc + '<br>';
 				}
 			}
@@ -746,12 +746,11 @@ function add_marker(name, id, type, draggable, coordinates) {
 }
 
 var mapbox_styles = {
+	'Dark': 'mapbox/dark-v10',
+	'Light': 'mapbox/light-v10',
 	'Streets': 'mapbox/streets-v11',
 	'Satellite': 'mapbox/satellite-v9',
-	'Satellite + Streets': 'mapbox/satellite-streets-v9',
-	'Outdoors': 'mapbox/outdoors-v11',
-	'Light': 'mapbox/light-v10',
-	'Dark': 'mapbox/dark-v10'
+	'Satellite + Streets': 'mapbox/satellite-streets-v9'
 }
 
 var map_style = localStorage.getItem("mapstyle") || Object.values(mapbox_styles)[0];

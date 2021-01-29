@@ -5,6 +5,12 @@
 {% block head %}
 <title>Engage | {{ model.name }} | Scenarios</title>
 <script type="text/javascript" src="{% static 'js/scenarios.js' %}"></script>
+<style>
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+</style>
 {% endblock %}
 
 {% block config_scenarios %}<h5><i class="fas fa-code-branch"></i>&nbsp;&nbsp;<b>Scenarios</b></h5>{% endblock %}
@@ -17,12 +23,10 @@
 </div>
 <div class="row">
 	<div class="col-12" id="map" style="height:350px;border:solid;"></div>
-    <div class="col-12" id="map-legend-container"><div id="map-legend"></div></div>s
+    <div class="col-12" id="map-legend-container"><div id="map-legend"></div></div>
 </div>
-<form id="form_scenario_settings" method="post" action="" accept-charset="utf-8">
-	<div class="row hide" id="scenario_settings"><div style="color:red" class="col-12 centered"><br>{% trans "Oops, an error occurred" %}.<br><br></div></div>
+<form style="height: 100%" id="form_scenario_settings" class="hide" method="post" action="" accept-charset="utf-8">
+	<div style="overflow-y: scroll; height: calc(100% - 495px);" class="row" id="scenario_settings"><div style="color:red" class="col-12 centered"><br>{% trans "Oops, an error occurred" %}.<br><br></div></div>
 </form>
-<!-- <form id="form_scenario_configuration" method="post" action="" accept-charset="utf-8"> -->
-	<div class="row" id="scenario_configuration"></div>
-<!-- </form> -->
+<div class="row" style="overflow-y: scroll; height: calc(100% - 495px);" id="scenario_configuration"></div>
 {% endblock %}

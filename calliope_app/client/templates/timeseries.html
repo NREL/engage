@@ -7,17 +7,25 @@
 {% block head %}
 <title>Engage | {{ model.name }} | Timeseries</title>
 <script type="text/javascript" src="{% static 'js/timeseries.js' %}"></script>
+<style>
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<br>
-<div class="row">
-	<div id="timeseries-content" class="col-12"></div>
-	<div id="chart-0" class="col-12 centered timeseries_viz"></div>
+<div class="row" style="height:350px; border:solid;">
+	<div class="col-12" style="padding: 0;">
+		<div id="timeseries-placeholder" class="centered " style="width: 100%; margin-top: 100px;"><h3>No data yet...</h3></div>
+		<div id="timeseries-content" class="" style="max-height: 344px;"></div>
+		<div id="chart-0" class=" centered timeseries_viz" style="max-height:350px; padding-top: 20px;"></div>
+	</div>
 </div>
 <br>
-<div class="row">
-	<div class="col-6">
+<div class="row" style="height: calc(100% - 415px);">
+	<div class="col-6" style="height: 100%;">
 		<div class="row">
 			<div class="col-6">
 				<h5>
@@ -80,7 +88,7 @@
 				</table>
 		</div>
 	</div>
-	<div class="col-6">
+	<div class="col-6" style="height: 100%;">
 		<div class="row">
 			<div class="col-6">
 				<h5>

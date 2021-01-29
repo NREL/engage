@@ -13,16 +13,18 @@
 {% block config_4_tab %}tab-active{% endblock %}
 
 {% block content %}
-<form id="form_data" method="post" action="" accept-charset="utf-8" onsubmit="return false;">
+<form id="form_data" style="height: 100%" method="post" action="" accept-charset="utf-8" onsubmit="return false;">
 	<div id="subheader2" class="row content_navigation">
 		<input {% if not can_edit %}disabled{% endif %} id="scenario" class="nav-dropdown centered" type="text" autocomplete="off" placeholder="{% trans 'Name of new scenario' %}..."/>
 	</div>
-	<br>
-	<div class="row">
+	<div class="row" style="overflow-y: scroll; height: calc(100% - 145px);">
 		<div class="col-1"></div>
 		<div class="col-10">
 			<div class="row">
-				<div class="col-12 centered"><h5>1. <u>{% trans "Name" %}</u> {% trans "the new scenario" %} <b>{% trans "above" %}</b><br><br>2. <u>{% trans "Choose" %}</u> {% trans "an existing scenario to duplicate" %} <b>{% trans "below" %}</b> [OPTIONAL]</h5><br><br><h2>{% trans "Existing" %}:</h2><br></div>
+				<div class="col-12 centered">
+					<br><br>
+					<h5>1. <u>{% trans "Name" %}</u> {% trans "the new scenario" %} <b>{% trans "above" %}</b><br><br>2. <u>{% trans "Choose" %}</u> {% trans "an existing scenario to duplicate" %} <b>{% trans "below" %}</b> [OPTIONAL]</h5><br><br><h2>{% trans "Existing" %}:</h2><br>
+				</div>
 				{% if scenarios %}
 				{% for scenario in scenarios %}
 				<div class="col-12 centered selection_tile" data-scenario_id="{{ scenario.id }}">

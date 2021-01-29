@@ -367,15 +367,14 @@ def scenario(request):
     scenario_settings = list(render(request,
                                     'scenario_settings.html',
                                     context))[0]
-
     context = {
         "model": model,
         "active_lt_ids": active_lt_ids,
         "loc_techs": loc_techs,
         "scenario_id": scenario_id,
-        "unique_techs": list(set(unique_techs)),
-        "unique_tags": list(set(unique_tags)),
-        "unique_locations": list(filter(None, set(unique_locations))),
+        "unique_techs": sorted(set(unique_techs)),
+        "unique_tags": sorted(set(unique_tags)),
+        "unique_locations": sorted(filter(None, set(unique_locations))),
         "can_edit": can_edit}
     scenario_configuration = list(render(request,
                                          'scenario_configuration.html',

@@ -161,3 +161,8 @@ AWS_SES_FROM_EMAIL = env.str('AWS_SES_FROM_EMAIL', '')
 
 # S3 BUCKET
 AWS_S3_BUCKET_NAME = env.str('AWS_S3_BUCKET_NAME', '')
+
+# Cambium API
+# ------------------------------------------------------------------------------
+CAMBIUM_URL = env.str("CAMBIUM_URL", "")
+CAMBIUM_API_KEY = env.str("CAMBIUM_API_KEY", "")

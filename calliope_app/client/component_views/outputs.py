@@ -2,9 +2,10 @@ from django.http import HttpResponse, JsonResponse, Http404
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 from django.utils.html import mark_safe
+from django.conf import settings
 
 from api.models.configuration import Model
-from api.models.outputs import Run
+from api.models.outputs import Run, Cambium
 from api.tasks import task_status
 
 import os
@@ -40,11 +41,16 @@ def run_dashboard(request):
 
     runs = model.runs.filter(scenario_id=scenario_id)
 
+    # Check for any publication updates
+    for run in runs.filter(published=None):
+        Cambium.push_run(run)
+
     context = {
         "model": model,
         "runs": runs,
         "can_edit": can_edit,
-        "task_status": task_status
+        "task_status": task_status,
+        "cambium_configured": bool(settings.CAMBIUM_API_KEY)
     }
     html = list(render(request, 'run_dashboard.html', context))[0]
 

@@ -7,7 +7,6 @@ from django.urls import reverse
 from api.models.engage import Help_Guide
 from api.models.configuration import Model
 
-import os
 import re
 from pytz import common_timezones
 
@@ -43,6 +42,7 @@ def runs_view(request, model_uuid):
         "session_scenario": session_scenario,
         "can_edit": can_edit,
         "mapbox_token": settings.MAPBOX_TOKEN,
+        "cambium_url": settings.CAMBIUM_URL + '?project=' + str(model.uuid),
         "help_content": Help_Guide.get_safe_html('runs'),
     }
 

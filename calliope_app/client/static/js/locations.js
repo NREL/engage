@@ -107,7 +107,6 @@ function toggle_location_edit(location_id, edit) {
 			row.find('.location-edit').toggleClass('btn-danger bg-danger').html('<i class="fas fa-edit"></i> Edit');
 			var marker = markers.find(function(m) { return m.id == id });
 			var location = locations.find(function(l) { return l.id == id });
-			marker.getPopup().setHTML('<h4>' + location['pretty_name'] + '</h4>');
 			marker.setLngLat([location.longitude, location.latitude]);
 			row.attr('data-dirty', '');
 		} else {
@@ -133,7 +132,6 @@ function update_marker_from_row(tr) {
 	var name = tr.find('.location-edit-name').val();
 	var marker = markers.find(function(m) { return m.id == id });
 	marker.setLngLat([lng, lat]);
-	marker.getPopup().setHTML('<h4>' + name + '</h4>');
 }
 
 function activate_location_elements() {

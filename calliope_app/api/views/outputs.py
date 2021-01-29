@@ -5,13 +5,13 @@ from datetime import datetime, timedelta
 
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate
 
-from api.exceptions import AuthenticationFailedException, ModelNotExistException
+from api.exceptions import ModelNotExistException
 from api.models.outputs import Run
-from api.models.outputs import Haven
+from api.models.outputs import Haven, Cambium
 from api.tasks import run_model, task_status, build_model
 from api.models.configuration import Model, ParamsManager, Model_User
 from api.utils import zip_folder
@@ -209,6 +209,34 @@ def delete_run(request):
     #     shutil.rmtree(run.outputs_path)
 
     return HttpResponseRedirect("")
+
+
+@csrf_protect
+def publish_run(request):
+    """
+    Publish a scenario run to Cambium (https://cambium.nrel.gov/)
+
+    Parameters:
+    model_uuid (uuid): required
+    run_id (int): required
+
+    Returns (json): Action Confirmation
+
+    Example:
+    POST: /api/publish_run/
+    """
+
+    model_uuid = request.POST["model_uuid"]
+    run_id = request.POST["run_id"]
+
+    model = Model.by_uuid(model_uuid)
+    model.handle_edit_access(request.user)
+
+    run = model.runs.filter(id=run_id).first()
+    msg = Cambium.push_run(run)
+    payload = {'message': msg}
+
+    return HttpResponse(json.dumps(payload), content_type="application/json")
 
 
 @csrf_protect
