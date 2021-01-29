@@ -13,7 +13,7 @@
 	}
     html, body {
       height: 100%;
-      overflow: hidden;
+      overflow-y: hidden;
     }
 </style>
 {% endblock %}
@@ -42,5 +42,5 @@
 		<button class="btn btn-sm btn-warning" onClick="window.location.reload();">{% trans "Refresh" %}</button> {% trans "Dashboard updates have been paused for" %} <span id="pause_time" class="font-weight-bold">0 {% trans "seconds" %}</span>.
 	</div>
 </div>
-<div class="row" style="overflow-y: scroll; height: calc(100% - 495px);" id="run_dashboard"></div>
+<div class="row" style="white-space: nowrap; overflow-y: scroll; height: calc(100% - 495px);" id="run_dashboard"></div>
 {% endblock %}

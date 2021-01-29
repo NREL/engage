@@ -35,7 +35,6 @@ def runs_view(request, model_uuid):
     session_scenario_id = request.session.get('scenario_id', None)
     session_scenario = scenarios.filter(id=session_scenario_id).first()
 
-    print (settings.CAMBIUM_URL, settings.AWS_S3_BUCKET_NAME)
     context = {
         "timezones": common_timezones,
         "model": model,

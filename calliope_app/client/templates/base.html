@@ -117,7 +117,33 @@
 					var LANGUAGE_CODE = '{{ LANGUAGE_CODE }}';
 				</script>
 
+				{% if model %}
+					<!-- Model -->
+					<div class="btn-group" style="height:30px;margin-top:3px;float:right">
+						<button class="btn-dark dropdown-toggle text-sm" type="button" data-toggle="dropdown">
+							&nbsp;&nbsp;<b><i class="fas fa-cogs"></i>&nbsp;&nbsp;{{ model }}&nbsp;&nbsp;</b>
+							{% if can_edit == False %}<span class="text-sm" style="background-color:yellow;color:black;">&nbsp;<b>{% trans "VIEW ONLY" %}</b>&nbsp;</span>{% endif %}
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu dropdown-menu-right">
+							<li><a href="{% url 'model' model.uuid %}"><h5>&nbsp;&nbsp;<i class="far fa-comments"></i>&nbsp;&nbsp;{% trans "Activity" %}</a>&nbsp;&nbsp;</h5></a></li>
+							<li><a href="{% url 'timeseries' model.uuid %}"><h5>&nbsp;&nbsp;<i class="far fa-clock"></i>&nbsp;&nbsp;{% trans "Timeseries" %}</a>&nbsp;&nbsp;</h5></a></li>
+						</ul>
+					</div>
+				{% endif %}
+
 				{% if user.is_authenticated %}
+					<!-- User -->
+					<div class="btn-group" style="height:30px;margin-top:3px;float:right">
+						<button class="btn-primary dropdown-toggle text-sm" type="button" data-toggle="dropdown">&nbsp;&nbsp;<i class="fas fa-user"></i>&nbsp;&nbsp;{{ user.first_name }}&nbsp;&nbsp;
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu dropdown-menu-left">
+							<li>&nbsp;&nbsp;{{ user.first_name }} {{ user.last_name }}<br>&nbsp;&nbsp;<span class="text-sm">{{ user.email }}<br>&nbsp;&nbsp;{{ user.user_profile.organization }}</span><br><br></li>
+							<li><a href="/settings/password/"><h6>&nbsp;&nbsp;<i class="fa fa-key"></i>&nbsp;&nbsp;{% trans "Change Password" %}</a>&nbsp;&nbsp;</h6></a></li>
+							<li><a href="/logout/?next=/login/"><h6>&nbsp;&nbsp;<i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;{% trans "Log out" %}</a>&nbsp;&nbsp;</h6></a></li>
+						</ul>
+					</div>
 					<!-- Timezone -->
 					{% if timezones %}
 					<div class="btn-group" style="height:30px;margin-top:3px;float:right">
@@ -134,37 +160,9 @@
 						</form>
 					</div>
 					{% endif %}
-
-				
-					<!-- User -->
-					<div class="btn-group" style="height:30px;margin-top:3px;float:right">
-						<button class="btn-primary dropdown-toggle text-sm" type="button" data-toggle="dropdown">&nbsp;&nbsp;<i class="fas fa-user"></i>&nbsp;&nbsp;{{ user.first_name }}&nbsp;&nbsp;
-							<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu dropdown-menu-left">
-							<li>&nbsp;&nbsp;{{ user.first_name }} {{ user.last_name }}<br>&nbsp;&nbsp;<span class="text-sm">{{ user.email }}<br>&nbsp;&nbsp;{{ user.user_profile.organization }}</span><br><br></li>
-							<li><a href="/settings/password/"><h6>&nbsp;&nbsp;<i class="fa fa-key"></i>&nbsp;&nbsp;{% trans "Change Password" %}</a>&nbsp;&nbsp;</h6></a></li>
-							<li><a href="/logout/?next=/login/"><h6>&nbsp;&nbsp;<i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;{% trans "Log out" %}</a>&nbsp;&nbsp;</h6></a></li>
-						</ul>
-					</div>
 				{% else %}
 					<!-- Login -->
 					<a href="{% url 'home' %}"><button class="btn-primary text-sm" style="height:30px;margin-top:3px;float:right">&nbsp;&nbsp;<i class="fas fa-user"></i>&nbsp;&nbsp;{% trans "LOGIN" %}&nbsp;&nbsp;</button></a>
-				{% endif %}
-
-				{% if model %}
-					<!-- Model -->
-					<div class="btn-group" style="height:30px;margin-top:3px;float:right">
-						<button class="btn-dark dropdown-toggle text-sm" type="button" data-toggle="dropdown">
-							&nbsp;&nbsp;<b><i class="fas fa-cogs"></i>&nbsp;&nbsp;{{ model }}&nbsp;&nbsp;</b>
-							{% if can_edit == False %}<span class="text-sm" style="background-color:yellow;color:black;">&nbsp;<b>{% trans "VIEW ONLY" %}</b>&nbsp;</span>{% endif %}
-							<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu dropdown-menu-right">
-							<li><a href="{% url 'model' model.uuid %}"><h5>&nbsp;&nbsp;<i class="far fa-comments"></i>&nbsp;&nbsp;{% trans "Activity" %}</a>&nbsp;&nbsp;</h5></a></li>
-							<li><a href="{% url 'timeseries' model.uuid %}"><h5>&nbsp;&nbsp;<i class="far fa-clock"></i>&nbsp;&nbsp;{% trans "Timeseries" %}</a>&nbsp;&nbsp;</h5></a></li>
-						</ul>
-					</div>
 				{% endif %}
 
 			</div>
