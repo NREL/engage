@@ -372,8 +372,8 @@ def scenario(request):
         "active_lt_ids": active_lt_ids,
         "loc_techs": loc_techs,
         "scenario_id": scenario_id,
-        "unique_techs": sorted(set(unique_techs)),
-        "unique_tags": sorted(set(unique_tags)),
+        "unique_techs": sorted(filter(None, set(unique_techs))),
+        "unique_tags": sorted(filter(None, set(unique_tags))),
         "unique_locations": sorted(filter(None, set(unique_locations))),
         "can_edit": can_edit}
     scenario_configuration = list(render(request,
