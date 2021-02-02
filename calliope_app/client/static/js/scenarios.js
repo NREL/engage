@@ -67,6 +67,7 @@ function save_scenario_settings() {
 }
 
 function get_scenario_configuration() {
+	$('.viz-spinner').show();
 	var model_uuid = $('#header').data('model_uuid'),
 		scenario_id = $("#scenario option:selected").data('id');
 	
@@ -79,6 +80,7 @@ function get_scenario_configuration() {
 			},
 			dataType: 'json',
 			success: function (data) {
+				$('.viz-spinner').hide();
 				loc_techs = data['loc_techs'];
 				$('#scenario_settings').html(data['scenario_settings']);
 				activate_scenario_settings();
@@ -171,6 +173,7 @@ function get_scenario_configuration() {
 			}
 		});
 	} else {
+		$('.viz-spinner').hide();
 		$('#map').remove();
 		$('#scenario_configuration').html('<div class="col-12 text-center"><br/><br/><h4>Select or create a scenario above!</h4></div>');
 	};
