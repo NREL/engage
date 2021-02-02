@@ -37,8 +37,7 @@ DJANGO_APPS = [
     'django.contrib.humanize',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'debug_toolbar'
+    'django.contrib.staticfiles'
 ]
 
 LOCAL_APPS = [
