@@ -354,10 +354,13 @@ def scenario(request):
     loc_techs = model.loc_techs
     active_lt = Scenario_Loc_Tech.objects.filter(scenario_id=scenario_id)
     active_lt_ids = list(active_lt.values_list('loc_tech_id', flat=True))
-    unique_techs = loc_techs.values_list('technology__pretty_name', flat=True)
-    unique_tags = loc_techs.values_list('technology__pretty_tag', flat=True)
-    locations = loc_techs.values_list('location_1__pretty_name',
-                                      'location_2__pretty_name')
+    vals = loc_techs.values_list('technology__pretty_name',
+                                 'technology__pretty_tag',
+                                 'location_1__pretty_name',
+                                 'location_2__pretty_name')
+    unique_techs = [v[0] for v in vals]
+    unique_tags = [v[1] for v in vals]
+    locations = [(v[2], v[3]) for v in vals]
     unique_locations = [item for sublist in locations for item in sublist]
 
     context = {
