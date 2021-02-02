@@ -1,48 +1,59 @@
 """
 User Celery signals to update celery task instances.
 """
+import pytz
+import time
 import traceback as pytraceback
 from datetime import datetime
 from celery import states, signals
 from .models import CeleryTask
 
 
-def task_received_handler(request, args, kwargs, **extras):
+def befor_task_publish_handler(sender=None, body=None, headers=None, **kwargs):
     """
-    Set task status to be RECEIVED.
+    Create CeleryTask instance
     """
-    task_id = request.task_id
+    task_id = headers["id"]
     task, _ = CeleryTask.objects.get_or_create(task_id=task_id)
-    task.status = states.RECEIVED
+    task.status = states.PENDING
     task.save()
 
 
-def task_prerun_handler(task_id, task, args, kwargs, **extras):
+def task_prerun_handler(task_id, task=None, *args, **kwargs):
     """
     Set task status to be STARTED
     """
-    task, _ = CeleryTask.objects.get_or_create(task_id=task_id)
-    task.status = states.STARTED
-    task.date_start = datetime.utcnow()
-    task.save()
+    # Ensure CeleryTask instance created, and avoid race condition with before_task_publish
+    attempts = 0
+    while attempts < 20:
+        try:
+            task = CeleryTask.objects.get(task_id=task_id)
+            if task:
+                task.status = states.STARTED
+                task.date_start = datetime.now(pytz.utc)
+                task.save()
+            break
+        except CeleryTask.DoesNotExist:
+            attempts += 1
+            time.sleep(0.5)
 
 
-def task_success_handler(sender, result, **extras):
+def task_success_handler(sender, result=None, **kwargs):
     """
     Set task status to be SUCCESS.
     """
-    task, _ = CeleryTask.objects.get_or_create(task_id=sender.request.id)
+    task = CeleryTask.objects.get(task_id=sender.request.id)
     task.status = states.SUCCESS
     task.date_done = datetime.utcnow()
     task.result = result
     task.save()
 
 
-def task_failure_handler(task_id, exception, args, kwargs, traceback, einfo, **extras):
+def task_failure_handler(task_id, exception=None, traceback=None, einfo=None, *args, **kwargs):
     """
     Set task status to be FAILURE
     """
-    task, _ = CeleryTask.objects.get_or_create(task_id=task_id)
+    task = CeleryTask.objects.get(task_id=task_id)
     task.status = states.FAILURE
     task.traceback = "".join(pytraceback.format_tb(traceback))
     task.date_done = datetime.utcnow()
@@ -53,7 +64,7 @@ def enable_state_handlers():
     """
     To enable celery task handlers on different task state
     """
-    signals.task_received.connect(task_received_handler)
+    signals.before_task_publish.connect(befor_task_publish_handler)
     signals.task_prerun.connect(task_prerun_handler)
     signals.task_success.connect(task_success_handler)
     signals.task_failure.connect(task_failure_handler)

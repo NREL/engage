@@ -41,9 +41,9 @@ DJANGO_APPS = [
 ]
 
 LOCAL_APPS = [
-    'api',
-    'client',
-    'taskmeta',
+    'api.apps.ApiConfig',
+    'client.apps.ClientConfig',
+    'taskmeta.apps.TaskmetaConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
