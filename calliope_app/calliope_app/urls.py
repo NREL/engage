@@ -13,6 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import debug_toolbar
+
 from django.contrib import admin
 from django.urls import include, path
 from django.conf.urls import url
@@ -25,6 +27,7 @@ from django.conf.urls.static import static
 admin.site.site_header = 'NREL\'s Calliope Admin'
 
 urlpatterns = [
+    path('__debug__/', include(debug_toolbar.urls)),
     path('i18n/', include('django.conf.urls.i18n')),
 ]
 
