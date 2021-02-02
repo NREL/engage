@@ -3,13 +3,13 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.db.models import Q
 
 from api.models.engage import Help_Guide
 from api.models.calliope import Parameter, Abstract_Tech
 from api.models.configuration import Model, User_File, \
-    Technology, Timeseries_Meta, Model_User, Model_Comment
+    Technology, Loc_Tech, Timeseries_Meta, Model_User, Model_Comment
 
-import os
 from pytz import common_timezones
 
 
@@ -79,11 +79,30 @@ def locations_view(request, model_uuid):
     except Exception:
         return HttpResponseRedirect(reverse('home'))
 
+    locations = model.locations.values()
+    location_ids = [loc['id'] for loc in locations]
+    lts = Loc_Tech.objects.filter(
+        Q(location_1_id__in=location_ids) | Q(location_2_id__in=location_ids))
+    lts = lts.values("id", "technology_id", "location_1_id", "location_2_id",
+                     "technology__pretty_name", "technology__pretty_tag")
+    loc_techs = {}
+    for lt in lts:
+        l1, l2 = lt["location_1_id"], lt["location_2_id"]
+        if l1 not in loc_techs.keys():
+            loc_techs[l1] = [lt]
+        else:
+            loc_techs[l1].append(lt)
+        if l2 is not None and l2 not in loc_techs.keys():
+            loc_techs[l2] = [lt]
+        elif l2 is not None:
+            loc_techs[l2].append(lt)
+
     context = {
         "nrel_api_key": settings.NREL_API_KEY,
         "timezones": common_timezones,
         "model": model,
-        "locations": model.locations,
+        "locations": locations,
+        "loc_techs": loc_techs,
         "mapbox_token": settings.MAPBOX_TOKEN,
         "can_edit": can_edit,
         "help_content": Help_Guide.get_safe_html('locations'),

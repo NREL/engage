@@ -1,5 +1,5 @@
 {% load i18n %}
-
+{% load return_item %}
 <table id="location_table" class="table table-hover table-sm">
 	<tbody>
 		{% for location in locations %}
@@ -42,22 +42,24 @@
 					<button {% if not can_edit %}disabled{% endif %} type="button" class="location-save btn btn-warning hide"><b>{% trans "Save" %}</b></button>
 				</td>
 			</tr>
-			{% if location.location_1.all %}
+			{% with loc_techs|return_item:location.id as lts %}
+			{% if lts %}
 			<tr class="location-technologies-row" data-location_id="{{ location.id }}">
 				<!-- Location Technologies -->
 				<td colspan=7 class="text-sm">
 					<i class="fas fa-cog"></i> {% trans "Technologies" %}: 
 					<span class="location-technologies">
-						{% for loc_tech in location.location_1.all %}
+						{% for loc_tech in lts %}
 						<a class="btn-sm btn-outline-secondary" href="{% url 'loc_techs' model.uuid %}?tech_id={{ loc_tech.technology_id }}&loc_tech_id={{ loc_tech.id }}">
-							<b>{{ loc_tech.technology.pretty_name }}</b>
-							{% if loc_tech.technology.pretty_tag %} [{{ loc_tech.technology.pretty_tag }}]{% endif %}
+							<b>{{ loc_tech.technology__pretty_name }}</b>
+							{% if loc_tech.technology__pretty_tag %} [{{ loc_tech.technology__pretty_tag }}]{% endif %}
 						</a>
 						&nbsp;&nbsp;&nbsp;&nbsp;
 						{% endfor %}</span>
 				</td>
 			</tr>
 			{% endif %}
+			{% endwith %}
 			<tr class="location-data_sources-row" data-location_id="{{ location.id }}">
 				<!-- Data Sources -->
 				<td colspan=7 class="text-sm">
