@@ -1,6 +1,7 @@
 import functools
 import json
 import os
+import uuid
 
 import numpy as np
 from django.conf import settings
@@ -1181,9 +1182,7 @@ def upload_timeseries(request):
                 "has_header": has_header,
             }
         )
-        upload_task, _ = CeleryTask.objects.get_or_create(
-            task_id=async_result.id)
-
+        upload_task = CeleryTask.objects.get(task_id=async_result.id)
         new_meta.upload_task = upload_task
         new_meta.is_uploading = True
         new_meta.save()

@@ -1,6 +1,7 @@
 import base64
 import os
 import json
+import uuid
 from datetime import datetime, timedelta
 
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
@@ -91,8 +92,7 @@ def build(request):
                 "end_date": end_date,
             }
         )
-        build_task, _ = CeleryTask.objects.get_or_create(
-            task_id=async_result.id)
+        build_task = CeleryTask.objects.get(task_id=async_result.id)
         run.build_task = build_task
         run.save()
 
