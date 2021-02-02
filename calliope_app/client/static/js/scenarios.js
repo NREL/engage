@@ -199,6 +199,7 @@ function activate_scenario_settings() {
 }
 
 function toggle_scenario_loc_tech(loc_tech_id, add) {
+	$('.viz-spinner').show();
 	var model_uuid = $('#header').data('model_uuid'),
 		scenario_id = $("#scenario option:selected").data('id');
 	$.ajax({
@@ -215,7 +216,10 @@ function toggle_scenario_loc_tech(loc_tech_id, add) {
 		success: function (data) {
 			map_timeout_queue++
 			setTimeout(function(){
-				if (map_timeout_queue == 1) { retrieve_map(false, scenario_id, undefined); };
+				if (map_timeout_queue == 1) {
+					retrieve_map(false, scenario_id, undefined);
+					$('.viz-spinner').hide();
+				};
 				map_timeout_queue--;
 			}, 500);
 		}
