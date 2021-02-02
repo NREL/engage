@@ -1,7 +1,6 @@
 var hold_refresh = false;
 var pause_start = null;
 var pause_interval = null;
-var loc_techs = [];
 var submitdata = {};
 
 $( document ).ready(function() {
@@ -27,27 +26,10 @@ function get_scenario() {
 	hold_refresh = false;
 	clearInterval(pause_interval);
 	$('#updates_paused').slideUp();
-	var model_uuid = $('#header').data('model_uuid');
 	var scenario_id = $("#scenario option:selected").data('id');
-	
-	// The following is a stripped-down version of the AJAX call in
-	// get_scenario_configuration() in scenarios.js.
-	// We use it to set the loc_techs variable for the map popups.
 	if (scenario_id != undefined) {
-		$.ajax({
-			url: '/' + LANGUAGE_CODE + '/component/scenario/',
-			data: {
-			  'model_uuid': model_uuid,
-			  'scenario_id': scenario_id,
-			},
-			dataType: 'json',
-			success: function (data) {
-				refresh_run_dashboard(true);
-				loc_techs = data['loc_techs'];
-				$('#master-new').removeClass('hide');
-			}
-		});
-		
+		refresh_run_dashboard(true);
+		$('#master-new').removeClass('hide');
 	} else {
 		$('#master-new').addClass('hide');
 		$('#run_dashboard').html('<div class="col-12 text-center"><br/><br/><h4>Please create a scenario first!</h4></div>');
