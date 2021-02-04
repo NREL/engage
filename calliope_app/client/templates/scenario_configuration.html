@@ -1,5 +1,5 @@
 {% load i18n %}
-
+{% load return_item %}
 <!DOCTYPE html>
 <html lang="en">
 <table id="config_table" class="table table-hover table-sm">
@@ -50,24 +50,26 @@
 		</tr>
 		{% for loc_tech in loc_techs %}
 			<!-- Scenario Loc Tech Row -->
-			<tr class="node {% if loc_tech.id in active_lt_ids %}table-info{% endif %}" data-loc_tech_id={{ loc_tech.id }} data-tech="{{ loc_tech.technology.pretty_name }}" data-tag="{{ loc_tech.technology.pretty_tag }}" data-locations="['{{ loc_tech.location_1.pretty_name }}'{% if loc_tech.location_2 %},'{{ loc_tech.location_2.pretty_name }}'{% endif %}]">
+			<tr class="node {% if loc_tech.id in active_lt_ids %}table-info{% endif %}" data-loc_tech_id={{ loc_tech.id }} data-tech="{{ loc_tech.technology__pretty_name }}" data-tag="{{ loc_tech.technology__pretty_tag }}" data-locations="['{{ loc_tech.location_1__pretty_name }}'{% if loc_tech.location_2__pretty_name %},'{{ loc_tech.location_2__pretty_name }}'{% endif %}]">
 				<!-- Type -->
-				<td class="text-sm centered" style="border-left: solid 20px {{ loc_tech.technology.color }}">
+				{% with colors|return_item:loc_tech.technology_id as color %}
+				<td class="text-sm centered" style="border-left: solid 20px {% if color %}{{ color }}{% else %}white{% endif %}">
 					<h6>
-						{{ loc_tech.technology.abstract_tech.icon|safe }}
+						{{ loc_tech.technology__abstract_tech__icon|safe }}
 					</h6>
 				</td>
+				{% endwith %}
 				<!-- Carrier -->
 				<td class="text-sm">
-					{% if loc_tech.technology.carrier_in %}
-					<b>{{ loc_tech.technology.carrier_in }}</b>
+					{% if carrier_ins|return_item:loc_tech.technology_id %}
+					<b>{{ carrier_ins|return_item:loc_tech.technology_id }}</b>
 					{% else %}
 					<a href="{% url 'technologies' model.uuid %}?tech_id={{ loc_tech.technology_id }}"><i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="right" title="{% trans 'Input carrier not defined' %}"></i></a>
 					{% endif %}
-					{% if loc_tech.technology.carrier_in != loc_tech.technology.carrier_out %}
-					 	&nbsp;&nbsp;to&nbsp;&nbsp; 
-						{% if loc_tech.technology.carrier_out %}
-						<b>{{ loc_tech.technology.carrier_out }}</b>
+					{% if carrier_ins|return_item:loc_tech.technology_id != carrier_outs|return_item:loc_tech.technology_id %}
+					 	&nbsp;to&nbsp; 
+						{% if carrier_outs|return_item:loc_tech.technology_id %}
+						<b>{{ carrier_outs|return_item:loc_tech.technology_id }}</b>
 						{% else %}
 						<a href="{% url 'technologies' model.uuid %}?tech_id={{ loc_tech.technology_id }}"><i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="right" title="{% trans 'Output carrier not defined' %}"></i></a>
 						{% endif %}
@@ -75,25 +77,25 @@
 				</td>
 				<!-- Technology -->
 				<td>
-					<a href="{% url 'technologies' model.uuid %}?tech_id={{ loc_tech.technology_id }}" style="color:#0021da"><b>{{ loc_tech.technology.pretty_name }}</b></a>
+					<a href="{% url 'technologies' model.uuid %}?tech_id={{ loc_tech.technology_id }}" style="color:#0021da"><b>{{ loc_tech.technology__pretty_name }}</b></a>
 				</td>
 				<!-- Tag -->
 				<td class="text-sm">
-					{% if loc_tech.technology.pretty_tag %}
+					{% if loc_tech.technology__pretty_tag %}
 					<i class="fas fa-tag"></i>
 					&nbsp;&nbsp;
-					{{ loc_tech.technology.pretty_tag }}
+					{{ loc_tech.technology__pretty_tag }}
 					{% endif %}
 				</td>
 				<!-- Location -->
 				<td>
 					<a href="{% url 'loc_techs' model.uuid %}?tech_id={{ loc_tech.technology_id }}&loc_tech_id={{ loc_tech.id }}" style="color:#0021da">
 						<i class="fas fa-map-marker-alt"></i>&nbsp;
-						{{ loc_tech.location_1.pretty_name }}
-						{% if loc_tech.location_2 %}
+						{{ loc_tech.location_1__pretty_name }}
+						{% if loc_tech.location_2__pretty_name %}
 						&nbsp;&nbsp;<i class="fas fa-exchange-alt"></i>&nbsp;&nbsp;
 						<i class="fas fa-map-marker-alt"></i>&nbsp;
-						{{ loc_tech.location_2.pretty_name }}
+						{{ loc_tech.location_2__pretty_name }}
 						{% endif %}
 					</a>
 				</td>

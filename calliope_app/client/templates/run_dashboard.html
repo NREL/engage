@@ -16,10 +16,10 @@
 					<td class="centered" style="padding-top:10px"><b>{% trans "Plots" %}</b></td>
 					<td class="centered" style="padding-top:10px"><b>{% trans "Map Viz" %}</b></td>
 					<td class="centered" style="padding-top:10px"><b>{% trans "Outputs" %}</b></td>
-					<td class="centered" style="padding-top:10px"><b>{% trans "Version" %}</b></td>
 					{% if cambium_configured %}
 					<td class="centered" style="padding-top:10px"><b>{% trans "Cambium" %}</b></td>
 					{% endif %}
+					<td class="centered" style="padding-top:10px"><b>{% trans "Version" %}</b></td>
 					<td></td>
 				</tr>
 			{% endifchanged %}
@@ -95,28 +95,28 @@
 						<a href="/api/download/?model_uuid={{ model.uuid }}&run_id={{ run.id }}&type=outputs"><button tabindex="-1" type="button" class="btn btn-success btn-download" style="width:100%;"><i class="fa fa-download" aria-hidden="true"></i></button></a>
 						{% endif %}
 					</td>
-					<!-- Deprecated -->
-					<td class="centered">
-						{% if run.deprecated %}
-						<button class="run-version btn btn-sm btn-outline-danger" style="font-size:0.7em;" disabled>{% trans "OUT OF DATE" %}</button>
-						{% else %}
-						<button class="run-version btn btn-sm btn-outline-success" style="font-size:0.7em;" disabled>{% trans "UP TO DATE" %}</button>
-						{% endif %}
-					</td>
 					<!-- Publish Button -->
 					{% if cambium_configured %}
 					<td class="centered">
 						{% if run.outputs_path %}
 						{% if run.published == True %}
-						<button type="button" class="btn btn-sm btn-success run-cambium" title="{% trans 'Published' %}"><b>Published</b></button>
+						<button type="button" class="btn btn-success run-cambium" style="width:100%;" title="{% trans 'Published' %}"><b>PUBLISHED</b></button>
 						{% elif run.published == False %}
-						<button {% if not can_edit %}disabled{% endif %} data-run_id="{{ run.id }}" type="button" class="btn btn-sm btn-warning run-publish" title="{% trans 'Publish run' %}"><b>Publish</b></button>
+						<button {% if not can_edit %}disabled{% endif %} data-run_id="{{ run.id }}" type="button" class="btn btn-outline-warning run-publish" style="width:100%;" title="{% trans 'Publish run' %}"><b>PUBLISH</b></button>
 						{% else %}
-						<button disabled data-run_id="{{ run.id }}" type="button" class="btn btn-sm btn-warning run-publishing" title="{% trans 'Publishing run' %}">&nbsp;&nbsp;<i class="fas fa-spinner fa-spin"></i>&nbsp;&nbsp;</button>
+						<button disabled data-run_id="{{ run.id }}" type="button" class="btn btn-warning run-publishing" style="width:100%;" title="{% trans 'Publishing run' %}">&nbsp;&nbsp;<i class="fas fa-spinner fa-spin"></i>&nbsp;&nbsp;</button>
 						{% endif %}
 						{% endif %}
 					</td>
 					{% endif %}
+					<!-- Deprecated -->
+					<td class="centered">
+						{% if run.deprecated %}
+						<button class="run-version btn btn-outline-danger" style="width: 100%;" disabled>{% trans "OUT OF DATE" %}</button>
+						{% else %}
+						<button class="run-version btn btn-outline-success" style="width: 100%;" disabled>{% trans "UP TO DATE" %}</button>
+						{% endif %}
+					</td>
 					<!-- Edit Buttons -->
 					<td class="centered">
 						{% if False %}

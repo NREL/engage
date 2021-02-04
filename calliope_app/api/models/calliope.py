@@ -7,6 +7,9 @@ class Parameter(models.Model):
         db_table = "parameter"
         verbose_name_plural = "[Admin] Parameters"
 
+    C_INS = ['carrier', 'carrier_in', 'carrier_in_2', 'carrier_in_3']
+    C_OUTS = ['carrier', 'carrier_out', 'carrier_out_2', 'carrier_out_3']
+
     root = models.CharField(max_length=200)
     category = models.CharField(max_length=200)
     name = models.CharField(max_length=200)

@@ -137,6 +137,25 @@ class Model(models.Model):
         return self.run_set.all()
 
     @property
+    def color_lookup(self):
+        params = Tech_Param.objects.filter(technology__in=self.technologies,
+                                           parameter__name='color')
+        return {c.technology_id: c.value for c in params}
+
+    def carrier_lookup(self, carrier_in=True):
+        names = Parameter.C_INS if carrier_in else Parameter.C_OUTS
+        params = Tech_Param.objects.filter(
+            technology__in=self.technologies, parameter__name__in=names)
+        carrier_ins = {}
+        for c in params:
+            if c.technology_id not in carrier_ins:
+                carrier_ins[c.technology_id] = c.value
+            else:
+                val = carrier_ins[c.technology_id]
+                carrier_ins[c.technology_id] = ', '.join([val, c.value])
+        return carrier_ins
+
+    @property
     def carriers(self):
         """ Get all configured carrier strings """
         CARRIER_IDS = [4, 5, 6, 23, 66, 67, 68, 69, 70, 71]
@@ -546,18 +565,16 @@ class Technology(models.Model):
     @property
     def carrier_in(self):
         """ Lookup the input carrier from the technology's parameters """
-        c_ins = ['carrier', 'carrier_in', 'carrier_in_2', 'carrier_in_3']
         p = Tech_Param.objects.filter(technology=self,
-                                      parameter__name__in=c_ins
+                                      parameter__name__in=Parameter.C_INS
                                       ).order_by('value')
         return ','.join(list(p.values_list('value', flat=True)))
 
     @property
     def carrier_out(self):
         """ Lookup the output carrier from the technology's parameters """
-        c_outs = ['carrier', 'carrier_out', 'carrier_out_2', 'carrier_out_3']
         p = Tech_Param.objects.filter(technology=self,
-                                      parameter__name__in=c_outs
+                                      parameter__name__in=Parameter.C_OUTS
                                       ).order_by('value')
         return ','.join(list(p.values_list('value', flat=True)))
 
@@ -570,15 +587,6 @@ class Technology(models.Model):
         d = self.to_dict()
         j = json.dumps(d)
         return j
-
-    def get_color(self):
-        """ Lookup the color from the technology's parameters """
-        color = Tech_Param.objects.filter(technology=self,
-                                          parameter_id=3).first()
-        if color:
-            return color.value
-        else:
-            return "#fff"
 
     def duplicate(self, model_id, pretty_name):
         """ Duplicate and return a new technology instance """
@@ -656,11 +664,6 @@ class Tech_Param(models.Model):
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
-
-    @property
-    def placeholder(self):
-        """ Value to place in the HTML placeholder field """
-        return self.raw_value or self.value
 
     @classmethod
     def _essentials(cls, technology, data):
@@ -918,11 +921,6 @@ class Loc_Tech_Param(models.Model):
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
-
-    @property
-    def placeholder(self):
-        """ Value to place in the HTML placeholder field """
-        return self.raw_value if self.raw_value else self.value
 
     @classmethod
     def _add(cls, loc_tech, data):
@@ -1214,6 +1212,12 @@ class ParamsManager():
         if excl_ids is None:
             excl_ids = []
         new_excl_ids = excl_ids.copy()
+        values = ["id", "parameter__root",
+            "parameter__category", "parameter__category", "parameter_id",
+            "parameter__name", "parameter__pretty_name",
+            "parameter__description", "parameter__is_essential",
+            "parameter__is_carrier", "parameter__units", "parameter__choices",
+            "parameter__timeseries_enabled"]
 
         # Get Params based on Level
         if level == '0_abstract':
@@ -1225,6 +1229,7 @@ class ParamsManager():
                 Q(parameter__is_linear=is_linear) | Q(parameter__is_linear=None),
                 Q(parameter__is_expansion=is_expansion) | Q(parameter__is_expansion=None)
             ).order_by('parameter__category', 'parameter__pretty_name')
+            values += ["default_value"]
 
         elif level == '1_tech':
             technology = Technology.objects.get(id=id)
@@ -1239,35 +1244,40 @@ class ParamsManager():
                 loc_tech_id=id
             ).order_by('parameter__category', 'parameter__pretty_name', 'year')
 
+        if level in ['1_tech', '2_loc_tech']:
+            values += ["year", "timeseries", "timeseries_meta_id",
+                       "raw_value", "value"]
+
         # System-Wide Handling
         if systemwide is False:
             params = params.filter(parameter__is_systemwide=False)
 
         # Build Parameter Dictionary List
+        params = params.values(*values)
         for param in params:
-            if (param.parameter_id in excl_ids):
+            if (param["parameter_id"] in excl_ids):
                 continue
-            new_excl_ids.append(param.parameter_id)
+            new_excl_ids.append(param["parameter_id"])
             param_dict = {
-                'id': param.id if 'id' in dir(param) else 0,
+                'id': param["id"] if 'id' in param.keys() else 0,
                 'level': level,
-                'year': param.year if 'year' in dir(param) else 0,
+                'year': param["year"] if 'year' in param.keys() else 0,
                 'technology_id': technology.id,
-                'parameter_root': param.parameter.root,
-                'parameter_category': param.parameter.category,
-                'parameter_id': param.parameter_id,
-                'parameter_name': param.parameter.name,
-                'parameter_pretty_name': param.parameter.pretty_name,
-                'parameter_description': param.parameter.description,
-                'parameter_is_essential': param.parameter.is_essential,
-                'parameter_is_carrier': param.parameter.is_carrier,
-                'units': param.parameter.units,
-                'placeholder': param.placeholder if 'placeholder' in dir(param) else param.default_value,
-                'choices': param.parameter.choices,
-                'timeseries_enabled': param.parameter.timeseries_enabled,
-                'timeseries': param.timeseries if 'timeseries' in dir(param) else False,
-                'timeseries_meta_id': param.timeseries_meta_id if 'timeseries_meta_id' in dir(param) else 0,
-                'value': param.value if 'value' in dir(param) else param.default_value}
+                'parameter_root': param["parameter__root"],
+                'parameter_category': param["parameter__category"],
+                'parameter_id': param["parameter_id"],
+                'parameter_name': param["parameter__name"],
+                'parameter_pretty_name': param["parameter__pretty_name"],
+                'parameter_description': param["parameter__description"],
+                'parameter_is_essential': param["parameter__is_essential"],
+                'parameter_is_carrier': param["parameter__is_carrier"],
+                'units': param["parameter__units"],
+                'placeholder': param["raw_value"] or param["value"] if "raw_value" in param.keys() else param["default_value"],
+                'choices': param["parameter__choices"],
+                'timeseries_enabled': param["parameter__timeseries_enabled"],
+                'timeseries': param["timeseries"] if 'timeseries' in param.keys() else False,
+                'timeseries_meta_id': param["timeseries_meta_id"] if 'timeseries_meta_id' in param.keys() else 0,
+                'value': param["value"] if "value" in param.keys() else param["default_value"]}
             data.append(param_dict)
 
         return data, list(set(new_excl_ids))
