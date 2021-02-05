@@ -1,3 +1,5 @@
+from urllib.parse import urljoin
+
 from django.db import models
 from django.conf import settings
 
@@ -64,37 +66,38 @@ class Cambium():
     @staticmethod
     def push_run(run):
         if not run.outputs_key:
-            data = {
-                'filename': run.outputs_key,
-                'processor': 'engage',
-                'project_name': run.model.name,
-                'project_uuid': run.model.uuid,
-                'project_source': 'Engage',
-                'extras': {"scenario": run.scenario.name, "year": run.year},
-                'private_key': settings.CAMBIUM_API_KEY
-            }
-            try:
-                # Cambium Request
-                url = os.path.join(settings.CAMBIUM_URL, 'api/ingest-data/')
-                response = requests.post(url, data=data)
-                msg = response['message']
-
-                # Handle Response
-                if msg == "SUCCESS":
-                    run.model.run_set.filter(
-                        year=run.year,
-                        scenario_id=run.scenario_id).update(published=False)
-                    run.published = True
-                elif msg in ["SUBMITTED", "RECEIVED", "STARTED", "PENDING"]:
-                    run.published = None
-                elif msg in ["FAILURE"]:
-                    run.published = False
-                run.save()
-                return msg
-            except Exception as e:
-                return str(e)
-        else:
             return 'Data has not been transferred to S3 bucket'
+        
+        data = {
+            'filename': run.outputs_key,
+            'processor': 'engage',
+            'project_name': run.model.name,
+            'project_uuid': str(run.model.uuid),
+            'project_source': 'Engage',
+            'extras': {"scenario": run.scenario.name, "year": run.year},
+            'private_key': settings.CAMBIUM_API_KEY,
+            'asynchronous': True
+        }
+        try:
+            url = urljoin(settings.CAMBIUM_URL, 'api/ingest-data/')
+            response = requests.post(url, data=data)
+            msg = response['message']
+
+            # Handle Response
+            if msg == "SUCCESS":
+                run.model.run_set.filter(
+                    year=run.year,
+                    scenario_id=run.scenario_id).update(published=False)
+                run.published = True
+            elif msg in ["SUBMITTED", "RECEIVED", "STARTED", "PENDING"]:
+                run.published = None
+            elif msg in ["FAILURE"]:
+                run.published = False
+            run.save()
+            return msg
+        except Exception as e:
+            raise
+            return str(e)
 
 
 class Haven():
