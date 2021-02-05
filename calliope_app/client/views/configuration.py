@@ -133,17 +133,19 @@ def technologies_view(request, model_uuid):
     except Exception:
         return HttpResponseRedirect(reverse('home'))
 
-    technologies = model.technologies
+    technologies = model.technologies.values(
+        "id", "pretty_name", "pretty_tag", "abstract_tech__icon")
     session_technology_id = request.GET.get('tech_id', None)
+    print('session_technology_id', session_technology_id)
     if not session_technology_id:
         session_technology_id = request.session.get('technology_id', None)
-    session_technology = technologies.filter(id=session_technology_id).first()
-
+    if session_technology_id:
+        session_technology_id = int(session_technology_id)
     context = {
         "timezones": common_timezones,
         "model": model,
-        "technologies": technologies,
-        "session_technology": session_technology,
+        "technologies": list(technologies),
+        "session_technology_id": session_technology_id,
         "can_edit": can_edit,
         "help_content": Help_Guide.get_safe_html('technologies'),
     }
@@ -209,20 +211,21 @@ def loc_techs_view(request, model_uuid):
     except Exception:
         return HttpResponseRedirect(reverse('home'))
 
-    technologies = model.technologies
+    technologies = model.technologies.values(
+        "id", "pretty_name", "pretty_tag", "abstract_tech__icon")
     session_technology_id = request.GET.get('tech_id', None)
     session_loc_tech_id = request.GET.get('loc_tech_id', None)
     if not session_technology_id:
         session_technology_id = request.session.get('technology_id', None)
+    if session_technology_id:
+        session_technology_id = int(session_technology_id)
     if session_loc_tech_id:
         request.session['loc_tech_id'] = int(session_loc_tech_id)
-    session_technology = technologies.filter(id=session_technology_id).first()
-
     context = {
         "timezones": common_timezones,
         "model": model,
-        "technologies": technologies,
-        "session_technology": session_technology,
+        "technologies": list(technologies),
+        "session_technology_id": session_technology_id,
         "can_edit": can_edit,
         "mapbox_token": settings.MAPBOX_TOKEN,
         "help_content": Help_Guide.get_safe_html('nodes'),

@@ -69,6 +69,11 @@ th.sticky {
 .select2-search {
     text-align: center;
 }
+.select2-container .select2-selection--single .select2-selection__rendered {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
 #overlay-back {
     position   : fixed;
     top        : 0;

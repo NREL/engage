@@ -354,14 +354,18 @@ def scenario(request):
     loc_techs = model.loc_techs
     active_lt = Scenario_Loc_Tech.objects.filter(scenario_id=scenario_id)
     active_lt_ids = list(active_lt.values_list('loc_tech_id', flat=True))
-    vals = loc_techs.values_list('technology__pretty_name',
+    loc_techs = loc_techs.values('id', 'technology_id',
+                                 'technology__pretty_name',
                                  'technology__pretty_tag',
+                                 'technology__abstract_tech__icon',
                                  'location_1__pretty_name',
                                  'location_2__pretty_name')
-    unique_techs = [v[0] for v in vals]
-    unique_tags = [v[1] for v in vals]
-    locations = [(v[2], v[3]) for v in vals]
+    unique_techs = [v['technology__pretty_name'] for v in loc_techs]
+    unique_tags = [v['technology__pretty_tag'] for v in loc_techs]
+    locations = [(v['location_1__pretty_name'],
+                  v['location_2__pretty_name']) for v in loc_techs]
     unique_locations = [item for sublist in locations for item in sublist]
+    colors = model.color_lookup
 
     context = {
         "model": model,
@@ -372,6 +376,9 @@ def scenario(request):
                                     context))[0]
     context = {
         "model": model,
+        "colors": colors,
+        "carrier_ins": model.carrier_lookup(True),
+        "carrier_outs": model.carrier_lookup(False),
         "active_lt_ids": active_lt_ids,
         "loc_techs": loc_techs,
         "scenario_id": scenario_id,
@@ -384,18 +391,18 @@ def scenario(request):
                                          context))[0]
 
     # Map Data
-    lts = loc_techs.filter(id__in=active_lt_ids)
-    lts = [{
-        "technology": lt.technology.pretty_name,
-        "location_1": lt.location_1.pretty_name,
-        "location_2": lt.location_2.pretty_name if lt.location_2 else None,
-        "color": lt.technology.color,
-        "icon": lt.technology.abstract_tech.icon} for lt in lts]
+    alts = loc_techs.filter(id__in=active_lt_ids)
+    active_loc_techs = [{
+        "technology": lt["technology__pretty_name"],
+        "location_1": lt["location_1__pretty_name"],
+        "location_2": lt["location_2__pretty_name"],
+        "color": colors[lt["technology_id"]],
+        "icon": lt["technology__abstract_tech__icon"]} for lt in alts]
 
     payload = {
         'model_id': model.id,
         'scenario_id': scenario_id,
-        'loc_techs': lts,
+        'loc_techs': active_loc_techs,
         'scenario_settings': scenario_settings.decode('utf-8'),
         'scenario_configuration': scenario_configuration.decode('utf-8')}
 
