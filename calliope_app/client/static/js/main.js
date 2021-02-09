@@ -1,9 +1,10 @@
-var marker_clicked = false;
-var set_loc_clicked = 1; // toggle between 1 and 2 -- when loc clicked on map, set this loc dropdown
-var map = null;
-var loc_techs = [];
-var markers = [];
-var placeholder_text;
+var marker_clicked = false,
+	set_loc_clicked = 1, // toggle between 1 and 2 -- when loc clicked on map, set this loc dropdown
+	map = null,
+	active_lt_ids = [],
+	loc_techs = [],
+	markers = [],
+	placeholder_text;
 
 $(function() {
 		$(".alert-info,.alert-success").fadeTo(3000, 500).slideUp(500, function() {
@@ -314,7 +315,7 @@ function get_loc_techs() {
 			dataType: 'json',
 			success: function (data) {
 				if (map) map = null;
-				
+
 				loc_techs = data['loc_techs'];
 				
 				$('#tech_essentials').html(data['html_essentials']);
@@ -649,6 +650,7 @@ function add_marker(name, id, type, draggable, coordinates) {
 		var techs_html = '';
 		var trans_html = '<hr>';
 		for (var i = 0; i < loc_techs.length; i ++) {
+			if (!active_lt_ids.includes(loc_techs[i].id)) { continue };
 			if (name == loc_techs[i].location_1 || name == loc_techs[i].location_2) {
 				if (loc_techs[i].location_2 == null) {
 					has_techs = true;
@@ -662,7 +664,6 @@ function add_marker(name, id, type, draggable, coordinates) {
 		}
 		if (has_techs || has_trans) {
 			description += techs_html;
-			if (!has_techs) description += '<span style="color: red">No techs</span>';
 			if (has_trans) description += trans_html;
 		}
 	}
@@ -857,7 +858,7 @@ function load_map(locations, transmissions, draggable, loc_tech_id) {
 				"type": "Feature",
 				"properties": {
 					"color": "blue",
-					"width": 5
+					"width": 4
 				},
 				"geometry": {
 					"type": "MultiLineString",
@@ -931,16 +932,17 @@ function render_map(locations, transmissions, draggable, loc_tech_id) {
 		
 		map.on('load', function() {
 			load_map(locations, transmissions, draggable, loc_tech_id);
+			var camera = map.cameraForBounds(bounds, {
+				padding: 50,
+				maxZoom: 15
+			});
+			map.jumpTo(camera);
 		});
 	} else {
 		load_map(locations, transmissions, draggable, loc_tech_id);
 	}
-	
-	var camera = map.cameraForBounds(bounds, {
-		padding: 50,
-		maxZoom: 15
-	});
-	map.jumpTo(camera);
+
+	$('.viz-spinner').hide();
 }
 
 function toggle_favorite($this, update_favorite) {

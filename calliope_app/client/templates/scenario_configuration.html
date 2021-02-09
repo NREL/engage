@@ -10,9 +10,7 @@
 			<th class="sticky text-sm">{% trans "Technologies" %}</th>
 			<th class="sticky text-sm">{% trans "Scenario Tag" %}</th>
 			<th class="sticky text-sm">{% trans "Locations" %}</th>
-			<th class="sticky text-sm centered">
-				<button id="edit-scenario" {% if not can_edit %}disabled{% endif %} class="btn btn-light blink_me" data-toggle="tooltip" data-placement="left" title="Lock/unlock the scenario configuration."><i class="fas fa-lock" style="color:red"></i><i class="fas fa-unlock hide" style="color:green"></i></button>
-			</th>
+			<th class="sticky text-sm centered"></th>
 		</tr>
 		<tr id="filter-row" class="tbl-header" style="border-left: solid 20px grey">
 			<th class="text-sm"></th>
@@ -43,19 +41,19 @@
 			</th>
 			<th class="text-sm centered">
 				<label class="switch">
-				  <input class="disabled" id="add_loc_techs" type="checkbox">
+				  <input {% if not can_edit %}disabled{% endif %} id="add_loc_techs" type="checkbox">
 				  <span class="slider round" style="border-radius: 11px;" data-toggle="tooltip" data-placement="left" title="{% trans 'Bulk toggle nodes activation for the current scenario.' %}"></span>
 				</label>
 			</th>
 		</tr>
 		{% for loc_tech in loc_techs %}
 			<!-- Scenario Loc Tech Row -->
-			<tr class="node {% if loc_tech.id in active_lt_ids %}table-info{% endif %}" data-loc_tech_id={{ loc_tech.id }} data-tech="{{ loc_tech.technology__pretty_name }}" data-tag="{{ loc_tech.technology__pretty_tag }}" data-locations="['{{ loc_tech.location_1__pretty_name }}'{% if loc_tech.location_2__pretty_name %},'{{ loc_tech.location_2__pretty_name }}'{% endif %}]">
+			<tr class="node {% if loc_tech.id in active_lt_ids %}table-info{% endif %}" data-loc_tech_id={{ loc_tech.id }} data-tech="{{ loc_tech.technology }}" data-tag="{{ loc_tech.tag }}" data-locations="['{{ loc_tech.location_1 }}'{% if loc_tech.location_2 %},'{{ loc_tech.location_2 }}'{% endif %}]">
 				<!-- Type -->
 				{% with colors|return_item:loc_tech.technology_id as color %}
 				<td class="text-sm centered" style="border-left: solid 20px {% if color %}{{ color }}{% else %}white{% endif %}">
 					<h6>
-						{{ loc_tech.technology__abstract_tech__icon|safe }}
+						{{ loc_tech.icon|safe }}
 					</h6>
 				</td>
 				{% endwith %}
@@ -77,32 +75,32 @@
 				</td>
 				<!-- Technology -->
 				<td>
-					<a href="{% url 'technologies' model.uuid %}?tech_id={{ loc_tech.technology_id }}" style="color:#0021da"><b>{{ loc_tech.technology__pretty_name }}</b></a>
+					<a href="{% url 'technologies' model.uuid %}?tech_id={{ loc_tech.technology_id }}" style="color:#0021da"><b>{{ loc_tech.technology }}</b></a>
 				</td>
 				<!-- Tag -->
 				<td class="text-sm">
-					{% if loc_tech.technology__pretty_tag %}
+					{% if loc_tech.tag %}
 					<i class="fas fa-tag"></i>
 					&nbsp;&nbsp;
-					{{ loc_tech.technology__pretty_tag }}
+					{{ loc_tech.tag }}
 					{% endif %}
 				</td>
 				<!-- Location -->
 				<td>
 					<a href="{% url 'loc_techs' model.uuid %}?tech_id={{ loc_tech.technology_id }}&loc_tech_id={{ loc_tech.id }}" style="color:#0021da">
 						<i class="fas fa-map-marker-alt"></i>&nbsp;
-						{{ loc_tech.location_1__pretty_name }}
-						{% if loc_tech.location_2__pretty_name %}
+						{{ loc_tech.location_1 }}
+						{% if loc_tech.location_2 %}
 						&nbsp;&nbsp;<i class="fas fa-exchange-alt"></i>&nbsp;&nbsp;
 						<i class="fas fa-map-marker-alt"></i>&nbsp;
-						{{ loc_tech.location_2__pretty_name }}
+						{{ loc_tech.location_2 }}
 						{% endif %}
 					</a>
 				</td>
 				<!-- Scenario Loc Tech Edit Buttons -->
 				<td class="centered">
 					<label class="switch">
-					  <input class="add_loc_tech disabled" type="checkbox" {% if loc_tech.id in active_lt_ids %}checked{% endif %}>
+					  <input {% if not can_edit %}disabled{% endif %} class="add_loc_tech" type="checkbox" {% if loc_tech.id in active_lt_ids %}checked{% endif %}>
 					  <span class="slider round" data-toggle="tooltip" data-placement="left" title="{% trans 'Toggle node activation.' %}"></span>
 					</label>
 				</td>

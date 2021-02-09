@@ -1,6 +1,5 @@
-var map_timeout_queue = 0;
-var map_mode = 'scenarios';
-var loc_techs = [];
+var bulk_confirmation = false,
+	map_mode = 'scenarios';
 
 $( document ).ready(function() {
 
@@ -80,7 +79,7 @@ function get_scenario_configuration() {
 			},
 			dataType: 'json',
 			success: function (data) {
-				$('.viz-spinner').hide();
+				active_lt_ids = data['active_lt_ids'];
 				loc_techs = data['loc_techs'];
 				$('#scenario_settings').html(data['scenario_settings']);
 				activate_scenario_settings();
@@ -91,36 +90,43 @@ function get_scenario_configuration() {
 				retrieve_map(false, scenario_id, undefined);
 
 				$('.add_loc_tech').on('change', function(e) {
-					if ($(this).hasClass('disabled')) {
-						$(this).prop("checked", !$(this).is(":checked"));
-						alert('Unlock the table first to make edits!')
-						return false;
-					}
 					var loc_tech_id = $(this).parents('tr').data('loc_tech_id');
 					if (e.target.checked) {
-						toggle_scenario_loc_tech(loc_tech_id, true)
+						toggle_scenario_loc_tech([loc_tech_id], true)
 						$(this).parents('tr').addClass('table-info')
 					} else {
-						toggle_scenario_loc_tech(loc_tech_id, false)
+						toggle_scenario_loc_tech([loc_tech_id], false)
 						$(this).parents('tr').removeClass('table-info')
 					}
 				})
 				$('#add_loc_techs').on('change', function(e) {
-					if ($(this).hasClass('disabled')) {
-						$(this).prop("checked", !$(this).is(":checked"));
-						alert('Unlock the table first to make edits!')
-						return false;
-					}
-					if (e.target.checked) {
-						var visible_loc_techs = $(".node").not(".hide").find(".add_loc_tech:not(:checked)");
-						visible_loc_techs.each( function() {
-							$(this).prop( "checked", true ).change();
-						});
+					if (bulk_confirmation == false) {
+						bulk_confirmation = confirm('This will toggle every node shown below.\nAre you sure you want to enable bulk editing?');
+					};
+					if (bulk_confirmation == true) {
+						var loc_tech_ids = [];
+						if (e.target.checked) {
+							var visible_loc_techs = $(".node").not(".hide").find(".add_loc_tech:not(:checked)");
+							visible_loc_techs.each( function() {
+								var row = $(this).parents('tr');
+								loc_tech_ids.push(row.data('loc_tech_id'));
+								$(this).prop( "checked", true );
+								row.addClass('table-info');
+							});
+							toggle_scenario_loc_tech(loc_tech_ids, true);
+						} else {
+							var visible_loc_techs = $(".node").not(".hide").find(".add_loc_tech:checked");
+							visible_loc_techs.each( function() {
+								var row = $(this).parents('tr');
+								loc_tech_ids.push(row.data('loc_tech_id'));
+								$(this).prop( "checked", false );
+								row.removeClass('table-info');
+							});
+							toggle_scenario_loc_tech(loc_tech_ids, false);
+						}
 					} else {
-						var visible_loc_techs = $(".node").not(".hide").find(".add_loc_tech:checked");
-						visible_loc_techs.each( function() {
-							$(this).prop( "checked", false ).change();
-						});
+						$(this).prop("checked", !$(this).is(":checked"));
+						return false;
 					}
 				})
 				$('#tech-filter, #tag-filter, #location-filter').on('change', function(e) {
@@ -133,18 +139,6 @@ function get_scenario_configuration() {
 					if (tag != '') { filter_selection = filter_selection.filter('*[data-tag="' + tag + '"]'); filter = true; }
 					if (location != '') { filter_selection = filter_selection.filter('*[data-locations*="' + "'" + location + "'" + '"]'); filter = true; }
 					filter_selection.removeClass('hide') 
-				})
-				$('#edit-scenario').on('click', function() {
-					var is_unlocked = $('.fa-lock').hasClass('hide');
-					if (is_unlocked) {
-						$('.fa-lock').removeClass('hide');
-						$('.fa-unlock').addClass('hide');
-						$('.add_loc_tech, #add_loc_techs').addClass('disabled');
-					} else {
-						$('.fa-lock').addClass('hide');
-						$('.fa-unlock').removeClass('hide');
-						$('.add_loc_tech, #add_loc_techs').removeClass('disabled');
-					}
 				})
 				if ($('#master-cancel').hasClass('hide')) {
 					$('#master-settings').removeClass('hide');
@@ -198,30 +192,26 @@ function activate_scenario_settings() {
 	
 }
 
-function toggle_scenario_loc_tech(loc_tech_id, add) {
-	$('.viz-spinner').show();
-	var model_uuid = $('#header').data('model_uuid'),
-		scenario_id = $("#scenario option:selected").data('id');
-	$.ajax({
-		url: '/' + LANGUAGE_CODE + '/api/toggle_scenario_loc_tech/',
-		type: 'POST',
-		data: {
-		  'model_uuid': model_uuid,
-		  'scenario_id': scenario_id,
-		  'loc_tech_id': loc_tech_id,
-		  'add': +add,
-		  'csrfmiddlewaretoken': getCookie('csrftoken'),
-		},
-		dataType: 'json',
-		success: function (data) {
-			map_timeout_queue++
-			setTimeout(function(){
-				if (map_timeout_queue == 1) {
-					retrieve_map(false, scenario_id, undefined);
-					$('.viz-spinner').hide();
-				};
-				map_timeout_queue--;
-			}, 500);
-		}
-	});
+function toggle_scenario_loc_tech(loc_tech_ids, add) {
+	if (loc_tech_ids.length > 0) {
+		$('.viz-spinner').show();
+		var model_uuid = $('#header').data('model_uuid'),
+			scenario_id = $("#scenario option:selected").data('id');
+		$.ajax({
+			url: '/' + LANGUAGE_CODE + '/api/toggle_scenario_loc_tech/',
+			type: 'POST',
+			data: {
+			  'model_uuid': model_uuid,
+			  'scenario_id': scenario_id,
+			  'loc_tech_ids': loc_tech_ids.join(','),
+			  'add': +add,
+			  'csrfmiddlewaretoken': getCookie('csrftoken'),
+			},
+			dataType: 'json',
+			success: function (data) {
+				active_lt_ids = data['active_lt_ids'];
+				retrieve_map(false, scenario_id, undefined);
+			}
+		});
+	};
 }

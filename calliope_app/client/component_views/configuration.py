@@ -347,25 +347,42 @@ def scenario(request):
     model = Model.by_uuid(model_uuid)
     can_edit = model.handle_view_access(request.user)
 
+    # Scenario Parameters
+    colors = model.color_lookup
     parameters = Scenario_Param.objects.filter(
         model_id=model.id, scenario_id=scenario_id,
         run_parameter__user_visibility=True)
 
-    loc_techs = model.loc_techs
-    active_lt = Scenario_Loc_Tech.objects.filter(scenario_id=scenario_id)
-    active_lt_ids = list(active_lt.values_list('loc_tech_id', flat=True))
-    loc_techs = loc_techs.values('id', 'technology_id',
-                                 'technology__pretty_name',
-                                 'technology__pretty_tag',
-                                 'technology__abstract_tech__icon',
-                                 'location_1__pretty_name',
-                                 'location_2__pretty_name')
-    unique_techs = [v['technology__pretty_name'] for v in loc_techs]
-    unique_tags = [v['technology__pretty_tag'] for v in loc_techs]
-    locations = [(v['location_1__pretty_name'],
-                  v['location_2__pretty_name']) for v in loc_techs]
+    # All Loc Techs
+    loc_techs = []
+    lts = model.loc_techs
+    lts = lts.values('id', 'technology_id', 'technology__pretty_name',
+                     'technology__pretty_tag',
+                     'technology__abstract_tech__icon',
+                     'location_1__pretty_name', 'location_2__pretty_name')
+    for lt in lts:
+        tech_id = lt["technology_id"]
+        color = colors[tech_id] if tech_id in colors.keys() else "#000"
+        loc_techs.append({
+            "id": lt['id'],
+            "technology_id": lt['technology_id'],
+            "tag": lt["technology__pretty_tag"],
+            "technology": lt["technology__pretty_name"],
+            "location_1": lt["location_1__pretty_name"],
+            "location_2": lt["location_2__pretty_name"],
+            "color": color,
+            "icon": lt["technology__abstract_tech__icon"]})
+
+    # Active Loc Techs
+    active_lts = Scenario_Loc_Tech.objects.filter(scenario_id=scenario_id)
+    active_lt_ids = list(active_lts.values_list("loc_tech_id", flat=True))
+
+    # Filters Data
+    unique_techs = [v['technology'] for v in loc_techs]
+    unique_tags = [v['tag'] for v in loc_techs]
+    locations = [(v['location_1'],
+                  v['location_2']) for v in loc_techs]
     unique_locations = [item for sublist in locations for item in sublist]
-    colors = model.color_lookup
 
     context = {
         "model": model,
@@ -390,23 +407,11 @@ def scenario(request):
                                          'scenario_configuration.html',
                                          context))[0]
 
-    # Map Data
-    alts = loc_techs.filter(id__in=active_lt_ids)
-    active_loc_techs = []
-    for lt in alts:
-        tech_id = lt["technology_id"]
-        color = colors[tech_id] if tech_id in colors.keys() else "#000"
-        active_loc_techs.append({
-            "technology": lt["technology__pretty_name"],
-            "location_1": lt["location_1__pretty_name"],
-            "location_2": lt["location_2__pretty_name"],
-            "color": color,
-            "icon": lt["technology__abstract_tech__icon"]})
-
     payload = {
         'model_id': model.id,
         'scenario_id': scenario_id,
-        'loc_techs': active_loc_techs,
+        'loc_techs': loc_techs,
+        'active_lt_ids': active_lt_ids,
         'scenario_settings': scenario_settings.decode('utf-8'),
         'scenario_configuration': scenario_configuration.decode('utf-8')}
 
