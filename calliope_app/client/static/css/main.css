@@ -56,7 +56,7 @@ th.sticky {
   border: 2px solid blue;
 }
 #tech_parameters input {
-  min-width: 70px;
+  min-width: 140px;
   padding: 0;
   padding-right: 6px;
 }
@@ -69,6 +69,11 @@ th.sticky {
 .select2-search {
     text-align: center;
 }
+.select2-container .select2-selection--single .select2-selection__rendered {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
 #overlay-back {
     position   : fixed;
     top        : 0;
@@ -113,27 +118,28 @@ input.nav-dropdown {
 .marker {
     cursor: pointer;
     border-radius: 50%;
-    width: 18px;
-    height: 18px;
+    width: 15px;
+    height: 15px;
     background-color: #000;
-    border: 3px solid #fff;
+    border: 2px solid #fff;
 }
 .marker.dark {
     background-color: #fff;
-    border: 3px solid #000;
+    border: 2px solid #000;
 }
 
 .marker.selected {
     background-color: #00f;
-    border: 3px solid #000;
+    border: 2px solid #000;
 }
 .marker.selected.dark {
-    background-color: #fff;
+    background-color: #00f;
+    border: 2px solid #fff;
 }
 
 .marker.unselected {
     background-color: #fff;
-    border: 3px solid #000;
+    border: 2px solid #000;
 }
 .marker.unselected.dark {
     background-color: #999;

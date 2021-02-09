@@ -65,9 +65,9 @@
 </div>
 </form>
 <div class="row">
-	<div class="col-2"></div>
-	<div class="col-8 centered">
-		<table class="table table-hover table-sm" style="background-color: #f3f3f3;">
+	<div class="col-1"></div>
+	<div class="col-10 centered">
+		<table class="table table-hover table-sm" style="background-color: #f3f3f3; white-space: nowrap;">
 		{% for user_model in user_models %}
 			<tr class="tbl-header colab-row" data-uuid="{{ user_model.model.uuid }}">
 				<th colspan=4><b>{% if user_model.model.public is True %}<i class="fa fa-globe"></i>&nbsp;&nbsp;&nbsp;{% endif %}{{ user_model.model }}:</b></th>
@@ -83,6 +83,6 @@
 		{% endfor %}
 		</table>
 	</div>
-	<div class="col-2"></div>
+	<div class="col-1"></div>
 </div>
 {% endblock %}

@@ -32,6 +32,8 @@ function get_scenario() {
 		$('#master-new').removeClass('hide');
 	} else {
 		$('#master-new').addClass('hide');
+		toggle_viz_spinner(false);
+		$('#build-error').html("No results yet...");
 		$('#run_dashboard').html('<div class="col-12 text-center"><br/><br/><h4>Please create a scenario first!</h4></div>');
 	}
 }

@@ -50,7 +50,7 @@
 					<td style="width:200px;" class="centered">
 						{% if param.timeseries_enabled %}
 						<button type="button" {% if not can_edit %}{% if param.timeseries == False %}disabled{% endif %}{% endif %} class="btn {% if param.timeseries == True %}btn-info param_row_toggle{% else %}btn-outline-info convert-to-timeseries{% endif %}" style="width:100%" data-toggle="tooltip" data-placement="right" title="{% if param.timeseries == True %}Show timeseries{% else %}Convert to timeseries{% endif %}">
-							<i class='far fa-clock parameter-year' aria-hidden="true"></i>
+							<i class="fas fa-chart-line parameter-year"></i>
 							&nbsp;&nbsp;{% trans "Timeseries" %}
 						</button>
 						{% endif %}
@@ -74,6 +74,9 @@
 								<option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
 								{% endfor %}
 							{% else %}
+								{% if not param.value %}
+								<option selected></option>
+								{% endif %}
 								{% for choice in carriers %}
 								<option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
 								{% endfor %}
@@ -154,6 +157,9 @@
 								<option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
 								{% endfor %}
 							{% else %}
+								{% if not param.value %}
+								<option selected></option>
+								{% endif %}
 								{% for choice in carriers %}
 								<option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
 								{% endfor %}
@@ -198,6 +204,7 @@
 								<option value="{{ choice }}">{{ choice }}</option>
 								{% endfor %}
 							{% else %}
+								<option selected></option>
 								{% for choice in carriers %}
 								<option value="{{ choice }}">{{ choice }}</option>
 								{% endfor %}
@@ -208,7 +215,7 @@
 						{% endif %}
 					</td>
 					{% if param.timeseries == False and not param.choices and not param.parameter_is_carrier %}
-					<td class="parameter-target-value" style="text-align:right;" data-value="{{ param.value|add_commas }}">{{ param.value|add_commas }}</td>
+					<td class="parameter-target-value" style="text-align:right;"></td>
 					{% else %}
 					<td></td>
 					{% endif %}

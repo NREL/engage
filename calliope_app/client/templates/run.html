@@ -26,7 +26,7 @@
 <div id="subheader2" class="row content_navigation">
 	{% include "scenario_selector.html" %}
 </div>
-<div class="row" style="overflow-y: scroll; height:350px; border:solid; position: relative;">
+<div class="row" style="overflow-y: scroll; height:460px; border:solid; position: relative;">
 	<span id="build-error" style="color:red"></span>
     <div id="viz_outputs_container" style="width: 100%;"></div>
     <div id="viz_logs_container" class="rounded col-12" style="display: none; background-color: black; color: white;"></div>
@@ -42,5 +42,5 @@
 		<button class="btn btn-sm btn-warning" onClick="window.location.reload();">{% trans "Refresh" %}</button> {% trans "Dashboard updates have been paused for" %} <span id="pause_time" class="font-weight-bold">0 {% trans "seconds" %}</span>.
 	</div>
 </div>
-<div class="row" style="white-space: nowrap; overflow-y: scroll; height: calc(100% - 495px);" id="run_dashboard"></div>
+<div class="row" style="white-space: nowrap; overflow-y: scroll; height: calc(100% - 595px);" id="run_dashboard"></div>
 {% endblock %}

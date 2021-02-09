@@ -451,10 +451,10 @@ class TechnologyTestCase(TestCase):
     def test_to_json(self):
         self.assertTrue("model" in json.loads(self.tech.to_json()))
 
-    def get_color__default(self):
-        self.assertEqual(self.tech.get_color(), "#fff")
+    def color__default(self):
+        self.assertEqual(self.tech.color, "#fff")
 
-    def get_color__custom(self):
+    def color__custom(self):
         color_param1 = Parameter.objects.create(
             root="root",
             category="public",
@@ -485,7 +485,7 @@ class TechnologyTestCase(TestCase):
         arrier_tech_param = Tech_Param.objects.create(
             technology=self.tech, parameter=color_param3, model=self.model, value="my-color3"
         )
-        self.assertEqual(self.tech.get_color(), "my-color3")
+        self.assertEqual(self.tech.color, "my-color3")
 
     def test_duplicate(self):
         new_tech = self.tech.duplicate(model_id=self.model.id, pretty_name="NewTechName")

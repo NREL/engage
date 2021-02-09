@@ -118,16 +118,18 @@
 				</script>
 
 				{% if model %}
+				{% if can_edit == False %}<div class="text-sm" style="background-color: yellow; color: black; float: right; height: 30px; padding: 4px; margin-top: 3px;">&nbsp;<b>{% trans "VIEW ONLY" %}</b>&nbsp;</div>{% endif %}
 					<!-- Model -->
 					<div class="btn-group" style="height:30px;margin-top:3px;float:right">
 						<button class="btn-dark dropdown-toggle text-sm" type="button" data-toggle="dropdown">
-							&nbsp;&nbsp;<b><i class="fas fa-cogs"></i>&nbsp;&nbsp;{{ model }}&nbsp;&nbsp;</b>
-							{% if can_edit == False %}<span class="text-sm" style="background-color:yellow;color:black;">&nbsp;<b>{% trans "VIEW ONLY" %}</b>&nbsp;</span>{% endif %}
+							&nbsp;&nbsp;<b><i class="fas fa-cogs"></i></b>&nbsp;&nbsp;
+							
 							<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu dropdown-menu-right">
+							<li>&nbsp;&nbsp;{{ model }}<br><br></li>
 							<li><a href="{% url 'model' model.uuid %}"><h5>&nbsp;&nbsp;<i class="far fa-comments"></i>&nbsp;&nbsp;{% trans "Activity" %}</a>&nbsp;&nbsp;</h5></a></li>
-							<li><a href="{% url 'timeseries' model.uuid %}"><h5>&nbsp;&nbsp;<i class="far fa-clock"></i>&nbsp;&nbsp;{% trans "Timeseries" %}</a>&nbsp;&nbsp;</h5></a></li>
+							<li><a href="{% url 'timeseries' model.uuid %}"><h5>&nbsp;&nbsp;<i class="fas fa-chart-line"></i>&nbsp;&nbsp;{% trans "Timeseries" %}</a>&nbsp;&nbsp;</h5></a></li>
 						</ul>
 					</div>
 				{% endif %}
@@ -135,8 +137,8 @@
 				{% if user.is_authenticated %}
 					<!-- User -->
 					<div class="btn-group" style="height:30px;margin-top:3px;float:right">
-						<button class="btn-primary dropdown-toggle text-sm" type="button" data-toggle="dropdown">&nbsp;&nbsp;<i class="fas fa-user"></i>&nbsp;&nbsp;{{ user.first_name }}&nbsp;&nbsp;
-							<span class="caret"></span>
+						<button class="btn-primary dropdown-toggle text-sm" type="button" data-toggle="dropdown">
+							&nbsp;&nbsp;<i class="fas fa-user"></i>&nbsp;&nbsp;<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu dropdown-menu-left">
 							<li>&nbsp;&nbsp;{{ user.first_name }} {{ user.last_name }}<br>&nbsp;&nbsp;<span class="text-sm">{{ user.email }}<br>&nbsp;&nbsp;{{ user.user_profile.organization }}</span><br><br></li>

@@ -1,7 +1,5 @@
-import functools
 import json
 import os
-import uuid
 
 import numpy as np
 from django.conf import settings
@@ -49,36 +47,34 @@ def add_model(request):
         template_model = None
         print("User building from blank model: {}".format(e))
 
-    existing = Model.objects.filter(name__iexact=model_name)
-    if len(existing) > 0:
-        payload = {"message": "A model with that name already exists."}
-    else:
-        if template_model is not None:
-            model = template_model.duplicate(is_snapshot=False)
-            model.name = model_name
-            model.save()
-            Model_User.objects.filter(model=model).hard_delete()
-            comment = (
-                "{} {} initiated this model from "
-                '<a href="/{}/model/">{}</a>.'.format(
-                    user.first_name,
-                    user.last_name,
-                    template_model.uuid,
-                    str(template_model),
-                )
-            )
-            Model_Comment.objects.filter(model=model).hard_delete()
-        else:
-            model = Model.objects.create(name=model_name)
-            comment = "{} initiated this model.".format(
-                user.get_full_name()
-            )
+    model_name = Model.find_unique_name(model_name)
 
-        Model_User.objects.create(user=request.user,
-                                  model=model, can_edit=True)
-        Model_Comment.objects.create(model=model,
-                                     comment=comment, type="version")
-        payload = {"message": "Added model.", "model_uuid": str(model.uuid)}
+    if template_model is not None:
+        model = template_model.duplicate(is_snapshot=False)
+        model.name = model_name
+        model.save()
+        Model_User.objects.filter(model=model).hard_delete()
+        comment = (
+            "{} {} initiated this model from "
+            '<a href="/{}/model/">{}</a>.'.format(
+                user.first_name,
+                user.last_name,
+                template_model.uuid,
+                str(template_model),
+            )
+        )
+        Model_Comment.objects.filter(model=model).hard_delete()
+    else:
+        model = Model.objects.create(name=model_name)
+        comment = "{} initiated this model.".format(
+            user.get_full_name()
+        )
+
+    Model_User.objects.create(user=request.user,
+                              model=model, can_edit=True)
+    Model_Comment.objects.create(model=model,
+                                 comment=comment, type="version")
+    payload = {"message": "Added model.", "model_uuid": str(model.uuid)}
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
 
@@ -850,7 +846,7 @@ def toggle_scenario_loc_tech(request):
     Parameters:
     model_uuid (uuid): required
     scenario_id (int): required
-    loc_tech_id (int): required
+    loc_tech_ids (int, comma delimited): required
     add (int): required: 1-True, 0-False
 
     Returns (json): Action Confirmation
@@ -861,44 +857,26 @@ def toggle_scenario_loc_tech(request):
 
     model_uuid = request.POST["model_uuid"]
     scenario_id = request.POST["scenario_id"]
-    loc_tech_id = request.POST["loc_tech_id"]
+    loc_tech_ids = request.POST["loc_tech_ids"]
+    loc_tech_ids = [int(i) for i in str(loc_tech_ids).split(',')]
     add = bool(int(request.POST["add"]))
 
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
 
     scenario = model.scenarios.filter(id=scenario_id).first()
-    scenario_loc_tech = Scenario_Loc_Tech.objects.filter(
-        model_id=model.id, scenario_id=scenario_id, loc_tech_id=loc_tech_id
-    ).first()
+
+    scenario_loc_techs = Scenario_Loc_Tech.objects.filter(
+        model_id=model.id, scenario_id=scenario_id,
+        loc_tech_id__in=loc_tech_ids
+    )
+    scenario_loc_techs.delete()
 
     if add:
-        if not scenario_loc_tech:
-            scenario_loc_tech = Scenario_Loc_Tech.objects.create(
-                model_id=model.id, scenario_id=scenario_id,
-                loc_tech_id=loc_tech_id
-            )
-            payload = {
-                "message": "added scenario location technology",
-                "scenario_loc_tech_id": scenario_loc_tech.id,
-            }
-        else:
-            payload = {
-                "message": "scenario location technology already exists",
-                "scenario_loc_tech_id": scenario_loc_tech.id,
-            }
-            print("------- Client Error: Already Exists")
-    elif not add:
-        if not scenario_loc_tech:
-            payload = {"message": "scenario location technology doesn' exist."}
-            print("------- Client Error: Doesn't Exist")
-        else:
-            scenario_loc_tech_id = scenario_loc_tech.id
-            scenario_loc_tech.delete()
-            payload = {
-                "message": "removed scenario location technology",
-                "scenario_loc_tech_id": scenario_loc_tech_id,
-            }
+        slts = [Scenario_Loc_Tech(model_id=model.id, scenario_id=scenario_id,
+                                  loc_tech_id=lt) for lt in loc_tech_ids]
+        Scenario_Loc_Tech.objects.bulk_create(slts)
+
     # Log Activity
     comment = "{} updated the scenario: {}.".format(
         request.user.get_full_name(), scenario.name
@@ -908,6 +886,12 @@ def toggle_scenario_loc_tech(request):
     Model_Comment.objects.create(model=model, comment=comment, type="edit")
     model.deprecate_runs(scenario_id=scenario_id)
 
+    # Return new list of active loc tech IDs
+    active_lts = Scenario_Loc_Tech.objects.filter(scenario_id=scenario_id)
+    active_lt_ids = list(active_lts.values_list("loc_tech_id", flat=True))
+
+    payload = {"active_lt_ids": active_lt_ids,
+               "message": "Updated scenario's location technologies"}
     return HttpResponse(json.dumps(payload), content_type="application/json")
 
 
