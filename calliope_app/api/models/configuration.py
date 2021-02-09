@@ -45,6 +45,23 @@ class Model(models.Model):
         else:
             return '%s' % (self.name)
 
+    @classmethod
+    def find_unique_name(cls, original_name):
+        """ Iterate a name with an integer suffix until unique name is found """
+        i = 0
+        non_unique_name = True
+        unique_model_name = original_name
+        while non_unique_name:
+            if i > 0:
+                unique_model_name = original_name + ' (' + str(i) + ')'
+            existing = cls.objects.filter(name__iexact=unique_model_name)
+            if existing:
+                i += 1
+            else:
+                non_unique_name = False
+        return unique_model_name
+
+
     def handle_edit_access(self, user):
         """ Requires Model Edit Permissions: 1
         Used to verify a user's full access to a model """

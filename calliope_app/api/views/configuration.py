@@ -49,36 +49,34 @@ def add_model(request):
         template_model = None
         print("User building from blank model: {}".format(e))
 
-    existing = Model.objects.filter(name__iexact=model_name)
-    if len(existing) > 0:
-        payload = {"message": "A model with that name already exists."}
-    else:
-        if template_model is not None:
-            model = template_model.duplicate(is_snapshot=False)
-            model.name = model_name
-            model.save()
-            Model_User.objects.filter(model=model).hard_delete()
-            comment = (
-                "{} {} initiated this model from "
-                '<a href="/{}/model/">{}</a>.'.format(
-                    user.first_name,
-                    user.last_name,
-                    template_model.uuid,
-                    str(template_model),
-                )
-            )
-            Model_Comment.objects.filter(model=model).hard_delete()
-        else:
-            model = Model.objects.create(name=model_name)
-            comment = "{} initiated this model.".format(
-                user.get_full_name()
-            )
+    model_name = Model.find_unique_name(model_name)
 
-        Model_User.objects.create(user=request.user,
-                                  model=model, can_edit=True)
-        Model_Comment.objects.create(model=model,
-                                     comment=comment, type="version")
-        payload = {"message": "Added model.", "model_uuid": str(model.uuid)}
+    if template_model is not None:
+        model = template_model.duplicate(is_snapshot=False)
+        model.name = model_name
+        model.save()
+        Model_User.objects.filter(model=model).hard_delete()
+        comment = (
+            "{} {} initiated this model from "
+            '<a href="/{}/model/">{}</a>.'.format(
+                user.first_name,
+                user.last_name,
+                template_model.uuid,
+                str(template_model),
+            )
+        )
+        Model_Comment.objects.filter(model=model).hard_delete()
+    else:
+        model = Model.objects.create(name=model_name)
+        comment = "{} initiated this model.".format(
+            user.get_full_name()
+        )
+
+    Model_User.objects.create(user=request.user,
+                              model=model, can_edit=True)
+    Model_Comment.objects.create(model=model,
+                                 comment=comment, type="version")
+    payload = {"message": "Added model.", "model_uuid": str(model.uuid)}
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
 
