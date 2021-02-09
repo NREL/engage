@@ -392,12 +392,16 @@ def scenario(request):
 
     # Map Data
     alts = loc_techs.filter(id__in=active_lt_ids)
-    active_loc_techs = [{
-        "technology": lt["technology__pretty_name"],
-        "location_1": lt["location_1__pretty_name"],
-        "location_2": lt["location_2__pretty_name"],
-        "color": colors[lt["technology_id"]],
-        "icon": lt["technology__abstract_tech__icon"]} for lt in alts]
+    active_loc_techs = []
+    for lt in alts:
+        tech_id = lt["technology_id"]
+        color = colors[tech_id] if tech_id in colors.keys() else "#000"
+        active_loc_techs.append({
+            "technology": lt["technology__pretty_name"],
+            "location_1": lt["location_1__pretty_name"],
+            "location_2": lt["location_2__pretty_name"],
+            "color": color,
+            "icon": lt["technology__abstract_tech__icon"]})
 
     payload = {
         'model_id': model.id,

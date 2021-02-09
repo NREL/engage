@@ -136,7 +136,6 @@ def technologies_view(request, model_uuid):
     technologies = model.technologies.values(
         "id", "pretty_name", "pretty_tag", "abstract_tech__icon")
     session_technology_id = request.GET.get('tech_id', None)
-    print('session_technology_id', session_technology_id)
     if not session_technology_id:
         session_technology_id = request.session.get('technology_id', None)
     if session_technology_id:
