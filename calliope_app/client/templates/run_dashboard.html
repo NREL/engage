@@ -17,7 +17,9 @@
 					<td class="centered" style="padding-top:10px"><b>{% trans "Map Viz" %}</b></td>
 					<td class="centered" style="padding-top:10px"><b>{% trans "Outputs" %}</b></td>
 					{% if cambium_configured %}
+					{% if request.user.is_authenticated is True and request.user.is_staff is True %}
 					<td class="centered" style="padding-top:10px"><b>{% trans "Cambium" %}</b></td>
+					{% endif %}
 					{% endif %}
 					<td class="centered" style="padding-top:10px"><b>{% trans "Version" %}</b></td>
 					<td></td>
@@ -97,6 +99,7 @@
 					</td>
 					<!-- Publish Button -->
 					{% if cambium_configured %}
+					{% if request.user.is_authenticated is True and request.user.is_staff is True %}
 					<td class="centered">
 						{% if run.outputs_path %}
 						{% if run.published == True %}
@@ -108,6 +111,7 @@
 						{% endif %}
 						{% endif %}
 					</td>
+					{% endif %}
 					{% endif %}
 					<!-- Deprecated -->
 					<td class="centered">
