@@ -67,7 +67,7 @@ class Cambium():
     def push_run(run):
         if not run.outputs_key:
             return 'Data has not been transferred to S3 bucket'
-        
+
         data = {
             'filename': run.outputs_key,
             'processor': 'engage',
@@ -80,10 +80,12 @@ class Cambium():
         }
         try:
             url = urljoin(settings.CAMBIUM_URL, 'api/ingest-data/')
-            response = requests.post(url, data=data)
-            msg = response['message']
+            response = requests.post(url, data=data).json()
+            if 'message' not in response:
+                return "Invalid Request"
 
             # Handle Response
+            msg = response['message']
             if msg == "SUCCESS":
                 run.model.run_set.filter(
                     year=run.year,
