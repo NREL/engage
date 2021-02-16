@@ -408,8 +408,17 @@ function load_data() {
                         'carrier': d[2],
                         'production': +d[4]
                     });
-                };
+                } else {
+                    trans_production[d[3]].push({
+                        'loc1': d[0],
+                        'loc2': d[1].split(':')[1],
+                        'tech': d[1].split(':')[0],
+                        'carrier': d[2],
+                        'production': -d[4]
+                    });
+                }
             });
+            console.log(trans_production)
             
             // load production
             max_prod = 0;
@@ -428,13 +437,14 @@ function load_data() {
                         'production': +d[4]
                     });
                 } else {
-                    trans_production[d[3]].push({
-                        'loc1': d[0],
-                        'loc2': d[1].split(':')[1],
-                        'tech': d[1].split(':')[0],
-                        'carrier': d[2],
-                        'production': +d[4]
-                    });
+                    // NOTE: USING CONSUMPTION DATA INSTEAD (ABOVE)
+                    // trans_production[d[3]].push({
+                    //     'loc1': d[0],
+                    //     'loc2': d[1].split(':')[1],
+                    //     'tech': d[1].split(':')[0],
+                    //     'carrier': d[2],
+                    //     'production': +d[4]
+                    // });
                 };
             });
             max_prod = Math.max.apply(Math, Object.values(max_prods));
@@ -1284,20 +1294,20 @@ function update_viz(ts, immediate) {
             return colors[d.tech];
         })
         .attr("x1", function(d) {
-            return project(coordinates[d.loc2]).x;
+            return project(coordinates[d.loc1]).x;
         })
         .attr("x2", function(d) {
             var lx1 = project(coordinates[d.loc1]).x,
                 lx2 = project(coordinates[d.loc2]).x;
-            return d3.interpolate(lx2, lx1)(get_trans_utilization(d));
+            return d3.interpolate(lx1, lx2)(get_trans_utilization(d));
         })
         .attr("y1", function(d) {
-            return project(coordinates[d.loc2]).y;
+            return project(coordinates[d.loc1]).y;
         })
         .attr("y2", function(d) {
             var ly1 = project(coordinates[d.loc1]).y,
                 ly2 = project(coordinates[d.loc2]).y;
-            return d3.interpolate(ly2, ly1)(get_trans_utilization(d));
+            return d3.interpolate(ly1, ly2)(get_trans_utilization(d));
         })
 
     // Draw production / consumption
