@@ -83,7 +83,7 @@ class Cambium():
             'project_name': run.model.name,
             'project_uuid': str(run.model.uuid),
             'project_source': 'Engage',
-            'extras': {"scenario": run.scenario.name, "year": run.year},
+            'extras': json.dumps({"scenario": run.scenario.name, "year": run.year}),
             'private_key': settings.CAMBIUM_API_KEY,
             'asynchronous': True
         }
@@ -91,7 +91,7 @@ class Cambium():
         try:
             url = urljoin(settings.CAMBIUM_URL, 'api/ingest-data/')
             response = requests.post(url, data=data).json()
-            logger.info("Cambium API response:\n%s", json.dumps(response, indent=2))
+            logger.info("Cambium API response:", json.dumps(response))
             if 'message' not in response:
                 return "Invalid Request"
 
