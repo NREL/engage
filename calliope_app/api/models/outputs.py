@@ -1,3 +1,5 @@
+import json
+import logging
 from urllib.parse import urljoin
 
 from django.db import models
@@ -11,6 +13,8 @@ import pandas as pd
 import numpy as np
 import os
 import requests
+
+logger = logging.getLogger(__name__)
 
 
 class Run(models.Model):
@@ -81,6 +85,11 @@ class Cambium():
         try:
             url = urljoin(settings.CAMBIUM_URL, 'api/ingest-data/')
             response = requests.post(url, data=data).json()
+            logger.info(
+                "Cambium ingest-data: %s, response:\n%s",
+                data["filename"],
+                json.dumps(response, indent=2)
+            )
             if 'message' not in response:
                 return "Invalid Request"
 
