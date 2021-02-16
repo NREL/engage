@@ -296,7 +296,7 @@ class CalliopeModelRunTask(Task):
         "techs":
             "No nodes have been selected for this scenario",
         "'str' object has no attribute 'keys'":
-            "Group share constraint is not valid json",
+            "Scenario settings constraint does not have valid JSON format",
         "'ConcreteModel' object has no attribute 'loc_tech_carriers_prod'":
             "There are no supply technologies configured",
         "does not exist":

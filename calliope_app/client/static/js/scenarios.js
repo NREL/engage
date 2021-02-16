@@ -174,7 +174,7 @@ function get_scenario_configuration() {
 };
 
 function activate_scenario_settings() {
-	$('.run-parameter-value, .run-parameter-year').on('change keyup paste', function() {
+	$('.run-parameter-value, .run-parameter-year').on('input change paste', function() {
 		$(this).parents('tr').addClass('table-warning')
 	});
 	$('.run-parameter-value-add').on('click', function() {

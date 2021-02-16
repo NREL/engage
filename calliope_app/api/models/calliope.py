@@ -69,4 +69,4 @@ class Run_Parameter(models.Model):
     choices = ArrayField(models.CharField(max_length=10, blank=True))
 
     def __str__(self):
-        return '%s' % (self.pretty_name)
+        return '%s (%s)' % (self.pretty_name, self.name)

@@ -83,7 +83,7 @@ class Technology_Admin(admin.ModelAdmin):
 
 
 class Tech_Param_Admin(admin.ModelAdmin):
-    list_filter = ['model', 'technology']
+    list_filter = ['model']
     list_display = ['id', 'technology', 'year', 'parameter', 'value',
                     'raw_value', 'timeseries', 'timeseries_meta', 'model',
                     'created', 'updated']
@@ -96,7 +96,7 @@ class Loc_Tech_Admin(admin.ModelAdmin):
 
 
 class Loc_Tech_Param_Admin(admin.ModelAdmin):
-    list_filter = ['model', 'loc_tech']
+    list_filter = ['model']
     list_display = ['id', 'loc_tech', 'year', 'parameter', 'value',
                     'raw_value', 'timeseries', 'timeseries_meta', 'model',
                     'created', 'updated']
@@ -122,7 +122,7 @@ class Scenario_Loc_Tech_Admin(admin.ModelAdmin):
 
 
 class Scenario_Param_Admin(admin.ModelAdmin):
-    list_filter = ['model', 'scenario']
+    list_filter = ['model']
     list_display = ['id', 'scenario', 'run_parameter', 'year', 'value',
                     'model', 'created', 'updated']
 

@@ -1,3 +1,5 @@
+import json
+import logging
 from urllib.parse import urljoin
 
 from django.db import models
@@ -11,6 +13,12 @@ import pandas as pd
 import numpy as np
 import os
 import requests
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 class Run(models.Model):
@@ -68,6 +76,7 @@ class Cambium():
         if not run.outputs_key:
             return 'Data has not been transferred to S3 bucket'
 
+        logger.info("Push run starts...")
         data = {
             'filename': run.outputs_key,
             'processor': 'engage',
@@ -78,9 +87,11 @@ class Cambium():
             'private_key': settings.CAMBIUM_API_KEY,
             'asynchronous': True
         }
+        logger.info("Call Cambium API to ingest data - %s", data["filename"])
         try:
             url = urljoin(settings.CAMBIUM_URL, 'api/ingest-data/')
             response = requests.post(url, data=data).json()
+            logger.info("Cambium API response:\n%s", json.dumps(response, indent=2))
             if 'message' not in response:
                 return "Invalid Request"
 
@@ -98,8 +109,10 @@ class Cambium():
             run.save()
             return msg
         except Exception as e:
+            logger.exception("Push run failed!")
             raise
             return str(e)
+        logger.info("Push run success.")
 
 
 class Haven():

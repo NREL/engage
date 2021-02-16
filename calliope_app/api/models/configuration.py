@@ -1047,13 +1047,28 @@ class Scenario(models.Model):
         new_scenario.save()
         # Copy Parameters
         scenario_params = Scenario_Param.objects.filter(scenario=self)
+        existing_param_ids = []
         for scenario_param in scenario_params:
+            existing_param_ids.append(scenario_param.run_parameter_id)
             scenario_param.pk = None
             if scenario_param.run_parameter.name == "name":
                 scenario_param.value = "{}: {}".format(new_scenario.model.name,
                                                        name)
             scenario_param.scenario_id = new_scenario.id
             scenario_param.save()
+        # Copy Default Parameters
+        parameters = Run_Parameter.objects.all()
+        for param in parameters:
+            if param.id in existing_param_ids:
+                continue
+            if param.name == "name":
+                value = "{}: {}".format(new_scenario.model.name, name)
+            else:
+                value = param.default_value
+            Scenario_Param.objects.create(
+                scenario=new_scenario, run_parameter=param,
+                value=value, model=new_scenario.model
+            )
         # Copy Configuration
         scenario_loc_techs = Scenario_Loc_Tech.objects.filter(scenario=self)
         for scenario_loc_tech in scenario_loc_techs:
