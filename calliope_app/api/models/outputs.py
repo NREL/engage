@@ -91,7 +91,7 @@ class Cambium():
         try:
             url = urljoin(settings.CAMBIUM_URL, 'api/ingest-data/')
             response = requests.post(url, data=data).json()
-            logger.info("Cambium API response:", json.dumps(response))
+            logger.info("Cambium API response: %s", json.dumps(response))
             if 'message' not in response:
                 return "Invalid Request"
 
