@@ -400,7 +400,6 @@ function load_data() {
                     if (!timestamps.includes(d[3])) {
                         timestamps.push(d[3])
                         production[d[3]] = []
-                        trans_production[d[3]] = []
                     }
                     production[d[3]].push({
                         'loc': d[0],
@@ -409,6 +408,9 @@ function load_data() {
                         'production': +d[4]
                     });
                 } else {
+                    if (trans_production[d[3]] == undefined) {
+                        trans_production[d[3]] = []
+                    };
                     trans_production[d[3]].push({
                         'loc1': d[0],
                         'loc2': d[1].split(':')[1],
@@ -418,7 +420,6 @@ function load_data() {
                     });
                 }
             });
-            console.log(trans_production)
             
             // load production
             max_prod = 0;
