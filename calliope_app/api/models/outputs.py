@@ -89,28 +89,28 @@ class Cambium():
         }
         logger.info("Call Cambium API to ingest data - %s", data["filename"])
         try:
-            url = urljoin(settings.CAMBIUM_URL, 'api/ingest-data/')
+            url = urljoin(settings.CAMBIUM_URL, "api/ingest-data/")
             response = requests.post(url, data=data).json()
             logger.info("Cambium API response: %s", json.dumps(response))
             if 'message' not in response:
                 return "Invalid Request"
 
             # Handle Response
-            msg = response['message']
-            if msg == "SUCCESS":
+            msg = response["message"]
+            status = response["status"]
+            if status == "SUCCESS":
                 run.model.run_set.filter(
                     year=run.year,
                     scenario_id=run.scenario_id).update(published=False)
                 run.published = True
-            elif msg in ["SUBMITTED", "RECEIVED", "STARTED", "PENDING"]:
+            elif status in ["SUBMITTED", "RECEIVED", "STARTED", "PENDING"]:
                 run.published = None
-            elif msg in ["FAILURE"]:
+            elif status in ["FAILURE", "FAILED"]:
                 run.published = False
             run.save()
             return msg
         except Exception as e:
             logger.exception("Push run failed!")
-            raise
             return str(e)
         logger.info("Push run success.")
 
