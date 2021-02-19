@@ -1,7 +1,8 @@
-var hold_refresh = false;
-var pause_start = null;
-var pause_interval = null;
-var submitdata = {};
+var hold_refresh = false,
+	pause_start = null,
+	pause_interval = null,
+	submitdata = {},
+	refreshTimeout;
 
 $( document ).ready(function() {
 
@@ -72,9 +73,11 @@ function refresh_run_dashboard(open_viz) {
 			}
 		});
 	};
-	setTimeout(function(){
+
+	if (refreshTimeout) { clearTimeout(refreshTimeout) };
+	refreshTimeout = setTimeout(function() {
 		refresh_run_dashboard(false);
-	}, 2000);
+	}, 4000);
 }
 
 function timeSince(date) {
