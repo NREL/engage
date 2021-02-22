@@ -13,12 +13,19 @@ from api.models.calliope import Parameter, Run_Parameter, \
 from taskmeta.models import CeleryTask
 
 import uuid
+import logging
 import pandas as pd
 import numpy as np
 import re
 import os
 import json
 from copy import deepcopy
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 class Model(models.Model):
@@ -442,14 +449,19 @@ class DuplicateModelManager():
             key = obj._meta.label_lower.split('.')[1]
             parents = self._change_dict[key]['parents']
             for parent in parents:
-                old_id = getattr(obj, '{}_id'.format(parent))
-                if old_id:
-
-                    if parent in ['location_1', 'location_2']:
-                        new_id = self._change_dict['location'][old_id]
-                    else:
-                        new_id = self._change_dict[parent][old_id]
-                    setattr(obj, '{}_id'.format(parent), new_id)
+                try:
+                    old_id = getattr(obj, '{}_id'.format(parent))
+                    if old_id:
+                        if parent in ['location_1', 'location_2']:
+                            new_id = self._change_dict['location'][old_id]
+                        else:
+                            new_id = self._change_dict[parent][old_id]
+                        setattr(obj, '{}_id'.format(parent), new_id)
+                except Exception as e:
+                    logger.error("------FOREIGN KEY ERROR-------")
+                    logger.error("{} | {}".format(key, obj.id))
+                    logger.error("{} | {}".format(parent, old_id))
+                    logger.error(e)
             obj.save()
 
 

@@ -1,6 +1,7 @@
 from django.db import models
 
 from datetime import datetime
+import pytz
 
 
 # ----- Override Base Django Classes: QuerySet, Manager
@@ -21,7 +22,7 @@ class EngageQuerySet(models.query.QuerySet):
     @classmethod
     def _cascade_mark_delete(cls, query_in):
         objects = list(query_in.all())
-        query_in.update(deleted=datetime.now())
+        query_in.update(deleted=datetime.now(tz=pytz.UTC))
         for obj in objects:
             for field in obj._meta.get_fields():
                 if field.one_to_many:
