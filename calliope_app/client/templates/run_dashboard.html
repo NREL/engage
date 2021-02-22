@@ -18,7 +18,7 @@
 					<td class="centered" style="padding-top:10px"><b>{% trans "Outputs" %}</b></td>
 					{% if cambium_configured %}
 					{% if request.user.is_authenticated is True and request.user.is_staff is True %}
-					<td class="centered" style="padding-top:10px"><b>{% trans "Cambium" %}</b></td>
+					<td class="centered" style="padding-top:10px" data-toggle="tooltip" data-placement="left" title="Publish results to the Cambium Scenario Viewer tool"><b>{% trans "Cambium" %}</b></td>
 					{% endif %}
 					{% endif %}
 					<td class="centered" style="padding-top:10px"><b>{% trans "Version" %}</b></td>
@@ -101,7 +101,7 @@
 					{% if cambium_configured %}
 					{% if request.user.is_authenticated is True and request.user.is_staff is True %}
 					<td class="centered">
-						{% if run.outputs_path %}
+						{% if run.outputs_key %}
 						{% if run.published == True %}
 						<button type="button" class="btn btn-success run-cambium" style="width:100%;" title="{% trans 'Published' %}"><b>PUBLISHED</b></button>
 						{% elif run.published == False %}
