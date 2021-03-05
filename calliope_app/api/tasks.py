@@ -24,13 +24,13 @@ from api.engage import aws_ses_configured
 from api.models.configuration import Model, Scenario, Scenario_Loc_Tech, \
     Tech_Param, Loc_Tech_Param, Timeseries_Meta, User_File
 from api.models.outputs import Run
-from api.utils import list_to_yaml, load_timeseries_from_csv, get_model_logger, \
-    zip_folder
+from api.utils import list_to_yaml, load_timeseries_from_csv, \
+    get_model_logger, zip_folder
 from api.calliope_utils import get_model_yaml_set, get_location_meta_yaml_set
 from api.calliope_utils import get_techs_yaml_set, get_loc_techs_yaml_set
 
 
-NOTIFICATION_TIME_INTERVAL = 20 # Minutes
+NOTIFICATION_TIME_INTERVAL = 20  # Minutes
 
 
 class ModelTaskStatus(object):
@@ -46,6 +46,44 @@ class ModelTaskStatus(object):
 
 
 task_status = ModelTaskStatus
+
+
+class CopyModelTask(Task):
+    """
+    A celery task class for handling success/failure status
+    """
+
+    def on_failure(self, exc, task_id, args, kwargs, einfo):
+        """
+        On failure, delete the new model
+        """
+        model = Model.objects.get(id=kwargs["dst_model_id"])
+        model.delete()
+
+    def on_success(self, retval, task_id, args, kwargs):
+        """
+        On success, set is_uploading to be False.
+        """
+        model = Model.objects.get(id=kwargs["dst_model_id"])
+        model.is_uploading = False
+        model.save()
+
+
+@app.task(
+    base=CopyModelTask,
+    queue="short_queue",
+    soft_time_limit=3600 - 60,
+    time_limit=3600,
+    ignore_result=True
+)
+def copy_model(src_model_id, dst_model_id, user_id, *args, **kwargs):
+    """
+    A celery task for handling model duplication
+    """
+    src_model = Model.objects.get(id=src_model_id)
+    dst_model = Model.objects.get(id=dst_model_id)
+    user = User.objects.get(id=user_id)
+    src_model.duplicate(dst_model, user)
 
 
 class CalliopeTimeseriesUploadTask(Task):

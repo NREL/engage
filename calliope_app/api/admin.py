@@ -34,7 +34,7 @@ class Abstract_Tech_Param_Admin(admin.ModelAdmin):
 
 class Model_Admin(admin.ModelAdmin):
     list_display = ['id', 'name', 'snapshot_version', 'snapshot_base', 'uuid',
-                    'public', 'created', 'updated']
+                    'public', 'is_uploading', 'created', 'updated']
 
 
 class Model_User_Admin(admin.ModelAdmin):

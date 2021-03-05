@@ -16,7 +16,7 @@ from api.models.configuration import Location, Technology, Tech_Param, \
     Loc_Tech, Loc_Tech_Param, ParamsManager, Scenario, Scenario_Param, \
     Scenario_Loc_Tech, Timeseries_Meta, Model, Model_Comment, \
     Model_Favorite, User_File, Model_User
-from api.tasks import task_status, upload_ts
+from api.tasks import task_status, upload_ts, copy_model
 from taskmeta.models import CeleryTask
 
 
@@ -39,42 +39,37 @@ def add_model(request):
     user = request.user
     model_name = request.POST["model_name"].strip()
     template_model_uuid = request.POST["template_model_uuid"]
+    payload = {}
 
     try:
         template_model = Model.objects.get(uuid=template_model_uuid)
-        template_model.handle_view_access(request.user)
+        template_model.handle_view_access(user)
     except Exception as e:
         template_model = None
         print("User building from blank model: {}".format(e))
 
+    # Create Model
     model_name = Model.find_unique_name(model_name)
+    model = Model.objects.create(name=model_name)
+    Model_User.objects.create(user=user, model=model, can_edit=True)
+    comment = "{} initiated this model.".format(user.get_full_name())
+    Model_Comment.objects.create(model=model, comment=comment, type="version")
+    payload['model_uuid'] = str(model.uuid)
+    payload["status"] = "Added"
 
     if template_model is not None:
-        model = template_model.duplicate(is_snapshot=False)
-        model.name = model_name
-        model.save()
-        Model_User.objects.filter(model=model).hard_delete()
-        comment = (
-            "{} {} initiated this model from "
-            '<a href="/{}/model/">{}</a>.'.format(
-                user.first_name,
-                user.last_name,
-                template_model.uuid,
-                str(template_model),
-            )
-        )
-        Model_Comment.objects.filter(model=model).hard_delete()
-    else:
-        model = Model.objects.create(name=model_name)
-        comment = "{} initiated this model.".format(
-            user.get_full_name()
-        )
-
-    Model_User.objects.create(user=request.user,
-                              model=model, can_edit=True)
-    Model_Comment.objects.create(model=model,
-                                 comment=comment, type="version")
-    payload = {"message": "Added model.", "model_uuid": str(model.uuid)}
+        try:
+            model.is_uploading = True
+            model.save()
+            copy_model.apply_async(
+                kwargs={"src_model_id": template_model.id,
+                        "dst_model_id": model.id,
+                        "user_id": user.id})
+            payload["status"] = "Submitted"
+        except Exception as e:
+            payload["status"] = "Failed"
+            payload["message"] = str(e)
+            model.delete()
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
 
@@ -125,33 +120,33 @@ def duplicate_model(request):
 
     user = request.user
     model_uuid = request.POST["model_uuid"]
+    payload = {}
 
     old_model = Model.by_uuid(model_uuid)
     old_model.handle_edit_access(user)
 
-    new_model = old_model.duplicate(is_snapshot=True)
+    # Create Model
+    model = Model.objects.create(name=old_model.name)
+    latest = Model.objects.filter(name=model.name).exclude(
+        snapshot_version=None).values_list('snapshot_version',
+                                           flat=True)
+    model.snapshot_version = np.max(list(latest) + [0]) + 1
+    model.snapshot_base = old_model
+    payload['model_uuid'] = str(model.uuid)
+    model.save()
 
-    # Log Activity
-    old_comment = '{} created a snapshot: <a href="/{}/model/">{}</a>'
-    old_comment = old_comment.format(user.get_full_name(),
-                                     new_model.uuid,
-                                     str(new_model))
-    new_comment = ('{} {} created this snapshot based on, '
-                   '<a href="/{}/model/">{}</a>.')
-    new_comment = new_comment.format(user.first_name,
-                                     user.last_name,
-                                     old_model.uuid,
-                                     str(old_model))
-    Model_Comment.objects.create(model=old_model,
-                                 comment=old_comment, type="version")
-    Model_Comment.objects.create(model=new_model,
-                                 comment=new_comment, type="version")
-
-    payload = {
-        "message": "duplicated model",
-        "old_model_uuid": str(old_model.uuid),
-        "new_model_uuid": str(new_model.uuid),
-    }
+    try:
+        model.is_uploading = True
+        model.save()
+        copy_model.apply_async(
+            kwargs={"src_model_id": old_model.id,
+                    "dst_model_id": model.id,
+                    "user_id": user.id})
+        payload["status"] = "Submitted"
+    except Exception as e:
+        payload["status"] = "Failed"
+        payload["message"] = str(e)
+        model.delete()
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
 

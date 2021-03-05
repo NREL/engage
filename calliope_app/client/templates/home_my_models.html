@@ -13,9 +13,18 @@
 	<tr class="table-info table-hover">
 		<!-- Model Name -->
 		<td style="text-overflow:ellipsis;white-space:nowrap;overflow:hidden;">
-			<h4 style="display:inline;"><a href="{% url 'model' user_model.model.uuid %}">&nbsp;{{ user_model.model.name }}&nbsp;</a></h4>
-			&nbsp;&nbsp;
+			<h4 style="display:inline;">
+				{% if user_model.model.is_uploading %}
+					{{ user_model.model.name }}
+				{% else %}
+					<a href="{% url 'model' user_model.model.uuid %}">{{ user_model.model.name }}</a>
+				{% endif %}
+			</h4>
 		</td>
+		{% if user_model.model.is_uploading %}
+		<td><i class="fas fa-sync fa-spin"></i></td>
+		<td colspan=2>Initiating... <span style="font-size:0.8em;">Refresh the page to check for updates.</span></td>
+		{% else %}
 		<!-- Notifications -->
 		<td>
 		{% if user_model.notifications > 0 %}
@@ -28,7 +37,7 @@
 			{% if user_model.model.model_user_set.count > 1 %}
 			<i class="fas fa-users"></i>&nbsp;&nbsp;
 			<b>{{ user_model.model.model_user_set.count }}</b> {% trans "Collaborators" %}
-			{% elif user_model.can_edit %}
+			{% elif user_model.can_edit and not user_model.model.is_uploading %}
 			{% trans "Share" %}
 			{% else %}
 			{% endif %}
@@ -42,6 +51,7 @@
 			<span style="padding:4px;border:solid 1px;background-color:yellow">&nbsp;{% trans "VIEW ONLY" %}&nbsp;</span>
 			{% endif %}
 		</td>
+		{% endif %}
 		<td>
 			<button tabindex="-1" type="button" class="btn btn-default transparent model-remove text-sm" title="{% trans 'Remove model' %}" data-model_uuid="{{ user_model.model.uuid }}"><i class="fas fa-times"></i>&nbsp;&nbsp;{% trans "Remove model" %}</button>
 		</td>

@@ -75,7 +75,8 @@ def share_view(request):
     """
 
     selected_model_uuid = request.GET.get('model_uuid', None)
-    user_models = Model_User.objects.filter(user=request.user)
+    user_models = Model_User.objects.filter(user=request.user,
+                                            model__is_uploading=False)
     users = User.objects.all().exclude(
         id=request.user.id).order_by('last_name', 'first_name')
 

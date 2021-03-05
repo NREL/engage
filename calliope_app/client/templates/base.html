@@ -120,11 +120,10 @@
 				{% if model %}
 				{% if can_edit == False %}<div class="text-sm" style="background-color: yellow; color: black; float: right; height: 30px; padding: 4px; margin-top: 3px;">&nbsp;<b>{% trans "VIEW ONLY" %}</b>&nbsp;</div>{% endif %}
 					<!-- Model -->
-					<div class="btn-group" style="height:30px;margin-top:3px;float:right">
-						<button class="btn-dark dropdown-toggle text-sm" type="button" data-toggle="dropdown">
-							&nbsp;&nbsp;<b><i class="fas fa-cogs"></i></b>&nbsp;&nbsp;
-							
-							<span class="caret"></span>
+					<div class="btn-group" style="height:30px;margin-top:3px;float:right;">
+						<button class="btn-dark dropdown-toggle text-sm" style="max-width:260px;overflow:hidden;text-overflow:ellipsis;" type="button" data-toggle="dropdown">
+							&nbsp;&nbsp;<b><i class="fas fa-cogs"></i></b>&nbsp;&nbsp;{{ model }}
+							<span class="caret"></span>&nbsp;
 						</button>
 						<ul class="dropdown-menu dropdown-menu-right">
 							<li>&nbsp;&nbsp;{{ model }}<br><br></li>
@@ -138,7 +137,7 @@
 					<!-- User -->
 					<div class="btn-group" style="height:30px;margin-top:3px;float:right">
 						<button class="btn-primary dropdown-toggle text-sm" type="button" data-toggle="dropdown">
-							&nbsp;&nbsp;<i class="fas fa-user"></i>&nbsp;&nbsp;<span class="caret"></span>
+							&nbsp;&nbsp;<i class="fas fa-user"></i>&nbsp;&nbsp;<span class="caret"></span>&nbsp;
 						</button>
 						<ul class="dropdown-menu dropdown-menu-left">
 							<li>&nbsp;&nbsp;{{ user.first_name }} {{ user.last_name }}<br>&nbsp;&nbsp;<span class="text-sm">{{ user.email }}<br>&nbsp;&nbsp;{{ user.user_profile.organization }}</span><br><br></li>
