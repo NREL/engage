@@ -589,7 +589,7 @@ function retrieve_map(draggable, scenario_id, technology_id, loc_tech_id) {
 }
 
 function blink_element(ele, n) {
-	if (typeof n !== 'number') n = 3;
+	if (typeof n !== 'number') n = 2;
 	var delay = 70;
 	for (var i = 0; i < n; i ++) {
 		ele.delay(delay).animate({ opacity: 0 }, 0)
@@ -615,7 +615,7 @@ function blink_location(id, what_to_blink, pan_to_marker) {
 		var ele = marker.getElement();
 		
 		if (what_to_blink == 'marker' || what_to_blink == 'both') {
-			blink_element($(ele), 6);
+			blink_element($(ele));
 			if (pan_to_marker) {
 				map.once('moveend', function() {
 					blink_element($(ele));

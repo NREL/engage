@@ -126,11 +126,13 @@ function reset_location_values() {
 }
 
 function update_marker_from_row(tr) {
-	var id = tr.data('location_id');
-	var lat = tr.find('.location-edit-lat').val();
-	var lng = tr.find('.location-edit-long').val();
-	var name = tr.find('.location-edit-name').val();
-	var marker = markers.find(function(m) { return m.id == id });
+	var id = tr.data('location_id'),
+		lat = tr.find('.location-edit-lat').val(),
+		lng = tr.find('.location-edit-long').val(),
+		name = tr.find('.location-edit-name').val(),
+		description = '<h4>' + name + '</h4>',
+		marker = markers.find(function(m) { return m.id == id });
+	marker.description = description;
 	marker.setLngLat([lng, lat]);
 }
 
@@ -144,7 +146,7 @@ function activate_location_elements() {
 	reset_location_values();
 	
 	$('.location-edit-name, .location-edit-lat, .location-edit-long, .location-edit-area').unbind();
-	$('.location-edit-name, .location-edit-lat, .location-edit-long, .location-edit-area').on('keyup', function(e) {
+	$('.location-edit-name, .location-edit-lat, .location-edit-long, .location-edit-area').on('keyup change', function(e) {
 		var tr = $(this).closest('tr');
 		update_marker_from_row(tr);
 		if (e.keyCode == 13) {
