@@ -2,10 +2,8 @@
 {% load i18n %}
 <form id="pvwatts_form" method="post" onsubmit="return false;">
 	<div class="centered">
-		<a href="https://pvwatts.nrel.gov/" target="_blank">
-			<h2>Solar Resource Data [NSRDB]</h2>
-			<img src="{% static 'images/pvwatts.png' %}" width="80%" />
-		</a>
+		<h3>Solar PV Capacity Factor Data<br>from <a href="https://nsrdb.nrel.gov/" target="_blank">NSRDB</a> and <a href="https://pvwatts.nrel.gov/" target="_blank">PVWatts</a></h3>
+		<img src="{% static 'images/pvwatts.png' %}" width="80%" />
 	</div>
 	<br>
 	<div class="form-row">
@@ -33,7 +31,7 @@
 			<input id="pvwatts_check_availability" type="submit" class="btn btn-sm btn-warning" name="" value="{% trans 'Check Availability' %}">
 		</div>
 		<div class="form-group col-md-4">
-			<span id="pvwatts_available_src_data" class="hide" style="color:limegreen"><i class="fas fa-circle"></i>&nbsp;&nbsp;{% trans 'Data available here!' %}</span>
+			<span id="pvwatts_available_src_data" class="hide" style="color:limegreen"><i class="fas fa-circle"></i>&nbsp;&nbsp;{% trans 'Data available here' %}</span>
 			<span id="pvwatts_checking_src_data" class="hide" style="color:orange"><i class="fas fa-circle"></i>&nbsp;&nbsp;{% trans 'Checking location...' %}</span>
 			<span id="pvwatts_not_available_src_data" class="hide" style="color:red"><i class="fas fa-circle"></i>&nbsp;&nbsp;{% trans 'Data not available here.' %}</span>
 		</div>
@@ -50,7 +48,7 @@
 			<input id="pvwatts_import_data" disabled type="submit" class="btn btn-sm btn-success" name="" value="{% trans 'Import Data' %}">
 		</div>
 	</div>
-	<span style="font-size: 0.8em"><i class="fas fa-info"></i> {% trans 'Requested data will appear on the Timeseries page located in the model dropdown menu in the toolbar above' %}</span>
+	<span style="font-size: 0.8em"><i class="fas fa-info"></i> {% trans 'Generates a timeseries of solar capacity factor data. Find and inspect it on the Timeseries page, linked below.' %}</span>
 	<br>
 	<a href="{% url 'timeseries' model.uuid %}">{% trans 'Timeseries Page' %}</a>
 	<br><br>

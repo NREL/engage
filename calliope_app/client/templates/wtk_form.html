@@ -2,9 +2,7 @@
 {% load i18n %}
 <form id="wtk_form" method="post" onsubmit="return false;">
 	<div class="centered">
-		<a href="https://www.nrel.gov/grid/wind-toolkit.html" target="_blank">
-			<h2>Wind Resource Data [WTK]</h2>
-		</a>
+		<h3>Wind Capacity Factor Data<br>from <a href="https://www.nrel.gov/grid/wind-toolkit.html" target="_blank">Wind Tool Kit (WTK)</a></h3>
 	</div>
 	<br>
 	<div class="form-row">
@@ -23,7 +21,7 @@
 			<input id="wtk_check_availability" type="submit" class="btn btn-sm btn-warning" name="" value="{% trans 'Check Availability' %}">
 		</div>
 		<div class="form-group col-md-4">
-			<span id="wtk_available_src_data" class="hide" style="color:limegreen"><i class="fas fa-circle"></i>&nbsp;&nbsp;{% trans 'Data available here!' %}</span>
+			<span id="wtk_available_src_data" class="hide" style="color:limegreen"><i class="fas fa-circle"></i>&nbsp;&nbsp;{% trans 'Data available here' %}</span>
 			<span id="wtk_checking_src_data" class="hide" style="color:orange"><i class="fas fa-circle"></i>&nbsp;&nbsp;{% trans 'Checking location...' %}</span>
 			<span id="wtk_not_available_src_data" class="hide" style="color:red"><i class="fas fa-circle"></i>&nbsp;&nbsp;{% trans 'Data not available here.' %}</span>
 		</div>
@@ -40,7 +38,7 @@
 			<input id="wtk_import_data" disabled type="submit" class="btn btn-sm btn-success" name="" value="{% trans 'Import Data' %}">
 		</div>
 	</div>
-	<span style="font-size: 0.8em"><i class="fas fa-info"></i> {% trans 'Requested data will appear on the Timeseries page located in the model dropdown menu in the toolbar above' %}</span>
+	<span style="font-size: 0.8em"><i class="fas fa-info"></i> {% trans 'Generates a timeseries of wind capacity factor data. Find and inspect it on the Timeseries page, linked below.' %}</span>
 	<br>
 	<a href="{% url 'timeseries' model.uuid %}">{% trans 'Timeseries Page' %}</a>
 	<br><br>
