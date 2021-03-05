@@ -485,8 +485,7 @@ class DuplicateModelManager():
         # Old Model
         if self.new_model.snapshot_base is not None:
             comment = '{} created a snapshot: <a href="/{}/model/">{}</a>'
-            comment = comment.format(
-                username, self.new_model.uuid, str(self.new_model))
+            comment = comment.format(username, self.new_model.uuid, str(self.new_model))
             Model_Comment.objects.create(
                 model=self.model, comment=comment, type="version")
 
