@@ -127,6 +127,8 @@ function initiate_units() {
 	math.createUnit('dpercent', {definition: '100 percent', aliases: ['dpercent', 'dpercentage']});
 	math.createUnit('dollar', {definition: '1', aliases: ['dollar', 'dollars'], baseName: 'dollar'});
 	math.createUnit('cent', {definition: '0.01 dollar', aliases: ['c', 'cent', 'cents']});
+  math.createUnit('calorie', {definition: '4.1868 joules', aliases: ['calorie', 'calories']});
+  math.createUnit('Calorie', {definition: '3.968 BTU', aliases: ['Calorie', 'Calories']});
 
 	user_defined_units.forEach(function(item) {
 		var pretty_name = item['name'],
