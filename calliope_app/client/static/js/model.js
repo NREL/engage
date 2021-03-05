@@ -47,7 +47,7 @@ $( document ).ready(function() {
 			},
 			dataType: 'json',
 			success: function (data) {
-				location.reload();
+				alert('Initiating a snapshot. Check back on this page later to find a link to it below');
 			},
 			error: function () {
 				$('#snapping').addClass('hide');

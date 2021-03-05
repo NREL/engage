@@ -37,7 +37,7 @@ $( document ).ready(function() {
 				},
 				dataType: 'json',
 				success: function (data) {
-					if (data['message'] == 'Added model.') {
+					if (data['message'] == undefined) {
 						window.onbeforeunload = null;
 						location.reload();
 					} else {
@@ -47,6 +47,10 @@ $( document ).ready(function() {
 						$('#add_model_message').removeClass('hide');
 						$('#add_model_btn').prop('selectedIndex',0);
 					}
+				},
+				error: function(data) {
+					$('#add_model_message').text("Oops! An error occurred!");
+					$('#add_model_message').removeClass('hide');
 				}
 			});
 		} else {

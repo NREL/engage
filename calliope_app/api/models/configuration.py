@@ -42,6 +42,7 @@ class Model(models.Model):
     snapshot_base = models.ForeignKey(
         "self", on_delete=models.CASCADE, blank=True, null=True)
     public = models.BooleanField(default=False)
+    is_uploading = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
@@ -224,10 +225,10 @@ class Model(models.Model):
         self.runs.filter(scenario_id__in=scenario_ids).update(deprecated=True)
         return True
 
-    def duplicate(self, is_snapshot):
+    def duplicate(self, dst_model, user):
         """ Duplicate the given model as either a new editable model or
         a new view-only snapshot. """
-        return DuplicateModelManager(self, is_snapshot).run()
+        return DuplicateModelManager(self, dst_model, user).run()
 
 
 class Model_User(models.Model):
@@ -359,10 +360,11 @@ class DuplicateModelManager():
 
     IGNORED_CHILDREN = ['model', 'model_user']
 
-    def __init__(self, model, is_snapshot):
+    def __init__(self, src_model, dst_model, user):
 
-        self.model = model
-        self.is_snapshot = is_snapshot
+        self.model = src_model
+        self.dst_model = dst_model
+        self.user = user
         self._change_dict = {}
         self._table_set = []
         self._children = []
@@ -379,6 +381,8 @@ class DuplicateModelManager():
         self._create_model()
         self._create_children()
         self._update_foreign_keys()
+        self._clean()
+        self._log_activity()
 
         return self.new_model
 
@@ -386,19 +390,13 @@ class DuplicateModelManager():
         """ Create the new model as snapshot or copy """
 
         new_model = deepcopy(self.model)
-
-        new_model.pk = None
-        new_model.uuid = str(uuid.uuid4())
+        new_model.pk = self.dst_model.pk
+        new_model.uuid = self.dst_model.uuid
+        new_model.name = self.dst_model.name
+        new_model.snapshot_version = self.dst_model.snapshot_version
+        new_model.snapshot_base = self.dst_model.snapshot_base
         new_model.public = False
-        if self.is_snapshot:
-            latest = Model.objects.filter(name=self.model.name).exclude(
-                snapshot_version=None).values_list('snapshot_version',
-                                                   flat=True)
-            new_model.snapshot_version = np.max(list(latest) + [0]) + 1
-            new_model.snapshot_base = self.model
-        else:
-            new_model.snapshot_version = None
-            new_model.snapshot_base = None
+        new_model.is_uploading = True
         new_model.save()
         self.new_model = new_model
 
@@ -463,6 +461,34 @@ class DuplicateModelManager():
                     logger.error("{} | {}".format(parent, old_id))
                     logger.error(e)
             obj.save()
+
+    def _clean(self):
+        """ Clean up the new model """
+        if self.new_model.snapshot_base is None:
+            Model_Comment.objects.filter(model=self.new_model).hard_delete()
+            Model_User.objects.filter(model=self.new_model).hard_delete()
+            Model_User.objects.create(
+                user=self.user, model=self.new_model, can_edit=True)
+
+    def _log_activity(self):
+        """ Log both old and new models with comments """
+        username = self.user.get_full_name()
+        # New Model
+        link = '<a href="/{}/model/">{}</a>.'
+        if self.new_model.snapshot_base is None:
+            comment = '{} initiated this model from ' + link
+        else:
+            comment = '{} created this snapshot from ' + link
+        comment = comment.format(username, self.model.uuid, str(self.model))
+        Model_Comment.objects.create(
+            model=self.new_model, comment=comment, type="version")
+        # Old Model
+        if self.new_model.snapshot_base is not None:
+            comment = '{} created a snapshot: <a href="/{}/model/">{}</a>'
+            comment = comment.format(
+                username, self.new_model.uuid, str(self.new_model))
+            Model_Comment.objects.create(
+                model=self.model, comment=comment, type="version")
 
 
 class Timeseries_Meta(models.Model):

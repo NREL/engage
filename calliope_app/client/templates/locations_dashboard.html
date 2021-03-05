@@ -26,7 +26,7 @@
 				<td>
 					<b><span class="location-area">{% if location.available_area >= 0 %}{{ location.available_area }}{% else %}&#8734;{% endif %}</span></b>
 					<input {% if not can_edit %}disabled{% endif %} type="number" min="0" class="location-edit-area hide" style="text-align: left; max-width: 200px;" value="{% if location.available_area >= 0 %}{{ location.available_area }}{% endif %}">
-					km<sup>2</sup>
+					m<sup>2</sup>
 				</td>
 				<!-- Location Description -->
 				<td style="max-width:200px" class="text-sm">
@@ -98,7 +98,7 @@
 			<td>
 				<b><span class="location-area hide"></span></b>
 				<input {% if not can_edit %}disabled{% endif %} type="number" min="0" class="location-edit-area" style="text-align: left; max-width: 200px;" placeholder="{% trans 'Available area' %}...">
-				km<sup>2</sup>
+				m<sup>2</sup>
 			</td>
 			<!-- Location Description -->
 			<td class="text-sm">
