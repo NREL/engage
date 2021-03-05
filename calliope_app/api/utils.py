@@ -149,7 +149,13 @@ def list_to_yaml(table_list, filename):
                         current_level[part] = False
                     else:
                         try:
-                            current_level[part] = json.loads(path[i + 1])
+                            string = path[i + 1].replace(
+                                '\'', "\"").replace(
+                                    '“', "\"").replace(
+                                        '”', "\"").replace(
+                                            '‘', "\"").replace(
+                                                '’', "\"")
+                            current_level[part] = json.loads(string)
                         except Exception:
                             try:
                                 current_level[part] = float(path[i + 1])
