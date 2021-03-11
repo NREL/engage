@@ -995,6 +995,9 @@ function activate_essentials() {
 		$(this).val('');
 		$(this).change();
 	});
+	$('#tech_description').on('input click', function() {
+		this.style.height = this.scrollHeight + 10 + "px";
+	});
 }
 
 function activate_paste(class_name) {
