@@ -750,7 +750,7 @@ class Tech_Param(models.Model):
             technology.save()
 
         if technology.pretty_tag:
-            tech_full_name = '{} ({})'.format(technology.pretty_name,
+            tech_full_name = '{} [{}]'.format(technology.pretty_name,
                                               technology.pretty_tag)
         else:
             tech_full_name = technology.pretty_name
