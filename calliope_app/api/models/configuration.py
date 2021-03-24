@@ -464,6 +464,9 @@ class DuplicateModelManager():
 
     def _clean(self):
         """ Clean up the new model """
+        # Unpublish from Cambium
+        self.new_model.run_set.all().update(published=False)
+        # Drop Comments and Model Users
         if self.new_model.snapshot_base is None:
             Model_Comment.objects.filter(model=self.new_model).hard_delete()
             Model_User.objects.filter(model=self.new_model).hard_delete()
