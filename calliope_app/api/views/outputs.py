@@ -192,7 +192,7 @@ def delete_run(request):
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
 
-    run = model.runs.filter(id=run_id)
+    run = model.runs.get(id=run_id)
     if run.outputs_key:
         data = {
             'filename': run.outputs_key,

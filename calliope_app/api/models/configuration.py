@@ -1182,7 +1182,7 @@ class Scenario_Param(models.Model):
     scenario = models.ForeignKey(Scenario, on_delete=models.CASCADE)
     run_parameter = models.ForeignKey(Run_Parameter, on_delete=models.CASCADE)
     year = models.IntegerField(default=0)
-    value = models.CharField(max_length=200)
+    value = models.TextField()
     model = models.ForeignKey(Model, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
