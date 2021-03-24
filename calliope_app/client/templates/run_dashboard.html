@@ -116,7 +116,7 @@
 					<!-- Deprecated -->
 					<td class="centered">
 						{% if run.deprecated %}
-						<button class="run-version btn btn-outline-danger" style="width: 100%;" disabled>{% trans "OUT OF DATE" %}</button>
+						<button class="run-version-old btn btn-outline-danger" data-dates="{{ run.subset_time }}" style="width: 100%;">{% trans "OUT OF DATE" %}</button>
 						{% else %}
 						<button class="run-version btn btn-outline-success" style="width: 100%;" disabled>{% trans "UP TO DATE" %}</button>
 						{% endif %}
