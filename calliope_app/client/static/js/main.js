@@ -1021,6 +1021,7 @@ function activate_paste(class_name) {
 					next_row.find('.parameter-delete, .parameter-value-delete').addClass('hide')
 				};
 				next.val(values[i]);
+				next.trigger('change');
 				next.focus();
 			};
 		}, 0);
