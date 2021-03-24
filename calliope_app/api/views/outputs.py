@@ -1,8 +1,9 @@
 import base64
 import os
 import json
-import uuid
 from datetime import datetime, timedelta
+from urllib.parse import urljoin
+import requests
 
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.conf import settings
@@ -192,21 +193,18 @@ def delete_run(request):
     model.handle_edit_access(request.user)
 
     run = model.runs.filter(id=run_id)
+    if run.outputs_key:
+        data = {
+            'filename': run.outputs_key,
+            'project_uuid': str(model.uuid),
+            'private_key': settings.CAMBIUM_API_KEY,
+        }
+        try:
+            url = urljoin(settings.CAMBIUM_URL, "api/remove-data/")
+            requests.post(url, data=data).json()
+        except Exception as e:
+            print("Cambium removal failed - {}".format(e))
     run.delete()
-
-    # Disabling the file removal b/c duplicated models currently share files
-
-    # if os.path.exists(run.inputs_path):
-    #     shutil.rmtree(run.inputs_path)
-
-    # if os.path.exists(run.logs_path):
-    #     shutil.rmtree(os.path.dirname(run.logs_path))
-
-    # if os.path.exists(run.plots_path):
-    #     shutil.rmtree(os.path.dirname(run.plots_path))
-
-    # if os.path.exists(run.outputs_path):
-    #     shutil.rmtree(run.outputs_path)
 
     return HttpResponseRedirect("")
 
