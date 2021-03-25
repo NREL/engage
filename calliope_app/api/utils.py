@@ -5,7 +5,6 @@ This module contains support functions and libraries used in views and tasks.
 import json
 import logging
 import os
-import re
 import shutil
 from datetime import datetime
 from itertools import permutations
@@ -150,7 +149,7 @@ def list_to_yaml(table_list, filename):
                         current_level[part] = False
                     else:
                         try:
-                            string = re.sub('\s+', '', path[i + 1])
+                            string = path[i + 1].replace(", ", ",")
                             for char in ['\'', '“', '”', '‘', '’']:
                                 string = string.replace(char, '\"')
                             current_level[part] = json.loads(string)
