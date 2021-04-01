@@ -302,4 +302,56 @@ function activate_runs() {
 }
 
 
+function resize(element){
+	var md;
+	const viz = document.getElementsByClassName('row')[1];
+	const dashboard = document.getElementById('run_dashboard');
+	console.log(dashboard.style.height)
+	element.onmousedown = onMouseDown;
+	function onMouseDown(e){
+		console.log('mouse down')
+		md = {e,
+			  vizHeight : viz.offsetHeight,
+			  dashboardHeight : dashboard.offsetHeight,
+			};
+		document.onmousemove = onMouseMove;
+		document.onmouseup = () => {
+			console.log('mouse up');
+			document.onmousemove = document.onmouseup = null;
+		}
+	}
+
+	function onMouseMove(e){
+
+		var delta = {x: e.clientX - md.e.clientX,
+					 y: e.clientY - md.e.clientY};
+		delta.y = Math.min(Math.max(delta.y, -md.vizHeight),
+							md.dashboardHeight);
+		
+		
+		viz.style.height = (md.vizHeight + delta.y) + "px";
+		dashboard.style.height = (md.dashboardHeight - delta.y) + "px"
+		//console.log(parseInt(viz.style.height) > md.vizHeight + 10)
+		if ((parseInt(viz.style.height) > (md.vizHeight + 10)) && parseInt(viz.style.height) > 630){
+			toggleSize(dashboard)
+		}
+	}
+
+}
+
+function toggleSize(element){
+	const viz = document.getElementsByClassName('row')[1];
+	if (element.style.height > 10 + "px"){
+		//minimize the run dashboard
+		viz.style.height = 760 + 'px'
+		element.style.height = 10 + "px"
+		
+	}
+	else{
+		viz.style.height = 460 + "px"
+		element.style.height = 535 + "px"
+		console.log(element.style.height)
+	}
+}
+
 
