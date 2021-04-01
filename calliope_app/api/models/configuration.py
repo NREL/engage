@@ -464,6 +464,9 @@ class DuplicateModelManager():
 
     def _clean(self):
         """ Clean up the new model """
+        # Unpublish from Cambium
+        self.new_model.run_set.all().update(published=False)
+        # Drop Comments and Model Users
         if self.new_model.snapshot_base is None:
             Model_Comment.objects.filter(model=self.new_model).hard_delete()
             Model_User.objects.filter(model=self.new_model).hard_delete()
@@ -750,7 +753,7 @@ class Tech_Param(models.Model):
             technology.save()
 
         if technology.pretty_tag:
-            tech_full_name = '{} ({})'.format(technology.pretty_name,
+            tech_full_name = '{} [{}]'.format(technology.pretty_name,
                                               technology.pretty_tag)
         else:
             tech_full_name = technology.pretty_name
@@ -1179,7 +1182,7 @@ class Scenario_Param(models.Model):
     scenario = models.ForeignKey(Scenario, on_delete=models.CASCADE)
     run_parameter = models.ForeignKey(Run_Parameter, on_delete=models.CASCADE)
     year = models.IntegerField(default=0)
-    value = models.CharField(max_length=200)
+    value = models.TextField()
     model = models.ForeignKey(Model, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)

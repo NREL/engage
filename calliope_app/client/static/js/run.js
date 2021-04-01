@@ -299,6 +299,25 @@ function activate_runs() {
 		};
 	});
 
+	$('.run-version-old').unbind();
+	$('.run-version-old').on('click', function() {
+		$(this).html('<i class="fas fa-spinner fa-spin"></i>');
+		$(this).attr('disabled', true);
+		$.ajax({
+			url: '/' + LANGUAGE_CODE + '/api/build/',
+			data: {
+			  'model_uuid': $('#header').data('model_uuid'),
+			  'scenario_id': $("#scenario option:selected").data('id'),
+			  'start_date': $(this).attr('data-dates').split(' to ')[0],
+			  'end_date': $(this).attr('data-dates').split(' to ')[1]
+			},
+			dataType: 'json',
+			success: function (data) {
+				console.log(data['status']);
+			}
+		});
+	});
+
 }
 
 
