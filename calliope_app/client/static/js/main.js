@@ -731,8 +731,8 @@ function add_marker(name, id, type, draggable, coordinates) {
 				blink_location(marker.id);
 				toggle_location_edit(marker.id, true);
 				var row = $("tr[data-location_id='" + marker.id + "']");
-				row.find('.location-edit-lat').val(new_lnglat.lat.toFixed(3))
-				row.find('.location-edit-long').val(new_lnglat.lng.toFixed(3))
+				row.find('.location-edit-lat').val(new_lnglat.lat.toFixed(5))
+				row.find('.location-edit-long').val(new_lnglat.lng.toFixed(5))
 				marker.lat = new_lnglat.lat;
 				marker.lon = new_lnglat.lng;
 			}

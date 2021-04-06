@@ -97,7 +97,8 @@ function toggle_location_edit(location_id, edit) {
 					markers[m].remove();
 					markers.splice(m, 1);
 				}
-				row.remove();
+				var location_id = row.attr('data-location_id');
+				$('#location_table tr[data-location_id="' + location_id + '"]').remove();
 				return;
 			}
 			
@@ -256,10 +257,7 @@ function activate_location_elements() {
 					if ($('.table-warning').length < 2) {
 						$('#master-cancel').addClass('hide');
 					};
-					// PVWatts & WTK
-					var meta = get_loc_meta(id);
-					request_pvwatts(id, meta[1], meta[2], 40, 180, update_availability);
-					request_wtk(id, meta[1], meta[2], update_availability);
+					activate_import_btns();
 				}
 			});
 		} else {
