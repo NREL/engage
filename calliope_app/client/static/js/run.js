@@ -6,18 +6,26 @@ var hold_refresh = false,
 
 $( document ).ready(function() {
 
+	// Resize Dashboard
+	var upper = $('#run_outputs'),
+		lower = $('#runs_container');
+	splitter_resize(upper, lower);
+	$('#splitter_btn').on('mousedown', function(e) { e.stopPropagation() });
+	$('#splitter_btn').on('click', function() {
+		splitter_toggle(upper, lower);
+	});
+
+	// Switch Scenarios
 	$('#scenario').on('change', get_scenario);
 	get_scenario();
 	
+	// New Scenario
 	$('#master-new').on('click', function() {
 		var model_uuid = $('#header').data('model_uuid'),
 			scenario_id = $("#scenario option:selected").data('id');
 		window.location = '/' + model_uuid + '/add_runs/' + scenario_id;
 	});
 
-	var scenario_id = $("#scenario option:selected").data('id');
-
-	/* this will make the save.php script take a long time so you can see the spinner ;) */
 	submitdata['model_uuid'] = $('#header').data('model_uuid');
 	submitdata['csrfmiddlewaretoken'] = getCookie('csrftoken');
 
@@ -320,57 +328,49 @@ function activate_runs() {
 
 }
 
+// Screen Splitter
 
-function resize(element){
-	var md;
-	const viz = document.getElementsByClassName('row')[1];
-	const dashboard = document.getElementById('run_dashboard');
-	console.log(dashboard.style.height)
-	element.onmousedown = onMouseDown;
-	function onMouseDown(e){
-		console.log('mouse down')
-		md = {e,
-			  vizHeight : viz.offsetHeight,
-			  dashboardHeight : dashboard.offsetHeight,
-			};
-		document.onmousemove = onMouseMove;
-		document.onmouseup = () => {
-			console.log('mouse up');
-			document.onmousemove = document.onmouseup = null;
-		}
-	}
+var maximize_label = 'Open Dashboard&nbsp;&nbsp;<i class="fas fa-chevron-up"></i>',
+	minimize_label = 'Minimize Dashboard&nbsp;&nbsp;<i class="fas fa-chevron-down"></i>',
+	minimize_threshold = 100;
 
-	function onMouseMove(e){
-
-		var delta = {x: e.clientX - md.e.clientX,
-					 y: e.clientY - md.e.clientY};
-		delta.y = Math.min(Math.max(delta.y, -md.vizHeight),
-							md.dashboardHeight);
-		
-		
-		viz.style.height = (md.vizHeight + delta.y) + "px";
-		dashboard.style.height = (md.dashboardHeight - delta.y) + "px"
-		//console.log(parseInt(viz.style.height) > md.vizHeight + 10)
-		if ((parseInt(viz.style.height) > (md.vizHeight + 10)) && parseInt(viz.style.height) > 630){
-			toggleSize(dashboard)
-		}
-	}
-
+function splitter_resize(upper, lower){
+	$('#splitter').on('mousedown', function(e) {
+		e.stopPropagation();
+		upper.css('overflow-y', 'hidden');
+		var md = {e, upperHeight: upper.outerHeight(),
+			      lowerHeight: lower.outerHeight()};
+		$(document).on('mousemove', function (e) {
+			var delta = {x: e.clientX - md.e.clientX,
+						 y: e.clientY - md.e.clientY};
+			delta.y = Math.min(Math.max(delta.y, -md.upperHeight), md.lowerHeight);
+			upper.css('height', (md.upperHeight + delta.y) + "px");
+			lower.css('height', (md.lowerHeight - delta.y) + "px");
+			if (lower.height() > minimize_threshold){
+				$('#splitter_btn').html(minimize_label);
+			} else {
+				$('#splitter_btn').html(maximize_label);
+			}
+		});
+		$(document).on('mouseup', function () {
+			upper.css('overflow-y', 'scroll');
+			$(this).unbind('mousemove mouseup');
+		});
+	});
 }
 
-function toggleSize(element){
-	const viz = document.getElementsByClassName('row')[1];
-	if (element.style.height > 10 + "px"){
-		//minimize the run dashboard
-		viz.style.height = 760 + 'px'
-		element.style.height = 10 + "px"
-		
-	}
-	else{
-		viz.style.height = 460 + "px"
-		element.style.height = 535 + "px"
-		console.log(element.style.height)
+function splitter_toggle(upper, lower){
+	var offset = 160;
+	if (lower.height() > minimize_threshold){
+		// Minimize Lower Row
+		upper.css('height', 'calc(100% - ' + offset + 'px)');
+		lower.css('height', '0px');
+		$('#splitter_btn').html(maximize_label);
+	} else{
+		// Expand Lower Row
+		var split_height = ((lower.height() + upper.height()) * 0.5);
+		upper.css('height', split_height + "px");
+		lower.css('height', split_height + "px");
+		$('#splitter_btn').html(minimize_label);
 	}
 }
-
-
