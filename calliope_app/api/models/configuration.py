@@ -613,6 +613,13 @@ class Technology(models.Model):
             return '{}'.format(self.name)
 
     @property
+    def calliope_pretty_name(self):
+        if self.pretty_tag:
+            return '{} [{}]'.format(self.pretty_name, self.pretty_tag)
+        else:
+            return self.pretty_name
+
+    @property
     def color(self):
         """ Lookup the color from the technology's parameters """
         p = Tech_Param.objects.filter(technology=self,
@@ -645,6 +652,20 @@ class Technology(models.Model):
         j = json.dumps(d)
         return j
 
+    def update_calliope_pretty_name(self):
+        param = Tech_Param.objects.filter(
+            model_id=self.model_id,
+            technology_id=self.id,
+            parameter__name='name')
+        if len(param) == 0:
+            Tech_Param.objects.create(
+                model_id=self.model_id,
+                technology_id=self.id,
+                parameter__name='name',
+                value=self.calliope_pretty_name)
+        else:
+            param.update(value=self.calliope_pretty_name)
+
     def duplicate(self, model_id, pretty_name):
         """ Duplicate and return a new technology instance """
         new_tech = deepcopy(self)
@@ -664,6 +685,7 @@ class Technology(models.Model):
             tech_param.pk = None
             tech_param.technology_id = new_tech.id
             tech_param.model_id = model_id
+            # Timeseries
             tmeta = deepcopy(tech_param.timeseries_meta)
             if tmeta is not None:
                 original_pk = tmeta.pk
@@ -684,6 +706,7 @@ class Technology(models.Model):
                     tech_param.value = tmeta.pk
                     tmetas[original_pk] = tmeta
             tech_param.save()
+        new_tech.update_calliope_pretty_name()
         return new_tech
 
     def update(self, form_data):
@@ -751,24 +774,7 @@ class Tech_Param(models.Model):
                         parameter_id=key,
                         value=value.replace(',', ''))
             technology.save()
-
-        if technology.pretty_tag:
-            tech_full_name = '{} [{}]'.format(technology.pretty_name,
-                                              technology.pretty_tag)
-        else:
-            tech_full_name = technology.pretty_name
-        tech_full_name_record = cls.objects.filter(
-            model_id=technology.model_id,
-            technology_id=technology.id,
-            parameter_id=2)
-        if len(tech_full_name_record) == 0:
-            cls.objects.create(
-                model_id=technology.model_id,
-                technology_id=technology.id,
-                parameter_id=2,
-                value=tech_full_name)
-        else:
-            tech_full_name_record.update(value=tech_full_name)
+        technology.update_calliope_pretty_name()
 
     @classmethod
     def _cplus_carriers(cls, technology, carriers, ratios):
