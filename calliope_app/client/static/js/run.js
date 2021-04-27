@@ -10,10 +10,7 @@ $( document ).ready(function() {
 	var upper = $('#run_outputs'),
 		lower = $('#runs_container');
 	splitter_resize(upper, lower);
-	$('#splitter_btn').on('mousedown', function(e) { e.stopPropagation() });
-	$('#splitter_btn').on('click', function() {
-		splitter_toggle(upper, lower);
-	});
+	
 
 	// Switch Scenarios
 	$('#scenario').on('change', get_scenario);
@@ -330,11 +327,11 @@ function activate_runs() {
 
 // Screen Splitter
 
-var maximize_label = 'Open Dashboard&nbsp;&nbsp;<i class="fas fa-chevron-up"></i>',
+/* var maximize_label = 'Open Dashboard&nbsp;&nbsp;<i class="fas fa-chevron-up"></i>',
 	minimize_label = 'Minimize Dashboard&nbsp;&nbsp;<i class="fas fa-chevron-down"></i>',
-	minimize_threshold = 100;
+	minimize_threshold = 100; */
 
-function splitter_resize(upper, lower){
+/* function splitter_resize(upper, lower){
 	$('#splitter').on('mousedown', function(e) {
 		e.stopPropagation();
 		upper.css('overflow-y', 'hidden');
@@ -352,10 +349,16 @@ function splitter_resize(upper, lower){
 				$('#splitter_btn').html(maximize_label);
 			}
 		});
+		$(document).unbind('mouseup')
 		$(document).on('mouseup', function () {
 			upper.css('overflow-y', 'scroll');
 			$(this).unbind('mousemove mouseup');
 		});
+
+	});
+	$('#splitter_btn').on('mousedown', function(e) { e.stopPropagation() });
+	$('#splitter_btn').on('click', function() {
+		splitter_toggle(upper, lower);
 	});
 }
 
@@ -373,4 +376,4 @@ function splitter_toggle(upper, lower){
 		lower.css('height', split_height + "px");
 		$('#splitter_btn').html(minimize_label);
 	}
-}
+} */

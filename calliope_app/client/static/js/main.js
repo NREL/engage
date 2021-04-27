@@ -1186,3 +1186,58 @@ function formatNumber(x, commas) {
     return parts.join(".");
 
 }
+
+var maximize_label = 'Open Dashboard&nbsp;&nbsp;<i class="fas fa-chevron-up"></i>',
+	minimize_label = 'Minimize Dashboard&nbsp;&nbsp;<i class="fas fa-chevron-down"></i>',
+	minimize_threshold = 100;
+
+function splitter_resize(upper, lower){
+	$('#splitter').unbind('mousedown')
+	$('#splitter').on('mousedown', function(e) {
+		e.stopPropagation();
+		upper.css('overflow-y', 'hidden');
+		var md = {e, upperHeight: upper.outerHeight(),
+			      lowerHeight: lower.outerHeight()};
+		$(document).unbind('mousemove')
+		$(document).on('mousemove', function (e) {
+			var delta = {x: e.clientX - md.e.clientX,
+						 y: e.clientY - md.e.clientY};
+			delta.y = Math.min(Math.max(delta.y, -md.upperHeight), md.lowerHeight);
+			upper.css('height', (md.upperHeight + delta.y) + "px");
+			lower.css('height', (md.lowerHeight - delta.y) + "px");
+			if (lower.height() > minimize_threshold){
+				$('#splitter_btn').html(minimize_label);
+			} else {
+				$('#splitter_btn').html(maximize_label);
+			}
+		});
+		$(document).unbind('mouseup')
+		$(document).on('mouseup', function () {
+			upper.css('overflow-y', 'scroll');
+			$(this).unbind('mousemove mouseup');
+		});
+
+	});
+	$('#splitter_btn').unbind('mousedown')
+	$('#splitter_btn').on('mousedown', function(e) { e.stopPropagation() });
+	$('#splitter_btn').unbind('click')
+	$('#splitter_btn').on('click', function() {
+		splitter_toggle(upper, lower);
+	});
+}
+
+function splitter_toggle(upper, lower){
+	var offset = 160;
+	if (lower.height() > minimize_threshold){
+		// Minimize Lower Row
+		upper.css('height', 'calc(100% - ' + offset + 'px)');
+		lower.css('height', '0px');
+		$('#splitter_btn').html(maximize_label);
+	} else{
+		// Expand Lower Row
+		var split_height = ((lower.height() + upper.height()) * 0.5);
+		upper.css('height', split_height + "px");
+		lower.css('height', split_height + "px");
+		$('#splitter_btn').html(minimize_label);
+	}
+}
