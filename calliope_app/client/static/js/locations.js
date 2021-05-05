@@ -2,6 +2,11 @@ var new_id = 0;
 var map_mode = 'locations';
 
 $( document ).ready(function() {
+
+	// Resize Dashboard
+	var upper = $('#map_container'),
+		lower = $('#locations_dashboard');
+	splitter_resize(upper, lower);
 	
 	$('#master-new').removeClass('hide');
 

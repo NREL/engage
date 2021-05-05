@@ -6,18 +6,22 @@ var hold_refresh = false,
 
 $( document ).ready(function() {
 
+	// Resize Dashboard
+	var upper = $('#run_outputs'),
+		lower = $('#runs_container');
+	splitter_resize(upper, lower);
+
+	// Switch Scenarios
 	$('#scenario').on('change', get_scenario);
 	get_scenario();
 	
+	// New Scenario
 	$('#master-new').on('click', function() {
 		var model_uuid = $('#header').data('model_uuid'),
 			scenario_id = $("#scenario option:selected").data('id');
 		window.location = '/' + model_uuid + '/add_runs/' + scenario_id;
 	});
 
-	var scenario_id = $("#scenario option:selected").data('id');
-
-	/* this will make the save.php script take a long time so you can see the spinner ;) */
 	submitdata['model_uuid'] = $('#header').data('model_uuid');
 	submitdata['csrfmiddlewaretoken'] = getCookie('csrftoken');
 
@@ -26,7 +30,7 @@ $( document ).ready(function() {
 function get_scenario() {
 	hold_refresh = false;
 	clearInterval(pause_interval);
-	$('#updates_paused').slideUp();
+	$('#updates_paused').hide();
 	var scenario_id = $("#scenario option:selected").data('id');
 	if (scenario_id != undefined) {
 		refresh_run_dashboard(true);
@@ -118,13 +122,13 @@ function bindEditable() {
 				pause_start = new Date();
 				updatePauseTime();
 				pause_interval = setInterval(updatePauseTime, 1000);
-				$('#updates_paused').slideDown();
+				$('#updates_paused').show();
 				$('.run-description').unbind();
 			},
 			callback: function(result, settings, submitdata) {
 				hold_refresh = false;
 				clearInterval(pause_interval);
-				$('#updates_paused').slideUp();
+				$('#updates_paused').hide();
 				bindEditable();
 			},
 			cssclass: '',
@@ -133,7 +137,7 @@ function bindEditable() {
 			onreset: function() {
 				hold_refresh = false;
 				clearInterval(pause_interval);
-				$('#updates_paused').slideUp();
+				$('#updates_paused').hide();
 				bindEditable();
 			},
 			submit: '<button class="btn btn-success"><i class="fas fa-save" /> Save</button>',
@@ -319,6 +323,3 @@ function activate_runs() {
 	});
 
 }
-
-
-

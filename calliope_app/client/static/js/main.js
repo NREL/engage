@@ -680,17 +680,17 @@ function add_marker(name, id, type, draggable, coordinates) {
 	marker.el = el;
 	marker.lat = coordinates[0];
 	marker.lon = coordinates[1];
+	marker.name = name;
 	marker.description = description;
 	marker._element._marker = marker;
 	marker._element.addEventListener('mouseenter', function(e) {
 		var m = e.target._marker;
-		$('#map-legend').html(m.description).css('display', 'inline-block');
+		$('#map-legend').html(m.description);
 	});
 	marker._element.addEventListener('mouseleave', function(e) {
-		$('#map-legend').hide();
+		$('#map-legend').html("");
 	});
 	marker._element.addEventListener('mouseup', function(e) {
-		// if (!draggable) e.stopPropagation();
 		var m = e.target._marker;
 		setTimeout(function() {
 			set_location(m.id);
@@ -701,6 +701,15 @@ function add_marker(name, id, type, draggable, coordinates) {
 				set_loc_clicked = 1;
 			}
 		}, 20);
+	});
+	marker._element.addEventListener('click', function(e) {
+		// Filter the Locations on the Scenarios Tab
+		e.stopPropagation();
+		var m = e.target._marker;
+		if ($('#location-filter').length > 0) {
+			$('#location-filter').val(m.name);
+			filter_nodes();
+		};
 	});
 	markers.push(marker);
 	if (draggable) {
@@ -903,20 +912,33 @@ function load_map(locations, transmissions, draggable, loc_tech_id) {
 
 
 function render_map(locations, transmissions, draggable, loc_tech_id) {
-	var coords = [], bounds = null;
-	if (locations.length == 0) {
-		// Center on global extent by default
-		coords = [[-180, -90], [180, 90]];
+
+	// Bounds
+	var lvar = 'Bounds: ' + get_model_name(),
+		bounds = JSON.parse(window.localStorage.getItem(lvar)),
+		padding = 0;
+	if ((bounds == null) || (lvar == 'Home') || (get_tab_name() == 'Nodes')) {
+		var coords = [];
+		if (locations.length == 0) {
+			// Center on global extent by default
+			coords = [[-180, -90], [180, 90]];
+		} else {
+			coords = locations.map(function(l) {
+				return [l.longitude, l.latitude];
+			});
+		}
+		bounds = coords.reduce(
+			function(bounds, coord) {
+				return bounds.extend(coord);
+			}, new mapboxgl.LngLatBounds(coords[0], coords[0]))
+		padding = 50;
 	} else {
-		coords = locations.map(function(l) {
-			return [l.longitude, l.latitude];
-		});
+		var sw = new mapboxgl.LngLat(bounds['_sw']['lng'], bounds['_sw']['lat']),
+			ne = new mapboxgl.LngLat(bounds['_ne']['lng'], bounds['_ne']['lat']);
+		bounds = new mapboxgl.LngLatBounds(sw, ne);
 	}
-	var bounds = coords.reduce(
-		function(bounds, coord) {
-			return bounds.extend(coord);
-		}, new mapboxgl.LngLatBounds(coords[0], coords[0]))
 	
+	// Map
 	if (map === null) {
 		map = new mapboxgl.Map({
 				container: 'map',
@@ -933,10 +955,18 @@ function render_map(locations, transmissions, draggable, loc_tech_id) {
 		map.on('load', function() {
 			load_map(locations, transmissions, draggable, loc_tech_id);
 			var camera = map.cameraForBounds(bounds, {
-				padding: 50,
+				padding: padding,
 				maxZoom: 15
 			});
 			map.jumpTo(camera);
+		});
+		map.on('click', function() {
+			$('#location-filter').val("");
+			filter_nodes();
+		})
+		map.on('moveend', function() {
+			var lvar = 'Bounds: ' + get_model_name();
+			window.localStorage.setItem(lvar, JSON.stringify(map.getBounds()));
 		});
 	} else {
 		load_map(locations, transmissions, draggable, loc_tech_id);
@@ -1185,4 +1215,64 @@ function formatNumber(x, commas) {
     };
     return parts.join(".");
 
+}
+
+var maximize_label = 'Open Dashboard&nbsp;&nbsp;<i class="fas fa-chevron-up"></i>',
+	minimize_label = 'Minimize Dashboard&nbsp;&nbsp;<i class="fas fa-chevron-down"></i>',
+	minimize_threshold = 0.1;
+
+function splitter_resize(upper, lower){
+	$('#splitter').unbind('mousedown')
+	$('#splitter').on('mousedown', function(e) {
+		e.stopPropagation();
+		var md = {e, upperHeight: upper.outerHeight(),
+			      lowerHeight: lower.outerHeight()};
+		$(document).unbind('mousemove');
+		$(document).on('mousemove', function (e) {
+			var delta = Math.min(Math.max((e.clientY - md.e.clientY), -md.upperHeight), md.lowerHeight),
+				totalHeight = md.upperHeight + md.lowerHeight,
+				upperHeight = (100 * (md.upperHeight + delta) / totalHeight);
+			upper.css('height', (upperHeight) + '%');
+			lower.css('height', (100 - upperHeight) + '%');
+			if (lower.height() / totalHeight > minimize_threshold){
+				$('#splitter_btn').html(minimize_label);
+			} else {
+				$('#splitter_btn').html(maximize_label);
+			}
+		});
+		$(document).unbind('mouseup');
+		$(document).on('mouseup', function () {
+			$(this).unbind('mousemove mouseup');
+			if (map != undefined) { map.resize() };
+		});
+	});
+	$('#splitter_btn').unbind('mousedown');
+	$('#splitter_btn').on('mousedown', function(e) { e.stopPropagation() });
+	$('#splitter_btn').unbind('click');
+	$('#splitter_btn').on('click', function() {
+		splitter_toggle(upper, lower);
+	});
+}
+
+function splitter_toggle(upper, lower){
+	if ((lower.height() / (lower.height() + upper.height())) > minimize_threshold){
+		// Minimize Lower Row
+		upper.css('height', '99%');
+		lower.css('height', '1%');
+		$('#splitter_btn').html(maximize_label);
+	} else{
+		// Expand Lower Row
+		upper.css('height', '50%');
+		lower.css('height', '50%');
+		$('#splitter_btn').html(minimize_label);
+	}
+	if (map != undefined) { map.resize() };
+}
+
+function get_model_name() {
+	return document.title.split(' | ')[1]
+}
+
+function get_tab_name() {
+	return document.title.split(' | ')[2]
 }

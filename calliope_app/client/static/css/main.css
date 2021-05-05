@@ -11,16 +11,16 @@ th.sticky {
   position: relative;
 }
 #data-source-modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1000; /* Sit on top */
+  display: none;
+  position: fixed;
+  z-index: 1000;
   left: 0;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.6);
 }
 #data-source-modal-content {
   background-color: #fefefe;
@@ -28,9 +28,24 @@ th.sticky {
   margin-top: 150px;
   padding: 20px;
   border: 1px solid #888;
-  width: 800px; /* Could be more or less, depending on screen size */
+  width: 800px;
 }
-
+#splitter {
+  height: 15px;
+  cursor: row-resize;
+  background-color: #137ac2;
+}
+#splitter_btn {
+  line-height: 5px;
+  cursor: pointer;
+  background-color: #005592;
+  color: white;
+  font-size: 0.85em;
+  font-weight: bold;
+  padding-top: 2px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
 .viz-spinner {
   height: 100px;
   width: 100px;
@@ -106,7 +121,7 @@ input.nav-dropdown {
   margin-left: 5px;
 }
 #map-legend {
-  display: none;
+  display: inline-block;
   font-family: sans-serif;
   padding: 5px;
   border: 2px solid black;
@@ -581,4 +596,24 @@ input:checked + .slider:before {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+#top, #bottom_left, #bottom_right {
+  height: auto !important;
+}
+#top {
+  margin-bottom: -40px;
+}
+#container {
+  width: 98vw !important;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
 }

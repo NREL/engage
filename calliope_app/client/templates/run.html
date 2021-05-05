@@ -8,12 +8,12 @@
 <script type="text/javascript" src="{% static 'js/run.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jeditable.js/2.0.13/jquery.jeditable.min.js"></script>
 <style media="screen">
-	#updates_paused {
-		display: none;
-	}
+    #updates_paused {
+       display: none;
+    }
     html, body {
       height: 100%;
-      overflow-y: hidden;
+      overflow: hidden;
     }
 </style>
 {% endblock %}
@@ -23,24 +23,31 @@
 {% block config_5_tab %}tab-active{% endblock %}
 
 {% block content %}
+
+<!-- Scenario Dropdown -->
 <div id="subheader2" class="row content_navigation">
-	{% include "scenario_selector.html" %}
+    {% include "scenario_selector.html" %}
 </div>
-<div class="row" style="overflow-y: scroll; height:460px; border:solid; position: relative;">
-	<span id="build-error" style="color:red"></span>
-    <div id="viz_outputs_container" style="width: 100%;"></div>
-    <div id="viz_logs_container" class="rounded col-12" style="display: none; background-color: black; color: white;"></div>
-	<div class="viz-spinner centered">
-		<div class="spinner-grow" style="width: 10rem; height: 10rem;" role="status">
-		  <span class="sr-only">Loading...</span>
-		</div>
-		<div style="color: #a2a2a2;font-weight: bold;">Loading...</div>
-	</div>
+
+<div style="height: calc(100% - 160px);">
+    <!-- Outputs -->
+    <div id="run_outputs" class="row" style="overflow-y: scroll; height: 50%; border:solid; position: relative;">
+        <span id="build-error" style="color:red"></span>
+        <div id="viz_outputs_container" style="width: 100%; overflow: hidden;"></div>
+        <div id="viz_logs_container" class="rounded col-12" style="display: none; background-color: black; color: white;"></div>
+        {% include "spinner.html" %}
+    </div>
+    <!-- Splitter -->
+    {% include "splitter.html" %}
+    <!-- Dashboard -->
+    <div id="runs_container" class="row" style="white-space: nowrap; overflow-y: scroll; height: 50%;">
+        <div id="updates_paused" class="col-12" style="padding: 0;">
+           <div class="col-12 alert alert-warning">
+             <button class="btn btn-sm btn-warning" onClick="window.location.reload();">{% trans "Refresh" %}</button> {% trans "Dashboard updates have been paused for" %} <span id="pause_time" class="font-weight-bold">0 {% trans "seconds" %}</span>.
+           </div>
+        </div>
+        <div id="run_dashboard" class="col-12" style="padding: 0;"></div>
+    </div>
 </div>
-<div id="updates_paused" class="row">
-	<div class="col-12 alert alert-warning">
-		<button class="btn btn-sm btn-warning" onClick="window.location.reload();">{% trans "Refresh" %}</button> {% trans "Dashboard updates have been paused for" %} <span id="pause_time" class="font-weight-bold">0 {% trans "seconds" %}</span>.
-	</div>
-</div>
-<div class="row" style="white-space: nowrap; overflow-y: scroll; height: calc(100% - 595px);" id="run_dashboard"></div>
+
 {% endblock %}
