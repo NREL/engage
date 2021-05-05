@@ -21,18 +21,19 @@
 <div id="subheader2" class="row content_navigation">
 	{% include "scenario_selector.html" %}
 </div>
-<div class="row">
-	<div class="col-12" id="map" style="height:350px; border:solid;"></div>
-    <div class="col-12" id="map-legend-container"><div id="map-legend"></div></div>
-    <div class="viz-spinner centered">
-        <div class="spinner-grow" style="width: 10rem; height: 10rem;" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
-        <div style="color: #a2a2a2;font-weight: bold;">Loading...</div>
+<div style="height: calc(100% - 160px);">
+    <!-- Map -->
+    {% include "map_container.html" %}
+    <!-- Splitter -->
+    {% include "splitter.html" %}
+    <!-- Dashboard -->
+    <div id="scenarios_dashboard" class="row" style="overflow-y: scroll; height: 50%;">
+        <form style="width: 100%;" id="form_scenario_settings" class="hide" method="post" action="" accept-charset="utf-8">
+            <div style="width: 100%;" id="scenario_settings">
+                <div style="color:red" class="col-12 centered"><br>{% trans "Oops, an error occurred" %}.<br><br></div>
+            </div>
+        </form>
+        <div style="width: 100%" id="scenario_configuration"></div>
     </div>
 </div>
-<form style="height: 100%" id="form_scenario_settings" class="hide" method="post" action="" accept-charset="utf-8">
-	<div style="overflow-y: scroll; height: calc(100% - 495px);" class="row" id="scenario_settings"><div style="color:red" class="col-12 centered"><br>{% trans "Oops, an error occurred" %}.<br><br></div></div>
-</form>
-<div class="row" style="overflow-y: scroll; height: calc(100% - 495px);" id="scenario_configuration"></div>
 {% endblock %}

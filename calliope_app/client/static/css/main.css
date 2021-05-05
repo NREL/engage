@@ -40,8 +40,11 @@ th.sticky {
   cursor: pointer;
   background-color: #005592;
   color: white;
-  font-size: 0.9em;
+  font-size: 0.85em;
   font-weight: bold;
+  padding-top: 2px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 .viz-spinner {
   height: 100px;
@@ -593,4 +596,24 @@ input:checked + .slider:before {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+#top, #bottom_left, #bottom_right {
+  height: auto !important;
+}
+#top {
+  margin-bottom: -40px;
+}
+#container {
+  width: 98vw !important;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
 }

@@ -23,20 +23,12 @@
 <div id="subheader2" class="row content_navigation">
 	<span class="nav-dropdown centered" style="cursor:default;padding-top:15px;font-size:1.4em"><b>{% trans "All Locations" %}</b></span>
 </div>
-
-<div id="map_container" class="row" style="height:495px;">
-	<div class="col-12" id="map" style="height: 100%; border:solid;"></div>
-    <div class="col-12" id="map-legend-container"><div id="map-legend"></div></div>
-</div>
-
-<!-- Splitter -->
-<div id="splitter" class="row">
-	<div class="col-4"></div>
-	<div class="col-4 centered"><div id="splitter_btn">Minimize Dashboard&nbsp;&nbsp;<i class="fas fa-chevron-down"></i></div></div>
-	<div class="col-4"></div>
-</div>
-
-<div id="dashboard"class="row" style="overflow-y: scroll; height: calc(100% - 495px);" id="locations_dashboard">
-	{% include "locations_dashboard.html" %}
+<div style="height: calc(100% - 160px);">
+    <!-- Map -->
+    {% include "map_container.html" %}
+    <!-- Splitter -->
+    {% include "splitter.html" %}
+    <!-- Dashboard -->
+    {% include "locations_dashboard.html" %}
 </div>
 {% endblock %}

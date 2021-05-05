@@ -5,7 +5,7 @@ $( document ).ready(function() {
 
 	// Resize Dashboard
 	var upper = $('#map_container'),
-		lower = $('#dashboard');
+		lower = $('#locations_dashboard');
 	splitter_resize(upper, lower);
 	
 	$('#master-new').removeClass('hide');

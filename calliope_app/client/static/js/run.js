@@ -10,7 +10,6 @@ $( document ).ready(function() {
 	var upper = $('#run_outputs'),
 		lower = $('#runs_container');
 	splitter_resize(upper, lower);
-	
 
 	// Switch Scenarios
 	$('#scenario').on('change', get_scenario);
@@ -31,7 +30,7 @@ $( document ).ready(function() {
 function get_scenario() {
 	hold_refresh = false;
 	clearInterval(pause_interval);
-	$('#updates_paused').slideUp();
+	$('#updates_paused').hide();
 	var scenario_id = $("#scenario option:selected").data('id');
 	if (scenario_id != undefined) {
 		refresh_run_dashboard(true);
@@ -123,13 +122,13 @@ function bindEditable() {
 				pause_start = new Date();
 				updatePauseTime();
 				pause_interval = setInterval(updatePauseTime, 1000);
-				$('#updates_paused').slideDown();
+				$('#updates_paused').show();
 				$('.run-description').unbind();
 			},
 			callback: function(result, settings, submitdata) {
 				hold_refresh = false;
 				clearInterval(pause_interval);
-				$('#updates_paused').slideUp();
+				$('#updates_paused').hide();
 				bindEditable();
 			},
 			cssclass: '',
@@ -138,7 +137,7 @@ function bindEditable() {
 			onreset: function() {
 				hold_refresh = false;
 				clearInterval(pause_interval);
-				$('#updates_paused').slideUp();
+				$('#updates_paused').hide();
 				bindEditable();
 			},
 			submit: '<button class="btn btn-success"><i class="fas fa-save" /> Save</button>',
@@ -324,56 +323,3 @@ function activate_runs() {
 	});
 
 }
-
-// Screen Splitter
-
-/* var maximize_label = 'Open Dashboard&nbsp;&nbsp;<i class="fas fa-chevron-up"></i>',
-	minimize_label = 'Minimize Dashboard&nbsp;&nbsp;<i class="fas fa-chevron-down"></i>',
-	minimize_threshold = 100; */
-
-/* function splitter_resize(upper, lower){
-	$('#splitter').on('mousedown', function(e) {
-		e.stopPropagation();
-		upper.css('overflow-y', 'hidden');
-		var md = {e, upperHeight: upper.outerHeight(),
-			      lowerHeight: lower.outerHeight()};
-		$(document).on('mousemove', function (e) {
-			var delta = {x: e.clientX - md.e.clientX,
-						 y: e.clientY - md.e.clientY};
-			delta.y = Math.min(Math.max(delta.y, -md.upperHeight), md.lowerHeight);
-			upper.css('height', (md.upperHeight + delta.y) + "px");
-			lower.css('height', (md.lowerHeight - delta.y) + "px");
-			if (lower.height() > minimize_threshold){
-				$('#splitter_btn').html(minimize_label);
-			} else {
-				$('#splitter_btn').html(maximize_label);
-			}
-		});
-		$(document).unbind('mouseup')
-		$(document).on('mouseup', function () {
-			upper.css('overflow-y', 'scroll');
-			$(this).unbind('mousemove mouseup');
-		});
-
-	});
-	$('#splitter_btn').on('mousedown', function(e) { e.stopPropagation() });
-	$('#splitter_btn').on('click', function() {
-		splitter_toggle(upper, lower);
-	});
-}
-
-function splitter_toggle(upper, lower){
-	var offset = 160;
-	if (lower.height() > minimize_threshold){
-		// Minimize Lower Row
-		upper.css('height', 'calc(100% - ' + offset + 'px)');
-		lower.css('height', '0px');
-		$('#splitter_btn').html(maximize_label);
-	} else{
-		// Expand Lower Row
-		var split_height = ((lower.height() + upper.height()) * 0.5);
-		upper.css('height', split_height + "px");
-		lower.css('height', split_height + "px");
-		$('#splitter_btn').html(minimize_label);
-	}
-} */
