@@ -1,6 +1,8 @@
 
 $( document ).ready(function() {
 
+	activate_import_btns();
+
 	// When the user clicks anywhere outside of the modal, close it
 	window.onclick = function(event) {
 	  if (event.target == $("#data-source-modal")[0]) {
@@ -9,14 +11,6 @@ $( document ).ready(function() {
 	};
 
 	// PVWatts
-	$('.pvwatts').on('click', function() {
-		$('#pvwatts_form').show();
-		$('#wtk_form').hide();
-		$("#data-source-modal").css('display', "block");
-		var location_id = +$(this).parents('tr').attr('data-location_id'),
-			meta = get_loc_meta(location_id);
-		pvwatts_form(meta[0], meta[1], meta[2])
-	});
 	$('#pvwatts_check_availability').on('click', function() {
 		request_pvwatts(null,
 						$('#pvwatts_lat').val(), $('#pvwatts_lon').val(),
@@ -36,14 +30,6 @@ $( document ).ready(function() {
 	});
 
 	// WTK
-	$('.wtk').on('click', function() {
-		$('#pvwatts_form').hide();
-		$('#wtk_form').show();
-		$("#data-source-modal").css('display', "block");
-		var location_id = +$(this).parents('tr').attr('data-location_id'),
-			meta = get_loc_meta(location_id);
-		wtk_form(meta[0], meta[1], meta[2])
-	});
 	$('#wtk_check_availability').on('click', function() {
 		request_wtk(null,
 					$('#wtk_lat').val(), $('#wtk_lon').val(),
@@ -61,6 +47,31 @@ $( document ).ready(function() {
 	});
 
 });
+
+function activate_import_btns() {
+	// PVWatts
+	$('.pvwatts:visible').attr('disabled', false);
+	$('.pvwatts').unbind();
+	$('.pvwatts').on('click', function() {
+		$('#pvwatts_form').show();
+		$('#wtk_form').hide();
+		$("#data-source-modal").css('display', "block");
+		var location_id = +$(this).parents('tr').attr('data-location_id'),
+			meta = get_loc_meta(location_id);
+		pvwatts_form(meta[0], meta[1], meta[2])
+	});
+	// WTK
+	$('.wtk:visible').attr('disabled', false);
+	$('.wtk').unbind();
+	$('.wtk').on('click', function() {
+		$('#pvwatts_form').hide();
+		$('#wtk_form').show();
+		$("#data-source-modal").css('display', "block");
+		var location_id = +$(this).parents('tr').attr('data-location_id'),
+			meta = get_loc_meta(location_id);
+		wtk_form(meta[0], meta[1], meta[2])
+	});
+}
 
 function pvwatts_form(name, lat, lon) {
 	var default_name = 'Solar Resource: '+name+' ['+lat+','+lon+']'

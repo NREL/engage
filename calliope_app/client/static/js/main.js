@@ -684,10 +684,10 @@ function add_marker(name, id, type, draggable, coordinates) {
 	marker._element._marker = marker;
 	marker._element.addEventListener('mouseenter', function(e) {
 		var m = e.target._marker;
-		$('#map-legend').html(m.description).css('display', 'inline-block');
+		$('#map-legend').html(m.description);
 	});
 	marker._element.addEventListener('mouseleave', function(e) {
-		$('#map-legend').hide();
+		$('#map-legend').html("");
 	});
 	marker._element.addEventListener('mouseup', function(e) {
 		// if (!draggable) e.stopPropagation();
@@ -731,8 +731,8 @@ function add_marker(name, id, type, draggable, coordinates) {
 				blink_location(marker.id);
 				toggle_location_edit(marker.id, true);
 				var row = $("tr[data-location_id='" + marker.id + "']");
-				row.find('.location-edit-lat').val(new_lnglat.lat.toFixed(3))
-				row.find('.location-edit-long').val(new_lnglat.lng.toFixed(3))
+				row.find('.location-edit-lat').val(new_lnglat.lat.toFixed(5))
+				row.find('.location-edit-long').val(new_lnglat.lng.toFixed(5))
 				marker.lat = new_lnglat.lat;
 				marker.lon = new_lnglat.lng;
 			}
@@ -903,20 +903,31 @@ function load_map(locations, transmissions, draggable, loc_tech_id) {
 
 
 function render_map(locations, transmissions, draggable, loc_tech_id) {
-	var coords = [], bounds = null;
-	if (locations.length == 0) {
-		// Center on global extent by default
-		coords = [[-180, -90], [180, 90]];
+
+	// Bounds
+	var lvar = ('Bounds: ' + document.title).split(' | ')[1],
+		bounds = JSON.parse(window.localStorage.getItem(lvar));
+	if ((bounds == null) || (lvar == 'Home')) {
+		var coords = [];
+		if (locations.length == 0) {
+			// Center on global extent by default
+			coords = [[-180, -90], [180, 90]];
+		} else {
+			coords = locations.map(function(l) {
+				return [l.longitude, l.latitude];
+			});
+		}
+		bounds = coords.reduce(
+			function(bounds, coord) {
+				return bounds.extend(coord);
+			}, new mapboxgl.LngLatBounds(coords[0], coords[0]))
 	} else {
-		coords = locations.map(function(l) {
-			return [l.longitude, l.latitude];
-		});
+		var sw = new mapboxgl.LngLat(bounds['_sw']['lng'], bounds['_sw']['lat']),
+			ne = new mapboxgl.LngLat(bounds['_ne']['lng'], bounds['_ne']['lat']);
+		bounds = new mapboxgl.LngLatBounds(sw, ne);
 	}
-	var bounds = coords.reduce(
-		function(bounds, coord) {
-			return bounds.extend(coord);
-		}, new mapboxgl.LngLatBounds(coords[0], coords[0]))
 	
+	// Map
 	if (map === null) {
 		map = new mapboxgl.Map({
 				container: 'map',
@@ -937,6 +948,10 @@ function render_map(locations, transmissions, draggable, loc_tech_id) {
 				maxZoom: 15
 			});
 			map.jumpTo(camera);
+		});
+		map.on('moveend', function() {
+			var lvar = ('Bounds: ' + document.title).split(' | ')[1];
+			window.localStorage.setItem(lvar, JSON.stringify(map.getBounds()));
 		});
 	} else {
 		load_map(locations, transmissions, draggable, loc_tech_id);

@@ -121,7 +121,7 @@ input.nav-dropdown {
   margin-left: 5px;
 }
 #map-legend {
-  display: none;
+  display: inline-block;
   font-family: sans-serif;
   padding: 5px;
   border: 2px solid black;

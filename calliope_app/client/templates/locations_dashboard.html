@@ -76,6 +76,11 @@
 					</td>
 				</tr>
 			{% endfor %}
+
+
+
+
+
 			<!-- Add location -->
 			<tr class="table-warning table-primary location-add-row hide">
 				<!-- Location Name -->
@@ -119,13 +124,13 @@
 				<!-- Data Sources -->
 				<td colspan=7 class="text-sm">
 					<i class="fas fa-database"></i> {% trans "Datasets" %}:
-					<span class="pvwatts btn-sm btn-outline-secondary" style="cursor: pointer">
+					<button class="pvwatts btn btn-sm btn-light" disabled>
 						<b>Solar</b> [NSRDB]
-					</span>
+					</button>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<span class="wtk btn-sm btn-outline-secondary" style="cursor: pointer">
+					<button class="wtk btn btn-sm btn-light" disabled>
 						<b>Wind</b> [WTK]
-					</span>
+					</button>
 					&nbsp;&nbsp;&nbsp;&nbsp;
 				</td>
 			</tr>
