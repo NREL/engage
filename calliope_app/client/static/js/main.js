@@ -680,6 +680,7 @@ function add_marker(name, id, type, draggable, coordinates) {
 	marker.el = el;
 	marker.lat = coordinates[0];
 	marker.lon = coordinates[1];
+	marker.name = name;
 	marker.description = description;
 	marker._element._marker = marker;
 	marker._element.addEventListener('mouseenter', function(e) {
@@ -690,7 +691,6 @@ function add_marker(name, id, type, draggable, coordinates) {
 		$('#map-legend').html("");
 	});
 	marker._element.addEventListener('mouseup', function(e) {
-		// if (!draggable) e.stopPropagation();
 		var m = e.target._marker;
 		setTimeout(function() {
 			set_location(m.id);
@@ -701,6 +701,15 @@ function add_marker(name, id, type, draggable, coordinates) {
 				set_loc_clicked = 1;
 			}
 		}, 20);
+	});
+	marker._element.addEventListener('click', function(e) {
+		// Filter the Locations on the Scenarios Tab
+		e.stopPropagation();
+		var m = e.target._marker;
+		if ($('#location-filter').length > 0) {
+			$('#location-filter').val(m.name);
+			filter_nodes();
+		};
 	});
 	markers.push(marker);
 	if (draggable) {
@@ -905,9 +914,10 @@ function load_map(locations, transmissions, draggable, loc_tech_id) {
 function render_map(locations, transmissions, draggable, loc_tech_id) {
 
 	// Bounds
-	var lvar = ('Bounds: ' + document.title).split(' | ')[1],
-		bounds = JSON.parse(window.localStorage.getItem(lvar));
-	if ((bounds == null) || (lvar == 'Home')) {
+	var lvar = 'Bounds: ' + get_model_name(),
+		bounds = JSON.parse(window.localStorage.getItem(lvar)),
+		padding = 0;
+	if ((bounds == null) || (lvar == 'Home') || (get_tab_name() == 'Nodes')) {
 		var coords = [];
 		if (locations.length == 0) {
 			// Center on global extent by default
@@ -921,6 +931,7 @@ function render_map(locations, transmissions, draggable, loc_tech_id) {
 			function(bounds, coord) {
 				return bounds.extend(coord);
 			}, new mapboxgl.LngLatBounds(coords[0], coords[0]))
+		padding = 50;
 	} else {
 		var sw = new mapboxgl.LngLat(bounds['_sw']['lng'], bounds['_sw']['lat']),
 			ne = new mapboxgl.LngLat(bounds['_ne']['lng'], bounds['_ne']['lat']);
@@ -944,13 +955,17 @@ function render_map(locations, transmissions, draggable, loc_tech_id) {
 		map.on('load', function() {
 			load_map(locations, transmissions, draggable, loc_tech_id);
 			var camera = map.cameraForBounds(bounds, {
-				padding: 50,
+				padding: padding,
 				maxZoom: 15
 			});
 			map.jumpTo(camera);
 		});
+		map.on('click', function() {
+			$('#location-filter').val("");
+			filter_nodes();
+		})
 		map.on('moveend', function() {
-			var lvar = ('Bounds: ' + document.title).split(' | ')[1];
+			var lvar = 'Bounds: ' + get_model_name();
 			window.localStorage.setItem(lvar, JSON.stringify(map.getBounds()));
 		});
 	} else {
@@ -1225,15 +1240,15 @@ function splitter_resize(upper, lower){
 				$('#splitter_btn').html(maximize_label);
 			}
 		});
-		$(document).unbind('mouseup')
+		$(document).unbind('mouseup');
 		$(document).on('mouseup', function () {
 			$(this).unbind('mousemove mouseup');
 			if (map != undefined) { map.resize() };
 		});
 	});
-	$('#splitter_btn').unbind('mousedown')
+	$('#splitter_btn').unbind('mousedown');
 	$('#splitter_btn').on('mousedown', function(e) { e.stopPropagation() });
-	$('#splitter_btn').unbind('click')
+	$('#splitter_btn').unbind('click');
 	$('#splitter_btn').on('click', function() {
 		splitter_toggle(upper, lower);
 	});
@@ -1252,4 +1267,12 @@ function splitter_toggle(upper, lower){
 		$('#splitter_btn').html(minimize_label);
 	}
 	if (map != undefined) { map.resize() };
+}
+
+function get_model_name() {
+	return document.title.split(' | ')[1]
+}
+
+function get_tab_name() {
+	return document.title.split(' | ')[2]
 }
