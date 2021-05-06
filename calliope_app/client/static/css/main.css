@@ -149,7 +149,7 @@ input.nav-dropdown {
 }
 .marker.selected.dark {
     background-color: #00f;
-    border: 2px solid #fff;
+    border: 2px solid #000;
 }
 
 .marker.unselected {

@@ -773,7 +773,7 @@ function changeMapStyle() {
 		$('.marker').addClass('dark');
 	} else {
 		$('.marker').removeClass('dark');
-	}
+	};
 }
 
 function MapStyleControl() { }
@@ -917,7 +917,7 @@ function render_map(locations, transmissions, draggable, loc_tech_id) {
 	var lvar = 'Bounds: ' + get_model_name(),
 		bounds = JSON.parse(window.localStorage.getItem(lvar)),
 		padding = 0;
-	if ((bounds == null) || (lvar == 'Home') || (get_tab_name() == 'Nodes')) {
+	if ((bounds == null) || (lvar == 'Home')) {
 		var coords = [];
 		if (locations.length == 0) {
 			// Center on global extent by default
@@ -953,6 +953,22 @@ function render_map(locations, transmissions, draggable, loc_tech_id) {
 			.addControl(new mapboxgl.NavigationControl());
 		
 		map.on('load', function() {
+			map.addSource('mapbox-dem', {
+				'type': 'raster-dem',
+				'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+				'tileSize': 512,
+				'maxzoom': 14
+			});
+			map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
+			map.addLayer({
+				'id': 'sky',
+				'type': 'sky',
+				'paint': {
+					'sky-type': 'atmosphere',
+					'sky-atmosphere-sun': [0.0, 0.0],
+					'sky-atmosphere-sun-intensity': 15
+				}
+			});
 			load_map(locations, transmissions, draggable, loc_tech_id);
 			var camera = map.cameraForBounds(bounds, {
 				padding: padding,
