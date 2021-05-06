@@ -669,7 +669,7 @@ function add_marker(name, id, type, draggable, coordinates) {
 	}
 	var el = document.createElement('div');
 	el.className = 'marker ' + type;
-	if (map_style == "mapbox/dark-v10") {
+	if (dark_styles.includes(map_style)) {
 		el.className += ' dark';
 	}
 	var marker = new mapboxgl.Marker(el)
@@ -761,7 +761,8 @@ var mapbox_styles = {
 	'Streets': 'mapbox/streets-v11',
 	'Satellite': 'mapbox/satellite-v9',
 	'Satellite + Streets': 'mapbox/satellite-streets-v9'
-}
+};
+var dark_styles = ["mapbox/dark-v10", "mapbox/satellite-v9", "mapbox/satellite-streets-v9"];
 
 var map_style = localStorage.getItem("mapstyle") || Object.values(mapbox_styles)[0];
 
@@ -769,7 +770,7 @@ function changeMapStyle() {
     map_style = $('#map-style').val();
     localStorage.setItem("mapstyle", map_style);
     map.setStyle('mapbox://styles/' + map_style);
-	if (map_style == "mapbox/dark-v10") {
+	if (dark_styles.includes(map_style)) {
 		$('.marker').addClass('dark');
 	} else {
 		$('.marker').removeClass('dark');
@@ -866,7 +867,7 @@ function load_map(locations, transmissions, draggable, loc_tech_id) {
 			{
 				"type": "Feature",
 				"properties": {
-					"color": "blue",
+					"color": "#88f",
 					"width": 4
 				},
 				"geometry": {
@@ -881,8 +882,8 @@ function load_map(locations, transmissions, draggable, loc_tech_id) {
 		trans_data["features"].push({
 			"type": "Feature",
 			"properties": {
-				"color": "black",
-				"width": 2
+				"color": "grey",
+				"width": 3
 			},
 			"geometry": {
 				"type": "MultiLineString",
@@ -917,7 +918,7 @@ function render_map(locations, transmissions, draggable, loc_tech_id) {
 	var lvar = 'Bounds: ' + get_model_name(),
 		bounds = JSON.parse(window.localStorage.getItem(lvar)),
 		padding = 0;
-	if ((bounds == null) || (lvar == 'Home')) {
+	if ((bounds == null) || (lvar == 'Bounds: Home')) {
 		var coords = [];
 		if (locations.length == 0) {
 			// Center on global extent by default
