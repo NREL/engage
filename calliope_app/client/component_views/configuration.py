@@ -83,6 +83,7 @@ def location_coordinates(request):
             locations[i]['type'] = 'unselected'
         else:
             locations[i]['type'] = 'reference'
+    locations = sorted(locations, key=lambda k: k['type'])
 
     response = {
         'locations': locations,
