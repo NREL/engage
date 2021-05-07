@@ -125,7 +125,6 @@ function initiate_units() {
 
 	math.createUnit('units', {definition: '1', aliases: ['units'], baseName: 'units'});
 	math.createUnit('percent', {definition: '0.01', aliases: ['percent', 'percentage'], baseName: 'percent'});
-	math.createUnit('dpercent', {definition: '100 percent', aliases: ['dpercent', 'dpercentage']});
 	math.createUnit('dollar', {definition: '1', aliases: ['dollar', 'dollars'], baseName: 'dollar'});
 	math.createUnit('cent', {definition: '0.01 dollar', aliases: ['c', 'cent', 'cents']});
   math.createUnit('calorie', {definition: '4.1868 joules', aliases: ['calorie', 'calories']});
@@ -172,7 +171,7 @@ function _clean_units(units) {
   units = units.replaceAll('units', 'unit').replaceAll('unit', 'units');
 	units = units.replaceAll('$', 'dollar');
 	units = units.replaceAll(',', '');
-	units = units.replaceAll('%<sub>/100</sub>', 'dpercent').replaceAll('%', 'percent');
+	units = units.replaceAll('%', 'percent');
 	units = units.replaceAll('<sup>2</sup>', '^2');
 	user_defined_units.forEach(function(item) {
 		var pretty_name = item['name'],
