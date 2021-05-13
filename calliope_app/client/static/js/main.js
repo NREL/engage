@@ -630,14 +630,16 @@ function blink_location(id, what_to_blink, pan_to_marker) {
 		
 		if (what_to_blink == 'row' || what_to_blink == 'both') {
 			var row = $('#location_table tr[data-location_id="' + id + '"]');
-			$('#locations_dashboard').animate({
-				scrollTop: row.position().top
-			}, {
-				duration: 500,
-				complete: function() {
-					blink_element(row);
-				}
-			});
+			if ($('#locations_dashboard').length > 0) {
+				$('#locations_dashboard').animate({
+					scrollTop: row.position().top
+				}, {
+					duration: 500,
+					complete: function() {
+						blink_element(row);
+					}
+				});
+			};
 		}
 	}, 10);
 }
@@ -703,6 +705,7 @@ function add_marker(name, id, type, draggable, coordinates) {
 		}, 20);
 	});
 	marker._element.addEventListener('click', function(e) {
+		splitter_reset();
 		// Filter the Locations on the Scenarios Tab
 		e.stopPropagation();
 		var m = e.target._marker;
@@ -783,16 +786,8 @@ MapStyleControl.prototype.onAdd = function(map) {
 	this._map = map;
 	this._container = document.createElement('div');
 	this._container.className = 'mapboxgl-ctrl';
-	
-	var label = document.createElement('label');
-	label.setAttribute('for', 'map-style');
-	label.textContent = 'Base map style:';
-	label.className = 'm-0 font-weight-bold';
-	
 	var select = document.createElement('select');
-	select.style.backgroundColor = '#d9ebff';
 	select.id = 'map-style';
-	
 	var mapbox_style_keys = Object.keys(mapbox_styles),
 		mapbox_style_values = Object.values(mapbox_styles);
 	for (var i = 0; i < mapbox_style_keys.length; i ++) {
@@ -802,11 +797,7 @@ MapStyleControl.prototype.onAdd = function(map) {
 	}
 	$(select).val(map_style);
 	$(select).change(changeMapStyle);
-	
-	this._container.append(label);
-	this._container.append(document.createElement('br'));
 	this._container.append(select);
-	
 	return this._container;
 }
 
@@ -918,20 +909,19 @@ function render_map(locations, transmissions, draggable, loc_tech_id) {
 	var lvar = 'Bounds: ' + get_model_name(),
 		bounds = JSON.parse(window.localStorage.getItem(lvar)),
 		padding = 0;
+	if (locations.length == 0) {  // Center on global extent by default
+		coords = [[-180, -90], [180, 90]];
+	} else {
+		coords = locations.map(function(l) {
+			return [l.longitude, l.latitude];
+		});
+	}
+	outerbounds = coords.reduce(
+		function(bounds, coord) {
+			return bounds.extend(coord);
+		}, new mapboxgl.LngLatBounds(coords[0], coords[0]))
 	if ((bounds == null) || (lvar == 'Bounds: Home')) {
-		var coords = [];
-		if (locations.length == 0) {
-			// Center on global extent by default
-			coords = [[-180, -90], [180, 90]];
-		} else {
-			coords = locations.map(function(l) {
-				return [l.longitude, l.latitude];
-			});
-		}
-		bounds = coords.reduce(
-			function(bounds, coord) {
-				return bounds.extend(coord);
-			}, new mapboxgl.LngLatBounds(coords[0], coords[0]))
+		bounds = outerbounds;
 		padding = 50;
 	} else {
 		var sw = new mapboxgl.LngLat(bounds['_sw']['lng'], bounds['_sw']['lat']),
@@ -941,6 +931,7 @@ function render_map(locations, transmissions, draggable, loc_tech_id) {
 	
 	// Map
 	if (map === null) {
+		// Create Map
 		map = new mapboxgl.Map({
 				container: 'map',
 				style: 'mapbox://styles/' + map_style,
@@ -951,8 +942,11 @@ function render_map(locations, transmissions, draggable, loc_tech_id) {
 				compact: true
 			}))
 			.addControl(new MapStyleControl())
-			.addControl(new mapboxgl.NavigationControl());
-		
+			.addControl(new ExtentToggle({bounds: outerbounds}))
+			.addControl(new mapboxgl.NavigationControl())
+			.addControl(new PitchToggle());
+
+		// On Load
 		map.on('load', function() {
 			map.addSource('mapbox-dem', {
 				'type': 'raster-dem',
@@ -978,8 +972,10 @@ function render_map(locations, transmissions, draggable, loc_tech_id) {
 			map.jumpTo(camera);
 		});
 		map.on('click', function() {
-			$('#location-filter').val("");
-			filter_nodes();
+			if ($('#location-filter').length > 0) {
+				$('#location-filter').val("");
+				filter_nodes();
+			};
 		})
 		map.on('moveend', function() {
 			var lvar = 'Bounds: ' + get_model_name();
@@ -1234,11 +1230,13 @@ function formatNumber(x, commas) {
 
 }
 
-var maximize_label = 'Open Dashboard&nbsp;&nbsp;<i class="fas fa-chevron-up"></i>',
-	minimize_label = 'Minimize Dashboard&nbsp;&nbsp;<i class="fas fa-chevron-down"></i>',
+var maximize_label = '<i class="fas fa-chevron-up"></i>&nbsp;&nbsp;&nbsp;Show',
+	minimize_label = '<i class="fas fa-chevron-down"></i>&nbsp;&nbsp;&nbsp;Hide',
 	minimize_threshold = 0.1;
 
-function splitter_resize(upper, lower){
+function splitter_resize() {
+	var upper = $('.splitter_upper'),
+		lower = $('.splitter_lower');
 	$('#splitter').unbind('mousedown')
 	$('#splitter').on('mousedown', function(e) {
 		e.stopPropagation();
@@ -1252,9 +1250,9 @@ function splitter_resize(upper, lower){
 			upper.css('height', (upperHeight) + '%');
 			lower.css('height', (100 - upperHeight) + '%');
 			if (lower.height() / totalHeight > minimize_threshold){
-				$('#splitter_btn').html(minimize_label);
+				$('#splitter_btn .content').html(minimize_label);
 			} else {
-				$('#splitter_btn').html(maximize_label);
+				$('#splitter_btn .content').html(maximize_label);
 			}
 		});
 		$(document).unbind('mouseup');
@@ -1267,21 +1265,34 @@ function splitter_resize(upper, lower){
 	$('#splitter_btn').on('mousedown', function(e) { e.stopPropagation() });
 	$('#splitter_btn').unbind('click');
 	$('#splitter_btn').on('click', function() {
-		splitter_toggle(upper, lower);
+		splitter_toggle();
 	});
 }
 
-function splitter_toggle(upper, lower){
+function splitter_toggle() {
+	var upper = $('.splitter_upper'),
+		lower = $('.splitter_lower');
 	if ((lower.height() / (lower.height() + upper.height())) > minimize_threshold){
 		// Minimize Lower Row
 		upper.css('height', '99%');
 		lower.css('height', '1%');
-		$('#splitter_btn').html(maximize_label);
+		$('#splitter_btn .content').html(maximize_label);
 	} else{
 		// Expand Lower Row
 		upper.css('height', '50%');
 		lower.css('height', '50%');
-		$('#splitter_btn').html(minimize_label);
+		$('#splitter_btn .content').html(minimize_label);
+	}
+	if (map != undefined) { map.resize() };
+}
+
+function splitter_reset() {
+	var upper = $('.splitter_upper'),
+		lower = $('.splitter_lower');
+	if ((lower.height() / (lower.height() + upper.height())) <= minimize_threshold){
+		upper.css('height', '50%');
+		lower.css('height', '50%');
+		$('#splitter_btn .content').html(minimize_label);
 	}
 	if (map != undefined) { map.resize() };
 }
@@ -1292,4 +1303,73 @@ function get_model_name() {
 
 function get_tab_name() {
 	return document.title.split(' | ')[2]
+}
+
+class PitchToggle {
+  constructor() {
+    this._bearing = -10;
+    this._pitch = 50;
+    this._minpitchzoom = 11;
+  }
+  onAdd(map) {
+    this._map = map;
+    let _this = this;
+    this._btn = document.createElement("button");
+    this._btn.className = "mapboxgl-ctrl-icon mapboxgl-ctrl-pitchtoggle-3d";
+    this._btn.type = "button";
+    this._btn["aria-label"] = "Toggle Pitch";
+    this._btn.onclick = function() {
+      if (map.getPitch() === 0) {
+        let options = { pitch: _this._pitch, bearing: _this._bearing };
+        if (_this._minpitchzoom && map.getZoom() > _this._minpitchzoom) {
+          options.zoom = _this._minpitchzoom;
+        }
+        map.easeTo(options);
+        _this._btn.className = "mapboxgl-ctrl-icon mapboxgl-ctrl-pitchtoggle-2d";
+      } else {
+        map.easeTo({ pitch: 0, bearing: 0 });
+        _this._btn.className = "mapboxgl-ctrl-icon mapboxgl-ctrl-pitchtoggle-3d";
+      }
+    };
+    this._container = document.createElement("div");
+    this._container.className = "mapboxgl-ctrl-group mapboxgl-ctrl";
+    this._container.appendChild(this._btn);
+    return this._container;
+  }
+  onRemove() {
+    this._container.parentNode.removeChild(this._container);
+    this._map = undefined;
+  }
+}
+
+class ExtentToggle {
+  constructor({ bounds = null }) {
+    this._bounds = bounds;
+  }
+  onAdd(map) {
+    this._map = map;
+    let _this = this;
+    this._btn = document.createElement("button");
+    this._btn.className = "mapboxgl-ctrl-fullscreen";
+    this._btn.type = "button";
+    this._btn["aria-label"] = "Reset Extent";
+    this._span = document.createElement("span");
+    this._span.className = "mapboxgl-ctrl-icon";
+    this._btn.appendChild(this._span);
+    this._btn.onclick = function() {
+		var camera = map.cameraForBounds(_this._bounds, {
+			padding: 50,
+			maxZoom: 15
+		});
+		map.jumpTo(camera);
+    };
+    this._container = document.createElement("div");
+    this._container.className = "mapboxgl-ctrl-group mapboxgl-ctrl";
+    this._container.appendChild(this._btn);
+    return this._container;
+  }
+  onRemove() {
+    this._container.parentNode.removeChild(this._container);
+    this._map = undefined;
+  }
 }

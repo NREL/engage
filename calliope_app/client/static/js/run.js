@@ -7,9 +7,7 @@ var hold_refresh = false,
 $( document ).ready(function() {
 
 	// Resize Dashboard
-	var upper = $('#run_outputs'),
-		lower = $('#runs_container');
-	splitter_resize(upper, lower);
+	splitter_resize();
 
 	// Switch Scenarios
 	$('#scenario').on('change', get_scenario);

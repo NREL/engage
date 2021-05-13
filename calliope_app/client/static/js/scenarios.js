@@ -4,9 +4,7 @@ var bulk_confirmation = false,
 $( document ).ready(function() {
 
 	// Resize Dashboard
-	var upper = $('#map_container'),
-		lower = $('#scenarios_dashboard');
-	splitter_resize(upper, lower);
+	splitter_resize();
 
 	$('#master-new').removeClass('hide');
 

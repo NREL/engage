@@ -4,10 +4,8 @@ var map_mode = 'locations';
 $( document ).ready(function() {
 
 	// Resize Dashboard
-	var upper = $('#map_container'),
-		lower = $('#locations_dashboard');
-	splitter_resize(upper, lower);
-	
+	splitter_resize();
+
 	$('#master-new').removeClass('hide');
 
 	// https://stackoverflow.com/questions/7317273/warn-user-before-leaving-web-page-with-unsaved-changes
