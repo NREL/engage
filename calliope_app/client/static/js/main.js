@@ -78,6 +78,15 @@ function activate_table() {
 		$(this).siblings('.sp-replacer').addClass('btn-warning');
 		check_unsaved();
 	});
+	$('.tech_carrier').on('change', function() {
+		if ($(this).val() == '-- New Carrier --') {
+			var carrier = prompt('New Carrier Name:'),
+				o = new Option(carrier, carrier);
+			$(o).html(carrier);
+			$(this).append(o);
+			$(this).val(carrier);
+		};
+	});
 
 	$("#tech_color").spectrum({showInput: true, allowEmpty:true, showInitial:true, preferredFormat: "hex"});
 
@@ -1033,10 +1042,6 @@ function activate_essentials() {
 		new_container.find('input').addClass('table-warning');
 		new_container.insertBefore(container);
 		check_unsaved();
-	});
-	$('.tech_carrier').on('focus', function() {
-		$(this).val('');
-		$(this).change();
 	});
 	$('#tech_description').on('input click', function() {
 		this.style.height = this.scrollHeight + 10 + "px";

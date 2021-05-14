@@ -27,6 +27,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+CARRIER_IDS = [4, 5, 6, 23, 66, 67, 68, 69, 70, 71]
+PRIMARY_CARRIER_IDS = [70, 71]
+CARRIER_RATIOS_ID = 7
+
 
 class Model(models.Model):
     class Meta:
@@ -183,15 +187,15 @@ class Model(models.Model):
     @property
     def carriers(self):
         """ Get all configured carrier strings """
-        CARRIER_IDS = [4, 5, 6, 23, 66, 67, 68, 69, 70, 71]
         carriers = Tech_Param.objects.filter(
             model=self,
             parameter_id__in=CARRIER_IDS)
         carriers = carriers.values_list('value', flat=True)
         carriers_list = []
+        pm = ParamsManager
         for carrier in carriers:
-            carriers_list += carrier.split(',')
-        return list(set(carriers_list))
+            carriers_list += [pm.simplify_name(v) for v in carrier.split(',')]
+        return sorted(set(carriers_list))
 
     @property
     def favorites(self):
@@ -768,6 +772,8 @@ class Tech_Param(models.Model):
                     technology_id=technology.id,
                     parameter_id=key).hard_delete()
                 if value:
+                    if int(key) in CARRIER_IDS:
+                        value = ParamsManager.simplify_name(value)
                     cls.objects.create(
                         model_id=technology.model_id,
                         technology_id=technology.id,
@@ -779,17 +785,18 @@ class Tech_Param(models.Model):
     @classmethod
     def _cplus_carriers(cls, technology, carriers, ratios):
         """ Update a technologies (Conversion Plus) carrier parameters """
-        RATIOS_ID = 7
         ratios_dict = {}
         for param_id in carriers.keys():
             # Delete Old Parameter
             cls.objects.filter(
                 model_id=technology.model_id,
                 technology_id=technology.id,
-                parameter_id__in=[param_id, RATIOS_ID]).hard_delete()
-            # Create New Parameter
-            val = ','.join([v for v in carriers[param_id] if v != ''])
-            if val:
+                parameter_id__in=[param_id, CARRIER_RATIOS_ID]).hard_delete()
+            # Create New Parameters
+            simplify = ParamsManager.simplify_name
+            vals = [simplify(v) for v in carriers[param_id] if v != '']
+            if vals:
+                val = vals[0] if len(vals) == 1 else str(vals)
                 cls.objects.create(
                     model_id=technology.model_id,
                     technology_id=technology.id,
@@ -801,18 +808,18 @@ class Tech_Param(models.Model):
                     ratios_dict[name] = {}
                 for carrier, ratio in zip(carriers[param_id],
                                           ratios[param_id]):
-                    try:
-                        ratio_val = float(ratio) if float(ratio) >= 0 else 1
-                    except ValueError:
-                        ratio_val = 1
                     if carrier:
-                        ratios_dict[name][carrier] = ratio_val
+                        try:
+                            val = float(ratio) if float(ratio) >= 0 else 1
+                        except ValueError:
+                            val = 1
+                        ratios_dict[name][simplify(carrier)] = val
         # Update Ratios Parameter
         ratios_val = json.dumps(ratios_dict)
         cls.objects.create(
             model_id=technology.model_id,
             technology_id=technology.id,
-            parameter_id=RATIOS_ID,
+            parameter_id=CARRIER_RATIOS_ID,
             value=ratios_val)
 
     @classmethod
@@ -1377,8 +1384,9 @@ class ParamsManager():
         carrier_ratios = essential_params[essential_params.parameter_id == 7]
         for _, row in essential_params.iterrows():
             ratios_val = None
-            if row.parameter_id in [4, 5, 6, 66, 67, 68, 69]:
-                val = row.value.split(',')
+            if row.parameter_id in CARRIER_IDS:
+                pm = ParamsManager
+                val = [pm.simplify_name(v) for v in row.value.split(', ')]
                 try:
                     ratios = json.loads(carrier_ratios.value[0])
                     ratios_val = ratios[row.parameter_name]
@@ -1397,6 +1405,6 @@ class ParamsManager():
 
     @staticmethod
     def simplify_name(name):
-        simple_name = name.replace(' ', '_')
+        simple_name = name.strip().replace(' ', '_')
         simple_name = re.sub('\W+', '', simple_name)
         return simple_name

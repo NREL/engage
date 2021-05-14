@@ -664,7 +664,7 @@ msgstr ""
 
 #: client/templates/scenario_configuration.html:11
 #: client/templates/technology_essentials.html:33
-msgid "Scenario Tag"
+msgid "Version Tag"
 msgstr ""
 
 #: client/templates/scenario_configuration.html:19
@@ -672,7 +672,7 @@ msgid "Filter nodes by technology."
 msgstr ""
 
 #: client/templates/scenario_configuration.html:27
-msgid "Filter nodes by scenario tag."
+msgid "Filter nodes by version tag."
 msgstr ""
 
 #: client/templates/scenario_configuration.html:35
@@ -731,7 +731,7 @@ msgstr ""
 
 #: client/templates/technology_essentials.html:32
 msgid ""
-"Scenario tags are used to differentiate multiple versions of the same "
+"Version tags are used to differentiate multiple versions of the same "
 "technology"
 msgstr ""
 
