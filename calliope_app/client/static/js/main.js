@@ -73,23 +73,6 @@ function activate_table() {
 	activate_paste('.dynamic_value_input');
 	activate_paste('.dynamic_year_input');
 
-	$('#tech_name, #tech_tag, #tech_description, #tech_color, #tech_is_linear, #tech_is_expansion, .tech_carrier, .tech_carrier_ratio').on('change keyup paste', function() {
-		$(this).addClass('table-warning');
-		$(this).siblings('.sp-replacer').addClass('btn-warning');
-		check_unsaved();
-	});
-	$('.tech_carrier').on('change', function() {
-		if ($(this).val() == '-- New Carrier --') {
-			var carrier = prompt('New Carrier Name:'),
-				o = new Option(carrier, carrier);
-			$(o).html(carrier);
-			$(this).append(o);
-			$(this).val(carrier);
-		};
-	});
-
-	$("#tech_color").spectrum({showInput: true, allowEmpty:true, showInitial:true, preferredFormat: "hex"});
-
 	// Reset parameter to saved value in database
 	$('.parameter-reset').unbind();
 	$('.parameter-reset').on('click', function() {
@@ -1036,15 +1019,39 @@ function activate_favorites() {
 }
 
 function activate_essentials() {
+	$('#tech_name, #tech_tag, #tech_description, #tech_color, #tech_is_linear, #tech_is_expansion').on('change keyup paste', function() {
+		$(this).addClass('table-warning');
+		$(this).siblings('.sp-replacer').addClass('btn-warning');
+		check_unsaved();
+	});
+	activate_carrier_dropdowns();
+	$("#tech_color").spectrum({showInput: true, allowEmpty:true, showInitial:true, preferredFormat: "hex"});
 	$('.carrier-value-add').on('click', function() {
 		var container = $(this).parent().parent().find('.new_carrier_form').last();
 		new_container = container.clone().removeClass('hide');
 		new_container.find('input').addClass('table-warning');
 		new_container.insertBefore(container);
+		activate_carrier_dropdowns();
 		check_unsaved();
 	});
 	$('#tech_description').on('input click', function() {
 		this.style.height = this.scrollHeight + 10 + "px";
+	});
+}
+
+function activate_carrier_dropdowns() {
+	$('.tech_carrier, .tech_carrier_ratio').unbind('change');
+	$('.tech_carrier, .tech_carrier_ratio').on('change', function() {
+		$(this).addClass('table-warning');
+		$(this).siblings('.sp-replacer').addClass('btn-warning');
+		check_unsaved();
+		if ($(this).val() == '-- New Carrier --') {
+			var carrier = prompt('New Carrier Name:'),
+				o = new Option(carrier, carrier);
+			$(o).html(carrier);
+			$(this).append(o);
+			$(this).val(carrier);
+		};
 	});
 }
 

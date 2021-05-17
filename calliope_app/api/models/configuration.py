@@ -192,9 +192,11 @@ class Model(models.Model):
             parameter_id__in=CARRIER_IDS)
         carriers = carriers.values_list('value', flat=True)
         carriers_list = []
-        pm = ParamsManager
         for carrier in carriers:
-            carriers_list += [pm.simplify_name(v) for v in carrier.split(',')]
+            try:
+                carriers_list += json.loads(carrier)
+            except Exception:
+                carriers_list += [carrier]
         return sorted(set(carriers_list))
 
     @property
@@ -772,8 +774,6 @@ class Tech_Param(models.Model):
                     technology_id=technology.id,
                     parameter_id=key).hard_delete()
                 if value:
-                    if int(key) in CARRIER_IDS:
-                        value = ParamsManager.simplify_name(value)
                     cls.objects.create(
                         model_id=technology.model_id,
                         technology_id=technology.id,
@@ -793,10 +793,9 @@ class Tech_Param(models.Model):
                 technology_id=technology.id,
                 parameter_id__in=[param_id, CARRIER_RATIOS_ID]).hard_delete()
             # Create New Parameters
-            simplify = ParamsManager.simplify_name
-            vals = [simplify(v) for v in carriers[param_id] if v != '']
+            vals = [v for v in carriers[param_id] if v != '']
             if vals:
-                val = vals[0] if len(vals) == 1 else str(vals)
+                val = vals[0] if len(vals) == 1 else json.dumps(vals)
                 cls.objects.create(
                     model_id=technology.model_id,
                     technology_id=technology.id,
@@ -813,7 +812,7 @@ class Tech_Param(models.Model):
                             val = float(ratio) if float(ratio) >= 0 else 1
                         except ValueError:
                             val = 1
-                        ratios_dict[name][simplify(carrier)] = val
+                        ratios_dict[name][carrier] = val
         # Update Ratios Parameter
         ratios_val = json.dumps(ratios_dict)
         cls.objects.create(
@@ -1384,16 +1383,18 @@ class ParamsManager():
         carrier_ratios = essential_params[essential_params.parameter_id == 7]
         for _, row in essential_params.iterrows():
             ratios_val = None
+            val = row.value
             if row.parameter_id in CARRIER_IDS:
-                pm = ParamsManager
-                val = [pm.simplify_name(v) for v in row.value.split(', ')]
+                try:
+                    val = json.loads(row.value)
+                except Exception:
+                    val = [row.value]
                 try:
                     ratios = json.loads(carrier_ratios.value[0])
                     ratios_val = ratios[row.parameter_name]
                 except Exception:
                     pass
-            else:
-                val = row.value
+            print (row.parameter_pretty_name, val)
             essentials[row.parameter_id] = {
                 'name': row.parameter_pretty_name,
                 'value': val,
@@ -1405,6 +1406,17 @@ class ParamsManager():
 
     @staticmethod
     def simplify_name(name):
-        simple_name = name.strip().replace(' ', '_')
-        simple_name = re.sub('\W+', '', simple_name)
+        simple_name = name.strip().replace(" ", "_")
+        simple_name = re.sub(r"\W+", "", simple_name)
         return simple_name
+
+    @staticmethod
+    def parse_carrier_name(carrier):
+        return carrier.split(" [")[0].strip()
+
+    @staticmethod
+    def parse_carrier_units(carrier):
+        try:
+            return re.search(r"\[([A-Za-z0-9_]+)\]", carrier).group(1)
+        except Exception:
+            return "kW"
