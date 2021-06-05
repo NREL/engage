@@ -1,5 +1,5 @@
 calliope==0.6.3
-django==2.2.20
+django==2.2.21
 django-environ>=0.4.5
 psycopg2==2.7.6
 boto3==1.9.145
