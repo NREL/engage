@@ -6,6 +6,16 @@
 {% block head %}
 <title>Engage | {{ model.name }} | Runs</title>
 <script type="text/javascript" src="{% static 'js/run.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/run_barchart.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/run_timeseries.js' %}"></script>
+
+<!--
+<script type="text/javascript" src="{% static 'js/run_map.js' %}"></script>
+<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+<script type="text/javascript" src="https://d3js.org/d3-array.v1.min.js"></script>
+<script type="text/javascript" src="https://d3js.org/d3-geo.v1.min.js"></script>
+-->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jeditable.js/2.0.13/jquery.jeditable.min.js"></script>
 <style media="screen">
     #updates_paused {
@@ -31,10 +41,24 @@
 
 <div style="height: calc(100% - 160px);">
     <!-- Outputs -->
-    <div id="run_outputs" class="splitter_upper row" style="overflow-y: scroll; height: 50%; border:solid; position: relative;">
+    <div id="run_outputs" class="splitter_upper row" style="overflow-y: scroll; height: 50%; position: relative; background-color: #191a1a; color: white;">
         <span id="build-error" style="color:red"></span>
-        <div id="viz_outputs_container" style="width: 100%; overflow: hidden;"></div>
-        <div id="viz_logs_container" class="rounded col-12" style="display: none; background-color: black; color: white;"></div>
+        <div id="viz_outputs_container" style="width: 100%; height: 100%; display: none;">
+            <div id="viz_outputs_controls" class="centered" style="width: 100%; float: left;">
+                <label for="run_metric"><b>{% trans 'Metric' %}</b></label>
+                <select id="run_metric" data-placeholder="{% trans 'Select a Metric' %}"></select>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <label for="run_carrier"><b>{% trans 'Carrier' %}</b></label>
+                <select id="run_carrier" data-placeholder="{% trans 'Select a Carrier' %}"></select>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <label for="run_location"><b>{% trans 'Location' %}</b></label>
+                <select id="run_location" data-placeholder="{% trans 'Select a Location' %}"></select>
+            </div>
+            <!-- <div id="viz_outputs_map" style="width: 50%; height: 50%; float: left;"></div> -->
+            <div id="viz_outputs_barchart" style="width: 20%; height: calc(100% - 40px); float: left;"></div>
+            <div id="viz_outputs_timeseries" style="width: 80%; height: calc(100% - 40px); float: left;"></div>
+        </div>
+        <div id="viz_logs_container" class="col-12" style="display: none;"></div>
         {% include "spinner.html" %}
     </div>
     <!-- Splitter -->

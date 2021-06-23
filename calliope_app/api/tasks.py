@@ -471,7 +471,7 @@ class CalliopeModelRunTask(Task):
         run.status = task_status.SUCCESS
         run.logs_path = retval["save_logs"]
         run.outputs_path = retval["save_outputs"]
-        run.plots_path = retval["save_plots"]
+        # run.plots_path = retval["save_plots"]
         run.save()
 
         # Upload model_outputs to S3
@@ -547,18 +547,18 @@ def run_model(run_id, model_path, user_id, *args, **kwargs):
         save_outputs = ""
 
     # Model plots in html
-    try:
-        if not os.path.exists(base_path + "/plots"):
-            os.makedirs(base_path + "/plots", exist_ok=True)
-        save_plots = os.path.join(base_path, "plots/model_plots.html")
-        if os.path.exists(save_plots):
-            os.remove(save_plots)
-        model.plot.summary(to_file=save_plots)
-        logger.info("Backend: Model plots was saved.")
-    except Exception as e:
-        logger.error("Backend: Failed to save model plots.")
-        logger.error(str(e))
-        save_plots = ""
+    # try:
+    #     if not os.path.exists(base_path + "/plots"):
+    #         os.makedirs(base_path + "/plots", exist_ok=True)
+    #     save_plots = os.path.join(base_path, "plots/model_plots.html")
+    #     if os.path.exists(save_plots):
+    #         os.remove(save_plots)
+    #     model.plot.summary(to_file=save_plots)
+    #     logger.info("Backend: Model plots was saved.")
+    # except Exception as e:
+    #     logger.error("Backend: Failed to save model plots.")
+    #     logger.error(str(e))
+    #     save_plots = ""
 
     # Model logs in plain text
     save_logs = logger.handlers[0].baseFilename
@@ -566,6 +566,6 @@ def run_model(run_id, model_path, user_id, *args, **kwargs):
     return {
         "run_id": run_id,
         "save_outputs": save_outputs,
-        "save_plots": save_plots,
+        # "save_plots": save_plots,
         "save_logs": save_logs
     }

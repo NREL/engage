@@ -625,3 +625,10 @@ input:checked + .slider:before {
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
 }
+
+#run_carrier, #run_location, #run_metric {
+    background-color: black;
+    color: white;
+    padding: 5px !important;
+    height: 40px !important;
+}

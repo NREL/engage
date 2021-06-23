@@ -78,10 +78,8 @@
 					</td>
 					<!-- Plots -->
 					<td class="centered">
-						{% if run.plots_path %}
+						{% if run.outputs_path %}
 						<button data-run_id="{{ run.id }}" tabindex="-1" type="button" class="btn btn-success btn-viz-outputs" style="width:100%;"><i class="fa fa-chart-line" aria-hidden="true"></i></button>
-						{% elif run.outputs_path %}
-						<i class="fa fa-exclamation-triangle" data-toggle="tooltip" data-placement="left" title="{% trans 'Preview not available' %}" style="color:red"></i>
 						{% endif %}
 					</td>
 					<!-- Nodal Map Viz -->

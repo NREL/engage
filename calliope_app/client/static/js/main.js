@@ -760,6 +760,7 @@ var mapbox_styles = {
 var dark_styles = ["mapbox/dark-v10", "mapbox/satellite-v9", "mapbox/satellite-streets-v9"];
 
 var map_style = localStorage.getItem("mapstyle") || Object.values(mapbox_styles)[0];
+if (!Object.values(mapbox_styles).includes(map_style)) { map_style = Object.values(mapbox_styles)[0] };
 
 function changeMapStyle() {
     map_style = $('#map-style').val();
@@ -924,6 +925,7 @@ function render_map(locations, transmissions, draggable, loc_tech_id) {
 	// Map
 	if (map === null) {
 		// Create Map
+		console.log(map_style)
 		map = new mapboxgl.Map({
 				container: 'map',
 				style: 'mapbox://styles/' + map_style,

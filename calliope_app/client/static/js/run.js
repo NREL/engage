@@ -67,8 +67,8 @@ function refresh_run_dashboard(open_viz) {
 						vl.click();
 					} else {
 						toggle_viz_spinner(false);
-						$('#viz_logs_container').empty().hide();
-						$('#viz_outputs_container').empty().show();
+						$('#viz_logs_container').hide();
+						$('#viz_outputs_container').hide();
 						$('#build-error').html("No results yet...");
 					}
 				};
@@ -151,8 +151,8 @@ function toggle_viz_spinner(on) {
 	$('#build-error').html("");
 	if (on == true) {
 		$('.viz-spinner').show();
-		$('#viz_logs_container').empty().hide();
-		$('#viz_outputs_container').empty().show();
+		// $('#viz_logs_container').hide();
+		// $('#viz_outputs_container').hide();
 	} else {
 		$('.viz-spinner').hide();
 	};
@@ -196,12 +196,12 @@ function activate_runs() {
 			success: function (data) {
 				toggle_viz_spinner(false);
 				$('#viz_logs_container').show().html(data);
-				$('#viz_outputs_container').empty().hide();
+				$('#viz_outputs_container').hide();
 			},
 			error: function () {
 				toggle_viz_spinner(false);
-				$('#viz_logs_container').empty().show();
-				$('#viz_outputs_container').empty().hide();
+				$('#viz_logs_container').hide();
+				$('#viz_outputs_container').hide();
 				$('#build-error').html("An error occurred...");
 			}
 		});
@@ -211,26 +211,8 @@ function activate_runs() {
 	$('.btn-viz-outputs').on('click', function() {
 		toggle_viz_spinner(true);
 		var run_id = $(this).data('run_id');
-		$.ajax({
-			url: '/' + LANGUAGE_CODE + '/component/plot_outputs/',
-			type: 'POST',
-			data: {
-				'model_uuid': $('#header').data('model_uuid'),
-				'run_id': run_id,
-				'csrfmiddlewaretoken': getCookie('csrftoken'),
-			},
-			success: function (data) {
-				toggle_viz_spinner(false);
-				$('#viz_logs_container').empty().hide();
-				$('#viz_outputs_container').show().html(data);
-			},
-			error: function () {
-				toggle_viz_spinner(false);
-				$('#viz_logs_container').empty().hide();
-				$('#viz_outputs_container').empty().show();
-				$('#build-error').html("An error occurred...");
-			}
-		});
+		$('#run_outputs').attr('data-run_id', run_id);
+		get_viz_outputs(true);
 	});
 
 	$('.btn-map-outputs').unbind();
@@ -240,9 +222,7 @@ function activate_runs() {
 			(!!window.MSInputMethodContext && !!document.documentMode) ||
 			(!(window.ActiveXObject) && "ActiveXObject" in window)
 		) {
-			$('#viz_outputs_container').show()
-				.addClass('alert alert-danger')
-				.html('Internet Explorer does not support the map visualization. Please use ' +
+			$('#build-error').html('Internet Explorer does not support the map visualization. Please use ' +
 					'<a href="https://www.firefox.com/" target="_blank" rel="noreferrer">Firefox</a> or ' +
 					'<a href="https://www.google.com/chrome/" target="_blank" rel="noreferrer">Chrome</a>.');
 			return false;
@@ -264,8 +244,8 @@ function activate_runs() {
 				},
 				dataType: 'json',
 				complete: function (data) {
-					$('#viz_logs_container').empty().hide();
-					$('#viz_outputs_container').empty().show();
+					$('#viz_logs_container').hide();
+					$('#viz_outputs_container').hide();
 					$('#build-error').html("Run deleted...");
 				}
 			});
@@ -320,4 +300,74 @@ function activate_runs() {
 		});
 	});
 
+	$('#run_metric, #run_carrier, #run_location').unbind();
+	$('#run_metric, #run_carrier, #run_location').on('change', function() {
+		toggle_viz_spinner(true);
+		get_viz_outputs(false);
+	});
+
+};
+
+function get_viz_outputs(update_options) {
+	if (update_options != true) {
+		var carrier = $('#run_carrier').val();
+		var metric = $('#run_metric').val();
+		var location = $('#run_location').val();
+	}
+	var run_id = $('#run_outputs').attr('data-run_id');
+	$.ajax({
+		url: '/' + LANGUAGE_CODE + '/component/plot_outputs/',
+		type: 'POST',
+		data: {
+			'model_uuid': $('#header').data('model_uuid'),
+			'run_id': run_id,
+			'carrier': carrier,
+			'metric': metric,
+			'location': location,
+			'csrfmiddlewaretoken': getCookie('csrftoken'),
+		},
+		success: function (data) {
+			toggle_viz_spinner(false);
+			$('#viz_logs_container').hide();
+			$('#viz_outputs_container').show();
+			render_barchart(data['barchart'], 'kW');
+			render_timeseries(data['timeseries'], 'kW');
+			if (update_options == true) { update_viz_options(data['options']) };
+		},
+		error: function () {
+			toggle_viz_spinner(false);
+			$('#viz_logs_container').hide();
+			$('#viz_outputs_container').hide();
+			$('#build-error').html("An error occurred...");
+		}
+	});
 }
+
+function update_viz_options(options) {
+	// Metrics
+	var metric_options = [];
+	options['metric'].forEach(function(val) { metric_options.push({text: val, value: val}) });
+	$("#run_metric").replaceOptions(metric_options);
+	// Carriers
+	var carrier_options = [];
+	options['carrier'].forEach(function(val) { carrier_options.push({text: val, value: val}) });
+	$("#run_carrier").replaceOptions(carrier_options);
+	// Locations
+	var loc_options = [{text: 'All Locations', val: ''}];
+	options['location'].forEach(function(val) { loc_options.push({text: val.replace('_', ' '), value: val}) });
+	$("#run_location").replaceOptions(loc_options);	
+}
+
+(function($, window) {
+  $.fn.replaceOptions = function(options) {
+    var self, $option;
+    this.empty();
+    self = this;
+    $.each(options, function(index, option) {
+      $option = $("<option></option>")
+        .attr("value", option.value)
+        .text(option.text);
+      self.append($option);
+    });
+  };
+})(jQuery, window);

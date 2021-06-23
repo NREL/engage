@@ -165,19 +165,20 @@ def plot_outputs(request):
 
     model_uuid = request.POST["model_uuid"]
     run_id = request.POST["run_id"]
+    carrier = request.POST.get("carrier", None)
+    metric = request.POST.get("metric", None)
+    location = request.POST.get("location", None)
 
     model = Model.by_uuid(model_uuid)
     model.handle_view_access(request.user)
-    
+
     try:
         run = Run.objects.get(id=run_id)
     except Exception:
         raise Http404
 
-    with open(run.plots_path) as f:
-        html = f.read()
-
-    return HttpResponse(html, content_type="text/html")
+    data = run.get_viz_data(carrier, metric, location)
+    return JsonResponse(data)
 
 
 @csrf_protect

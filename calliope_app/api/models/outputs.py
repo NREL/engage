@@ -68,6 +68,182 @@ class Run(models.Model):
     def __str__(self):
         return '%s (%s) @ %s' % (self.model, self.subset_time, self.updated)
 
+    def get_meta(self):
+        meta = {}
+        # Names
+        names = self.read_output('inputs_names.csv')
+        meta['names'] = names.set_index(0)[1].to_dict()
+        # Colors
+        colors = self.read_output('inputs_colors.csv')
+        meta['colors'] = colors.set_index(0)[1].to_dict()
+        # Locations
+        locations = self.read_output('inputs_loc_coordinates.csv')
+        meta['locations'] = list(locations[1].unique())
+        # Remotes (Transmission Technologies)
+        remotes = self.read_output('inputs_lookup_remotes.csv')
+        meta['remotes'] = remotes[1].unique()
+        # Demands
+        parents = self.read_output('inputs_inheritance.csv')
+        meta['demands'] = parents.groupby(1)[0].apply(list)['demand']
+        # Carriers
+        c1 = self.read_output('inputs_lookup_loc_techs_conversion.csv', [2, 3])
+        c2 = self.read_output('inputs_lookup_loc_techs_conversion_plus.csv', [2, 3])
+        c = c1.append(c2)
+        c[2] = c[2].str.contains('out')
+        c3 = self.read_output('inputs_lookup_loc_techs.csv', [1, 2])
+        c3[1] = True
+        c3.columns = [2, 3]
+        c = c.append(c3)
+        c[[4, 5, 6]] = c[3].str.split('::', expand=True)
+        c = c[~c[5].isin(meta['remotes'])]
+        c.loc[c[5].isin(meta['demands']), 2] = False
+        meta['carriers'] = list(c[6].unique())
+        meta['carriers_in'] = c[c[2] == False].groupby(6)[5].apply(
+            lambda x: list(set(x))).to_dict()
+        meta['carriers_out'] = c[c[2] == True].groupby(6)[5].apply(
+            lambda x: list(set(x))).to_dict()
+        return meta
+
+    def get_viz_data(self, carrier, metric, location):
+        response = {}
+        meta = self.get_meta()
+        METRICS = ['Production', 'Consumption', 'Storage', 'Costs']
+        if carrier not in meta['carriers']:
+            carrier = meta['carriers'][0]
+        if metric not in METRICS:
+            metric = METRICS[0]
+        if location not in meta['locations']:
+            location = None
+        # Filters
+        if metric == 'Consumption':
+            hard_filter = meta['carriers_in'].get(carrier, [])
+        else:
+            hard_filter = meta['carriers_out'].get(carrier, [])
+        soft_filter = \
+            meta['carriers_in'].get(carrier, []) + \
+            meta['carriers_out'].get(carrier, [])
+        # Options
+        response['options'] = {}
+        response['options']['metric'] = METRICS
+        response['options']['carrier'] = meta['carriers']
+        response['options']['location'] = meta['locations']
+        # Fixed Values (Barchart)
+        response['barchart'] = self.get_static_values(
+            meta, metric, location, soft_filter, hard_filter)
+        # Variable Values (Timeseries)
+        response['timeseries'] = self.get_variable_values(
+            meta, carrier, metric, location, soft_filter)
+        return response
+
+    def get_static_values(self, meta, metric, location,
+                          soft_filter, hard_filter):
+        LABELS = {'Production': 'Capacity',
+                  'Consumption': 'Capacity',
+                  'Storage': 'Storage Capacity',
+                  'Costs': 'Investment Cost'}
+        if metric == 'Storage':
+            # Storage Capacity
+            df = self.read_output('results_storage_cap.csv', [0, 1, 2])
+        elif metric == 'Costs':
+            # Investment Costs
+            df = self.read_output('results_cost_investment.csv', [0, 1, 3])
+        else:
+            # Energy Capacity
+            df = self.read_output('results_energy_cap.csv', [0, 1, 2])
+        df.columns = ['Location', 'Technology', 'Values']
+        # Filter
+        df = df[~df['Technology'].isin(meta['remotes'])]
+        df = df[~df['Technology'].isin(meta['demands'])]
+        df = df[df['Technology'].isin(soft_filter)]
+        df = df[df['Technology'].isin(hard_filter)]
+        if location:
+            df = df[df['Location'] == location]
+        # Process
+        if metric == "Consumption":
+            df['Values'] *= -1
+        df = df.groupby('Technology').sum()
+        df = df['Values'].to_dict()
+        layers = [{'name': meta['names'][key] if key in meta['names'] else key,
+                   'color': meta['colors'][key] if key in meta['colors'] else None,
+                   'y': [value]} for key, value in df.items()]
+        return {
+            'base': {'x': [LABELS[metric]]},
+            'layers': layers,
+        }
+
+    def get_variable_values(self, meta, carrier, metric,
+                            location, soft_filter):
+        if metric == 'Storage':
+            # Storage
+            df = self.read_output('results_storage.csv', [0, 1, 2, 3])
+            df.columns = ['Location', 'Technology', 'Timestamp', 'Values']
+        elif metric == 'Costs':
+            # Costs
+            df = self.read_output('results_cost_var.csv', [0, 1, 3, 4])
+            df.columns = ['Location', 'Technology', 'Timestamp', 'Values']
+        else:
+            # Production / Consumption
+            df = self.read_output('results_carrier_con.csv')
+            if metric == "Production":
+                df2 = self.read_output('results_carrier_prod.csv')
+                df = df.append(df2)
+            df.columns = ['Location', 'Technology', 'Carrier',
+                          'Timestamp', 'Values']
+            df = df[df['Carrier'] == carrier]
+        # Filter
+        df = df[~df['Technology'].isin(meta['remotes'])]
+        df = df[df['Technology'].isin(soft_filter)]
+        if location:
+            df = df[df['Location'] == location]
+        # Process
+        df = df.groupby(['Technology', 'Timestamp']).sum()
+        pvalues, nvalues, techs, ts = [], [], [], []
+        if 'Values' in df.columns:
+            df = df['Values'].reset_index()
+            ts = list(df['Timestamp'].unique())
+            for tech in df['Technology'].unique():
+                mask = df['Technology'] == tech
+                values_1 = df[mask]['Values'].values
+                if metric == "Consumption":
+                    is_primary = values_1 <= 0
+                else:
+                    is_primary = values_1 >= 0
+                # Secondary
+                if any(~is_primary):
+                    values_2 = np.copy(values_1)
+                    values_1[~is_primary] = 0
+                    values_2[is_primary] = 0
+                    if np.sum(values_2) != 0:
+                        nvalues.append(list(-values_2))
+                # Primary
+                if np.sum(values_1) != 0:
+                    pvalues.append(list(values_1))
+                    techs.append(tech)
+        layers = [
+            {'name': meta['names'][techs[i]] if techs[i] in meta['names'] else techs[i],
+             'color': meta['colors'][techs[i]] if techs[i] in meta['colors'] else None,
+             'group': 'Primary',
+             'y': pvalues[i]
+             } for i in range(len((techs)))]
+        data = {
+            'base': {'x': ts},
+            'layers': layers
+        }
+        if (metric == 'Production') & (len(nvalues) > 0):
+            data['overlay'] = {'name': "Demand",
+                               'y': list(np.sum(np.array(nvalues), axis=0))}
+        return data
+
+    def read_output(self, file, columns=[]):
+        fpath = os.path.join(self.outputs_path, file)
+        try:
+            df = pd.read_csv(fpath, header=None)
+            if columns:
+                df = df[columns]
+        except FileNotFoundError:
+            df = pd.DataFrame(columns=columns)
+        return df
+
 
 class Cambium():
 
