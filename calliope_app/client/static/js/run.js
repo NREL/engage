@@ -180,6 +180,7 @@ function activate_runs() {
 			}
 		});
 	});
+	$('.btn-run-inputs').click();
 
 	$('.btn-viz-logs').unbind();
 	$('.btn-viz-logs').on('click', function() {
