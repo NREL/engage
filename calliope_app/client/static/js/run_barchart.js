@@ -33,7 +33,8 @@ function render_barchart(data, units, redraw) {
                   },
                   yaxis: {
                     gridcolor: "#3b3b3b",
-                    gridwidth: 1
+                    gridwidth: 1,
+                    type: 'log'
                   },
                   bargap: 0,
                   // barmode: 'relative',

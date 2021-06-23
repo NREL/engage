@@ -179,7 +179,7 @@ class Run(models.Model):
         df = df['Values'].to_dict()
         layers = [{'name': meta['names'][key] if key in meta['names'] else key,
                    'color': meta['colors'][key] if key in meta['colors'] else None,
-                   'y': [value]} for key, value in df.items()]
+                   'y': [value]} for key, value in df.items() if value != 0]
         return {
             'base': {'x': [LABELS[metric]]},
             'layers': layers,
@@ -257,6 +257,7 @@ class Run(models.Model):
              'group': 'Primary',
              'y': pvalues[i]
              } for i in range(len((techs)))]
+        layers = sorted(layers, key=lambda k: np.var(k['y']))
         data = {
             'base': {'x': ts},
             'layers': layers
