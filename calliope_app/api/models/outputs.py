@@ -114,7 +114,8 @@ class Run(models.Model):
         # Get a list of all carriers (sorted by # technologies)
         carriers = {**meta['carriers_in'], **meta['carriers_out']}
         carriers = [(key, len(values)) for key, values in carriers.items()]
-        meta['carriers'] = [k[0] for k in sorted(carriers, key=lambda k: k[0])]
+        carriers = sorted(carriers, key=lambda k: k[1], reverse=True)
+        meta['carriers'] = [k[0] for k in carriers]
         return meta
 
     def get_viz_data(self, carrier, metric, location):
@@ -183,6 +184,7 @@ class Run(models.Model):
         layers = [{'name': meta['names'][key] if key in meta['names'] else key,
                    'color': meta['colors'][key] if key in meta['colors'] else None,
                    'y': [value]} for key, value in df.items() if value != 0]
+        layers = sorted(layers, key=lambda k: k['y'][0])
         return {
             'base': {'x': [LABELS[metric]]},
             'layers': layers,
