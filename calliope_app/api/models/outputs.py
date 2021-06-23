@@ -107,11 +107,14 @@ class Run(models.Model):
         c = c[~c[5].isin(meta['remotes'])]
         c.loc[c[5].isin(meta['demands']), 2] = False
         # Response
-        meta['carriers'] = list(c[6].unique())
         meta['carriers_in'] = c[c[2] == False].groupby(6)[5].apply(
             lambda x: list(set(x))).to_dict()
         meta['carriers_out'] = c[c[2] == True].groupby(6)[5].apply(
             lambda x: list(set(x))).to_dict()
+        # Get a list of all carriers (sorted by # technologies)
+        carriers = {**meta['carriers_in'], **meta['carriers_out']}
+        carriers = [(key, len(values)) for key, values in carriers.items()]
+        meta['carriers'] = [k[0] for k in sorted(carriers, key=lambda k: k[0])]
         return meta
 
     def get_viz_data(self, carrier, metric, location):
@@ -209,8 +212,8 @@ class Run(models.Model):
                 df = df.append(df2)
             else:
                 df2 = self.read_output('results_carrier_export.csv')
-                df2[4] *= -1
                 if not df2.empty:
+                    df2[4] *= -1
                     df = df.append(df2)
             df.columns = ['Location', 'Technology', 'Carrier',
                           'Timestamp', 'Values']
