@@ -3,6 +3,7 @@
 var total_radius = 40,
     buffer_radius = 10,
     calc_zoom_scale = function(current_zoom) {
+        return 0.4;
         var nodes_scale = 1 / Math.sqrt(nodes.length + 1);
         var map_scale = 2 * Math.pow(1.2 + nodes_scale, current_zoom - initial_map_zoom);
         var scale = nodes_scale * map_scale;
@@ -21,7 +22,7 @@ var total_radius = 40,
     },
     map_style = localStorage.getItem("mapstyle") || Object.values(mapbox_styles)[0],
     buffer_divisor = 5,
-    stroke_multiplier = 10,
+    stroke_multiplier = 15,
     inactive_opacity = 0.1,
     active_opacity = function() {
         return 1;
@@ -87,7 +88,7 @@ var total_radius = 40,
     trans_production = {},
     selected_tech = null,
     selected_carrier = 'all',
-    animation_speed = 200,
+    animation_speed = 600,
     animation_interval = null,
     wait_d3_interval = null,
     wait_mapbox_interval = null,
@@ -570,20 +571,6 @@ function initiate_viz() {
         .on('mousemove', timeline_drag_move)
         .append("g");
     
-    // Initiate Hatch Fill for Consumption
-    svg_main
-        .append('defs')
-        .append('pattern')
-        .attr('id', 'diagonalHatch')
-        .attr('patternUnits', 'userSpaceOnUse')
-        .attr('width', 8)
-        .attr('height', 8)
-        .append('path')
-        .attr('d', 'M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2')
-        .attr('transform', 'scale(2)')
-        .attr('stroke', '#fff')
-        .attr('stroke-width', 1);
-    
     //---- Build Legend
     
     // Add Carriers
@@ -661,11 +648,6 @@ function initiate_viz() {
 
                     viz.main.selectAll(".trans_production")
                         .data(trans_production[ts])
-                        .style("opacity", function(d) {
-                            return active_opacity();
-                        })
-                    viz.main.selectAll(".capacity-datum")
-                        .data(nodes)
                         .style("opacity", function(d) {
                             return active_opacity();
                         })
@@ -755,11 +737,6 @@ function initiate_viz() {
                     $(this).find(".symbol").css("background-color", colors[$(this).data("tech")]);
                     viz.main.selectAll(".trans_production")
                         .data(trans_production[ts])
-                        .style("opacity", function(d) {
-                            return active_opacity();
-                        })
-                    viz.main.selectAll(".capacity-datum")
-                        .data(nodes)
                         .style("opacity", function(d) {
                             return active_opacity();
                         })
@@ -1002,7 +979,7 @@ function build_viz() {
         .data(links)
         .enter().append("line")
         .attr("class", "trans_capacities")
-        .attr("stroke-width", 1 + stroke_multiplier * zoom_scale)
+        .attr("stroke-width", (1 + stroke_multiplier * zoom_scale) * 0.2)
         .attr("x1", function(d) {
             return project(coordinates[d.loc1]).x;
         })
@@ -1015,8 +992,8 @@ function build_viz() {
         .attr("y2", function(d) {
             return project(coordinates[d.loc2]).y;
         })
-        .style("stroke", "gray")
-        .style("opacity", 0.2)
+        .style("stroke", "silver")
+        .style("opacity", 0.4)
         .style("stroke-linecap", "round")
         .attr("cursor", "crosshair")
         .attr("pointer-events", "visible")
@@ -1079,11 +1056,12 @@ function build_viz() {
         .attr("transform", function(d) {
             return translate(coordinates[d.loc])
         })
-        .attr("fill", "white")
-        .attr("stroke", "black")
-        .attr("stroke-width", 0.5)
+        .attr("stroke", "silver")
+        .attr("stroke-width", 1)
         .attr("d", static_arc)
-        .style("opacity", 0.7)
+        .style("opacity", 0.4)
+        .style("fill", "silver")
+        .style("fill-opacity", 0.8)
         .attr("cursor", "crosshair")
         .attr("pointer-events", "visible")
         .on("mouseenter", function(d) {
@@ -1099,28 +1077,6 @@ function build_viz() {
         .on("mouseleave", function(d) {
             popup_content = '';
         });
-	
-	// draw capacity datums
-    d3.selectAll(".capacity-datum").remove();
-    viz.main.selectAll(".capacity-datum")
-        .data(nodes)
-        .enter().append("line")
-        .attr("class", "capacity-datum")
-        .attr("transform", function(d) {
-            return translate(coordinates[d.loc])
-        })
-        .attr("x1", 0).attr("y1", function(d) {
-            return -get_iRadius(d);
-        })
-        .attr("x2", 0).attr("y2", function(d) {
-            return -get_oRadius(d);
-        })
-        .attr("stroke-width", 1 + stroke_multiplier * zoom_scale)
-        .attr("stroke", function(d) {
-            return colors[d.tech]
-        })
-        .attr("d", static_arc)
-        .moveToFront();
 
     // draw initial production
     d3.selectAll(".production").remove();
@@ -1143,26 +1099,28 @@ function build_viz() {
             this._current = d;
         });
 
-    // Draw initial consumption (hatch fill)
-    d3.selectAll(".consumption").remove();
-    viz.main.selectAll(".consumption")
-        .data(production[timestamps[0]])
-        .enter().append("path")
-        .attr("class", function(d) {
-            return "consumption carrier carrier-" + d.carrier
-        })
-        .attr("transform", function(d) {
-            return translate(coordinates[d.loc])
-        })
-        .attr("fill", "url(#diagonalHatch)")
-        .attr("opacity", function(d) {
-            if (d.production >= 0) {
-                return 0
-            } else {
-                return 1
-            };
-        })
-        .attr("d", dynamic_arc);
+    // Draw initial consumption
+    // d3.selectAll(".consumption").remove();
+    // viz.main.selectAll(".consumption")
+    //     .data(production[timestamps[0]])
+    //     .enter().append("path")
+    //     .attr("class", function(d) {
+    //         return "consumption carrier carrier-" + d.carrier
+    //     })
+    //     .attr("transform", function(d) {
+    //         return translate(coordinates[d.loc])
+    //     })
+    //     .attr("fill", function(d) {
+    //         return colors[d.tech];
+    //     })
+    //     .attr("opacity", function(d) {
+    //         if (d.production >= 0) {
+    //             return 0
+    //         } else {
+    //             return 1
+    //         };
+    //     })
+    //     .attr("d", dynamic_arc);
 
     //---- Draw timeline initially
     redraw_timeline();
@@ -1192,12 +1150,12 @@ function update_viz(ts, immediate) {
 		// duration = 0;
         map_bounds = map.getBounds();
         zoom_scale = calc_zoom_scale(map.getZoom());
-		
+
         // update static transmission lines
         viz.main.selectAll(".trans_capacities")
             .data(links)
             .transition().duration(duration)
-            .attr("stroke-width", stroke_multiplier * zoom_scale)
+            .attr("stroke-width", (1 + stroke_multiplier * zoom_scale) * 0.2)
             .attr("x1", function(d) {
                 return project(coordinates[d.loc1]).x;
             })
@@ -1218,22 +1176,6 @@ function update_viz(ts, immediate) {
             .attr("transform", function(d) {
                 return translate(coordinates[d.loc])
             })
-            .attr("d", static_arc);
-
-		// update capacity datums
-        viz.main.selectAll(".capacity-datum")
-            .data(nodes)
-            .transition().duration(duration)
-            .attr("transform", function(d) {
-                return translate(coordinates[d.loc])
-            })
-            .attr("x1", 0).attr("y1", function(d) {
-                return -get_iRadius(d);
-            })
-            .attr("x2", 0).attr("y2", function(d) {
-                return -get_oRadius(d);
-            })
-            .attr("stroke-width", 1 + stroke_multiplier * zoom_scale)
             .attr("d", static_arc);
         
         // workaround for rendering bug when
@@ -1265,12 +1207,6 @@ function update_viz(ts, immediate) {
                     return (selected_tech == d.tech ? active_opacity() : inactive_opacity);
                 };
             });
-            viz.main.selectAll(".capacity-datum")
-                .data(nodes)
-                .transition().duration(duration)
-                .style("opacity", function(d) {
-                    return (selected_tech == d.tech ? active_opacity() : inactive_opacity);
-                });
     }
     
     if (selected_carrier !== 'all') {
@@ -1293,12 +1229,6 @@ function update_viz(ts, immediate) {
                     return (selected_carrier == d.carrier ? active_opacity() : inactive_opacity);
                 };
             });
-            viz.main.selectAll(".capacity-datum")
-                .data(nodes)
-                .transition().duration(duration)
-                .style("opacity", function(d) {
-                    return (selected_carrier == d.carrier ? active_opacity() : inactive_opacity);
-                });
     }
     
     // draw trans_production
@@ -1329,7 +1259,6 @@ function update_viz(ts, immediate) {
 
     // Draw production / consumption
 
-
     // update production
     viz.main.selectAll(".production")
         .data(production[ts])
@@ -1340,14 +1269,13 @@ function update_viz(ts, immediate) {
         });
 
     // update consumption
-    viz.main.selectAll(".consumption")
-        .data(production[ts])
-        .transition().duration(duration)
-        .attrTween("d", arcTween)
-        .attr("fill", "url(#diagonalHatch)")
-        .attr("transform", function(d) {
-            return translate(coordinates[d.loc])
-        });
+    // viz.main.selectAll(".consumption")
+    //     .data(production[ts])
+    //     .transition().duration(duration)
+    //     .attrTween("d", arcTween)
+    //     .attr("transform", function(d) {
+    //         return translate(coordinates[d.loc])
+    //     });
         
     // Update the Clock
     var print_ts;

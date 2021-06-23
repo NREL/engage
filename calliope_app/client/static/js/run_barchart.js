@@ -1,6 +1,8 @@
 
 function render_barchart(data, units, redraw) {
 
+    if (data == undefined) { $('#viz_outputs_barchart').html(""); return };
+
     var layers = [];
 
     data.layers.forEach(function(layer) {

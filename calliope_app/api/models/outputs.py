@@ -94,9 +94,19 @@ class Run(models.Model):
         c3[1] = True
         c3.columns = [2, 3]
         c = c.append(c3)
+        # Uncompress rows that have multiple Carriers (comma delimited)
+        compress_mask = c[3].str.contains(',')
+        compressed_rows = c[compress_mask]
+        c = c[~compress_mask]
+        for i, row in compressed_rows.iterrows():
+            for item in row[3].split(','):
+                c.append([row[2], item])
+        # Split into Location, Technology, Carrier
         c[[4, 5, 6]] = c[3].str.split('::', expand=True)
+        # Filter
         c = c[~c[5].isin(meta['remotes'])]
         c.loc[c[5].isin(meta['demands']), 2] = False
+        # Response
         meta['carriers'] = list(c[6].unique())
         meta['carriers_in'] = c[c[2] == False].groupby(6)[5].apply(
             lambda x: list(set(x))).to_dict()
@@ -108,6 +118,9 @@ class Run(models.Model):
         response = {}
         meta = self.get_meta()
         METRICS = ['Production', 'Consumption', 'Storage', 'Costs']
+        unmet = self.read_output('results_unmet_demand.csv', [0])
+        if not unmet.empty:
+            METRICS += ['Unmet Demand']
         if carrier not in meta['carriers']:
             carrier = meta['carriers'][0]
         if metric not in METRICS:
@@ -128,8 +141,9 @@ class Run(models.Model):
         response['options']['carrier'] = meta['carriers']
         response['options']['location'] = meta['locations']
         # Fixed Values (Barchart)
-        response['barchart'] = self.get_static_values(
-            meta, metric, location, soft_filter, hard_filter)
+        if metric != 'Unmet Demand':
+            response['barchart'] = self.get_static_values(
+                meta, metric, location, soft_filter, hard_filter)
         # Variable Values (Timeseries)
         response['timeseries'] = self.get_variable_values(
             meta, carrier, metric, location, soft_filter)
@@ -181,20 +195,32 @@ class Run(models.Model):
             # Costs
             df = self.read_output('results_cost_var.csv', [0, 1, 3, 4])
             df.columns = ['Location', 'Technology', 'Timestamp', 'Values']
+        elif metric == 'Unmet Demand':
+            # Unmet Demand
+            df = self.read_output('results_unmet_demand.csv', [0, 1, 2, 3])
+            df.columns = ['Location', 'Carrier', 'Timestamp', 'Values']
+            df = df[df['Carrier'] == carrier]
+            df['Technology'] = 'All Technologies'
         else:
             # Production / Consumption
             df = self.read_output('results_carrier_con.csv')
             if metric == "Production":
                 df2 = self.read_output('results_carrier_prod.csv')
                 df = df.append(df2)
+            else:
+                df2 = self.read_output('results_carrier_export.csv')
+                df2[4] *= -1
+                if not df2.empty:
+                    df = df.append(df2)
             df.columns = ['Location', 'Technology', 'Carrier',
                           'Timestamp', 'Values']
             df = df[df['Carrier'] == carrier]
         # Filter
-        df = df[~df['Technology'].isin(meta['remotes'])]
-        df = df[df['Technology'].isin(soft_filter)]
-        if location:
-            df = df[df['Location'] == location]
+        if metric != 'Unmet Demand':
+            df = df[~df['Technology'].isin(meta['remotes'])]
+            df = df[df['Technology'].isin(soft_filter)]
+            if location:
+                df = df[df['Location'] == location]
         # Process
         df = df.groupby(['Technology', 'Timestamp']).sum()
         pvalues, nvalues, techs, ts = [], [], [], []
@@ -204,7 +230,13 @@ class Run(models.Model):
             for tech in df['Technology'].unique():
                 mask = df['Technology'] == tech
                 values_1 = df[mask]['Values'].values
-                if metric == "Consumption":
+                # Handle Unmet Demand (Does not vary by Technology)
+                if metric == "Unmet Demand":
+                    pvalues.append(list(values_1))
+                    techs.append(tech)
+                    continue
+                # Split up Positive / Negative for Production / Consumption
+                elif metric == "Consumption":
                     is_primary = values_1 <= 0
                 else:
                     is_primary = values_1 >= 0
@@ -237,9 +269,10 @@ class Run(models.Model):
     def read_output(self, file, columns=[]):
         fpath = os.path.join(self.outputs_path, file)
         try:
-            df = pd.read_csv(fpath, header=None)
             if columns:
-                df = df[columns]
+                df = pd.read_csv(fpath, header=None, usecols=columns)
+            else:
+                df = pd.read_csv(fpath, header=None)
         except FileNotFoundError:
             df = pd.DataFrame(columns=columns)
         return df

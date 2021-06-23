@@ -1,6 +1,8 @@
 
 function render_timeseries(data, units) {
 
+    if (data == undefined) { $('#viz_outputs_timeseries').html(""); return };
+
     var ts = data.base.x.slice(0, 8760),
         layers = [];
 
