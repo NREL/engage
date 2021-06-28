@@ -3,14 +3,14 @@
 var total_radius = 40,
     buffer_radius = 10,
     calc_zoom_scale = function(current_zoom) {
-        return 0.4;
+        return 0.3;
         var nodes_scale = 1 / Math.sqrt(nodes.length + 1);
         var map_scale = 2 * Math.pow(1.2 + nodes_scale, current_zoom - initial_map_zoom);
         var scale = nodes_scale * map_scale;
         return scale;
     },
     radius_multiplier = function(d) {
-        return 1 + Math.log10(link_counts[d.loc])
+        return 1 + 1.5 * Math.log10(n_loc_techs(d)) + 0.5 * Math.log10(link_counts[d.loc])
     },
     mapbox_styles = {
         'Streets': 'mapbox/streets-v11',
@@ -22,7 +22,7 @@ var total_radius = 40,
     },
     map_style = localStorage.getItem("mapstyle") || Object.values(mapbox_styles)[0],
     buffer_divisor = 5,
-    stroke_multiplier = 15,
+    stroke_multiplier = 12,
     inactive_opacity = 0.1,
     active_opacity = function() {
         return 1;
@@ -979,7 +979,7 @@ function build_viz() {
         .data(links)
         .enter().append("line")
         .attr("class", "trans_capacities")
-        .attr("stroke-width", (1 + stroke_multiplier * zoom_scale) * 0.2)
+        .attr("stroke-width", (1 + stroke_multiplier * zoom_scale) * 0.4)
         .attr("x1", function(d) {
             return project(coordinates[d.loc1]).x;
         })
@@ -1060,7 +1060,7 @@ function build_viz() {
         .attr("stroke-width", 1)
         .attr("d", static_arc)
         .style("opacity", 0.4)
-        .style("fill", "silver")
+        .style("fill", "gray")
         .style("fill-opacity", 0.8)
         .attr("cursor", "crosshair")
         .attr("pointer-events", "visible")
@@ -1092,8 +1092,9 @@ function build_viz() {
         .attr("fill", function(d) {
             return colors[d.tech];
         })
-    .attr("stroke", "black")
-    .attr("stroke-width", 0.5)
+    .attr("stroke", "transparent")
+    // .attr("stroke", "black")
+    .attr("stroke-width", 1)
     .attr("d", dynamic_arc)
         .each(function(d) {
             this._current = d;
@@ -1155,7 +1156,7 @@ function update_viz(ts, immediate) {
         viz.main.selectAll(".trans_capacities")
             .data(links)
             .transition().duration(duration)
-            .attr("stroke-width", (1 + stroke_multiplier * zoom_scale) * 0.2)
+            .attr("stroke-width", (1 + stroke_multiplier * zoom_scale) * 0.4)
             .attr("x1", function(d) {
                 return project(coordinates[d.loc1]).x;
             })
