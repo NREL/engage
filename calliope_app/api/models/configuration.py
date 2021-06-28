@@ -659,18 +659,18 @@ class Technology(models.Model):
         return j
 
     def update_calliope_pretty_name(self):
-        param = Tech_Param.objects.filter(
+        tech_param = Tech_Param.objects.filter(
             model_id=self.model_id,
             technology_id=self.id,
             parameter__name='name')
-        if len(param) == 0:
+        if len(tech_param) == 0:
             Tech_Param.objects.create(
                 model_id=self.model_id,
                 technology_id=self.id,
-                parameter__name='name',
+                parameter=Parameter.objects.get(name='name'),
                 value=self.calliope_pretty_name)
         else:
-            param.update(value=self.calliope_pretty_name)
+            tech_param.update(value=self.calliope_pretty_name)
 
     def duplicate(self, model_id, pretty_name):
         """ Duplicate and return a new technology instance """
@@ -1394,7 +1394,6 @@ class ParamsManager():
                     ratios_val = ratios[row.parameter_name]
                 except Exception:
                     pass
-            print (row.parameter_pretty_name, val)
             essentials[row.parameter_id] = {
                 'name': row.parameter_pretty_name,
                 'value': val,
