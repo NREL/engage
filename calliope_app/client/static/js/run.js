@@ -161,6 +161,7 @@ function toggle_viz_spinner(on) {
 function activate_runs() {
 	
 	bindEditable();
+	select_run_row();
 
 	$('.btn-run-inputs').unbind();
 	$('.btn-run-inputs').on('click', function() {
@@ -186,6 +187,8 @@ function activate_runs() {
 	$('.btn-viz-logs').on('click', function() {
 		toggle_viz_spinner(true);
 		var run_id = $(this).data('run_id');
+		$('#run_outputs').attr('data-run_id', run_id);
+		select_run_row();
 		$.ajax({
 			url: '/' + LANGUAGE_CODE + '/component/show_logs/',
 			type: 'POST',
@@ -213,6 +216,7 @@ function activate_runs() {
 		toggle_viz_spinner(true);
 		var run_id = $(this).data('run_id');
 		$('#run_outputs').attr('data-run_id', run_id);
+		select_run_row();
 		get_viz_outputs(true);
 	});
 
@@ -357,6 +361,13 @@ function update_viz_options(options) {
 	var loc_options = [{text: 'All Locations', val: ''}];
 	options['location'].forEach(function(val) { loc_options.push({text: val.replace('_', ' '), value: val}) });
 	$("#run_location").replaceOptions(loc_options);	
+}
+
+function select_run_row() {
+	var run_id = $('#run_outputs').attr('data-run_id'),
+		row = $('tr[data-run_id="' + run_id + '"]');
+	$('tr').removeClass('table-primary');
+	row.addClass('table-primary');
 }
 
 (function($, window) {

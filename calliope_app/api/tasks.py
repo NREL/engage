@@ -413,7 +413,7 @@ class CalliopeModelRunTask(Task):
             from_email=settings.AWS_SES_FROM_EMAIL,
             recipient_list=recipient_list
         )
-    
+
     def get_elasped_run_time(self, run):
         """Get model run time in minutes"""
         elasped_time = run.updated - run.created
@@ -447,13 +447,13 @@ class CalliopeModelRunTask(Task):
         run.plots_path = ""
         run.logs_path = save_logs
         run.save()
-        
+
         # Send failure notification to user
         if self.get_elasped_run_time(run) >= NOTIFICATION_TIME_INTERVAL:
             notification_enabled = True
         else:
             notification_enabled = False
-        
+
         if aws_ses_configured() and notification_enabled:
             try:
                 self.notify_user(run, kwargs["user_id"], success=False, exc=exc)
@@ -468,10 +468,13 @@ class CalliopeModelRunTask(Task):
         """
         # Update run instance in database
         run = Run.objects.get(id=retval["run_id"])
-        run.status = task_status.SUCCESS
         run.logs_path = retval["save_logs"]
         run.outputs_path = retval["save_outputs"]
-        # run.plots_path = retval["save_plots"]
+        results = os.path.join(run.outputs_path, 'results_carrier_prod.csv')
+        if os.path.exists(results):
+            run.status = task_status.SUCCESS
+        else:
+            run.status = task_status.FAILURE
         run.save()
 
         # Upload model_outputs to S3
@@ -487,7 +490,7 @@ class CalliopeModelRunTask(Task):
         zip_file = zip_folder(retval["save_outputs"])
         key = "engage" + zip_file.replace(settings.DATA_STORAGE, '')
         client.upload_file(zip_file, settings.AWS_S3_BUCKET_NAME, key)
-        
+
         run.outputs_key = key
         run.save()
 

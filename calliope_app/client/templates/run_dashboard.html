@@ -27,7 +27,7 @@
 			{% endifchanged %}
 			{% with runs|return_item:forloop.counter as next_run %}
 			<!-- Run Row -->
-				<tr class="table-default">
+				<tr class="table-default" data-run_id="{{ run.id }}">
 					<!-- Run Status Indicator -->
 					{% if run.status == task_status.BUILDING %}
 					<td class="centered table-warning" style="width:100px;" data-toggle="tooltip" data-placement="left" title="{{ run.status }} @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
@@ -78,13 +78,13 @@
 					</td>
 					<!-- Plots -->
 					<td class="centered">
-						{% if run.outputs_path %}
+						{% if run.outputs_path and run.status != task_status.FAILURE and run.status != 'Failed' %}
 						<button data-run_id="{{ run.id }}" tabindex="-1" type="button" class="btn btn-success btn-viz-outputs" style="width:100%;"><i class="fa fa-chart-line" aria-hidden="true"></i></button>
 						{% endif %}
 					</td>
 					<!-- Nodal Map Viz -->
 					<td class="centered">
-						{% if run.outputs_path %}
+						{% if run.outputs_path and run.status != task_status.FAILURE and run.status != 'Failed' %}
 						<!-- <button data-run_id="{{ run.id }}" tabindex="-1" type="button" class="btn btn-success btn-map-outputs" style="width:100%;"><i class="fa fa-map" aria-hidden="true"></i></button> -->
 						<a title="{% trans 'Open Map Viz in a new window' %}" href="/{{ model.uuid }}/{{ run.id }}/map_viz/" tabindex="-1" class="btn btn-success btn-map-outputs" style="width:100%;"><i class="fa fa-map" aria-hidden="true"></i></a>
 						{% endif %}
