@@ -778,7 +778,7 @@ class Tech_Param(models.Model):
                         model_id=technology.model_id,
                         technology_id=technology.id,
                         parameter_id=key,
-                        value=value.replace(',', ''))
+                        value=ParamsManager.clean_str_val(value))
             technology.save()
         technology.update_calliope_pretty_name()
 
@@ -837,7 +837,7 @@ class Tech_Param(models.Model):
                         technology_id=technology.id,
                         year=years[i],
                         parameter_id=key,
-                        value=vals[0],
+                        value=ParamsManager.clean_str_val(vals[0]),
                         raw_value=vals[1] if len(vals) > 1 else vals[0]))
                 cls.objects.bulk_create(new_objects)
 
@@ -855,7 +855,7 @@ class Tech_Param(models.Model):
                     model_id=technology.model_id,
                     technology_id=technology.id,
                     parameter_id=key,
-                    value=vals[0],
+                    value=ParamsManager.clean_str_val(vals[0]),
                     raw_value=vals[1] if len(vals) > 1 else vals[0])
         if 'timeseries' in data:
             for key, value in data['timeseries'].items():
@@ -867,7 +867,7 @@ class Tech_Param(models.Model):
                     model_id=technology.model_id,
                     technology_id=technology.id,
                     parameter_id=key,
-                    value=value,
+                    value=ParamsManager.clean_str_val(value),
                     timeseries_meta_id=value,
                     timeseries=True)
         if 'parameter_instance' in data:
@@ -879,7 +879,7 @@ class Tech_Param(models.Model):
                 if 'value' in value_dict:
                     vals = str(value_dict['value']).split('||')
                     parameter_instance.update(
-                        value=vals[0],
+                        value=ParamsManager.clean_str_val(vals[0]),
                         raw_value=vals[1] if len(vals) > 1 else vals[0])
                 if 'year' in value_dict:
                     parameter_instance.update(year=value_dict['year'])
@@ -1007,7 +1007,7 @@ class Loc_Tech_Param(models.Model):
                         loc_tech_id=loc_tech.id,
                         year=years[i],
                         parameter_id=key,
-                        value=vals[0],
+                        value=ParamsManager.clean_str_val(vals[0]),
                         raw_value=vals[1] if len(vals) > 1 else vals[0]))
                 cls.objects.bulk_create(new_objects)
 
@@ -1025,7 +1025,7 @@ class Loc_Tech_Param(models.Model):
                     model_id=loc_tech.model_id,
                     loc_tech_id=loc_tech.id,
                     parameter_id=key,
-                    value=vals[0],
+                    value=ParamsManager.clean_str_val(vals[0]),
                     raw_value=vals[1] if len(vals) > 1 else vals[0])
         if 'timeseries' in data:
             for key, value in data['timeseries'].items():
@@ -1037,7 +1037,7 @@ class Loc_Tech_Param(models.Model):
                     model_id=loc_tech.model_id,
                     loc_tech_id=loc_tech.id,
                     parameter_id=key,
-                    value=value,
+                    value=ParamsManager.clean_str_val(value),
                     timeseries_meta_id=value,
                     timeseries=True)
         if 'parameter_instance' in data:
@@ -1049,7 +1049,7 @@ class Loc_Tech_Param(models.Model):
                 if 'value' in value_dict:
                     vals = str(value_dict['value']).split('||')
                     parameter_instance.update(
-                        value=vals[0],
+                        value=ParamsManager.clean_str_val(vals[0]),
                         raw_value=vals[1] if len(vals) > 1 else vals[0])
                 if 'year' in value_dict:
                     parameter_instance.update(year=value_dict['year'])
@@ -1116,7 +1116,7 @@ class Scenario(models.Model):
             if param.name == "name":
                 value = "{}: {}".format(new_scenario.model.name, name)
             else:
-                value = param.default_value
+                value = ParamsManager.clean_str_val(param.default_value)
             Scenario_Param.objects.create(
                 scenario=new_scenario, run_parameter=param,
                 value=value, model=new_scenario.model
@@ -1223,7 +1223,7 @@ class Scenario_Param(models.Model):
                         model_id=scenario.model_id,
                         scenario_id=scenario.id,
                         year=cls.int_or_zero(years[i]),
-                        value=values[i]))
+                        value=ParamsManager.clean_str_val(values[i])))
             cls.objects.bulk_create(new_objects)
 
     @classmethod
@@ -1242,7 +1242,7 @@ class Scenario_Param(models.Model):
                     model_id=scenario.model_id,
                     scenario_id=scenario.id,
                     id=key)
-                param.update(value=val)
+                param.update(value=ParamsManager.clean_str_val(val))
 
     @classmethod
     def _delete(cls, scenario, data):
@@ -1408,6 +1408,18 @@ class ParamsManager():
         simple_name = name.strip().replace(" ", "_")
         simple_name = re.sub(r"\W+", "", simple_name)
         return simple_name
+
+    @staticmethod
+    def clean_str_val(value):
+        value = str(value)
+        clean_value = value.replace(',', '')
+        try:
+            if '.' in clean_value:
+                return str(float(clean_value))
+            else:
+                return str(int(clean_value))
+        except ValueError:
+            return value
 
     @staticmethod
     def parse_carrier_name(carrier):
