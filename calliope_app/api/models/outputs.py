@@ -155,16 +155,16 @@ class Run(models.Model):
 
     def get_static_values(self, meta, metric, location,
                           soft_filter, hard_filter):
-        LABELS = {'Production': 'Capacity',
-                  'Consumption': 'Capacity',
-                  'Storage': 'Storage Capacity',
-                  'Costs': 'Investment Cost'}
+        LABELS = {'Production': 'Capacities',
+                  'Consumption': 'Capacities',
+                  'Storage': 'Storage Capacities',
+                  'Costs': 'Fixed Costs'}
         if metric == 'Storage':
             # Storage Capacity
             df = self.read_output('results_storage_cap.csv', [0, 1, 2])
         elif metric == 'Costs':
             # Investment Costs
-            df = self.read_output('results_cost_investment.csv', [0, 1, 3])
+            df = self.read_output('results_cost.csv', [0, 1, 3])
         else:
             # Energy Capacity
             df = self.read_output('results_energy_cap.csv', [0, 1, 2])
@@ -198,7 +198,7 @@ class Run(models.Model):
             df.columns = ['Location', 'Technology', 'Timestamp', 'Values']
         elif metric == 'Costs':
             # Costs
-            df = self.read_output('results_cost_var.csv', [0, 1, 3, 4])
+            df = self.read_output('results_cost_var.csv', [0, 1, 2, 4])
             df.columns = ['Location', 'Technology', 'Timestamp', 'Values']
         elif metric == 'Unmet Demand':
             # Unmet Demand
