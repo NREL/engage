@@ -166,7 +166,6 @@ def plot_outputs(request):
     model_uuid = request.POST["model_uuid"]
     run_id = request.POST["run_id"]
     carrier = request.POST.get("carrier", None)
-    metric = request.POST.get("metric", None)
     location = request.POST.get("location", None)
 
     model = Model.by_uuid(model_uuid)
@@ -177,7 +176,7 @@ def plot_outputs(request):
     except Exception:
         raise Http404
 
-    data = run.get_viz_data(carrier, metric, location)
+    data = run.get_viz_data(carrier, location)
     return JsonResponse(data)
 
 

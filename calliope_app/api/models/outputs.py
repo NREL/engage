@@ -78,10 +78,11 @@ class Run(models.Model):
         meta['colors'] = colors.set_index(0)[1].to_dict()
         # Locations
         locations = self.read_output('inputs_loc_coordinates.csv')
-        meta['locations'] = list(locations[1].unique())
+        meta['locations'] = sorted(locations[1].unique())
         # Remotes (Transmission Technologies)
-        remotes = self.read_output('inputs_lookup_remotes.csv')
-        meta['remotes'] = remotes[1].unique()
+        remotes = self.read_output('inputs_lookup_remotes.csv')[1].unique()
+        meta['remotes'] = remotes
+        meta['transmissions'] = list(set([t.split(':')[0] for t in remotes]))
         # Demands
         parents = self.read_output('inputs_inheritance.csv')
         meta['demands'] = parents.groupby(1)[0].apply(list)['demand']
@@ -104,7 +105,7 @@ class Run(models.Model):
         # Split into Location, Technology, Carrier
         c[[4, 5, 6]] = c[3].str.split('::', expand=True)
         # Filter
-        c = c[~c[5].isin(meta['remotes'])]
+        # c = c[~c[5].isin(meta['remotes'])]
         c.loc[c[5].isin(meta['demands']), 2] = False
         # Response
         meta['carriers_in'] = c[c[2] == False].groupby(6)[5].apply(
@@ -118,39 +119,38 @@ class Run(models.Model):
         meta['carriers'] = [k[0] for k in carriers]
         return meta
 
-    def get_viz_data(self, carrier, metric, location):
+    def get_viz_data(self, carrier, location):
         response = {}
         meta = self.get_meta()
+        locations = []
         METRICS = ['Production', 'Consumption', 'Storage', 'Costs']
-        unmet = self.read_output('results_unmet_demand.csv', [0])
-        if not unmet.empty:
-            METRICS += ['Unmet Demand']
         if carrier not in meta['carriers']:
             carrier = meta['carriers'][0]
-        if metric not in METRICS:
-            metric = METRICS[0]
         if location not in meta['locations']:
             location = None
-        # Filters
-        if metric == 'Consumption':
-            hard_filter = meta['carriers_in'].get(carrier, [])
-        else:
-            hard_filter = meta['carriers_out'].get(carrier, [])
-        soft_filter = \
-            meta['carriers_in'].get(carrier, []) + \
-            meta['carriers_out'].get(carrier, [])
+        # Metrics
+        for metric in METRICS:
+            data = {}
+            # Filters
+            if metric == 'Consumption':
+                hard_filter = meta['carriers_in'].get(carrier, [])
+            else:
+                hard_filter = meta['carriers_out'].get(carrier, [])
+            soft_filter = \
+                meta['carriers_in'].get(carrier, []) + \
+                meta['carriers_out'].get(carrier, [])
+            # Fixed Values (Barchart)
+            data['barchart'], locs1 = self.get_static_values(
+                meta, metric, location, soft_filter, hard_filter)
+            # Variable Values (Timeseries)
+            data['timeseries'], locs2 = self.get_variable_values(
+                meta, carrier, metric, location, soft_filter)
+            response[metric] = data
+            locations += locs1 + locs2
         # Options
         response['options'] = {}
-        response['options']['metric'] = METRICS
         response['options']['carrier'] = meta['carriers']
-        response['options']['location'] = meta['locations']
-        # Fixed Values (Barchart)
-        if metric != 'Unmet Demand':
-            response['barchart'] = self.get_static_values(
-                meta, metric, location, soft_filter, hard_filter)
-        # Variable Values (Timeseries)
-        response['timeseries'] = self.get_variable_values(
-            meta, carrier, metric, location, soft_filter)
+        response['options']['location'] = sorted(set(locations))
         return response
 
     def get_static_values(self, meta, metric, location,
@@ -162,33 +162,45 @@ class Run(models.Model):
         if metric == 'Storage':
             # Storage Capacity
             df = self.read_output('results_storage_cap.csv', [0, 1, 2])
+            ctx = self.read_output('inputs_storage_cap_max.csv', [0, 1, 2])
         elif metric == 'Costs':
             # Investment Costs
             df = self.read_output('results_cost.csv', [0, 1, 3])
+            ctx = self.read_output('NONE.csv', [0, 1, 2])
         else:
             # Energy Capacity
             df = self.read_output('results_energy_cap.csv', [0, 1, 2])
+            ctx = self.read_output('inputs_energy_cap_max.csv', [0, 1, 2])
         df.columns = ['Location', 'Technology', 'Values']
+        ctx.columns = ['Location', 'Technology', 'Values']
+        ctx = ctx.replace(np.inf, np.nan).dropna()
         # Filter
         df = df[~df['Technology'].isin(meta['remotes'])]
         df = df[~df['Technology'].isin(meta['demands'])]
         df = df[df['Technology'].isin(soft_filter)]
         df = df[df['Technology'].isin(hard_filter)]
+        locations = list(df['Location'].unique())
         if location:
             df = df[df['Location'] == location]
+            ctx = df[df['Location'] == location]
         # Process
-        if metric == "Consumption":
-            df['Values'] *= -1
         df = df.groupby('Technology').sum()
+        ctx = ctx.groupby('Technology').sum()
         df = df['Values'].to_dict()
-        layers = [{'name': meta['names'][key] if key in meta['names'] else key,
+        ctx = ctx['Values'].to_dict()
+        layers = [{'key': key,
+                   'name': meta['names'][key] if key in meta['names'] else key,
                    'color': meta['colors'][key] if key in meta['colors'] else None,
                    'y': [value]} for key, value in df.items() if value != 0]
         layers = sorted(layers, key=lambda k: k['y'][0])
+        layers_ctx = [{'name': d['name'],
+                       'color': d['color'],
+                       'y': [ctx.get(d['key'], d['y'][0])]} for d in layers]
         return {
             'base': {'x': [LABELS[metric]]},
             'layers': layers,
-        }
+            'layers_ctx': layers_ctx,
+        }, locations
 
     def get_variable_values(self, meta, carrier, metric,
                             location, soft_filter):
@@ -200,12 +212,6 @@ class Run(models.Model):
             # Costs
             df = self.read_output('results_cost_var.csv', [0, 1, 2, 4])
             df.columns = ['Location', 'Technology', 'Timestamp', 'Values']
-        elif metric == 'Unmet Demand':
-            # Unmet Demand
-            df = self.read_output('results_unmet_demand.csv', [0, 1, 2, 3])
-            df.columns = ['Location', 'Carrier', 'Timestamp', 'Values']
-            df = df[df['Carrier'] == carrier]
-            df['Technology'] = 'All Technologies'
         else:
             # Production / Consumption
             df = self.read_output('results_carrier_con.csv')
@@ -219,13 +225,24 @@ class Run(models.Model):
                     df = df.append(df2)
             df.columns = ['Location', 'Technology', 'Carrier',
                           'Timestamp', 'Values']
+            # Unmet Demand
+            df3 = self.read_output('results_unmet_demand.csv', [0, 1, 2, 3])
+            df3.columns = ['Location', 'Carrier', 'Timestamp', 'Values']
+            df3 = df3[df3['Carrier'] == carrier]
+            df3['Technology'] = 'Unmet Demand'
+            if not df3.empty:
+                df = df.append(df3)
+                soft_filter.append('Unmet Demand')
+                meta['colors']['Unmet Demand'] = "#FF000055"
             df = df[df['Carrier'] == carrier]
         # Filter
-        if metric != 'Unmet Demand':
-            df = df[~df['Technology'].isin(meta['remotes'])]
-            df = df[df['Technology'].isin(soft_filter)]
-            if location:
-                df = df[df['Location'] == location]
+        df = df[df['Technology'].isin(soft_filter)]
+        df['Technology'] = df['Technology'].str.split(':').str[0]
+        locations = list(df['Location'].unique())
+        if location:
+            df = df[df['Location'] == location]
+        else:
+            df = df[~df['Technology'].isin(meta['transmissions'])]
         # Process
         df = df.groupby(['Technology', 'Timestamp']).sum()
         pvalues, nvalues, techs, ts = [], [], [], []
@@ -235,13 +252,8 @@ class Run(models.Model):
             for tech in df['Technology'].unique():
                 mask = df['Technology'] == tech
                 values_1 = df[mask]['Values'].values
-                # Handle Unmet Demand (Does not vary by Technology)
-                if metric == "Unmet Demand":
-                    pvalues.append(list(values_1))
-                    techs.append(tech)
-                    continue
                 # Split up Positive / Negative for Production / Consumption
-                elif metric == "Consumption":
+                if metric == "Consumption":
                     is_primary = values_1 <= 0
                 else:
                     is_primary = values_1 >= 0
@@ -250,7 +262,7 @@ class Run(models.Model):
                     values_2 = np.copy(values_1)
                     values_1[~is_primary] = 0
                     values_2[is_primary] = 0
-                    if np.sum(values_2) != 0:
+                    if (np.sum(values_2) != 0) & (tech in meta['demands']):
                         nvalues.append(list(-values_2))
                 # Primary
                 if np.sum(values_1) != 0:
@@ -270,7 +282,7 @@ class Run(models.Model):
         if (metric == 'Production') & (len(nvalues) > 0):
             data['overlay'] = {'name': "Demand",
                                'y': list(np.sum(np.array(nvalues), axis=0))}
-        return data
+        return data, locations
 
     def read_output(self, file, columns=[]):
         fpath = os.path.join(self.outputs_path, file)

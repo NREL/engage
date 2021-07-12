@@ -1,8 +1,11 @@
-var hold_refresh = false,
-	pause_start = null,
-	pause_interval = null,
-	submitdata = {},
-	refreshTimeout;
+var metrics = ['Production', 'Consumption', 'Storage', 'Costs'],
+		labels = ['Production Capacity', 'Consumption Capacity', 'Storage Capacity', 'Fixed Cost'],
+		units = ['kW', 'kW', 'kWh', '$'],
+		hold_refresh = false,
+		pause_start = null,
+		pause_interval = null,
+		submitdata = {},
+		refreshTimeout;
 
 $( document ).ready(function() {
 
@@ -217,7 +220,7 @@ function activate_runs() {
 		var run_id = $(this).data('run_id');
 		$('#run_outputs').attr('data-run_id', run_id);
 		select_run_row();
-		get_viz_outputs(true);
+		get_viz_outputs();
 	});
 
 	$('.btn-map-outputs').unbind();
@@ -305,20 +308,17 @@ function activate_runs() {
 		});
 	});
 
-	$('#run_metric, #run_carrier, #run_location').unbind();
-	$('#run_metric, #run_carrier, #run_location').on('change', function() {
+	$('#run_carrier, #run_location').unbind();
+	$('#run_carrier, #run_location').on('change', function() {
 		toggle_viz_spinner(true);
-		get_viz_outputs(false);
+		get_viz_outputs();
 	});
 
 };
 
-function get_viz_outputs(update_options) {
-	if (update_options != true) {
-		var carrier = $('#run_carrier').val();
-		var metric = $('#run_metric').val();
-		var location = $('#run_location').val();
-	}
+function get_viz_outputs() {
+	var carrier = $('#run_carrier').val();
+	var location = $('#run_location').val();
 	var run_id = $('#run_outputs').attr('data-run_id');
 	$.ajax({
 		url: '/' + LANGUAGE_CODE + '/component/plot_outputs/',
@@ -327,7 +327,6 @@ function get_viz_outputs(update_options) {
 			'model_uuid': $('#header').data('model_uuid'),
 			'run_id': run_id,
 			'carrier': carrier,
-			'metric': metric,
 			'location': location,
 			'csrfmiddlewaretoken': getCookie('csrftoken'),
 		},
@@ -335,9 +334,9 @@ function get_viz_outputs(update_options) {
 			toggle_viz_spinner(false);
 			$('#viz_logs_container').hide();
 			$('#viz_outputs_container').show();
-			render_barchart(data['barchart'], 'kW');
-			render_timeseries(data['timeseries'], 'kW');
-			if (update_options == true) { update_viz_options(data['options']) };
+			render_barcharts(data);
+			render_timeseries(data);
+			update_viz_options(data['options']);
 		},
 		error: function () {
 			toggle_viz_spinner(false);
@@ -349,18 +348,18 @@ function get_viz_outputs(update_options) {
 }
 
 function update_viz_options(options) {
-	// Metrics
-	var metric_options = [];
-	options['metric'].forEach(function(val) { metric_options.push({text: val, value: val}) });
-	$("#run_metric").replaceOptions(metric_options);
 	// Carriers
-	var carrier_options = [];
+	var carrier_options = [],
+			last_carrier = $("#run_carrier").val();
 	options['carrier'].forEach(function(val) { carrier_options.push({text: val, value: val}) });
 	$("#run_carrier").replaceOptions(carrier_options);
+	if (options['carrier'].includes(last_carrier)) { $("#run_carrier").val(last_carrier) };
 	// Locations
-	var loc_options = [{text: 'All Locations', val: ''}];
+	var loc_options = [{text: 'All Locations', value: ''}],
+			last_location = $("#run_location").val();
 	options['location'].forEach(function(val) { loc_options.push({text: val.replace('_', ' '), value: val}) });
-	$("#run_location").replaceOptions(loc_options);	
+	$("#run_location").replaceOptions(loc_options);
+	if (options['location'].includes(last_location)) { $("#run_location").val(last_location) };
 }
 
 function select_run_row() {
