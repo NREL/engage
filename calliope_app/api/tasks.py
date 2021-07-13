@@ -292,15 +292,15 @@ def get_timeseries_data(filename, start_date, end_date):
     timeseries.columns = ["value"]
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
+    year = start_date.year
 
     # Grab available year's data
     mask = (timeseries.index >= start_date) & \
            (timeseries.index <= end_date)
     subset = timeseries[mask]
 
-    # If year is not available: grad latest (or nearest) available data year
+    # If year is not available: grab latest (or nearest) available data year
     if len(subset) == 0:
-        year = start_date.year
         years = np.array(timeseries.index.year.unique())
 
         latest = years[years < year]
@@ -314,7 +314,10 @@ def get_timeseries_data(filename, start_date, end_date):
         mask = (timeseries.index >= start_date) & \
                (timeseries.index <= end_date)
         subset = timeseries[mask]
-        subset.index = subset.index.map(lambda t: t.replace(year=year))
+
+    leap_mask = (subset.index.month == 2) & (subset.index.day == 29)
+    subset = subset[~leap_mask]
+    subset.index = subset.index.map(lambda t: t.replace(year=year))
 
     return subset
 

@@ -403,19 +403,19 @@ def download(request):
 
     model = Model.by_uuid(model_uuid)
     model.handle_view_access(request.user)
-    
+
     try:
         run = Run.objects.get(id=run_id)
     except Exception:
         raise Http404
-    
+
     if download_type == 'inputs':
         path = run.inputs_path
     elif download_type == "outputs":
         path = run.outputs_path
     else:
         raise Http404
-    
+
     if os.path.exists(path):
         file_path = zip_folder(path)
         with open(file_path, 'rb') as fh:
