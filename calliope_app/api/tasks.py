@@ -302,34 +302,34 @@ def get_timeseries_data(filename, start_date, end_date):
     # If year is not available: grab latest (or nearest) available data year
     if len(subset) == 0:
         years = np.array(timeseries.index.year.unique())
-
         latest = years[years < year]
         if latest:
             recent_year = latest.max()
         else:
             recent_year = years[years > year].min()
-        start_date = start_date.replace(year=recent_year)
-        end_date = end_date.replace(year=recent_year)
-
-        mask = (timeseries.index >= start_date) & \
-               (timeseries.index <= end_date)
+        start_date2 = start_date.replace(year=recent_year)
+        end_date2 = end_date.replace(year=recent_year)
+        mask = (timeseries.index >= start_date2) & \
+               (timeseries.index <= end_date2)
         subset = timeseries[mask]
+
+    # Remove extra leap year days and reset correct year
+    feb_29_mask = (subset.index.month == 2) & (subset.index.day == 29)
+    subset = subset[~feb_29_mask]
+    subset.index = subset.index.map(lambda t: t.replace(year=year))
 
     # Fill Missing Hours w/ 0
     idx = pd.period_range(start_date, end_date, freq='H').to_timestamp()
     subset = subset.reindex(idx, fill_value=0)
 
     # Leap Year Handling (Fill w/ Feb 28th)
-    feb_28_mask = (subset.index.month == 2) & (subset.index.day == 28)
-    feb_29_mask = (subset.index.month == 2) & (subset.index.day == 29)
     if year % 4 == 0:
+        feb_28_mask = (subset.index.month == 2) & (subset.index.day == 28)
+        feb_29_mask = (subset.index.month == 2) & (subset.index.day == 29)
         feb_28 = subset.loc[feb_28_mask, 'value'].values
         feb_29 = subset.loc[feb_29_mask, 'value'].values
         if ((len(feb_29) > 0) & (len(feb_28) > 0)):
             subset.loc[feb_29_mask, 'value'] = feb_28
-    else:
-        subset = subset[~feb_29_mask]
-    subset.index = subset.index.map(lambda t: t.replace(year=year))
 
     return subset
 
