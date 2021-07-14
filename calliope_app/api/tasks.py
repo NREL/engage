@@ -303,7 +303,7 @@ def get_timeseries_data(filename, start_date, end_date):
     if len(subset) == 0:
         years = np.array(timeseries.index.year.unique())
         latest = years[years < year]
-        if latest:
+        if len(latest) > 0:
             recent_year = latest.max()
         else:
             recent_year = years[years > year].min()
