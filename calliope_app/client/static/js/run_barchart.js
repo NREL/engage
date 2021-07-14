@@ -22,7 +22,7 @@ function render_barcharts(input_data) {
               x: [layer.name], y: layer.y, xaxis: 'x' + (i + 1), yaxis: 'y' + (i + 1),
               name: layer.name,
               type: 'bar',
-              marker: { color: layer.color, line: { color: 'transparent', width: 1 } },
+              marker: { color: layer.color, line: { color: 'silver', width: 1 } },
               hovertemplate: '<b>%{y}</b> ' + units[3 - i] + '<br>' + layer.name + '<extra></extra>',
           };
           layers.push(trace);

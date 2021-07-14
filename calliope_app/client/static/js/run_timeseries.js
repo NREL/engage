@@ -17,7 +17,7 @@ function render_timeseries(input_data) {
               showlegend: !legend_items.includes(layer.name),
               legendgroup: layer.name,
               fillcolor: layer.color,
-              line: { width: 2, color: layer.color },
+              line: { width: 1, color: 'black' },
               hovertemplate: '<b>%{y}</b> ' + units[3 - i] + '<br>' + layer.name + '<extra></extra>',
           };
           layers.push(trace);
