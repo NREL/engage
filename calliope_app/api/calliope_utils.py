@@ -3,6 +3,11 @@ This module contains support functions and libraries used in
 interfacing with Calliope.
 """
 
+import os
+import yaml
+import shutil
+from calliope import Model as CalliopeModel
+
 from api.models.configuration import Scenario_Param, Scenario_Loc_Tech, \
     Location, Tech_Param, Loc_Tech_Param, Loc_Tech
 
@@ -149,3 +154,202 @@ def get_loc_techs_yaml_set(scenario_id, year):
 def stringify(param_list):
     param_list = [str(x) for x in param_list]
     return '||'.join(param_list).replace('||||', '||')
+
+
+def run_basic(model_path):
+    """ Basic Run """
+    model = CalliopeModel(config=model_path)
+    model.run()
+    _write_outputs(model, model_path)
+
+
+def run_clustered(model_path, idx):
+    """ Clustered Capacity Expansion w/ Monthly Operational Runs """
+    _set_clustering(model_path, on=True)
+    _set_subset_time(model_path)
+    _set_capacities(model_path)
+    model = CalliopeModel(config=model_path)
+    model.run()
+    _write_outputs(model, model_path)
+    # Results
+    capacity, storage, units, demand_techs = _get_cap_results(model)
+    # Monthly Dispatch
+    year = idx.year[0]
+    months = list(idx.month.unique())
+    mode = 'w'  # write mode to start
+    for month in months:
+        try:
+            days = idx[idx.month == month]
+            st = '{}-{}-{} 00:00'.format(year, _pad(month), _pad(days.min().day))
+            et = '{}-{}-{} 23:00'.format(year, _pad(month), _pad(days.max().day))
+            _set_clustering(model_path, on=False)
+            _set_subset_time(model_path, st, et)
+            _set_capacities(model_path, demand_techs, capacity, storage, units)
+            model = CalliopeModel(config=model_path)
+            model.run()
+            _write_outputs(model, model_path, True, mode)
+            mode = 'a'  # Append after the first write
+        except Exception:
+            pass
+    _reset_configs(model_path)
+
+
+def _set_clustering(model_path, on=False, k=30):
+    # Read
+    with open(model_path) as file:
+        model_yaml = yaml.load(file, Loader=yaml.FullLoader)
+    # Update
+    if on is True:
+        time = {}
+        time['function'] = "apply_clustering"
+        time['function_options'] = {}
+        time['function_options']['clustering_func'] = "kmeans"
+        time['function_options']['how'] = "mean"
+        time['function_options']['k'] = k
+    else:
+        time = None
+    model_yaml['model']['time'] = time
+    # Write
+    with open(model_path, 'w') as file:
+        yaml.dump(model_yaml, file)
+
+
+def _set_subset_time(model_path, start_time=None, end_time=None):
+    # Read
+    with open(model_path) as file:
+        model_yaml = yaml.load(file, Loader=yaml.FullLoader)
+    # Update
+    if start_time is not None:
+        subset_time = [start_time, end_time]
+    else:
+        subset_time = None
+    model_yaml['model']['subset_time'] = subset_time
+    # Write
+    with open(model_path, 'w') as file:
+        yaml.dump(model_yaml, file)
+
+
+def _set_capacities(model_path, ignore_techs=[],
+                    capacity=None, storage=None, units=None):
+    # ---- UPDATE MODEL REFERENCE
+    # Read
+    with open(model_path) as file:
+        model_yaml = yaml.load(file, Loader=yaml.FullLoader)
+    # Update Model Settings
+    if capacity is None:
+        model_yaml['import'] = ['techs.yaml', 'locations.yaml']
+    else:
+        model_yaml['import'] = ['techs.yaml', 'locations_fixed.yaml']
+    # Write
+    with open(model_path, 'w') as file:
+        yaml.dump(model_yaml, file)
+    if capacity is None:
+        return
+    # ---- UPDATE CAPACITIES
+    # Read
+    locations_path = model_path.replace('model.yaml', 'locations.yaml')
+    with open(locations_path) as file:
+        locations_yaml = yaml.load(file, Loader=yaml.FullLoader)
+    # Update Locations Settings
+    for loc, loc_data in locations_yaml['locations'].items():
+        if 'techs' not in loc_data:
+            continue
+        for tech, tech_data in loc_data['techs'].items():
+            if tech in ignore_techs:
+                continue
+            key = loc + '::' + tech
+            if not tech_data:
+                tech_data = {}
+            if 'constraints' not in tech_data.keys():
+                tech_data['constraints'] = {}
+            if key in units:
+                tech_data['constraints']['units_equals'] = int(units[key])
+            elif key in capacity:
+                tech_data['constraints']['energy_cap_equals'] = float(capacity[key])
+            if key in storage:
+                tech_data['constraints']['storage_cap_equals'] = float(storage[key])
+            locations_yaml['locations'][loc]['techs'][tech] = tech_data
+    # Update Links Settings
+    for loc, loc_data in locations_yaml['links'].items():
+        if 'techs' not in loc_data:
+            continue
+        for tech, tech_data in loc_data['techs'].items():
+            locs = loc.split(',')
+            key = locs[0] + '::' + tech + ':' + locs[1]
+            if not tech_data:
+                tech_data = {}
+            if 'constraints' not in tech_data.keys():
+                tech_data['constraints'] = {}
+            if key in capacity:
+                tech_data['constraints']['energy_cap_equals'] = \
+                    float(capacity[key])
+            locations_yaml['links'][loc]['techs'][tech] = tech_data
+    # Write
+    locations_path = locations_path.replace('locations.yaml',
+                                            'locations_fixed.yaml')
+    with open(locations_path, 'w') as file:
+        yaml.dump(locations_yaml, file)
+
+
+def _get_cap_results(model):
+    # Capacities
+    _cap_techs = model.results.energy_cap.loc_techs.values
+    _cap_vals = model.results.energy_cap.values
+    capacity = dict(zip(_cap_techs, _cap_vals))
+    # Storage Capacities
+    try:
+        _storage_techs = model.results.storage_cap.loc_techs_store.values
+        _storage_vals = model.results.storage_cap.values
+        storage = dict(zip(_storage_techs, _storage_vals))
+    except AttributeError:
+        storage = {}
+    # Installed Units
+    try:
+        _unit_techs = model.results.units.loc_techs_milp.values
+        _unit_vals = model.results.units.values.astype(int)
+        units = dict(zip(_unit_techs, _unit_vals.astype(int)))
+    except AttributeError:
+        units = {}
+    # Demand Techs
+    _demands = [t == 'demand' for t in model.inputs.inheritance.values]
+    demand_techs = list(model.inputs.inheritance.techs.values[_demands])
+    return capacity, storage, units, demand_techs
+
+
+def _pad(number):
+    number = int(number)
+    return str(number) if number >= 10 else '0' + str(number)
+
+
+def _reset_configs(model_path):
+    _set_clustering(model_path)
+    _set_subset_time(model_path)
+    _set_capacities(model_path)
+
+
+def _write_outputs(model, model_path, ts_update=False, mode='w'):
+    TS_FILES = ['results_capacity_factor.csv',
+                'results_carrier_con.csv',
+                'results_carrier_prod.csv',
+                'results_cost_var.csv',
+                'results_resource_con.csv',
+                'results_storage.csv']
+    base_path = os.path.dirname(os.path.dirname(model_path))
+    folder = "outputs_tmp" if ts_update else "outputs"
+    folder = os.path.join(base_path, folder)
+    if not os.path.exists(folder):
+        os.makedirs(folder, exist_ok=True)
+    save_outputs = os.path.join(base_path, folder, "model_outputs")
+    if os.path.exists(save_outputs):
+        shutil.rmtree(save_outputs)
+    model.to_csv(save_outputs)
+    if ts_update is True:
+        final_outputs = os.path.join(base_path, "outputs/model_outputs")
+        for file in TS_FILES:
+            try:
+                with open(os.path.join(save_outputs, file), 'r') as i:
+                    with open(os.path.join(final_outputs, file), mode) as o:
+                        o.write(i.read())
+            except Exception:
+                pass
+        shutil.rmtree(os.path.join(base_path, folder))

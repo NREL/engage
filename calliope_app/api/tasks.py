@@ -12,7 +12,6 @@ from dateutil.parser import parse as date_parse
 
 from celery import Task
 from celery.exceptions import SoftTimeLimitExceeded
-from calliope import Model as CalliopeModel
 from calliope_app.celery import app
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -28,6 +27,7 @@ from api.utils import list_to_yaml, load_timeseries_from_csv, \
     get_model_logger, zip_folder
 from api.calliope_utils import get_model_yaml_set, get_location_meta_yaml_set
 from api.calliope_utils import get_techs_yaml_set, get_loc_techs_yaml_set
+from api.calliope_utils import run_basic, run_clustered
 
 
 NOTIFICATION_TIME_INTERVAL = 20  # Minutes
@@ -543,40 +543,24 @@ def run_model(run_id, model_path, user_id, *args, **kwargs):
     run.status = task_status.RUNNING
     run.save()
 
+    # Init
+    subset_time = run.subset_time.split(' to ')
+    st = pd.to_datetime(subset_time[0])
+    et = pd.to_datetime(subset_time[1]) + pd.DateOffset(hours=23)
+    idx = pd.date_range(start=st, end=et, freq='h')
+
     # Model run
-    model = CalliopeModel(config=model_path, *args, **kwargs)
-    model.run()
+    if (len(idx) <= (24 * 30)):
+        logger.info('Running basic optimization...')
+        run_basic(model_path)
+    else:
+        logger.info('Running clustered optimization...')
+        run_clustered(model_path, idx)
     logger.info("Backend: Model runs successfully!")
 
-    # Model outputs in csv
+    # Model outputs
     base_path = os.path.dirname(os.path.dirname(model_path))
-    logger.info("Backend: Saving model results...")
-    try:
-        if not os.path.exists(base_path + "/outputs"):
-            os.makedirs(base_path + "/outputs", exist_ok=True)
-        save_outputs = os.path.join(base_path, "outputs/model_outputs")
-        if os.path.exists(save_outputs):
-            shutil.rmtree(save_outputs)
-        model.to_csv(save_outputs)
-        logger.info("Backend: Model outputs was saved.")
-    except Exception as e:
-        logger.error("Backend: Failed to save model outputs.")
-        logger.error(str(e))
-        save_outputs = ""
-
-    # Model plots in html
-    # try:
-    #     if not os.path.exists(base_path + "/plots"):
-    #         os.makedirs(base_path + "/plots", exist_ok=True)
-    #     save_plots = os.path.join(base_path, "plots/model_plots.html")
-    #     if os.path.exists(save_plots):
-    #         os.remove(save_plots)
-    #     model.plot.summary(to_file=save_plots)
-    #     logger.info("Backend: Model plots was saved.")
-    # except Exception as e:
-    #     logger.error("Backend: Failed to save model plots.")
-    #     logger.error(str(e))
-    #     save_plots = ""
+    save_outputs = os.path.join(base_path, "outputs/model_outputs")
 
     # Model logs in plain text
     save_logs = logger.handlers[0].baseFilename
@@ -584,6 +568,5 @@ def run_model(run_id, model_path, user_id, *args, **kwargs):
     return {
         "run_id": run_id,
         "save_outputs": save_outputs,
-        # "save_plots": save_plots,
         "save_logs": save_logs
     }
