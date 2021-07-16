@@ -50,10 +50,10 @@ th.sticky {
   height: 100px;
   width: 100px;
   font-size: 40px;
-  color: #c5c5c5;
+  color: "white";
   margin-top: 40px;
   margin-left: -75px;
-  position: absolute;
+  position: fixed;
   left: 50%;
   z-index: 1000;
 }
