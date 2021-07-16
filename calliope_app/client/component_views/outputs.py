@@ -133,18 +133,21 @@ def show_logs(request):
 
     model_uuid = request.POST['model_uuid']
     run_id = request.POST['run_id']
-    
+
     model = Model.by_uuid(model_uuid)
     model.handle_view_access(request.user)
-    
+
     try:
         run = Run.objects.get(id=run_id)
     except Exception:
         raise Http404
-    
     with open(run.logs_path) as f:
         html = f.read()
-
+    try:
+        tb = run.run_task.traceback
+        html += tb.replace("\n", "<br>").replace("    ", "&emsp;&emsp;")
+    except Exception:
+        pass
     return HttpResponse(html, content_type="text/html")
 
 
