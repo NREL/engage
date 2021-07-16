@@ -210,7 +210,9 @@ class Run(models.Model):
             df.columns = ['Location', 'Technology', 'Timestamp', 'Values']
         elif metric == 'Costs':
             # Costs
-            df = self.read_output('results_cost_var.csv', [0, 1, 2, 4])
+            df = self.read_output('results_cost_var.csv', [0, 1, 2, 3, 4])
+            cols = [0, 1, 2, 4] if df[3][0] == 'monetary' else [0, 1, 3, 4]
+            df = df[cols]
             df.columns = ['Location', 'Technology', 'Timestamp', 'Values']
         else:
             # Production / Consumption
