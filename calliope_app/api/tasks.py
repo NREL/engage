@@ -550,12 +550,13 @@ def run_model(run_id, model_path, user_id, *args, **kwargs):
     idx = pd.date_range(start=st, end=et, freq='h')
 
     # Model run
-    if (len(idx) <= (24 * 30)):
-        logger.info('Running basic optimization...')
-        run_basic(model_path)
-    else:
+    user = User.objects.get(id=user_id)
+    if ((len(idx) > (24 * 30)) & (user.is_staff is True)):
         logger.info('Running clustered optimization...')
         run_clustered(model_path, idx)
+    else:
+        logger.info('Running basic optimization...')
+        run_basic(model_path)
     logger.info("Backend: Model runs successfully!")
 
     # Model outputs
