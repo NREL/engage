@@ -18,7 +18,7 @@ function render_timeseries(input_data) {
               legendgroup: layer.name,
               fillcolor: layer.color,
               line: { width: 1, color: 'black' },
-              hovertemplate: '<b>%{y}</b> ' + units[3 - i] + '<br>' + layer.name + '<extra></extra>',
+              hovertemplate: '<b>%{y}</b> ' + units[3 - i] + '&nbsp;&nbsp;&nbsp;&nbsp;%{x}<br>' + layer.name + '<extra></extra>',
           };
           layers.push(trace);
           legend_items.push(layer.name);
@@ -27,16 +27,10 @@ function render_timeseries(input_data) {
           var trace = {
               x: ts, y: data.overlay.y, yaxis: 'y' + (i + 1),
               name: data.overlay.name,
-              stackgroup: "Secondary1", legendgroup: "Secondary", showlegend: false,
-              fillcolor: "transparent", line: { width: 3, color: "black" },
-              hovertemplate: '<b>%{y}</b> ' + units[3 - i] + '  ' + data.overlay.name + '<extra></extra>',
+              stackgroup: "Secondary", legendgroup: "Secondary", showlegend: true,
+              fillcolor: "transparent", line: { width: 4, color: "white", dash: "dashdot" },
+              hovertemplate: '<b>%{y}</b> ' + units[3 - i] + '&nbsp;&nbsp;&nbsp;&nbsp;%{x}<br>' + data.overlay.name + '<extra></extra>',
           };
-          layers.push(trace);
-          var trace = {...trace};
-          trace.line = { width: 3, color: "white", dash: "dash" };
-          trace.stackgroup = "Secondary2";
-          trace.legendgroup = "Secondary";
-          trace.showlegend = true;
           layers.push(trace);
       };
     });
@@ -44,7 +38,7 @@ function render_timeseries(input_data) {
     // Layout
     var layout = {plot_bgcolor: 'transparent',
                   paper_bgcolor: 'transparent',
-                  // hovermode: 'closest',
+                  hovermode: 'closest',
                   xaxis:  { anchor: 'y4', side: "top", gridcolor: "#3b3b3b", gridwidth: 1, type: 'date' },
                   yaxis:  { title: { text: metrics[3] }, domain: [0.03, 0.22], gridcolor: "#3b3b3b", gridwidth: 1, autorange: true, type: 'linear' },
                   yaxis2: { title: { text: metrics[2] }, domain: [0.28, 0.47], gridcolor: "#3b3b3b", gridwidth: 1, autorange: true, type: 'linear' },
