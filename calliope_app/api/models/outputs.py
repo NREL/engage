@@ -13,6 +13,7 @@ import pandas as pd
 import numpy as np
 import os
 import requests
+import glob
 
 logging.basicConfig(
     level=logging.INFO,
@@ -86,6 +87,8 @@ class Run(models.Model):
         # Demands
         parents = self.read_output('inputs_inheritance.csv')
         meta['demands'] = parents.groupby(1)[0].apply(list)['demand']
+        # Months
+        meta['months'] = self.get_months()
         # Carriers
         c1 = self.read_output('inputs_lookup_loc_techs_conversion.csv', [2, 3])
         c2 = self.read_output('inputs_lookup_loc_techs_conversion_plus.csv', [2, 3])
@@ -119,7 +122,7 @@ class Run(models.Model):
         meta['carriers'] = [k[0] for k in carriers]
         return meta
 
-    def get_viz_data(self, carrier, location):
+    def get_viz_data(self, carrier, location, month):
         response = {}
         meta = self.get_meta()
         locations = []
@@ -128,6 +131,8 @@ class Run(models.Model):
             carrier = meta['carriers'][0]
         if location not in meta['locations']:
             location = None
+        if month not in meta['months']:
+            month = meta['months'][0] if meta['months'] else None
         # Metrics
         for metric in METRICS:
             data = {}
@@ -144,13 +149,14 @@ class Run(models.Model):
                 meta, metric, location, soft_filter, hard_filter)
             # Variable Values (Timeseries)
             data['timeseries'], locs2 = self.get_variable_values(
-                meta, carrier, metric, location, soft_filter)
+                meta, carrier, metric, location, month, soft_filter)
             response[metric] = data
             locations += locs1 + locs2
         # Options
         response['options'] = {}
         response['options']['carrier'] = meta['carriers']
         response['options']['location'] = sorted(set(locations))
+        response['options']['month'] = meta['months']
         return response
 
     def get_static_values(self, meta, metric, location,
@@ -203,32 +209,33 @@ class Run(models.Model):
         }, locations
 
     def get_variable_values(self, meta, carrier, metric,
-                            location, soft_filter):
+                            location, month, soft_filter):
+        ext = '_' + str(month) + '.csv' if month else '.csv'
         if metric == 'Storage':
             # Storage
-            df = self.read_output('results_storage.csv', [0, 1, 2, 3])
+            df = self.read_output('results_storage' + ext, [0, 1, 2, 3])
             df.columns = ['Location', 'Technology', 'Timestamp', 'Values']
         elif metric == 'Costs':
             # Costs
-            df = self.read_output('results_cost_var.csv', [0, 1, 2, 3, 4])
+            df = self.read_output('results_cost_var' + ext, [0, 1, 2, 3, 4])
             cols = [0, 1, 2, 4] if df[3][0] == 'monetary' else [0, 1, 3, 4]
             df = df[cols]
             df.columns = ['Location', 'Technology', 'Timestamp', 'Values']
         else:
             # Production / Consumption
-            df = self.read_output('results_carrier_con.csv')
+            df = self.read_output('results_carrier_con' + ext)
             if metric == "Production":
-                df2 = self.read_output('results_carrier_prod.csv')
+                df2 = self.read_output('results_carrier_prod' + ext)
                 df = df.append(df2)
             else:
-                df2 = self.read_output('results_carrier_export.csv')
+                df2 = self.read_output('results_carrier_export' + ext)
                 if not df2.empty:
                     df2[4] *= -1
                     df = df.append(df2)
             df.columns = ['Location', 'Technology', 'Carrier',
                           'Timestamp', 'Values']
             # Unmet Demand
-            df3 = self.read_output('results_unmet_demand.csv', [0, 1, 2, 3])
+            df3 = self.read_output('results_unmet_demand' + ext, [0, 1, 2, 3])
             df3.columns = ['Location', 'Carrier', 'Timestamp', 'Values']
             df3 = df3[df3['Carrier'] == carrier]
             df3['Technology'] = 'Unmet Demand'
@@ -296,6 +303,11 @@ class Run(models.Model):
         except FileNotFoundError:
             df = pd.DataFrame(columns=columns)
         return df
+
+    def get_months(self):
+        fpath = os.path.join(self.outputs_path, 'results_carrier_prod_*.csv')
+        months = sorted([m[-6:-4] for m in glob.glob(fpath)])
+        return months
 
 
 class Cambium():

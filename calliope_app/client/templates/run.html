@@ -45,11 +45,14 @@
         <span id="build-error" style="color:red"></span>
         <div id="viz_outputs_container" style="width: 100%; height: calc(100vh - 180px); display: none;">
             <div id="viz_outputs_controls" class="centered" style="width: 100%; float: left;">
-                <label for="run_carrier"><b>{% trans 'Carrier' %}</b></label>
+                <label for="run_carrier"><b>{% trans 'Carrier' %}</b></label>&nbsp;&nbsp;
                 <select id="run_carrier" data-placeholder="{% trans 'Select a Carrier' %}"></select>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <label for="run_location"><b>{% trans 'Location' %}</b></label>
+                <label for="run_location"><b>{% trans 'Location' %}</b></label>&nbsp;&nbsp;
                 <select id="run_location" data-placeholder="{% trans 'Select a Location' %}"></select>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <label for="run_month"><b>{% trans 'Month' %}</b></label>&nbsp;&nbsp;
+                <select id="run_month" data-placeholder="{% trans 'Select a Month' %}"></select>
             </div>
             <!-- <div id="viz_outputs_map" style="width: 50%; height: 50%; float: left;"></div> -->
             <div id="viz_outputs_barchart" style="width: 20%; height: calc(100% - 40px); float: left;"></div>

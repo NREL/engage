@@ -626,7 +626,7 @@ input:checked + .slider:before {
                                   supported by Chrome and Opera */
 }
 
-#run_carrier, #run_location {
+#run_carrier, #run_location, #run_month {
     background-color: black;
     color: white;
     padding: 5px !important;

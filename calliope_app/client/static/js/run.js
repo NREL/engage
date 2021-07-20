@@ -5,7 +5,19 @@ var metrics = ['Production', 'Consumption', 'Storage', 'Costs'],
 		pause_start = null,
 		pause_interval = null,
 		submitdata = {},
-		refreshTimeout;
+		refreshTimeout,
+		month_dict = {'01': 'January',
+									'02': 'February',
+									'03': 'March',
+									'04': 'April',
+									'05': 'May',
+									'06': 'June',
+									'07': 'July',
+									'08': 'August',
+									'09': 'September',
+									'10': 'October',
+									'11': 'November',
+									'12': 'December'}
 
 $( document ).ready(function() {
 
@@ -308,8 +320,8 @@ function activate_runs() {
 		});
 	});
 
-	$('#run_carrier, #run_location').unbind();
-	$('#run_carrier, #run_location').on('change', function() {
+	$('#run_carrier, #run_location, #run_month').unbind();
+	$('#run_carrier, #run_location, #run_month').on('change', function() {
 		toggle_viz_spinner(true);
 		get_viz_outputs();
 	});
@@ -317,9 +329,10 @@ function activate_runs() {
 };
 
 function get_viz_outputs() {
-	var carrier = $('#run_carrier').val();
-	var location = $('#run_location').val();
-	var run_id = $('#run_outputs').attr('data-run_id');
+	var carrier = $('#run_carrier').val(),
+			location = $('#run_location').val(),
+			month = $('#run_month').val(),
+			run_id = $('#run_outputs').attr('data-run_id');
 	$.ajax({
 		url: '/' + LANGUAGE_CODE + '/component/plot_outputs/',
 		type: 'POST',
@@ -328,6 +341,7 @@ function get_viz_outputs() {
 			'run_id': run_id,
 			'carrier': carrier,
 			'location': location,
+			'month': month,
 			'csrfmiddlewaretoken': getCookie('csrftoken'),
 		},
 		success: function (data) {
@@ -360,6 +374,17 @@ function update_viz_options(options) {
 	options['location'].forEach(function(val) { loc_options.push({text: val.replace('_', ' '), value: val}) });
 	$("#run_location").replaceOptions(loc_options);
 	if (options['location'].includes(last_location)) { $("#run_location").val(last_location) };
+	// Months
+	if (options['month'].length > 0) {
+			var month_options = [],
+					last_month = $("#run_month").val();
+			options['month'].forEach(function(val) { month_options.push({text: month_dict[val], value: val}) });
+			$("#run_month").replaceOptions(month_options);
+			if (options['month'].includes(last_month)) { $("#run_month").val(last_month) };
+			$("#run_month, label[for='run_month']").show();
+	} else {
+			$("#run_month, label[for='run_month']").hide();
+	}
 }
 
 function select_run_row() {

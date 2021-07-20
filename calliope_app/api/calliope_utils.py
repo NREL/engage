@@ -156,15 +156,17 @@ def stringify(param_list):
     return '||'.join(param_list).replace('||||', '||')
 
 
-def run_basic(model_path):
+def run_basic(model_path, logger):
     """ Basic Run """
+    logger.info('--- Run Basic')
     model = CalliopeModel(config=model_path)
     model.run()
     _write_outputs(model, model_path)
 
 
-def run_clustered(model_path, idx):
+def run_clustered(model_path, idx, logger):
     """ Clustered Capacity Expansion w/ Monthly Operational Runs """
+    logger.info('--- Run Clustering')
     _set_clustering(model_path, on=True)
     _set_subset_time(model_path)
     _set_capacities(model_path)
@@ -176,9 +178,9 @@ def run_clustered(model_path, idx):
     # Monthly Dispatch
     year = idx.year[0]
     months = list(idx.month.unique())
-    mode = 'w'  # write mode to start
     for month in months:
         try:
+            logger.info('--- Run Operational Month: {}'.format(month))
             days = idx[idx.month == month]
             st = '{}-{}-{} 00:00'.format(year, _pad(month), _pad(days.min().day))
             et = '{}-{}-{} 23:00'.format(year, _pad(month), _pad(days.max().day))
@@ -187,9 +189,9 @@ def run_clustered(model_path, idx):
             _set_capacities(model_path, demand_techs, capacity, storage, units)
             model = CalliopeModel(config=model_path)
             model.run()
-            _write_outputs(model, model_path, True, mode)
-            mode = 'a'  # Append after the first write
-        except Exception:
+            _write_outputs(model, model_path, _pad(month))
+        except Exception as e:
+            logger.error(e)
             pass
     _reset_configs(model_path)
 
@@ -327,7 +329,7 @@ def _reset_configs(model_path):
     _set_capacities(model_path)
 
 
-def _write_outputs(model, model_path, ts_update=False, mode='w'):
+def _write_outputs(model, model_path, ts_only_suffix=None):
     TS_FILES = ['results_capacity_factor.csv',
                 'results_carrier_con.csv',
                 'results_carrier_prod.csv',
@@ -335,7 +337,7 @@ def _write_outputs(model, model_path, ts_update=False, mode='w'):
                 'results_resource_con.csv',
                 'results_storage.csv']
     base_path = os.path.dirname(os.path.dirname(model_path))
-    folder = "outputs_tmp" if ts_update else "outputs"
+    folder = "outputs_tmp" if ts_only_suffix else "outputs"
     folder = os.path.join(base_path, folder)
     if not os.path.exists(folder):
         os.makedirs(folder, exist_ok=True)
@@ -343,12 +345,13 @@ def _write_outputs(model, model_path, ts_update=False, mode='w'):
     if os.path.exists(save_outputs):
         shutil.rmtree(save_outputs)
     model.to_csv(save_outputs)
-    if ts_update is True:
+    if ts_only_suffix is not None:
         final_outputs = os.path.join(base_path, "outputs/model_outputs")
         for file in TS_FILES:
             try:
                 with open(os.path.join(save_outputs, file), 'r') as i:
-                    with open(os.path.join(final_outputs, file), mode) as o:
+                    f = file.replace('.csv', '_{}.csv'.format(ts_only_suffix))
+                    with open(os.path.join(final_outputs, f), 'w') as o:
                         o.write(i.read())
             except Exception:
                 pass

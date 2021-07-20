@@ -553,10 +553,10 @@ def run_model(run_id, model_path, user_id, *args, **kwargs):
     user = User.objects.get(id=user_id)
     if ((len(idx) > (24 * 30)) & (user.is_staff is True)):
         logger.info('Running clustered optimization...')
-        run_clustered(model_path, idx)
+        run_clustered(model_path, idx, logger)
     else:
         logger.info('Running basic optimization...')
-        run_basic(model_path)
+        run_basic(model_path, logger)
     logger.info("Backend: Model runs successfully!")
 
     # Model outputs
