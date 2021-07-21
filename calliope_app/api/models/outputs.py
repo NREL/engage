@@ -285,7 +285,8 @@ class Run(models.Model):
              } for i in range(len((techs)))]
         layers = sorted(
             layers,
-            key=lambda k: (-np.min(np.abs(k['y'])) / np.max(np.abs(k['y'])),
+            key=lambda k: (k['name'] == 'Unmet Demand',
+                           -np.min(np.abs(k['y'])) / np.max(np.abs(k['y'])),
                            np.max(np.abs(k['y']))))
         data = {
             'base': {'x': ts},
