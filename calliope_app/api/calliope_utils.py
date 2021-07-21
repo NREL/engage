@@ -335,7 +335,8 @@ def _write_outputs(model, model_path, ts_only_suffix=None):
                 'results_carrier_prod.csv',
                 'results_cost_var.csv',
                 'results_resource_con.csv',
-                'results_storage.csv']
+                'results_storage.csv',
+                'results_unmet_demand.csv']
     base_path = os.path.dirname(os.path.dirname(model_path))
     folder = "outputs_tmp" if ts_only_suffix else "outputs"
     folder = os.path.join(base_path, folder)
