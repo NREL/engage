@@ -12,8 +12,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate
 
 from api.exceptions import ModelNotExistException
-from api.models.outputs import Run
-from api.models.outputs import Haven, Cambium
+from api.models.outputs import Run, Cambium
 from api.tasks import run_model, task_status, build_model
 from api.models.configuration import Model, ParamsManager, Model_User
 from api.utils import zip_folder
@@ -299,88 +298,6 @@ def basic_auth_required(api_view):
             return HttpResponse(json.dumps({"error": msg}),
                                 content_type="application/json")
     return wrapper
-
-
-@csrf_exempt
-@basic_auth_required
-def haven(request):
-    """
-    Retrieve the data for a run
-
-    Parameters:
-    model_uuid (uuid): optional
-    scenario_id (int): optional
-    stations_only (bool): optional
-    aggregate (dict): optional, for example, {"solar": [1,2,4]}
-
-    Returns (json): Requested Data
-
-    Example:
-    POST: /api/haven/
-    """
-    if request.method != "POST":
-        msg = "Method is not allowed."
-        response = HttpResponse(json.dumps({"error": msg}),
-                                content_type="application/json")
-        return response
-
-    user = request.user
-    if not user.is_authenticated:
-        msg = "User is not authenticated."
-        return HttpResponse(json.dumps({"error": msg}),
-                            content_type="application/json")
-
-    # Parse post parameters
-    model_uuid = request.POST.get('model_uuid', None)
-    scenario_id = request.POST.get('scenario_id', None)
-    stations_only = bool(request.POST.get('stations_only', True))
-    aggregate = request.POST.get('aggregate', None)
-
-    # Construct initial payload
-    payload = {}
-    payload["inputs"] = {
-        "model_uuid": model_uuid,
-        "scenario_id": scenario_id,
-        "stations_only": stations_only,
-        "aggregage": aggregate
-    }
-
-    # Ensure model existing and access
-    try:
-        model = Model.by_uuid(model_uuid)
-        model.handle_view_access(user)
-    except ModelNotExistException:
-        payload["message"] = f"To request data, post a valid 'model_uuid'."
-        model_users = Model_User.objects.filter(user=user,
-                                                model__snapshot_version=None)
-        models = [{
-            "uuid": model_user.model.get_uuid(),
-            "name": model_user.model.name
-        } for model_user in model_users]
-        payload["models"] = models
-        return HttpResponse(json.dumps(payload),
-                            content_type="application/json")
-
-    # Query user requested data.
-    payload["selected_model_name"] = model.name
-    scenario = model.scenarios.filter(id=scenario_id).first()
-    if scenario is None:
-        payload["message"] = "To request data, post a valid 'scenario_id'."
-        scenarios = list(model.scenarios.values('id', 'name'))
-        payload["scenarios"] = scenarios
-    else:
-        payload["selected_scenario_name"] = scenario.name
-        try:
-            haven_data = Haven(scenario).get_data(aggregate, stations_only)
-            if isinstance(haven_data, str):
-                payload["message"] = haven_data
-            else:
-                payload["message"] = "All data successfully retrieved."
-                payload["scenario_data"] = haven_data
-        except Exception as e:
-            payload["message"] = str(e)
-
-    return HttpResponse(json.dumps(payload), content_type="application/json")
 
 
 @csrf_protect

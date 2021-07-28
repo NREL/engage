@@ -30,7 +30,7 @@ def get_model_logger(log_file):
     """
     logging.basicConfig(level=logging.INFO,
                         format="[%(asctime)s] %(levelname)s: %(message)s")
-    if logger.hasHandlers():
+    if logger.handlers:
         logger.removeHandler(logger.handlers[0])
 
     file_handler = logging.FileHandler(log_file)

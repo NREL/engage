@@ -4,7 +4,7 @@ Unit tests for Django app 'api' models - api/models/configuration.
 
 from django.test import TestCase
 
-from api.models.outputs import Run, Haven
+from api.models.outputs import Run
 from api.models.configuration import Model, Scenario
 
 
@@ -38,7 +38,3 @@ class RunTestCase(TestCase):
             f"{self.model_run.model} ({self.model_run.subset_time})",
             str(self.model_run),
         )
-
-
-def HavenTestCase(TestCase):
-    pass

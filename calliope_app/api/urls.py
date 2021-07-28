@@ -121,9 +121,6 @@ urlpatterns = [
     path('update_run_description/',
          outputs_views.update_run_description,
          name='update_run_description'),
-    path('haven/',
-         outputs_views.haven,
-         name='haven'),
     path('download/',
          outputs_views.download,
          name='download')]

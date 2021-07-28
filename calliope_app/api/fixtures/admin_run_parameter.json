@@ -8,7 +8,7 @@
       "can_evolve": "False",
       "name": "calliope_version",
       "pretty_name": "Calliope version",
-      "default_value": "0.6.3",
+      "default_value": "0.6.6",
       "description": "Calliope framework version this model is intended for",
       "choices": "[]"
     }
@@ -79,7 +79,7 @@
       "name": "subset_time",
       "pretty_name": "Subset time",
       "default_value": "",
-      "description": "Subset of timesteps as a two-element list giving the range, e.g. [\u20182005-01-01\u2019, \u20182005-01-05\u2019], or a single string, e.g. \u20182005-01\u2019",
+      "description": "Subset of timesteps as a two-element list giving the range, e.g. [\"2005-01-01\", \"2005-01-05\"], or a single string, e.g. \"2005-01\"",
       "choices": "[]"
     }
   },
@@ -177,7 +177,7 @@
       "name": "cyclic_storage",
       "pretty_name": "Cyclic storage",
       "default_value": "True",
-      "description": "If True, storage in the last timestep of the timeseries is considered to be the \u2018previous timestep\u2019 in the first timestep of the timeseries",
+      "description": "If True, storage in the last timestep of the timeseries is considered to be the \"previous timestep\" in the first timestep of the timeseries",
       "choices": "[\"True\",\"False\"]"
     }
   },
@@ -205,7 +205,7 @@
       "name": "mode",
       "pretty_name": "Optimization mode",
       "default_value": "plan",
-      "description": "Which mode to run the model in: \u2018plan\u2019 or \u2018operate\u2019",
+      "description": "Which mode to run the model in: \"plan\" or \"operate\"",
       "choices": "[\"plan\",\"operate\"]"
     }
   },
@@ -219,7 +219,7 @@
       "name": "objective_options",
       "pretty_name": "Objective options",
       "default_value": "",
-      "description": "Arguments to pass to objective function. If cost-based objective function in use, should include \u2018cost_class\u2019 and \u2018sense\u2019 (maximize/minimize)",
+      "description": "Arguments to pass to objective function. If cost-based objective function in use, should include \"cost_class\" and \"sense\" (maximize/minimize)",
       "choices": "[]"
     }
   },

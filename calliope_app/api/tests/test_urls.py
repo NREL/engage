@@ -291,15 +291,6 @@ class APIRunURLTestCase(TestCase):
                 self.assertEqual(reverse(view_name), url)
                 self.assertEqual(resolve(url).view_name, view_name)
 
-    def test_haven(self):
-        view_name = "haven"
-
-        for language_code, _ in settings.LANGUAGES:
-            with translation.override(language_code):
-                url = f"/{language_code}/api/haven/"
-                self.assertEqual(reverse(view_name), url)
-                self.assertEqual(resolve(url).view_name, view_name)
-
     def test_download(self):
         view_name = "download"
 

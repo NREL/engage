@@ -73,48 +73,54 @@ class Run(models.Model):
         meta = {}
         # Names
         names = self.read_output('inputs_names.csv')
-        meta['names'] = names.set_index(0)[1].to_dict()
+        meta['names'] = names.set_index('techs')['names'].to_dict()
         # Colors
         colors = self.read_output('inputs_colors.csv')
-        meta['colors'] = colors.set_index(0)[1].to_dict()
+        meta['colors'] = colors.set_index('techs')['colors'].to_dict()
         # Locations
         locations = self.read_output('inputs_loc_coordinates.csv')
-        meta['locations'] = sorted(locations[1].unique())
+        meta['locations'] = sorted(locations['locs'].unique())
         # Remotes (Transmission Technologies)
-        remotes = self.read_output('inputs_lookup_remotes.csv')[1].unique()
-        meta['remotes'] = remotes
+        remotes = self.read_output('inputs_lookup_remotes.csv')
+        remotes = remotes['techs'].unique()
+        meta['remotes'] = list(remotes)
         meta['transmissions'] = list(set([t.split(':')[0] for t in remotes]))
         # Demands
         parents = self.read_output('inputs_inheritance.csv')
-        meta['demands'] = parents.groupby(1)[0].apply(list)['demand']
+        parents = parents.groupby('inheritance')['techs'].apply(list)['demand']
+        meta['demands'] = parents
         # Months
         meta['months'] = self.get_months()
         # Carriers
-        c1 = self.read_output('inputs_lookup_loc_techs_conversion.csv', [2, 3])
-        c2 = self.read_output('inputs_lookup_loc_techs_conversion_plus.csv', [2, 3])
+        c1 = self.read_output('inputs_lookup_loc_techs_conversion.csv')
+        c1 = c1[['carrier_tiers', 'lookup_loc_techs_conversion']]
+        c2 = self.read_output('inputs_lookup_loc_techs_conversion_plus.csv')
+        c2 = c2[['carrier_tiers', 'lookup_loc_techs_conversion_plus']]
+        c1.columns = c2.columns = ['carrier_tiers', 'ltc']
         c = c1.append(c2)
-        c[2] = c[2].str.contains('out')
-        c3 = self.read_output('inputs_lookup_loc_techs.csv', [1, 2])
-        c3[1] = True
-        c3.columns = [2, 3]
+        c['production'] = c['carrier_tiers'].str.contains('out')
+        del c['carrier_tiers']
+        c3 = self.read_output('inputs_lookup_loc_techs.csv')
+        c3 = c3[['lookup_loc_techs']]
+        c3.columns = ['ltc']
+        c3['production'] = True
         c = c.append(c3)
         # Uncompress rows that have multiple Carriers (comma delimited)
-        compress_mask = c[3].str.contains(',')
+        compress_mask = c['ltc'].str.contains(',')
         compressed_rows = c[compress_mask]
         c = c[~compress_mask]
         for i, row in compressed_rows.iterrows():
-            for item in row[3].split(','):
-                c.append([row[2], item])
+            for item in row['ltc'].split(','):
+                c.append([row['production'], item])
         # Split into Location, Technology, Carrier
-        c[[4, 5, 6]] = c[3].str.split('::', expand=True)
+        c[['locs', 'techs', 'carrier']] = c['ltc'].str.split('::', expand=True)
         # Filter
-        # c = c[~c[5].isin(meta['remotes'])]
-        c.loc[c[5].isin(meta['demands']), 2] = False
+        c.loc[c['techs'].isin(meta['demands']), 'production'] = False
         # Response
-        meta['carriers_in'] = c[c[2] == False].groupby(6)[5].apply(
-            lambda x: list(set(x))).to_dict()
-        meta['carriers_out'] = c[c[2] == True].groupby(6)[5].apply(
-            lambda x: list(set(x))).to_dict()
+        meta['carriers_in'] = c[c['production'] == False].groupby(
+            'carrier')['techs'].apply(lambda x: list(set(x))).to_dict()
+        meta['carriers_out'] = c[c['production'] == True].groupby(
+            'carrier')['techs'].apply(lambda x: list(set(x))).to_dict()
         # Get a list of all carriers (sorted by # technologies)
         carriers = {**meta['carriers_in'], **meta['carriers_out']}
         carriers = [(key, len(values)) for key, values in carriers.items()]
@@ -167,33 +173,43 @@ class Run(models.Model):
                   'Costs': 'Fixed Costs'}
         if metric == 'Storage':
             # Storage Capacity
-            df = self.read_output('results_storage_cap.csv', [0, 1, 2])
-            ctx = self.read_output('inputs_storage_cap_max.csv', [0, 1, 2])
+            df = self.read_output('results_storage_cap.csv')
+            df['values'] = df['storage_cap']
+            ctx = self.read_output('inputs_storage_cap_max.csv')
+            if ctx is not None:
+                ctx['values'] = ctx['storage_cap_max']
         elif metric == 'Costs':
             # Investment Costs
-            df = self.read_output('results_cost.csv', [0, 1, 3])
-            ctx = self.read_output('NONE.csv', [0, 1, 2])
+            df = self.read_output('results_cost.csv')
+            df['values'] = df['cost']
+            ctx = None
         else:
             # Energy Capacity
-            df = self.read_output('results_energy_cap.csv', [0, 1, 2])
-            ctx = self.read_output('inputs_energy_cap_max.csv', [0, 1, 2])
-        df.columns = ['Location', 'Technology', 'Values']
-        ctx.columns = ['Location', 'Technology', 'Values']
-        ctx = ctx.replace(np.inf, np.nan).dropna()
-        # Filter
-        df = df[~df['Technology'].isin(meta['remotes'])]
-        df = df[~df['Technology'].isin(meta['demands'])]
-        df = df[df['Technology'].isin(soft_filter)]
-        df = df[df['Technology'].isin(hard_filter)]
-        locations = list(df['Location'].unique())
+            df = self.read_output('results_energy_cap.csv')
+            df['values'] = df['energy_cap']
+            ctx = self.read_output('inputs_energy_cap_max.csv')
+            if ctx is not None:
+                ctx['values'] = ctx['energy_cap_max']
+        # Process Values
+        df = df[~df['techs'].isin(meta['remotes'])]
+        df = df[~df['techs'].isin(meta['demands'])]
+        df = df[df['techs'].isin(soft_filter)]
+        df = df[df['techs'].isin(hard_filter)]
+        locations = list(df['locs'].unique())
         if location:
-            df = df[df['Location'] == location]
-            ctx = df[df['Location'] == location]
-        # Process
-        df = df.groupby('Technology').sum()
-        ctx = ctx.groupby('Technology').sum()
-        df = df['Values'].to_dict()
-        ctx = ctx['Values'].to_dict()
+            df = df[df['locs'] == location]
+        df = df.groupby('techs').sum()
+        df = df['values'].to_dict()
+        # Process Max Bounds Context (ctx)
+        if ctx is not None:
+            ctx = ctx.replace(np.inf, np.nan).dropna()
+            if location:
+                ctx = ctx[ctx['locs'] == location]
+            ctx = ctx.groupby('techs').sum()
+            ctx = ctx['values'].to_dict()
+        else:
+            ctx = {}
+        # Viz Layers
         layers = [{'key': key,
                    'name': meta['names'][key] if key in meta['names'] else key,
                    'color': meta['colors'][key] if key in meta['colors'] else None,
@@ -213,54 +229,51 @@ class Run(models.Model):
         ext = '_' + str(month) + '.csv' if month else '.csv'
         if metric == 'Storage':
             # Storage
-            df = self.read_output('results_storage' + ext, [0, 1, 2, 3])
-            df.columns = ['Location', 'Technology', 'Timestamp', 'Values']
+            df = self.read_output('results_storage' + ext)
+            df['values'] = df['storage']
         elif metric == 'Costs':
             # Costs
-            df = self.read_output('results_cost_var' + ext, [0, 1, 2, 3, 4])
-            cols = [0, 1, 2, 4] if df[3][0] == 'monetary' else [0, 1, 3, 4]
-            df = df[cols]
-            df.columns = ['Location', 'Technology', 'Timestamp', 'Values']
+            df = self.read_output('results_cost_var' + ext)
+            df['values'] = df['cost_var']
         else:
             # Production / Consumption
             df = self.read_output('results_carrier_con' + ext)
+            df['values'] = df['carrier_con']
             if metric == "Production":
                 df2 = self.read_output('results_carrier_prod' + ext)
+                df2['values'] = df2['carrier_prod']
                 df = df.append(df2)
             else:
                 df2 = self.read_output('results_carrier_export' + ext)
-                if not df2.empty:
-                    df2[4] *= -1
+                if df2 is not None:
+                    df2['values'] = -df2['carrier_export']
                     df = df.append(df2)
-            df.columns = ['Location', 'Technology', 'Carrier',
-                          'Timestamp', 'Values']
             # Unmet Demand
-            df3 = self.read_output('results_unmet_demand' + ext, [0, 1, 2, 3])
-            df3.columns = ['Location', 'Carrier', 'Timestamp', 'Values']
-            df3 = df3[df3['Carrier'] == carrier]
-            df3['Technology'] = 'Unmet Demand'
-            if not df3.empty:
+            df3 = self.read_output('results_unmet_demand' + ext)
+            if df3 is not None:
+                df3['values'] = df3['unmet_demand']
+                df3['techs'] = 'Unmet Demand'
                 df = df.append(df3)
                 soft_filter.append('Unmet Demand')
                 meta['colors']['Unmet Demand'] = "#FF000055"
-            df = df[df['Carrier'] == carrier]
+            df = df[df['carriers'] == carrier]
         # Filter
-        df = df[df['Technology'].isin(soft_filter)]
-        df['Technology'] = df['Technology'].str.split(':').str[0]
-        locations = list(df['Location'].unique())
+        df = df[df['techs'].isin(soft_filter)]
+        df['techs'] = df['techs'].str.split(':').str[0]
+        locations = list(df['locs'].unique())
         if location:
-            df = df[df['Location'] == location]
+            df = df[df['locs'] == location]
         else:
-            df = df[~df['Technology'].isin(meta['transmissions'])]
+            df = df[~df['techs'].isin(meta['transmissions'])]
         # Process
-        df = df.groupby(['Technology', 'Timestamp']).sum()
+        df = df.groupby(['techs', 'timesteps']).sum()
         pvalues, nvalues, techs, ts = [], [], [], []
-        if 'Values' in df.columns:
-            df = df['Values'].reset_index()
-            ts = list(df['Timestamp'].unique())
-            for tech in df['Technology'].unique():
-                mask = df['Technology'] == tech
-                values_1 = df[mask]['Values'].values
+        if 'values' in df.columns:
+            df = df['values'].reset_index()
+            ts = list(df['timesteps'].unique())
+            for tech in df['techs'].unique():
+                mask = df['techs'] == tech
+                values_1 = df[mask]['values'].values
                 # Split up Positive / Negative for Production / Consumption
                 if metric == "Consumption":
                     is_primary = values_1 <= 0
@@ -297,16 +310,12 @@ class Run(models.Model):
                                'y': list(np.sum(np.array(nvalues), axis=0))}
         return data, locations
 
-    def read_output(self, file, columns=[]):
+    def read_output(self, file):
         fpath = os.path.join(self.outputs_path, file)
         try:
-            if columns:
-                df = pd.read_csv(fpath, header=None, usecols=columns)
-            else:
-                df = pd.read_csv(fpath, header=None)
+            return pd.read_csv(fpath, header=0)
         except FileNotFoundError:
-            df = pd.DataFrame(columns=columns)
-        return df
+            return None
 
     def get_months(self):
         fpath = os.path.join(self.outputs_path, 'results_carrier_prod_*.csv')
@@ -358,168 +367,3 @@ class Cambium():
             logger.exception("Push run failed!")
             return str(e)
         logger.info("Push run success.")
-
-
-class Haven():
-
-    def __init__(self, scenario):
-        self.scenario = scenario
-        self.model = scenario.model
-
-        self.RUN = None
-        self.YEARS = []
-        self.TS_META = {}
-        self.DATA = {}
-        self.CAP_GEN_VALS = {}
-
-    def get_data(self, aggregate, stations_only):
-        # Stations
-        df = pd.DataFrame(list(self.model.loc_techs.values(
-            'id', 'technology__name',
-            'technology__pretty_name',
-            'technology__tag',
-            'technology__pretty_tag',
-            'location_1__name',
-            'location_2__name')))
-        df['technology__tag'] = df['technology__tag'].fillna('0')
-        df['technology'] = df['technology__name'] + '-' + df['technology__tag']
-        df.drop(['technology__tag', 'technology__name'], inplace=True, axis=1)
-        df.columns = ['id', 'location_1', 'location_2',
-                      'name', 'tag', 'technology']
-        df.set_index('id', drop=False, inplace=True)
-        self.stations = df
-        self.DATA["stations"] = df.to_dict(orient='records')
-
-        if stations_only is False:
-            # Capacity / Generation
-            runs = Run.objects.filter(
-                scenario=self.scenario, deprecated=False).order_by('-updated')
-            for run in runs:
-                if run.outputs_path != "":
-                    if run.year not in self.YEARS:
-                        self.RUN = run
-                        self._load_run()
-
-            self.DATA["timeseries_meta"] = self.TS_META
-            self.DATA["capacity_generation"] = self.CAP_GEN_VALS
-        else:
-            self.DATA["timeseries_meta"] = "stations_only must be false"
-            self.DATA["capacity_generation"] = "stations_only must be false"
-
-        # Optional: Aggregation
-        if aggregate is None:
-            return self.DATA
-        else:
-            return self._aggregate(aggregate, stations_only)
-
-    @staticmethod
-    def _get_loc_label(technology):
-        try:
-            return technology.split(':')[1]
-        except Exception:
-            return None
-
-    @staticmethod
-    def _get_tech_label(technology):
-        return technology.split(':')[0]
-
-    def _lookup_id(self, tech, loc):
-        mask_l1 = self.stations.location_1 == loc
-        loc_2 = self._get_loc_label(tech)
-        if loc_2:
-            mask_l2 = self.stations.location_2 == loc_2
-        else:
-            mask_l2 = self.stations.location_2.isnull()
-        mask_t = self.stations.technology == self._get_tech_label(tech)
-        ids = self.stations[mask_l1 & mask_l2 & mask_t]['id']
-        try:
-            return int(ids.values[0])
-        except Exception:
-            return "Not Found"
-
-    def _aggregate(self, aggregate, stations_only):
-
-        key = None  # Used for error logging in Exception
-        year = None
-        try:
-            # Stations
-            grouped = {}
-            for key, ids in aggregate.items():
-                group = self.stations.loc[ids].to_dict(orient='records')
-                if key not in grouped:
-                    grouped[key] = group
-            self.DATA["stations"] = grouped
-
-            if stations_only is True:
-                return self.DATA
-
-            # Capacity / Generation
-            capacity_generation = self.DATA["capacity_generation"]
-            aggregated = {}
-            for year in capacity_generation:
-                if year not in self.TS_META:
-                    continue
-                n_ts = len(self.TS_META[year])
-                aggregated[year] = {}
-                cap_gen_all = pd.DataFrame(capacity_generation[year])
-                for key, ids in aggregate.items():
-                    cap_gen = cap_gen_all[cap_gen_all['id'].isin(ids)]
-                    group_cap = cap_gen.capacity.sum()
-                    group_gen = np.array(cap_gen.generation.values.tolist())
-
-                    if (len(group_gen) > 0):
-                        group_gen = list(group_gen.sum(axis=0))
-                    else:
-                        group_gen = list(np.zeros(n_ts))
-                    group_cap_gen = {
-                        'ids': ids,
-                        'capacity': group_cap,
-                        'generation': group_gen
-                    }
-                    aggregated[year][key] = group_cap_gen
-            self.DATA["capacity_generation"] = aggregated
-
-            return self.DATA
-
-        except Exception as e:
-            dbg = ('e:', str(e), 'year:', year, 'key:', key)
-            return "Aggregation failed: {}".format(dbg)
-
-    def _load_run(self):
-        self.YEARS.append(self.RUN.year)
-        self.CAP_GEN_VALS[self.RUN.year] = []
-        try:
-            # load capacity data
-            e_cap = self._load_csv('results_energy_cap.csv')
-            # load generation data
-            carrier_con = self._load_csv('results_carrier_con.csv')
-            carrier_prod = self._load_csv('results_carrier_prod.csv')
-            con_prod = pd.concat([carrier_con, carrier_prod],
-                                 ignore_index=True)
-            # Set timeseries
-            ts = list(np.unique(con_prod[3].values))
-            self.TS_META[self.RUN.year] = ts
-            con_prod[3] = pd.to_datetime(con_prod[3])
-            # build capacity and generation
-            for _, row in e_cap.iterrows():
-                loc_val = row[0]
-                tech_val = row[1]
-                cap_val = row[2]
-                loc_mask = con_prod[0] == loc_val
-                tech_mask = con_prod[1] == tech_val
-                subset = con_prod[loc_mask & tech_mask]
-                subset = subset.groupby(3).sum()
-                gen_vals = list(subset[4].values)
-                self.CAP_GEN_VALS[self.RUN.year].append({
-                    'id': self._lookup_id(tech_val, loc_val),
-                    'location_1': loc_val,
-                    'location_2': self._get_loc_label(tech_val),
-                    'technology': self._get_tech_label(tech_val),
-                    'capacity': cap_val,
-                    'generation': gen_vals})
-        except Exception as e:
-            self.CAP_GEN_VALS[self.RUN.year] = [str(e)]
-
-    def _load_csv(self, fname, header=None):
-        path = os.path.join(self.RUN.outputs_path, fname)
-        return pd.read_csv(path, header=header)
