@@ -19,8 +19,7 @@ class Parameter_Admin(admin.ModelAdmin):
     # fields = []
     list_display = ['id', 'root', 'category', 'name', 'pretty_name',
                     'description', 'timeseries_enabled', 'units', 'choices',
-                    'is_linear', 'is_expansion', 'is_systemwide',
-                    'is_essential', 'is_carrier']
+                    'is_systemwide', 'is_essential', 'is_carrier']
 
 
 class Abstract_Tech_Admin(admin.ModelAdmin):
@@ -78,8 +77,7 @@ class Location_Admin(admin.ModelAdmin):
 class Technology_Admin(admin.ModelAdmin):
     list_filter = ['model']
     list_display = ['id', 'pretty_name', 'abstract_tech', 'name', 'tag',
-                    'pretty_tag', 'is_linear', 'is_expansion', 'model',
-                    'created', 'updated']
+                    'pretty_tag', 'model', 'created', 'updated']
 
 
 class Tech_Param_Admin(admin.ModelAdmin):

@@ -8,8 +8,6 @@
       "pretty_name": "Combined Cycle Gas Turbine (CCGT)",
       "tag": "capacity_expansion",
       "pretty_tag": "Capacity Expansion",
-      "is_linear": true,
-      "is_expansion": true,
       "model_id": "1"
     }
   },
@@ -22,8 +20,6 @@
       "pretty_name": "Concentrating Solar Power (CSP)",
       "tag": "capacity_expansion",
       "pretty_tag": "Capacity Expansion",
-      "is_linear": true,
-      "is_expansion": true,
       "model_id": "1"
     }
   },
@@ -36,8 +32,6 @@
       "pretty_name": "Battery Storage",
       "tag": "capacity_expansion",
       "pretty_tag": "Capacity Expansion",
-      "is_linear": true,
-      "is_expansion": true,
       "model_id": "1"
     }
   },
@@ -50,8 +44,6 @@
       "pretty_name": "Power Demand",
       "tag": "capacity_expansion",
       "pretty_tag": "Capacity Expansion",
-      "is_linear": null,
-      "is_expansion": null,
       "model_id": "1"
     }
   },
@@ -64,8 +56,6 @@
       "pretty_name": "AC Power Transmission",
       "tag": "capacity_expansion",
       "pretty_tag": "Capacity Expansion",
-      "is_linear": true,
-      "is_expansion": true,
       "model_id": "1"
     }
   },
@@ -78,8 +68,6 @@
       "pretty_name": "Local Power Transmission",
       "tag": "capacity_expansion",
       "pretty_tag": "Capacity Expansion",
-      "is_linear": true,
-      "is_expansion": true,
       "model_id": "1"
     }
   }

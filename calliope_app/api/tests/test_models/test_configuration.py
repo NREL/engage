@@ -491,12 +491,6 @@ class TechnologyTestCase(TestCase):
         new_tech = self.tech.duplicate(model_id=self.model.id, pretty_name="NewTechName")
         self.assertEqual(new_tech.pretty_name, "NewTechName")
 
-    def test_update(self):
-        form_data = {"is_linear": False, "is_expansion": False}
-        self.tech.update(form_data)
-        self.assertEqual(self.tech.is_linear, False)
-        self.assertEqual(self.tech.is_expansion, False)
-
 
 class TechParamTestCase(TestCase):
     def setUp(self):

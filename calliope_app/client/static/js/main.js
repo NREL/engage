@@ -1021,7 +1021,7 @@ function activate_favorites() {
 }
 
 function activate_essentials() {
-	$('#tech_name, #tech_tag, #tech_description, #tech_color, #tech_is_linear, #tech_is_expansion').on('change keyup paste', function() {
+	$('#tech_name, #tech_tag, #tech_description, #tech_color').on('change keyup paste', function() {
 		$(this).addClass('table-warning');
 		$(this).siblings('.sp-replacer').addClass('btn-warning');
 		check_unsaved();

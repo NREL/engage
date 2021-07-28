@@ -18,8 +18,6 @@ class Parameter(models.Model):
     timeseries_enabled = models.BooleanField()
     units = models.CharField(max_length=200)
     choices = ArrayField(models.CharField(max_length=20, blank=True))
-    is_linear = models.BooleanField(null=True)
-    is_expansion = models.BooleanField(null=True)
     is_systemwide = models.BooleanField(default=False)
     is_essential = models.BooleanField(default=False)
     is_carrier = models.BooleanField(default=False)

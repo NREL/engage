@@ -37,27 +37,6 @@
 			<input {% if not can_edit %}disabled{% endif %} id="tech_tag" style="width:100%" type="text" name='essentials[tech_tag]' value="{% if technology.pretty_tag %}{{ technology.pretty_tag }}{% endif %}">
 		</div>
 
-		<!-- Capacity Optimization -->
-		{% if technology.abstract_tech.name != 'demand' %}
-
-			<div class="col-5" data-toggle="tooltip" data-placement="left" title="{% trans 'These settings filter the constraint parameters below' %}">
-				<b>Capacity Optimization:</b>
-			</div>
-			<div class="col-7">
-				<select {% if not can_edit %}disabled{% endif %} id="tech_is_linear" style="width:50%" type="text" name='is_linear' >
-					<option disabled {% if not technology.is_linear %}selected{% endif %} value=""></option>
-					<option {% if technology.is_linear is True %}selected{% endif %} value=1>{% trans "Linear" %}</option>
-					<option {% if technology.is_linear is False %}selected{% endif %} value=0>{% trans "Units" %}</option>
-				</select>
-				<select {% if not can_edit %}disabled{% endif %} id="tech_is_expansion" style="width:49%" type="text" name='is_expansion' >
-					<option disabled {% if not technology.is_expansion %}selected{% endif %} value=""></option>
-					<option {% if technology.is_expansion is True %}selected{% endif %} value=1>{% trans "Expansion" %}</option>
-					<option {% if technology.is_expansion is False %}selected{% endif %} value=0>{% trans "Fixed" %}</option>
-				</select>
-			</div>
-
-		{% endif %}
-
 		<!-- Carriers -->
 		{% if technology.abstract_tech.name != 'conversion_plus' %}
 			<!-- Required Carriers (Simple) -->

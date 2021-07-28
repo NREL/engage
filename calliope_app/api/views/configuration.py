@@ -489,7 +489,7 @@ def update_tech_params(request):
     """
     Update the parameters for a technology. Parameter data is provided in a
     form_data object which stores updates under the following keys:
-        'essentials', 'add', 'edit', 'delete', 'is_linear', 'is_expansion'
+        'essentials', 'add', 'edit', 'delete'
 
     Parameters:
     model_uuid (uuid): required
