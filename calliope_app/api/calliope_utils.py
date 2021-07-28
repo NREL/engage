@@ -162,6 +162,7 @@ def run_basic(model_path, logger):
     model = CalliopeModel(config=model_path)
     model.run()
     _write_outputs(model, model_path)
+    return model.results.termination_condition
 
 
 def run_clustered(model_path, idx, logger):
@@ -173,6 +174,8 @@ def run_clustered(model_path, idx, logger):
     model = CalliopeModel(config=model_path)
     model.run()
     _write_outputs(model, model_path)
+    if model.results.termination_condition != 'optimal':
+        return model.results.termination_condition
     # Results
     capacity, storage, units, demand_techs = _get_cap_results(model)
     # Monthly Dispatch
@@ -194,6 +197,7 @@ def run_clustered(model_path, idx, logger):
             logger.error(e)
             pass
     _reset_configs(model_path)
+    return 'optimal'
 
 
 def _set_clustering(model_path, on=False, k=30):
