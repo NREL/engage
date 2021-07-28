@@ -93,9 +93,17 @@ class Run(models.Model):
         meta['months'] = self.get_months()
         # Carriers
         c1 = self.read_output('inputs_lookup_loc_techs_conversion.csv')
-        c1 = c1[['carrier_tiers', 'lookup_loc_techs_conversion']]
+        if c1 is not None:
+            c1 = c1[['carrier_tiers', 'lookup_loc_techs_conversion']]
+        else:
+            c1 = pd.DataFrame(columns=['carrier_tiers',
+                                       'lookup_loc_techs_conversion'])
         c2 = self.read_output('inputs_lookup_loc_techs_conversion_plus.csv')
-        c2 = c2[['carrier_tiers', 'lookup_loc_techs_conversion_plus']]
+        if c2 is not None:
+            c2 = c2[['carrier_tiers', 'lookup_loc_techs_conversion_plus']]
+        else:
+            c2 = pd.DataFrame(columns=['carrier_tiers',
+                                       'lookup_loc_techs_conversion_plus'])
         c1.columns = c2.columns = ['carrier_tiers', 'ltc']
         c = c1.append(c2)
         c['production'] = c['carrier_tiers'].str.contains('out')
@@ -174,7 +182,10 @@ class Run(models.Model):
         if metric == 'Storage':
             # Storage Capacity
             df = self.read_output('results_storage_cap.csv')
-            df['values'] = df['storage_cap']
+            if df is None:
+                df = pd.DataFrame(columns=['locs', 'techs', 'values'])
+            else:
+                df['values'] = df['storage_cap']
             ctx = self.read_output('inputs_storage_cap_max.csv')
             if ctx is not None:
                 ctx['values'] = ctx['storage_cap_max']
@@ -230,7 +241,11 @@ class Run(models.Model):
         if metric == 'Storage':
             # Storage
             df = self.read_output('results_storage' + ext)
-            df['values'] = df['storage']
+            if df is None:
+                df = pd.DataFrame(
+                    columns=['locs', 'techs', 'timesteps', 'values'])
+            else:
+                df['values'] = df['storage']
         elif metric == 'Costs':
             # Costs
             df = self.read_output('results_cost_var' + ext)
