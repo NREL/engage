@@ -23,7 +23,7 @@
       "name": "group_share",
       "pretty_name": "Group share",
       "default_value": "",
-      "description": "Optional settings for the group_share constraint. Configurable in JSON format (e.g. {\"pv,wind,bio\":{\"energy_prod_min\": 0.5}})",
+      "description": "Optional settings for the group_share constraint. Configurable in JSON format: {\"pv,wind,bio\":{\"energy_prod_min\": 0.5}}",
       "choices": "[]"
     }
   },
@@ -332,6 +332,20 @@
       "pretty_name": "Zero threshold",
       "default_value": "1.00E-10",
       "description": "Any value coming out of the backend that is smaller than this threshold (due to floating point errors, probably) will be set to zero",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 25,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "group_constraints",
+      "user_visibility": "True",
+      "can_evolve": "True",
+      "name": "",
+      "pretty_name": "Group constraints",
+      "default_value": "",
+      "description": "Optional settings for the group_constraints constraint. Configurable in JSON format: {\"renewables\": {\"techs\": [\"pv\", \"wind\"], \"locs\": [\"Region 1\"], \"demand_share_min\": {\"electricity\": 0.5}}}",
       "choices": "[]"
     }
   }
