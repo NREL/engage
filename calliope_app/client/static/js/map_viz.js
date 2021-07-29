@@ -289,8 +289,6 @@ function load_data() {
     // console.log('loading data...');
     model_uuid = $('#viz-container').data('model_uuid');
     run_id = $('#viz-main').data('run_id');
-    // console.log('model_uuid = ' + model_uuid);
-    // console.log('run_id = ' + run_id);
     $.ajax({
         url: '/' + LANGUAGE_CODE + '/component/map_outputs/',
         type: 'POST',
@@ -311,39 +309,39 @@ function load_data() {
             if (data_loaded == false) {
 
                 // load colors & techs
-                data.responseJSON['inputs_colors'].split('\n').slice(0, -1).map(function(line) {
-                    var d = line.split(',');
-                    colors[d[0]] = d[1];
-                    techs.push(d[0]);
+                var [headers, lines] = parse_data(data, 'inputs_colors');
+                lines.map(function(d) {
+                    colors[d[headers.techs]] = d[headers.colors];
+                    techs.push(d[headers.techs]);
                 });
                 
                 // load names
-                data.responseJSON['inputs_names'].split('\n').slice(0, -1).map(function(line) {
-                    var d = line.split(',');
-                    names[d[0]] = d[1];
+                var [headers, lines] = parse_data(data, 'inputs_names');
+                lines.map(function(d) {
+                    names[d[headers.techs]] = d[headers.names];
                 });
                 
                 // load parents & groups
-                data.responseJSON['inputs_inheritance'].split('\n').slice(0, -1).map(function(line) {
-                    var d = line.split(',');
-                    parents[d[0]] = d[1];
-                    if (Object.keys(tech_groups).indexOf(d[1]) == -1) {
-                        tech_groups[d[1]] = [d[0]];
+                var [headers, lines] = parse_data(data, 'inputs_inheritance');
+                lines.map(function(d) {
+                    parents[d[headers.techs]] = d[headers.inheritance];
+                    if (Object.keys(tech_groups).indexOf(d[headers.inheritance]) == -1) {
+                        tech_groups[d[headers.inheritance]] = [d[headers.techs]];
                     } else {
-                        tech_groups[d[1]].push(d[0]);
+                        tech_groups[d[headers.inheritance]].push(d[headers.techs]);
                     }
                 });
                 
                 // load coordinates
                 var lats = [], lons = [];
-                data.responseJSON['inputs_loc_coordinates'].split('\n').slice(0, -1).map(function(line) {
-                    var d = line.split(',');
-                    assign(coordinates, [d[1], d[0]], +d[2]);
-                    if (d[0] == 'lat') {
-                        lats.push(+d[2])
+                var [headers, lines] = parse_data(data, 'inputs_loc_coordinates');
+                lines.map(function(d) {
+                    assign(coordinates, [d[headers.locs], d[headers.coordinates]], +d[headers.loc_coordinates]);
+                    if (d[headers.coordinates] == 'lat') {
+                        lats.push(+d[headers.loc_coordinates])
                     };
-                    if (d[0] == 'lon') {
-                        lons.push(+d[2])
+                    if (d[headers.coordinates] == 'lon') {
+                        lons.push(+d[headers.loc_coordinates])
                     };
                 });
                 lat_buffer = (Math.max.apply(Math, lats) - Math.min.apply(Math, lats)) / buffer_divisor;
@@ -358,28 +356,28 @@ function load_data() {
                 }
                 
                 // load capacities
-                data.responseJSON['results_energy_cap'].split('\n').slice(0, -1).map(function(line) {
-                    var d = line.split(',');
-                    if (techs.includes(d[1])) {
+                var [headers, lines] = parse_data(data, 'results_energy_cap');
+                lines.map(function(d) {
+                    if (techs.includes(d[headers.techs])) {
                         nodes.push({
-                            'loc': d[0],
-                            'tech': d[1],
-                            'capacity': +d[2]
+                            'loc': d[headers.locs],
+                            'tech': d[headers.techs],
+                            'capacity': +d[headers.energy_cap]
                         });
-                        locations[d[0]].push(d[1]);
-                        assign(capacities, [d[0], d[1]], +d[2]);
+                        locations[d[headers.locs]].push(d[headers.techs]);
+                        assign(capacities, [d[headers.locs], d[headers.techs]], +d[headers.energy_cap]);
                     } else {
                         links.push({
-                            'loc1': d[0],
-                            'loc2': d[1].split(':')[1],
-                            'tech': d[1].split(':')[0],
-                            'capacity': +d[2]
+                            'loc1': d[headers.locs],
+                            'loc2': d[headers.techs].split(':')[1],
+                            'tech': d[headers.techs].split(':')[0],
+                            'capacity': +d[headers.energy_cap]
                         });
                         
                         // Cache # of links from each node:
-                        link_counts[d[0]] ++;
+                        link_counts[d[headers.locs]] ++;
                         
-                        assign(trans_capacities, [d[0], d[1].split(':')[0], d[1].split(':')[1]], +d[2]);
+                        assign(trans_capacities, [d[headers.locs], d[headers.techs].split(':')[0], d[headers.techs].split(':')[1]], +d[headers.energy_cap]);
                     };
                 });
 
@@ -390,34 +388,34 @@ function load_data() {
                 production = {}
                 trans_production = {}
             }
-            
+
             // load consumption
-            data.responseJSON['results_carrier_con'].split('\n').slice(0, -1).map(function(line) {
-                var d = line.split(',');
-                if (techs.includes(d[1])) {
-                    if (!carriers.includes(d[2])) {
-                        carriers.push(d[2])
+            var [headers, lines] = parse_data(data, 'results_carrier_con');
+            lines.map(function(d) {
+                if (techs.includes(d[headers.techs])) {
+                    if (!carriers.includes(d[headers.carriers])) {
+                        carriers.push(d[headers.carriers])
                     }
-                    if (!timestamps.includes(d[3])) {
-                        timestamps.push(d[3])
-                        production[d[3]] = []
+                    if (!timestamps.includes(d[headers.timesteps])) {
+                        timestamps.push(d[headers.timesteps])
+                        production[d[headers.timesteps]] = []
                     }
-                    production[d[3]].push({
-                        'loc': d[0],
-                        'tech': d[1],
-                        'carrier': d[2],
-                        'production': +d[4]
+                    production[d[headers.timesteps]].push({
+                        'loc': d[headers.locs],
+                        'tech': d[headers.techs],
+                        'carrier': d[headers.carriers],
+                        'production': +d[headers.carrier_con]
                     });
                 } else {
-                    if (trans_production[d[3]] == undefined) {
-                        trans_production[d[3]] = []
+                    if (trans_production[d[headers.timesteps]] == undefined) {
+                        trans_production[d[headers.timesteps]] = []
                     };
-                    trans_production[d[3]].push({
-                        'loc1': d[0],
-                        'loc2': d[1].split(':')[1],
-                        'tech': d[1].split(':')[0],
-                        'carrier': d[2],
-                        'production': -d[4]
+                    trans_production[d[headers.timesteps]].push({
+                        'loc1': d[headers.locs],
+                        'loc2': d[headers.techs].split(':')[1],
+                        'tech': d[headers.techs].split(':')[0],
+                        'carrier': d[headers.carriers],
+                        'production': -d[headers.carrier_con]
                     });
                 }
             });
@@ -425,27 +423,27 @@ function load_data() {
             // load production
             max_prod = 0;
             var max_prods = {};
-            data.responseJSON['results_carrier_prod'].split('\n').slice(0, -1).map(function(line) {
-                var d = line.split(',');
-                if (!carriers.includes(d[2])) {
-                    carriers.push(d[2])
+            var [headers, lines] = parse_data(data, 'results_carrier_prod');
+            lines.map(function(d) {
+                if (!carriers.includes(d[headers.carriers])) {
+                    carriers.push(d[headers.carriers])
                 }
-                if (techs.includes(d[1])) {
-                    max_prods[d[3]] = (max_prods[d[3]] || 0) + +d[4];
-                    production[d[3]].push({
-                        'loc': d[0],
-                        'tech': d[1],
-                        'carrier': d[2],
-                        'production': +d[4]
+                if (techs.includes(d[headers.techs])) {
+                    max_prods[d[headers.timesteps]] = (max_prods[d[headers.timesteps]] || 0) + +d[headers.carrier_prod];
+                    production[d[headers.timesteps]].push({
+                        'loc': d[headers.locs],
+                        'tech': d[headers.techs],
+                        'carrier': d[headers.carriers],
+                        'production': +d[headers.carrier_prod]
                     });
                 } else {
                     // NOTE: USING CONSUMPTION DATA INSTEAD (ABOVE)
-                    // trans_production[d[3]].push({
-                    //     'loc1': d[0],
-                    //     'loc2': d[1].split(':')[1],
-                    //     'tech': d[1].split(':')[0],
-                    //     'carrier': d[2],
-                    //     'production': +d[4]
+                    // trans_production[d[headers.timesteps]].push({
+                    //     'loc1': d[headers.locs],
+                    //     'loc2': d[headers.techs].split(':')[1],
+                    //     'tech': d[headers.techs].split(':')[0],
+                    //     'carrier': d[headers.carriers],
+                    //     'production': +d[headers.carrier_prod]
                     // });
                 };
             });
@@ -456,6 +454,14 @@ function load_data() {
         }
     });
 }
+
+function parse_data(data, key) {
+    var lines = data.responseJSON[key].split('\n'),
+        headers = lines[0].split(',');
+    headers = headers.reduce(function(a, b, i) { return (a[b] = i, a) }, {});
+    lines = lines.slice(1, -1).map(function(a) { return a.split(',') });
+    return [headers, lines];
+};
 
 //---------------- BUILD VISUALIZATION
 

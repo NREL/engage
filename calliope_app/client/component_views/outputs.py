@@ -215,29 +215,32 @@ def map_outputs(request):
         response["message"] = "To request data, " \
                               "post a valid 'model_uuid' and 'run_id'"
     else:
-        files = [
-            "inputs_colors",
-            "inputs_names",
-            "inputs_inheritance",
-            "inputs_loc_coordinates",
-            "results_energy_cap"
-        ]
-        ts_files = [
-            "results_carrier_con",
-            "results_carrier_prod"
-        ]
-        ts_dt_col = 3
-
+        # Static
+        files = ["inputs_colors",
+                 "inputs_names",
+                 "inputs_inheritance",
+                 "inputs_loc_coordinates",
+                 "results_energy_cap"]
         for file in files:
             with open(os.path.join(run.outputs_path, file + ".csv")) as f:
                 response[file] = f.read()
-        for file in ts_files:
-            df = pd.read_csv(os.path.join(run.outputs_path, file + ".csv"),
-                             header=None)
-            df.set_index(ts_dt_col, inplace=True, drop=False)
+
+        # Variable
+        files = ["results_carrier_con",
+                 "results_carrier_prod"]
+        month = None
+        if run.get_months():
+            month = start_date.month
+            month = '0' + str(month) if month < 10 else str(month)
+        ext = '_' + str(month) + '.csv' if month else '.csv'
+        for file in files:
+            df = pd.read_csv(os.path.join(run.outputs_path, file + ext),
+                             header=0)
+            df.set_index('timesteps', inplace=True, drop=False)
             df.index = pd.to_datetime(df.index)
             df = df[(df.index >= start_date) & (df.index < end_date)]
             s = io.StringIO()
-            df.to_csv(s, index=False, header=False)
+            df.to_csv(s, index=False)
             response[file] = s.getvalue()
+
     return JsonResponse(response)

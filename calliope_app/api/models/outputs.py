@@ -48,6 +48,9 @@ class Run(models.Model):
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
 
+    calliope_066_upgraded = models.BooleanField(default=False)
+    calliope_066_errors = models.TextField(blank=True)
+
     build_task = models.ForeignKey(
         to=CeleryTask,
         to_field="id",
