@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 
 from api.models.engage import User_Profile
+from api.tasks import upgrade_066
 
 import json
 
@@ -94,5 +95,28 @@ def user_registration(request):
     payload = {"message": ("Thank you! A verification email has been sent!"
                            "\nTo complete your registration, you must click"
                            " on the activation link sent to {}".format(email))}
+
+    return HttpResponse(json.dumps(payload), content_type="application/json")
+
+
+@csrf_protect
+def apply_upgrade_066(request):
+    """
+    Launch data migration to Calliope 066.
+
+    Parameters:
+
+    Returns (json): Action Confirmation
+
+    Example:
+    POST: /api/upgrade_066/
+    """
+
+    payload = {}
+    if request.user.is_staff:
+        async_result = upgrade_066.apply_async()
+        payload['task_id'] = async_result.id
+    else:
+        payload['message'] = "Not authorized!"
 
     return HttpResponse(json.dumps(payload), content_type="application/json")

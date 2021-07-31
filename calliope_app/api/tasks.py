@@ -8,6 +8,7 @@ import boto3
 import botocore
 import pandas as pd
 import numpy as np
+import datetime
 from dateutil.parser import parse as date_parse
 
 from celery import Task
@@ -571,3 +572,145 @@ def run_model(run_id, model_path, user_id, *args, **kwargs):
         "save_outputs": save_outputs,
         "save_logs": save_logs
     }
+
+
+class CalliopeTimeseriesUploadTask(Task):
+    """
+    A celery task class for handling success/failure status
+    """
+
+    def on_failure(self, exc, task_id, args, kwargs, einfo):
+        pass
+
+    def on_success(self, retval, task_id, args, kwargs):
+        pass
+
+
+@app.task(
+    base=CalliopeTimeseriesUploadTask,
+    queue="long_queue",
+    soft_time_limit=(48 * 3600 - 180),
+    time_limit=(48 * 3600),
+    ignore_result=True
+)
+def upgrade_066(*args, **kwargs):
+    """
+    A celery task for migrating output data to 066 format with headers.
+    """
+    runs = Run.objects.exclude(status='SUCCESS')
+    runs.update(calliope_066_upgraded=True)
+    runs = Run.objects.filter(status='SUCCESS')
+    for r, run in enumerate(runs):
+        if run.calliope_066_upgraded:
+            continue
+        run.calliope_066_errors = ""
+        try:
+            outputs_path = run.outputs_path
+            if not outputs_path:
+                run.calliope_066_upgraded = True
+                run.save()
+                continue
+            # --- BACKUP
+            backup = outputs_path + '_backup'
+            if not os.path.exists(backup):
+                shutil.copytree(outputs_path, backup)
+            # --- META
+            # Locations
+            locs = list(pd.read_csv(
+                os.path.join(backup, 'inputs_loc_coordinates.csv'),
+                header=None)[1].unique())
+            if 'locs' in locs:
+                run.calliope_066_upgraded = True
+                run.save()
+                continue
+            # Technologies
+            techs = list(pd.read_csv(
+                os.path.join(backup, 'inputs_names.csv'),
+                header=None)[0].unique())
+            techs += list(pd.read_csv(
+                os.path.join(backup, 'inputs_lookup_remotes.csv'),
+                header=None)[1].unique())
+            # Carriers
+            carriers = pd.read_csv(
+                os.path.join(backup, 'inputs_lookup_loc_carriers.csv'),
+                header=None)
+            index = 1 if set(carriers[0].unique()).issubset(locs) else 0
+            carriers = list(carriers[index].unique())
+            # --- UPDATE
+            files = os.listdir(backup)
+            for file in files:
+                try:
+                    src = os.path.join(backup, file)
+                    dst = os.path.join(outputs_path, file)
+                    try:
+                        d = pd.read_csv(src, header=None)
+                    except pd.errors.EmptyDataError:
+                        continue
+                    # Metric
+                    if 'inputs' in file:
+                        metric = file.split('inputs_')[1][:-4]
+                    else:
+                        metric = file.split('results_')[1][:-4]
+                    try:
+                        int(metric[-2:])
+                        metric = metric[:-3]
+                    except Exception:
+                        pass
+                    # Update Each Column Header
+                    columns = list(d.columns)
+                    for i, col in enumerate(columns):
+                        values = list(d[col].unique())
+                        if len(values) == 1 and 'monetary' in values:
+                            columns[i] = 'costs'
+                        elif set(['in', 'out']).issubset(values):
+                            columns[i] = 'carrier_tiers'
+                        elif set(values).issubset(['lat', 'lon']):
+                            columns[i] = 'coordinates'
+                        elif set(values).issubset(locs):
+                            columns[i] = 'locs'
+                        elif set(values).issubset(carriers):
+                            columns[i] = 'carriers'
+                        elif set(values).issubset(techs):
+                            columns[i] = 'techs'
+                        elif 'group_share' in metric and i == 1:
+                            columns[i] = 'techlists'
+                        else:
+                            try:
+                                datetime.datetime.strptime(values[0],
+                                                           '%Y-%m-%d %H:%M:%S')
+                                if metric == 'max_demand_timesteps':
+                                    columns[i] = metric
+                                else:
+                                    columns[i] = 'timesteps'
+                            except Exception:
+                                try:
+                                    datetime.datetime.strptime(values[0],
+                                                               '%Y-%m-%d')
+                                    columns[i] = 'datesteps'
+                                except Exception:
+                                    try:
+                                        if 'cluster' in metric and sorted(values) == list(range(np.max(values) + 1)):
+                                            columns[i] = 'cluster'
+                                        else:
+                                            raise
+                                    except Exception:
+                                        columns[i] = metric
+                    if 'cluster' in columns and metric not in columns:
+                        i = columns.index('cluster')
+                        columns[i] = metric
+                    d.columns = columns
+                    if len(columns) != len(set(columns)):
+                        print('\n\n', r, file, '\n')
+                        print(d.head())
+                    d.to_csv(dst, index=False)
+                except Exception as e:
+                    error = "ERROR ({}): {} | ".format(file, str(e))
+                    run.calliope_066_errors += error
+                    pass
+        except Exception as e:
+            error = "ERROR: {} | ".format(str(e))
+            run.calliope_066_errors += error
+            pass
+        if run.calliope_066_errors == "":
+            run.calliope_066_upgraded = True
+        run.save()

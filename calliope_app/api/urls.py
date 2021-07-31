@@ -5,6 +5,11 @@ from .views import engage as engage_views
 from .views import outputs as outputs_views
 
 urlpatterns = [
+    # Upgrades
+    path('upgrade_066/',
+         engage_views.apply_upgrade_066,
+         name='upgrade_066'),
+
     # Users
     path('user_registration/',
          engage_views.user_registration,
