@@ -554,7 +554,7 @@ class Timeseries_Meta(models.Model):
         directory = '{}/timeseries'.format(settings.DATA_STORAGE)
         input_fname = '{}/{}.csv'.format(directory, self.file_uuid)
         timeseries = pd.read_csv(input_fname, parse_dates=[0])
-        timeseries.index = pd.to_datetime(timeseries.datetime)
+        timeseries.index = pd.DatetimeIndex(timeseries.datetime).tz_localize(None)
         return timeseries
 
     @classmethod
