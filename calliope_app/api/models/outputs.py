@@ -362,8 +362,14 @@ class Cambium():
         logger.info("Call Cambium API to ingest data - %s", data["filename"])
         try:
             url = urljoin(settings.CAMBIUM_URL, "api/ingest-data/")
-            response = requests.post(url, data=data).json()
-            logger.info("Cambium API response: %s", json.dumps(response))
+
+            logger.info("Cambium API request JSON:\n%s", json.dumps(data))
+            response = requests.post(url, data=data)
+            logger.info("Cambium API response RAW:\n%s", str(response))
+            response = response.json()
+            # ERROR PARSING JSON !!: Expecting value: line 2 column 1 (char 1)
+            logger.info("Cambium API response JSON:\n%s", json.dumps(response))
+
             if 'message' not in response:
                 return "Invalid Request"
 
