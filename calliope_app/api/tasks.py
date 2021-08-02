@@ -288,7 +288,7 @@ def build_model_csv(model, scenario, start_date, end_date, inputs_path):
 def get_timeseries_data(filename, start_date, end_date):
     """ Load up timeseries data into a DataFrame for an intra-year period. """
     timeseries = pd.read_csv(filename, parse_dates=[0])
-    timeseries.index = pd.to_datetime(timeseries.datetime)
+    timeseries.index = pd.DatetimeIndex(timeseries.datetime).tz_localize(None)
     del (timeseries['datetime'])
     timeseries.columns = ["value"]
     start_date = pd.to_datetime(start_date)
