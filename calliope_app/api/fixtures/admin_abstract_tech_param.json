@@ -2268,7 +2268,7 @@
     }
   },
   {
-    "pk": 252,
+    "pk": 253,
     "model": "api.abstract_tech_param",
     "fields": {
       "abstract_tech_id": "2",
@@ -2277,7 +2277,7 @@
     }
   },
   {
-    "pk": 253,
+    "pk": 254,
     "model": "api.abstract_tech_param",
     "fields": {
       "abstract_tech_id": "4",
@@ -2286,7 +2286,7 @@
     }
   },
   {
-    "pk": 253,
+    "pk": 255,
     "model": "api.abstract_tech_param",
     "fields": {
       "abstract_tech_id": "4",
@@ -2295,7 +2295,7 @@
     }
   },
   {
-    "pk": 184,
+    "pk": 256,
     "model": "api.abstract_tech_param",
     "fields": {
       "abstract_tech_id": "3",
@@ -2304,7 +2304,7 @@
     }
   },
   {
-    "pk": 185,
+    "pk": 257,
     "model": "api.abstract_tech_param",
     "fields": {
       "abstract_tech_id": "5",
