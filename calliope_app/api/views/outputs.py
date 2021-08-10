@@ -106,7 +106,7 @@ def build(request):
     except Exception as e:
         payload = {
             "status": "Failed",
-            "message": "Please contact admin at robert.spencer@nrel.gov ' \
+            "message": "Please contact admin at engage@nrel.gov ' \
             'regarding this error: {}".format(
                 str(e)
             ),
