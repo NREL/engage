@@ -552,7 +552,7 @@ def run_model(run_id, model_path, user_id, *args, **kwargs):
 
     # Model run
     user = User.objects.get(id=user_id)
-    if ((len(idx) > (24 * 30)) & (user.is_staff is True)):
+    if len(idx) > (24 * 30):
         logger.info('Running clustered optimization...')
         condition = run_clustered(model_path, idx, logger)
     else:
