@@ -200,7 +200,7 @@ def run_clustered(model_path, idx, logger):
     return 'optimal'
 
 
-def _set_clustering(model_path, on=False, k=30):
+def _set_clustering(model_path, on=False, k=14):
     # Read
     with open(model_path) as file:
         model_yaml = yaml.load(file, Loader=yaml.FullLoader)

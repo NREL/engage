@@ -551,8 +551,8 @@ def run_model(run_id, model_path, user_id, *args, **kwargs):
     idx = pd.date_range(start=st, end=et, freq='h')
 
     # Model run
-    user = User.objects.get(id=user_id)
-    if len(idx) > (24 * 30):
+    if len(idx) > (24 * 14):
+        # Cap the number of representative days to 14 (temporary solution)
         logger.info('Running clustered optimization...')
         condition = run_clustered(model_path, idx, logger)
     else:
