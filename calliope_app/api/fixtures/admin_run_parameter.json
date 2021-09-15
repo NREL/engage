@@ -162,7 +162,7 @@
       "can_evolve": "False",
       "name": "bigM",
       "pretty_name": "Unmet demand cost",
-      "default_value": "1000000000",
+      "default_value": "1e6",
       "description": "Used for unmet demand, but should be of a similar order of magnitude as the largest cost that the model could achieve. Too high and the model will not converge",
       "choices": "[]"
     }
@@ -186,7 +186,7 @@
     "model": "api.run_parameter",
     "fields": {
       "root": "run",
-      "user_visibility": "False",
+      "user_visibility": "True",
       "can_evolve": "False",
       "name": "ensure_feasibility",
       "pretty_name": "Ensure feasibility",
@@ -326,7 +326,7 @@
     "model": "api.run_parameter",
     "fields": {
       "root": "run",
-      "user_visibility": "False",
+      "user_visibility": "True",
       "can_evolve": "False",
       "name": "zero_threshold",
       "pretty_name": "Zero threshold",

@@ -29,6 +29,7 @@ def build(request):
     scenario_id (int): required
     start_date (timestamp): required
     end_date (timestamp): required
+    cluster (bool): optional
 
     Returns (json): Action Confirmation
 
@@ -41,6 +42,7 @@ def build(request):
     scenario_id = request.GET.get("scenario_id", None)
     start_date = request.GET.get("start_date", None)
     end_date = request.GET.get("end_date", None)
+    cluster = (request.GET.get("cluster", 'true') == 'true')
 
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
@@ -63,6 +65,7 @@ def build(request):
             subset_time=subset_time,
             status=task_status.QUEUED,
             inputs_path="",
+            cluster=cluster,
         )
 
         # Generate File Path

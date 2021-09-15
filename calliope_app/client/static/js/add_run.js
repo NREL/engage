@@ -15,9 +15,10 @@ $( document ).ready(function() {
 			scenario_id = $("#scenario").data('scenario_id'),
 			start_date = $('#start_date').val(),
 			end_date = $('#end_date').val(),
+			cluster = $('#cluster').is(":checked"),
 			sd = new Date(start_date),
 			ed = new Date(end_date);
-
+		
 		// fix timezone issues
 		sd = new Date(sd.getTime() + sd.getTimezoneOffset() * 60000);
 		ed = new Date(ed.getTime() + ed.getTimezoneOffset() * 60000);
@@ -47,6 +48,7 @@ $( document ).ready(function() {
 				  'scenario_id': scenario_id,
 				  'start_date': start_date,
 				  'end_date': end_date,
+				  'cluster': cluster,
 				},
 				dataType: 'json',
 				success: function (data) {
