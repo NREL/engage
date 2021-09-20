@@ -32,7 +32,7 @@ function render_barcharts(input_data) {
     // Layout
     var layout = {plot_bgcolor: 'transparent',
                   paper_bgcolor: 'transparent',
-                  hovermode: 'closest',
+                  hovermode: 'x',
                   xaxis:  { visible: false },
                   xaxis2: { visible: false },
                   xaxis3: { visible: false },

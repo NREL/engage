@@ -128,4 +128,7 @@ urlpatterns = [
          name='update_run_description'),
     path('download/',
          outputs_views.download,
-         name='download')]
+         name='download'),
+    path('upload_outputs/',
+         outputs_views.upload_outputs,
+         name='upload_outputs')]

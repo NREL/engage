@@ -38,7 +38,7 @@ function render_timeseries(input_data) {
     // Layout
     var layout = {plot_bgcolor: 'transparent',
                   paper_bgcolor: 'transparent',
-                  hovermode: 'closest',
+                  hovermode: 'x',
                   xaxis:  { anchor: 'y4', side: "top", gridcolor: "#3b3b3b", gridwidth: 1, type: 'date' },
                   yaxis:  { title: { text: metrics[3] }, domain: [0.03, 0.22], gridcolor: "#3b3b3b", gridwidth: 1, autorange: true, type: 'linear' },
                   yaxis2: { title: { text: metrics[2] }, domain: [0.28, 0.47], gridcolor: "#3b3b3b", gridwidth: 1, autorange: true, type: 'linear' },

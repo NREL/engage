@@ -16,6 +16,7 @@ $( document ).ready(function() {
 			start_date = $('#start_date').val(),
 			end_date = $('#end_date').val(),
 			cluster = $('#cluster').is(":checked"),
+			manual = $('#manual').is(":checked"),
 			sd = new Date(start_date),
 			ed = new Date(end_date);
 		
@@ -49,6 +50,7 @@ $( document ).ready(function() {
 				  'start_date': start_date,
 				  'end_date': end_date,
 				  'cluster': cluster,
+				  'manual':manual,
 				},
 				dataType: 'json',
 				success: function (data) {
@@ -62,6 +64,13 @@ $( document ).ready(function() {
 				}
 			});
 		};
+	});
+
+	// Automatically deactivate clustering if manual is enabled.
+	$('#manual').on('click', function() {
+		if ($('#manual').is(":checked")) {
+			$('#cluster').prop('checked', false);
+		}
 	});
 
 });

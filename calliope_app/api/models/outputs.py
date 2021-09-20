@@ -51,7 +51,9 @@ class Run(models.Model):
     calliope_066_upgraded = models.BooleanField(default=False)
     calliope_066_errors = models.TextField(blank=True)
 
+    # User run settings
     cluster = models.BooleanField(default=True)
+    manual = models.BooleanField(default=False)
 
     build_task = models.ForeignKey(
         to=CeleryTask,

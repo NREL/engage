@@ -311,7 +311,8 @@ function activate_runs() {
 			  'model_uuid': $('#header').data('model_uuid'),
 			  'scenario_id': $("#scenario option:selected").data('id'),
 			  'start_date': $(this).attr('data-dates').split(' to ')[0],
-			  'end_date': $(this).attr('data-dates').split(' to ')[1]
+			  'end_date': $(this).attr('data-dates').split(' to ')[1],
+			  'cluster': $(this).attr('cluster')
 			},
 			dataType: 'json',
 			success: function (data) {
@@ -324,6 +325,55 @@ function activate_runs() {
 	$('#run_carrier, #run_location, #run_month').on('change', function() {
 		toggle_viz_spinner(true);
 		get_viz_outputs();
+	});
+
+	$('.btn-upload-outputs').unbind();
+	$('.btn-upload-outputs').on('click', function() {
+		var run_id = $(this).data('run_id');
+		console.log(run_id);
+		//hold_refresh = true;
+		//$('.file-add-row').toggleClass('hide');
+		$('#submit_outputs').click();
+
+		var model_uuid = $('#header').data('model_uuid');
+		
+		var uploadForm = document.createElement('form');
+		uploadForm.id = 'uploadForm';
+		uploadForm.method='post';
+		uploadForm.action='/' + LANGUAGE_CODE + '/api/upload_outputs/';
+		uploadForm.enctype = 'multipart/form-data';
+		var modelInput = document.createElement('input');
+		modelInput.name = 'model_uuid';
+		modelInput.value = model_uuid;
+		uploadForm.appendChild(modelInput);
+		var runInput = document.createElement('input');
+		runInput.name = 'run_id';
+		runInput.value = run_id;
+		uploadForm.appendChild(runInput);
+		var csrfInput = document.createElement('input');
+		csrfInput.name = 'csrfmiddlewaretoken';
+		csrfInput.value = getCookie('csrftoken');
+		uploadForm.appendChild(csrfInput);
+    	var fileInput = document.createElement('input');
+		var submit_outputs= document.createElement('input');
+		submit_outputs.type = 'submit';
+		submit_outputs.id = 'submit_outputs';
+		uploadForm.appendChild(submit_outputs);
+
+    	fileInput.type = 'file';
+    	fileInput.name = 'myfile';
+    	fileInput.multiple = false;
+		fileInput.onchange = function(){
+
+			$('#submit_outputs').click();
+			uploadForm.remove();
+		};
+
+		uploadForm.appendChild(fileInput);
+		$(document.body.append(uploadForm));
+		fileInput.click();
+	
+		
 	});
 
 };

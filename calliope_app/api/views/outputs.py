@@ -1,5 +1,5 @@
 import base64
-import os
+import os, shutil
 import json
 from datetime import datetime, timedelta
 from urllib.parse import urljoin
@@ -10,11 +10,13 @@ from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate
+from django.core.files.storage import FileSystemStorage
+from django.shortcuts import redirect
 
 from api.exceptions import ModelNotExistException
 from api.models.outputs import Run, Cambium
 from api.tasks import run_model, task_status, build_model
-from api.models.configuration import Model, ParamsManager, Model_User
+from api.models.configuration import Model, ParamsManager, Model_User,User_File
 from api.utils import zip_folder
 from taskmeta.models import CeleryTask
 
@@ -30,6 +32,7 @@ def build(request):
     start_date (timestamp): required
     end_date (timestamp): required
     cluster (bool): optional
+    manual (bool): optional
 
     Returns (json): Action Confirmation
 
@@ -43,6 +46,7 @@ def build(request):
     start_date = request.GET.get("start_date", None)
     end_date = request.GET.get("end_date", None)
     cluster = (request.GET.get("cluster", 'true') == 'true')
+    manual = (request.GET.get("manual", 'false') == 'true')
 
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
@@ -66,6 +70,7 @@ def build(request):
             status=task_status.QUEUED,
             inputs_path="",
             cluster=cluster,
+            manual=manual,
         )
 
         # Generate File Path
@@ -347,3 +352,64 @@ def download(request):
         json.dumps({"message": "Not Found!"}, indent=4),
         content_type="application/json"
     )
+
+@csrf_protect
+def upload_outputs(request):
+    """
+    Upload a zipped outputs file.
+
+    Parameters:
+    model_uuid (uuid): required
+    run_id (int): required
+    description (str): optional
+    myfile (file): required
+
+    Returns: 
+
+    Example:
+    POST: /api/upload_outputs/
+    """
+
+    model_uuid = request.POST["model_uuid"]
+    run_id = request.POST["run_id"]
+
+    model = Model.by_uuid(model_uuid)
+    model.handle_edit_access(request.user)
+
+    try:
+        run = Run.objects.get(id=run_id)
+    except Exception:
+        print("No Run Found")
+        raise Http404
+
+    if (request.method == "POST") and ("myfile" in request.FILES):
+
+        myfile = request.FILES["myfile"]
+        if ".zip" in myfile.name:
+
+            model_dir = run.inputs_path.replace("/inputs","")
+            out_dir = os.path.join(model_dir,"outputs")
+            if not os.path.exists(out_dir):
+                os.makedirs(out_dir, exist_ok=True)
+            
+            print(myfile.name)
+            fs = FileSystemStorage()
+            filename = fs.save(os.path.join(out_dir,myfile.name), myfile)
+
+            # Default assumes CSV files were directly zipped into archive
+            run.outputs_path = out_dir
+
+            shutil.unpack_archive(filename,out_dir)
+            # Loop through options for archived output directories rather than base CSVs
+            # TODO: Add user input on location of output CSVs via API option
+            for dir in ['outputs','model_outputs']:
+                if dir in os.listdir(out_dir):
+                    run.outputs_path = os.path.join(out_dir,dir)
+
+            run.save()
+
+            return redirect("/%s/runs/" % model_uuid)
+        return redirect("/%s/runs/" % model_uuid)
+
+    print("No File Found")
+    raise Http404
