@@ -10,6 +10,7 @@
 				<tr class="tbl-header" style="font-size:0.9em;background-color:#ececec;">
 					<td class="centered" style="padding-top:10px"><b>{% trans "Status" %}</b></td>
 					<td style="font-size:1.3em"><b>{{ run.year }}</b></td>
+					<td style="padding-top:10px"><b>{% trans "Clustered" %}</b></td>
 					<td style="padding-top:10px"><b>{% trans "Notes" %}</b> (double-click to edit)</td>
 					<td class="centered" style="padding-top:10px"><b>{% trans "Inputs" %}</b></td>
 					<td class="centered" style="padding-top:10px"><b>{% trans "Logs" %}</b></td>
@@ -34,8 +35,14 @@
 						<i class="fa fa-cog fa-spin" style="color:green"></i>
 					</td>
                     {% elif run.status == task_status.BUILT or run.status == 'Built' %}
-					<td class="centered table-success" style="width:100px;" data-toggle="tooltip" data-placement="left" title="{{ run.status }} (ready to run) @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
+						{% if run.manual %}
+						<td class="centered table-manual" style="width:100px;background-color:lightblue" data-toggle="tooltip" data-placement="left" title="{{ run.status }}">
+							<b style="color:blue;">Manual</b>
+						</td>
+						{% else %}
+						<td class="centered table-success" style="width:100px;" data-toggle="tooltip" data-placement="left" title="{{ run.status }} (ready to run) @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
 						<button {% if not can_edit %}disabled{% endif %} data-run_id="{{ run.id }}" tabindex="-1" type="button" class="btn btn-outline-success btn-run-inputs" style="width:100%;"><i class="fas fa-play"></i>&nbsp;&nbsp;{% trans "Run" %}</button>
+						{% endif %}
 					</td>
                     {% elif run.status == task_status.QUEUED %}
 					<td class="centered table-warning" style="width:100px;" data-toggle="tooltip" data-placement="left" title="{{ run.status }} @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
@@ -60,6 +67,7 @@
 					{% endif %}
 					<!-- Subset Time -->
 					<td><div class="text-sm">{{ run.subset_time }}</div></td>
+					<td>{% if run.cluster %}<i class="fas fa-check"></i>{% endif %}</td>
 					<!-- Notes -->
 					<td style="width: 40%; white-space: normal;">
 						<div class="run-description" style="cursor:copy" id="{{ run.id }}">{{ run.description|default:"" }}</div>
@@ -93,6 +101,10 @@
 					<td class="centered">
 						{% if run.outputs_path %}
 						<a href="/api/download/?model_uuid={{ model.uuid }}&run_id={{ run.id }}&type=outputs"><button tabindex="-1" type="button" class="btn btn-success btn-download" style="width:100%;"><i class="fa fa-download" aria-hidden="true"></i></button></a>
+						{% elif run.manual and can_edit %}
+						<button tabindex="-1" type="button" data-run_id="{{ run.id }}" class="btn btn-success btn-upload-outputs" style="width:100%;position:relative">
+							<i class="fa fa-upload" aria-hidden="true"></i>
+						</button>
 						{% endif %}
 					</td>
 					<!-- Publish Button -->
@@ -114,7 +126,7 @@
 					<!-- Deprecated -->
 					<td class="centered">
 						{% if run.deprecated %}
-						<button class="run-version-old btn btn-outline-danger" data-dates="{{ run.subset_time }}" style="width: 100%;">{% trans "OUT OF DATE" %}</button>
+						<button class="run-version-old btn btn-outline-danger" data-dates="{{ run.subset_time }}" cluster="{{ run.cluster }}" style="width: 100%;">{% trans "OUT OF DATE" %}</button>
 						{% else %}
 						<button class="run-version btn btn-outline-success" style="width: 100%;" disabled>{% trans "UP TO DATE" %}</button>
 						{% endif %}
@@ -127,6 +139,7 @@
 						<button {% if not can_edit %}disabled{% endif %} data-run_id="{{ run.id }}" type="button" class="btn btn-sm btn-outline-danger run-delete" title="{% trans 'Delete run' %}"><i class="fas fa-trash"></i></button>
 					</td>
 				</tr>
+                
 			{% endwith %}
 		{% endfor %}
 	</tbody>
