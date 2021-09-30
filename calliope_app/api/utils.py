@@ -209,9 +209,9 @@ def load_timeseries_from_csv(filename, t_index, v_index, has_header=False):
         else:
             # Fast: Try using strptime
             try:
-                chunk_dates = chunk_df[[t_index]].astype(str).ix[:, 0].apply(
+                chunk_dates = chunk_df[[t_index]].astype(str).iloc[:, 0].apply(
                     lambda x: make_aware(datetime.strptime(x, date_format)))
-            except ValueError:
+            except (ValueError, AttributeError):
                 chunk_dates = pd.to_datetime(chunk_df.loc[:, t_index])
 
             chunk_df.iloc[:, t_index] = chunk_dates
