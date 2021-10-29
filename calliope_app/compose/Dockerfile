@@ -39,9 +39,11 @@ RUN ./configure \
 # install python packages
 WORKDIR /www
 COPY requirements.txt requirements-dev.txt /www/
-RUN pip3 install --upgrade pip
-RUN pip3 install -r requirements.txt
-RUN pip3 install -r requirements-dev.txt
-RUN pip3 install psycopg2-binary
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+RUN pip install -r requirements-dev.txt
+RUN pip install psycopg2-binary
 
 COPY . .
+
+RUN pip install -e .
