@@ -1104,6 +1104,16 @@ function add_row($this) {
 		param_id = row.data('param_id');
 	row.addClass('param_header');
 	$('.param_row_'+param_id).removeClass('param_row_min');
+	var p_row = $('.param_row_'+param_id),
+	p_value = p_row.find('.parameter-value-existing').data('value'),
+	units = p_row.find('.parameter-units').data('value'),
+	val = convert_units(p_value, units);
+	if (typeof(val) == 'number') {
+		p_row.find('.parameter-value-existing').attr('data-target_value',val);
+	} else {
+		p_row.find('.parameter-value-existing').addClass('invalid-value');
+		p_row.find('.parameter-target-value').html(row.find('.parameter-target-value').data('value'));
+	}
 	head_value_cell = row.find('.head_value');
 	head_value_cell.removeClass('head_value').addClass('param_row_toggle');
 	head_value_cell.find('.static_inputs').remove();
