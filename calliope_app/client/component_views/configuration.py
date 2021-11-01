@@ -276,6 +276,7 @@ def timeseries_view(request):
     timeseries = timeseries_meta.get_timeseries()
 
     min_date, max_date = timeseries_meta.get_period()
+    timeseries.index = pd.DatetimeIndex(timeseries.datetime).tz_localize(None)
 
     # Validate start_date, end_date
     if start_date is not None:
@@ -304,12 +305,12 @@ def timeseries_view(request):
     if start_date is not None:
         if start_date <= min_date or start_date >= max_date:
             start_date = min_date
-        timeseries = timeseries[timeseries.datetime >= start_date]
+        timeseries = timeseries[timeseries.index >= start_date]
 
     if end_date is not None:
         if end_date <= min_date or end_date >= (max_date + timedelta(days=1)):
             end_date = max_date + timedelta(days=1)
-        timeseries = timeseries[timeseries.datetime < end_date]
+        timeseries = timeseries[timeseries.index < end_date]
 
     if len(timeseries) > 8784:  # hours in one year
         # get max value for each day
