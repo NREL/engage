@@ -95,3 +95,22 @@ services:
       - long_worker
       - celery_flower
     command: ["./wait-for-postgres.sh", "compose/run-calliope-app.sh"]
+
+  # docker compose --profile batch_node up
+  batch_node:
+    profiles:
+      - batch_node
+    build:
+      context: calliope_app
+      dockerfile: compose/Dockerfile
+    image: calliope-app
+    container_name: calliope-batch-node
+    restart: on-failure
+    env_file:
+      - .envs/.local
+    volumes:
+      - ./calliope_app:/www
+      - ./data:/data
+    depends_on:
+      - postgres
+    command: ["./wait-for-postgres.sh", "compose/run-batch-node.sh"]

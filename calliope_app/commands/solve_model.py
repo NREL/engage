@@ -1,47 +1,34 @@
-import logging
-import os
+"""
+CLI command to solve model associated to Run instance.
 
+Example
+-------
+engage solve-model --run-id=5 --user-id=1
+
+"""
+
+import logging
 import click
-from calliope import Model
+from .model_run_handler import ModelRunHandler
 
 logger = logging.getLogger(__name__)
 
 
 @click.command()
-@click.argument("config-file")
 @click.option(
-    "--outputs",
-    type=click.Path(),
+    "--run-id",
+    type=click.INT,
     required=True,
-    help="The output directory of model run"
+    help="The Run instance id"
 )
-def solve_model(config_file, outputs):
-    """Run Calliope model with given config file"""
-    # Solve Calliope model
-    try:
-        logger.info("Engage solving model - %s", config_file)
-        model = Model(config_file)
-        model.run()
-        logger.info("Model run success - %s", config_file)
-    except Exception as err:
-        logger.error("Failed to solve model - %s", config_file)
-        logger.error(str(err))
-        return
-
-    # Export Calliope model run results in CSV
-    model_outputs = os.path.join(outputs, "model_outputs")
-    if os.path.exists(model_outputs):
-        shutil.rmtree(model_outputs)
-        os.makedirs(model_outputs)
-
-    try:
-        logger.info("Exporting model results in CSV - %s", config_file)
-        model.to_csv(model_outputs)
-    except Exception as err:
-        logger.error("Failed to export CSV results - %s", )
-
-    # Export HTML plots
-    plot_file = os.path.join(outputs, "model_plots.html")
-    model.plot.summary(to_file=plot_file)
-
+@click.option(
+    "--user-id",
+    type=click.INT,
+    required=True,
+    help="The User instance id"
+)
+def solve_model(run_id, user_id):
+    """Given a run id, run the Calliope model associated"""
+    handler = ModelRunHandler(run_id=run_id, user_id=user_id)
+    handler.solve_model()
     logger.info("Model run & export success!")

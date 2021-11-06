@@ -357,7 +357,8 @@ class CalliopeModelRunTask(Task):
             "A timeseries has not been selected for a timeseries parameter"
     }
 
-    def notify_user(self, run, user_id, success=True, exc=None):
+    @classmethod
+    def notify_user(cls, run, user_id, success=True, exc=None):
         """Send notification to user"""
         # Get user
         try:
@@ -394,7 +395,8 @@ class CalliopeModelRunTask(Task):
             recipient_list=recipient_list
         )
 
-    def notify_admin(self, run, user_id, task_id, success=False, exc=None):
+    @classmethod
+    def notify_admin(cls, run, user_id, task_id, success=False, exc=None):
         """Send notification to admin"""
         if success:
             return
