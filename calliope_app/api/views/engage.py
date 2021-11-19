@@ -1,6 +1,6 @@
 from django.views.decorators.csrf import csrf_protect
 from django.urls import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 
 from api.models.engage import User_Profile
 from api.tasks import upgrade_066
@@ -85,19 +85,34 @@ def user_registration(request):
     email = request.POST.get('email').lower()
     password = request.POST.get('password')
 
+    if any((c in ['<','>','{','}','|']) for c in email):
+        payload = {"message":'Invalid email'}
+        return HttpResponse(json.dumps(payload, indent=4),
+                        content_type="application/json")
+    if any((c in ['<','>','{','}','|']) for c in first_name):
+        payload = {"message":'Invalid name'}
+        return HttpResponse(json.dumps(payload, indent=4),
+                        content_type="application/json")
+    if any((c in ['<','>','{','}','|']) for c in last_name):
+        payload = {"message":'Invalid name'}
+        return HttpResponse(json.dumps(payload, indent=4),
+                        content_type="application/json")
+    if any((c in ['<','>','{','}','|']) for c in organization):
+        payload = {"message":'Invalid org'}
+        return HttpResponse(json.dumps(payload, indent=4),
+                        content_type="application/json")
     User_Profile.register(http_host=request.META['HTTP_HOST'],
-                          email=email,
-                          first_name=first_name,
-                          last_name=last_name,
-                          password=password,
-                          organization=organization)
+                        email=email,
+                        first_name=first_name,
+                        last_name=last_name,
+                        password=password,
+                        organization=organization)
 
     payload = {"message": ("Thank you! A verification email has been sent!"
-                           "\nTo complete your registration, you must click"
-                           " on the activation link sent to {}".format(email))}
+                        "\nTo complete your registration, you must click"
+                        " on the activation link sent to {}".format(email))}
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
-
 
 @csrf_protect
 def apply_upgrade_066(request):
