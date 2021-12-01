@@ -545,5 +545,29 @@ var user_defined_units = [
   {
     "name": "Firewood_Mass_Energy[16MJ/kg]",
     "value": "16 MJ/kg"
+  },
+  {
+    "name":"Therm[100,000 BTU]",
+    "value":"100000 BTU"
+  },
+  {
+    "name":"thm[100,000 BTU]",
+    "value":"100000 BTU"
+  },
+  {
+    "name":"cf[ft^3]",
+    "value":"1 ft^3"
+  },
+  {
+    "name":"Gasoline_Gallon_Equivalent[114,118.8 BTU]",
+    "value":"114118.8 BTU"
+  },
+  {
+    "name":"GGE[114,118.8 BTU]",
+    "value":"114118.8 BTU"
+  },
+  {
+    "name":"gge[114,118.8 BTU]",
+    "value":"114118.8 BTU"
   }
 ]
