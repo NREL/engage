@@ -25,7 +25,7 @@ setup(
     description="A package for running engage models with CLI commands",
     entry_points={
         'console_scripts': [
-            'engage=commands.cli:main',
+            'engage=batch.cli:main',
         ],
     },
     install_requires=requirements,

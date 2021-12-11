@@ -17,11 +17,20 @@ import boto3
 import django
 from django.conf import settings
 
+
 # Setup django environment before using django models in standalone scripts
 def setup_django():
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     sys.path.append(root_dir)
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "calliope_app.settings.local")
+    
+    # Ensure Django logfile before setup
+    logfile = "/opt/python/log/django.log"
+    os.makedirs(os.path.dirname(logfile), exist_ok=True)
+    if not os.path.exists(logfile):
+        with open(logfile, "w") as f:
+            pass
+    
     django.setup()
 
 setup_django()
