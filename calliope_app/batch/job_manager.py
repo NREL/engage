@@ -29,7 +29,7 @@ class BatchJobManager:
 
     def generate_job_message(self, run_id, user_id):
         job = {
-            "name": "engage-test-job",
+            "name": f"engage-model-run-{run_id}-user-{user_id}",
             "command": [
                 "engage", "solve-model",
                 "--run-id", str(run_id),
@@ -42,5 +42,5 @@ class BatchJobManager:
 
 if __name__ == "__main__":
     bm = BatchJobManager()
-    job = bm.generate_job_message(run_id=1290, user_id=34)
+    job = bm.generate_job_message(run_id=1459, user_id=34)
     bm.submit_job(job)

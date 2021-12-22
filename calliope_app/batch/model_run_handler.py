@@ -103,6 +103,11 @@ class ModelRunHandler:
 
     def solve_model(self):
         """Solve Calliope model and handle success/failure cases"""
+        print("Exist1", os.path.exists("/data/"))
+        print("Exist2", os.path.exists("/data/7323237a-3719-486a-a657-64b3c727dc60/"))
+        print("Exist3", os.path.exists("/data/7323237a-3719-486a-a657-64b3c727dc60/testmodel2/example_scenario/2005/2005-01-01-to-2005-01-02/2021-12-16-002607/"))
+        print("ExistsLog", os.path.exists("'/data/7323237a-3719-486a-a657-64b3c727dc60/testmodel2/example_scenario/2005/2005-01-01-to-2005-01-02/2021-12-16-002607/logs.html"))
+        self._ensure_logs_file()
         try:
             run_model(
                 run_id=self.run_id,
@@ -112,6 +117,13 @@ class ModelRunHandler:
             self._handle_on_success()
         except Exception as exc:
             self._handle_on_failure(exc)
+
+    def _ensure_logs_file(self):
+        if os.path.exists(self.logs_path):
+            return
+    
+        with open(self.logs_path, "w") as f:
+            pass
 
     def _handle_on_failure(self, exc):
         """Handle run instance and logs when model run failed"""
