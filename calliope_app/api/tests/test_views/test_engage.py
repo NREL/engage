@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 
-from api.models.engage import User_Profile
+from account.models import User_Profile
 
 
 class UserActivationViewTestCase(TestCase):

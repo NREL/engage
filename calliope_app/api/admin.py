@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from api.models.engage import Help_Guide, User_Profile
+from api.models.engage import Help_Guide
 from api.models.calliope import Abstract_Tech, Abstract_Tech_Param, \
     Parameter, Run_Parameter
 from api.models.configuration import Model, Model_User, Model_Comment, \
@@ -40,11 +40,6 @@ class Model_User_Admin(admin.ModelAdmin):
     list_filter = ['model']
     list_display = ['id', 'model', 'user', 'can_edit',
                     'last_access', 'notifications']
-
-
-class User_Profile_Admin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'organization',
-                    'timezone', 'activation_uuid']
 
 
 class Model_Comment_Admin(admin.ModelAdmin):
@@ -142,7 +137,6 @@ admin.site.register(Abstract_Tech_Param, Abstract_Tech_Param_Admin)
 admin.site.register(Run_Parameter, Run_Parameter_Admin)
 admin.site.register(Model, Model_Admin)
 admin.site.register(Model_User, Model_User_Admin)
-admin.site.register(User_Profile, User_Profile_Admin)
 admin.site.register(Model_Comment, Model_Comment_Admin)
 admin.site.register(Model_Favorite, Model_Favorite_Admin)
 admin.site.register(User_File, User_File_Admin)

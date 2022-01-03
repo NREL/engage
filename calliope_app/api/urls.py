@@ -10,17 +10,6 @@ urlpatterns = [
          engage_views.apply_upgrade_066,
          name='upgrade_066'),
 
-    # Users
-    path('user_registration/',
-         engage_views.user_registration,
-         name='user_registration'),
-    path('set_timezone/',
-         engage_views.set_timezone,
-         name='set_timezone'),
-    path('user_activation/<activation_uuid>',
-         engage_views.user_activation,
-         name='user_activation'),
-
     # Models
     path('add_model/',
          configuration_views.add_model,

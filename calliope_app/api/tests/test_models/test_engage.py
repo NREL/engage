@@ -8,7 +8,8 @@ from django.test import TestCase
 from django.utils.html import mark_safe
 from django.utils.safestring import SafeString
 
-from api.models.engage import Help_Guide, User_Profile
+from account.models import User_Profile
+from api.models.engage import Help_Guide
 
 
 class HelpGuideTestCase(TestCase):

@@ -309,27 +309,11 @@ class ClientEngageURLTestCase(TestCase):
                 self.assertEqual(reverse(view_name), url)
                 self.assertEqual(resolve(url).view_name, view_name)
 
-    def test_password(self):
-        view_name = "password"
-        for language_code, _ in settings.LANGUAGES:
-            with translation.override(language_code):
-                url = f"/{language_code}/settings/password/"
-                self.assertEqual(reverse(view_name), url)
-                self.assertEqual(resolve(url).view_name, view_name)
-    
     def test_admin_login(self):
         view_name = "admin"
         for language_code, _ in settings.LANGUAGES:
             with translation.override(language_code):
                 url = f"/{language_code}/admin/login/"
-                self.assertEqual(reverse(view_name), url)
-                self.assertEqual(resolve(url).view_name, view_name)
-    
-    def test_login(self):
-        view_name = "login"
-        for language_code, _ in settings.LANGUAGES:
-            with translation.override(language_code):
-                url = f"/{language_code}/login/"
                 self.assertEqual(reverse(view_name), url)
                 self.assertEqual(resolve(url).view_name, view_name)
     
