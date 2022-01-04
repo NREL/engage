@@ -1,15 +1,13 @@
 """
 Unit tests for Django app 'api' models - api/models/configuration.
 """
-from mock import patch
-
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.utils.html import mark_safe
 from django.utils.safestring import SafeString
+from mock import patch
 
-from account.models import User_Profile
-from api.models.engage import Help_Guide
+from api.models.engage import Help_Guide, User_Profile
 
 
 class HelpGuideTestCase(TestCase):

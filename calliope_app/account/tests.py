@@ -7,12 +7,12 @@ from django.utils import translation
 
 
 class AccountUserURLTestCase(TestCase):
-    def test_user_registration(self):
-        view_name = "user_registration"
+    def test_register(self):
+        view_name = "register"
 
         for language_code, _ in settings.LANGUAGES:
             with translation.override(language_code):
-                url = f"/{language_code}/api/user_registration/"
+                url = f"/{language_code}/register/"
                 self.assertEqual(reverse(view_name), url)
                 self.assertEqual(resolve(url).view_name, view_name)
 
@@ -22,7 +22,7 @@ class AccountUserURLTestCase(TestCase):
 
         for language_code, _ in settings.LANGUAGES:
             with translation.override(language_code):
-                url = f"/{language_code}/api/user_activation/{activation_uuid}"
+                url = f"/{language_code}/user_activation/{activation_uuid}"
                 self.assertEqual(
                     reverse(view_name, kwargs={"activation_uuid": activation_uuid}), url
                 )

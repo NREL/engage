@@ -9,16 +9,12 @@ from account import views
 urlpatterns = [
     path('login/', views.user_login, name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('register/', views.user_registration, name='register'),
 
     path(
         'settings/password/',
         views.password_view,
         name='password'
-    ),
-    path(
-        'user_registration/',
-        views.user_registration,
-        name='user_registration'
     ),
     path(
         'user_activation/<activation_uuid>',

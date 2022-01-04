@@ -8,6 +8,11 @@ from api.models.configuration import Model, Model_User, Model_Comment, \
     Loc_Tech, Loc_Tech_Param, Timeseries_Meta, Scenario, \
     Scenario_Loc_Tech, Scenario_Param
 from api.models.outputs import Run
+from api.models.engage import User_Profile
+
+
+class User_Profile_Admin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'organization', 'timezone', 'activation_uuid']
 
 
 class Help_Guide_Admin(admin.ModelAdmin):
@@ -137,6 +142,7 @@ admin.site.register(Abstract_Tech_Param, Abstract_Tech_Param_Admin)
 admin.site.register(Run_Parameter, Run_Parameter_Admin)
 admin.site.register(Model, Model_Admin)
 admin.site.register(Model_User, Model_User_Admin)
+admin.site.register(User_Profile, User_Profile_Admin)
 admin.site.register(Model_Comment, Model_Comment_Admin)
 admin.site.register(Model_Favorite, Model_Favorite_Admin)
 admin.site.register(User_File, User_File_Admin)

@@ -1,5 +1,6 @@
 import json
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -10,63 +11,30 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_protect
 
-from account.models import User_Profile
-from api.models.configuration import Model
+from account.forms import UserRegistrationForm, UserAuthenticationForm
+from api.models.engage import User_Profile
 
 
-@csrf_protect
 def user_registration(request):
     """
-    Submit a user's registration, triggers a link sent to the user's email
-    to activate their account.
-
-    Parameters:
-    first_name (string): required
-    last_name (string): required
-    organization (string): required
-    email (string): required
-    password (string): required
-
-    Returns (json): Action Confirmation
-
-    Example:
-    POST: /api/user_registration/
+    User registration view
     """
-
-    first_name = request.POST.get('first_name').title()
-    last_name = request.POST.get('last_name').title()
-    organization = request.POST.get('organization')
-    email = request.POST.get('email').lower()
-    password = request.POST.get('password')
-
-    if any((c in ['<','>','{','}','|']) for c in email):
-        payload = {"message":'Invalid email'}
-        return HttpResponse(json.dumps(payload, indent=4),
-                        content_type="application/json")
-    if any((c in ['<','>','{','}','|']) for c in first_name):
-        payload = {"message":'Invalid name'}
-        return HttpResponse(json.dumps(payload, indent=4),
-                        content_type="application/json")
-    if any((c in ['<','>','{','}','|']) for c in last_name):
-        payload = {"message":'Invalid name'}
-        return HttpResponse(json.dumps(payload, indent=4),
-                        content_type="application/json")
-    if any((c in ['<','>','{','}','|']) for c in organization):
-        payload = {"message":'Invalid org'}
-        return HttpResponse(json.dumps(payload, indent=4),
-                        content_type="application/json")
-    User_Profile.register(http_host=request.META['HTTP_HOST'],
-                        email=email,
-                        first_name=first_name,
-                        last_name=last_name,
-                        password=password,
-                        organization=organization)
-
-    payload = {"message": ("Thank you! A verification email has been sent!"
-                        "\nTo complete your registration, you must click"
-                        " on the activation link sent to {}".format(email))}
-
-    return HttpResponse(json.dumps(payload), content_type="application/json")
+    if request.method == "POST":
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save(host=request.META["HTTP_HOST"])
+            email = form.cleaned_data["email"]
+            messages.success(
+                request,
+                f"Registration successful, activation link was sent to your email address - {email}"
+            )
+            return redirect("login")
+        messages.error(request, "Unsuccessful registration. Invalid information.")
+    else:
+        form = UserRegistrationForm()
+    
+    template_name = "registration/registration.html"
+    return render(request, template_name, context={"registration_form": form})
 
 
 @csrf_protect
@@ -95,58 +63,25 @@ def user_activation(request, activation_uuid):
 
 def user_login(request):
     """
-    View the "Login" page
-
-    Returns: HttpResponse
-
-    Example:
-    http://0.0.0.0:8000/login/
+    User authentication view
     """
-    redirect_to = request.GET.get('next', '')
-    status = request.GET.get('status', 'login')
-    status_messages = {'active': ("Account has been activated!\n"
-                                  "Please proceed to login..."),
-                       'inactive': ("Account has not yet been activated!\n"
-                                    "Email must be verified first..."),
-                       'invalid-email': ("Email is invalid!\n"
-                                         "Please try again..."),
-                       'invalid-password': ("Password is invalid!\n"
-                                            "Please try again...")}
+    redirect_url = request.GET.get("next", settings.LOGIN_REDIRECT_URL)
+    if not redirect_url:
+        redirect_url = "/"
+    
+    if request.method == "POST":
+        form = UserAuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.user_cache
+            if user is not None:
+                login(request, user)
+                return redirect(redirect_url)
+        
+        messages.error(request, form.non_field_errors())
+    
+    form = UserAuthenticationForm()
 
-    if request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('home'))
-    if request.method == 'POST':
-        email = request.POST.get('email').lower()
-        password = request.POST.get('password')
-
-        user = User.objects.filter(username=email).first()
-        if user:
-            if not user.is_active:
-                url = "%s?status=inactive" % reverse('login')
-                return HttpResponseRedirect(url)
-            else:
-                user = authenticate(username=email, password=password)
-                if user:
-                    login(request, user)
-                    if redirect_to:
-                        return HttpResponseRedirect(redirect_to)
-                    else:
-                        return HttpResponseRedirect(reverse('home'))
-                else:
-                    url = "%s?status=invalid-password" % reverse('login')
-                    return HttpResponseRedirect(url)
-
-        else:
-            url = "%s?status=invalid-email" % reverse('login')
-            return HttpResponseRedirect(url)
-    else:
-        public_models = Model.objects.filter(
-            snapshot_version=None,
-            public=True)
-        context = {'redirect_to': redirect_to,
-                   'status': status_messages.get(status, ''),
-                   'public_models': public_models}
-        return render(request, 'registration/login.html', context)
+    return render(request, "registration/login.html", context={"login_form": form})
 
 
 @login_required
