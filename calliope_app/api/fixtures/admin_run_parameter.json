@@ -8,7 +8,7 @@
       "can_evolve": "False",
       "name": "calliope_version",
       "pretty_name": "Calliope version",
-      "default_value": "0.6.6",
+      "default_value": "0.6.7",
       "description": "Calliope framework version this model is intended for",
       "choices": "[]"
     }

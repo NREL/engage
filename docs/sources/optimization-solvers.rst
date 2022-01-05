@@ -38,7 +38,7 @@ to solve Calliope models with fast speed and large memory in compute node.
 More Choice
 -----------
 In behind, Calliope interfaces to `Pyomo <http://www.pyomo.org/>`_  - a Python-based, open-source optimization modeling language with 
-a diverse set of optimization capabilities. With the `API interface <https://calliope.readthedocs.io/en/v0.6.6-post1/api/api.html#api-backend-interface>`_ 
+a diverse set of optimization capabilities. With the `API interface <https://calliope.readthedocs.io/en/v0.6.7/api/api.html#api-backend-interface>`_ 
 provided by Calliope, you can specify the customized solver options.
 
 For more solver choice, please refer to `specifying-custom-solver-options 
