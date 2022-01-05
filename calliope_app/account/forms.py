@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from api.models.engage import User_Profile
+from account.validators import email_validator, unicode_email_validator, unicode_chars_validator 
 
 
 class UserRegistrationForm(UserCreationForm):
@@ -13,22 +14,26 @@ class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(
         label=_("Email"),
         required=True,
-        widget=forms.EmailInput
+        widget=forms.EmailInput,
+        validators=(email_validator, unicode_email_validator)
     )
     first_name = forms.CharField(
         label=_("First Name"),
         required=True,
-        strip=True
+        strip=True,
+        validators=(unicode_chars_validator, )
     )
     last_name = forms.CharField(
         label=_("Last Name"),
         required=True,
-        strip=True
+        strip=True,
+        validators=(unicode_chars_validator, )
     )
     organization = forms.CharField(
         label=_("Organization"),
         required=True,
-        strip=True
+        strip=True,
+        validators=(unicode_chars_validator, )
     )
     password1 = forms.CharField(
         label=_("Password"),
@@ -76,7 +81,8 @@ class UserRegistrationForm(UserCreationForm):
 class UserAuthenticationForm(AuthenticationForm):
     username = forms.EmailField(
         label=_("Email"),
-        widget=forms.EmailInput(attrs={'autofocus': True})
+        widget=forms.EmailInput(attrs={'autofocus': True}),
+        validators=(email_validator, unicode_email_validator)
     )
     password = forms.CharField(
         label=_("Password"),
