@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from api.models.engage import Help_Guide, User_Profile
+from api.models.engage import Help_Guide
 from api.models.calliope import Abstract_Tech, Abstract_Tech_Param, \
     Parameter, Run_Parameter
 from api.models.configuration import Model, Model_User, Model_Comment, \
@@ -8,6 +8,11 @@ from api.models.configuration import Model, Model_User, Model_Comment, \
     Loc_Tech, Loc_Tech_Param, Timeseries_Meta, Scenario, \
     Scenario_Loc_Tech, Scenario_Param
 from api.models.outputs import Run
+from api.models.engage import User_Profile
+
+
+class User_Profile_Admin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'organization', 'timezone', 'activation_uuid']
 
 
 class Help_Guide_Admin(admin.ModelAdmin):
@@ -40,11 +45,6 @@ class Model_User_Admin(admin.ModelAdmin):
     list_filter = ['model']
     list_display = ['id', 'model', 'user', 'can_edit',
                     'last_access', 'notifications']
-
-
-class User_Profile_Admin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'organization',
-                    'timezone', 'activation_uuid']
 
 
 class Model_Comment_Admin(admin.ModelAdmin):
