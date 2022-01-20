@@ -9,6 +9,10 @@
 		<div class="col-1 tab" style="background-color:#dedede;z-index:-1;padding:0;z-index: 451;">
 			<button id="master-cancel" {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-danger master-btn hide"><b>{% trans "Cancel" %}</b></button>
 			<button id="master-settings" {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-info master-btn hide">{% trans "Settings" %}</button>
+			<div class="btn-group btn-group-vertical" style='width: 100%; height: 100%;'>
+			<button id="master-bulk-up" {% if not can_edit %}disabled{% endif %} type="button" class="btn master-btn btn-info hide" style='height: 50%;padding:0;'>{% trans "Bulk Upload" %}</button>
+			<a href="/api/bulk_download/?model_uuid={{ model.uuid }}" id="master-bulk-down" tabindex="-1" type="button" class="btn master-btn btn-info hide" style='width:101%;height:50%;padding:0;'>{% trans "Bulk Download" %}</a>
+			</div>
 		</div>
 		
 		<div class="col-2 centered tab {% block config_1_tab %}{% endblock %}">

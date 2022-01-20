@@ -1,0 +1,39 @@
+{% extends 'configure.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+<title>Engage | {{ model.name }} | Bulk Data Results</title>
+<style>
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<table id="log_table" class="table table-hover table-sm" style="white-space:nowrap">
+	<tbody>
+        <tr>
+            <td>
+                <span class="text-lg"></span><b>Results:</b>
+            </td>
+        </tr>
+        {% if logs|length == 0 %}
+        <tr>
+            <td>
+                <span class="text-sm"></span>Upload successful.
+            </td>
+        </tr>
+        {% endif %}
+        {% for log in logs %}
+        <tr>
+            <td>
+                <span class="text-sm"></span>{{ log }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -120,4 +120,18 @@ urlpatterns = [
          name='download'),
     path('upload_outputs/',
          outputs_views.upload_outputs,
-         name='upload_outputs')]
+         name='upload_outputs'),
+
+    # Bulk Data
+    path('upload_locations/',
+         outputs_views.upload_locations,
+         name='upload_locations'),
+    path('upload_techs/',
+         outputs_views.upload_techs,
+         name='upload_techs'),
+    path('upload_loctechs/',
+         outputs_views.upload_loctechs,
+         name='upload_loctechs'),
+    path('bulk_download/',
+         outputs_views.bulk_downloads,
+         name='bulk_download/'),   ]

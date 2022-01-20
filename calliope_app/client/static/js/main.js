@@ -1144,6 +1144,8 @@ function check_unsaved() {
 	$('.master-btn').addClass('hide');
 	if ($('.table-warning, .table-danger').length == 0) {
 		$('#master-new').removeClass('hide');
+		$('#master-bulk-up').removeClass('hide');
+		$('#master-bulk-down').removeClass('hide');
 		window.onbeforeunload = null;
 	} else {
 		$('#master-save').removeClass('hide');
