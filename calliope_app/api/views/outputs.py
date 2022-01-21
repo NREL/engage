@@ -17,6 +17,7 @@ from django.contrib.auth import authenticate
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
+from django.utils.text import slugify
 
 from api.exceptions import ModelNotExistException
 from api.models.outputs import Run, Cambium
@@ -391,7 +392,7 @@ def upload_outputs(request):
     if (request.method == "POST") and ("myfile" in request.FILES):
 
         myfile = request.FILES["myfile"]
-        if ".zip" in myfile.name:
+        if myfile.name.endswith('.zip'):
 
             model_dir = run.inputs_path.replace("/inputs","")
             out_dir = os.path.join(model_dir,"outputs")
@@ -451,7 +452,7 @@ def upload_locations(request):
     if (request.method == "POST") and ("myfile" in request.FILES):
 
         myfile = request.FILES["myfile"]
-        if '.csv' in myfile.name:
+        if myfile.name.endswith('.csv'):
             df = pd.read_csv(myfile)
         else:
             context['logs'].append('File format not supported. Please use a .csv.')
@@ -526,7 +527,7 @@ def upload_techs(request):
     if (request.method == "POST") and ("myfile" in request.FILES):
 
         myfile = request.FILES["myfile"]
-        if '.csv' in myfile.name:
+        if myfile.name.endswith('.csv'):
             df = pd.read_csv(myfile)
         else:
             context['logs'].append('File format not supported. Please use a .csv.')
@@ -638,7 +639,7 @@ def upload_techs(request):
                             existing.is_uploading = True
                             existing.save()
                         except Exception as e:
-                            print(e)
+                            context['logs'].append(e)
                     update_dict['edit']['timeseries'][p.pk] = existing.id
                 else:
                     if p.units in noconv_units:
@@ -688,7 +689,7 @@ def upload_loctechs(request):
     if (request.method == "POST") and ("myfile" in request.FILES):
 
         myfile = request.FILES["myfile"]
-        if '.csv' in myfile.name:
+        if myfile.name.endswith('.csv'):
             df = pd.read_csv(myfile)
         else:
             context['logs'].append('File format not supported. Please use a .csv.')
@@ -776,13 +777,12 @@ def upload_loctechs(request):
                                     "has_header": True,
                                 }
                             )
-                            print(async_result)
                             upload_task = CeleryTask.objects.get(task_id=async_result.id)
                             existing.upload_task = upload_task
                             existing.is_uploading = True
                             existing.save()
                         except Exception as e:
-                            print(e)
+                            context['logs'].append(e)
                     update_dict['edit']['timeseries'][p.pk] = existing.id
                 else:
                     if p.units in noconv_units:
@@ -903,5 +903,5 @@ def bulk_downloads(request):
     zip_file.close()
 
     response = HttpResponse(zip_buff.getvalue(), content_type="application/x-zip-compressed")
-    response['Content-Disposition'] = 'inline; filename=configs.zip'
+    response['Content-Disposition'] = 'inline; filename='+slugify(model.name)+'_configs.zip'
     return response
