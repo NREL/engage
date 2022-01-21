@@ -654,7 +654,6 @@ def upload_techs(request):
 
         return render(request, "bulkresults.html", context)
 
-    print("No File Found")
     context['logs'].append("No file found")
     return render(request, "bulkresults.html", context)
 
