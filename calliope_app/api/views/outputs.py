@@ -392,7 +392,7 @@ def upload_outputs(request):
     if (request.method == "POST") and ("myfile" in request.FILES):
 
         myfile = request.FILES["myfile"]
-        if myfile.name.endswith('.zip'):
+        if os.path.splitext(myfile.name)[1].lower() == '.zip':
 
             model_dir = run.inputs_path.replace("/inputs","")
             out_dir = os.path.join(model_dir,"outputs")
@@ -452,7 +452,7 @@ def upload_locations(request):
     if (request.method == "POST") and ("myfile" in request.FILES):
 
         myfile = request.FILES["myfile"]
-        if myfile.name.endswith('.csv'):
+        if os.path.splitext(myfile.name)[1].lower() == '.csv':
             df = pd.read_csv(myfile)
         else:
             context['logs'].append('File format not supported. Please use a .csv.')
@@ -527,7 +527,7 @@ def upload_techs(request):
     if (request.method == "POST") and ("myfile" in request.FILES):
 
         myfile = request.FILES["myfile"]
-        if myfile.name.endswith('.csv'):
+        if os.path.splitext(myfile.name)[1].lower() == '.csv':
             df = pd.read_csv(myfile)
         else:
             context['logs'].append('File format not supported. Please use a .csv.')
@@ -689,7 +689,7 @@ def upload_loctechs(request):
     if (request.method == "POST") and ("myfile" in request.FILES):
 
         myfile = request.FILES["myfile"]
-        if myfile.name.endswith('.csv'):
+        if os.path.splitext(myfile.name)[1].lower() == '.csv':
             df = pd.read_csv(myfile)
         else:
             context['logs'].append('File format not supported. Please use a .csv.')
