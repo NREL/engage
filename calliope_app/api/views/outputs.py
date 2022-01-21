@@ -459,7 +459,7 @@ def upload_locations(request):
             return render(request, "bulkresults.html", context)
 
         if not set(['pretty_name','longitude','latitude']).issubset(set(df.columns)):
-            context['logs'].append('Missing required columns')
+            context['logs'].append('Missing required columns. pretty_name, longitude, latitude are required.')
             return render(request, "bulkresults.html", context)
         df = df.loc[:,df.columns.isin(['id','pretty_name','longitude','latitude','available_area','description'])]
         df['model'] = model
@@ -534,7 +534,7 @@ def upload_techs(request):
             return render(request, "bulkresults.html", context)
 
         if not set(['pretty_name','abstract_tech']).issubset(set(df.columns)):
-            context['logs'].append('Missing required columns')
+            context['logs'].append('Missing required columns. pretty_name, abstract_tech are required.')
             return render(request, "bulkresults.html", context)
 
         df['model'] = model
@@ -696,7 +696,7 @@ def upload_loctechs(request):
             return render(request, 'bulkresults.html', context)
 
         if not set(['technology','location_1']).issubset(set(df.columns)):
-            context['logs'].append("Missing required columns")
+            context['logs'].append("Missing required columns. technology, location_1 are required.")
             return render(request, 'bulkresults.html', context)
         df['model'] = model
         df['tech'] = df['technology'].apply(lambda x: ParamsManager.simplify_name(x))
