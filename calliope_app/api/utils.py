@@ -14,6 +14,7 @@ import pandas as pd
 import numpy as np
 from django.db.models import Func, Value
 from django.utils.timezone import make_aware
+import pint
 
 
 CALLIOPE = 18
@@ -285,3 +286,24 @@ class DateTrunc(Func):
     def __init__(self, trunc_type, field_expression, **extra):
         super(DateTrunc, self).__init__(
             Value(trunc_type), field_expression, **extra)
+
+def initialize_units():
+    ureg = pint.UnitRegistry()
+    ureg.define('percent = 0.01 = percentage')
+    ureg.define('MMBTU = 1000000 BTU = mmbtu = mbtu')
+    ureg.define('Calorie = 1000 calorie = Calories')
+    ureg.define('dollar = 1 = dollars')
+    ureg.define('cent = .01 dollar = cent = cents')
+    ureg.define('units = 1 = unit')
+
+    return ureg
+
+def convert_units(ureg,val,target):
+	ur_v = ureg.Quantity(str(val).replace('%',' percent ').replace('$',' dollar '))
+	if str(ur_v.units) == 'dimensionless':
+		return val
+	else:
+		conv_v = ur_v.to(target.replace('%',' percent ').replace('$',' dollar ')).magnitude
+		return str(conv_v)+'||'+str(val)
+    
+noconv_units = ['<sub>ABC</sub>','<sup>T</sup>/<sub>F</sub>','&#8593;','']

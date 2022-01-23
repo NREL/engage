@@ -1,23 +1,30 @@
 import base64
-import os, shutil
+import os, shutil, io, zipfile
+from re import L
 import json
 from datetime import datetime, timedelta
 from urllib.parse import urljoin
 import requests
+import pandas as pd
+import pint
+#import geopandas as gpd
 
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate
 from django.core.files.storage import FileSystemStorage
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import login_required
+from django.utils.text import slugify
 
 from api.exceptions import ModelNotExistException
 from api.models.outputs import Run, Cambium
-from api.tasks import run_model, task_status, build_model
-from api.models.configuration import Model, ParamsManager, Model_User,User_File
-from api.utils import zip_folder
+from api.tasks import run_model, task_status, build_model,upload_ts
+from api.models.calliope import Abstract_Tech, Abstract_Tech_Param, Parameter
+from api.models.configuration import Model, ParamsManager, Model_User,User_File, Location, Technology, Tech_Param, Loc_Tech, Loc_Tech_Param, Timeseries_Meta
+from api.utils import zip_folder, initialize_units, convert_units, noconv_units
 from taskmeta.models import CeleryTask
 
 
@@ -385,7 +392,7 @@ def upload_outputs(request):
     if (request.method == "POST") and ("myfile" in request.FILES):
 
         myfile = request.FILES["myfile"]
-        if ".zip" in myfile.name:
+        if os.path.splitext(myfile.name)[1].lower() == '.zip':
 
             model_dir = run.inputs_path.replace("/inputs","")
             out_dir = os.path.join(model_dir,"outputs")
@@ -413,3 +420,488 @@ def upload_outputs(request):
 
     print("No File Found")
     raise Http404
+
+@csrf_protect
+@login_required
+def upload_locations(request):
+    """
+    Upload a CSV file with new/updated locations.
+
+    Parameters:
+    model_uuid (uuid): required
+    description (str): optional
+    myfile (file): required
+    col_map (dict): optional
+
+    Returns: 
+
+    Example:
+    POST: /api/upload_locations/
+    """
+
+    model_uuid = request.POST["model_uuid"]
+
+    model = Model.by_uuid(model_uuid)
+    model.handle_edit_access(request.user)
+
+    context = {
+                'logs':[],
+                "model": model
+              }
+
+    if (request.method == "POST") and ("myfile" in request.FILES):
+
+        myfile = request.FILES["myfile"]
+        if os.path.splitext(myfile.name)[1].lower() == '.csv':
+            df = pd.read_csv(myfile)
+        else:
+            context['logs'].append('File format not supported. Please use a .csv.')
+            return render(request, "bulkresults.html", context)
+
+        if not set(['pretty_name','longitude','latitude']).issubset(set(df.columns)):
+            context['logs'].append('Missing required columns. pretty_name, longitude, latitude are required.')
+            return render(request, "bulkresults.html", context)
+        df = df.loc[:,df.columns.isin(['id','pretty_name','longitude','latitude','available_area','description'])]
+        df['model'] = model
+        df['name'] = df['pretty_name'].apply(lambda x: ParamsManager.simplify_name(x))
+        for i,row in df.iterrows():
+            if pd.isnull(row['pretty_name']):
+                context['logs'].append(str(i)+'- Missing pretty name. Skipped')
+                continue
+            if pd.isnull(row['latitude']) or pd.isnull(row['longitude']):
+                context['logs'].append(str(i)+'- Missing latitude or longitude. Skipped')
+                continue
+            if pd.isnull(row['available_area']):
+                row['available_area'] = None
+            if pd.isnull(row['description']):
+                row['description'] = None
+            if 'id' not in row.keys() or pd.isnull(row['id']):
+                location = Location.objects.create(**(row.dropna()))
+            else:
+                location = Location.objects.filter(id=row['id']).first()
+                if not location:
+                    context['logs'].append(str(i)+'- Location '+row['pretty_name']+': No location with id '+row['id']+' found to update. Skipped.')
+                    continue
+                location.name = row['name']
+                location.pretty_name = row['pretty_name']
+                location.longitude = row['longitude']
+                location.latitude = row['latitude']
+                location.available_area = row['available_area']
+                location.description = row['description']
+                location.save()
+            
+        return redirect("/%s/locations/" % model_uuid)
+
+    context['logs'].append("No file found")
+    return render(request, "bulkresults.html", context)
+
+
+@csrf_protect
+@login_required
+def upload_techs(request):
+    """
+    Upload a CSV file with new/updated technologies.
+
+    Parameters:
+    model_uuid (uuid): required
+    description (str): optional
+    myfile (file): required
+    col_map (dict): optional
+
+    Returns: 
+
+    Example:
+    POST: /api/upload_techs/
+    """
+
+    model_uuid = request.POST["model_uuid"]
+
+    model = Model.by_uuid(model_uuid)
+    model.handle_edit_access(request.user)
+
+    context = {
+                'logs':[],
+                "model": model
+              }
+
+    if (request.method == "POST") and ("myfile" in request.FILES):
+
+        myfile = request.FILES["myfile"]
+        if os.path.splitext(myfile.name)[1].lower() == '.csv':
+            df = pd.read_csv(myfile)
+        else:
+            context['logs'].append('File format not supported. Please use a .csv.')
+            return render(request, "bulkresults.html", context)
+
+        if not set(['pretty_name','abstract_tech']).issubset(set(df.columns)):
+            context['logs'].append('Missing required columns. pretty_name, abstract_tech are required.')
+            return render(request, "bulkresults.html", context)
+
+        df['model'] = model
+        df['name'] = df['pretty_name'].apply(lambda x: ParamsManager.simplify_name(str(x)))
+        if 'pretty_tag' in df.columns:
+            df['tag'] = df['pretty_tag'].apply(lambda x: ParamsManager.simplify_name(str(x)))
+
+        ureg = initialize_units()
+
+        for i,row in df.iterrows():
+            if pd.isnull(row['abstract_tech']):
+                context['logs'].append(str(i)+'- Tech '+row['pretty_name']+': Missing abstract_tech. Skipped.')
+                continue
+            if row['abstract_tech'] in ['conversion','conversion_plus']:
+                if 'carrier_in' not in row.keys() or 'carrier_out' not in row.keys() or pd.isnull(row['carrier_in']) or pd.isnull(row['carrier_out']):
+                    context['logs'].append(str(i)+'- Tech '+row['pretty_name']+': Conversion techs require both carrier_in and carrier_out. Skipped.')
+                    continue
+            else:
+                if 'carrier' not in row.keys() or pd.isnull(row['carrier']):
+                    context['logs'].append(str(i)+'- Tech '+row['pretty_name']+': Missing a carrier. Skipped.')
+                    continue
+
+            if 'id' not in row.keys() or pd.isnull(row['id']):
+                technology = Technology.objects.create(
+                    model_id=row['model'].id,
+                    abstract_tech_id=Abstract_Tech.objects.filter(name=row['abstract_tech']).first().id,
+                    name=row['name'],
+                    pretty_name=row['pretty_name'],
+                )
+                
+            else:
+                technology = Technology.objects.filter(model=model,id=row['id']).first()
+                if not technology:
+                    context['logs'].append(str(i)+'- Tech '+row['pretty_name']+': No tech with id '+row['id']+' found to update. Skipped.')
+                    continue
+                technology.abstract_tech = Abstract_Tech.objects.filter(name=row['abstract_tech']).first()
+                technology.name = row['name']
+                technology.pretty_name = row['pretty_name']
+                technology.save()
+                Tech_Param.objects.filter(model_id=model.id,technology_id=technology.id).delete()
+
+            Tech_Param.objects.create(
+                    model_id=model.id,
+                    technology_id=technology.id,
+                    parameter_id=1,
+                    value=row['abstract_tech'],
+                )
+            Tech_Param.objects.create(
+                    model_id=model.id,
+                    technology_id=technology.id,
+                    parameter_id=2,
+                    value=row['pretty_name'],
+                )
+            update_dict = {'edit':{'parameter':{},'timeseries':{}},'essentials':{}}
+            for f,v in row.iteritems():
+                if pd.isnull(v):
+                    continue
+                p = Parameter.objects.filter(name=f).first()
+                if p == None:
+                    continue
+                # Essential params
+                if p.is_essential:
+                    update_dict['essentials'][p.pk] = v
+
+                # Timeseries params
+                elif str(v).startswith('file='):
+                    fields = v.split('=')[1].split(':')
+                    filename = fields[0]
+                    t_col = fields[1]
+                    v_col = fields[2]
+
+                    file = User_File.objects.filter(model=model, filename='user_files/'+filename)
+                    if not file:
+                        context['logs'].append(str(i)+'- Tech '+row['pretty_name']+': Column '+f+' missing file "' + filename+ '" for timeseries. Parameter skipped.')
+                        continue
+
+                    existing = Timeseries_Meta.objects.filter(model=model,
+                                              original_filename=filename,
+                                              original_timestamp_col=t_col,
+                                              original_value_col=v_col).first()
+                    if not existing:
+                        existing = Timeseries_Meta.objects.create(
+                            model=model,
+                            name=filename+str(t_col)+str(v_col),
+                            original_filename=filename,
+                            original_timestamp_col=t_col,
+                            original_value_col=v_col,
+                        )
+                        try:
+                            async_result = upload_ts.apply_async(
+                                kwargs={
+                                    "model_uuid": model_uuid,
+                                    "timeseries_meta_id": existing.id,
+                                    "file_id": file.first().id,
+                                    "timestamp_col": t_col,
+                                    "value_col": v_col,
+                                    "has_header": True,
+                                }
+                            )
+                            upload_task = CeleryTask.objects.get(task_id=async_result.id)
+                            existing.upload_task = upload_task
+                            existing.is_uploading = True
+                            existing.save()
+                        except Exception as e:
+                            context['logs'].append(e)
+                    update_dict['edit']['timeseries'][p.pk] = existing.id
+                else:
+                    if p.units in noconv_units:
+                        update_dict['edit']['parameter'][p.pk] = v
+                    else:
+                        try:
+                            update_dict['edit']['parameter'][p.pk] = convert_units(ureg,v,p.units)
+                        except pint.errors.DimensionalityError as e:
+                            context['logs'].append(str(i)+'- Tech '+row['pretty_name']+': Column '+f+' '+str(e)+'. Parameter skipped.')
+                            continue
+                        
+            technology.update(update_dict)
+
+        return render(request, "bulkresults.html", context)
+
+    context['logs'].append("No file found")
+    return render(request, "bulkresults.html", context)
+
+@csrf_protect
+@login_required
+def upload_loctechs(request):
+    """
+    Upload a CSV file with new/updated location technologies.
+
+    Parameters:
+    model_uuid (uuid): required
+    description (str): optional
+    myfile (file): required
+    col_map (dict): optional
+
+    Returns: 
+
+    Example:
+    POST: /api/upload_loctechs/
+    """
+
+    model_uuid = request.POST["model_uuid"]
+
+    model = Model.by_uuid(model_uuid)
+    model.handle_edit_access(request.user)
+
+    context = {
+                'logs':[],
+                "model": model
+              }
+
+    if (request.method == "POST") and ("myfile" in request.FILES):
+
+        myfile = request.FILES["myfile"]
+        if os.path.splitext(myfile.name)[1].lower() == '.csv':
+            df = pd.read_csv(myfile)
+        else:
+            context['logs'].append('File format not supported. Please use a .csv.')
+            return render(request, 'bulkresults.html', context)
+
+        if not set(['technology','location_1']).issubset(set(df.columns)):
+            context['logs'].append("Missing required columns. technology, location_1 are required.")
+            return render(request, 'bulkresults.html', context)
+        df['model'] = model
+        df['tech'] = df['technology'].apply(lambda x: ParamsManager.simplify_name(x))
+        #if 'pretty_tag' in df.columns:
+        #    df['tag'] = df['pretty_tag'].apply(lambda x: ParamsManager.simplify_name(x))
+        df['loc'] = df['location_1'].apply(lambda x: ParamsManager.simplify_name(x))
+
+        ureg = initialize_units()
+
+        for i,row in df.iterrows():
+            technology = Technology.objects.filter(model_id=model.id,name=row['tech']).first()
+            if technology == None:
+                technology = Technology.objects.filter(model_id=model.id,name=row['technology']).first()
+                if technology == None:
+                    context['logs'].append(str(i)+'- Tech '+row['technology']+' missing. Skipped.')
+                    continue
+            location = Location.objects.filter(model_id=model.id,name=row['loc']).first()
+            if location==None:
+                location = Location.objects.filter(model_id=model.id,name=row['location_1']).first()
+                if location==None:
+                    context['logs'].append(str(i)+'- Location '+row['location_1']+' missing. Skipped.')
+                    continue
+            if Abstract_Tech.objects.filter(id=technology.abstract_tech_id).first().name == 'transmission':
+                location_2 = Location.objects.filter(model_id=model.id,name=row['location_2']).first()
+                if location_2==None:
+                    context['logs'].append(str(i)+'- Location 2 '+row['location_2']+' missing. Skipped.')
+                    continue
+            loctech = Loc_Tech.objects.create(
+                model_id=row['model'].id,
+                technology=technology,
+                location_1=location,
+                location_2=location_2,
+            )
+
+            update_dict = {'edit':{'parameter':{},'timeseries':{}},'essentials':{}}
+            for f,v in row.iteritems():
+                if pd.isnull(v):
+                    continue
+                p = Parameter.objects.filter(name=f).first()
+                if p == None:
+                    continue
+                # Essential params
+                if p.is_essential:
+                    update_dict['essentials'][p.pk] = v
+
+                # Timeseries params
+                elif str(v).startswith('file='):
+                    fields = v.split('=')[1].split(':')
+                    filename = fields[0]
+                    t_col = fields[1]
+                    v_col = fields[2]
+
+                    file = User_File.objects.filter(model=model, filename='user_files/'+filename)
+                    if not file:
+                        context['logs'].append(str(i)+'- Tech '+row['pretty_name']+': Column '+f+' missing file "' + filename+ '" for timeseries. Parameter skipped.')
+                        continue
+
+                    existing = Timeseries_Meta.objects.filter(model=model,
+                                              original_filename=filename,
+                                              original_timestamp_col=t_col,
+                                              original_value_col=v_col).first()
+                    if not existing:
+                        existing = Timeseries_Meta.objects.create(
+                            model=model,
+                            name=filename+str(t_col)+str(v_col),
+                            original_filename=filename,
+                            original_timestamp_col=t_col,
+                            original_value_col=v_col,
+                        )
+                        try:
+                            async_result = upload_ts.apply_async(
+                                kwargs={
+                                    "model_uuid": model_uuid,
+                                    "timeseries_meta_id": existing.id,
+                                    "file_id": file.first().id,
+                                    "timestamp_col": t_col,
+                                    "value_col": v_col,
+                                    "has_header": True,
+                                }
+                            )
+                            upload_task = CeleryTask.objects.get(task_id=async_result.id)
+                            existing.upload_task = upload_task
+                            existing.is_uploading = True
+                            existing.save()
+                        except Exception as e:
+                            context['logs'].append(e)
+                    update_dict['edit']['timeseries'][p.pk] = existing.id
+                else:
+                    if p.units in noconv_units:
+                        update_dict['edit']['parameter'][p.pk] = v
+                    else:
+                        try:
+                            update_dict['edit']['parameter'][p.pk] = convert_units(ureg,v,p.units)
+                        except pint.errors.DimensionalityError as e:
+                            context['logs'].append('\n'+str(i)+'- Tech '+row['pretty_name']+': Column '+f+' '+str(e)+'. Skipped.')
+                            continue
+                    
+            loctech.update(update_dict)
+
+        return render(request, "bulkresults.html", context)
+
+    context['logs'].append("No file found")
+    return render(request, "bulkresults.html", context)
+
+@csrf_protect
+@login_required
+def bulk_downloads(request):
+    """
+    Single endpoint for downloading config template files for a model.
+
+    Parameters:
+    model_uuid (uuid): required
+    file_list (list): required
+
+    Returns: 
+    Zip containing one or more files.
+
+    Example:
+    GET: /api/bulk_downloads/
+    """
+
+    model_uuid = request.GET["model_uuid"]
+
+    model = Model.by_uuid(model_uuid)
+    model.handle_edit_access(request.user)
+
+    file_buffs = {}
+
+    # Build location file
+    if 'locations' in request.GET['file_list']:
+        locations_df = pd.DataFrame.from_records(Location.objects.filter(model=model).values())
+        if locations_df.empty:
+            locations_df = pd.DataFrame(columns=[f.name for f in Location._meta.get_fields()])
+            locations_df.drop(columns=['location_1','location_2','model','created','updated','deleted'],inplace=True)
+        else:  
+            locations_df.drop(columns=['model_id','created','updated','deleted'],inplace=True)
+        loc_buff = io.StringIO()
+        locations_df.to_csv(loc_buff,index=False)
+        file_buffs['locations.csv'] = (loc_buff)
+
+    # Build technology file
+    if 'technologies' in request.GET['file_list']:
+        techs = Technology.objects.filter(model=model)
+        tech_ids = list(techs.values_list('id',
+                                          flat=True).distinct())
+        param_list = list(Abstract_Tech_Param.objects.all().values_list('parameter__name', flat=True).distinct())
+        parameters = Tech_Param.objects.filter(technology_id__in=tech_ids).order_by('-year')
+        all_cols = [f.name for f in Technology._meta.get_fields()]+param_list
+        techs_df = pd.DataFrame()
+        techs_df_p = pd.DataFrame()
+        for t in techs:
+            tech_dict = t.__dict__
+            for p in parameters.filter(technology_id=t.id):
+                if p.timeseries:
+                    tech_dict[p.parameter.name] = 'file='+p.timeseries_meta.original_filename+':'+str(p.timeseries_meta.original_timestamp_col)+':'+str(p.timeseries_meta.original_value_col)
+                elif p.raw_value:
+                    tech_dict[p.parameter.name] = p.raw_value
+                else:
+                    tech_dict[p.parameter.name] = p.value
+            [tech_dict.pop(k) for k in ['abstract_tech_id','_state','model_id','created','updated','deleted']]
+            techs_df = techs_df.append(tech_dict, ignore_index=True)
+        techs_df = techs_df.reindex(columns=[f for f in all_cols if f in techs_df.columns]).rename(columns={'parent':'abstract_tech'})
+        for p in list(set(param_list)-set(techs_df.columns)):
+            techs_df[p] = None
+        techs_buff = io.StringIO()
+        techs_df.to_csv(techs_buff,index=False)
+        file_buffs['techs.csv'] = (techs_buff)
+
+    # Build loc_techs/nodes file
+    if 'loc_techs' in request.GET['file_list']:
+        loc_techs = Loc_Tech.objects.filter(model=model)
+        loc_tech_ids = list(loc_techs.values_list('id',
+                                          flat=True).distinct())
+        param_list = list(Abstract_Tech_Param.objects.all().values_list('parameter__name', flat=True).distinct())
+        parameters = Loc_Tech_Param.objects.filter(loc_tech_id__in=loc_tech_ids).order_by('-year')
+        all_cols = [f.name for f in Loc_Tech._meta.get_fields()]+param_list
+        loc_techs_df = pd.DataFrame()
+        loc_techs_df_p = pd.DataFrame()
+        for l in loc_techs:
+            loc_tech_dict = l.__dict__
+            loc_tech_dict['location_1'] = l.location_1.name
+            loc_tech_dict['location_2'] = l.location_1.name
+            loc_tech_dict['technology'] = l.technology.name
+            for p in parameters.filter(loc_tech_id=l.id):
+                if p.timeseries:
+                    loc_tech_dict[p.parameter.name] = 'file='+p.timeseries_meta.original_filename+':'+str(p.timeseries_meta.original_timestamp_col)+':'+str(p.timeseries_meta.original_value_col)
+                elif p.raw_value:
+                    loc_tech_dict[p.parameter.name] = p.raw_value
+                else:
+                    loc_tech_dict[p.parameter.name] = p.value
+            [loc_tech_dict.pop(k) for k in ['_state','model_id','created','updated','deleted']]
+            loc_techs_df = loc_techs_df.append(loc_tech_dict, ignore_index=True)
+        loc_techs_df = loc_techs_df.reindex(columns=[f for f in all_cols if f in loc_techs_df.columns])
+        for p in list(set(param_list)-set(loc_techs_df.columns)):
+            loc_techs_df[p] = None
+        loc_techs_buff = io.StringIO()
+        loc_techs_df.to_csv(loc_techs_buff,index=False)
+        file_buffs['loc_techs.csv'] = (loc_techs_buff)
+        
+    zip_buff = io.BytesIO()
+    zip_file = zipfile.ZipFile(zip_buff, 'w')
+    for buff in file_buffs.keys():
+        zip_file.writestr(buff, file_buffs[buff].getvalue())
+    zip_file.close()
+
+    response = HttpResponse(zip_buff.getvalue(), content_type="application/x-zip-compressed")
+    response['Content-Disposition'] = 'inline; filename='+slugify(model.name)+'_configs.zip'
+    return response
