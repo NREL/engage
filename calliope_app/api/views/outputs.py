@@ -480,7 +480,7 @@ def upload_locations(request):
             else:
                 location = Location.objects.filter(id=row['id']).first()
                 if not location:
-                    context['logs'].append(str(i)+'- Location '+row['pretty_name']+': No location with id '+row['id']+' found to update. Skipped.')
+                    context['logs'].append(str(i)+'- Location '+row['pretty_name']+': No location with id '+str(row['id'])+' found to update. Skipped.')
                     continue
                 location.name = row['name']
                 location.pretty_name = row['pretty_name']
@@ -490,7 +490,7 @@ def upload_locations(request):
                 location.description = row['description']
                 location.save()
             
-        return redirect("/%s/locations/" % model_uuid)
+        return render(request, "bulkresults.html", context)
 
     context['logs'].append("No file found")
     return render(request, "bulkresults.html", context)
@@ -568,7 +568,7 @@ def upload_techs(request):
             else:
                 technology = Technology.objects.filter(model=model,id=row['id']).first()
                 if not technology:
-                    context['logs'].append(str(i)+'- Tech '+row['pretty_name']+': No tech with id '+row['id']+' found to update. Skipped.')
+                    context['logs'].append(str(i)+'- Tech '+row['pretty_name']+': No tech with id '+str(row['id'])+' found to update. Skipped.')
                     continue
                 technology.abstract_tech = Abstract_Tech.objects.filter(name=row['abstract_tech']).first()
                 technology.name = row['name']
@@ -844,9 +844,8 @@ def bulk_downloads(request):
                                           flat=True).distinct())
         param_list = list(Abstract_Tech_Param.objects.all().values_list('parameter__name', flat=True).distinct())
         parameters = Tech_Param.objects.filter(technology_id__in=tech_ids).order_by('-year')
-        all_cols = [f.name for f in Technology._meta.get_fields()]+param_list
+        tech_list = ['id','name','pretty_name','abstract_tech']
         techs_df = pd.DataFrame()
-        techs_df_p = pd.DataFrame()
         for t in techs:
             tech_dict = t.__dict__
             for p in parameters.filter(technology_id=t.id):
@@ -858,7 +857,12 @@ def bulk_downloads(request):
                     tech_dict[p.parameter.name] = p.value
             [tech_dict.pop(k) for k in ['abstract_tech_id','_state','model_id','created','updated','deleted']]
             techs_df = techs_df.append(tech_dict, ignore_index=True)
-        techs_df = techs_df.reindex(columns=[f for f in all_cols if f in techs_df.columns]).rename(columns={'parent':'abstract_tech'})
+        techs_df = techs_df.rename(columns={'parent':'abstract_tech'})
+        # The double for loop keeps the tech fields on the left if there are no records while still allowing for empty paramters
+        # to be added on the right after any filled parameters
+        for p in list(set(tech_list)-set(techs_df.columns)):
+            techs_df[p] = None
+        techs_df = techs_df.reindex(columns=[f for f in tech_list+param_list if f in techs_df.columns])
         for p in list(set(param_list)-set(techs_df.columns)):
             techs_df[p] = None
         techs_buff = io.StringIO()
@@ -872,13 +876,13 @@ def bulk_downloads(request):
                                           flat=True).distinct())
         param_list = list(Abstract_Tech_Param.objects.all().values_list('parameter__name', flat=True).distinct())
         parameters = Loc_Tech_Param.objects.filter(loc_tech_id__in=loc_tech_ids).order_by('-year')
-        all_cols = [f.name for f in Loc_Tech._meta.get_fields()]+param_list
+        loc_tech_list = ['id','location_1','location_2','technology']
         loc_techs_df = pd.DataFrame()
         loc_techs_df_p = pd.DataFrame()
         for l in loc_techs:
             loc_tech_dict = l.__dict__
             loc_tech_dict['location_1'] = l.location_1.name
-            loc_tech_dict['location_2'] = l.location_1.name
+            loc_tech_dict['location_2'] = l.location_2.name
             loc_tech_dict['technology'] = l.technology.name
             for p in parameters.filter(loc_tech_id=l.id):
                 if p.timeseries:
@@ -889,7 +893,11 @@ def bulk_downloads(request):
                     loc_tech_dict[p.parameter.name] = p.value
             [loc_tech_dict.pop(k) for k in ['_state','model_id','created','updated','deleted']]
             loc_techs_df = loc_techs_df.append(loc_tech_dict, ignore_index=True)
-        loc_techs_df = loc_techs_df.reindex(columns=[f for f in all_cols if f in loc_techs_df.columns])
+        # The double for loop keeps the loc_tech fields on the left if there are no records while still allowing for empty paramters
+        # to be added on the right after any filled parameters
+        for p in list(set(loc_tech_list)-set(loc_techs_df.columns)):
+            loc_techs_df[p] = None
+        loc_techs_df = loc_techs_df.reindex(columns=[f for f in loc_tech_list+param_list if f in loc_techs_df.columns])
         for p in list(set(param_list)-set(loc_techs_df.columns)):
             loc_techs_df[p] = None
         loc_techs_buff = io.StringIO()
