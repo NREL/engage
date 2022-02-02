@@ -928,7 +928,7 @@ def bulk_downloads(request):
             tech_dict = t.__dict__
             for p in parameters.filter(technology_id=t.id):
                 pname = p.parameter.name
-                if p.year:
+                if p.year and pname+'_'+str(p.year) not in param_list:
                     pname+='_'+str(p.year)
                     param_list.append(pname)
                 if p.timeseries:
@@ -969,7 +969,7 @@ def bulk_downloads(request):
             loc_tech_dict['technology'] = l.technology.name
             for p in parameters.filter(loc_tech_id=l.id):
                 pname = p.parameter.name
-                if p.year:
+                if p.year and pname+'_'+str(p.year) not in param_list:
                     pname+='_'+str(p.year)
                     param_list.append(pname)
                 if p.timeseries:
