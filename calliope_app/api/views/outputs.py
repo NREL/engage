@@ -462,7 +462,7 @@ def upload_locations(request):
             context['logs'].append('Missing required columns. pretty_name, longitude, latitude are required.')
             return render(request, "bulkresults.html", context)
         df = df.loc[:,df.columns.isin(['id','pretty_name','longitude','latitude','available_area','description'])]
-        df['model'] = model
+        df['model__id'] = model.id
         df['name'] = df['pretty_name'].apply(lambda x: ParamsManager.simplify_name(x))
         for i,row in df.iterrows():
             if pd.isnull(row['pretty_name']):
@@ -537,7 +537,6 @@ def upload_techs(request):
             context['logs'].append('Missing required columns. pretty_name, abstract_tech are required.')
             return render(request, "bulkresults.html", context)
 
-        df['model'] = model
         df['name'] = df['pretty_name'].apply(lambda x: ParamsManager.simplify_name(str(x)))
         if 'pretty_tag' in df.columns:
             df['tag'] = df['pretty_tag'].apply(lambda x: ParamsManager.simplify_name(str(x)))
@@ -559,7 +558,7 @@ def upload_techs(request):
 
             if 'id' not in row.keys() or pd.isnull(row['id']):
                 technology = Technology.objects.create(
-                    model_id=row['model'].id,
+                    model_id=model.id,
                     abstract_tech_id=Abstract_Tech.objects.filter(name=row['abstract_tech']).first().id,
                     name=row['name'],
                     pretty_name=row['pretty_name'],
@@ -734,7 +733,6 @@ def upload_loctechs(request):
         if not set(['technology','location_1']).issubset(set(df.columns)):
             context['logs'].append("Missing required columns. technology, location_1 are required.")
             return render(request, 'bulkresults.html', context)
-        df['model'] = model
         df['tech'] = df['technology'].apply(lambda x: ParamsManager.simplify_name(x))
         #if 'pretty_tag' in df.columns:
         #    df['tag'] = df['pretty_tag'].apply(lambda x: ParamsManager.simplify_name(x))
@@ -761,14 +759,14 @@ def upload_loctechs(request):
                     context['logs'].append(str(i)+'- Location 2 '+row['location_2']+' missing. Skipped.')
                     continue
                 loctech = Loc_Tech.objects.create(
-                    model_id=row['model'].id,
+                    model_id=model.id,
                     technology=technology,
                     location_1=location,
                     location_2=location_2,
                 )
             else:
                 loctech = Loc_Tech.objects.create(
-                    model_id=row['model'].id,
+                    model_id=model.id,
                     technology=technology,
                     location_1=location,
                 )
