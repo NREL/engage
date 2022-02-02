@@ -352,7 +352,7 @@ def download(request):
         file_path = zip_folder(path)
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/text")
-            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            response['Content-Disposition'] = 'inline; filename='+slugify(model.name+'_'+run.scenario.name+'_'+str(run.year)+'_')+os.path.basename(file_path)
             return response
 
     return HttpResponse(
