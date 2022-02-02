@@ -1,6 +1,6 @@
 import base64
 import os, shutil, io, zipfile
-from re import L
+from re import L, match
 import json
 from datetime import datetime, timedelta
 from urllib.parse import urljoin
@@ -352,7 +352,7 @@ def download(request):
         file_path = zip_folder(path)
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/text")
-            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            response['Content-Disposition'] = 'inline; filename='+slugify(model.name+'_'+run.scenario.name+'_'+str(run.year)+'_')+os.path.basename(file_path)
             return response
 
     return HttpResponse(
@@ -462,7 +462,7 @@ def upload_locations(request):
             context['logs'].append('Missing required columns. pretty_name, longitude, latitude are required.')
             return render(request, "bulkresults.html", context)
         df = df.loc[:,df.columns.isin(['id','pretty_name','longitude','latitude','available_area','description'])]
-        df['model'] = model
+        df['model__id'] = model.id
         df['name'] = df['pretty_name'].apply(lambda x: ParamsManager.simplify_name(x))
         for i,row in df.iterrows():
             if pd.isnull(row['pretty_name']):
@@ -537,7 +537,6 @@ def upload_techs(request):
             context['logs'].append('Missing required columns. pretty_name, abstract_tech are required.')
             return render(request, "bulkresults.html", context)
 
-        df['model'] = model
         df['name'] = df['pretty_name'].apply(lambda x: ParamsManager.simplify_name(str(x)))
         if 'pretty_tag' in df.columns:
             df['tag'] = df['pretty_tag'].apply(lambda x: ParamsManager.simplify_name(str(x)))
@@ -559,7 +558,7 @@ def upload_techs(request):
 
             if 'id' not in row.keys() or pd.isnull(row['id']):
                 technology = Technology.objects.create(
-                    model_id=row['model'].id,
+                    model_id=model.id,
                     abstract_tech_id=Abstract_Tech.objects.filter(name=row['abstract_tech']).first().id,
                     name=row['name'],
                     pretty_name=row['pretty_name'],
@@ -588,13 +587,24 @@ def upload_techs(request):
                     parameter_id=2,
                     value=row['pretty_name'],
                 )
-            update_dict = {'edit':{'parameter':{},'timeseries':{}},'essentials':{}}
+            update_dict = {'edit':{'parameter':{},'timeseries':{}},'add':{},'essentials':{}}
             for f,v in row.iteritems():
                 if pd.isnull(v):
                     continue
-                p = Parameter.objects.filter(name=f).first()
-                if p == None:
-                    continue
+                pyear = f.rsplit('_',1)
+                if len(pyear) > 1 and match('[0-9]{4}',pyear[1]):
+                    p = Parameter.objects.filter(name=pyear[0]).first()
+                    if p == None:
+                        p = Parameter.objects.filter(name=f).first()
+                        if p == None:
+                            continue
+                    else:
+                        pyear = pyear[1]
+                else:
+                    pyear = None
+                    p = Parameter.objects.filter(name=f).first()
+                    if p == None:
+                        continue
                 # Essential params
                 if p.is_essential:
                     update_dict['essentials'][p.pk] = v
@@ -643,14 +653,39 @@ def upload_techs(request):
                     update_dict['edit']['timeseries'][p.pk] = existing.id
                 else:
                     if p.units in noconv_units:
-                        update_dict['edit']['parameter'][p.pk] = v
+                        if pyear:
+                            if p.pk not in update_dict['add'].keys():
+                                update_dict['add'][p.pk] = {'year':[],'value':[]}
+                            if p.pk in update_dict['edit']['parameter']:
+                                update_dict['add'][p.pk]['year'].append('0')
+                                update_dict['add'][p.pk]['value'].append(update_dict['edit']['parameter'][p.pk])
+                                update_dict['edit']['parameter'].pop(p.pk)
+                            update_dict['add'][p.pk]['year'].append(pyear)
+                            update_dict['add'][p.pk]['value'].append(v)
+                        elif p.pk in update_dict['add'].keys():
+                            update_dict['add'][p.pk]['year'].append('0')
+                            update_dict['add'][p.pk]['value'].append(v)
+                        else:
+                            update_dict['edit']['parameter'][p.pk] = v
                     else:
                         try:
-                            update_dict['edit']['parameter'][p.pk] = convert_units(ureg,v,p.units)
+                            if pyear:
+                                if p.pk not in update_dict['add'].keys():
+                                    update_dict['add'][p.pk] = {'year':[],'value':[]}
+                                if p.pk in update_dict['edit']['parameter']:
+                                    update_dict['add'][p.pk]['year'].append('0')
+                                    update_dict['add'][p.pk]['value'].append(update_dict['edit']['parameter'][p.pk])
+                                    update_dict['edit']['parameter'].pop(p.pk)
+                                update_dict['add'][p.pk]['year'].append(pyear)
+                                update_dict['add'][p.pk]['value'].append(convert_units(ureg,v,p.units))
+                            elif p.pk in update_dict['add'].keys():
+                                update_dict['add'][p.pk]['year'].append('0')
+                                update_dict['add'][p.pk]['value'].append(v)
+                            else:
+                                update_dict['edit']['parameter'][p.pk] = convert_units(ureg,v,p.units)
                         except pint.errors.DimensionalityError as e:
                             context['logs'].append(str(i)+'- Tech '+row['pretty_name']+': Column '+f+' '+str(e)+'. Parameter skipped.')
                             continue
-                        
             technology.update(update_dict)
 
         return render(request, "bulkresults.html", context)
@@ -698,7 +733,6 @@ def upload_loctechs(request):
         if not set(['technology','location_1']).issubset(set(df.columns)):
             context['logs'].append("Missing required columns. technology, location_1 are required.")
             return render(request, 'bulkresults.html', context)
-        df['model'] = model
         df['tech'] = df['technology'].apply(lambda x: ParamsManager.simplify_name(x))
         #if 'pretty_tag' in df.columns:
         #    df['tag'] = df['pretty_tag'].apply(lambda x: ParamsManager.simplify_name(x))
@@ -724,20 +758,37 @@ def upload_loctechs(request):
                 if location_2==None:
                     context['logs'].append(str(i)+'- Location 2 '+row['location_2']+' missing. Skipped.')
                     continue
-            loctech = Loc_Tech.objects.create(
-                model_id=row['model'].id,
-                technology=technology,
-                location_1=location,
-                location_2=location_2,
-            )
+                loctech = Loc_Tech.objects.create(
+                    model_id=model.id,
+                    technology=technology,
+                    location_1=location,
+                    location_2=location_2,
+                )
+            else:
+                loctech = Loc_Tech.objects.create(
+                    model_id=model.id,
+                    technology=technology,
+                    location_1=location,
+                )
 
-            update_dict = {'edit':{'parameter':{},'timeseries':{}},'essentials':{}}
+            update_dict = {'edit':{'parameter':{},'timeseries':{}},'add':{},'essentials':{}}
             for f,v in row.iteritems():
                 if pd.isnull(v):
                     continue
-                p = Parameter.objects.filter(name=f).first()
-                if p == None:
-                    continue
+                pyear = f.rsplit('_',1)
+                if len(pyear) > 1 and match('[0-9]{4}',pyear[1]):
+                    p = Parameter.objects.filter(name=pyear[0]).first()
+                    if p == None:
+                        p = Parameter.objects.filter(name=f).first()
+                        if p == None:
+                            continue
+                    else:
+                        pyear = pyear[1]
+                else:
+                    pyear = None
+                    p = Parameter.objects.filter(name=f).first()
+                    if p == None:
+                        continue
                 # Essential params
                 if p.is_essential:
                     update_dict['essentials'][p.pk] = v
@@ -786,14 +837,39 @@ def upload_loctechs(request):
                     update_dict['edit']['timeseries'][p.pk] = existing.id
                 else:
                     if p.units in noconv_units:
-                        update_dict['edit']['parameter'][p.pk] = v
+                        if pyear:
+                            if p.pk not in update_dict['add'].keys():
+                                update_dict['add'][p.pk] = {'year':[],'value':[]}
+                            if p.pk in update_dict['edit']['parameter']:
+                                update_dict['add'][p.pk]['year'].append('0')
+                                update_dict['add'][p.pk]['value'].append(update_dict['edit']['parameter'][p.pk])
+                                update_dict['edit']['parameter'].pop(p.pk)
+                            update_dict['add'][p.pk]['year'].append(pyear)
+                            update_dict['add'][p.pk]['value'].append(v)
+                        elif p.pk in update_dict['add'].keys():
+                            update_dict['add'][p.pk]['year'].append('0')
+                            update_dict['add'][p.pk]['value'].append(v)
+                        else:
+                            update_dict['edit']['parameter'][p.pk] = v
                     else:
                         try:
-                            update_dict['edit']['parameter'][p.pk] = convert_units(ureg,v,p.units)
+                            if pyear:
+                                if p.pk not in update_dict['add'].keys():
+                                    update_dict['add'][p.pk] = {'year':[],'value':[]}
+                                if p.pk in update_dict['edit']['parameter']:
+                                    update_dict['add'][p.pk]['year'].append('0')
+                                    update_dict['add'][p.pk]['value'].append(update_dict['edit']['parameter'][p.pk])
+                                    update_dict['edit']['parameter'].pop(p.pk)
+                                update_dict['add'][p.pk]['year'].append(pyear)
+                                update_dict['add'][p.pk]['value'].append(convert_units(ureg,v,p.units))
+                            elif p.pk in update_dict['add'].keys():
+                                update_dict['add'][p.pk]['year'].append('0')
+                                update_dict['add'][p.pk]['value'].append(v)
+                            else:
+                                update_dict['edit']['parameter'][p.pk] = convert_units(ureg,v,p.units)
                         except pint.errors.DimensionalityError as e:
-                            context['logs'].append('\n'+str(i)+'- Tech '+row['pretty_name']+': Column '+f+' '+str(e)+'. Skipped.')
-                            continue
-                    
+                            context['logs'].append(str(i)+'- Tech '+row['pretty_name']+': Column '+f+' '+str(e)+'. Parameter skipped.')
+                            continue                    
             loctech.update(update_dict)
 
         return render(request, "bulkresults.html", context)
@@ -849,12 +925,16 @@ def bulk_downloads(request):
         for t in techs:
             tech_dict = t.__dict__
             for p in parameters.filter(technology_id=t.id):
+                pname = p.parameter.name
+                if p.year and pname+'_'+str(p.year) not in param_list:
+                    pname+='_'+str(p.year)
+                    param_list.append(pname)
                 if p.timeseries:
-                    tech_dict[p.parameter.name] = 'file='+p.timeseries_meta.original_filename+':'+str(p.timeseries_meta.original_timestamp_col)+':'+str(p.timeseries_meta.original_value_col)
+                    tech_dict[pname] = 'file='+p.timeseries_meta.original_filename+':'+str(p.timeseries_meta.original_timestamp_col)+':'+str(p.timeseries_meta.original_value_col)
                 elif p.raw_value:
-                    tech_dict[p.parameter.name] = p.raw_value
+                    tech_dict[pname] = p.raw_value
                 else:
-                    tech_dict[p.parameter.name] = p.value
+                    tech_dict[pname] = p.value
             [tech_dict.pop(k) for k in ['abstract_tech_id','_state','model_id','created','updated','deleted']]
             techs_df = techs_df.append(tech_dict, ignore_index=True)
         techs_df = techs_df.rename(columns={'parent':'abstract_tech'})
@@ -862,6 +942,7 @@ def bulk_downloads(request):
         # to be added on the right after any filled parameters
         for p in list(set(tech_list)-set(techs_df.columns)):
             techs_df[p] = None
+        param_list.sort()
         techs_df = techs_df.reindex(columns=[f for f in tech_list+param_list if f in techs_df.columns])
         for p in list(set(param_list)-set(techs_df.columns)):
             techs_df[p] = None
@@ -885,18 +966,23 @@ def bulk_downloads(request):
             loc_tech_dict['location_2'] = l.location_2.name
             loc_tech_dict['technology'] = l.technology.name
             for p in parameters.filter(loc_tech_id=l.id):
+                pname = p.parameter.name
+                if p.year and pname+'_'+str(p.year) not in param_list:
+                    pname+='_'+str(p.year)
+                    param_list.append(pname)
                 if p.timeseries:
-                    loc_tech_dict[p.parameter.name] = 'file='+p.timeseries_meta.original_filename+':'+str(p.timeseries_meta.original_timestamp_col)+':'+str(p.timeseries_meta.original_value_col)
+                    loc_tech_dict[pname] = 'file='+p.timeseries_meta.original_filename+':'+str(p.timeseries_meta.original_timestamp_col)+':'+str(p.timeseries_meta.original_value_col)
                 elif p.raw_value:
-                    loc_tech_dict[p.parameter.name] = p.raw_value
+                    loc_tech_dict[pname] = p.raw_value
                 else:
-                    loc_tech_dict[p.parameter.name] = p.value
+                    loc_tech_dict[pname] = p.value
             [loc_tech_dict.pop(k) for k in ['_state','model_id','created','updated','deleted']]
             loc_techs_df = loc_techs_df.append(loc_tech_dict, ignore_index=True)
         # The double for loop keeps the loc_tech fields on the left if there are no records while still allowing for empty paramters
         # to be added on the right after any filled parameters
         for p in list(set(loc_tech_list)-set(loc_techs_df.columns)):
             loc_techs_df[p] = None
+        param_list.sort()
         loc_techs_df = loc_techs_df.reindex(columns=[f for f in loc_tech_list+param_list if f in loc_techs_df.columns])
         for p in list(set(param_list)-set(loc_techs_df.columns)):
             loc_techs_df[p] = None
