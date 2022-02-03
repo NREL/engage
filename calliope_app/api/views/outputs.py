@@ -652,6 +652,7 @@ def upload_techs(request):
                             context['logs'].append(e)
                     update_dict['edit']['timeseries'][p.pk] = existing.id
                 else:
+                    print()
                     if p.units in noconv_units:
                         if pyear:
                             if p.pk not in update_dict['add'].keys():
@@ -734,8 +735,8 @@ def upload_loctechs(request):
             context['logs'].append("Missing required columns. technology, location_1 are required.")
             return render(request, 'bulkresults.html', context)
         df['tech'] = df['technology'].apply(lambda x: ParamsManager.simplify_name(x))
-        #if 'pretty_tag' in df.columns:
-        #    df['tag'] = df['pretty_tag'].apply(lambda x: ParamsManager.simplify_name(x))
+        if 'pretty_tag' in df.columns:
+            df['tag'] = df['pretty_tag'].apply(lambda x: ParamsManager.simplify_name(x))
         df['loc'] = df['location_1'].apply(lambda x: ParamsManager.simplify_name(x))
 
         ureg = initialize_units()
@@ -835,6 +836,15 @@ def upload_loctechs(request):
                         except Exception as e:
                             context['logs'].append(e)
                     update_dict['edit']['timeseries'][p.pk] = existing.id
+                # Timeseries params (based on name)
+                elif str(v).startswith('ts='):
+                    tsname = v.split('=')[1]
+                    existing = Timeseries_Meta.objects.filter(model=model,
+                                              name=tsname).first()
+                    if not existing:
+                        context['logs'].append(str(i)+'- Tech '+row['pretty_name']+': Column '+f+' missing timeseries "' + tsname + '". Parameter skipped.')
+                        continue
+                    update_dict['edit']['timeseries'][p.pk] = existing.id
                 else:
                     if p.units in noconv_units:
                         if pyear:
@@ -920,7 +930,7 @@ def bulk_downloads(request):
                                           flat=True).distinct())
         param_list = list(Abstract_Tech_Param.objects.all().values_list('parameter__name', flat=True).distinct())
         parameters = Tech_Param.objects.filter(technology_id__in=tech_ids).order_by('-year')
-        tech_list = ['id','name','pretty_name','abstract_tech']
+        tech_list = ['id','name','pretty_name','abstract_tech','tag','pretty_tag']
         techs_df = pd.DataFrame()
         for t in techs:
             tech_dict = t.__dict__
@@ -963,7 +973,8 @@ def bulk_downloads(request):
         for l in loc_techs:
             loc_tech_dict = l.__dict__
             loc_tech_dict['location_1'] = l.location_1.name
-            loc_tech_dict['location_2'] = l.location_2.name
+            if l.location_2:
+                loc_tech_dict['location_2'] = l.location_2.name
             loc_tech_dict['technology'] = l.technology.name
             for p in parameters.filter(loc_tech_id=l.id):
                 pname = p.parameter.name
@@ -971,7 +982,10 @@ def bulk_downloads(request):
                     pname+='_'+str(p.year)
                     param_list.append(pname)
                 if p.timeseries:
-                    loc_tech_dict[pname] = 'file='+p.timeseries_meta.original_filename+':'+str(p.timeseries_meta.original_timestamp_col)+':'+str(p.timeseries_meta.original_value_col)
+                    if p.timeseries_meta.original_filename:
+                        loc_tech_dict[pname] = 'file='+p.timeseries_meta.original_filename+':'+str(p.timeseries_meta.original_timestamp_col)+':'+str(p.timeseries_meta.original_value_col)
+                    else:
+                        loc_tech_dict[pname] = 'ts='+p.timeseries_meta.name
                 elif p.raw_value:
                     loc_tech_dict[pname] = p.raw_value
                 else:
