@@ -462,7 +462,7 @@ def upload_locations(request):
             context['logs'].append('Missing required columns. pretty_name, longitude, latitude are required.')
             return render(request, "bulkresults.html", context)
         df = df.loc[:,df.columns.isin(['id','pretty_name','longitude','latitude','available_area','description'])]
-        df['model__id'] = model.id
+        df['model_id'] = model.id
         df['name'] = df['pretty_name'].apply(lambda x: ParamsManager.simplify_name(x))
         for i,row in df.iterrows():
             if pd.isnull(row['pretty_name']):
