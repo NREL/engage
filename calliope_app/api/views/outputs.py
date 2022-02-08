@@ -737,16 +737,21 @@ def upload_loctechs(request):
         df['tech'] = df['technology'].apply(lambda x: ParamsManager.simplify_name(x))
         if 'pretty_tag' in df.columns:
             df['tag'] = df['pretty_tag'].apply(lambda x: ParamsManager.simplify_name(x))
+        if 'tag' not in df.columns:
+            df['tag'] = None
         df['loc'] = df['location_1'].apply(lambda x: ParamsManager.simplify_name(x))
 
         ureg = initialize_units()
 
         for i,row in df.iterrows():
-            technology = Technology.objects.filter(model_id=model.id,name=row['tech']).first()
+            technology = Technology.objects.filter(model_id=model.id,name=row['tech'],tag=row['tag']).first()
             if technology == None:
-                technology = Technology.objects.filter(model_id=model.id,name=row['technology']).first()
+                technology = Technology.objects.filter(model_id=model.id,name=row['technology'],tag=row['tag']).first()
                 if technology == None:
-                    context['logs'].append(str(i)+'- Tech '+row['technology']+' missing. Skipped.')
+                    if row['tag'] == None:
+                        context['logs'].append(str(i)+'- Tech '+row['technology']+' missing. Skipped.')
+                    else:
+                        context['logs'].append(str(i)+'- Tech '+row['technology']+'-'+row['tag']+' missing. Skipped.')
                     continue
             location = Location.objects.filter(model_id=model.id,name=row['loc']).first()
             if location==None:
@@ -759,18 +764,39 @@ def upload_loctechs(request):
                 if location_2==None:
                     context['logs'].append(str(i)+'- Location 2 '+row['location_2']+' missing. Skipped.')
                     continue
-                loctech = Loc_Tech.objects.create(
-                    model_id=model.id,
-                    technology=technology,
-                    location_1=location,
-                    location_2=location_2,
-                )
+                if 'id' not in row.keys() or pd.isnull(row['id']):
+                    loctech = Loc_Tech.objects.create(
+                        model_id=model.id,
+                        technology=technology,
+                        location_1=location,
+                        location_2=location_2,
+                    )
+                else:
+                    loctech = Loc_Tech.objects.filter(model=model,id=row['id']).first()
+                    if not loctech:
+                        context['logs'].append(str(i)+'- Tech '+row['pretty_name']+': No tech with id '+str(row['id'])+' found to update. Skipped.')
+                        continue
+                    loctech.technology = technology
+                    loctech.location_1 = location
+                    loctech.location_2 = location_2
+                    loctech.save()
+                    Loc_Tech_Param.objects.filter(model_id=model.id,loc_tech_id=loctech.id).delete()
             else:
-                loctech = Loc_Tech.objects.create(
-                    model_id=model.id,
-                    technology=technology,
-                    location_1=location,
-                )
+                if 'id' not in row.keys() or pd.isnull(row['id']):
+                    loctech = Loc_Tech.objects.create(
+                        model_id=model.id,
+                        technology=technology,
+                        location_1=location,
+                    )
+                else:
+                    loctech = Loc_Tech.objects.filter(model=model,id=row['id']).first()
+                    if not loctech:
+                        context['logs'].append(str(i)+'- Tech '+row['pretty_name']+': No tech with id '+str(row['id'])+' found to update. Skipped.')
+                        continue
+                    loctech.technology = technology
+                    loctech.location_1 = location
+                    loctech.save()
+                    Loc_Tech_Param.objects.filter(model_id=model.id,loc_tech_id=loctech.id).delete()
 
             update_dict = {'edit':{'parameter':{},'timeseries':{}},'add':{},'essentials':{}}
             for f,v in row.iteritems():
@@ -930,10 +956,11 @@ def bulk_downloads(request):
                                           flat=True).distinct())
         param_list = list(Abstract_Tech_Param.objects.all().values_list('parameter__name', flat=True).distinct())
         parameters = Tech_Param.objects.filter(technology_id__in=tech_ids).order_by('-year')
-        tech_list = ['id','name','pretty_name','abstract_tech','tag','pretty_tag']
+        tech_list = ['id','name','pretty_name','abstract_tech','tag','pretty_tag','calliope_name']
         techs_df = pd.DataFrame()
         for t in techs:
             tech_dict = t.__dict__
+            tech_dict['calliope_name'] = t.calliope_name
             for p in parameters.filter(technology_id=t.id):
                 pname = p.parameter.name
                 if p.year and pname+'_'+str(p.year) not in param_list:
@@ -967,7 +994,7 @@ def bulk_downloads(request):
                                           flat=True).distinct())
         param_list = list(Abstract_Tech_Param.objects.all().values_list('parameter__name', flat=True).distinct())
         parameters = Loc_Tech_Param.objects.filter(loc_tech_id__in=loc_tech_ids).order_by('-year')
-        loc_tech_list = ['id','location_1','location_2','technology']
+        loc_tech_list = ['id','location_1','location_2','technology','tag','calliope_name']
         loc_techs_df = pd.DataFrame()
         loc_techs_df_p = pd.DataFrame()
         for l in loc_techs:
@@ -976,6 +1003,8 @@ def bulk_downloads(request):
             if l.location_2:
                 loc_tech_dict['location_2'] = l.location_2.name
             loc_tech_dict['technology'] = l.technology.name
+            loc_tech_dict['tag'] = l.technology.tag
+            loc_tech_dict['calliope_name'] = l.technology.calliope_name
             for p in parameters.filter(loc_tech_id=l.id):
                 pname = p.parameter.name
                 if p.year and pname+'_'+str(p.year) not in param_list:
