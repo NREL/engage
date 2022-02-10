@@ -1,6 +1,6 @@
 calliope==0.6.7
 click==7.1.2
-django==2.2.24
+django==2.2.27
 django-environ>=0.4.5
 django-crispy-forms==1.13.0
 psycopg2-binary==2.8.6
