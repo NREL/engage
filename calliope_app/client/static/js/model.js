@@ -1,19 +1,20 @@
-$( document ).ready(function() {
+$(document).ready(function () {
 
 	// Add model
-	$('#add_model_comment_btn').on('click', function() {
+	$('#add_model_comment_btn').on('click', function () {
 
 		var model_uuid = $('#header').data('model_uuid');
 		var comment = $.trim($("#model_comment").val());
+		var clean_comment = $("<div>").html(comment).text();
 
-		if (comment != '') {
+		if (clean_comment != '') {
 			$("#add_model_comment_btn").attr("disabled", true);
 			$.ajax({
 				url: '/' + LANGUAGE_CODE + '/api/add_model_comment/',
 				type: 'POST',
 				data: {
 					'model_uuid': model_uuid,
-					'comment': comment,
+					'comment': clean_comment,
 					'csrfmiddlewaretoken': getCookie('csrftoken'),
 				},
 				dataType: 'json',
@@ -28,10 +29,9 @@ $( document ).ready(function() {
 				}
 			});
 		};
-
 	});
 
-	$('#snapshot_model_btn').on('click', function() {
+	$('#snapshot_model_btn').on('click', function () {
 
 		var model_uuid = $('#header').data('model_uuid');
 
@@ -57,7 +57,7 @@ $( document ).ready(function() {
 
 	});
 
-	$('.activity-header').on('click', function() {
+	$('.activity-header').on('click', function () {
 		var rows = $(this).nextUntil('.activity-header').not('.comment-activity, .version-activity');
 		if ($(this).hasClass('hiding_rows')) {
 			rows.removeClass('hide');
@@ -73,6 +73,6 @@ $( document ).ready(function() {
 	});
 
 	$('#master-bulk-down').removeClass('hide');
-	$('#master-bulk-down').css("text-align","center");
-	$('#master-bulk-down').attr("href", function() { return $(this).attr("href")+"&file_list=locations,technologies,loc_techs"});
+	$('#master-bulk-down').css("text-align", "center");
+	$('#master-bulk-down').attr("href", function () { return $(this).attr("href") + "&file_list=locations,technologies,loc_techs" });
 });
