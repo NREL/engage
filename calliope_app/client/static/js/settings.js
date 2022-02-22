@@ -8,7 +8,6 @@ $(document).ready(function () {
 
 	// Add model
 	$('#add_collaborator_btn, #add_collaborator_btn_view_only, #remove_collaborator_btn').on('click', function () {
-
 		var model_uuid = $.trim($("#model_uuid").val());
 		var collaborator_id = $.trim($("#collaborator_id").val());
 		var collaborator_can_edit = $(this).data('collaborator_can_edit');
