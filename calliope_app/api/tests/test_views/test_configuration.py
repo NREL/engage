@@ -162,7 +162,7 @@ class AddCollaboratorViewTestCase(TestCase):
     def test_add_collaborator__unknown_user(self):
         data = {
             "model_uuid": str(self.model.uuid),
-            "collaborator_email": "unregistered-email@example.com",
+            "collaborator_id": "unknown id",
             "collaborator_can_edit": True,
         }
         response = self.client.post(reverse("add_collaborator"), data=data)
@@ -175,7 +175,7 @@ class AddCollaboratorViewTestCase(TestCase):
     def test_add_collaborator__registered_user(self):
         data = {
             "model_uuid": str(self.model.uuid),
-            "collaborator_email": "my-collaborator@example.com",
+            "collaborator_id": self.collaborator.id,
             "collaborator_can_edit": 1,
         }
         response = self.client.post(reverse("add_collaborator"), data=data)

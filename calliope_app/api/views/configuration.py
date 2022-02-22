@@ -161,7 +161,7 @@ def add_collaborator(request):
 
     Parameters:
     model_uuid (uuid): required
-    collaborator_email (str): required
+    collaborator_id (str): required
     collaborator_can_edit (int): optional (0 or 1)
 
     Returns (json): Action Confirmation
@@ -171,8 +171,8 @@ def add_collaborator(request):
     """
 
     model_uuid = request.POST["model_uuid"]
-    email = request.POST["collaborator_email"]
-    user = User.objects.filter(email=email).first()
+    user_id = request.POST["collaborator_id"]
+    user = User.objects.filter(id=user_id).first()
     try:
         can_edit = bool(int(request.POST["collaborator_can_edit"]))
     except ValueError:
