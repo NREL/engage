@@ -7,6 +7,7 @@ from urllib.parse import urljoin
 import requests
 import pandas as pd
 import pint
+import numpy as np
 #import geopandas as gpd
 
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
@@ -557,12 +558,22 @@ def upload_techs(request):
                     continue
 
             if 'id' not in row.keys() or pd.isnull(row['id']):
-                technology = Technology.objects.create(
-                    model_id=model.id,
-                    abstract_tech_id=Abstract_Tech.objects.filter(name=row['abstract_tech']).first().id,
-                    name=row['name'],
-                    pretty_name=row['pretty_name'],
-                )
+                if pd.isnull(row['tag']):
+                    technology = Technology.objects.create(
+                        model_id=model.id,
+                        abstract_tech_id=Abstract_Tech.objects.filter(name=row['abstract_tech']).first().id,
+                        name=row['name'],
+                        pretty_name=row['pretty_name'],
+                    )
+                else:
+                    technology = Technology.objects.create(
+                        model_id=model.id,
+                        abstract_tech_id=Abstract_Tech.objects.filter(name=row['abstract_tech']).first().id,
+                        name=row['name'],
+                        pretty_name=row['pretty_name'],
+                        tag=row['tag'],
+                        pretty_tag=row['pretty_tag']
+                    )
                 
             else:
                 technology = Technology.objects.filter(model=model,id=row['id']).first()
@@ -572,6 +583,12 @@ def upload_techs(request):
                 technology.abstract_tech = Abstract_Tech.objects.filter(name=row['abstract_tech']).first()
                 technology.name = row['name']
                 technology.pretty_name = row['pretty_name']
+                if pd.isnull(row['tag']):
+                    technology.tag = None
+                    technology.pretty_tag = None
+                else:
+                    technology.tag = row['tag']
+                    technology.pretty_tag = row['pretty_tag']
                 technology.save()
                 Tech_Param.objects.filter(model_id=model.id,technology_id=technology.id).delete()
 
@@ -652,7 +669,6 @@ def upload_techs(request):
                             context['logs'].append(e)
                     update_dict['edit']['timeseries'][p.pk] = existing.id
                 else:
-                    print()
                     if p.units in noconv_units:
                         if pyear:
                             if p.pk not in update_dict['add'].keys():
@@ -748,10 +764,10 @@ def upload_loctechs(request):
             if technology == None:
                 technology = Technology.objects.filter(model_id=model.id,name=row['technology'],tag=row['tag']).first()
                 if technology == None:
-                    if row['tag'] == None:
+                    if pd.isnull(row['tag']):
                         context['logs'].append(str(i)+'- Tech '+row['technology']+' missing. Skipped.')
                     else:
-                        context['logs'].append(str(i)+'- Tech '+row['technology']+'-'+row['tag']+' missing. Skipped.')
+                        context['logs'].append(str(i)+'- Tech '+row['technology']+'-'+str(row['tag'])+' missing. Skipped.')
                     continue
             location = Location.objects.filter(model_id=model.id,name=row['loc']).first()
             if location==None:
