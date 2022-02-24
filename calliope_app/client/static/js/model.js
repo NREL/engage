@@ -5,7 +5,8 @@ $(document).ready(function () {
 
 		var model_uuid = $('#header').data('model_uuid');
 		var comment = $.trim($("#model_comment").val());
-		var clean_comment = $("<div>").html(comment).text();
+		// var clean_comment = $("<div>").html(comment).text();
+		var clean_comment = comment;
 
 		if (clean_comment != '') {
 			$("#add_model_comment_btn").attr("disabled", true);
@@ -22,8 +23,8 @@ $(document).ready(function () {
 					if (data['message'] == 'Added comment.') {
 						location.reload();
 					} else {
-						$('#comment_message').text(data['message']);
-						$('#comment_message').removeClass('hide');
+						$('#add_comment_message').removeClass('hide');
+						$('#add_comment_message').text(data['message']);
 						$("#add_model_comment_btn").attr("disabled", false);
 					}
 				}

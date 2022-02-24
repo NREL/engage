@@ -5,6 +5,7 @@
 	<!-- New Model Name -->
 	<td>
 		<input type="text" style="text-align:left;height:31px;margin-top:1px" class="form-control" maxlength="80" id="model_name" placeholder="{% trans 'New model name' %}..." required>
+		<span id="add_model_message" class="hide text-sm" style="color:red;">{% trans "Error" %}</span>
 	</td>
 	<!-- New Model Template -->
 	<td colspan=3 class="centered">
@@ -27,7 +28,6 @@
 			<option value="{{ snapshot.uuid }}">&nbsp;&nbsp;&nbsp;&nbsp;{{ snapshot }}</option>
 			{% endfor %}
 		</select>
-		<br><span id="add_model_message" class="hide text-sm" style="color:red;">{% trans "Error" %}</span>
 	</td>
 	<!-- New Model Create -->
 	<td class="centered">
