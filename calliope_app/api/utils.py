@@ -690,9 +690,10 @@ user_defined_units = [
 ]
 
 def convert_units(ureg,val,target):
-    ur_v = ureg.Quantity(str(val).replace('%',' percent ').replace('$',' dollar '))
+    ur_v = str(val).replace('%',' percent ').replace('$',' dollar ')
     for u in user_defined_units:
         ur_v = ur_v.replace(u['name'],u['value'])
+    ur_v = ureg.Quantity(ur_v)
     if str(ur_v.units) == 'dimensionless':
         return val
     else:
