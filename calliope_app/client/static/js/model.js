@@ -71,4 +71,8 @@ $( document ).ready(function() {
 			$(this).find('.fa-caret-down').removeClass('hide');
 		}
 	});
+
+	$('#master-bulk-down').removeClass('hide');
+	$('#master-bulk-down').css("text-align","center");
+	$('#master-bulk-down').attr("href", function() { return $(this).attr("href")+"&file_list=locations,technologies,loc_techs"});
 });

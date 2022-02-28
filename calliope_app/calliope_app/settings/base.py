@@ -25,7 +25,7 @@ WSGI_APPLICATION = 'calliope_app.wsgi.application'
 ROOT_URLCONF = 'calliope_app.urls'
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = '/'
 
 # APPS
 # ------------------------------------------------------------------------------
@@ -37,10 +37,12 @@ DJANGO_APPS = [
     'django.contrib.humanize',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles'
+    'django.contrib.staticfiles',
+    'crispy_forms'
 ]
 
 LOCAL_APPS = [
+    'account.apps.AccountConfig',
     'api.apps.ApiConfig',
     'client.apps.ClientConfig',
     'taskmeta.apps.TaskmetaConfig',
@@ -103,6 +105,8 @@ X_FRAME_OPTIONS = 'SAMEORIGIN'
 # ------------------------------------------------------------------------------
 STATIC_URL = '/static/'
 STATIC_ROOT = '/static'
+
+CRISPY_TEMPLATE_PACK="bootstrap4"
 
 # MEDIA
 # ------------------------------------------------------------------------------

@@ -128,8 +128,8 @@ Calliope References
 Official Documentation
 ~~~~~~~~~~~~~~~~~~~~~~
 
-This web application is built on top of ``Calliope - v0.6.6`` for now, the official documentation is linked here 
-https://calliope.readthedocs.io/en/v0.6.6-post1/.
+This web application is built on top of ``Calliope - v0.6.7`` for now, the official documentation is linked here 
+https://calliope.readthedocs.io/en/v0.6.7/.
 
 
 Example Models

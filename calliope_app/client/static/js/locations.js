@@ -18,6 +18,8 @@ $( document ).ready(function() {
 	
 	$('#master-new').unbind();
 	$('#master-new').on('click', function(e) {
+		$('#master-bulk-up').addClass('hide');
+		$('#master-bulk-down').addClass('hide');
 		$('#master-cancel').removeClass('hide');
 		e.stopPropagation();
 		$('#create_location_notice').remove();
@@ -36,6 +38,46 @@ $( document ).ready(function() {
 	if ($('#location_table tr[data-location_id]').length == 0) {
 		$('#locations_dashboard').prepend('<div id="create_location_notice" class="col-12 text-center"><br/><br/><h4>Create a location (initially at the center of the map) by clicking the "+ New" button above!</h4></div>');
 	}
+
+	$('#master-bulk-up').removeClass('hide');
+	$('#master-bulk-up').on('click', function(){
+		var model_uuid = $('#header').data('model_uuid');
+		//e.stopPropagation();
+		var uploadForm = document.createElement('form');
+		uploadForm.id = 'uploadForm';
+		uploadForm.method='post';
+		uploadForm.action='/' + LANGUAGE_CODE + '/api/upload_locations/';
+		uploadForm.enctype = 'multipart/form-data';
+		var modelInput = document.createElement('input');
+		modelInput.name = 'model_uuid';
+		modelInput.value = model_uuid;
+		uploadForm.appendChild(modelInput);
+		var csrfInput = document.createElement('input');
+		csrfInput.name = 'csrfmiddlewaretoken';
+		csrfInput.value = getCookie('csrftoken');
+		uploadForm.appendChild(csrfInput);
+    	var fileInput = document.createElement('input');
+		var submit_outputs= document.createElement('input');
+		submit_outputs.type = 'submit';
+		submit_outputs.id = 'submit_outputs';
+		uploadForm.appendChild(submit_outputs);
+
+    	fileInput.type = 'file';
+    	fileInput.name = 'myfile';
+    	fileInput.multiple = false;
+		fileInput.onchange = function(){
+
+			$('#submit_outputs').click();
+			uploadForm.remove();
+		};
+
+		uploadForm.appendChild(fileInput);
+		$(document.body.append(uploadForm));
+		fileInput.click();
+	});
+
+	$('#master-bulk-down').removeClass('hide');
+	$('#master-bulk-down').attr("href", function() { return $(this).attr("href")+"&file_list=locations"});
 
 });
 
@@ -260,6 +302,9 @@ function activate_location_elements() {
 					if ($('.table-warning').length < 2) {
 						$('#master-cancel').addClass('hide');
 					};
+					
+					$('#master-bulk-up').removeClass('hide');
+					$('#master-bulk-down').removeClass('hide');
 					activate_import_btns();
 				}
 			});

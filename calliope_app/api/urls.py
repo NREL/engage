@@ -10,17 +10,6 @@ urlpatterns = [
          engage_views.apply_upgrade_066,
          name='upgrade_066'),
 
-    # Users
-    path('user_registration/',
-         engage_views.user_registration,
-         name='user_registration'),
-    path('set_timezone/',
-         engage_views.set_timezone,
-         name='set_timezone'),
-    path('user_activation/<activation_uuid>',
-         engage_views.user_activation,
-         name='user_activation'),
-
     # Models
     path('add_model/',
          configuration_views.add_model,
@@ -131,4 +120,18 @@ urlpatterns = [
          name='download'),
     path('upload_outputs/',
          outputs_views.upload_outputs,
-         name='upload_outputs')]
+         name='upload_outputs'),
+
+    # Bulk Data
+    path('upload_locations/',
+         outputs_views.upload_locations,
+         name='upload_locations'),
+    path('upload_techs/',
+         outputs_views.upload_techs,
+         name='upload_techs'),
+    path('upload_loctechs/',
+         outputs_views.upload_loctechs,
+         name='upload_loctechs'),
+    path('bulk_download/',
+         outputs_views.bulk_downloads,
+         name='bulk_download/'),   ]

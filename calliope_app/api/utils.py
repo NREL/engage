@@ -14,6 +14,7 @@ import pandas as pd
 import numpy as np
 from django.db.models import Func, Value
 from django.utils.timezone import make_aware
+import pint
 
 
 CALLIOPE = 18
@@ -285,3 +286,418 @@ class DateTrunc(Func):
     def __init__(self, trunc_type, field_expression, **extra):
         super(DateTrunc, self).__init__(
             Value(trunc_type), field_expression, **extra)
+
+def initialize_units():
+    ureg = pint.UnitRegistry()
+    ureg.define('percent = 0.01 = percentage')
+    ureg.define('MMBTU = 1000000 BTU = mmbtu = mbtu')
+    ureg.define('Calorie = 1000 calorie = Calories')
+    ureg.define('dollar = 1 = dollars')
+    ureg.define('cent = .01 dollar = cent = cents')
+    ureg.define('units = 1 = unit')
+
+    return ureg
+
+user_defined_units = [
+  {
+    "name": "Gravity[9.81m/s^2]",
+    "value": "9.81 m/s^2"
+  },
+  {
+    "name": "Fresh_Water_Density[1000kg/m^3]",
+    "value": "1000 kg/m^3"
+  },
+  {
+    "name": "Surface_Seawater_Density[1023.6kg/m^3]",
+    "value": "1023.6 kg/m^3"
+  },
+  {
+    "name": "Crude_Oil_Low_Volume_Energy[28MJ/L]",
+    "value": "28 MJ/L"
+  },
+  {
+    "name": "Crude_Oil_High_Volume_Energy[31.4MJ/L]",
+    "value": "31.4 MJ/L"
+  },
+  {
+    "name": "Dried_Plants_Low_Volume_Energy[1.6MJ/L]",
+    "value": "1.6 MJ/L"
+  },
+  {
+    "name": "Dried_Plants_High_Volume_Energy[16.64MJ/L]",
+    "value": "16.64 MJ/L"
+  },
+  {
+    "name": "Wood_Fuel_Low_Volume_Energy[2.56MJ/L]",
+    "value": "2.56 MJ/L"
+  },
+  {
+    "name": "Wood_Fuel_High_Volume_Energy[21.84MJ/L]",
+    "value": "21.84 MJ/L"
+  },
+  {
+    "name": "Pyrolysis_Oil_Volume_Energy[21.35MJ/L]",
+    "value": "21.35 MJ/L"
+  },
+  {
+    "name": "Methanol_Mass_Energy[15.9MJ/L]",
+    "value": "15.9 MJ/L"
+  },
+  {
+    "name": "Ethanol_Low_Volume_Energy[18.4MJ/L]",
+    "value": "18.4 MJ/L"
+  },
+  {
+    "name": "Ethanol_High_Volume_Energy[21.2MJ/L]",
+    "value": "21.2 MJ/L"
+  },
+  {
+    "name": "Ecalene_Volume_Energy[22.7MJ/L]",
+    "value": "22.7 MJ/L"
+  },
+  {
+    "name": "Butanol_Volume_Energy[29.2MJ/L]",
+    "value": "29.2 MJ/L"
+  },
+  {
+    "name": "Fat_Volume_Energy[31.68MJ/L]",
+    "value": "31.68 MJ/L"
+  },
+  {
+    "name": "Biodiesel_Low_Volume_Energy[33.3MJ/L]",
+    "value": "33.3 MJ/L"
+  },
+  {
+    "name": "Biodiesel_High_Volume_Energy[35.7MJ/L]",
+    "value": "35.7 MJ/L"
+  },
+  {
+    "name": "Sunflower_Oil_Volume_Energy[33.18MJ/L]",
+    "value": "33.18 MJ/L"
+  },
+  {
+    "name": "Castor_Oil_Volume_Energy[33.21MJ/kg]",
+    "value": "33.21 MJ/kg"
+  },
+  {
+    "name": "Olive_Oil_Low_Volume_Energy[33.00MJ/L]",
+    "value": "33.00 MJ/L"
+  },
+  {
+    "name": "Olive_Oil_High_Volume_Energy[33.48MJ/L]",
+    "value": "33.48 MJ/L"
+  },
+  {
+    "name": "Methane_Liquified_Low_Volume_Energy[23.00MJ/L]",
+    "value": "23.00 MJ/L"
+  },
+  {
+    "name": "Methane_Liquified_High_Volume_Energy[23.3MJ/L]",
+    "value": "23.3 MJ/L"
+  },
+  {
+    "name": "Hydrogen__Liquified_Low_Volume_Energy[8.5MJ/L]",
+    "value": "8.5 MJ/L"
+  },
+  {
+    "name": "Hydrogen_Liquified_High_Volume_Energy[10.1MJ/L]",
+    "value": "10.1 MJ/L"
+  },
+  {
+    "name": "Coal_Low_Volume_Energy[39.85MJ/L]",
+    "value": "39.85 MJ/L"
+  },
+  {
+    "name": "Coal_High_Volume_Energy[74.43MJ/L]",
+    "value": "74.43 MJ/L"
+  },
+  {
+    "name": "Gasoline_Low_Volume_Energy[32MJ/L]",
+    "value": "32 MJ/L"
+  },
+  {
+    "name": "Gasoline_High_Volume_Energy[34.8MJ/L]",
+    "value": "34.8 MJ/L"
+  },
+  {
+    "name": "Diesel_Volume_Energy[40.3MJ/L]",
+    "value": "40.3 MJ/L"
+  },
+  {
+    "name": "Natural_Gas_Liquified_Low_Volume_Energy[25.5MJ/L]",
+    "value": "25.5 MJ/L"
+  },
+  {
+    "name": "Natural_Gas_Liquified_High_Volume_Energy[28.7MJ/L]",
+    "value": "28.7 MJ/L"
+  },
+  {
+    "name": "Ethane_Liquified_Volume_Energy[24MJ/L]",
+    "value": "24 MJ/L"
+  },
+  {
+    "name": "Propane_Lpg_Volume_Energy[91330BTU/gal]",
+    "value": "91330 BTU/gal"
+  },
+  {
+    "name": "Propane_Gas_60_Deg_Volume_Energy[2550/ft^3]",
+    "value": "2550/ft^3"
+  },
+  {
+    "name": "Butane_Volume_Energy[3200BTU/ft^3]",
+    "value": "3200 BTU/ft^3"
+  },
+  {
+    "name": "Fuel_Oil_No_1_Volume_Energy[137400BTU/gal]",
+    "value": "137400 BTU/gal"
+  },
+  {
+    "name": "Fuel_Oil_No_2_Volume_Energy[139600BTU/gal]",
+    "value": "139600 BTU/gal"
+  },
+  {
+    "name": "Fuel_Oil_No_3_Volume_Energy[141800BTU/gal]",
+    "value": "141800 BTU/gal"
+  },
+  {
+    "name": "Fuel_Oil_No_4_Volume_Energy[145100BTU/gal]",
+    "value": "145100 BTU/gal"
+  },
+  {
+    "name": "Fuel_Oil_No_5_Volume_Energy[148800BTU/gal]",
+    "value": "148800 BTU/gal"
+  },
+  {
+    "name": "Fuel_Oil_No_6_Volume_Energy[152400BTU/gal]",
+    "value": "152400 BTU/gal"
+  },
+  {
+    "name": "Heating_Oil_Volume_Energy[139000BTU/gal]",
+    "value": "139000 BTU/gal"
+  },
+  {
+    "name": "Kerosene_Volume_Energy[135000BTU/gal]",
+    "value": "135000 BTU/gal"
+  },
+  {
+    "name": "Residual_Fuel_Oil_Volume_Energy[6287000BTU/oilbarrel]",
+    "value": "6287000 BTU/oilbarrel"
+  },
+  {
+    "name": "Bagasse_Cane_Stalk_Mass_Energy[9.6MJ/kg]",
+    "value": "9.6 MJ/kg"
+  },
+  {
+    "name": "Chaff_Seed_Casings_Mass_Energy[14.6MJ/kg]",
+    "value": "14.6 MJ/kg"
+  },
+  {
+    "name": "Animal_Dung_Manure_Low_Mass_Energy[10MJ/kg]",
+    "value": "10 MJ/kg"
+  },
+  {
+    "name": "Animal_Dung_Manure_High_Mass_Energy[15MJ/kg]",
+    "value": "15 MJ/kg"
+  },
+  {
+    "name": "Dried_Plants_Low_Mass_Energy[10MJ/kg]",
+    "value": "10 MJ/kg"
+  },
+  {
+    "name": "Dried_Plants_High_Mass_Energy[16MJ/kg]",
+    "value": "16 MJ/kg"
+  },
+  {
+    "name": "Wood_Fuel_Low_Mass_Energy[16MJ/kg]",
+    "value": "16 MJ/kg"
+  },
+  {
+    "name": "Wood_Fuel_High_Mass_Energy[21MJ/kg]",
+    "value": "21 MJ/kg"
+  },
+  {
+    "name": "Charcoal_Mass_Energy[30MJ/kg]",
+    "value": "30 MJ/kg"
+  },
+  {
+    "name": "Dry_Cow_Dung_Mass_Energy[15MJ/kg]",
+    "value": "15 MJ/kg"
+  },
+  {
+    "name": "Dry_Wood_Mass_Energy[19MJ/kg]",
+    "value": "19 MJ/kg"
+  },
+  {
+    "name": "Pyrolysis_Oil_Mass_Energy[17.5MJ/kg]",
+    "value": "17.5 MJ/kg"
+  },
+  {
+    "name": "Methanol_Low_Mass_Energy[19.9MJ/kg]",
+    "value": "19.9 MJ/kg"
+  },
+  {
+    "name": "Methanol_High_Mass_Energy[22.7MJ/kg]",
+    "value": "22.7 MJ/kg"
+  },
+  {
+    "name": "Ethanol_Low_Mass_Energy[23.4MJ/kg]",
+    "value": "23.4 MJ/kg"
+  },
+  {
+    "name": "Ethanol_High_Mass_Energy[26.8MJ/kg]",
+    "value": "26.8 MJ/kg"
+  },
+  {
+    "name": "Ecalene_Mass_Energy[28.4MJ/kg]",
+    "value": "28.4 MJ/kg"
+  },
+  {
+    "name": "Butanol_Mass_Energy[36MJ/kg]",
+    "value": "36 MJ/kg"
+  },
+  {
+    "name": "Fat_Mass_Energy[37.656MJ/kg]",
+    "value": "37.656 MJ/kg"
+  },
+  {
+    "name": "Biodiesel_Mass_Energy[37.8MJ/kg]",
+    "value": "37.8 MJ/kg"
+  },
+  {
+    "name": "Sunflower_Oil_Mass_Energy[39.49MJ/kg]",
+    "value": "39.49 MJ/kg"
+  },
+  {
+    "name": "Castor_Oil_Mass_Energy[39.5MJ/kg]",
+    "value": "39.5 MJ/kg"
+  },
+  {
+    "name": "Olive_Oil_Low_Mass_Energy[39.25MJ/kg]",
+    "value": "39.25 MJ/kg"
+  },
+  {
+    "name": "Olive_Oil_High_Mass_Energy[39.82MJ/kg]",
+    "value": "39.82 MJ/kg"
+  },
+  {
+    "name": "Methane_Low_Mass_Energy[55.00MJ/kg]",
+    "value": "55.00 MJ/kg"
+  },
+  {
+    "name": "Methane_High_Mass_Energy[55.7MJ/kg]",
+    "value": "55.7 MJ/kg"
+  },
+  {
+    "name": "Hydrogen_Low_Mass_Energy[120MJ/kg]",
+    "value": "120 MJ/kg"
+  },
+  {
+    "name": "Hydrogen_High_Mass_Energy[142MJ/kg]",
+    "value": "142 MJ/kg"
+  },
+  {
+    "name": "Coal_Low_Mass_Energy[29.3MJ/kg]",
+    "value": "29.3 MJ/kg"
+  },
+  {
+    "name": "Coal_High_Mass_Energy[33.5MJ/kg]",
+    "value": "33.5 MJ/kg"
+  },
+  {
+    "name": "Crude_Oil_Mass_Energy[41.868MJ/kg]",
+    "value": "41.868 MJ/kg"
+  },
+  {
+    "name": "Gasoline_Low_Mass_Energy[45MJ/kg]",
+    "value": "45 MJ/kg"
+  },
+  {
+    "name": "Gasoline_High_Mass_Energy[48.3MJ/kg]",
+    "value": "48.3 MJ/kg"
+  },
+  {
+    "name": "Diesel_Mass_Energy[48.1MJ/kg]",
+    "value": "48.1 MJ/kg"
+  },
+  {
+    "name": "Natural_Gas_Low_Mass_Energy[38MJ/kg]",
+    "value": "38 MJ/kg"
+  },
+  {
+    "name": "Natural_Gas_High_Mass_Energy[50MJ/kg]",
+    "value": "50 MJ/kg"
+  },
+  {
+    "name": "Ethane_Mass_Energy[51.9MJ/kg]",
+    "value": "51.9 MJ/kg"
+  },
+  {
+    "name": "Household_Waste_Mass_Energy[9.5MJ/kg]",
+    "value": "9.5 MJ/kg"
+  },
+  {
+    "name": "Plastic_Mass_Energy[30MJ/kg]",
+    "value": "30 MJ/kg"
+  },
+  {
+    "name": "Car_Tires_Mass_Energy[35MJ/kg]",
+    "value": "35 MJ/kg"
+  },
+  {
+    "name": "Oil_Mass_Energy[2.4e7J/lbm]",
+    "value": "2.4e7 J/lbm"
+  },
+  {
+    "name": "Natural_Uranium_LWR_Mass_Energy[650GJ/kg]",
+    "value": "650 GJ/kg"
+  },
+  {
+    "name": "Natural_Uranium_FNR_Mass_Energy[28000GJ/kg]",
+    "value": "28000 GJ/kg"
+  },
+  {
+    "name": "Enriched_Uranium_LWR_Mass_Energy[3900GJ/kg]",
+    "value": "3900 GJ/kg"
+  },
+  {
+    "name": "Firewood_Mass_Energy[16MJ/kg]",
+    "value": "16 MJ/kg"
+  },
+  {
+    "name":"Therm[100,000 BTU]",
+    "value":"100000 BTU"
+  },
+  {
+    "name":"thm[100,000 BTU]",
+    "value":"100000 BTU"
+  },
+  {
+    "name":"cf[ft^3]",
+    "value":"1 ft^3"
+  },
+  {
+    "name":"Gasoline_Gallon_Equivalent[114,118.8 BTU]",
+    "value":"114118.8 BTU"
+  },
+  {
+    "name":"GGE[114,118.8 BTU]",
+    "value":"114118.8 BTU"
+  },
+  {
+    "name":"gge[114,118.8 BTU]",
+    "value":"114118.8 BTU"
+  }
+]
+
+def convert_units(ureg,val,target):
+    ur_v = str(val).replace('%',' percent ').replace('$',' dollar ')
+    for u in user_defined_units:
+        ur_v = ur_v.replace(u['name'],u['value'])
+    ur_v = ureg.Quantity(ur_v)
+    if str(ur_v.units) == 'dimensionless':
+        return val
+    else:
+        conv_v = ur_v.to(target.replace('%',' percent ').replace('$',' dollar ')).magnitude
+        return str(conv_v)+'||'+str(val)
+    
+noconv_units = ['<sub>ABC</sub>','<sup>T</sup>/<sub>F</sub>','&#8593;','']
