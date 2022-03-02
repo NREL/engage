@@ -7,6 +7,7 @@ from django.conf import settings
 
 from api.models.utils import EngageManager
 from api.models.configuration import Model, Scenario
+from api.models.engage import ComputeEnvironment
 from taskmeta.models import CeleryTask
 
 import pandas as pd
@@ -47,6 +48,12 @@ class Run(models.Model):
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
+    compute_environment = models.ForeignKey(
+        ComputeEnvironment,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL
+    )
 
     calliope_066_upgraded = models.BooleanField(default=False)
     calliope_066_errors = models.TextField(blank=True)

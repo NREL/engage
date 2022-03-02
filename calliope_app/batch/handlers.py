@@ -43,7 +43,7 @@ from api.tasks import CalliopeModelRunTask, NOTIFICATION_TIME_INTERVAL, run_mode
 logger = logging.getLogger(__name__)
 
 
-class ModelRunHandler:
+class ModelRunExecutor:
     """A util class for manage model run associated to Django model"""
     
     def __init__(self, run_id, user_id):

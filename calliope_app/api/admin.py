@@ -8,7 +8,17 @@ from api.models.configuration import Model, Model_User, Model_Comment, \
     Loc_Tech, Loc_Tech_Param, Timeseries_Meta, Scenario, \
     Scenario_Loc_Tech, Scenario_Param
 from api.models.outputs import Run
-from api.models.engage import User_Profile
+from api.models.engage import User_Profile, ComputeEnvironment
+
+
+class ComputeEnvironmentAdmin(admin.ModelAdmin):
+    filter_horizontal = ("users",)
+    list_display = ['id',  'name', 'alias', 'is_default', 'ncpu', 'memory', 'type', '_users']
+
+    @staticmethod
+    def _users(instance):
+        """Return the number of users that can use the environment"""
+        return instance.users.count()
 
 
 class User_Profile_Admin(admin.ModelAdmin):
@@ -156,3 +166,4 @@ admin.site.register(Scenario, Scenario_Admin)
 admin.site.register(Scenario_Loc_Tech, Scenario_Loc_Tech_Admin)
 admin.site.register(Scenario_Param, Scenario_Param_Admin)
 admin.site.register(Run, Run_Admin)
+admin.site.register(ComputeEnvironment, ComputeEnvironmentAdmin)

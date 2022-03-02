@@ -182,7 +182,7 @@ function activate_runs() {
 
 	$('.btn-run-inputs').unbind();
 	$('.btn-run-inputs').on('click', function () {
-		var run_id = $(this).data('run_id')
+		var run_id = $(this).data('run_id');
 
 		$.ajax({
 			url: '/' + LANGUAGE_CODE + '/api/optimize/',
@@ -194,11 +194,13 @@ function activate_runs() {
 			},
 			dataType: 'json',
 			success: function (data) {
+				if (data['status'] == 'BLOCKED') {
+					alert(data["message"]);
+				}
 				refresh_run_dashboard();
 			}
 		});
 	});
-	$('.btn-run-inputs').click();
 
 	$('.btn-viz-logs').unbind();
 	$('.btn-viz-logs').on('click', function () {
