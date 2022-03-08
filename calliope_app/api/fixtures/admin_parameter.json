@@ -1290,5 +1290,889 @@
       "is_carrier": false,
       "choices": "[]"
     }
+  },
+  {
+    "pk": 77,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2",
+      "category": "Emissions: CO2",
+      "name": "energy_cap",
+      "pretty_name": "Embodied qty. per unit production capacity",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW",
+      "description": "Embodied or one-time emissions per unit production capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 78,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2",
+      "category": "Emissions: CO2",
+      "name": "energy_cap_per_distance",
+      "pretty_name": "Embodied qty. per distance",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW/km",
+      "description": "Embodied or one-time emissions per unit length/distance of transmission technology",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 79,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2",
+      "category": "Emissions: CO2",
+      "name": "export",
+      "pretty_name": "Post-process qty. per unit export",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "kg/kWh",
+      "description": "Emissions per unit energy content of, in particular, carrier exported. Note that carrier exported is always taken from carrier produced, so emissions associated with carrier produced are best associated with 'om_prod' and this should only be set if there are additional emissions associated with export.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 80,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2",
+      "category": "Emissions: CO2",
+      "name": "depreciation_rate",
+      "pretty_name": "Depreciation Rate",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/year",
+      "description": "",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 81,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2",
+      "category": "Emissions: CO2",
+      "name": "interest_rate",
+      "pretty_name": "Interest Rate",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "%",
+      "description": "",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 82,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2",
+      "category": "Emissions: CO2",
+      "name": "om_annual",
+      "pretty_name": "Annual qty. per unit capacity",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW/year",
+      "description": "Fixed annual emissions per unit production capacity. Can be used, e.g., for fixed annual emissions associated with production capacity of the technology, or, e.g., if the technology uses resource area propoortional to capacity, annual emissions in proportion to resource area used.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 83,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2",
+      "category": "Emissions: CO2",
+      "name": "om_annual_investment_fraction",
+      "pretty_name": "Annual qty. as fraction of embodied",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "%/year",
+      "description": "Annual emissions as a fraction of embodied or one-time emissions associated wtih implementation of the technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 84,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2",
+      "category": "Emissions: CO2",
+      "name": "om_con",
+      "pretty_name": "Pre-process qty. per unit consumption",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "kg/kWh",
+      "description": "Emissions per unit energy content of resource or consumption consumed. May be useful for pre-conversion, e.g., pre-combustion emissions associated with fuel.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 85,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2",
+      "category": "Emissions: CO2",
+      "name": "om_prod",
+      "pretty_name": "Post-process qty. per unit production",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "kg/kWh",
+      "description": "Emissions per unit energy content of carrier produced.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 86,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2",
+      "category": "Emissions: CO2",
+      "name": "purchase",
+      "pretty_name": "Embodied qty. per technology unit",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg",
+      "description": "If unit technology (integer technology representation) is being utilized, quantity of embodied emissions associated with one unit of the technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 87,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2",
+      "category": "Emissions: CO2",
+      "name": "resource_area",
+      "pretty_name": "Area qty.",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/m2",
+      "description": "Embodied or one-time emissions per unit resource area utilized. May be useful for representing one-time emissions associated with, e.g., site preparation for the technology to be built.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 88,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2",
+      "category": "Emissions: CO2",
+      "name": "resource_cap",
+      "pretty_name": "Embodied qty. per unit resource consumption capacity",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW",
+      "description": "Embodied or one-time emissions per unit resource consumption capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 89,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2",
+      "category": "Emissions: CO2",
+      "name": "storage_cap",
+      "pretty_name": "Embodied qty. per unit storage capacity",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kWh",
+      "description": "Embodied or one-time emissions per unit storage capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 90,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.ch4",
+      "category": "Emissions: CH4",
+      "name": "energy_cap",
+      "pretty_name": "Embodied qty. per unit production capacity",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW",
+      "description": "Embodied or one-time emissions per unit production capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 91,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.ch4",
+      "category": "Emissions: CH4",
+      "name": "energy_cap_per_distance",
+      "pretty_name": "Embodied qty. per distance",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW/km",
+      "description": "Embodied or one-time emissions per unit length/distance of transmission technology",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 92,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.ch4",
+      "category": "Emissions: CH4",
+      "name": "export",
+      "pretty_name": "Post-process qty. per unit export",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "kg/kWh",
+      "description": "Emissions per unit energy content of, in particular, carrier exported. Note that carrier exported is always taken from carrier produced, so emissions associated with carrier produced are best associated with 'om_prod' and this should only be set if there are additional emissions associated with export.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 93,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.ch4",
+      "category": "Emissions: CH4",
+      "name": "depreciation_rate",
+      "pretty_name": "Depreciation Rate",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/year",
+      "description": "",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 94,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.ch4",
+      "category": "Emissions: CH4",
+      "name": "interest_rate",
+      "pretty_name": "Interest Rate",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "%",
+      "description": "",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 95,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.ch4",
+      "category": "Emissions: CH4",
+      "name": "om_annual",
+      "pretty_name": "Annual qty. per unit capacity",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW/year",
+      "description": "Fixed annual emissions per unit production capacity. Can be used, e.g., for fixed annual emissions associated with production capacity of the technology, or, e.g., if the technology uses resource area propoortional to capacity, annual emissions in proportion to resource area used.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 96,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.ch4",
+      "category": "Emissions: CH4",
+      "name": "om_annual_investment_fraction",
+      "pretty_name": "Annual qty. as fraction of embodied",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "%/year",
+      "description": "Annual emissions as a fraction of embodied or one-time emissions associated wtih implementation of the technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 97,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.ch4",
+      "category": "Emissions: CH4",
+      "name": "om_con",
+      "pretty_name": "Pre-process qty. per unit consumption",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "kg/kWh",
+      "description": "Emissions per unit energy content of resource or consumption consumed. May be useful for pre-conversion, e.g., pre-combustion emissions associated with fuel.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 98,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.ch4",
+      "category": "Emissions: CH4",
+      "name": "om_prod",
+      "pretty_name": "Post-process qty. per unit production",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "kg/kWh",
+      "description": "Emissions per unit energy content of carrier produced.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 99,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.ch4",
+      "category": "Emissions: CH4",
+      "name": "purchase",
+      "pretty_name": "Embodied qty. per technology unit",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg",
+      "description": "If unit technology (integer technology representation) is being utilized, quantity of embodied emissions associated with one unit of the technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 100,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.ch4",
+      "category": "Emissions: CH4",
+      "name": "resource_area",
+      "pretty_name": "Area qty.",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/m2",
+      "description": "Embodied or one-time emissions per unit resource area utilized. May be useful for representing one-time emissions associated with, e.g., site preparation for the technology to be built.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 101,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.ch4",
+      "category": "Emissions: CH4",
+      "name": "resource_cap",
+      "pretty_name": "Embodied qty. per unit resource consumption capacity",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW",
+      "description": "Embodied or one-time emissions per unit resource consumption capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 102,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.ch4",
+      "category": "Emissions: CH4",
+      "name": "storage_cap",
+      "pretty_name": "Embodied qty. per unit storage capacity",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kWh",
+      "description": "Embodied or one-time emissions per unit storage capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 103,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.n2o",
+      "category": "Emissions: N2O",
+      "name": "energy_cap",
+      "pretty_name": "Embodied qty. per unit production capacity",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW",
+      "description": "Embodied or one-time emissions per unit production capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 104,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.n2o",
+      "category": "Emissions: N2O",
+      "name": "energy_cap_per_distance",
+      "pretty_name": "Embodied qty. per distance",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW/km",
+      "description": "Embodied or one-time emissions per unit length/distance of transmission technology",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 105,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.n2o",
+      "category": "Emissions: N2O",
+      "name": "export",
+      "pretty_name": "Post-process qty. per unit export",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "kg/kWh",
+      "description": "Emissions per unit energy content of, in particular, carrier exported. Note that carrier exported is always taken from carrier produced, so emissions associated with carrier produced are best associated with 'om_prod' and this should only be set if there are additional emissions associated with export.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 106,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.n2o",
+      "category": "Emissions: N2O",
+      "name": "depreciation_rate",
+      "pretty_name": "Depreciation Rate",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/year",
+      "description": "",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 107,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.n2o",
+      "category": "Emissions: N2O",
+      "name": "interest_rate",
+      "pretty_name": "Interest Rate",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "%",
+      "description": "",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 108,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.n2o",
+      "category": "Emissions: N2O",
+      "name": "om_annual",
+      "pretty_name": "Annual qty. per unit capacity",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW/year",
+      "description": "Fixed annual emissions per unit production capacity. Can be used, e.g., for fixed annual emissions associated with production capacity of the technology, or, e.g., if the technology uses resource area propoortional to capacity, annual emissions in proportion to resource area used.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 109,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.n2o",
+      "category": "Emissions: N2O",
+      "name": "om_annual_investment_fraction",
+      "pretty_name": "Annual qty. as fraction of embodied",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "%/year",
+      "description": "Annual emissions as a fraction of embodied or one-time emissions associated wtih implementation of the technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 110,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.n2o",
+      "category": "Emissions: N2O",
+      "name": "om_con",
+      "pretty_name": "Pre-process qty. per unit consumption",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "kg/kWh",
+      "description": "Emissions per unit energy content of resource or consumption consumed. May be useful for pre-conversion, e.g., pre-combustion emissions associated with fuel.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 111,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.n2o",
+      "category": "Emissions: N2O",
+      "name": "om_prod",
+      "pretty_name": "Post-process qty. per unit production",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "kg/kWh",
+      "description": "Emissions per unit energy content of carrier produced.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 112,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.n2o",
+      "category": "Emissions: N2O",
+      "name": "purchase",
+      "pretty_name": "Embodied qty. per technology unit",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg",
+      "description": "If unit technology (integer technology representation) is being utilized, quantity of embodied emissions associated with one unit of the technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 113,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.n2o",
+      "category": "Emissions: N2O",
+      "name": "resource_area",
+      "pretty_name": "Area qty.",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/m2",
+      "description": "Embodied or one-time emissions per unit resource area utilized. May be useful for representing one-time emissions associated with, e.g., site preparation for the technology to be built.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 114,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.n2o",
+      "category": "Emissions: N2O",
+      "name": "resource_cap",
+      "pretty_name": "Embodied qty. per unit resource consumption capacity",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW",
+      "description": "Embodied or one-time emissions per unit resource consumption capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 115,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.n2o",
+      "category": "Emissions: N2O",
+      "name": "storage_cap",
+      "pretty_name": "Embodied qty. per unit storage capacity",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kWh",
+      "description": "Embodied or one-time emissions per unit storage capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 116,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2e",
+      "category": "Emissions: CO2e",
+      "name": "energy_cap",
+      "pretty_name": "Embodied qty. per unit production capacity",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW",
+      "description": "Embodied or one-time equivalent emissions per unit production capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 117,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2e",
+      "category": "Emissions: CO2e",
+      "name": "energy_cap_per_distance",
+      "pretty_name": "Embodied qty. per distance",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW/km",
+      "description": "Embodied or one-time equivalent emissions per unit length/distance of transmission technology",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 118,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2e",
+      "category": "Emissions: CO2e",
+      "name": "export",
+      "pretty_name": "Post-process qty. per unit export",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "kg/kWh",
+      "description": "Equivalent emissions per unit energy content of, in particular, carrier exported. Note that carrier exported is always taken from carrier produced, so emissions associated with carrier produced are best associated with 'om_prod' and this should only be set if there are additional emissions associated with export.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 119,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2e",
+      "category": "Emissions: CO2e",
+      "name": "depreciation_rate",
+      "pretty_name": "Depreciation Rate",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/year",
+      "description": "",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 120,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2e",
+      "category": "Emissions: CO2e",
+      "name": "interest_rate",
+      "pretty_name": "Interest Rate",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "%",
+      "description": "",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 121,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2e",
+      "category": "Emissions: CO2e",
+      "name": "om_annual",
+      "pretty_name": "Annual qty. per unit capacity",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW/year",
+      "description": "Fixed annual equivalent emissions per unit production capacity. Can be used, e.g., for fixed annual emissions associated with production capacity of the technology, or, e.g., if the technology uses resource area propoortional to capacity, annual emissions in proportion to resource area used.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 122,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2e",
+      "category": "Emissions: CO2e",
+      "name": "om_annual_investment_fraction",
+      "pretty_name": "Annual qty. as fraction of embodied",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "%/year",
+      "description": "Annual emissions as a fraction of embodied or one-time equivalent emissions associated wtih implementation of the technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 123,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2e",
+      "category": "Emissions: CO2e",
+      "name": "om_con",
+      "pretty_name": "Pre-process qty. per unit consumption",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "kg/kWh",
+      "description": "Equivalent emissions per unit energy content of resource or consumption consumed. May be useful for pre-conversion, e.g., pre-combustion emissions associated with fuel.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 124,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2e",
+      "category": "Emissions: CO2e",
+      "name": "om_prod",
+      "pretty_name": "Post-process qty. per unit production",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "kg/kWh",
+      "description": "Equivalent emissions per unit energy content of carrier produced.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 125,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2e",
+      "category": "Emissions: CO2e",
+      "name": "purchase",
+      "pretty_name": "Embodied qty. per technology unit",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg",
+      "description": "If unit technology (integer technology representation) is being utilized, quantity of embodied equivalent emissions associated with one unit of the technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 126,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2e",
+      "category": "Emissions: CO2e",
+      "name": "resource_area",
+      "pretty_name": "Area qty.",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/m2",
+      "description": "Embodied or one-time equivalent emissions per unit resource area utilized. May be useful for representing one-time emissions associated with, e.g., site preparation for the technology to be built.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 127,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2e",
+      "category": "Emissions: CO2e",
+      "name": "resource_cap",
+      "pretty_name": "Embodied qty. per unit resource consumption capacity",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW",
+      "description": "Embodied or one-time equivalent emissions per unit resource consumption capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 128,
+    "model": "api.parameter",
+    "fields": {
+      "root": "costs.co2e",
+      "category": "Emissions: CO2e",
+      "name": "storage_cap",
+      "pretty_name": "Embodied qty. per unit storage capacity",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kWh",
+      "description": "Embodied or one-time equivalent emissions per unit storage capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    }
   }
 ]
