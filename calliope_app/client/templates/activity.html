@@ -18,7 +18,6 @@
 		<input id="snapshot_model_btn" class="btn btn-sm btn-warning" type="submit" value="{% trans 'Create Snapshot' %}">
 		<button disabled id='snapping' type="button" class="btn btn-sm btn-warning hide"><i class="fas fa-sync fa-spin"></i></button>
 		<button disabled id='snap_fail' type="button" class="btn btn-sm btn-danger hide"><i class="fas fa-exclamation"></i> {% trans "Contact Administrator" %}</button>
-		<span id="comment_message" class="hide" style="color:red;">{% trans "Error" %}</span>
 		<form action="#">
 			<table class="table table-sm">
 				<tr>
@@ -29,6 +28,7 @@
 					</td>
 					<td style="border:none">
 						<textarea id="model_comment" class="form-control" style="text-align:left" placeholder="{% trans 'Comment' %}..." required></textarea>
+						<span id="add_comment_message" class="hide text-sm" style="color:red;">{% trans "Error" %}</span>
 					</td>
 				</tr>
 			</table>

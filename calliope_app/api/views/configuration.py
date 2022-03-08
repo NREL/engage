@@ -1,5 +1,6 @@
 import json
 import os
+import re
 
 import numpy as np
 from django.conf import settings
@@ -8,6 +9,7 @@ from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from PySAM import Windpower
 from PySAM.ResourceTools import FetchResourceFiles
 
@@ -18,6 +20,23 @@ from api.models.configuration import Location, Technology, Tech_Param, \
     Model_Favorite, User_File, Model_User
 from api.tasks import task_status, upload_ts, copy_model
 from taskmeta.models import CeleryTask
+
+
+def validate_model_name(value):
+    if len(value) < 3:
+        raise ValidationError(f"Error: Invalid model name, too short.")
+
+    regex = re.compile(r"(<(.*)>.*?|<(.*) />|[^\w\s\(\)-])")
+    matched = regex.search(value)
+    if matched is None:
+        return
+    
+    diff = set(value).difference(set(["(", ")", " ", "-", "_"]))
+    if len(diff) == 0:
+        raise ValidationError("Error: Invalid model name, should not contain only symbols")
+
+    result = matched.group(0)
+    raise ValidationError(f"Error: Invalid model name, should not contain '{result}'")
 
 
 @csrf_protect
@@ -40,6 +59,13 @@ def add_model(request):
     model_name = request.POST["model_name"].strip()
     template_model_uuid = request.POST["template_model_uuid"]
     payload = {}
+
+    try:
+        validate_model_name(model_name)
+    except ValidationError as e:
+        payload["status"] = "Failed"
+        payload["message"] = str(e)
+        return HttpResponse(json.dumps(payload), content_type="application/json")
 
     try:
         template_model = Model.objects.get(uuid=template_model_uuid)
@@ -161,7 +187,7 @@ def add_collaborator(request):
 
     Parameters:
     model_uuid (uuid): required
-    collaborator_email (str): required
+    collaborator_id (str): required
     collaborator_can_edit (int): optional (0 or 1)
 
     Returns (json): Action Confirmation
@@ -171,8 +197,8 @@ def add_collaborator(request):
     """
 
     model_uuid = request.POST["model_uuid"]
-    email = request.POST["collaborator_email"]
-    user = User.objects.filter(email=email).first()
+    user_id = request.POST["collaborator_id"]
+    user = User.objects.filter(id=user_id).first()
     try:
         can_edit = bool(int(request.POST["collaborator_can_edit"]))
     except ValueError:
@@ -189,6 +215,20 @@ def add_collaborator(request):
     payload = {"message": message}
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
+
+
+def validate_model_comment(value):
+    value = value.strip()
+    if len(value) == 0:
+        raise ValidationError("Please write your comment.")
+    
+    regex = re.compile(r"(<(.*)>.*?|<(.*) />)")
+    matched = regex.search(value)
+    if matched is None:
+        return
+    
+    result = matched.group(0)
+    raise ValidationError(f"Invalid comment string, please remove '{result}'")
 
 
 @csrf_protect
@@ -209,17 +249,20 @@ def add_model_comment(request):
     model_uuid = request.POST["model_uuid"]
     comment = request.POST["comment"]
 
+    try:
+        validate_model_comment(comment)
+    except ValidationError as e:
+        payload = {"message": str(e)}
+        return HttpResponse(json.dumps(payload), content_type="application/json")
+
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
 
-    if len(comment) > 0:
-        Model_Comment.objects.create(
-            model=model, user=request.user, comment=comment, type="comment"
-        )
-        model.notify_collaborators(request.user)
-        payload = {"message": "Added comment."}
-    else:
-        payload = {"message": "No comment to be added."}
+    Model_Comment.objects.create(
+        model=model, user=request.user, comment=comment, type="comment"
+    )
+    model.notify_collaborators(request.user)
+    payload = {"message": "Added comment."}
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
 
