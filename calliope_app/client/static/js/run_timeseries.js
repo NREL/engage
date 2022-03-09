@@ -5,8 +5,6 @@ function render_timeseries(input_data) {
     var layers = [],
         legend_items = [];
     metrics.slice().reverse().forEach((metric, i) => {
-      console.log(metric);
-      console.log(i);
       if (input_data[metric] == undefined) { return };
       if (input_data[metric]['timeseries'] == undefined) { return };
       var data = input_data[metric]['timeseries'],
@@ -56,7 +54,6 @@ function render_timeseries(input_data) {
                   font: { color: 'white' }};
 
     var config = {responsive: true};
-    console.log(layers);
     Plotly.newPlot('viz_outputs_timeseries', layers, layout, config);
 
 };
