@@ -1419,3 +1419,9 @@ class ParamsManager():
             return re.search(r"\[([A-Za-z0-9_]+)\]", carrier).group(1)
         except Exception:
             return "kW"
+
+    @classmethod
+    def emission_categories(cls):
+        queryset = Parameter.objects.filter(category__contains="Emissions")
+        categories = sorted(list(set([param.category for param in queryset])))
+        return categories

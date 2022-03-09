@@ -1,25 +1,24 @@
-$( document ).ready(function() {
+$(document).ready(function () {
 
-	$('#model_uuid').on('change', function() {
+	$('#model_uuid').on('change', function () {
 		var model_uuid = $.trim($(this).val());
 		filter_collaborators(model_uuid);
 	})
 	filter_collaborators($.trim($('#model_uuid').val()))
 
 	// Add model
-	$('#add_collaborator_btn, #add_collaborator_btn_view_only, #remove_collaborator_btn').on('click', function() {
+	$('#add_collaborator_btn, #add_collaborator_btn_view_only, #remove_collaborator_btn').on('click', function () {
+		var model_uuid = $.trim($("#model_uuid").val());
+		var collaborator_id = $.trim($("#collaborator_id").val());
+		var collaborator_can_edit = $(this).data('collaborator_can_edit');
 
-		var model_uuid = $.trim($("#model_uuid").val()),
-			collaborator_email = $.trim($("#collaborator_email").val()),
-			collaborator_can_edit = $(this).data('collaborator_can_edit');
-
-		if ((model_uuid != '') && (collaborator_email != '')) {
+		if ((model_uuid != '') && (collaborator_id != '')) {
 			$.ajax({
 				url: '/' + LANGUAGE_CODE + '/api/add_collaborator/',
 				type: 'POST',
 				data: {
 					'model_uuid': model_uuid,
-					'collaborator_email': collaborator_email,
+					'collaborator_id': collaborator_id,
 					'collaborator_can_edit': +collaborator_can_edit,
 					'csrfmiddlewaretoken': getCookie('csrftoken'),
 				},

@@ -56,7 +56,7 @@ class User_Profile(models.Model):
         user = User.objects.filter(email=email).first()
         if not user:
             user = User.objects.create_user(
-                username=email,
+                username=email.lower(),
                 email=email,
                 first_name=first_name,
                 last_name=last_name,

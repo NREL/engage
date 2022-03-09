@@ -206,7 +206,7 @@ class Run(models.Model):
         elif metric == 'Costs':
             # Investment Costs
             df = self.read_output('results_cost.csv')
-            df['values'] = df['cost']
+            df['values'] = df.loc[df['costs']=='monetary']['cost']
             ctx = None
         else:
             # Energy Capacity
@@ -263,7 +263,7 @@ class Run(models.Model):
         elif metric == 'Costs':
             # Costs
             df = self.read_output('results_cost_var' + ext)
-            df['values'] = df['cost_var']
+            df['values'] = df.loc[df['costs']=='monetary']['cost_var']
         else:
             # Production / Consumption
             df = self.read_output('results_carrier_con' + ext)

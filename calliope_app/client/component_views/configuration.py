@@ -130,6 +130,8 @@ def all_tech_params(request):
                                   'technology_essentials.html',
                                   context))[0]
 
+    emissions = ParamsManager.emission_categories()
+
     # Parameters Table
     context = {
         "technology": technology,
@@ -138,16 +140,17 @@ def all_tech_params(request):
         "carriers": model.carriers,
         "level": "1_tech",
         "timeseries": timeseries,
-        "can_edit": can_edit}
-    html_parameters = list(render(request,
-                                  'technology_parameters.html',
-                                  context))[0]
+        "can_edit": can_edit,
+        "emissions": emissions
+    }
+    html_parameters = list(render(request, 'technology_parameters.html', context))[0]
 
     payload = {
         'technology_id': technology_id,
         'html_essentials': html_essentials.decode('utf-8'),
         'html_parameters': html_parameters.decode('utf-8'),
-        'favorites': model.favorites}
+        'favorites': model.favorites
+    }
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
 
@@ -226,8 +229,10 @@ def all_loc_tech_params(request):
     timeseries = Timeseries_Meta.objects.filter(model=model, failure=False,
                                                 is_uploading=False)
 
+    emissions = ParamsManager.emission_categories()
     # Parameters Table
     context = {
+        "emissions": emissions,
         "loc_tech": loc_tech,
         "model": model,
         "parameters": parameters,
@@ -235,9 +240,7 @@ def all_loc_tech_params(request):
         "level": "2_loc_tech",
         "timeseries": timeseries,
         "can_edit": can_edit}
-    html_parameters = list(render(request,
-                                  'technology_parameters.html',
-                                  context))[0]
+    html_parameters = list(render(request, 'technology_parameters.html', context))[0]
 
     payload = {
         'loc_tech_id': loc_tech_id,
