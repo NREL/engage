@@ -26,12 +26,23 @@ def get_model_yaml_set(scenario_id, year):
     # Loop over Parameters
     for param in params:
         unique_param = param.run_parameter.name
+
+        # NOTE: deprecated run parameter in the database
+        if unique_param == "objective_options":
+            continue
+        
         if unique_param not in unique_params:
             # If parameter hasn't been set, add to Return List
             unique_params.append(unique_param)
-            param_list = [param.run_parameter.root,
-                          param.run_parameter.name,
-                          param.value]
+            if "." in param.run_parameter.root:
+                items = param.run_parameter.root.split(".")
+                param_list = items + [param.run_parameter.name, param.value]
+            else:
+                param_list = [
+                    param.run_parameter.root,
+                    param.run_parameter.name,
+                    param.value
+                ]
             model_yaml_set.append((stringify(param_list), is_timeseries))
     model_yaml_set += [('import||["techs.yaml","locations.yaml"]', False)]
     return model_yaml_set
