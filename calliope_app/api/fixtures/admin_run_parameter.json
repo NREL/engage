@@ -362,5 +362,19 @@
       "description": "A dictionary of cost classes and their weights in the objective. By default, the weights of emissions are zero, monetary's is 1.",
       "choices": "[]"
     }
+  },
+  {
+    "pk": 27,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "run.objective_options",
+      "user_visibility": "True",
+      "can_evolve": "False",
+      "name": "sense",
+      "pretty_name": "Sense",
+      "default_value": "minimize",
+      "description": "'sense' value choices: 'minimize', or 'maximize'.",
+      "choices": "[\"minimize\",\"maximize\"]"
+    }
   }
 ]
