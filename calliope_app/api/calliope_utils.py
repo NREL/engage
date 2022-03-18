@@ -25,7 +25,7 @@ def get_model_yaml_set(scenario_id, year):
     unique_params = []
     # Loop over Parameters
     for param in params:
-        unique_param = param.run_parameter.name
+        unique_param = param.run_parameter.root+param.run_parameter.name
 
         # NOTE: deprecated run parameter in the database
         if unique_param == "objective_options":
@@ -92,7 +92,7 @@ def get_techs_yaml_set(scenario_id, year):
         unique_params = []
         # Loop over Parameters
         for param in params:
-            unique_param = param.parameter.name
+            unique_param = param.parameter.root + param.parameter.name
             if unique_param not in unique_params:
                 # If parameter hasn't been set, add to Return List
                 unique_params.append(unique_param)
@@ -144,7 +144,7 @@ def get_loc_techs_yaml_set(scenario_id, year):
         unique_params = []
         # Loop over Parameters
         for param in params:
-            unique_param = param.parameter.name
+            unique_param = param.parameter.root + param.parameter.name
             if unique_param not in unique_params:
                 # If parameter hasn't been set, add to Return List
                 unique_params.append(unique_param)
