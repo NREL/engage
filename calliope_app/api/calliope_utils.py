@@ -28,7 +28,7 @@ def get_model_yaml_set(scenario_id, year):
         unique_param = param.run_parameter.root+param.run_parameter.name
 
         # NOTE: deprecated run parameter in the database
-        if unique_param == "objective_options":
+        if unique_param == "runobjective_options":
             continue
         
         if unique_param not in unique_params:
