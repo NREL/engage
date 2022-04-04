@@ -47,7 +47,7 @@ function render_timeseries(input_data) {
                   yaxis5: { title: { text: metrics[3] }, domain: [0.51, 0.61], gridcolor: "#3b3b3b", gridwidth: 1, autorange: true, type: 'linear' },
                   yaxis6: { title: { text: metrics[2] }, domain: [0.63, 0.73], gridcolor: "#3b3b3b", gridwidth: 1, autorange: true, type: 'linear' },
                   yaxis7: { title: { text: metrics[1] }, domain: [0.75, 0.86], gridcolor: "#3b3b3b", gridwidth: 1, autorange: true, type: 'linear' },
-                  yaxis8: { title: { text: metrics[0] }, domain: [0.85, 0.97], gridcolor: "#3b3b3b", gridwidth: 1, autorange: true, type: 'linear' },
+                  yaxis8: { title: { text: metrics[0] }, domain: [0.86, 0.97], gridcolor: "#3b3b3b", gridwidth: 1, autorange: true, type: 'linear' },
                   showlegend: true,
                   legend: { traceorder: 'reversed', bgcolor: '#1a1b1bde', bordercolor: '#FFFFFF', borderwidth: 1 },
                   margin: { l: 60, r: 30, t: 40, b: 10 },
