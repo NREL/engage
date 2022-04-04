@@ -375,11 +375,11 @@ def _write_outputs(model, model_path, ts_only_suffix=None):
                 pass
         shutil.rmtree(os.path.join(base_path, folder))
     if final_outputs:
-        _yaml_outputs(model,model_path,final_outputs)
+        _yaml_outputs(model_path,final_outputs)
     else:
-        _yaml_outputs(model,model_path,save_outputs)
+        _yaml_outputs(model_path,save_outputs)
 
-def _yaml_outputs(model, model_path, outputs_dir):
+def _yaml_outputs(model_path, outputs_dir):
     base_path = os.path.dirname(os.path.dirname(model_path))
     results_var = {'energy_cap':'results_energy_cap.csv'}
     inputs_dir = os.path.join(base_path, 'inputs')
@@ -388,24 +388,27 @@ def _yaml_outputs(model, model_path, outputs_dir):
     model.update(yaml.load(open(os.path.join(inputs_dir,'locations.yaml')), Loader=yaml.FullLoader))
     model.update(yaml.load(open(os.path.join(inputs_dir,'techs.yaml')), Loader=yaml.FullLoader))
 
+    has_outputs = False
     for v in results_var.keys():
-        r_df = pd.read_csv(os.path.join(outputs_dir,results_var[v]))
+        if os.path.exists(os.path.join(outputs_dir,results_var[v])):
+            has_outputs = True
+            r_df = pd.read_csv(os.path.join(outputs_dir,results_var[v]))
 
-        for tl in ['locations','links']:
-            for l in model[tl].keys():
-                if tl == 'links':
-                    l1 = l.split(',')[0]
-                    l2 = l.split(',')[1]
-                if 'techs' in model[tl][l].keys():
-                    for t in model[tl][l]['techs'].keys():
-                        if model[tl][l]['techs'][t] == None:
-                            model[tl][l]['techs'][t] = {}
-                        model[tl][l]['techs'][t]['results'] = {}
-                        if tl == 'links':
-                            model[tl][l]['techs'][t]['results']['energy_cap'] = float(r_df.loc[(r_df['locs'] == l1) &
-                                                                                (r_df['techs'] == t+':'+l2)]['energy_cap'].values[0])
-                        else:
-                            model[tl][l]['techs'][t]['results']['energy_cap'] = float(r_df.loc[(r_df['locs'] == l) &
-                                                                                (r_df['techs'] == t)]['energy_cap'].values[0])
-
-    yaml.dump(model, open(os.path.join(outputs_dir,'model_results.yaml'),'w+'), default_flow_style=False)
+            for tl in ['locations','links']:
+                for l in model[tl].keys():
+                    if tl == 'links':
+                        l1 = l.split(',')[0]
+                        l2 = l.split(',')[1]
+                    if 'techs' in model[tl][l].keys():
+                        for t in model[tl][l]['techs'].keys():
+                            if model[tl][l]['techs'][t] == None:
+                                model[tl][l]['techs'][t] = {}
+                            model[tl][l]['techs'][t]['results'] = {}
+                            if tl == 'links':
+                                model[tl][l]['techs'][t]['results']['energy_cap'] = float(r_df.loc[(r_df['locs'] == l1) &
+                                                                                    (r_df['techs'] == t+':'+l2)]['energy_cap'].values[0])
+                            else:
+                                model[tl][l]['techs'][t]['results']['energy_cap'] = float(r_df.loc[(r_df['locs'] == l) &
+                                                                                    (r_df['techs'] == t)]['energy_cap'].values[0])
+    if has_outputs:
+        yaml.dump(model, open(os.path.join(outputs_dir,'model_results.yaml'),'w+'), default_flow_style=False)
