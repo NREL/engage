@@ -170,3 +170,7 @@ AWS_S3_BUCKET_NAME = env.str('AWS_S3_BUCKET_NAME', '')
 # ------------------------------------------------------------------------------
 CAMBIUM_URL = env.str("CAMBIUM_URL", "")
 CAMBIUM_API_KEY = env.str("CAMBIUM_API_KEY", "")
+
+# AUTOFIELD
+# --------------------------------------------------------------------------------
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

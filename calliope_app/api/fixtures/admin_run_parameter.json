@@ -312,7 +312,7 @@
     "model": "api.run_parameter",
     "fields": {
       "root": "run",
-      "user_visibility": "False",
+      "user_visibility": "True",
       "can_evolve": "False",
       "name": "solver",
       "pretty_name": "Solver",
