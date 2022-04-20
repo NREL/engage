@@ -149,6 +149,3 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE if USE_TZ else None
 CELERY_TRACK_STARTED = True
 
-# AUTOFIELD
-# --------------------------------------------------------------------------------
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
