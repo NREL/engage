@@ -17,6 +17,7 @@ $( document ).ready(function() {
 			end_date = $('#end_date').val(),
 			cluster = $('#cluster').is(":checked"),
 			manual = $('#manual').is(":checked"),
+			timestep = $('#timestep').val(),
 			sd = new Date(start_date),
 			ed = new Date(end_date);
 		
@@ -51,6 +52,7 @@ $( document ).ready(function() {
 				  'end_date': end_date,
 				  'cluster': cluster,
 				  'manual':manual,
+				  'timestep':timestep,
 				},
 				dataType: 'json',
 				success: function (data) {
