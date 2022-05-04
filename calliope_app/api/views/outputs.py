@@ -55,6 +55,14 @@ def build(request):
     end_date = request.GET.get("end_date", None)
     cluster = (request.GET.get("cluster", 'true') == 'true')
     manual = (request.GET.get("manual", 'false') == 'true')
+    timestep = request.GET.get("timestep", '1H')
+    try:
+        pd.tseries.frequencies.to_offset(timestep)
+    except ValueError:
+        payload = {
+            "status": "Failed",
+            "message": "'"+timestep+"' is not a valid timestep.",
+        }
 
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
@@ -79,6 +87,7 @@ def build(request):
             inputs_path="",
             cluster=cluster,
             manual=manual,
+            timestep=timestep,
         )
 
         # Generate File Path

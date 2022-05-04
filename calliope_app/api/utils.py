@@ -228,9 +228,6 @@ def load_timeseries_from_csv(filename, t_index, v_index, has_header=False):
     df.index.name = 'datetime'
     df.columns = ['value']
 
-    # Resample
-    df = hourly_timeseries(df)
-
     return df
 
 

@@ -54,6 +54,7 @@ class Run(models.Model):
     # User run settings
     cluster = models.BooleanField(default=True)
     manual = models.BooleanField(default=False)
+    timestep = models.TextField(default='1H',blank=False)
 
     build_task = models.ForeignKey(
         to=CeleryTask,
@@ -263,8 +264,12 @@ class Run(models.Model):
         elif cost_class:
             # Costs
             df = self.read_output('results_cost_var' + ext)
-            df = df.loc[df['costs']==cost_class[1]]
-            df['values'] = df['cost_var']
+            if df is None:
+                df = pd.DataFrame(
+                    columns=['locs', 'techs', 'timesteps', 'values'])
+            else:
+                df = df.loc[df['costs']==cost_class[1]]
+                df['values'] = df['cost_var']
         else:
             # Production / Consumption
             df = self.read_output('results_carrier_con' + ext)
