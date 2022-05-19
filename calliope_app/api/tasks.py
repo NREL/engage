@@ -228,21 +228,17 @@ def build_model_yaml(scenario_id, start_date, inputs_path):
     model_yaml_set = get_model_yaml_set(scenario_id, year)
     with open(os.path.join(inputs_path, "model.yaml"), 'w') as outfile:
         yaml.dump(model_yaml_set, outfile, default_flow_style=False)
-    #list_to_yaml(model_yaml_set, os.path.join(inputs_path, "model.yaml"))
 
     # techs.yaml
     techs_yaml_set = get_techs_yaml_set(scenario_id, year)
     with open(os.path.join(inputs_path, "techs.yaml"), 'w') as outfile:
         yaml.dump(techs_yaml_set, outfile, default_flow_style=False)
-    #list_to_yaml(techs_yaml_set, os.path.join(inputs_path, "techs.yaml"))
 
     # locations.yaml
     loc_techs_yaml_set = get_loc_techs_yaml_set(scenario_id, year)
     location_yaml_set = get_location_meta_yaml_set(scenario_id, loc_techs_yaml_set)
     with open(os.path.join(inputs_path, "locations.yaml"), 'w') as outfile:
         yaml.dump(location_yaml_set, outfile, default_flow_style=False)
-    #list_to_yaml(loc_techs_yaml_set + location_coord_yaml_set,
-    #             os.path.join(inputs_path, "locations.yaml"))
 
 
 def build_model_csv(model, scenario, start_date, end_date, inputs_path, timesteps):

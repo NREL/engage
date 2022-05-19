@@ -20,13 +20,11 @@ def get_model_yaml_set(scenario_id, year):
                                            year__lte=year).order_by('-year')
     # Initialize the Return list
     model_yaml_set = {}
-    # There are no timeseries in Run Parameters
-    is_timeseries = False
     # Tracks which parameters have already been set (prioritized by year)
     unique_params = []
     # Loop over Parameters
     for param in params:
-        unique_param = (param.run_parameter.root+'.'+param.run_parameter.name)
+        unique_param = param.run_parameter.root+'.'+param.run_parameter.name
 
         # NOTE: deprecated run parameter in the database
         if unique_param == "run.objective_options":
@@ -35,13 +33,13 @@ def get_model_yaml_set(scenario_id, year):
         if unique_param not in unique_params:
             # If parameter hasn't been set, add to Return List
             unique_params.append(unique_param)
-            param_list = unique_param.split('.')+[param.value]
-            dictify(model_yaml_set,param_list)
-    dictify(model_yaml_set,['import','["techs.yaml","locations.yaml"]'])
+            key_list = unique_param.split('.')
+            dictify(model_yaml_set,key_list,param.value)
+    dictify(model_yaml_set,['import'],'["techs.yaml","locations.yaml"]')
     return model_yaml_set
 
 
-def get_location_meta_yaml_set(scenario_id, existing = {}):
+def get_location_meta_yaml_set(scenario_id, existing = None):
     """ Function pulls model locations from Database for YAML """
     loc_techs = Scenario_Loc_Tech.objects.filter(scenario_id=scenario_id)
     loc_ids = loc_techs.values_list('loc_tech__location_1',
@@ -49,8 +47,11 @@ def get_location_meta_yaml_set(scenario_id, existing = {}):
     loc_ids = list(filter(None, set(
         [item for sublist in loc_ids for item in sublist])))
     locations = Location.objects.filter(id__in=loc_ids)
-    # Initialize the Return list
-    location_coord_yaml_set = existing
+    # Initialize the Return dict
+    if existing:
+        location_coord_yaml_set = existing
+    else:
+        location_coord_yaml_set = {}
     # There are no timeseries in Location Coordinates
     is_timeseries = False
     # Loop over Parameters
@@ -58,14 +59,14 @@ def get_location_meta_yaml_set(scenario_id, existing = {}):
         # Coordinates
         coordinates = '{{"lat": {}, "lon": {}}}'.format(loc.latitude,
                                                         loc.longitude)
-        param_list = ['locations', loc.name, 'coordinates', coordinates]
-        dictify(location_coord_yaml_set,param_list)
+        param_list = ['locations', loc.name, 'coordinates']
+        dictify(location_coord_yaml_set,param_list,coordinates)
         # Available Area
         if loc.available_area is None:
             continue
         param_list = ['locations', loc.name,
-                      'available_area', loc.available_area]
-        dictify(location_coord_yaml_set,param_list)
+                      'available_area']
+        dictify(location_coord_yaml_set,param_list,loc.available_area)
     return location_coord_yaml_set
 
 
@@ -85,7 +86,7 @@ def get_techs_yaml_set(scenario_id, year):
         unique_params = []
         # Loop over Parameters
         for param in params:
-            unique_param = (param.parameter.root+'.'+param.parameter.name)
+            unique_param = param.parameter.root+'.'+param.parameter.name
             if unique_param not in unique_params:
                 # If parameter hasn't been set, add to Return List
                 unique_params.append(unique_param)
@@ -97,9 +98,8 @@ def get_techs_yaml_set(scenario_id, year):
                 else:
                     value = param.value
                 param_list = ['techs', param.technology.calliope_name]+\
-                              unique_param.split('.')+\
-                              [value]
-                dictify(techs_yaml_set,param_list)
+                              unique_param.split('.')
+                dictify(techs_yaml_set,param_list,value)
     return techs_yaml_set
 
 
@@ -131,15 +131,15 @@ def get_loc_techs_yaml_set(scenario_id, year):
 
         if len(params) == 0:
             param_list = [parent_type, location, 'techs',
-                          technology, '']
-            dictify(loc_techs_yaml_set,param_list)
+                          technology]
+            dictify(loc_techs_yaml_set,param_list,'')
             continue
 
         # Tracks which parameters have already been set (prioritized by year)
         unique_params = []
         # Loop over Parameters
         for param in params:
-            unique_param = (param.parameter.root+'.'+param.parameter.name)
+            unique_param = param.parameter.root+'.'+param.parameter.name
             if unique_param not in unique_params:
                 # If parameter hasn't been set, add to Return List
                 unique_params.append(unique_param)
@@ -153,41 +153,43 @@ def get_loc_techs_yaml_set(scenario_id, year):
                     
                 param_list = [parent_type, location, 'techs',
                               param.loc_tech.technology.calliope_name]+\
-                              unique_param.split('.')+\
-                              [value]
-                dictify(loc_techs_yaml_set,param_list)
+                              unique_param.split('.')
+                dictify(loc_techs_yaml_set,param_list,value)
     return loc_techs_yaml_set
 
-def dictify(target, arr):
-    level = target
-    
+# This function takes a target dict and adds a new entry from an array of nested dict keys
+# The final value in the array is the entry value and the rest of the list is the nested keys
+# Creates any missing keys in the nested list
+def dictify(target, keys, value):
     # Build the nested dict structure (if neccessary) by adding any
     # nested keys in the list before the final key/value pair
-    keys = [k for k in arr[:-1] if k != '']
+    # Strip out/skip any entries with an empty key
+    keys = [k for k in keys if k != '']
     if len(keys) > 1:
         for key in keys[:-1]:
-            if key not in level.keys():
-                level[key] = {}
-            level = level[key]
+            if key not in target.keys():
+                target[key] = {}
+            target = target[key]
 
     # Handle blank, T/F, float, and JSON string values
-    if arr[-1] == "":
-            level[keys[-1]] = None
-    elif arr[-1] == 'True':
-            level[keys[-1]] = True
-    elif arr[-1] == 'False':
-            level[keys[-1]] = False
+    if value == "":
+            target[keys[-1]] = None
+    elif value == 'True':
+            target[keys[-1]] = True
+    elif value == 'False':
+            target[keys[-1]] = False
     else:
+        # Try converting string to JSON object or float before saving as flat string
         try:
-            string = arr[-1].replace(", ", ",")
+            string = value.replace(", ", ",")
             for char in ['\'', '“', '”', '‘', '’']:
                 string = string.replace(char, '\"')
-            level[keys[-1]] = json.loads(string)
+            target[keys[-1]] = json.loads(string)
         except Exception:
             try:
-                level[keys[-1]] = float(arr[-1])
+                target[keys[-1]] = float(value)
             except ValueError:
-                level[keys[-1]] = arr[-1]
+                target[keys[-1]] = value
 
 def stringify(param_list):
     param_list = [str(x) for x in param_list]
