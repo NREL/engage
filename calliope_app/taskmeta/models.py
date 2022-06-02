@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.postgres import fields
 from celery import states
 
 CELERY_TASK_STATE_CHOICES = sorted(zip(states.ALL_STATES, states.ALL_STATES))
@@ -34,7 +33,7 @@ class CeleryTask(models.Model):
     status = models.CharField(max_length=50, default=states.PENDING, choices=CELERY_TASK_STATE_CHOICES)
     date_start = models.DateTimeField(null=True, editable=False)
     date_done = models.DateTimeField(null=True, editable=False)
-    result = fields.JSONField(null=True, default=None)
+    result = models.JSONField(null=True, default=None)
     traceback = models.TextField(null=True, default=None)
     
     class Meta:
