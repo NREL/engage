@@ -213,7 +213,7 @@ def build_model(inputs_path, run_id, model_uuid, scenario_id,
     scenario = Scenario.objects.get(id=scenario_id)
 
     build_model_yaml(scenario_id, start_date, inputs_path)
-    build_model_csv(model, scenario, start_date, end_date, inputs_path)
+    build_model_csv(model, scenario, start_date, end_date, inputs_path, run.timestep)
 
     return inputs_path
 
@@ -238,7 +238,7 @@ def build_model_yaml(scenario_id, start_date, inputs_path):
                  os.path.join(inputs_path, "locations.yaml"))
 
 
-def build_model_csv(model, scenario, start_date, end_date, inputs_path):
+def build_model_csv(model, scenario, start_date, end_date, inputs_path, timesteps):
     # timeseries: *.csv
     loc_techs = Scenario_Loc_Tech.objects.filter(
         model=model, scenario=scenario)
@@ -281,11 +281,11 @@ def build_model_csv(model, scenario, start_date, end_date, inputs_path):
             directory = "{}/timeseries".format(settings.DATA_STORAGE)
             input_fname = "{}/{}.csv".format(
                 directory, timeseries_meta.file_uuid)
-            timeseries = get_timeseries_data(input_fname, start_date, end_date)
+            timeseries = get_timeseries_data(input_fname, start_date, end_date, timesteps)
             timeseries.to_csv(filename)
 
 
-def get_timeseries_data(filename, start_date, end_date):
+def get_timeseries_data(filename, start_date, end_date, timesteps):
     """ Load up timeseries data into a DataFrame for an intra-year period. """
     timeseries = pd.read_csv(filename, parse_dates=[0])
     timeseries.index = pd.DatetimeIndex(timeseries.datetime).tz_localize(None)
@@ -319,8 +319,18 @@ def get_timeseries_data(filename, start_date, end_date):
     subset = subset[~feb_29_mask]
     subset.index = subset.index.map(lambda t: t.replace(year=year))
 
-    # Fill Missing Hours w/ 0
-    idx = pd.period_range(start_date, end_date, freq='H').to_timestamp()
+    # Determine offset difference and resample to run's timesteps
+    diffs = (subset.index[1:]-subset.index[:-1])
+    min_delta = diffs.min()
+    subset_freq = start_date+min_delta
+    target_freq = start_date+pd.tseries.frequencies.to_offset(timesteps)
+    if subset_freq<target_freq:
+        subset = subset.resample(rule=timesteps).mean()
+    elif subset_freq>target_freq:
+        subset = subset.resample(rule=timesteps).interpolate()
+
+    # Fill Missing Timesteps w/ 0
+    idx = pd.period_range(start_date, end_date, freq=timesteps).to_timestamp()
     subset = subset.reindex(idx, fill_value=0)
 
     # Leap Year Handling (Fill w/ Feb 28th)

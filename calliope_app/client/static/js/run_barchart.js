@@ -13,7 +13,7 @@ function render_barcharts(input_data) {
               name: layer.name,
               type: 'bar',
               marker: { opacity: 0.5, color: layer.color + '33', line: { color: layer.color, width: 2 } },
-              hovertemplate: '<b>%{y}</b> ' + units[3 - i] + ' (Maximum Constraint) <br>' + layer.name + '<extra></extra>',
+              hovertemplate: '<b>%{y}</b> ' + units[units.length - 1 - i] + ' (Maximum Constraint) <br>' + layer.name + '<extra></extra>',
           };
           layers.push(trace);
       })
@@ -23,7 +23,7 @@ function render_barcharts(input_data) {
               name: layer.name,
               type: 'bar',
               marker: { color: layer.color, line: { color: 'silver', width: 1 } },
-              hovertemplate: '<b>%{y}</b> ' + units[3 - i] + '<br>' + layer.name + '<extra></extra>',
+              hovertemplate: '<b>%{y}</b> ' + units[units.length - 1 - i] + '<br>' + layer.name + '<extra></extra>',
           };
           layers.push(trace);
       })
@@ -38,10 +38,17 @@ function render_barcharts(input_data) {
                   xaxis3: { visible: false },
                   xaxis4: { visible: false },
                   xaxis5: { visible: false },
-                  yaxis:  { title: { text: labels[3] }, domain: [0.03, 0.22], gridcolor: "#3b3b3b", gridwidth: 1, type: 'log' },
-                  yaxis2: { title: { text: labels[2] }, domain: [0.28, 0.47], gridcolor: "#3b3b3b", gridwidth: 1, type: 'log' },
-                  yaxis3: { title: { text: labels[1] }, domain: [0.53, 0.72], gridcolor: "#3b3b3b", gridwidth: 1, type: 'log' },
-                  yaxis4: { title: { text: labels[0] }, domain: [0.75, 0.97], gridcolor: "#3b3b3b", gridwidth: 1, type: 'log' },
+                  xaxis6: { visible: false },
+                  xaxis7: { visible: false },
+                  xaxis8: { visible: false },
+                  yaxis:  { title: { text: labels[7] }, domain: [0.03, 0.13], gridcolor: "#3b3b3b", gridwidth: 1, type: 'log' },
+                  yaxis2: { title: { text: labels[6] }, domain: [0.15, 0.25], gridcolor: "#3b3b3b", gridwidth: 1, type: 'log' },
+                  yaxis3: { title: { text: labels[5] }, domain: [0.27, 0.37], gridcolor: "#3b3b3b", gridwidth: 1, type: 'log' },
+                  yaxis4: { title: { text: labels[4] }, domain: [0.39, 0.49], gridcolor: "#3b3b3b", gridwidth: 1, type: 'log' },
+                  yaxis5: { title: { text: labels[3] }, domain: [0.51, 0.61], gridcolor: "#3b3b3b", gridwidth: 1, type: 'log' },
+                  yaxis6: { title: { text: labels[2] }, domain: [0.63, 0.73], gridcolor: "#3b3b3b", gridwidth: 1, type: 'log' },
+                  yaxis7: { title: { text: labels[1] }, domain: [0.75, 0.85], gridcolor: "#3b3b3b", gridwidth: 1, type: 'log' },
+                  yaxis8: { title: { text: labels[0] }, domain: [0.87, 0.97], gridcolor: "#3b3b3b", gridwidth: 1, type: 'log' },
                   bargap: 0,
                   barmode: 'overlay',
                   // barmode: 'relative',

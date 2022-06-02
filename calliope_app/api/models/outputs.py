@@ -6,7 +6,7 @@ from django.db import models
 from django.conf import settings
 
 from api.models.utils import EngageManager
-from api.models.configuration import Model, Scenario
+from api.models.configuration import Model, Scenario, ParamsManager
 from api.models.engage import ComputeEnvironment
 from taskmeta.models import CeleryTask
 
@@ -61,6 +61,7 @@ class Run(models.Model):
     # User run settings
     cluster = models.BooleanField(default=True)
     manual = models.BooleanField(default=False)
+    timestep = models.TextField(default='1H',blank=False)
 
     build_task = models.ForeignKey(
         to=CeleryTask,
@@ -154,7 +155,8 @@ class Run(models.Model):
         response = {}
         meta = self.get_meta()
         locations = []
-        METRICS = ['Production', 'Consumption', 'Storage', 'Costs']
+        cost_classes = ParamsManager.cost_classes()
+        METRICS = ['Production', 'Consumption', 'Storage']+list(cost_classes.keys())
         if carrier not in meta['carriers']:
             carrier = meta['carriers'][0]
         if location not in meta['locations']:
@@ -164,6 +166,10 @@ class Run(models.Model):
         # Metrics
         for metric in METRICS:
             data = {}
+            if metric in cost_classes.keys():
+                cost_class = (metric,cost_classes[metric].split('.')[1])
+            else:
+                cost_class = None
             # Filters
             if metric == 'Consumption':
                 hard_filter = meta['carriers_in'].get(carrier, [])
@@ -174,10 +180,10 @@ class Run(models.Model):
                 meta['carriers_out'].get(carrier, [])
             # Fixed Values (Barchart)
             data['barchart'], locs1 = self.get_static_values(
-                meta, metric, location, soft_filter, hard_filter)
+                meta, metric, location, soft_filter, hard_filter,cost_class)
             # Variable Values (Timeseries)
             data['timeseries'], locs2 = self.get_variable_values(
-                meta, carrier, metric, location, month, soft_filter)
+                meta, carrier, metric, location, month, soft_filter,cost_class)
             response[metric] = data
             locations += locs1 + locs2
         # Options
@@ -188,7 +194,7 @@ class Run(models.Model):
         return response
 
     def get_static_values(self, meta, metric, location,
-                          soft_filter, hard_filter):
+                          soft_filter, hard_filter, cost_class):
         LABELS = {'Production': 'Capacities',
                   'Consumption': 'Capacities',
                   'Storage': 'Storage Capacities',
@@ -203,10 +209,12 @@ class Run(models.Model):
             ctx = self.read_output('inputs_storage_cap_max.csv')
             if ctx is not None:
                 ctx['values'] = ctx['storage_cap_max']
-        elif metric == 'Costs':
+        elif cost_class:
+            LABELS[cost_class[0]] = cost_class[1]
             # Investment Costs
             df = self.read_output('results_cost.csv')
-            df['values'] = df.loc[df['costs']=='monetary']['cost']
+            df = df.loc[df['costs']==cost_class[1]]
+            df['values'] = df['cost']
             ctx = None
         else:
             # Energy Capacity
@@ -250,7 +258,7 @@ class Run(models.Model):
         }, locations
 
     def get_variable_values(self, meta, carrier, metric,
-                            location, month, soft_filter):
+                            location, month, soft_filter, cost_class):
         ext = '_' + str(month) + '.csv' if month else '.csv'
         if metric == 'Storage':
             # Storage
@@ -260,10 +268,15 @@ class Run(models.Model):
                     columns=['locs', 'techs', 'timesteps', 'values'])
             else:
                 df['values'] = df['storage']
-        elif metric == 'Costs':
+        elif cost_class:
             # Costs
             df = self.read_output('results_cost_var' + ext)
-            df['values'] = df.loc[df['costs']=='monetary']['cost_var']
+            if df is None:
+                df = pd.DataFrame(
+                    columns=['locs', 'techs', 'timesteps', 'values'])
+            else:
+                df = df.loc[df['costs']==cost_class[1]]
+                df['values'] = df['cost_var']
         else:
             # Production / Consumption
             df = self.read_output('results_carrier_con' + ext)

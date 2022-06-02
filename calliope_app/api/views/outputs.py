@@ -62,6 +62,14 @@ def build(request):
     cluster = (request.GET.get("cluster", 'true') == 'true')
     manual = (request.GET.get("manual", 'false') == 'true')
     run_env = request.GET.get("run_env", None)
+    timestep = request.GET.get("timestep", '1H')
+    try:
+        pd.tseries.frequencies.to_offset(timestep)
+    except ValueError:
+        payload = {
+            "status": "Failed",
+            "message": "'"+timestep+"' is not a valid timestep.",
+        }
 
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
@@ -92,6 +100,7 @@ def build(request):
             inputs_path="",
             cluster=cluster,
             manual=manual,
+            timestep=timestep,
             compute_environment=compute_environment
         )
 
@@ -633,7 +642,7 @@ def upload_techs(request):
                 technology.abstract_tech = Abstract_Tech.objects.filter(name=row['abstract_tech']).first()
                 technology.name = row['name']
                 technology.pretty_name = row['pretty_name']
-                if pd.isnull(row['tag']):
+                if pd.isnull(row['tag']) or pd.isnull(row['pretty_tag']):
                     technology.tag = None
                     technology.pretty_tag = None
                 else:
@@ -660,7 +669,11 @@ def upload_techs(request):
                     continue
                 pyear = f.rsplit('_',1)
                 if len(pyear) > 1 and match('[0-9]{4}',pyear[1]):
-                    p = Parameter.objects.filter(name=pyear[0]).first()
+                    proot = pyear[0].rsplit('.',1)
+                    if len(proot) > 1:
+                        p = Parameter.objects.filter(root=proot[0],name=proot[1]).first()
+                    else:
+                        p = Parameter.objects.filter(name=pyear[0]).first()
                     if p == None:
                         p = Parameter.objects.filter(name=f).first()
                         if p == None:
@@ -669,7 +682,11 @@ def upload_techs(request):
                         pyear = pyear[1]
                 else:
                     pyear = None
-                    p = Parameter.objects.filter(name=f).first()
+                    proot = f.rsplit('.',1)
+                    if len(proot) > 1:
+                        p = Parameter.objects.filter(root=proot[0],name=proot[1]).first()
+                    else:
+                        p = Parameter.objects.filter(name=f).first()
                     if p == None:
                         continue
                 # Essential params
@@ -810,6 +827,8 @@ def upload_loctechs(request):
         ureg = initialize_units()
 
         for i,row in df.iterrows():
+            if pd.isnull(row['tag']):
+                row['tag'] = None
             technology = Technology.objects.filter(model_id=model.id,name=row['tech'],tag=row['tag']).first()
             if technology == None:
                 technology = Technology.objects.filter(model_id=model.id,name=row['technology'],tag=row['tag']).first()
@@ -870,7 +889,11 @@ def upload_loctechs(request):
                     continue
                 pyear = f.rsplit('_',1)
                 if len(pyear) > 1 and match('[0-9]{4}',pyear[1]):
-                    p = Parameter.objects.filter(name=pyear[0]).first()
+                    proot = pyear[0].rsplit('.',1)
+                    if len(proot) > 1:
+                        p = Parameter.objects.filter(root=proot[0],name=proot[1]).first()
+                    else:
+                        p = Parameter.objects.filter(name=pyear[0]).first()
                     if p == None:
                         p = Parameter.objects.filter(name=f).first()
                         if p == None:
@@ -879,7 +902,11 @@ def upload_loctechs(request):
                         pyear = pyear[1]
                 else:
                     pyear = None
-                    p = Parameter.objects.filter(name=f).first()
+                    proot = f.rsplit('.',1)
+                    if len(proot) > 1:
+                        p = Parameter.objects.filter(root=proot[0],name=proot[1]).first()
+                    else:
+                        p = Parameter.objects.filter(name=f).first()
                     if p == None:
                         continue
                 # Essential params
@@ -1028,9 +1055,19 @@ def bulk_downloads(request):
             tech_dict = t.__dict__
             tech_dict['calliope_name'] = t.calliope_name
             for p in parameters.filter(technology_id=t.id):
+                newcol = False
                 pname = p.parameter.name
+                if 'costs' in p.parameter.root:
+                    try:
+                        param_list.remove(pname)
+                    except ValueError:
+                        pass
+                    pname = p.parameter.root+'.'+pname
+                    newcol = True
                 if p.year and pname+'_'+str(p.year) not in param_list:
                     pname+='_'+str(p.year)
+                    newcol = True
+                if newcol and pname not in param_list:
                     param_list.append(pname)
                 if p.timeseries:
                     tech_dict[pname] = 'file='+p.timeseries_meta.original_filename+':'+str(p.timeseries_meta.original_timestamp_col)+':'+str(p.timeseries_meta.original_value_col)
@@ -1062,7 +1099,6 @@ def bulk_downloads(request):
         parameters = Loc_Tech_Param.objects.filter(loc_tech_id__in=loc_tech_ids).order_by('-year')
         loc_tech_list = ['id','location_1','location_2','technology','tag','calliope_name']
         loc_techs_df = pd.DataFrame()
-        loc_techs_df_p = pd.DataFrame()
         for l in loc_techs:
             loc_tech_dict = l.__dict__
             loc_tech_dict['location_1'] = l.location_1.name
@@ -1072,9 +1108,19 @@ def bulk_downloads(request):
             loc_tech_dict['tag'] = l.technology.tag
             loc_tech_dict['calliope_name'] = l.technology.calliope_name
             for p in parameters.filter(loc_tech_id=l.id):
+                newcol = False
                 pname = p.parameter.name
+                if 'costs' in p.parameter.root:
+                    try:
+                        param_list.remove(pname)
+                    except ValueError:
+                        pass
+                    pname = p.parameter.root+'.'+pname
+                    newcol = True
                 if p.year and pname+'_'+str(p.year) not in param_list:
                     pname+='_'+str(p.year)
+                    newcol = True
+                if newcol and pname not in param_list:
                     param_list.append(pname)
                 if p.timeseries:
                     if p.timeseries_meta.original_filename:

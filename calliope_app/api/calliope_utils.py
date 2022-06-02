@@ -25,13 +25,24 @@ def get_model_yaml_set(scenario_id, year):
     unique_params = []
     # Loop over Parameters
     for param in params:
-        unique_param = param.run_parameter.name
+        unique_param = param.run_parameter.root+param.run_parameter.name
+
+        # NOTE: deprecated run parameter in the database
+        if unique_param == "runobjective_options":
+            continue
+        
         if unique_param not in unique_params:
             # If parameter hasn't been set, add to Return List
             unique_params.append(unique_param)
-            param_list = [param.run_parameter.root,
-                          param.run_parameter.name,
-                          param.value]
+            if "." in param.run_parameter.root:
+                items = param.run_parameter.root.split(".")
+                param_list = items + [param.run_parameter.name, param.value]
+            else:
+                param_list = [
+                    param.run_parameter.root,
+                    param.run_parameter.name,
+                    param.value
+                ]
             model_yaml_set.append((stringify(param_list), is_timeseries))
     model_yaml_set += [('import||["techs.yaml","locations.yaml"]', False)]
     return model_yaml_set
@@ -81,7 +92,7 @@ def get_techs_yaml_set(scenario_id, year):
         unique_params = []
         # Loop over Parameters
         for param in params:
-            unique_param = param.parameter.name
+            unique_param = param.parameter.root + param.parameter.name
             if unique_param not in unique_params:
                 # If parameter hasn't been set, add to Return List
                 unique_params.append(unique_param)
@@ -133,7 +144,7 @@ def get_loc_techs_yaml_set(scenario_id, year):
         unique_params = []
         # Loop over Parameters
         for param in params:
-            unique_param = param.parameter.name
+            unique_param = param.parameter.root + param.parameter.name
             if unique_param not in unique_params:
                 # If parameter hasn't been set, add to Return List
                 unique_params.append(unique_param)
@@ -364,11 +375,11 @@ def _write_outputs(model, model_path, ts_only_suffix=None):
                 pass
         shutil.rmtree(os.path.join(base_path, folder))
     if final_outputs:
-        _yaml_outputs(model,model_path,final_outputs)
+        _yaml_outputs(model_path,final_outputs)
     else:
-        _yaml_outputs(model,model_path,save_outputs)
+        _yaml_outputs(model_path,save_outputs)
 
-def _yaml_outputs(model, model_path, outputs_dir):
+def _yaml_outputs(model_path, outputs_dir):
     base_path = os.path.dirname(os.path.dirname(model_path))
     results_var = {'energy_cap':'results_energy_cap.csv'}
     inputs_dir = os.path.join(base_path, 'inputs')
@@ -377,7 +388,11 @@ def _yaml_outputs(model, model_path, outputs_dir):
     model.update(yaml.load(open(os.path.join(inputs_dir,'locations.yaml')), Loader=yaml.FullLoader))
     model.update(yaml.load(open(os.path.join(inputs_dir,'techs.yaml')), Loader=yaml.FullLoader))
 
+    has_outputs = False
     for v in results_var.keys():
+        if not os.path.exists(os.path.join(outputs_dir,results_var[v])):
+            continue
+        has_outputs = True
         r_df = pd.read_csv(os.path.join(outputs_dir,results_var[v]))
 
         for tl in ['locations','links']:
@@ -396,5 +411,5 @@ def _yaml_outputs(model, model_path, outputs_dir):
                         else:
                             model[tl][l]['techs'][t]['results']['energy_cap'] = float(r_df.loc[(r_df['locs'] == l) &
                                                                                 (r_df['techs'] == t)]['energy_cap'].values[0])
-
-    yaml.dump(model, open(os.path.join(outputs_dir,'model_results.yaml'),'w+'), default_flow_style=False)
+    if has_outputs:
+        yaml.dump(model, open(os.path.join(outputs_dir,'model_results.yaml'),'w+'), default_flow_style=False)

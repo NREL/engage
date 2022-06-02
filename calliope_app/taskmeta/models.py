@@ -53,6 +53,7 @@ class BatchTask(models.Model):
     status = models.CharField(max_length=20, default=None, choices=BATCH_TASK_STATE_CHOICES)
     date_start = models.DateTimeField(null=True, editable=False)
     date_done = models.DateTimeField(null=True, editable=False)
+    result = models.JSONField(null=True, default=None)
     traceback = models.TextField(null=True, default=None)
     
     class Meta:

@@ -1,27 +1,25 @@
-var metrics = ['Production', 'Consumption', 'Storage', 'Costs'],
-	labels = ['Production Capacity', 'Consumption Capacity', 'Storage Capacity', 'Fixed Cost'],
-	units = ['kW', 'kW', 'kWh', '$'],
-	hold_refresh = false,
-	pause_start = null,
-	pause_interval = null,
-	submitdata = {},
-	refreshTimeout,
-	month_dict = {
-		'01': 'January',
-		'02': 'February',
-		'03': 'March',
-		'04': 'April',
-		'05': 'May',
-		'06': 'June',
-		'07': 'July',
-		'08': 'August',
-		'09': 'September',
-		'10': 'October',
-		'11': 'November',
-		'12': 'December'
-	}
+var metrics = ['Production', 'Consumption', 'Storage', 'Costs','Emissions: CO2','Emissions: CH4', 'Emissions: N2O','Emissions: CO2e'],
+		labels = ['Production Capacity', 'Consumption Capacity', 'Storage Capacity', 'Fixed Cost','Emissions: CO2','Emissions: CH4', 'Emissions: N2O','Emissions: CO2e'],
+		units = ['kW', 'kW', 'kWh', '$', 'kg', 'kg', 'kg', 'kg'],
+		hold_refresh = false,
+		pause_start = null,
+		pause_interval = null,
+		submitdata = {},
+		refreshTimeout,
+		month_dict = {'01': 'January',
+									'02': 'February',
+									'03': 'March',
+									'04': 'April',
+									'05': 'May',
+									'06': 'June',
+									'07': 'July',
+									'08': 'August',
+									'09': 'September',
+									'10': 'October',
+									'11': 'November',
+									'12': 'December'}
 
-$(document).ready(function () {
+$( document ).ready(function() {
 
 	// Resize Dashboard
 	splitter_resize();

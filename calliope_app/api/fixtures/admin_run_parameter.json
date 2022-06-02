@@ -312,7 +312,7 @@
     "model": "api.run_parameter",
     "fields": {
       "root": "run",
-      "user_visibility": "False",
+      "user_visibility": "True",
       "can_evolve": "False",
       "name": "solver",
       "pretty_name": "Solver",
@@ -347,6 +347,34 @@
       "default_value": "",
       "description": "Optional settings for the group_constraints constraint. Configurable in JSON format: {\"renewables\": {\"techs\": [\"pv\", \"wind\"], \"locs\": [\"Region 1\"], \"demand_share_min\": {\"electricity\": 0.5}}}",
       "choices": "[]"
+    }
+  },
+  {
+    "pk": 26,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "run.objective_options",
+      "user_visibility": "True",
+      "can_evolve": "False",
+      "name": "cost_class",
+      "pretty_name": "Weights of cost classes",
+      "default_value": "{'monetary': 1, 'co2': 0, 'ch4': 0, 'n2o': 0, 'co2e': 0}",
+      "description": "A dictionary of cost classes and their weights in the objective. By default, the weights of emissions are zero, monetary's is 1.",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 27,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "run.objective_options",
+      "user_visibility": "True",
+      "can_evolve": "False",
+      "name": "sense",
+      "pretty_name": "Sense",
+      "default_value": "minimize",
+      "description": "'sense' value choices: 'minimize', or 'maximize'.",
+      "choices": "[\"minimize\",\"maximize\"]"
     }
   }
 ]

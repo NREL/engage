@@ -17,6 +17,7 @@ $(document).ready(function () {
 			end_date = $('#end_date').val(),
 			cluster = $('#cluster').is(":checked"),
 			manual = $('#manual').is(":checked"),
+			timestep = $('#timestep').val(),
 			sd = new Date(start_date),
 			ed = new Date(end_date),
 			run_env = $('#run-environment option:selected').text();
@@ -46,13 +47,14 @@ $(document).ready(function () {
 			$.ajax({
 				url: '/' + LANGUAGE_CODE + '/api/build/',
 				data: {
-					'model_uuid': model_uuid,
-					'scenario_id': scenario_id,
-					'start_date': start_date,
-					'end_date': end_date,
-					'cluster': cluster,
-					'manual': manual,
-					'run_env': run_env
+				  'model_uuid': model_uuid,
+				  'scenario_id': scenario_id,
+				  'start_date': start_date,
+				  'end_date': end_date,
+				  'cluster': cluster,
+				  'manual':manual,
+				  'timestep':timestep,
+				  'run_env': run_env
 				},
 				dataType: 'json',
 				success: function (data) {

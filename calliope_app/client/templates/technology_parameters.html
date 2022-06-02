@@ -32,7 +32,7 @@
 				{% endifchanged %}
 			{% endif %}{% endif %}
 			{% with parameters|return_item:forloop.counter as next_param %}
-			{% ifchanged param.parameter_name %}
+			{% ifchanged param.parameter_name or param.parameter_root %}
 				<!-- Parameter Master Row -->
 				<tr class="{% if next_param.parameter_id == param.parameter_id %}param_header{% endif %} {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% elif param.parameter_category in emissions %}table-info{% else %}table-primary{% endif %}{% else %}table-default{% endif %}" data-param_id={{ param.parameter_id }}>
 					<!-- Favorite Buttons -->
