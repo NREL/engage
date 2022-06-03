@@ -39,6 +39,7 @@ from api.engage import aws_ses_configured
 from api.models.outputs import Run
 from api.tasks import task_status as run_status
 from api.tasks import CalliopeModelRunTask, NOTIFICATION_TIME_INTERVAL, run_model
+from api.utils import zip_folder
 
 logger = logging.getLogger(__name__)
 
@@ -103,10 +104,6 @@ class ModelRunExecutor:
 
     def solve_model(self):
         """Solve Calliope model and handle success/failure cases"""
-        print("Exist1", os.path.exists("/data/"))
-        print("Exist2", os.path.exists("/data/7323237a-3719-486a-a657-64b3c727dc60/"))
-        print("Exist3", os.path.exists("/data/7323237a-3719-486a-a657-64b3c727dc60/testmodel2/example_scenario/2005/2005-01-01-to-2005-01-02/2021-12-16-002607/"))
-        print("ExistsLog", os.path.exists("'/data/7323237a-3719-486a-a657-64b3c727dc60/testmodel2/example_scenario/2005/2005-01-01-to-2005-01-02/2021-12-16-002607/logs.html"))
         self._ensure_logs_file()
         try:
             run_model(
@@ -158,17 +155,15 @@ class ModelRunExecutor:
         # Update run instance with model run information
         self.run.logs_path = self.logs_path
         self.run.outputs_path = self.outputs_path
-        results = os.path.join(self.run.outputs_path, "results_carrier_prod.csv")
-        if os.path.exists(results):
+        if os.path.exists(self.outputs_path):
             self.run.status = run_status.SUCCESS
-        else:
-            self.run.status = run_status.FAILURE
         self.run.save()
         
         # Upload results to S3 bucekt if configured
         if not settings.AWS_S3_BUCKET_NAME:
             return
         client = boto3.client(service_name="s3", region_name="us-west-2")
-        client.upload_file(self.outputs_zip, settings.AWS_S3_BUCKET_NAME, self.outputs_key)
+        zip_file = zip_folder(self.outputs_path)
+        client.upload_file(zip_file, settings.AWS_S3_BUCKET_NAME, self.outputs_key)
         self.run.outputs_key = self.outputs_key
         self.run.save()
