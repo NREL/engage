@@ -114,6 +114,8 @@ class ModelRunExecutor:
             self._handle_on_success()
         except Exception as exc:
             self._handle_on_failure(exc)
+            return False
+        return True
 
     def _ensure_logs_file(self):
         if os.path.exists(self.logs_path):

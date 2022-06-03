@@ -39,8 +39,12 @@ def main():
 def solve_model(run_id, user_id):
     """Given a run id, run the Calliope model associated"""
     handler = ModelRunExecutor(run_id=run_id, user_id=user_id)
-    handler.solve_model()
-    logger.info("Model run & export success!")
+    solved = handler.solve_model()
+    if solved:
+        logger.info("Model run & export success!")
+    else:
+        logger.error("Failed to solve the model.")
+    logger.info("Job complete")
 
 main.add_command(solve_model)
 
