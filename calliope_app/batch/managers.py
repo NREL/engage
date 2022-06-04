@@ -1,8 +1,11 @@
+import json
 import logging
 import boto3
 from abc import ABC, abstractmethod
 
 from django.conf import settings
+
+from api.models.engage import ComputeCommand
 
 logger = logging.getLogger(__name__)
 
@@ -47,10 +50,14 @@ class AWSBatchJobManager(AWSBatchClient):
         return response
 
     def generate_job_message(self, run_id, user_id):
+        try:
+            command = ComputeCommand.objects.get(name="solve_model")
+            cmd = json.loads(command.value)
+        except ComputeCommand.DoesNotExist:
+            cmd = ["engage", "solve-model"]
         job = {
             "name": f"Engage-Model-Run-UserId-{user_id}-RunId-{run_id}",
-            "command": [
-                "engage", "solve-model",
+            "command": cmd + [
                 "--run-id", str(run_id),
                 "--user-id", str(user_id)
             ],
