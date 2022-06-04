@@ -77,6 +77,7 @@ class Run(models.Model):
         to_field="id",
         related_name="model_run",
         null=True,
+        blank=True,
         on_delete=models.PROTECT,
         default=None
     )

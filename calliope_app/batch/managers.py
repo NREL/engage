@@ -33,8 +33,8 @@ class AWSBatchJobManager(AWSBatchClient):
         self.compute_environment = compute_environment
     
     def get_job_definition(self):
-        """Store job definition name from compute environment alias"""
-        return self.compute_environment.alias
+        """Store job definition name from compute environment"""
+        return self.compute_environment.full_name
     
     def submit_job(self, job):
         response = self.client.submit_job(
