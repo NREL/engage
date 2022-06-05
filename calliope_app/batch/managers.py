@@ -51,13 +51,16 @@ class AWSBatchJobManager(AWSBatchClient):
 
     def generate_job_message(self, run_id, user_id):
         try:
-            command = ComputeCommand.objects.get(name="solve_model")
-            cmd = json.loads(command.value)
+            cmd1 = ComputeCommand.objects.get(name="solve_model")
+            item = self.get_job_definition().split("-")[-1][2:].upper()
+            cmd2 = ':'.join(item[i:i + 2] for i in range(0, 12, 2))
+            command = [cmd1.value, cmd2,"engage", "solve-model"]
         except ComputeCommand.DoesNotExist:
-            cmd = ["engage", "solve-model"]
+            command = ["engage", "solve-model"]
+        
         job = {
             "name": f"Engage-Model-Run-UserId-{user_id}-RunId-{run_id}",
-            "command": cmd + [
+            "command": command + [
                 "--run-id", str(run_id),
                 "--user-id", str(user_id)
             ],
