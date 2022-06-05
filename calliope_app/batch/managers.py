@@ -5,8 +5,6 @@ from abc import ABC, abstractmethod
 
 from django.conf import settings
 
-from api.models.engage import ComputeCommand
-
 logger = logging.getLogger(__name__)
 
 
@@ -50,20 +48,16 @@ class AWSBatchJobManager(AWSBatchClient):
         return response
 
     def generate_job_message(self, run_id, user_id):
-        try:
-            cmd1 = ComputeCommand.objects.get(name="solve_model")
-            item = self.get_job_definition().split("-")[-1][2:].upper()
-            cmd2 = ':'.join(item[i:i + 2] for i in range(0, 12, 2))
-            command = [cmd1.value, cmd2,"engage", "solve-model"]
-        except ComputeCommand.DoesNotExist:
-            command = ["engage", "solve-model"]
-        
+        command = [
+            "engage", "solve-model"
+            "--run-id", str(run_id),
+            "--user-id", str(user_id)
+        ]
+        if self.compute_environment.cmd:
+            command = json.loads(self.compute_environment.cmd) + command
         job = {
             "name": f"Engage-Model-Run-UserId-{user_id}-RunId-{run_id}",
-            "command": command + [
-                "--run-id", str(run_id),
-                "--user-id", str(user_id)
-            ],
+            "command": command,
             "definition": self.get_job_definition()
         }
         return job

@@ -116,6 +116,7 @@ class ComputeEnvironment(models.Model):
     type = models.CharField(max_length=60, choices=ENV_TYPES)
     ncpu = models.PositiveSmallIntegerField(null=True, blank=True)
     memory = models.PositiveSmallIntegerField(null=True, blank=True)
+    cmd = models.TextField(blank=True, null=True)
     users = models.ManyToManyField(User, related_name="compute_environments", blank=True)
 
     class Meta:
@@ -125,16 +126,3 @@ class ComputeEnvironment(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class ComputeCommand(models.Model):
-    name = models.CharField(max_length=120)
-    value = models.TextField(null=True, blank=True)
-
-    class Meta:
-        db_table = "compute_commands"
-        verbose_name = "[Admin] Compute Command"
-        verbose_name_plural = "[Admin] Compute Commands"
-
-    def __str__(self):
-        return f"<{self.name}: {self.value}>"
