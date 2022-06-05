@@ -49,7 +49,7 @@ class AWSBatchJobManager(AWSBatchClient):
 
     def generate_job_message(self, run_id, user_id):
         command = [
-            "engage", "solve-model"
+            "engage", "solve-model",
             "--run-id", str(run_id),
             "--user-id", str(user_id)
         ]
