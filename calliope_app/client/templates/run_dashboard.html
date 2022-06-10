@@ -9,6 +9,7 @@
 			<!-- Scenarios Header Row  -->
 				<tr class="tbl-header" style="font-size:0.9em;background-color:#ececec;">
 					<td class="centered" style="padding-top:10px"><b>{% trans "Status" %}</b></td>
+					<td class="centered" style="padding-top:10px"><b>{% trans "RunEnvironment" %}</b></td>
 					<td style="font-size:1.3em"><b>{{ run.year }}</b></td>
 					<td style="padding-top:10px"><b>{% trans "Clustered" %}</b></td>
 					<td style="padding-top:10px"><b>{% trans "Notes" %}</b> (double-click to edit)</td>
@@ -19,7 +20,7 @@
 					<td class="centered" style="padding-top:10px"><b>{% trans "Outputs" %}</b></td>
 					{% if cambium_configured %}
 					{% if request.user.is_authenticated is True and request.user.is_staff is True %}
-					<td class="centered" style="padding-top:10px" data-toggle="tooltip" data-placement="left" title="Publish results to the Cambium Scenario Viewer tool"><b>{% trans "Cambium" %}</b></td>
+					<td class="centered" style="padding-top:10px" data-toggle="tooltip" data-placement="left" title="Publish results to the Scenario Viewer tool"><b>{% trans "ScenarioViewer" %}</b></td>
 					{% endif %}
 					{% endif %}
 					<td class="centered" style="padding-top:10px"><b>{% trans "Version" %}</b></td>
@@ -43,7 +44,7 @@
 						<td class="centered table-success" style="width:100px;" data-toggle="tooltip" data-placement="left" title="{{ run.status }} (ready to run) @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
 						<button {% if not can_edit %}disabled{% endif %} data-run_id="{{ run.id }}" tabindex="-1" type="button" class="btn btn-outline-success btn-run-inputs" style="width:100%;"><i class="fas fa-play"></i>&nbsp;&nbsp;{% trans "Run" %}</button>
 						{% endif %}
-					</td>
+						</td>
                     {% elif run.status == task_status.QUEUED %}
 					<td class="centered table-warning" style="width:100px;" data-toggle="tooltip" data-placement="left" title="{{ run.status }} @ {% if user.is_authenticated %}{{ run.updated|timezone:user.user_profile.timezone }}{% else %}{{ run.updated }}{% endif %}">
 						<i class="fa fa-clock" style="color:green"></i>
@@ -65,6 +66,12 @@
 						{{ run.status }}
 					</td>
 					{% endif %}
+
+					<!--Compute Environment-->
+					<td>
+						<div class="form-group text-center" style="margin-bottom: 1px;">{% if run.compute_environment %}{{run.compute_environment}}{% else %}default{% endif %}</div>
+					</td>
+					
 					<!-- Subset Time -->
 					<td><div class="text-sm">{{ run.subset_time }}</div></td>
 					<td>{% if run.cluster %}<i class="fas fa-check"></i>{% endif %}</td>

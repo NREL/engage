@@ -100,3 +100,29 @@ class User_Profile(models.Model):
         user.is_active = True
         user.save()
         return True
+
+
+class ComputeEnvironment(models.Model):
+
+    ENV_TYPES = [
+        ("Celery Worker", "Celery Worker"),
+        ("Container Job", "Container Job"),
+        ("Other Compute", "Other Compute")
+    ]
+
+    name = models.CharField(max_length=120)
+    full_name = models.CharField(max_length=120)
+    is_default = models.BooleanField(default=False)
+    type = models.CharField(max_length=60, choices=ENV_TYPES)
+    ncpu = models.PositiveSmallIntegerField(null=True, blank=True)
+    memory = models.PositiveSmallIntegerField(null=True, blank=True)
+    cmd = models.TextField(blank=True, null=True)
+    users = models.ManyToManyField(User, related_name="compute_environments", blank=True)
+
+    class Meta:
+        db_table = "compute_environments"
+        verbose_name = "[Admin] Compute Environment"
+        verbose_name_plural = "[Admin] Compute Environments"
+
+    def __str__(self):
+        return self.name

@@ -1,16 +1,16 @@
-$( document ).ready(function() {
+$(document).ready(function () {
 
 	add_run_precheck();
 
 	$('#master-cancel').removeClass('hide');
 	$('#master-save').removeClass('hide');
 
-	$('#master-cancel').on('click', function() {
+	$('#master-cancel').on('click', function () {
 		var model_uuid = $('#header').data('model_uuid');
 		window.location = '/' + model_uuid + '/runs/';
 	});
 
-	$('#master-save').on('click', function() {
+	$('#master-save').on('click', function () {
 		var model_uuid = $('#header').data('model_uuid'),
 			scenario_id = $("#scenario").data('scenario_id'),
 			start_date = $('#start_date').val(),
@@ -19,8 +19,9 @@ $( document ).ready(function() {
 			manual = $('#manual').is(":checked"),
 			timestep = $('#timestep').val(),
 			sd = new Date(start_date),
-			ed = new Date(end_date);
-		
+			ed = new Date(end_date),
+			run_env = $('#run-environment option:selected').text();
+
 		// fix timezone issues
 		sd = new Date(sd.getTime() + sd.getTimezoneOffset() * 60000);
 		ed = new Date(ed.getTime() + ed.getTimezoneOffset() * 60000);
@@ -53,10 +54,10 @@ $( document ).ready(function() {
 				  'cluster': cluster,
 				  'manual':manual,
 				  'timestep':timestep,
+				  'run_env': run_env
 				},
 				dataType: 'json',
 				success: function (data) {
-					console.log(data['status']);
 					if (data['status'] == 'Success') {
 						window.location = '/' + model_uuid + '/runs/';
 					} else {
@@ -69,7 +70,7 @@ $( document ).ready(function() {
 	});
 
 	// Automatically deactivate clustering if manual is enabled.
-	$('#manual').on('click', function() {
+	$('#manual').on('click', function () {
 		if ($('#manual').is(":checked")) {
 			$('#cluster').prop('checked', false);
 		}
@@ -84,8 +85,8 @@ function add_run_precheck() {
 	$.ajax({
 		url: '/' + LANGUAGE_CODE + '/component/add_run_precheck/',
 		data: {
-		  'model_uuid': model_uuid,
-		  'scenario_id': scenario_id,
+			'model_uuid': model_uuid,
+			'scenario_id': scenario_id,
 		},
 		dataType: 'json',
 		success: function (data) {
@@ -97,7 +98,7 @@ function add_run_precheck() {
 };
 
 function activate_tiles() {
-	$('.selection_tile').on('click', function() {
+	$('.selection_tile').on('click', function () {
 		var start_date = $(this).data('start_date'),
 			end_date = $(this).data('end_date');
 		$('.selection_tile').removeClass('btn-outline-primary')
@@ -111,14 +112,14 @@ function render_gantt() {
 
 	var data = $('#timeseries_gantt').data('timeseries');
 
-	var margin = {top: 40, right: 40, bottom: 20, left: 40},
-	    width = $('#timeseries_gantt').width() - margin.left - margin.right,
-	    bar_height = 16
-	    height = (bar_height + 4) * data.length;
+	var margin = { top: 40, right: 40, bottom: 20, left: 40 },
+		width = $('#timeseries_gantt').width() - margin.left - margin.right,
+		bar_height = 16
+	height = (bar_height + 4) * data.length;
 
 	// Prep data
-	var	parseDate = d3.timeParse("%m/%d/%Y, %H:%M:%S");
-	data.forEach(function(d) {
+	var parseDate = d3.timeParse("%m/%d/%Y, %H:%M:%S");
+	data.forEach(function (d) {
 		d.node = d[0]
 		d.parameter = d[1]
 		d.start_date = parseDate(d[2]);
@@ -126,68 +127,68 @@ function render_gantt() {
 	});
 
 	// X Axis
-	var start_date = d3.min(data, function(d) { return d.start_date }),
-		end_date = d3.max(data, function(d) { return d.end_date });
+	var start_date = d3.min(data, function (d) { return d.start_date }),
+		end_date = d3.max(data, function (d) { return d.end_date });
 	var x = d3.scaleTime()
 		.domain([start_date, end_date])
-	    .range([0, width]);
+		.range([0, width]);
 	var xAxis = d3.axisTop()
-	    .scale(x);
+		.scale(x);
 
 	// Y Axis
 	var y = d3.scaleLinear()
 		.domain([data.length, 0])
-	    .range([height, 0]);
+		.range([height, 0]);
 
 
 	// Draw
 	var svg = d3.select("#timeseries_gantt").append("svg")
-	    .attr("width", width + margin.left + margin.right)
-	    .attr("height", height + margin.top + margin.bottom)
-	  .append("g")
-	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+		.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 	// Define the div for the tooltip
-	var tooltip = d3.select("body").append("div")	
-	    .attr("class", "tooltip")
-	    .style("background-color", "white")
-	    .style("border", "solid 3px black")
-	    .style("padding", "5px")
-	    .style("opacity", 0);
+	var tooltip = d3.select("body").append("div")
+		.attr("class", "tooltip")
+		.style("background-color", "white")
+		.style("border", "solid 3px black")
+		.style("padding", "5px")
+		.style("opacity", 0);
 
 	svg.append("g")
-	      .attr("class", "x axis")
-	      .style("font-size", "1.2em")
-	      .call(xAxis)
+		.attr("class", "x axis")
+		.style("font-size", "1.2em")
+		.call(xAxis)
 	var g = svg.selectAll()
-	        .data(data).enter().append("g");
+		.data(data).enter().append("g");
 
 	g.append("rect")
-        .attr("height", bar_height)
-        .attr("width", function(d) { return x(end_date) - x(start_date); })
-        .attr("x", function(d) { return x(start_date); })
-        .attr("y", function(d, i) { return y(i) + (bar_height / 2); })
-        .style("fill", "red")
-        .style("opacity", "0.2");
+		.attr("height", bar_height)
+		.attr("width", function (d) { return x(end_date) - x(start_date); })
+		.attr("x", function (d) { return x(start_date); })
+		.attr("y", function (d, i) { return y(i) + (bar_height / 2); })
+		.style("fill", "red")
+		.style("opacity", "0.2");
 
 	g.append("rect")
-        .attr("height", bar_height)
-        .attr("width", function(d) { return x(d.end_date) - x(d.start_date); })
-        .attr("x", function(d) { return x(d.start_date); })
-        .attr("y", function(d, i) { return y(i) + (bar_height / 2); })
-        .style("fill", "green")
-        .on("mouseover", function(d) {
-            tooltip.transition()
-            	.duration(200)
-                .style("opacity", 1);
-            tooltip.html("<b>" + d.node + "</b><br/>"  + d.parameter)	
-                .style("left", (d3.event.pageX - 100) + "px")
-                .style("top", (d3.event.pageY - 50) + "px");	
-            })
-        .on("mouseout", function(d) {
-            tooltip.transition()
-                .duration(500)
-                .style("opacity", 0);	
-        });
+		.attr("height", bar_height)
+		.attr("width", function (d) { return x(d.end_date) - x(d.start_date); })
+		.attr("x", function (d) { return x(d.start_date); })
+		.attr("y", function (d, i) { return y(i) + (bar_height / 2); })
+		.style("fill", "green")
+		.on("mouseover", function (d) {
+			tooltip.transition()
+				.duration(200)
+				.style("opacity", 1);
+			tooltip.html("<b>" + d.node + "</b><br/>" + d.parameter)
+				.style("left", (d3.event.pageX - 100) + "px")
+				.style("top", (d3.event.pageY - 50) + "px");
+		})
+		.on("mouseout", function (d) {
+			tooltip.transition()
+				.duration(500)
+				.style("opacity", 0);
+		});
 
 };

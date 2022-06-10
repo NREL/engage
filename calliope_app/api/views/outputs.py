@@ -1,18 +1,21 @@
 import base64
-import os, shutil, io, zipfile
-from re import L, match
 import json
+import io
+import logging
+import os
+import shutil
+import zipfile
+from re import match
+
 from datetime import datetime, timedelta
 from urllib.parse import urljoin
 import requests
 import pandas as pd
 import pint
-import numpy as np
-#import geopandas as gpd
 
-from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.views.decorators.csrf import csrf_protect
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate
 from django.core.files.storage import FileSystemStorage
@@ -20,13 +23,16 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
 
-from api.exceptions import ModelNotExistException
 from api.models.outputs import Run, Cambium
 from api.tasks import run_model, task_status, build_model,upload_ts
 from api.models.calliope import Abstract_Tech, Abstract_Tech_Param, Parameter
-from api.models.configuration import Model, ParamsManager, Model_User,User_File, Location, Technology, Tech_Param, Loc_Tech, Loc_Tech_Param, Timeseries_Meta
+from api.models.configuration import Model, ParamsManager, User_File, Location, Technology, Tech_Param, Loc_Tech, Loc_Tech_Param, Timeseries_Meta
+from api.models.engage import ComputeEnvironment
 from api.utils import zip_folder, initialize_units, convert_units, noconv_units
+from batch.managers import AWSBatchJobManager 
 from taskmeta.models import CeleryTask
+
+logger = logging.getLogger(__name__)
 
 
 @csrf_protect
@@ -55,6 +61,7 @@ def build(request):
     end_date = request.GET.get("end_date", None)
     cluster = (request.GET.get("cluster", 'true') == 'true')
     manual = (request.GET.get("manual", 'false') == 'true')
+    run_env = request.GET.get("run_env", None)
     timestep = request.GET.get("timestep", '1H')
     try:
         pd.tseries.frequencies.to_offset(timestep)
@@ -77,6 +84,12 @@ def build(request):
         # model and scenario instances
         scenario = model.scenarios.get(id=scenario_id)
 
+        # compute environment of the run
+        try:
+            compute_environment = ComputeEnvironment.objects.get(name=run_env)
+        except ComputeEnvironment.DoesNotExist:
+            compute_environment = ComputeEnvironment.objects.filter(is_default=True).first(0)
+
         # Create run instance
         run = Run.objects.create(
             model=model,
@@ -88,6 +101,7 @@ def build(request):
             cluster=cluster,
             manual=manual,
             timestep=timestep,
+            compute_environment=compute_environment
         )
 
         # Generate File Path
@@ -120,6 +134,7 @@ def build(request):
         build_task = CeleryTask.objects.get(task_id=async_result.id)
         run.build_task = build_task
         run.save()
+        logger.info("Model run %s starts to build in celery worker.", run.id)
 
         payload = {
             "status": "Success",
@@ -129,6 +144,8 @@ def build(request):
         }
 
     except Exception as e:
+        logger.exception("Failed to build model run.")
+        logger.exception(e)
         payload = {
             "status": "Failed",
             "message": "Please contact admin at engage@nrel.gov ' \
@@ -137,8 +154,7 @@ def build(request):
             ),
         }
 
-    return HttpResponse(json.dumps(payload, indent=4),
-                        content_type="application/json")
+    return HttpResponse(json.dumps(payload, indent=4), content_type="application/json")
 
 
 @csrf_protect
@@ -182,17 +198,51 @@ def optimize(request):
         )
 
     # run celery task
-    async_result = run_model.apply_async(
-        kwargs={"run_id": run_id, "model_path": model_path,
-                "user_id": request.user.id}
-    )
-    run_task, _ = CeleryTask.objects.get_or_create(task_id=async_result.id)
-    run.run_task = run_task
-    run.status = task_status.QUEUED
-    run.save()
-    payload = {"task_id": async_result.id}
-    return HttpResponse(json.dumps(payload, indent=4),
-                        content_type="application/json")
+    environment = run.compute_environment
+    if environment.type == "Celery Worker":
+        async_result = run_model.apply_async(
+            kwargs={
+                "run_id": run_id,
+                "model_path": model_path,
+                "user_id": request.user.id
+            }
+        )
+        logger.info(
+            "Model run %s starts to execute in %s compute environment with celery worker.",
+            run.id, environment.name
+        )
+
+        run_task, _ = CeleryTask.objects.get_or_create(task_id=async_result.id)
+        run.run_task = run_task
+        run.status = task_status.QUEUED
+        run.save()
+        payload = {"task_id": async_result.id}
+    
+    # Batch task
+    elif environment.type == "Container Job":
+        manager = AWSBatchJobManager(compute_environment=environment)
+        if manager.compute_environment_in_use():
+            payload = {
+                "status": "BLOCKED",
+                "message": f"Compute environment '{environment.name}' is in use, please try again later."
+            }
+        else:
+            job = manager.generate_job_message(run_id=run.id, user_id=request.user.id)
+            response = manager.submit_job(job)
+            logger.info(
+                "Model run %s starts to execute in '%s' comptute environment with container job.",
+                run.id, environment.name
+            )
+            
+            run.status = task_status.QUEUED
+            run.save()
+            payload = {"task_id": response.get("jobId")}
+    
+    # Unknown environment, not supported
+    else:
+        raise Exception("Failed to submit job, unknown compute environment")
+
+    return HttpResponse(json.dumps(payload, indent=4),  content_type="application/json")
 
 
 @csrf_protect

@@ -49,18 +49,31 @@
 		</div>
 		<div class="col-2">
 			<h5>Run Options:</h5>
+
 			<h6>
 				{% trans "Enable Clustered Run:" %}
 				<input id="cluster" class="centered" type="checkbox" checked="checked">
 			</h6>
+
 			<h6>
 				{% trans "Enable Manual Run:" %}
 				<input id="manual" class="centered" type="checkbox">
 			</h6>
+
 			<h6>
 				{% trans "Run Timestep" %}
 				<input id="timestep" class="centered" type="text" value="1H">
 			</h6>
+			
+			<h6>{% trans "Select Run Environment:" %}</h6>
+			<div class="form-group" style="margin-bottom: 1px;">
+				<select id="run-environment" class="form-control" style="text-align: left;">
+					{% for env in compute_environments  %}
+					<option {% if env.name == 'default' %} selected {% endif %}>{{env.name}}</option>
+					{% endfor %}
+				</select>
+			</div>
+
 		</div>
 	</div>
 	<br>

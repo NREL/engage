@@ -154,7 +154,7 @@ LOGGING = {
 
 # CELERY
 # --------------------------------------------------------------------------------
-CELERY_BROKER_URL = env.str('CELERY_BROKER_URL')
+CELERY_BROKER_URL = env.str('CELERY_BROKER_URL', '')
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'

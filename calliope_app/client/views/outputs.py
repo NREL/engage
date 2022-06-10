@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
-from api.models.engage import Help_Guide
+from api.models.engage import Help_Guide, ComputeEnvironment
 from api.models.configuration import Model
 
 import re
@@ -66,7 +66,15 @@ def add_runs_view(request, model_uuid, scenario_id):
     model = Model.by_uuid(model_uuid)
     can_edit = model.handle_view_access(request.user)
 
+    compute_environments = request.user.compute_environments.all()
+    if compute_environments.count() == 0:
+        default_environment = ComputeEnvironment.objects.get(name="default")
+        default_environment.users.add(request.user)
+        default_environment.save()
+        compute_environments = [default_environment]
+
     context = {
+        "compute_environments": compute_environments,
         "timezones": common_timezones,
         "model": model,
         "scenario": model.scenarios.get(id=scenario_id),
