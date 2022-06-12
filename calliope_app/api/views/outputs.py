@@ -145,7 +145,6 @@ def build(request):
 
     except Exception as e:
         logger.exception("Failed to build model run.")
-        logger.exception(e)
         payload = {
             "status": "Failed",
             "message": "Please contact admin at engage@nrel.gov ' \
@@ -276,8 +275,8 @@ def delete_run(request):
         try:
             url = urljoin(settings.CAMBIUM_URL, "api/remove-data/")
             requests.post(url, data=data).json()
-        except Exception as e:
-            print("Cambium removal failed - {}".format(e))
+        except Exception:
+            logger.exception("Cambium removal failed")
     run.delete()
 
     return HttpResponseRedirect("")
@@ -337,7 +336,7 @@ def update_run_description(request):
     try:
         run = model.runs.get(id=run_id)
     except ObjectDoesNotExist as e:
-        print(e)
+        logger.exception(e)
         payload = {}
         payload["message"] = "Run ID {} does not exist.".format(run_id)
         return HttpResponse(
