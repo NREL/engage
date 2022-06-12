@@ -66,13 +66,14 @@ def add_runs_view(request, model_uuid, scenario_id):
     model = Model.by_uuid(model_uuid)
     can_edit = model.handle_view_access(request.user)
 
-    compute_environments = request.user.compute_environments.all()
-    if compute_environments.count() == 0:
-        default_environment = ComputeEnvironment.objects.get(name="default")
+    default_environment = ComputeEnvironment.objects.filter(name__iexact="default")
+    if not default_environment.exists():
+        default_environment = ComputeEnvironment.objects.get(name__iexact="default")
         default_environment.users.add(request.user)
         default_environment.save()
-        compute_environments = [default_environment]
 
+    compute_environments = request.user.compute_environments.all()
+    
     context = {
         "compute_environments": compute_environments,
         "timezones": common_timezones,
