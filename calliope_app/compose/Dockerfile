@@ -42,7 +42,9 @@ COPY requirements.txt requirements-dev.txt /www/
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN pip install -r requirements-dev.txt
-RUN pip install psycopg2-binary
+
+# Install calliope without dependencies, as already installed in requirements
+RUN pip install calliope==0.6.7 --no-deps
 
 COPY . .
 

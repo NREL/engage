@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-celery flower -A calliope_app --port=5555
+celery -A calliope_app flower --port=5555
