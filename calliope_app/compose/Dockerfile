@@ -12,7 +12,6 @@ RUN apt-get update -y --fix-missing \
     && apt-get install -y --no-install-recommends \
     build-essential \
     python3-dev \
-    python3-pip \
     libgmp3-dev \
     libz-dev \
     libreadline-dev \
@@ -45,6 +44,7 @@ RUN pip install -r requirements-dev.txt
 
 # Install calliope without dependencies, as already installed in requirements
 RUN pip install calliope==0.6.7 --no-deps
+RUN pip install flower>=1.1.0
 
 COPY . .
 
