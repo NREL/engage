@@ -8,6 +8,7 @@ import yaml
 import shutil
 from calliope import Model as CalliopeModel
 import pandas as pd
+import json
 
 from api.models.configuration import Scenario_Param, Scenario_Loc_Tech, \
     Location, Tech_Param, Loc_Tech_Param, Loc_Tech
@@ -18,37 +19,27 @@ def get_model_yaml_set(scenario_id, year):
     params = Scenario_Param.objects.filter(scenario_id=scenario_id,
                                            year__lte=year).order_by('-year')
     # Initialize the Return list
-    model_yaml_set = []
-    # There are no timeseries in Run Parameters
-    is_timeseries = False
+    model_yaml_set = {}
     # Tracks which parameters have already been set (prioritized by year)
     unique_params = []
     # Loop over Parameters
     for param in params:
-        unique_param = param.run_parameter.root+param.run_parameter.name
+        unique_param = param.run_parameter.root+'.'+param.run_parameter.name
 
         # NOTE: deprecated run parameter in the database
-        if unique_param == "runobjective_options":
+        if unique_param == "run.objective_options":
             continue
         
         if unique_param not in unique_params:
             # If parameter hasn't been set, add to Return List
             unique_params.append(unique_param)
-            if "." in param.run_parameter.root:
-                items = param.run_parameter.root.split(".")
-                param_list = items + [param.run_parameter.name, param.value]
-            else:
-                param_list = [
-                    param.run_parameter.root,
-                    param.run_parameter.name,
-                    param.value
-                ]
-            model_yaml_set.append((stringify(param_list), is_timeseries))
-    model_yaml_set += [('import||["techs.yaml","locations.yaml"]', False)]
+            key_list = unique_param.split('.')
+            dictify(model_yaml_set,key_list,param.value)
+    dictify(model_yaml_set,['import'],'["techs.yaml","locations.yaml"]')
     return model_yaml_set
 
 
-def get_location_meta_yaml_set(scenario_id):
+def get_location_meta_yaml_set(scenario_id, existing = None):
     """ Function pulls model locations from Database for YAML """
     loc_techs = Scenario_Loc_Tech.objects.filter(scenario_id=scenario_id)
     loc_ids = loc_techs.values_list('loc_tech__location_1',
@@ -56,8 +47,11 @@ def get_location_meta_yaml_set(scenario_id):
     loc_ids = list(filter(None, set(
         [item for sublist in loc_ids for item in sublist])))
     locations = Location.objects.filter(id__in=loc_ids)
-    # Initialize the Return list
-    location_coord_yaml_set = []
+    # Initialize the Return dict
+    if existing:
+        location_coord_yaml_set = existing
+    else:
+        location_coord_yaml_set = {}
     # There are no timeseries in Location Coordinates
     is_timeseries = False
     # Loop over Parameters
@@ -65,14 +59,14 @@ def get_location_meta_yaml_set(scenario_id):
         # Coordinates
         coordinates = '{{"lat": {}, "lon": {}}}'.format(loc.latitude,
                                                         loc.longitude)
-        param_list = ['locations', loc.name, 'coordinates', coordinates]
-        location_coord_yaml_set.append((stringify(param_list), is_timeseries))
+        param_list = ['locations', loc.name, 'coordinates']
+        dictify(location_coord_yaml_set,param_list,coordinates)
         # Available Area
         if loc.available_area is None:
             continue
         param_list = ['locations', loc.name,
-                      'available_area', loc.available_area]
-        location_coord_yaml_set.append((stringify(param_list), is_timeseries))
+                      'available_area']
+        dictify(location_coord_yaml_set,param_list,loc.available_area)
     return location_coord_yaml_set
 
 
@@ -84,7 +78,7 @@ def get_techs_yaml_set(scenario_id, year):
     parameters = Tech_Param.objects.filter(technology_id__in=tech_ids,
                                            year__lte=year).order_by('-year')
     # Initialize the Return list
-    techs_yaml_set = []
+    techs_yaml_set = {}
     # Loop over Technologies
     for tech_id in tech_ids:
         params = parameters.filter(technology_id=tech_id)
@@ -92,19 +86,20 @@ def get_techs_yaml_set(scenario_id, year):
         unique_params = []
         # Loop over Parameters
         for param in params:
-            unique_param = param.parameter.root + param.parameter.name
+            unique_param = param.parameter.root+'.'+param.parameter.name
             if unique_param not in unique_params:
                 # If parameter hasn't been set, add to Return List
                 unique_params.append(unique_param)
-                is_timeseries = param.timeseries
-                if '%' in param.parameter.units:  # Calliope in decimal format
+                if param.timeseries:
+                    value = "file={}--{}.csv:value".format(
+                                    param.technology.calliope_name, unique_param.replace('.','-'))
+                elif '%' in param.parameter.units:  # Calliope in decimal format
                     value = float(param.value) / 100
                 else:
                     value = param.value
-                param_list = ['techs', param.technology.calliope_name,
-                              param.parameter.root, param.parameter.name,
-                              value]
-                techs_yaml_set.append((stringify(param_list), is_timeseries))
+                param_list = ['techs', param.technology.calliope_name]+\
+                              unique_param.split('.')
+                dictify(techs_yaml_set,param_list,value)
     return techs_yaml_set
 
 
@@ -117,7 +112,7 @@ def get_loc_techs_yaml_set(scenario_id, year):
     parameters = Loc_Tech_Param.objects.filter(
         loc_tech_id__in=loc_tech_ids, year__lte=year).order_by('-year')
     # Initialize the Return list
-    loc_techs_yaml_set = []
+    loc_techs_yaml_set = {}
     # Loop over Technologies
     for loc_tech_id in loc_tech_ids:
         loc_tech = Loc_Tech.objects.get(id=loc_tech_id)
@@ -132,36 +127,69 @@ def get_loc_techs_yaml_set(scenario_id, year):
         else:
             parent_type = 'locations'
             location = loc_tech.location_1.name
+        technology = loc_tech.technology.calliope_name
 
         if len(params) == 0:
-            is_timeseries = False
             param_list = [parent_type, location, 'techs',
-                          loc_tech.technology.calliope_name, '']
-            loc_techs_yaml_set.append((stringify(param_list), is_timeseries))
+                          technology]
+            dictify(loc_techs_yaml_set,param_list,'')
             continue
 
         # Tracks which parameters have already been set (prioritized by year)
         unique_params = []
         # Loop over Parameters
         for param in params:
-            unique_param = param.parameter.root + param.parameter.name
+            unique_param = param.parameter.root+'.'+param.parameter.name
             if unique_param not in unique_params:
                 # If parameter hasn't been set, add to Return List
                 unique_params.append(unique_param)
-                is_timeseries = param.timeseries
-                if '%' in param.parameter.units:  # Calliope in decimal format
+                if param.timeseries:
+                    value = "file={}--{}--{}.csv:value".format(
+                                    location, technology, unique_param.replace('.','-'))
+                elif '%' in param.parameter.units:  # Calliope in decimal format
                     value = float(param.value) / 100
                 else:
                     value = param.value
+                    
                 param_list = [parent_type, location, 'techs',
-                              param.loc_tech.technology.calliope_name,
-                              param.parameter.root,
-                              param.parameter.name,
-                              value]
-                loc_techs_yaml_set.append((stringify(param_list),
-                                           is_timeseries))
+                              param.loc_tech.technology.calliope_name]+\
+                              unique_param.split('.')
+                dictify(loc_techs_yaml_set,param_list,value)
     return loc_techs_yaml_set
 
+# This function takes a target dict and adds a new entry from an array of nested dict keys
+# The final value in the array is the entry value and the rest of the list is the nested keys
+# Creates any missing keys in the nested list
+def dictify(target, keys, value):
+    # Build the nested dict structure (if neccessary) by adding any
+    # nested keys in the list before the final key/value pair
+    # Strip out/skip any entries with an empty key
+    keys = [k for k in keys if k != '']
+    if len(keys) > 1:
+        for key in keys[:-1]:
+            if key not in target.keys():
+                target[key] = {}
+            target = target[key]
+
+    # Handle blank, T/F, float, and JSON string values
+    if value == "":
+            target[keys[-1]] = None
+    elif value == 'True':
+            target[keys[-1]] = True
+    elif value == 'False':
+            target[keys[-1]] = False
+    else:
+        # Try converting string to JSON object or float before saving as flat string
+        try:
+            string = value.replace(", ", ",")
+            for char in ['\'', '“', '”', '‘', '’']:
+                string = string.replace(char, '\"')
+            target[keys[-1]] = json.loads(string)
+        except Exception:
+            try:
+                target[keys[-1]] = float(value)
+            except ValueError:
+                target[keys[-1]] = value
 
 def stringify(param_list):
     param_list = [str(x) for x in param_list]
