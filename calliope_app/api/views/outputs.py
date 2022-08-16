@@ -30,7 +30,7 @@ from api.models.configuration import Model, ParamsManager, User_File, Location, 
 from api.models.engage import ComputeEnvironment
 from api.utils import zip_folder, initialize_units, convert_units, noconv_units
 from batch.managers import AWSBatchJobManager 
-from taskmeta.models import CeleryTask
+from taskmeta.models import CeleryTask, BatchTask, batch_task_status
 
 logger = logging.getLogger(__name__)
 
@@ -182,7 +182,6 @@ def optimize(request):
     try:
         run = model.runs.get(id=run_id)
     except ObjectDoesNotExist as e:
-        print(e)
         payload["message"] = "Run ID {} does not exist.".format(run_id)
         return HttpResponse(
             json.dumps(payload, indent=4), content_type="application/json"
@@ -220,7 +219,28 @@ def optimize(request):
     # Batch task
     elif environment.type == "Container Job":
         manager = AWSBatchJobManager(compute_environment=environment)
-        if manager.compute_environment_in_use():
+
+        # Try to fetch and update Batch job status
+        _runs = Run.objects.filter(
+            compute_environment__name=environment.name,
+            status__in=[task_status.QUEUED, task_status.RUNNING]
+        )
+        result, all_complete = manager.describe_jobs(jobs=[r.batch_job.task_id for r in _runs])
+        logger.info("Current uncomplete Batch job status: %s", result)
+        for r in _runs:
+            if r.batch_job.task_id not in result:
+                continue
+            job_status = result[r.batch_job.task_id]
+            if job_status == "SUCCEEDED":
+                r.status = task_status.SUCCESS
+                r.batch_job.status = batch_task_status.SUCCEEDED
+            if job_status == "FAILED":
+                r.status = task_status.FAILURE
+                r.batch_job.status = batch_task_status.FAILED
+            r.batch_job.save()
+            r.save()
+        
+        if not all_complete:
             payload = {
                 "status": "BLOCKED",
                 "message": f"Compute environment '{environment.name}' is in use, please try again later."
@@ -232,7 +252,11 @@ def optimize(request):
                 "Model run %s starts to execute in '%s' comptute environment with container job.",
                 run.id, environment.name
             )
-            
+            try:
+                batch_job = BatchTask.objects.get(task_id=response["jobId"])
+            except BatchTask.DoesNotExist:
+                batch_job = BatchTask.objects.create(task_id=response["jobId"], status=batch_task_status.SUBMITTED)
+            run.batch_job = batch_job
             run.status = task_status.QUEUED
             run.save()
             payload = {"task_id": response.get("jobId")}
@@ -278,6 +302,15 @@ def delete_run(request):
         except Exception:
             logger.exception("Cambium removal failed")
     run.delete()
+
+    if run.batch_job:
+        job_id = run.batch_job.task_id
+        manager = AWSBatchJobManager(compute_environment=run.compute_environment)
+        try:
+            manager.terminate_job(job_id)
+            logger.info("Batch job terminated by user %s", request.user.email)
+        except:
+            pass
 
     return HttpResponseRedirect("")
 

@@ -57,7 +57,7 @@ class BatchTask(models.Model):
     
     class Meta:
         db_table = "batch_task"
-        verbose_name_plural = "[Admin] Batch Task"
+        verbose_name_plural = "[Admin] Batch Tasks"
     
     def __str__(self):
         return "<Batch Task: {0.task_id} state={0.status}>".format(self)
