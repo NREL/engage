@@ -77,9 +77,9 @@ class AWSBatchJobManager(AWSBatchClient):
                 all_compelete = False
         return result, all_compelete
 
-    def terminate_job(self, job_id):
+    def terminate_job(self, job_id, reason):
         response = self.client.terminate_job(
             jobId=job_id,
-            reason="Job terminated manually by Engage user."
+            reason=reason
         )
         return response

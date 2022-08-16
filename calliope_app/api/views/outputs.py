@@ -305,9 +305,10 @@ def delete_run(request):
 
     if run.batch_job:
         job_id = run.batch_job.task_id
+        reason = f"Job terminated manually by Engage user: {request.user.email}" 
         manager = AWSBatchJobManager(compute_environment=run.compute_environment)
         try:
-            manager.terminate_job(job_id)
+            manager.terminate_job(job_id, reason)
             logger.info("Batch job terminated by user %s", request.user.email)
         except:
             pass
