@@ -315,6 +315,7 @@ def delete_run(request):
         run.batch_job.status = batch_task_status.FAILED
         run.batch_job.result = ""
         run.batch_job.traceback = reason
+        run.batch_job.save()
     
     run.delete()
 
