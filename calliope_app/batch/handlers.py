@@ -8,7 +8,7 @@ With the Run instance, we are going to solve the model associated,
 and save the model results, plots and logs information into the Run 
 intance.
 """
-
+import json
 import logging
 import os
 import sys
@@ -40,6 +40,7 @@ from api.models.outputs import Run
 from api.tasks import task_status as run_status
 from api.tasks import CalliopeModelRunTask, NOTIFICATION_TIME_INTERVAL, run_model
 from api.utils import zip_folder
+from taskmeta.models import batch_task_status
 
 logger = logging.getLogger(__name__)
 
@@ -133,6 +134,11 @@ class ModelRunExecutor:
         self.run.plots_path = ""
         self.run.logs_path = self.logs_path
         self.run.save()
+
+        self.run.batch_job.status = batch_task_status.FAILED
+        self.run.batch_job.result = ""
+        self.run.batch_job.traceback = str(exc)
+        self.run.batch_job.save()
         
         # Send notifications via email to user/admin.
         if self._get_elasped_run_time(self.run) >= NOTIFICATION_TIME_INTERVAL:
@@ -169,3 +175,12 @@ class ModelRunExecutor:
         client.upload_file(zip_file, settings.AWS_S3_BUCKET_NAME, self.outputs_key)
         self.run.outputs_key = self.outputs_key
         self.run.save()
+
+        self.run.batch_job.status = batch_task_status.SUCCEEDED
+        self.run.batch_job.result = json.dumps({
+            "logs": self.logs_path,
+            "outputs": self.outputs_path,
+            "plots": self.plots_path
+        }, indent=2)
+        self.run.batch_job.traceback = ""
+        self.run.batch_job.save()
