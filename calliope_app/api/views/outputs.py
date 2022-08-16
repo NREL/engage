@@ -145,7 +145,8 @@ def build(request):
         }
 
     except Exception as e:
-        logger.exception("Failed to build model run.")
+        logger.warning("Failed to build model run.")
+        logger.exception(e)
         payload = {
             "status": "Failed",
             "message": "Please contact admin at engage@nrel.gov ' \
@@ -183,7 +184,7 @@ def optimize(request):
     try:
         run = model.runs.get(id=run_id)
     except ObjectDoesNotExist as e:
-        print(e)
+        logger.warning(e)
         payload["message"] = "Run ID {} does not exist.".format(run_id)
         return HttpResponse(
             json.dumps(payload, indent=4), content_type="application/json"
@@ -276,8 +277,9 @@ def delete_run(request):
         try:
             url = urljoin(settings.CAMBIUM_URL, "api/remove-data/")
             requests.post(url, data=data).json()
-        except Exception:
-            logger.exception("Cambium removal failed")
+        except Exception as e:
+            logger.warning("Cambium removal failed")
+            logger.exception(e)
     run.delete()
 
     return HttpResponseRedirect("")
@@ -446,7 +448,7 @@ def upload_outputs(request):
     try:
         run = Run.objects.get(id=run_id)
     except Exception:
-        print("No Run Found")
+        logger.warning("No Run Found")
         raise Http404
 
     if (request.method == "POST") and ("myfile" in request.FILES):
@@ -459,14 +461,14 @@ def upload_outputs(request):
             if not os.path.exists(out_dir):
                 os.makedirs(out_dir, exist_ok=True)
             
-            print(myfile.name)
             fs = FileSystemStorage()
-            filename = fs.save(os.path.join(out_dir,myfile.name), myfile)
+            filename = os.path.basename(fs.save(os.path.join(out_dir,myfile.name), myfile))
 
             # Default assumes CSV files were directly zipped into archive
             run.outputs_path = out_dir
-
-            shutil.unpack_archive(filename,out_dir)
+            with zipfile.ZipFile(os.path.join(out_dir,filename),'r') as zip_f:
+                zip_f.extractall(out_dir)
+            #shutil.unpack_archive(filename,out_dir)
             # Loop through options for archived output directories rather than base CSVs
             # TODO: Add user input on location of output CSVs via API option
             for dir in ['outputs','model_outputs']:
@@ -478,7 +480,7 @@ def upload_outputs(request):
             return redirect("/%s/runs/" % model_uuid)
         return redirect("/%s/runs/" % model_uuid)
 
-    print("No File Found")
+    logger.warning("No File Found")
     raise Http404
 
 @csrf_protect
@@ -675,9 +677,9 @@ def upload_techs(request):
                             p = Parameter.objects.filter(root=proot[0],name=proot[1]).first()
                         else:
                             p = Parameter.objects.filter(name=pyear[0]).first()
-                        if p == None:
+                        if p is None:
                             p = Parameter.objects.filter(name=f).first()
-                            if p == None:
+                            if p is None:
                                 continue
                         else:
                             pyear = pyear[1]
@@ -688,7 +690,7 @@ def upload_techs(request):
                             p = Parameter.objects.filter(root=proot[0],name=proot[1]).first()
                         else:
                             p = Parameter.objects.filter(name=f).first()
-                        if p == None:
+                        if p is None:
                             continue
                     # Essential params
                     if p.is_essential:
@@ -776,10 +778,8 @@ def upload_techs(request):
                                 continue
                 technology.update(update_dict)
             except Exception as e:
-                logger.exception('ERROR in upload_loctechs')
-                exc_type, exc_obj, exc_tb = sys.exc_info()
-                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-                logger.exception(exc_type, str(e), fname, exc_tb.tb_lineno)
+                logger.warning('ERROR in upload_techs')
+                logger.exception(e)
                 context['logs'].append('Unexpected error occured at row '+str(i)+': '+str(e))
 
         return render(request, "bulkresults.html", context)
@@ -846,7 +846,6 @@ def upload_loctechs(request):
                 if technology == None:
                     technology = Technology.objects.filter(model_id=model.id,name=row['technology'],tag=row['tag']).first()
                     if technology == None:
-                        print('Here',model.id, row['tech'], row['technology'],row['tag'])
                         if pd.isnull(row['tag']):
                             context['logs'].append(str(i)+'- Tech '+str(row['technology'])+' missing. Skipped.')
                         else:
@@ -910,9 +909,9 @@ def upload_loctechs(request):
                             p = Parameter.objects.filter(root=proot[0],name=proot[1]).first()
                         else:
                             p = Parameter.objects.filter(name=pyear[0]).first()
-                        if p == None:
+                        if p is None:
                             p = Parameter.objects.filter(name=f).first()
-                            if p == None:
+                            if p is None:
                                 continue
                         else:
                             pyear = pyear[1]
@@ -923,7 +922,7 @@ def upload_loctechs(request):
                             p = Parameter.objects.filter(root=proot[0],name=proot[1]).first()
                         else:
                             p = Parameter.objects.filter(name=f).first()
-                        if p == None:
+                        if p is None:
                             continue
                     # Essential params
                     if p.is_essential:
@@ -1020,10 +1019,8 @@ def upload_loctechs(request):
                                 continue                    
                 loctech.update(update_dict)
             except Exception as e:
-                logger.exception('ERROR in upload_loctechs')
-                exc_type, exc_obj, exc_tb = sys.exc_info()
-                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-                logger.exception(exc_type, str(e), fname, exc_tb.tb_lineno)
+                logger.warning('ERROR in upload_loctechs')
+                logger.exception(e)
                 context['logs'].append('Unexpected error occured at row '+str(i)+': '+str(e))
 
         return render(request, "bulkresults.html", context)
@@ -1089,9 +1086,10 @@ def bulk_downloads(request):
                         pass
                     pname = p.parameter.root+'.'+pname
                     newcol = True
-                if p.year and pname+'_'+str(p.year) not in param_list:
+                if p.year:
                     pname+='_'+str(p.year)
-                    newcol = True
+                    if pname not in param_list:
+                        newcol = True
                 if newcol and pname not in param_list:
                     param_list.append(pname)
                 if p.timeseries:
@@ -1142,9 +1140,10 @@ def bulk_downloads(request):
                         pass
                     pname = p.parameter.root+'.'+pname
                     newcol = True
-                if p.year and pname+'_'+str(p.year) not in param_list:
+                if p.year:
                     pname+='_'+str(p.year)
-                    newcol = True
+                    if pname not in param_list:
+                        newcol = True
                 if newcol and pname not in param_list:
                     param_list.append(pname)
                 if p.timeseries:
