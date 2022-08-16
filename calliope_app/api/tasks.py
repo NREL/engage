@@ -5,7 +5,6 @@ import os
 import shutil
 
 import boto3
-import botocore
 import pandas as pd
 import numpy as np
 import datetime
@@ -13,7 +12,6 @@ import yaml
 from dateutil.parser import parse as date_parse
 
 from celery import Task
-from celery.exceptions import SoftTimeLimitExceeded
 from calliope_app.celery import app
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -25,8 +23,7 @@ from api.engage import aws_ses_configured
 from api.models.configuration import Model, Scenario, Scenario_Loc_Tech, \
     Tech_Param, Loc_Tech_Param, Timeseries_Meta, User_File
 from api.models.outputs import Run
-from api.utils import list_to_yaml, load_timeseries_from_csv, \
-    get_model_logger, zip_folder
+from api.utils import load_timeseries_from_csv, get_model_logger, zip_folder
 from api.calliope_utils import get_model_yaml_set, get_location_meta_yaml_set
 from api.calliope_utils import get_techs_yaml_set, get_loc_techs_yaml_set
 from api.calliope_utils import run_basic, run_clustered
