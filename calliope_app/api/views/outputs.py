@@ -301,17 +301,22 @@ def delete_run(request):
             requests.post(url, data=data).json()
         except Exception:
             logger.exception("Cambium removal failed")
-    run.delete()
 
     if run.batch_job:
         job_id = run.batch_job.task_id
-        reason = f"Job terminated manually by Engage user: {request.user.email}" 
+        reason = f"Job terminated manually by Engage user: {request.user.email}"
         manager = AWSBatchJobManager(compute_environment=run.compute_environment)
         try:
             manager.terminate_job(job_id, reason)
             logger.info("Batch job terminated by user %s", request.user.email)
         except:
             pass
+
+        run.batch_job.status = batch_task_status.FAILED
+        run.batch_job.result = ""
+        run.batch_job.traceback = reason
+    
+    run.delete()
 
     return HttpResponseRedirect("")
 
