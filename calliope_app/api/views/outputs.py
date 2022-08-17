@@ -741,7 +741,7 @@ def upload_techs(request):
                     else:
                         if p.units in noconv_units:
                             if pyear:
-                                if p.pk not in update_dict['add'].keys():
+                                if p.pk not in update_dict['add']:
                                     update_dict['add'][p.pk] = {'year':[],'value':[]}
                                 if p.pk in update_dict['edit']['parameter']:
                                     update_dict['add'][p.pk]['year'].append('0')
@@ -749,7 +749,7 @@ def upload_techs(request):
                                     update_dict['edit']['parameter'].pop(p.pk)
                                 update_dict['add'][p.pk]['year'].append(pyear)
                                 update_dict['add'][p.pk]['value'].append(v)
-                            elif p.pk in update_dict['add'].keys():
+                            elif p.pk in update_dict['add']:
                                 update_dict['add'][p.pk]['year'].append('0')
                                 update_dict['add'][p.pk]['value'].append(v)
                             else:
@@ -757,7 +757,7 @@ def upload_techs(request):
                         else:
                             try:
                                 if pyear:
-                                    if p.pk not in update_dict['add'].keys():
+                                    if p.pk not in update_dict['add']:
                                         update_dict['add'][p.pk] = {'year':[],'value':[]}
                                     if p.pk in update_dict['edit']['parameter']:
                                         update_dict['add'][p.pk]['year'].append('0')
@@ -765,14 +765,11 @@ def upload_techs(request):
                                         update_dict['edit']['parameter'].pop(p.pk)
                                     update_dict['add'][p.pk]['year'].append(pyear)
                                     update_dict['add'][p.pk]['value'].append(convert_units(ureg,v,p.units))
-                                elif p.pk in update_dict['add'].keys():
+                                elif p.pk in update_dict['add']:
                                     update_dict['add'][p.pk]['year'].append('0')
                                     update_dict['add'][p.pk]['value'].append(v)
                                 else:
                                     update_dict['edit']['parameter'][p.pk] = convert_units(ureg,v,p.units)
-                            except pint.errors.DimensionalityError as e:
-                                context['logs'].append(str(i)+'- Tech '+str(row['pretty_name'])+': Column '+f+' '+str(e)+'. Error converting units. Parameter skipped.')
-                                continue
                             except Exception as e:
                                 context['logs'].append(str(i)+'- Tech '+str(row['pretty_name'])+': Column '+f+' '+str(e)+'. Error converting units. Parameter skipped.')
                                 continue
@@ -982,7 +979,7 @@ def upload_loctechs(request):
                     else:
                         if p.units in noconv_units:
                             if pyear:
-                                if p.pk not in update_dict['add'].keys():
+                                if p.pk not in update_dict['add']:
                                     update_dict['add'][p.pk] = {'year':[],'value':[]}
                                 if p.pk in update_dict['edit']['parameter']:
                                     update_dict['add'][p.pk]['year'].append('0')
@@ -990,7 +987,7 @@ def upload_loctechs(request):
                                     update_dict['edit']['parameter'].pop(p.pk)
                                 update_dict['add'][p.pk]['year'].append(pyear)
                                 update_dict['add'][p.pk]['value'].append(v)
-                            elif p.pk in update_dict['add'].keys():
+                            elif p.pk in update_dict['add']:
                                 update_dict['add'][p.pk]['year'].append('0')
                                 update_dict['add'][p.pk]['value'].append(v)
                             else:
@@ -998,7 +995,7 @@ def upload_loctechs(request):
                         else:
                             try:
                                 if pyear:
-                                    if p.pk not in update_dict['add'].keys():
+                                    if p.pk not in update_dict['add']:
                                         update_dict['add'][p.pk] = {'year':[],'value':[]}
                                     if p.pk in update_dict['edit']['parameter']:
                                         update_dict['add'][p.pk]['year'].append('0')
@@ -1006,14 +1003,11 @@ def upload_loctechs(request):
                                         update_dict['edit']['parameter'].pop(p.pk)
                                     update_dict['add'][p.pk]['year'].append(pyear)
                                     update_dict['add'][p.pk]['value'].append(convert_units(ureg,v,p.units))
-                                elif p.pk in update_dict['add'].keys():
+                                elif p.pk in update_dict['add']:
                                     update_dict['add'][p.pk]['year'].append('0')
                                     update_dict['add'][p.pk]['value'].append(v)
                                 else:
                                     update_dict['edit']['parameter'][p.pk] = convert_units(ureg,v,p.units)
-                            except pint.errors.DimensionalityError as e:
-                                context['logs'].append(str(i)+'- Tech '+str(row['technology'])+': Column '+f+' '+str(e)+'. Error converting units. Parameter skipped.')
-                                continue
                             except Exception as e:
                                 context['logs'].append(str(i)+'- Tech '+str(row['technology'])+': Column '+f+' '+str(e)+'. Error converting units. Parameter skipped.')
                                 continue                    
