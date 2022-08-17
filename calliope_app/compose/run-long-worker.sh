@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-celery worker -n long-task-worker -A calliope_app -Q long_queue -l info
+celery -A calliope_app worker -n long-task-worker -Q long_queue -l info
