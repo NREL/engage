@@ -688,12 +688,14 @@ user_defined_units = [
 ]
 
 def convert_units(ureg,val,target):
-    ur_v = str(val).replace('%',' percent ').replace('$',' dollar ')
+    ur_v = str(val).replace('%',' percent ').replace('$',' dollar ').replace('<sup>','^').replace('</sup>','')
     for u in user_defined_units:
         ur_v = ur_v.replace(u['name'],u['value'])
     ur_v = ureg.Quantity(ur_v)
     if str(ur_v.units) == 'dimensionless':
-        return val
+        if val != str(ur_v.magnitude):
+            return str(ur_v.magnitude)+'||'+str(val)
+        return str(ur_v.magnitude)
     else:
         conv_v = ur_v.to(target.replace('%',' percent ').replace('$',' dollar ')).magnitude
         return str(conv_v)+'||'+str(val)
