@@ -8,7 +8,7 @@ from django.conf import settings
 from api.models.utils import EngageManager
 from api.models.configuration import Model, Scenario, ParamsManager
 from api.models.engage import ComputeEnvironment
-from taskmeta.models import CeleryTask
+from taskmeta.models import CeleryTask, BatchTask
 
 import pandas as pd
 import numpy as np
@@ -76,6 +76,16 @@ class Run(models.Model):
         to=CeleryTask,
         to_field="id",
         related_name="model_run",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        default=None
+    )
+
+    batch_job = models.ForeignKey(
+        to=BatchTask,
+        to_field="id",
+        related_name="+",
         null=True,
         blank=True,
         on_delete=models.PROTECT,

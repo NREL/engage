@@ -5,14 +5,13 @@ import os
 import shutil
 
 import boto3
-import botocore
 import pandas as pd
 import numpy as np
 import datetime
+import yaml
 from dateutil.parser import parse as date_parse
 
 from celery import Task
-from celery.exceptions import SoftTimeLimitExceeded
 from calliope_app.celery import app
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -24,8 +23,7 @@ from api.engage import aws_ses_configured
 from api.models.configuration import Model, Scenario, Scenario_Loc_Tech, \
     Tech_Param, Loc_Tech_Param, Timeseries_Meta, User_File
 from api.models.outputs import Run
-from api.utils import list_to_yaml, load_timeseries_from_csv, \
-    get_model_logger, zip_folder
+from api.utils import load_timeseries_from_csv, get_model_logger, zip_folder
 from api.calliope_utils import get_model_yaml_set, get_location_meta_yaml_set
 from api.calliope_utils import get_techs_yaml_set, get_loc_techs_yaml_set
 from api.calliope_utils import run_basic, run_clustered
@@ -225,17 +223,19 @@ def build_model_yaml(scenario_id, start_date, inputs_path):
 
     # model.yaml
     model_yaml_set = get_model_yaml_set(scenario_id, year)
-    list_to_yaml(model_yaml_set, os.path.join(inputs_path, "model.yaml"))
+    with open(os.path.join(inputs_path, "model.yaml"), 'w') as outfile:
+        yaml.dump(model_yaml_set, outfile, default_flow_style=False)
 
     # techs.yaml
     techs_yaml_set = get_techs_yaml_set(scenario_id, year)
-    list_to_yaml(techs_yaml_set, os.path.join(inputs_path, "techs.yaml"))
+    with open(os.path.join(inputs_path, "techs.yaml"), 'w') as outfile:
+        yaml.dump(techs_yaml_set, outfile, default_flow_style=False)
 
     # locations.yaml
     loc_techs_yaml_set = get_loc_techs_yaml_set(scenario_id, year)
-    location_coord_yaml_set = get_location_meta_yaml_set(scenario_id)
-    list_to_yaml(loc_techs_yaml_set + location_coord_yaml_set,
-                 os.path.join(inputs_path, "locations.yaml"))
+    location_yaml_set = get_location_meta_yaml_set(scenario_id, loc_techs_yaml_set)
+    with open(os.path.join(inputs_path, "locations.yaml"), 'w') as outfile:
+        yaml.dump(location_yaml_set, outfile, default_flow_style=False)
 
 
 def build_model_csv(model, scenario, start_date, end_date, inputs_path, timesteps):
@@ -254,27 +254,27 @@ def build_model_csv(model, scenario, start_date, end_date, inputs_path, timestep
     for ts in list(tech_ts) + list(loc_tech_ts):
         timeseries_meta_id = ts.timeseries_meta_id
         parameter_name = ts.parameter.name
-        try:
+        parameter_root = ts.parameter.root.replace('.','-')
+        if ts in loc_tech_ts:
             location_1_name = ts.loc_tech.location_1.name
             technology_name = ts.loc_tech.technology.calliope_name
             if not ts.loc_tech.location_2:
                 filename = os.path.join(
-                    inputs_path, "{}--{}--{}.csv".format(
+                    inputs_path, "{}--{}--{}-{}.csv".format(
                         location_1_name, technology_name,
-                        parameter_name))
+                        parameter_root, parameter_name))
             else:
                 location_2_name = ts.loc_tech.location_2.name
                 filename = os.path.join(inputs_path,
-                                        "{},{}--{}--{}.csv".format(
+                                        "{},{}--{}--{}-{}.csv".format(
                                             location_1_name, location_2_name,
-                                            technology_name,
+                                            technology_name, parameter_root,
                                             parameter_name))
-        except Exception as e:
-            print(e)
+        elif ts in tech_ts:
             technology_name = ts.technology.calliope_name
             filename = os.path.join(
-                inputs_path, "{}--{}.csv".format(
-                    technology_name, parameter_name))
+                inputs_path, "{}--{}-{}.csv".format(
+                    technology_name, parameter_root, parameter_name))
         timeseries_meta = Timeseries_Meta.objects.filter(
             id=timeseries_meta_id).first()
         if timeseries_meta is not None:

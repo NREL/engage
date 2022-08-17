@@ -119,6 +119,7 @@ def dictfetchall(cursor):
 def list_to_yaml(table_list, filename):
     """
     Convert a list of strings to YAML file format
+    DEPRECATED: The YAML creation code was refactored to write directly to a dict
     """
 
     X = [x[0].split('||') for x in table_list]

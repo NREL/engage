@@ -62,19 +62,24 @@ class AWSBatchJobManager(AWSBatchClient):
         }
         return job
 
-    def compute_environment_in_use(self):
-        """
-        To make sure only one job queued with given job definition
-        """
-        job_definition = self.get_job_definition()
-
+    def describe_jobs(self, jobs: list) -> list:
+        if not jobs:
+            return [], True
+        
+        all_compelete = True
         uncomplete_status = ["SUBMITTED", "PENDING", "RUNNABLE", "STARTING", "RUNNING"]
-        for job_status in uncomplete_status:
-            response = self.client.list_jobs(
-                jobQueue=settings.AWS_BATCH_JOB_QUEUE,
-                jobStatus=job_status
-            )
-            for job in response["jobSummaryList"]:
-                if job["jobDefinition"] == job_definition:
-                    return True
-        return False
+
+        response = self.client.describe_jobs(jobs=jobs)
+        result = {}
+        for item in response["jobs"]:
+            result[item["jobId"]] =  item["status"]
+            if  item["status"] in uncomplete_status:
+                all_compelete = False
+        return result, all_compelete
+
+    def terminate_job(self, job_id, reason):
+        response = self.client.terminate_job(
+            jobId=job_id,
+            reason=reason
+        )
+        return response

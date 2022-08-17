@@ -12,7 +12,6 @@ RUN apt-get update -y --fix-missing \
     && apt-get install -y --no-install-recommends \
     build-essential \
     python3-dev \
-    python3-pip \
     libgmp3-dev \
     libz-dev \
     libreadline-dev \
@@ -42,7 +41,10 @@ COPY requirements.txt requirements-dev.txt /www/
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN pip install -r requirements-dev.txt
-RUN pip install psycopg2-binary
+
+# Install calliope without dependencies, as already installed in requirements
+RUN pip install calliope==0.6.7 --no-deps
+RUN pip install flower>=1.1.0
 
 COPY . .
 

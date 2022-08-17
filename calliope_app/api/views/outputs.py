@@ -14,6 +14,7 @@ import requests
 import pandas as pd
 import pint
 
+from celery import current_app
 from django.views.decorators.csrf import csrf_protect
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -31,7 +32,9 @@ from api.models.configuration import Model, ParamsManager, User_File, Location, 
 from api.models.engage import ComputeEnvironment
 from api.utils import zip_folder, initialize_units, convert_units, noconv_units
 from batch.managers import AWSBatchJobManager 
-from taskmeta.models import CeleryTask
+from taskmeta.models import CeleryTask, BatchTask, batch_task_status
+
+from calliope_app.celery import app
 
 logger = logging.getLogger(__name__)
 
@@ -185,6 +188,7 @@ def optimize(request):
         run = model.runs.get(id=run_id)
     except ObjectDoesNotExist as e:
         logger.warning(e)
+
         payload["message"] = "Run ID {} does not exist.".format(run_id)
         return HttpResponse(
             json.dumps(payload, indent=4), content_type="application/json"
@@ -222,7 +226,28 @@ def optimize(request):
     # Batch task
     elif environment.type == "Container Job":
         manager = AWSBatchJobManager(compute_environment=environment)
-        if manager.compute_environment_in_use():
+
+        # Try to fetch and update Batch job status
+        _runs = Run.objects.filter(
+            compute_environment__name=environment.name,
+            status__in=[task_status.QUEUED, task_status.RUNNING]
+        )
+        result, all_complete = manager.describe_jobs(jobs=[r.batch_job.task_id for r in _runs])
+        logger.info("Current uncomplete Batch job status: %s", result)
+        for r in _runs:
+            if r.batch_job.task_id not in result:
+                continue
+            job_status = result[r.batch_job.task_id]
+            if job_status == "SUCCEEDED":
+                r.status = task_status.SUCCESS
+                r.batch_job.status = batch_task_status.SUCCEEDED
+            if job_status == "FAILED":
+                r.status = task_status.FAILURE
+                r.batch_job.status = batch_task_status.FAILED
+            r.batch_job.save()
+            r.save()
+        
+        if not all_complete:
             payload = {
                 "status": "BLOCKED",
                 "message": f"Compute environment '{environment.name}' is in use, please try again later."
@@ -234,7 +259,11 @@ def optimize(request):
                 "Model run %s starts to execute in '%s' comptute environment with container job.",
                 run.id, environment.name
             )
-            
+            try:
+                batch_job = BatchTask.objects.get(task_id=response["jobId"])
+            except BatchTask.DoesNotExist:
+                batch_job = BatchTask.objects.create(task_id=response["jobId"], status=batch_task_status.SUBMITTED)
+            run.batch_job = batch_job
             run.status = task_status.QUEUED
             run.save()
             payload = {"task_id": response.get("jobId")}
@@ -280,6 +309,32 @@ def delete_run(request):
         except Exception as e:
             logger.warning("Cambium removal failed")
             logger.exception(e)
+    
+    # Terminate Celery Task
+    if run.run_task and run.run_task.status not in [task_status.FAILURE, task_status.SUCCESS]:
+        task_id = run.run_task.task_id
+        current_app.control.revoke(task_id, terminate=True)
+        run.run_task.status = task_status.FAILURE
+        run.run_task.result = ""
+        run.run_task.traceback = f"Task terminated manually by Engage user: {request.user.email}"
+        run.run_task.save()
+
+    # Terminate Container Job
+    if run.batch_job:
+        job_id = run.batch_job.task_id
+        reason = f"Job terminated manually by Engage user: {request.user.email}"
+        manager = AWSBatchJobManager(compute_environment=run.compute_environment)
+        try:
+            manager.terminate_job(job_id, reason)
+            logger.info("Batch job terminated by user %s", request.user.email)
+        except:
+            pass
+
+        run.batch_job.status = batch_task_status.FAILED
+        run.batch_job.result = ""
+        run.batch_job.traceback = reason
+        run.batch_job.save()
+    
     run.delete()
 
     return HttpResponseRedirect("")
