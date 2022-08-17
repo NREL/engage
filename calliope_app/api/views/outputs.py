@@ -13,6 +13,7 @@ import requests
 import pandas as pd
 import pint
 
+from celery import current_app
 from django.views.decorators.csrf import csrf_protect
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -31,6 +32,8 @@ from api.models.engage import ComputeEnvironment
 from api.utils import zip_folder, initialize_units, convert_units, noconv_units
 from batch.managers import AWSBatchJobManager 
 from taskmeta.models import CeleryTask, BatchTask, batch_task_status
+
+from calliope_app.celery import app
 
 logger = logging.getLogger(__name__)
 
@@ -301,7 +304,17 @@ def delete_run(request):
             requests.post(url, data=data).json()
         except Exception:
             logger.exception("Cambium removal failed")
+    
+    # Terminate Celery Task
+    if run.run_task and run.run_task.status not in [task_status.FAILURE, task_status.SUCCESS]:
+        task_id = run.run_task.task_id
+        current_app.control.revoke(task_id, terminate=True)
+        run.run_task.status = task_status.FAILURE
+        run.run_task.result = ""
+        run.run_task.traceback = f"Task terminated manually by Engage user: {request.user.email}"
+        run.run_task.save()
 
+    # Terminate Container Job
     if run.batch_job:
         job_id = run.batch_job.task_id
         reason = f"Job terminated manually by Engage user: {request.user.email}"
