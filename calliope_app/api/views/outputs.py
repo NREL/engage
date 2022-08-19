@@ -1142,7 +1142,10 @@ def bulk_downloads(request):
                 if newcol and pname not in param_list:
                     param_list.append(pname)
                 if p.timeseries:
-                    tech_dict[pname] = 'file='+p.timeseries_meta.original_filename+':'+str(p.timeseries_meta.original_timestamp_col)+':'+str(p.timeseries_meta.original_value_col)
+                    if p.timeseries_meta is not None:
+                        tech_dict[pname] = 'file='+p.timeseries_meta.original_filename+':'+str(p.timeseries_meta.original_timestamp_col)+':'+str(p.timeseries_meta.original_value_col)
+                    else:
+                        pass
                 elif p.raw_value:
                     tech_dict[pname] = p.raw_value
                 else:
@@ -1196,10 +1199,13 @@ def bulk_downloads(request):
                 if newcol and pname not in param_list:
                     param_list.append(pname)
                 if p.timeseries:
-                    if p.timeseries_meta.original_filename:
-                        loc_tech_dict[pname] = 'file='+p.timeseries_meta.original_filename+':'+str(p.timeseries_meta.original_timestamp_col)+':'+str(p.timeseries_meta.original_value_col)
+                    if p.timeseries_meta is not None:
+                        if p.timeseries_meta.original_filename:
+                            loc_tech_dict[pname] = 'file='+p.timeseries_meta.original_filename+':'+str(p.timeseries_meta.original_timestamp_col)+':'+str(p.timeseries_meta.original_value_col)
+                        else:
+                            loc_tech_dict[pname] = 'ts='+p.timeseries_meta.name
                     else:
-                        loc_tech_dict[pname] = 'ts='+p.timeseries_meta.name
+                        pass
                 elif p.raw_value:
                     loc_tech_dict[pname] = p.raw_value
                 else:
