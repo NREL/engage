@@ -242,7 +242,8 @@ class Run(models.Model):
         locations = list(df['locs'].unique())
         if location:
             df = df[df['locs'] == location]
-        df = df.groupby('techs').sum()
+        if not df.empty:
+            df = df.groupby('techs').sum()
         df = df['values'].to_dict()
         # Process Max Bounds Context (ctx)
         if ctx is not None:

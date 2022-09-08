@@ -172,12 +172,13 @@ def dictify(target, keys, value):
             target = target[key]
 
     # Handle blank, T/F, float, and JSON string values
+    # As of Calliope 0.6.8 all "False" values should be set to none/null
     if value == "":
             target[keys[-1]] = None
     elif value == 'True':
             target[keys[-1]] = True
     elif value == 'False':
-            target[keys[-1]] = False
+            target[keys[-1]] = None
     else:
         # Try converting string to JSON object or float before saving as flat string
         try:
