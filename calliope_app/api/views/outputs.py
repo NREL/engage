@@ -879,14 +879,14 @@ def upload_loctechs(request):
         if not set(['technology','location_1']).issubset(set(df.columns)):
             context['logs'].append("Missing required columns. technology, location_1 are required.")
             return render(request, 'bulkresults.html', context)
-        df['tech'] = df['technology'].apply(lambda x: ParamsManager.simplify_name(x))
+        df['tech'] = df['technology'].apply(lambda x: ParamsManager.simplify_name(str(x)))
         if 'pretty_tag' in df.columns:
-            df['tag'] = df['pretty_tag'].apply(lambda x: ParamsManager.simplify_name(x))
+            df['tag'] = df['pretty_tag'].apply(lambda x: ParamsManager.simplify_name(str(x)))
         elif 'tag' in df.columns:
-            df['tag'] = df['tag'].apply(lambda x: ParamsManager.simplify_name(x))
+            df['tag'] = df['tag'].apply(lambda x: ParamsManager.simplify_name(str(x)))
         if 'tag' not in df.columns:
             df['tag'] = None
-        df['loc'] = df['location_1'].apply(lambda x: ParamsManager.simplify_name(x))
+        df['loc'] = df['location_1'].apply(lambda x: ParamsManager.simplify_name(str(x)))
 
         ureg = initialize_units()
 
