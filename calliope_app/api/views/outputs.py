@@ -1180,7 +1180,7 @@ def bulk_downloads(request):
             if l.location_2:
                 loc_tech_dict['location_2'] = l.location_2.pretty_name
             loc_tech_dict['technology'] = l.technology.pretty_name
-            loc_tech_dict['pretty_tag'] = l.technology.pretty_tag
+            loc_tech_dict['tag'] = l.technology.pretty_tag
             loc_tech_dict['calliope_name'] = l.technology.calliope_name
             for p in parameters.filter(loc_tech_id=l.id):
                 newcol = False
