@@ -5,7 +5,7 @@ This module contains support functions and libraries used in views and tasks.
 import json
 import logging
 import os
-import shutil
+import shutil,copy
 from datetime import datetime
 from itertools import permutations
 

@@ -20,7 +20,8 @@ $(document).ready(function () {
 			timestep = $('#timestep').val(),
 			sd = new Date(start_date),
 			ed = new Date(end_date),
-			run_env = $('#run-environment option:selected').text();
+			run_env = $('#run-environment option:selected').text(),
+			years = $('#years').val();
 
 		// fix timezone issues
 		sd = new Date(sd.getTime() + sd.getTimezoneOffset() * 60000);
@@ -54,7 +55,8 @@ $(document).ready(function () {
 				  'cluster': cluster,
 				  'manual':manual,
 				  'timestep':timestep,
-				  'run_env': run_env
+				  'run_env': run_env,
+				  'years':years
 				},
 				dataType: 'json',
 				success: function (data) {

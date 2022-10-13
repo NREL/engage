@@ -67,6 +67,7 @@ def build(request):
     manual = (request.GET.get("manual", 'false') == 'true')
     run_env = request.GET.get("run_env", None)
     timestep = request.GET.get("timestep", '1H')
+    years = [int(y) for y in request.GET.get("years",'').split(',') if y != '']
     try:
         pd.tseries.frequencies.to_offset(timestep)
     except ValueError:
@@ -82,8 +83,6 @@ def build(request):
         start_date = datetime.strptime(start_date, "%Y-%m-%d")
         end_date = datetime.strptime(end_date,
                                      "%Y-%m-%d") + timedelta(hours=23)
-        subset_time = str(start_date.date()) + " to " + str(end_date.date())
-        year = start_date.year
 
         # model and scenario instances
         scenario = model.scenarios.get(id=scenario_id)
@@ -94,51 +93,75 @@ def build(request):
         except ComputeEnvironment.DoesNotExist:
             compute_environment = ComputeEnvironment.objects.filter(is_default=True).first(0)
 
-        # Create run instance
-        run = Run.objects.create(
-            model=model,
-            scenario=scenario,
-            year=year,
-            subset_time=subset_time,
-            status=task_status.QUEUED,
-            inputs_path="",
-            cluster=cluster,
-            manual=manual,
-            timestep=timestep,
-            compute_environment=compute_environment
-        )
+        timestamp = datetime.now().strftime("%Y-%m-%d %H%M%S").lower().replace(" ", "-")
+        if years == []:
+            years = [start_date.year]
+            groupname = ''
+        else:
+            if start_date.year not in years:
+                years = [start_date.year]+years
+            groupname = 'Group-'+timestamp
+        for year in sorted(years):
+            start_date = start_date.replace(year=year)
+            end_date = end_date.replace(year=year)
+            subset_time = str(start_date.date()) + " to " + str(end_date.date())
+            # Create run instance
+            run = Run.objects.create(
+                model=model,
+                scenario=scenario,
+                year=year,
+                subset_time=subset_time,
+                status=task_status.QUEUED,
+                inputs_path="",
+                cluster=cluster,
+                manual=manual,
+                timestep=timestep,
+                compute_environment=compute_environment,
+                group=groupname
+            )
 
-        # Generate File Path
-        timestamp = datetime.now().strftime("%Y-%m-%d %H%M%S")
-        model_name = ParamsManager.simplify_name(model.name)
-        scenario_name = ParamsManager.simplify_name(scenario.name)
-        inputs_path = "{}/{}/{}/{}/{}/{}/{}/inputs".format(
-            settings.DATA_STORAGE,
-            model.uuid,
-            model_name,
-            scenario_name,
-            year,
-            subset_time,
-            timestamp,
-        )
-        inputs_path = inputs_path.lower().replace(" ", "-")
-        os.makedirs(inputs_path, exist_ok=True)
+            # Generate File Path
+            model_name = ParamsManager.simplify_name(model.name)
+            scenario_name = ParamsManager.simplify_name(scenario.name)
+            if groupname:
+                inputs_path = "{}/{}/{}/{}/{}/{}/{}/{}/inputs".format(
+                    settings.DATA_STORAGE,
+                    model.uuid,
+                    model_name,
+                    scenario_name,
+                    groupname,
+                    year,
+                    subset_time,
+                    timestamp,
+                )
+            else:
+                inputs_path = "{}/{}/{}/{}/{}/{}/{}/inputs".format(
+                    settings.DATA_STORAGE,
+                    model.uuid,
+                    model_name,
+                    scenario_name,
+                    year,
+                    subset_time,
+                    timestamp,
+                )
+            inputs_path = inputs_path.lower().replace(" ", "-")
+            os.makedirs(inputs_path, exist_ok=True)
 
-        # Celery task
-        async_result = build_model.apply_async(
-            kwargs={
-                "inputs_path": inputs_path,
-                "run_id": run.id,
-                "model_uuid": model_uuid,
-                "scenario_id": scenario_id,
-                "start_date": start_date,
-                "end_date": end_date,
-            }
-        )
-        build_task = CeleryTask.objects.get(task_id=async_result.id)
-        run.build_task = build_task
-        run.save()
-        logger.info("Model run %s starts to build in celery worker.", run.id)
+            # Celery task
+            async_result = build_model.apply_async(
+                kwargs={
+                    "inputs_path": inputs_path,
+                    "run_id": run.id,
+                    "model_uuid": model_uuid,
+                    "scenario_id": scenario_id,
+                    "start_date": start_date,
+                    "end_date": end_date,
+                }
+            )
+            build_task = CeleryTask.objects.get(task_id=async_result.id)
+            run.build_task = build_task
+            run.save()
+            logger.info("Model run %s starts to build in celery worker.", run.id)
 
         payload = {
             "status": "Success",
