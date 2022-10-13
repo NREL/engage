@@ -178,7 +178,7 @@ def dictify(target, keys, value):
     elif value == 'True':
             target[keys[-1]] = True
     elif value == 'False':
-            target[keys[-1]] = None
+            target[keys[-1]] = False
     else:
         # Try converting string to JSON object or float before saving as flat string
         try:
