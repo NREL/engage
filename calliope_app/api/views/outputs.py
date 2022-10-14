@@ -123,7 +123,7 @@ def build(request):
             # Generate File Path
             model_name = ParamsManager.simplify_name(model.name)
             scenario_name = ParamsManager.simplify_name(scenario.name)
-            if groupname:
+            if groupname != '':
                 inputs_path = "{}/{}/{}/{}/{}/{}/{}/{}/inputs".format(
                     settings.DATA_STORAGE,
                     model.uuid,
@@ -276,7 +276,7 @@ def optimize(request):
                 "message": f"Compute environment '{environment.name}' is in use, please try again later."
             }
         else:
-            job = manager.generate_job_message(run_id=run.id, user_id=request.user.id)
+            job = manager.generate_job_message(run_id=run.id, user_id=request.user.id, depends_on=[])
             response = manager.submit_job(job)
             logger.info(
                 "Model run %s starts to execute in '%s' comptute environment with container job.",
@@ -290,6 +290,29 @@ def optimize(request):
             run.status = task_status.QUEUED
             run.save()
             payload = {"task_id": response.get("jobId")}
+            if run.group != '':
+                future_runs = Run.objects.filter(group=run.group,year__gt=run.year).order_by('year')
+                for next_run in future_runs:
+                    if next_run.status == task_status.BUILT:
+                        logger.info("Found a subsequent gradient model for year %s.",next_run.year)
+                        job = manager.generate_job_message(run_id=next_run.id, user_id=request.user.id,
+                                                            depends_on=[run.batch_job.task_id])
+                        response = manager.submit_job(job)
+                        logger.info(
+                            "Graidient model run %s queued to execute in '%s' comptute environment with container job waiting on run %s.",
+                            next_run.id, environment.name, run.id
+                        )
+                        try:
+                            batch_job = BatchTask.objects.get(task_id=response["jobId"])
+                        except BatchTask.DoesNotExist:
+                            batch_job = BatchTask.objects.create(task_id=response["jobId"], status=batch_task_status.SUBMITTED)
+                        next_run.batch_job = batch_job
+                        next_run.status = task_status.QUEUED
+                        next_run.save()
+                        run = next_run
+                    else:
+                        logger.info("Found a subsequent gradient model for year %s but it was not .",next_run.year)
+                        break
     
     # Unknown environment, not supported
     else:

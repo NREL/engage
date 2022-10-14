@@ -577,10 +577,10 @@ def run_model(run_id, model_path, user_id, *args, **kwargs):
     save_outputs = os.path.join(base_path, "outputs/model_outputs")
 
     # Check for grouped/gradient runs
-    if run.group:
+    if run.group != '':
         future_runs = Run.objects.filter(group=run.group,year__gt=run.year).order_by('year')
         for next_run in future_runs:
-            if next_run and next_run.status == task_status.BUILT:
+            if next_run.status == task_status.BUILT:
                 logger.info("Found a subsequent gradient model for year %s.",next_run.year)
                 apply_gradient(run.inputs_path,save_outputs,next_run.inputs_path,run.year,next_run.year,logger)
                 if next_run == future_runs.first():
@@ -603,22 +603,6 @@ def run_model(run_id, model_path, user_id, *args, **kwargs):
 
                         run_task, _ = CeleryTask.objects.get_or_create(task_id=async_result.id)
                         next_run.run_task = run_task
-                        next_run.status = task_status.QUEUED
-                        next_run.save()
-
-                    elif environment.type == "Container Job":
-                        manager = AWSBatchJobManager(compute_environment=environment)
-                        job = manager.generate_job_message(run_id=next_run.id, user_id=user_id)
-                        response = manager.submit_job(job)
-                        logger.info(
-                            "Model run %s starts to execute in '%s' comptute environment with container job.",
-                            next_run.id, environment.name
-                        )
-                        try:
-                            batch_job = BatchTask.objects.get(task_id=response["jobId"])
-                        except BatchTask.DoesNotExist:
-                            batch_job = BatchTask.objects.create(task_id=response["jobId"], status=batch_task_status.SUBMITTED)
-                        next_run.batch_job = batch_job
                         next_run.status = task_status.QUEUED
                         next_run.save()
 
