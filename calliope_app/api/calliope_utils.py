@@ -431,14 +431,17 @@ def _yaml_outputs(model_path, outputs_dir):
                     l2 = l.split(',')[1]
                 if 'techs' in model[tl][l].keys():
                     for t in model[tl][l]['techs'].keys():
+                        if v == 'storage_cap' and model['techs'][t]['essentials']['parent'] not in ['storage','supply_plus']:
+                            continue
                         if model[tl][l]['techs'][t] == None:
                             model[tl][l]['techs'][t] = {}
-                        model[tl][l]['techs'][t]['results'] = {}
+                        if 'results' not in model[tl][l]['techs'][t]:
+                            model[tl][l]['techs'][t]['results'] = {}
                         if tl == 'links':
-                            model[tl][l]['techs'][t]['results']['energy_cap'] = float(r_df.loc[(r_df['locs'] == l1) &
-                                                                                (r_df['techs'] == t+':'+l2)]['energy_cap'].values[0])
+                            model[tl][l]['techs'][t]['results'][v+'_equals'] = float(r_df.loc[(r_df['locs'] == l1) &
+                                                                                (r_df['techs'] == t+':'+l2)][v].values[0])
                         else:
-                            model[tl][l]['techs'][t]['results']['energy_cap'] = float(r_df.loc[(r_df['locs'] == l) &
-                                                                                (r_df['techs'] == t)]['energy_cap'].values[0])
+                            model[tl][l]['techs'][t]['results'][v+'_equals'] = float(r_df.loc[(r_df['locs'] == l) &
+                                                                                (r_df['techs'] == t)][v].values[0])
     if has_outputs:
         yaml.dump(model, open(os.path.join(outputs_dir,'model_results.yaml'),'w+'), default_flow_style=False)
