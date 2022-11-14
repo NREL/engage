@@ -94,7 +94,6 @@ Execute the ``app`` service, and enter the docker container.
 
 .. code-block::
 
-    $ docker-compose up --detach
     $ docker-compose exec app bash
 
 Next, we need to migreate django models, create a superuser and load sample data into database.
