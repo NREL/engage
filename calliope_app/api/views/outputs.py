@@ -1181,7 +1181,7 @@ def bulk_downloads(request):
                                           flat=True).distinct())
         param_list = list(Abstract_Tech_Param.objects.all().values_list('parameter__name', flat=True).distinct())
         parameters = Tech_Param.objects.filter(technology_id__in=tech_ids).order_by('-year')
-        tech_list = ['id','name','pretty_name','abstract_tech','tag','pretty_tag','calliope_name']
+        tech_list = ['id','name','pretty_name','abstract_tech','tag','pretty_tag','calliope_name','description']
         techs_df = pd.DataFrame()
         for t in techs:
             tech_dict = t.__dict__

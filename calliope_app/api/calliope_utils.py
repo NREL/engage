@@ -180,7 +180,7 @@ def dictify(target, keys, value):
     elif value == 'True':
             target[keys[-1]] = True
     elif value == 'False':
-            target[keys[-1]] = None
+            target[keys[-1]] = False
     else:
         # Try converting string to JSON object or float before saving as flat string
         try:
@@ -437,9 +437,11 @@ def _yaml_outputs(model_path, outputs_dir):
                     for t in model[tl][l]['techs'].keys():
                         if v == 'storage_cap' and model['techs'][t]['essentials']['parent'] not in ['storage','supply_plus']:
                             continue
+
                         if model[tl][l]['techs'][t] is None:
                             model[tl][l]['techs'][t] = {}
-                        model[tl][l]['techs'][t]['results'] = {}
+                        if 'results' not in model[tl][l]['techs'][t]:
+                            model[tl][l]['techs'][t]['results'] = {}
                         if tl == 'links':
                             model[tl][l]['techs'][t]['results'][v+'_equals'] = float(r_df.loc[(r_df['locs'] == l1) &
                                                                                 (r_df['techs'] == t+':'+l2)][v].values[0])
