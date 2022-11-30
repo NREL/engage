@@ -580,31 +580,14 @@ def run_model(run_id, model_path, user_id, *args, **kwargs):
     if run.group != '':
         future_runs = Run.objects.filter(group=run.group,year__gt=run.year).order_by('year')
         for next_run in future_runs:
-            if next_run.status == task_status.BUILT:
+            logger.info(next_run.status)
+            if next_run.status == task_status.QUEUED:
                 logger.info("Found a subsequent gradient model for year %s.",next_run.year)
                 apply_gradient(run.inputs_path,save_outputs,next_run.inputs_path,run.year,next_run.year,logger)
                 if next_run == future_runs.first():
                     model_path = os.path.join(next_run.inputs_path, "model.yaml")
                     environment = next_run.compute_environment
-                    logger.info("Model run %s is ready to run.",next_run.id)
-
-                    if environment.type == "Celery Worker":
-                        async_result = run_model.apply_async(
-                            kwargs={
-                                "run_id": next_run.id,
-                                "model_path": model_path,
-                                "user_id": user_id
-                            }
-                        )
-                        logger.info(
-                            "Model run %s starts to execute in %s compute environment with celery worker.",
-                            next_run.id, environment.name
-                        )
-
-                        run_task, _ = CeleryTask.objects.get_or_create(task_id=async_result.id)
-                        next_run.run_task = run_task
-                        next_run.status = task_status.QUEUED
-                        next_run.save()
+                    logger.info("Model run %s is ready to run in %s environment.",next_run.id, environment.name)
 
     # Model logs in plain text
     save_logs = logger.handlers[0].baseFilename

@@ -14,7 +14,7 @@ import requests
 import pandas as pd
 import pint
 
-from celery import current_app
+from celery import current_app,chain
 from django.views.decorators.csrf import csrf_protect
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -228,23 +228,38 @@ def optimize(request):
     # run celery task
     environment = run.compute_environment
     if environment.type == "Celery Worker":
-        async_result = run_model.apply_async(
-            kwargs={
-                "run_id": run_id,
-                "model_path": model_path,
-                "user_id": request.user.id
-            }
-        )
-        logger.info(
-            "Model run %s starts to execute in %s compute environment with celery worker.",
-            run.id, environment.name
-        )
+        if run.group != '':
+            chain_runs = [(run.id,model_path,request.user.id)]
+            future_runs = Run.objects.filter(model=model,group=run.group,year__gt=run.year).order_by('year')
+            for next_run in future_runs:
+                if next_run.status == task_status.BUILT:
+                    logger.info("Found a subsequent gradient model for year %s.",next_run.year)
+                    next_model_path = os.path.join(next_run.inputs_path, "model.yaml")
+                    if not os.path.exists(model_path):
+                        logger.warning("Invalid model config path! Gradient year skipped.")
+                    chain_runs.append((next_run.id,next_model_path,request.user.id))
+            group_chain = chain(run_model.si(run_id=c[0],model_path=c[1],user_id=c[2]) for c in chain_runs).apply_async()
+            run_task, _ = CeleryTask.objects.get_or_create(task_id=group_chain.id)
+            Run.objects.filter(model=model,group=run.group).update(run_task=run_task,status=task_status.QUEUED)
+            payload = {"task_id":group_chain.id}
+        else:
+            async_result = run_model.apply_async(
+                kwargs={
+                    "run_id": run_id,
+                    "model_path": model_path,
+                    "user_id": request.user.id
+                }
+            )
+            logger.info(
+                "Model run %s starts to execute in %s compute environment with celery worker.",
+                run.id, environment.name
+            )
 
-        run_task, _ = CeleryTask.objects.get_or_create(task_id=async_result.id)
-        run.run_task = run_task
-        run.status = task_status.QUEUED
-        run.save()
-        payload = {"task_id": async_result.id}
+            run_task, _ = CeleryTask.objects.get_or_create(task_id=async_result.id)
+            run.run_task = run_task
+            run.status = task_status.QUEUED
+            run.save()
+            payload = {"task_id": async_result.id}
     
     # Batch task
     elif environment.type == "Container Job":
@@ -311,7 +326,7 @@ def optimize(request):
                         next_run.save()
                         run = next_run
                     else:
-                        logger.info("Found a subsequent gradient model for year %s but it was not .",next_run.year)
+                        logger.info("Found a subsequent gradient model for year %s but it was not built.",next_run.year)
                         break
     
     # Unknown environment, not supported

@@ -471,7 +471,6 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                         ('energy_cap_max' in old_tech.get('constraints',{}) or 'storage_cap_max' in old_tech.get('constraints',{})):
                     if loc_tech.get('results',{'energy_cap_equals':0}).get('energy_cap_equals',0) != 0 or\
                             loc_tech.get('results',{'storage_cap_equals':0}).get('storage_cap_equals',0) != 0:
-                        logger.info('{}--{}'.format(l,t))
                         loc_tech_b = copy.deepcopy(loc_tech)
                         built_tech_names.append(t)
 
@@ -479,9 +478,7 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                             [loc_tech_b['constraints'].pop(c) for c in ['energy_cap_max', 'storage_cap_max'] if c in loc_tech_b['constraints']]
                         else:
                             loc_tech_b['constraints'] = {}
-                        logger.info(loc_tech)
                         if 'energy_cap_equals' in loc_tech['results']:
-                            logger.info(l,t,loc_tech['results']['energy_cap_equals'])
                             loc_tech_b['constraints']['energy_cap_equals'] = loc_tech['results']['energy_cap_equals']
                         if 'storage_cap_equals' in loc_tech['results']:
                             loc_tech_b['constraints']['storage_cap_equals'] = loc_tech['results']['storage_cap_equals']
@@ -491,15 +488,15 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                         loc_tech_b.pop('results')
 
                         if new_loc_tech and 'constraints' in new_loc_tech:
-                            new_energy_cap_min = new_loc_tech['constraints'].get('energy_cap_min',new_tech['constraints'].get('energy_cap_min',0))
-                            new_energy_cap_max = new_loc_tech['constraints'].get('energy_cap_max',new_tech['constraints'].get('energy_cap_max',0))
-                            new_storage_cap_min = new_loc_tech['constraints'].get('storage_cap_min',new_tech['constraints'].get('storage_cap_min',0))
-                            new_storage_cap_max = new_loc_tech['constraints'].get('storage_cap_max',new_tech['constraints'].get('storage_cap_max',0))
+                            new_energy_cap_min = new_loc_tech['constraints'].get('energy_cap_min',new_tech.get('constraints',{}).get('energy_cap_min',0))
+                            new_energy_cap_max = new_loc_tech['constraints'].get('energy_cap_max',new_tech.get('constraints',{}).get('energy_cap_max',0))
+                            new_storage_cap_min = new_loc_tech['constraints'].get('storage_cap_min',new_tech.get('constraints',{}).get('storage_cap_min',0))
+                            new_storage_cap_max = new_loc_tech['constraints'].get('storage_cap_max',new_tech.get('constraints',{}).get('storage_cap_max',0))
                         else:
-                            new_energy_cap_min = new_tech['constraints'].get('energy_cap_min',0)
-                            new_energy_cap_max = new_tech['constraints'].get('energy_cap_max',0)
-                            new_storage_cap_min = new_tech['constraints'].get('storage_cap_min',0)
-                            new_storage_cap_max = new_tech['constraints'].get('storage_cap_max',0)
+                            new_energy_cap_min = new_tech.get('constraints',{}).get('energy_cap_min',0)
+                            new_energy_cap_max = new_tech.get('constraints',{}).get('energy_cap_max',0)
+                            new_storage_cap_min = new_tech.get('constraints',{}).get('storage_cap_min',0)
+                            new_storage_cap_max = new_tech.get('constraints',{}).get('storage_cap_max',0)
 
                         if new_loc_tech == None:
                                 new_loc_tech = {}
@@ -530,7 +527,7 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                                     # Copy over timeseries files for old techs, updating year to match new year
                                     if 'file=' in loc_tech_b[x][y]:
                                         filename=loc_tech_b[x][y].replace('file=','').replace('.csv:value','')
-                                        ts_df = pd.read_csv(old_inputs+filename+'.csv')
+                                        ts_df = pd.read_csv(old_inputs+'/'+filename+'.csv')
                                         ts_df['Unnamed: 0'] = pd.to_datetime(ts_df['Unnamed: 0'])
                                         freq = pd.infer_freq(ts_df['Unnamed: 0'])
                                         if not calendar.isleap(new_year):
@@ -594,6 +591,16 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                 if t in g:
                     new_model['model']['group_share'][g+','+t+'_'+str(old_year)] = group_share[g]
                     new_model['model']['group_share'].pop(g)
+
+        if new_model['group_constraints']:
+            group_constraints = new_model['group_constraints'].copy()
+            for g,c in group_constraints.items():
+                if t in c.get('techs',[]) and t+'_'+str(old_year) not in c.get('techs',[]):
+                    new_model['group_constraints'][g]['techs'].append(t+'_'+str(old_year))
+                if t in c.get('techs_lhs',[]) and t+'_'+str(old_year) not in c.get('techs',[]):
+                    new_model['group_constraints'][g]['techs_lhs'].append(t+'_'+str(old_year))
+                if t in c.get('techs_rhs',[]) and t+'_'+str(old_year) not in c.get('techs',[]):
+                    new_model['group_constraints'][g]['techs_rhs'].append(t+'_'+str(old_year))
 
     with open(new_inputs+'/techs.yaml','w') as outfile:
         yaml.dump(new_techs,outfile,default_flow_style=False)
