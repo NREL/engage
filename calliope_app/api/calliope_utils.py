@@ -437,7 +437,7 @@ def _yaml_outputs(model_path, outputs_dir):
                     for t in model[tl][l]['techs'].keys():
                         if v == 'storage_cap' and model['techs'][t]['essentials']['parent'] not in ['storage','supply_plus']:
                             continue
-                        if model[tl][l]['techs'][t] == None:
+                        if model[tl][l]['techs'][t] is None:
                             model[tl][l]['techs'][t] = {}
                         model[tl][l]['techs'][t]['results'] = {}
                         if tl == 'links':

@@ -67,7 +67,7 @@ def build(request):
     manual = (request.GET.get("manual", 'false') == 'true')
     run_env = request.GET.get("run_env", None)
     timestep = request.GET.get("timestep", '1H')
-    years = [int(y) for y in request.GET.get("years",'').split(',') if y != '']
+    years = [int(y) for y in request.GET.get("years",'').split(',') if y.strip() != '']
     try:
         pd.tseries.frequencies.to_offset(timestep)
     except ValueError:
@@ -94,7 +94,7 @@ def build(request):
             compute_environment = ComputeEnvironment.objects.filter(is_default=True).first(0)
 
         timestamp = datetime.now().strftime("%Y-%m-%d %H%M%S").lower().replace(" ", "-")
-        if years == []:
+        if not years:
             years = [start_date.year]
             groupname = ''
         else:
@@ -123,7 +123,7 @@ def build(request):
             # Generate File Path
             model_name = ParamsManager.simplify_name(model.name)
             scenario_name = ParamsManager.simplify_name(scenario.name)
-            if groupname != '':
+            if not groupname:
                 inputs_path = "{}/{}/{}/{}/{}/{}/{}/{}/inputs".format(
                     settings.DATA_STORAGE,
                     model.uuid,
