@@ -54,7 +54,7 @@ class Run(models.Model):
         null=True,
         on_delete=models.SET_NULL
     )
-    group = models.TextField(blank=True)
+    group = models.TextField(blank=True,null=True)
 
     calliope_066_upgraded = models.BooleanField(default=False)
     calliope_066_errors = models.TextField(blank=True)
