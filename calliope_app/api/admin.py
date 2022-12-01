@@ -138,7 +138,7 @@ class Scenario_Param_Admin(admin.ModelAdmin):
 class Run_Admin(admin.ModelAdmin):
     list_filter = ['model', 'calliope_066_upgraded', 'status','cluster','manual']
     list_display = ['id', 'scenario', 'year', 'subset_time', 'status',
-                    'message', 'description', 'created', 'updated',
+                    'message', 'description', 'created', 'updated', 'group',
                     'inputs_path', 'logs_path', 'outputs_path', 'outputs_key',
                     'plots_path', 'model', 'build_task', 'run_task',
                     'deprecated', 'published','cluster','manual',

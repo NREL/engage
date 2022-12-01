@@ -26,8 +26,9 @@ from api.models.outputs import Run
 from api.utils import load_timeseries_from_csv, get_model_logger, zip_folder
 from api.calliope_utils import get_model_yaml_set, get_location_meta_yaml_set
 from api.calliope_utils import get_techs_yaml_set, get_loc_techs_yaml_set
-from api.calliope_utils import run_basic, run_clustered
-
+from api.calliope_utils import run_basic, run_clustered, apply_gradient
+from batch.managers import AWSBatchJobManager 
+from taskmeta.models import CeleryTask, BatchTask, batch_task_status
 
 NOTIFICATION_TIME_INTERVAL = 20  # Minutes
 
@@ -214,7 +215,6 @@ def build_model(inputs_path, run_id, model_uuid, scenario_id,
     build_model_csv(model, scenario, start_date, end_date, inputs_path, run.timestep)
 
     return inputs_path
-
 
 def build_model_yaml(scenario_id, start_date, inputs_path):
 
@@ -575,6 +575,19 @@ def run_model(run_id, model_path, user_id, *args, **kwargs):
     # Model outputs
     base_path = os.path.dirname(os.path.dirname(model_path))
     save_outputs = os.path.join(base_path, "outputs/model_outputs")
+
+    # Check for grouped/gradient runs
+    if run.group != '':
+        future_runs = Run.objects.filter(group=run.group,year__gt=run.year).order_by('year')
+        for next_run in future_runs:
+            logger.info(next_run.status)
+            if next_run.status == task_status.QUEUED:
+                logger.info("Found a subsequent gradient model for year %s.",next_run.year)
+                apply_gradient(run.inputs_path,save_outputs,next_run.inputs_path,run.year,next_run.year,logger)
+                if next_run == future_runs.first():
+                    model_path = os.path.join(next_run.inputs_path, "model.yaml")
+                    environment = next_run.compute_environment
+                    logger.info("Model run %s is ready to run in %s environment.",next_run.id, environment.name)
 
     # Model logs in plain text
     save_logs = logger.handlers[0].baseFilename

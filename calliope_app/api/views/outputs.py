@@ -14,7 +14,7 @@ import requests
 import pandas as pd
 import pint
 
-from celery import current_app
+from celery import current_app,chain
 from django.views.decorators.csrf import csrf_protect
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -67,6 +67,7 @@ def build(request):
     manual = (request.GET.get("manual", 'false') == 'true')
     run_env = request.GET.get("run_env", None)
     timestep = request.GET.get("timestep", '1H')
+    years = [int(y) for y in request.GET.get("years",'').split(',') if y.strip() != '']
     try:
         pd.tseries.frequencies.to_offset(timestep)
     except ValueError:
@@ -82,8 +83,6 @@ def build(request):
         start_date = datetime.strptime(start_date, "%Y-%m-%d")
         end_date = datetime.strptime(end_date,
                                      "%Y-%m-%d") + timedelta(hours=23)
-        subset_time = str(start_date.date()) + " to " + str(end_date.date())
-        year = start_date.year
 
         # model and scenario instances
         scenario = model.scenarios.get(id=scenario_id)
@@ -94,51 +93,75 @@ def build(request):
         except ComputeEnvironment.DoesNotExist:
             compute_environment = ComputeEnvironment.objects.filter(is_default=True).first(0)
 
-        # Create run instance
-        run = Run.objects.create(
-            model=model,
-            scenario=scenario,
-            year=year,
-            subset_time=subset_time,
-            status=task_status.QUEUED,
-            inputs_path="",
-            cluster=cluster,
-            manual=manual,
-            timestep=timestep,
-            compute_environment=compute_environment
-        )
+        timestamp = datetime.now().strftime("%Y-%m-%d %H%M%S").lower().replace(" ", "-")
+        if not years:
+            years = [start_date.year]
+            groupname = ''
+        else:
+            if start_date.year not in years:
+                years = [start_date.year]+years
+            groupname = 'Group-'+timestamp
+        for year in sorted(years):
+            start_date = start_date.replace(year=year)
+            end_date = end_date.replace(year=year)
+            subset_time = str(start_date.date()) + " to " + str(end_date.date())
+            # Create run instance
+            run = Run.objects.create(
+                model=model,
+                scenario=scenario,
+                year=year,
+                subset_time=subset_time,
+                status=task_status.QUEUED,
+                inputs_path="",
+                cluster=cluster,
+                manual=manual,
+                timestep=timestep,
+                compute_environment=compute_environment,
+                group=groupname
+            )
 
-        # Generate File Path
-        timestamp = datetime.now().strftime("%Y-%m-%d %H%M%S")
-        model_name = ParamsManager.simplify_name(model.name)
-        scenario_name = ParamsManager.simplify_name(scenario.name)
-        inputs_path = "{}/{}/{}/{}/{}/{}/{}/inputs".format(
-            settings.DATA_STORAGE,
-            model.uuid,
-            model_name,
-            scenario_name,
-            year,
-            subset_time,
-            timestamp,
-        )
-        inputs_path = inputs_path.lower().replace(" ", "-")
-        os.makedirs(inputs_path, exist_ok=True)
+            # Generate File Path
+            model_name = ParamsManager.simplify_name(model.name)
+            scenario_name = ParamsManager.simplify_name(scenario.name)
+            if not groupname:
+                inputs_path = "{}/{}/{}/{}/{}/{}/{}/{}/inputs".format(
+                    settings.DATA_STORAGE,
+                    model.uuid,
+                    model_name,
+                    scenario_name,
+                    groupname,
+                    year,
+                    subset_time,
+                    timestamp,
+                )
+            else:
+                inputs_path = "{}/{}/{}/{}/{}/{}/{}/inputs".format(
+                    settings.DATA_STORAGE,
+                    model.uuid,
+                    model_name,
+                    scenario_name,
+                    year,
+                    subset_time,
+                    timestamp,
+                )
+            inputs_path = inputs_path.lower().replace(" ", "-")
+            os.makedirs(inputs_path, exist_ok=True)
 
-        # Celery task
-        async_result = build_model.apply_async(
-            kwargs={
-                "inputs_path": inputs_path,
-                "run_id": run.id,
-                "model_uuid": model_uuid,
-                "scenario_id": scenario_id,
-                "start_date": start_date,
-                "end_date": end_date,
-            }
-        )
-        build_task = CeleryTask.objects.get(task_id=async_result.id)
-        run.build_task = build_task
-        run.save()
-        logger.info("Model run %s starts to build in celery worker.", run.id)
+            # Celery task
+            async_result = build_model.apply_async(
+                kwargs={
+                    "inputs_path": inputs_path,
+                    "run_id": run.id,
+                    "model_uuid": model_uuid,
+                    "scenario_id": scenario_id,
+                    "start_date": start_date,
+                    "end_date": end_date,
+                }
+            )
+            build_task = CeleryTask.objects.get(task_id=async_result.id)
+            run.build_task = build_task
+            run.save()
+            logger.info("Model run %s starts to build in celery worker.", run.id)
 
         payload = {
             "status": "Success",
@@ -205,23 +228,38 @@ def optimize(request):
     # run celery task
     environment = run.compute_environment
     if environment.type == "Celery Worker":
-        async_result = run_model.apply_async(
-            kwargs={
-                "run_id": run_id,
-                "model_path": model_path,
-                "user_id": request.user.id
-            }
-        )
-        logger.info(
-            "Model run %s starts to execute in %s compute environment with celery worker.",
-            run.id, environment.name
-        )
+        if run.group != '':
+            chain_runs = [(run.id,model_path,request.user.id)]
+            future_runs = Run.objects.filter(model=model,group=run.group,year__gt=run.year).order_by('year')
+            for next_run in future_runs:
+                if next_run.status == task_status.BUILT:
+                    logger.info("Found a subsequent gradient model for year %s.",next_run.year)
+                    next_model_path = os.path.join(next_run.inputs_path, "model.yaml")
+                    if not os.path.exists(model_path):
+                        logger.warning("Invalid model config path! Gradient year skipped.")
+                    chain_runs.append((next_run.id,next_model_path,request.user.id))
+            group_chain = chain(run_model.si(run_id=c[0],model_path=c[1],user_id=c[2]) for c in chain_runs).apply_async()
+            run_task, _ = CeleryTask.objects.get_or_create(task_id=group_chain.id)
+            Run.objects.filter(model=model,group=run.group).update(run_task=run_task,status=task_status.QUEUED)
+            payload = {"task_id":group_chain.id}
+        else:
+            async_result = run_model.apply_async(
+                kwargs={
+                    "run_id": run_id,
+                    "model_path": model_path,
+                    "user_id": request.user.id
+                }
+            )
+            logger.info(
+                "Model run %s starts to execute in %s compute environment with celery worker.",
+                run.id, environment.name
+            )
 
-        run_task, _ = CeleryTask.objects.get_or_create(task_id=async_result.id)
-        run.run_task = run_task
-        run.status = task_status.QUEUED
-        run.save()
-        payload = {"task_id": async_result.id}
+            run_task, _ = CeleryTask.objects.get_or_create(task_id=async_result.id)
+            run.run_task = run_task
+            run.status = task_status.QUEUED
+            run.save()
+            payload = {"task_id": async_result.id}
     
     # Batch task
     elif environment.type == "Container Job":
@@ -253,7 +291,7 @@ def optimize(request):
                 "message": f"Compute environment '{environment.name}' is in use, please try again later."
             }
         else:
-            job = manager.generate_job_message(run_id=run.id, user_id=request.user.id)
+            job = manager.generate_job_message(run_id=run.id, user_id=request.user.id, depends_on=[])
             response = manager.submit_job(job)
             logger.info(
                 "Model run %s starts to execute in '%s' comptute environment with container job.",
@@ -267,6 +305,29 @@ def optimize(request):
             run.status = task_status.QUEUED
             run.save()
             payload = {"task_id": response.get("jobId")}
+            if run.group != '':
+                future_runs = Run.objects.filter(group=run.group,year__gt=run.year).order_by('year')
+                for next_run in future_runs:
+                    if next_run.status == task_status.BUILT:
+                        logger.info("Found a subsequent gradient model for year %s.",next_run.year)
+                        job = manager.generate_job_message(run_id=next_run.id, user_id=request.user.id,
+                                                            depends_on=[run.batch_job.task_id])
+                        response = manager.submit_job(job)
+                        logger.info(
+                            "Graidient model run %s queued to execute in '%s' comptute environment with container job waiting on run %s.",
+                            next_run.id, environment.name, run.id
+                        )
+                        try:
+                            batch_job = BatchTask.objects.get(task_id=response["jobId"])
+                        except BatchTask.DoesNotExist:
+                            batch_job = BatchTask.objects.create(task_id=response["jobId"], status=batch_task_status.SUBMITTED)
+                        next_run.batch_job = batch_job
+                        next_run.status = task_status.QUEUED
+                        next_run.save()
+                        run = next_run
+                    else:
+                        logger.info("Found a subsequent gradient model for year %s but it was not built.",next_run.year)
+                        break
     
     # Unknown environment, not supported
     else:

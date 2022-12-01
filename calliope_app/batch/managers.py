@@ -42,12 +42,13 @@ class AWSBatchJobManager(AWSBatchClient):
             jobName=job["name"],
             jobQueue=settings.AWS_BATCH_JOB_QUEUE,
             jobDefinition=job["definition"],
-            containerOverrides={"command": job["command"]}
+            containerOverrides={"command": job["command"]},
+            dependsOn=job["depends_on"]
         )
         logger.info("Engage batch job submitted - %s", job["name"])
         return response
 
-    def generate_job_message(self, run_id, user_id):
+    def generate_job_message(self, run_id, user_id, depends_on):
         command = [
             "engage", "solve-model",
             "--run-id", str(run_id),
@@ -58,7 +59,8 @@ class AWSBatchJobManager(AWSBatchClient):
         job = {
             "name": f"Engage-Model-Run-UserId-{user_id}-RunId-{run_id}",
             "command": command,
-            "definition": self.get_job_definition()
+            "definition": self.get_job_definition(),
+            "depends_on": [{"jobId":d,"type":"SEQUENTIAL"} for d in depends_on]
         }
         return job
 
