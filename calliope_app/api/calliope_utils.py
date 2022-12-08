@@ -539,8 +539,6 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                                         elif not calendar.isleap(old_year):
                                             ts_df['Unnamed: 0'] = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
                                             ts_df.index = ts_df['Unnamed: 0']
-                                            idx = pd.date_range(ts_df.index.min(),ts_df.index.max(),freq=freq)
-                                            subset = subset.reindex(idx, fill_value=0)
 
                                             # Leap Year Handling (Fill w/ Feb 28th)
                                             feb_28_mask = (ts_df.index.month == 2) & (ts_df.index.day == 28)
