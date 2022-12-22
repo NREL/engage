@@ -123,7 +123,7 @@ def build(request):
             # Generate File Path
             model_name = ParamsManager.simplify_name(model.name)
             scenario_name = ParamsManager.simplify_name(scenario.name)
-            if not groupname:
+            if groupname:
                 inputs_path = "{}/{}/{}/{}/{}/{}/{}/{}/inputs".format(
                     settings.DATA_STORAGE,
                     model.uuid,
