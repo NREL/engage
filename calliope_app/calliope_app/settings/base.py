@@ -128,11 +128,12 @@ gettext = lambda s: s
 LANGUAGES = [
     ('en', gettext('English')),
     ('es', gettext('Spanish')),
+    ('fr', gettext('French')),
     # Add new langugage here
 ]
 
 # MODELTRANSLATION
-MODELTRANSLATION_LANGUAGES = ('en', 'es') # Add new language here
+MODELTRANSLATION_LANGUAGES = ('en', 'es', 'fr') # Add new language here
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'en'
 MODELTRANSLATION_FALLBACK_LANGUAGES = ('en',)
 MODELTRANSLATION_TRANSLATION_FILES = (
