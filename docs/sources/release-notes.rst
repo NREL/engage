@@ -10,7 +10,7 @@ release, please observe the release notes below.
 
 Release Notes:
 
-* Support Calliope version 0.6.3.
+* Support Calliope version 0.6.7.
 * Support solvers - GLPK and FICO XPRESS.
 * Model user sign on and authentication.
 * Visualized Calliope model configuration, build and run.

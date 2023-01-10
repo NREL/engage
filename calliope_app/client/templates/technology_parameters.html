@@ -15,6 +15,8 @@
 						<th class="centered">
 							{% if param.parameter_category == "Costs: Monetary" %}
 							<i class="fas fa-dollar-sign"></i>
+							{% elif param.parameter_category in emissions %}
+							<i class="fa-solid fa-smog fa-xs"></i>
 							{% else %}
 							<i class="fas fa-link"></i>
 							{% endif %}
@@ -30,13 +32,16 @@
 				{% endifchanged %}
 			{% endif %}{% endif %}
 			{% with parameters|return_item:forloop.counter as next_param %}
-			{% ifchanged param.parameter_name %}
+			{% ifchanged param.parameter_name or param.parameter_root %}
 				<!-- Parameter Master Row -->
-				<tr class="{% if next_param.parameter_id == param.parameter_id %}param_header{% endif %} {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% else %}table-primary{% endif %}{% else %}table-default{% endif %}" data-param_id={{ param.parameter_id }}>
+				<tr class="{% if next_param.parameter_id == param.parameter_id %}param_header{% endif %} {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% elif param.parameter_category in emissions %}table-info{% else %}table-primary{% endif %}{% else %}table-default{% endif %}" data-param_id={{ param.parameter_id }}>
 					<!-- Favorite Buttons -->
 					{% if param.parameter_category == "Costs: Monetary" %}
 					<td class="table-success centered"><i {% if not can_edit %}disabled{% endif %} class="fas fa-star" data-toggle="tooltip" data-placement="right" title="{% trans 'Mark parameter as favorite' %}"></i></td>
 					<td style="width:250px;" class="table-success">&nbsp;<i class="fas fa-dollar-sign"></i>&nbsp;&nbsp;&nbsp;{{ param.parameter_category }}</td>
+					{% elif param.parameter_category in emissions %}
+					<td class="table-info centered"><i {% if not can_edit %}disabled{% endif %} class="fas fa-star" data-toggle="tooltip" data-placement="right" title="{% trans 'Mark parameter as favorite' %}"></i></td>
+					<td style="width:250px;" class="table-info">&nbsp;<i class="fa-solid fa-smog fa-2xs"></i>&nbsp;&nbsp;&nbsp;{{ param.parameter_category }}</td>
 					{% else %}
 					<td class="table-primary centered"><i {% if not can_edit %}disabled{% endif %} class="fas fa-star" data-toggle="tooltip" data-placement="right" title="{% trans 'Mark parameter as favorite' %}"></i></td>
 					<td style="width:250px;" class="table-primary"><i class="fas fa-link"></i>&nbsp;&nbsp;{{ param.parameter_category }}</td>
@@ -142,7 +147,7 @@
 				</tr>
 			{% else %}
 				<!-- Parameter Year - Value Row -->
-				<tr class="param_row param_row_min param_row_{{ param.parameter_id }} {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% else %}table-primary{% endif %}{% else %}table-default{% endif %}" data-param_id={{ param.parameter_id }}>
+				<tr class="param_row param_row_min param_row_{{ param.parameter_id }} {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% elif param.parameter_category in emissions %}table-info{% else %}table-primary{% endif %}{% else %}table-default{% endif %}" data-param_id={{ param.parameter_id }}>
 					<td colspan=3 style="background-color: white;"></td>
 					<!-- Year -->
 					<td class="">

@@ -1,4 +1,4 @@
-FROM python:3.6-slim-buster as app
+FROM python:3.8-slim-bullseye as app
 
 # set environment variables
 ENV LC_ALL=C.UTF-8
@@ -12,7 +12,6 @@ RUN apt-get update -y --fix-missing \
     && apt-get install -y --no-install-recommends \
     build-essential \
     python3-dev \
-    python3-pip \
     libgmp3-dev \
     libz-dev \
     libreadline-dev \
@@ -39,9 +38,14 @@ RUN ./configure \
 # install python packages
 WORKDIR /www
 COPY requirements.txt requirements-dev.txt /www/
-RUN pip3 install --upgrade pip
-RUN pip3 install -r requirements.txt
-RUN pip3 install -r requirements-dev.txt
-RUN pip3 install psycopg2-binary
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+RUN pip install -r requirements-dev.txt
+
+# Install calliope without dependencies, as already installed in requirements
+RUN pip install calliope==0.6.8 --no-deps
+RUN pip install flower>=1.1.0
 
 COPY . .
+
+RUN pip install -e .

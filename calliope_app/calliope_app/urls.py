@@ -15,9 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from django.conf.urls import url
 from django.conf import settings
-from django.contrib.auth import views as auth_views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
@@ -30,34 +28,9 @@ urlpatterns = [
 
 urlpatterns += i18n_patterns(
     path('', include('client.urls')),
+    path('', include('account.urls')),
     path('api/', include('api.urls')),
-
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-
-    url(r'^password_reset/$',
-        auth_views.PasswordResetView.as_view(
-            template_name='registration/pw_reset_form.html',
-            email_template_name='registration/pw_reset_email.html',
-            subject_template_name='registration/pw_reset_subject.txt',
-            from_email=settings.AWS_SES_FROM_EMAIL),
-        name='password_reset'),
-    url(r'^password_reset/done/$',
-        auth_views.PasswordResetDoneView.as_view(
-            template_name='registration/pw_reset_done.html'),
-        name='password_reset_done'),
-    url(r'^reset/\
-          (?P<uidb64>[0-9A-Za-z_\-]+)/\
-          (?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
-        auth_views.PasswordResetConfirmView.as_view(
-            template_name='registration/pw_reset_confirm.html'),
-        name='password_reset_confirm'),
-    url(r'^reset/done/$',
-        auth_views.PasswordResetCompleteView.as_view(
-            template_name='registration/pw_reset_complete.html'),
-        name='password_reset_complete'),
-
     path('admin/', admin.site.urls),
-    
     prefix_default_language=True
 )
 

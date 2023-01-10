@@ -3,6 +3,9 @@ var bulk_confirmation = false,
 
 $( document ).ready(function() {
 
+	// Resize Dashboard
+	splitter_resize();
+
 	$('#master-new').removeClass('hide');
 
 	$('#scenario').on('change', function() {
@@ -130,15 +133,7 @@ function get_scenario_configuration() {
 					}
 				})
 				$('#tech-filter, #tag-filter, #location-filter').on('change', function(e) {
-					$('.node').addClass('hide')
-					var tech = $('#tech-filter').val(),
-						tag = $('#tag-filter').val(),
-						location = $('#location-filter').val(),
-						filter_selection = $('.node');
-					if (tech != '') { filter_selection = filter_selection.filter('*[data-tech="' + tech + '"]'); filter = true; }
-					if (tag != '') { filter_selection = filter_selection.filter('*[data-tag="' + tag + '"]'); filter = true; }
-					if (location != '') { filter_selection = filter_selection.filter('*[data-locations*="' + "'" + location + "'" + '"]'); filter = true; }
-					filter_selection.removeClass('hide') 
+					filter_nodes();
 				})
 				if ($('#master-cancel').hasClass('hide')) {
 					$('#master-settings').removeClass('hide');
@@ -189,7 +184,18 @@ function activate_scenario_settings() {
 		row.addClass('table-danger')
 		row.find('.check_delete').prop("checked", true)
 	});
-	
+}
+
+function filter_nodes() {
+	$('.node').addClass('hide')
+	var tech = $('#tech-filter').val(),
+		tag = $('#tag-filter').val(),
+		location = $('#location-filter').val(),
+		filter_selection = $('.node');
+	if (tech != '') { filter_selection = filter_selection.filter('*[data-tech="' + tech + '"]'); filter = true; }
+	if (tag != '') { filter_selection = filter_selection.filter('*[data-tag="' + tag + '"]'); filter = true; }
+	if (location != '') { filter_selection = filter_selection.filter('*[data-locations*="' + "'" + location + "'" + '"]'); filter = true; }
+	filter_selection.removeClass('hide');
 }
 
 function toggle_scenario_loc_tech(loc_tech_ids, add) {

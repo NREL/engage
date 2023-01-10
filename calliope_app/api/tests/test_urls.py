@@ -1,36 +1,10 @@
 """
 Unit tests for Django app "api" urls.
 """
-
-import uuid
-
 from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse, resolve
 from django.utils import translation
-
-
-class APIUserURLTestCase(TestCase):
-    def test_user_registration(self):
-        view_name = "user_registration"
-
-        for language_code, _ in settings.LANGUAGES:
-            with translation.override(language_code):
-                url = f"/{language_code}/api/user_registration/"
-                self.assertEqual(reverse(view_name), url)
-                self.assertEqual(resolve(url).view_name, view_name)
-
-    def test_user_activation(self):
-        activation_uuid = str(uuid.uuid4())
-        view_name = "user_activation"
-
-        for language_code, _ in settings.LANGUAGES:
-            with translation.override(language_code):
-                url = f"/{language_code}/api/user_activation/{activation_uuid}"
-                self.assertEqual(
-                    reverse(view_name, kwargs={"activation_uuid": activation_uuid}), url
-                )
-                self.assertEqual(resolve(url).view_name, view_name)
 
 
 class APIModelURLTestCase(TestCase):
@@ -288,15 +262,6 @@ class APIRunURLTestCase(TestCase):
         for language_code, _ in settings.LANGUAGES:
             with translation.override(language_code):
                 url = f"/{language_code}/api/update_run_description/"
-                self.assertEqual(reverse(view_name), url)
-                self.assertEqual(resolve(url).view_name, view_name)
-
-    def test_haven(self):
-        view_name = "haven"
-
-        for language_code, _ in settings.LANGUAGES:
-            with translation.override(language_code):
-                url = f"/{language_code}/api/haven/"
                 self.assertEqual(reverse(view_name), url)
                 self.assertEqual(resolve(url).view_name, view_name)
 

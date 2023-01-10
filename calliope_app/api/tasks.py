@@ -5,14 +5,13 @@ import os
 import shutil
 
 import boto3
-import botocore
 import pandas as pd
 import numpy as np
+import datetime
+import yaml
 from dateutil.parser import parse as date_parse
 
 from celery import Task
-from celery.exceptions import SoftTimeLimitExceeded
-from calliope import Model as CalliopeModel
 from calliope_app.celery import app
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -24,11 +23,12 @@ from api.engage import aws_ses_configured
 from api.models.configuration import Model, Scenario, Scenario_Loc_Tech, \
     Tech_Param, Loc_Tech_Param, Timeseries_Meta, User_File
 from api.models.outputs import Run
-from api.utils import list_to_yaml, load_timeseries_from_csv, \
-    get_model_logger, zip_folder
+from api.utils import load_timeseries_from_csv, get_model_logger, zip_folder
 from api.calliope_utils import get_model_yaml_set, get_location_meta_yaml_set
 from api.calliope_utils import get_techs_yaml_set, get_loc_techs_yaml_set
-
+from api.calliope_utils import run_basic, run_clustered, apply_gradient
+from batch.managers import AWSBatchJobManager 
+from taskmeta.models import CeleryTask, BatchTask, batch_task_status
 
 NOTIFICATION_TIME_INTERVAL = 20  # Minutes
 
@@ -212,10 +212,9 @@ def build_model(inputs_path, run_id, model_uuid, scenario_id,
     scenario = Scenario.objects.get(id=scenario_id)
 
     build_model_yaml(scenario_id, start_date, inputs_path)
-    build_model_csv(model, scenario, start_date, end_date, inputs_path)
+    build_model_csv(model, scenario, start_date, end_date, inputs_path, run.timestep)
 
     return inputs_path
-
 
 def build_model_yaml(scenario_id, start_date, inputs_path):
 
@@ -224,20 +223,22 @@ def build_model_yaml(scenario_id, start_date, inputs_path):
 
     # model.yaml
     model_yaml_set = get_model_yaml_set(scenario_id, year)
-    list_to_yaml(model_yaml_set, os.path.join(inputs_path, "model.yaml"))
+    with open(os.path.join(inputs_path, "model.yaml"), 'w') as outfile:
+        yaml.dump(model_yaml_set, outfile, default_flow_style=False)
 
     # techs.yaml
     techs_yaml_set = get_techs_yaml_set(scenario_id, year)
-    list_to_yaml(techs_yaml_set, os.path.join(inputs_path, "techs.yaml"))
+    with open(os.path.join(inputs_path, "techs.yaml"), 'w') as outfile:
+        yaml.dump(techs_yaml_set, outfile, default_flow_style=False)
 
     # locations.yaml
     loc_techs_yaml_set = get_loc_techs_yaml_set(scenario_id, year)
-    location_coord_yaml_set = get_location_meta_yaml_set(scenario_id)
-    list_to_yaml(loc_techs_yaml_set + location_coord_yaml_set,
-                 os.path.join(inputs_path, "locations.yaml"))
+    location_yaml_set = get_location_meta_yaml_set(scenario_id, loc_techs_yaml_set)
+    with open(os.path.join(inputs_path, "locations.yaml"), 'w') as outfile:
+        yaml.dump(location_yaml_set, outfile, default_flow_style=False)
 
 
-def build_model_csv(model, scenario, start_date, end_date, inputs_path):
+def build_model_csv(model, scenario, start_date, end_date, inputs_path, timesteps):
     # timeseries: *.csv
     loc_techs = Scenario_Loc_Tech.objects.filter(
         model=model, scenario=scenario)
@@ -253,68 +254,93 @@ def build_model_csv(model, scenario, start_date, end_date, inputs_path):
     for ts in list(tech_ts) + list(loc_tech_ts):
         timeseries_meta_id = ts.timeseries_meta_id
         parameter_name = ts.parameter.name
-        try:
+        parameter_root = ts.parameter.root.replace('.','-')
+        if ts in loc_tech_ts:
             location_1_name = ts.loc_tech.location_1.name
             technology_name = ts.loc_tech.technology.calliope_name
             if not ts.loc_tech.location_2:
                 filename = os.path.join(
-                    inputs_path, "{}--{}--{}.csv".format(
+                    inputs_path, "{}--{}--{}-{}.csv".format(
                         location_1_name, technology_name,
-                        parameter_name))
+                        parameter_root, parameter_name))
             else:
                 location_2_name = ts.loc_tech.location_2.name
                 filename = os.path.join(inputs_path,
-                                        "{},{}--{}--{}.csv".format(
+                                        "{},{}--{}--{}-{}.csv".format(
                                             location_1_name, location_2_name,
-                                            technology_name,
+                                            technology_name, parameter_root,
                                             parameter_name))
-        except Exception as e:
-            print(e)
+        elif ts in tech_ts:
             technology_name = ts.technology.calliope_name
             filename = os.path.join(
-                inputs_path, "{}--{}.csv".format(
-                    technology_name, parameter_name))
+                inputs_path, "{}--{}-{}.csv".format(
+                    technology_name, parameter_root, parameter_name))
         timeseries_meta = Timeseries_Meta.objects.filter(
             id=timeseries_meta_id).first()
         if timeseries_meta is not None:
             directory = "{}/timeseries".format(settings.DATA_STORAGE)
             input_fname = "{}/{}.csv".format(
                 directory, timeseries_meta.file_uuid)
-            timeseries = get_timeseries_data(input_fname, start_date, end_date)
+            timeseries = get_timeseries_data(input_fname, start_date, end_date, timesteps)
             timeseries.to_csv(filename)
 
 
-def get_timeseries_data(filename, start_date, end_date):
+def get_timeseries_data(filename, start_date, end_date, timesteps):
     """ Load up timeseries data into a DataFrame for an intra-year period. """
     timeseries = pd.read_csv(filename, parse_dates=[0])
-    timeseries.index = pd.to_datetime(timeseries.datetime)
+    timeseries.index = pd.DatetimeIndex(timeseries.datetime).tz_localize(None)
     del (timeseries['datetime'])
     timeseries.columns = ["value"]
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
+    year = start_date.year
 
     # Grab available year's data
     mask = (timeseries.index >= start_date) & \
            (timeseries.index <= end_date)
     subset = timeseries[mask]
 
-    # If year is not available: grad latest (or nearest) available data year
+    # If year is not available: grab latest (or nearest) available data year
     if len(subset) == 0:
-        year = start_date.year
         years = np.array(timeseries.index.year.unique())
-
         latest = years[years < year]
-        if latest:
+        if len(latest) > 0:
             recent_year = latest.max()
         else:
             recent_year = years[years > year].min()
-        start_date = start_date.replace(year=recent_year)
-        end_date = end_date.replace(year=recent_year)
-
-        mask = (timeseries.index >= start_date) & \
-               (timeseries.index <= end_date)
+        start_date2 = start_date.replace(year=recent_year)
+        end_date2 = end_date.replace(year=recent_year)
+        mask = (timeseries.index >= start_date2) & \
+               (timeseries.index <= end_date2)
         subset = timeseries[mask]
-        subset.index = subset.index.map(lambda t: t.replace(year=year))
+
+    # Remove extra leap year days and reset correct year
+    feb_29_mask = (subset.index.month == 2) & (subset.index.day == 29)
+    subset = subset[~feb_29_mask]
+    subset.index = subset.index.map(lambda t: t.replace(year=year))
+
+    # Determine offset difference and resample to run's timesteps
+    diffs = (subset.index[1:]-subset.index[:-1])
+    min_delta = diffs.min()
+    subset_freq = start_date+min_delta
+    target_freq = start_date+pd.tseries.frequencies.to_offset(timesteps)
+    if subset_freq<target_freq:
+        subset = subset.resample(rule=timesteps).mean()
+    elif subset_freq>target_freq:
+        subset = subset.resample(rule=timesteps).interpolate()
+
+    # Fill Missing Timesteps w/ 0
+    idx = pd.period_range(start_date, end_date, freq=timesteps).to_timestamp()
+    subset = subset.reindex(idx, fill_value=0)
+
+    # Leap Year Handling (Fill w/ Feb 28th)
+    if year % 4 == 0:
+        feb_28_mask = (subset.index.month == 2) & (subset.index.day == 28)
+        feb_29_mask = (subset.index.month == 2) & (subset.index.day == 29)
+        feb_28 = subset.loc[feb_28_mask, 'value'].values
+        feb_29 = subset.loc[feb_29_mask, 'value'].values
+        if ((len(feb_29) > 0) & (len(feb_28) > 0)):
+            subset.loc[feb_29_mask, 'value'] = feb_28
 
     return subset
 
@@ -341,7 +367,8 @@ class CalliopeModelRunTask(Task):
             "A timeseries has not been selected for a timeseries parameter"
     }
 
-    def notify_user(self, run, user_id, success=True, exc=None):
+    @classmethod
+    def notify_user(cls, run, user_id, success=True, exc=None):
         """Send notification to user"""
         # Get user
         try:
@@ -378,7 +405,8 @@ class CalliopeModelRunTask(Task):
             recipient_list=recipient_list
         )
 
-    def notify_admin(self, run, user_id, task_id, success=False, exc=None):
+    @classmethod
+    def notify_admin(cls, run, user_id, task_id, success=False, exc=None):
         """Send notification to admin"""
         if success:
             return
@@ -413,7 +441,7 @@ class CalliopeModelRunTask(Task):
             from_email=settings.AWS_SES_FROM_EMAIL,
             recipient_list=recipient_list
         )
-    
+
     def get_elasped_run_time(self, run):
         """Get model run time in minutes"""
         elasped_time = run.updated - run.created
@@ -447,13 +475,13 @@ class CalliopeModelRunTask(Task):
         run.plots_path = ""
         run.logs_path = save_logs
         run.save()
-        
+
         # Send failure notification to user
         if self.get_elasped_run_time(run) >= NOTIFICATION_TIME_INTERVAL:
             notification_enabled = True
         else:
             notification_enabled = False
-        
+
         if aws_ses_configured() and notification_enabled:
             try:
                 self.notify_user(run, kwargs["user_id"], success=False, exc=exc)
@@ -468,10 +496,13 @@ class CalliopeModelRunTask(Task):
         """
         # Update run instance in database
         run = Run.objects.get(id=retval["run_id"])
-        run.status = task_status.SUCCESS
         run.logs_path = retval["save_logs"]
         run.outputs_path = retval["save_outputs"]
-        run.plots_path = retval["save_plots"]
+        results = os.path.join(run.outputs_path, 'results_carrier_prod.csv')
+        if os.path.exists(results):
+            run.status = task_status.SUCCESS
+        else:
+            run.status = task_status.FAILURE
         run.save()
 
         # Upload model_outputs to S3
@@ -487,7 +518,7 @@ class CalliopeModelRunTask(Task):
         zip_file = zip_folder(retval["save_outputs"])
         key = "engage" + zip_file.replace(settings.DATA_STORAGE, '')
         client.upload_file(zip_file, settings.AWS_S3_BUCKET_NAME, key)
-        
+
         run.outputs_key = key
         run.save()
 
@@ -525,40 +556,38 @@ def run_model(run_id, model_path, user_id, *args, **kwargs):
     run.status = task_status.RUNNING
     run.save()
 
+    # Init
+    subset_time = run.subset_time.split(' to ')
+    st = pd.to_datetime(subset_time[0])
+    et = pd.to_datetime(subset_time[1]) + pd.DateOffset(hours=23)
+    idx = pd.date_range(start=st, end=et, freq='h')
+
     # Model run
-    model = CalliopeModel(config=model_path, *args, **kwargs)
-    model.run()
-    logger.info("Backend: Model runs successfully!")
+    if run.cluster and len(idx) > (24 * 14):
+        # Cap the number of representative days to 14 (temporary solution)
+        logger.info('Running clustered optimization...')
+        condition = run_clustered(model_path, idx, logger)
+    else:
+        logger.info('Running basic optimization...')
+        condition = run_basic(model_path, logger)
+    logger.info("Backend: Model runs complete, STATUS: {}".format(condition))
 
-    # Model outputs in csv
+    # Model outputs
     base_path = os.path.dirname(os.path.dirname(model_path))
-    logger.info("Backend: Saving model results...")
-    try:
-        if not os.path.exists(base_path + "/outputs"):
-            os.makedirs(base_path + "/outputs", exist_ok=True)
-        save_outputs = os.path.join(base_path, "outputs/model_outputs")
-        if os.path.exists(save_outputs):
-            shutil.rmtree(save_outputs)
-        model.to_csv(save_outputs)
-        logger.info("Backend: Model outputs was saved.")
-    except Exception as e:
-        logger.error("Backend: Failed to save model outputs.")
-        logger.error(str(e))
-        save_outputs = ""
+    save_outputs = os.path.join(base_path, "outputs/model_outputs")
 
-    # Model plots in html
-    try:
-        if not os.path.exists(base_path + "/plots"):
-            os.makedirs(base_path + "/plots", exist_ok=True)
-        save_plots = os.path.join(base_path, "plots/model_plots.html")
-        if os.path.exists(save_plots):
-            os.remove(save_plots)
-        model.plot.summary(to_file=save_plots)
-        logger.info("Backend: Model plots was saved.")
-    except Exception as e:
-        logger.error("Backend: Failed to save model plots.")
-        logger.error(str(e))
-        save_plots = ""
+    # Check for grouped/gradient runs
+    if run.group != '':
+        future_runs = Run.objects.filter(group=run.group,year__gt=run.year).order_by('year')
+        for next_run in future_runs:
+            logger.info(next_run.status)
+            if next_run.status == task_status.QUEUED:
+                logger.info("Found a subsequent gradient model for year %s.",next_run.year)
+                apply_gradient(run.inputs_path,save_outputs,next_run.inputs_path,run.year,next_run.year,logger)
+                if next_run == future_runs.first():
+                    model_path = os.path.join(next_run.inputs_path, "model.yaml")
+                    environment = next_run.compute_environment
+                    logger.info("Model run %s is ready to run in %s environment.",next_run.id, environment.name)
 
     # Model logs in plain text
     save_logs = logger.handlers[0].baseFilename
@@ -566,6 +595,147 @@ def run_model(run_id, model_path, user_id, *args, **kwargs):
     return {
         "run_id": run_id,
         "save_outputs": save_outputs,
-        "save_plots": save_plots,
         "save_logs": save_logs
     }
+
+
+class CalliopeTimeseriesUploadTask(Task):
+    """
+    A celery task class for handling success/failure status
+    """
+
+    def on_failure(self, exc, task_id, args, kwargs, einfo):
+        pass
+
+    def on_success(self, retval, task_id, args, kwargs):
+        pass
+
+
+@app.task(
+    base=CalliopeTimeseriesUploadTask,
+    queue="long_queue",
+    soft_time_limit=(48 * 3600 - 180),
+    time_limit=(48 * 3600),
+    ignore_result=True
+)
+def upgrade_066(*args, **kwargs):
+    """
+    A celery task for migrating output data to 066 format with headers.
+    """
+    runs = Run.objects.exclude(status='SUCCESS')
+    runs.update(calliope_066_upgraded=True)
+    runs = Run.objects.filter(status='SUCCESS')
+    for r, run in enumerate(runs):
+        if run.calliope_066_upgraded:
+            continue
+        run.calliope_066_errors = ""
+        try:
+            outputs_path = run.outputs_path
+            if not outputs_path:
+                run.calliope_066_upgraded = True
+                run.save()
+                continue
+            # --- BACKUP
+            backup = outputs_path + '_backup'
+            if not os.path.exists(backup):
+                shutil.copytree(outputs_path, backup)
+            # --- META
+            # Locations
+            locs = list(pd.read_csv(
+                os.path.join(backup, 'inputs_loc_coordinates.csv'),
+                header=None)[1].unique())
+            if 'locs' in locs:
+                run.calliope_066_upgraded = True
+                run.save()
+                continue
+            # Technologies
+            techs = list(pd.read_csv(
+                os.path.join(backup, 'inputs_names.csv'),
+                header=None)[0].unique())
+            techs += list(pd.read_csv(
+                os.path.join(backup, 'inputs_lookup_remotes.csv'),
+                header=None)[1].unique())
+            # Carriers
+            carriers = pd.read_csv(
+                os.path.join(backup, 'inputs_lookup_loc_carriers.csv'),
+                header=None)
+            index = 1 if set(carriers[0].unique()).issubset(locs) else 0
+            carriers = list(carriers[index].unique())
+            # --- UPDATE
+            files = os.listdir(backup)
+            for file in files:
+                try:
+                    src = os.path.join(backup, file)
+                    dst = os.path.join(outputs_path, file)
+                    try:
+                        d = pd.read_csv(src, header=None)
+                    except pd.errors.EmptyDataError:
+                        continue
+                    # Metric
+                    if 'inputs' in file:
+                        metric = file.split('inputs_')[1][:-4]
+                    else:
+                        metric = file.split('results_')[1][:-4]
+                    try:
+                        int(metric[-2:])
+                        metric = metric[:-3]
+                    except Exception:
+                        pass
+                    # Update Each Column Header
+                    columns = list(d.columns)
+                    for i, col in enumerate(columns):
+                        values = list(d[col].unique())
+                        if len(values) == 1 and 'monetary' in values:
+                            columns[i] = 'costs'
+                        elif set(['in', 'out']).issubset(values):
+                            columns[i] = 'carrier_tiers'
+                        elif set(values).issubset(['lat', 'lon']):
+                            columns[i] = 'coordinates'
+                        elif set(values).issubset(locs):
+                            columns[i] = 'locs'
+                        elif set(values).issubset(carriers):
+                            columns[i] = 'carriers'
+                        elif set(values).issubset(techs):
+                            columns[i] = 'techs'
+                        elif 'group_share' in metric and i == 1:
+                            columns[i] = 'techlists'
+                        else:
+                            try:
+                                datetime.datetime.strptime(values[0],
+                                                           '%Y-%m-%d %H:%M:%S')
+                                if metric == 'max_demand_timesteps':
+                                    columns[i] = metric
+                                else:
+                                    columns[i] = 'timesteps'
+                            except Exception:
+                                try:
+                                    datetime.datetime.strptime(values[0],
+                                                               '%Y-%m-%d')
+                                    columns[i] = 'datesteps'
+                                except Exception:
+                                    try:
+                                        if 'cluster' in metric and sorted(values) == list(range(np.max(values) + 1)):
+                                            columns[i] = 'cluster'
+                                        else:
+                                            raise
+                                    except Exception:
+                                        columns[i] = metric
+                    if 'cluster' in columns and metric not in columns:
+                        i = columns.index('cluster')
+                        columns[i] = metric
+                    d.columns = columns
+                    if len(columns) != len(set(columns)):
+                        print('\n\n', r, file, '\n')
+                        print(d.head())
+                    d.to_csv(dst, index=False)
+                except Exception as e:
+                    error = "ERROR ({}): {} | ".format(file, str(e))
+                    run.calliope_066_errors += error
+                    pass
+        except Exception as e:
+            error = "ERROR: {} | ".format(str(e))
+            run.calliope_066_errors += error
+            pass
+        if run.calliope_066_errors == "":
+            run.calliope_066_upgraded = True
+        run.save()

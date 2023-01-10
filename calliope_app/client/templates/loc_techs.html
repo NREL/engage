@@ -9,7 +9,7 @@
 <style>
     html, body {
       height: 100%;
-      overflow-y: hidden;
+      overflow: hidden;
     }
 </style>
 {% endblock %}
@@ -24,6 +24,6 @@
 </div>
 <form id="form_data" style="height:100%" method="post" action="" accept-charset="utf-8">
 	<div class="row" id="tech_essentials"></div>
-	<div class="row" id="tech_parameters" style="overflow-y: scroll; height: calc(100% - 495px);"></div>
+	<div class="row" id="tech_parameters" style="overflow-y: scroll; max-height: calc(100% - 495px);"></div>
 </form>
 {% endblock %}

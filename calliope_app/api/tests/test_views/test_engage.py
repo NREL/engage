@@ -33,7 +33,7 @@ class UserActivationViewTestCase(TestCase):
 
 class UserRegistrationViewTestCase(TestCase):
     
-    def test_user_registration(self):
+    def test_register(self):
         data = {
             "first_name": "my-firstname",
             "last_name": "my-lastname",
@@ -42,7 +42,7 @@ class UserRegistrationViewTestCase(TestCase):
             "password": "my-new-password"
         }
         response = self.client.post(
-            reverse("user_registration"), 
+            reverse("register"), 
             data=data, 
             HTTP_HOST="localhost"
         )

@@ -5,5 +5,11 @@
 	<b>{{ carrier.name }}:</b>
 </div>
 <div class="col-7">
-	<input {% if not can_edit %}disabled{% endif %} list="carriers_list" style="width:100%" class="tech_carrier {% if not carrier.value.0 %}table-danger{% endif %}" type="text" name='essentials[{{ carrier_id }}]' value="{{ carrier.value.0 }}" data-val="{{ carrier.value.0 }}">
+    <select {% if not can_edit %}disabled{% endif %} style="width:100%" type="text" class="tech_carrier {% if not carrier.value.0 %}table-danger{% endif %}" name="essentials[{{ carrier_id }}]" data-value="{{ carrier.value.0 }}">
+        <option></option>
+        <option value="-- New Carrier --">-- New Carrier --</option>
+        {% for choice in carriers %}
+        <option value="{{ choice }}" {% if choice == carrier.value.0 %}selected{% endif %}>{{ choice }}</option>
+        {% endfor %}
+    </select>
 </div>

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from api.models.engage import Help_Guide, User_Profile
+from api.models.engage import Help_Guide
 from api.models.calliope import Abstract_Tech, Abstract_Tech_Param, \
     Parameter, Run_Parameter
 from api.models.configuration import Model, Model_User, Model_Comment, \
@@ -8,6 +8,21 @@ from api.models.configuration import Model, Model_User, Model_Comment, \
     Loc_Tech, Loc_Tech_Param, Timeseries_Meta, Scenario, \
     Scenario_Loc_Tech, Scenario_Param
 from api.models.outputs import Run
+from api.models.engage import User_Profile, ComputeEnvironment
+
+
+class ComputeEnvironmentAdmin(admin.ModelAdmin):
+    filter_horizontal = ("users",)
+    list_display = ['id',  'name', 'full_name', 'is_default', 'ncpu', 'memory', 'type', '_users']
+
+    @staticmethod
+    def _users(instance):
+        """Return the number of users that can use the environment"""
+        return instance.users.count()
+
+
+class User_Profile_Admin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'organization', 'timezone', 'activation_uuid']
 
 
 class Help_Guide_Admin(admin.ModelAdmin):
@@ -19,8 +34,7 @@ class Parameter_Admin(admin.ModelAdmin):
     # fields = []
     list_display = ['id', 'root', 'category', 'name', 'pretty_name',
                     'description', 'timeseries_enabled', 'units', 'choices',
-                    'is_linear', 'is_expansion', 'is_systemwide',
-                    'is_essential', 'is_carrier']
+                    'is_systemwide', 'is_essential', 'is_carrier']
 
 
 class Abstract_Tech_Admin(admin.ModelAdmin):
@@ -41,11 +55,6 @@ class Model_User_Admin(admin.ModelAdmin):
     list_filter = ['model']
     list_display = ['id', 'model', 'user', 'can_edit',
                     'last_access', 'notifications']
-
-
-class User_Profile_Admin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'organization',
-                    'timezone', 'activation_uuid']
 
 
 class Model_Comment_Admin(admin.ModelAdmin):
@@ -78,8 +87,7 @@ class Location_Admin(admin.ModelAdmin):
 class Technology_Admin(admin.ModelAdmin):
     list_filter = ['model']
     list_display = ['id', 'pretty_name', 'abstract_tech', 'name', 'tag',
-                    'pretty_tag', 'is_linear', 'is_expansion', 'model',
-                    'created', 'updated']
+                    'pretty_tag', 'model', 'created', 'updated']
 
 
 class Tech_Param_Admin(admin.ModelAdmin):
@@ -128,12 +136,13 @@ class Scenario_Param_Admin(admin.ModelAdmin):
 
 
 class Run_Admin(admin.ModelAdmin):
-    list_filter = ['model']
+    list_filter = ['model', 'calliope_066_upgraded', 'status','cluster','manual']
     list_display = ['id', 'scenario', 'year', 'subset_time', 'status',
-                    'message', 'description', 'created', 'updated',
+                    'message', 'description', 'created', 'updated', 'group',
                     'inputs_path', 'logs_path', 'outputs_path', 'outputs_key',
                     'plots_path', 'model', 'build_task', 'run_task',
-                    'deprecated', 'published']
+                    'deprecated', 'published','cluster','manual',
+                    'calliope_066_upgraded', 'calliope_066_errors']
 
 
 admin.site.register(Help_Guide, Help_Guide_Admin)
@@ -157,3 +166,4 @@ admin.site.register(Scenario, Scenario_Admin)
 admin.site.register(Scenario_Loc_Tech, Scenario_Loc_Tech_Admin)
 admin.site.register(Scenario_Param, Scenario_Param_Admin)
 admin.site.register(Run, Run_Admin)
+admin.site.register(ComputeEnvironment, ComputeEnvironmentAdmin)

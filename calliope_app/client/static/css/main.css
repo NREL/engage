@@ -11,16 +11,16 @@ th.sticky {
   position: relative;
 }
 #data-source-modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1000; /* Sit on top */
+  display: none;
+  position: fixed;
+  z-index: 1000;
   left: 0;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.6);
 }
 #data-source-modal-content {
   background-color: #fefefe;
@@ -28,17 +28,32 @@ th.sticky {
   margin-top: 150px;
   padding: 20px;
   border: 1px solid #888;
-  width: 800px; /* Could be more or less, depending on screen size */
+  width: 800px;
 }
-
+#splitter {
+  height: 15px;
+  cursor: row-resize;
+  background-color: #137ac2;
+}
+#splitter_btn {
+  line-height: 5px;
+  cursor: pointer;
+  background-color: #005592;
+  color: white;
+  font-size: 0.85em;
+  font-weight: bold;
+  padding-top: 1px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
 .viz-spinner {
   height: 100px;
   width: 100px;
   font-size: 40px;
-  color: #c5c5c5;
+  color: "white";
   margin-top: 40px;
   margin-left: -75px;
-  position: absolute;
+  position: fixed;
   left: 50%;
   z-index: 1000;
 }
@@ -98,7 +113,12 @@ input.nav-dropdown {
   padding: 5px 10px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 1);
 }
-
+.mapboxgl-ctrl-pitchtoggle-3d {
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+ICAgIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkeT0iLjM1ZW0iIHN0eWxlPSJmb250LXNpemU6IDE0cHg7IGZvbnQtZmFtaWx5OiAnSGVsdmV0aWNhIE5ldWUnLEFyaWFsLEhlbHZldGljYSxzYW5zLXNlcmlmOyBmb250LXdlaWdodDogYm9sZDsgdGV4dC1hbmNob3I6IG1pZGRsZTsiPjNEPC90ZXh0Pjwvc3ZnPg==);
+}
+.mapboxgl-ctrl-pitchtoggle-2d {
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+ICAgIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkeT0iLjM1ZW0iIHN0eWxlPSJmb250LXNpemU6IDE0cHg7IGZvbnQtZmFtaWx5OiAnSGVsdmV0aWNhIE5ldWUnLEFyaWFsLEhlbHZldGljYSxzYW5zLXNlcmlmOyBmb250LXdlaWdodDogYm9sZDsgdGV4dC1hbmNob3I6IG1pZGRsZTsiPjJEPC90ZXh0Pjwvc3ZnPg==);
+}
 #map-legend-container {
   position: absolute;
   pointer-events: none;
@@ -106,7 +126,7 @@ input.nav-dropdown {
   margin-left: 5px;
 }
 #map-legend {
-  display: none;
+  display: inline-block;
   font-family: sans-serif;
   padding: 5px;
   border: 2px solid black;
@@ -118,42 +138,45 @@ input.nav-dropdown {
 .marker {
     cursor: pointer;
     border-radius: 50%;
-    width: 15px;
-    height: 15px;
-    background-color: #000;
-    border: 2px solid #fff;
+    width: 18px;
+    height: 18px;
+    background-color: #00f;
+    border: 4px solid #000;
 }
 .marker.dark {
-    background-color: #fff;
-    border: 2px solid #000;
+    background-color: #33f;
+    border: 4px solid #fff;
 }
 
 .marker.selected {
+    width: 25px;
+    height: 25px;
     background-color: #00f;
-    border: 2px solid #000;
+    box-shadow: 0px 0px 0px 6px #7777ffee;
 }
 .marker.selected.dark {
     background-color: #00f;
-    border: 2px solid #fff;
+    box-shadow: 0px 0px 0px 6px #7777ffee;
 }
 
 .marker.unselected {
-    background-color: #fff;
+    background-color: #00f;
     border: 2px solid #000;
 }
 .marker.unselected.dark {
-    background-color: #999;
+    background-color: #33f;
+    border: 2px solid #fff;
 }
 
 .marker.reference {
     width: 15px;
     height: 15px;
-    border: 3px solid #fff;
+    border: 5px solid #000;
 }
 .marker.reference.dark {
     width: 15px;
     height: 15px;
-    border: 3px solid #000;
+    border: 5px solid #fff;
 }
 
 input:focus::placeholder{
@@ -581,4 +604,31 @@ input:checked + .slider:before {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+#top, #bottom_left, #bottom_right {
+  height: auto !important;
+}
+#top {
+  margin-bottom: -40px;
+}
+#container {
+  width: 98vw !important;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
+#run_carrier, #run_location, #run_month {
+    background-color: black;
+    color: white;
+    padding: 5px !important;
+    height: 40px !important;
 }

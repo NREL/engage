@@ -27,6 +27,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+CARRIER_IDS = [4, 5, 6, 23, 66, 67, 68, 69, 70, 71]
+PRIMARY_CARRIER_IDS = [70, 71]
+CARRIER_RATIOS_ID = 7
+
 
 class Model(models.Model):
     class Meta:
@@ -183,15 +187,17 @@ class Model(models.Model):
     @property
     def carriers(self):
         """ Get all configured carrier strings """
-        CARRIER_IDS = [4, 5, 6, 23, 66, 67, 68, 69, 70, 71]
         carriers = Tech_Param.objects.filter(
             model=self,
             parameter_id__in=CARRIER_IDS)
         carriers = carriers.values_list('value', flat=True)
         carriers_list = []
         for carrier in carriers:
-            carriers_list += carrier.split(',')
-        return list(set(carriers_list))
+            try:
+                carriers_list += json.loads(carrier)
+            except Exception:
+                carriers_list += [carrier]
+        return sorted(set(carriers_list))
 
     @property
     def favorites(self):
@@ -464,6 +470,9 @@ class DuplicateModelManager():
 
     def _clean(self):
         """ Clean up the new model """
+        # Unpublish from Cambium
+        self.new_model.run_set.all().update(published=False)
+        # Drop Comments and Model Users
         if self.new_model.snapshot_base is None:
             Model_Comment.objects.filter(model=self.new_model).hard_delete()
             Model_User.objects.filter(model=self.new_model).hard_delete()
@@ -545,7 +554,7 @@ class Timeseries_Meta(models.Model):
         directory = '{}/timeseries'.format(settings.DATA_STORAGE)
         input_fname = '{}/{}.csv'.format(directory, self.file_uuid)
         timeseries = pd.read_csv(input_fname, parse_dates=[0])
-        timeseries.index = pd.to_datetime(timeseries.datetime)
+        timeseries.index = pd.DatetimeIndex(timeseries.datetime).tz_localize(None)
         return timeseries
 
     @classmethod
@@ -590,8 +599,6 @@ class Technology(models.Model):
     pretty_name = models.CharField(max_length=200)
     tag = models.CharField(max_length=200, blank=True, null=True)
     pretty_tag = models.CharField(max_length=200, blank=True, null=True)
-    is_linear = models.BooleanField(null=True, default=True)
-    is_expansion = models.BooleanField(null=True, default=True)
     description = models.TextField(blank=True, null=True)
     model = models.ForeignKey(Model, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, null=True)
@@ -608,6 +615,13 @@ class Technology(models.Model):
             return '{}-{}'.format(self.name, self.tag)
         else:
             return '{}'.format(self.name)
+
+    @property
+    def calliope_pretty_name(self):
+        if self.pretty_tag:
+            return '{} [{}]'.format(self.pretty_name, self.pretty_tag)
+        else:
+            return self.pretty_name
 
     @property
     def color(self):
@@ -642,6 +656,20 @@ class Technology(models.Model):
         j = json.dumps(d)
         return j
 
+    def update_calliope_pretty_name(self):
+        tech_param = Tech_Param.objects.filter(
+            model_id=self.model_id,
+            technology_id=self.id,
+            parameter__name='name')
+        if len(tech_param) == 0:
+            Tech_Param.objects.create(
+                model_id=self.model_id,
+                technology_id=self.id,
+                parameter=Parameter.objects.get(name='name'),
+                value=self.calliope_pretty_name)
+        else:
+            tech_param.update(value=self.calliope_pretty_name)
+
     def duplicate(self, model_id, pretty_name):
         """ Duplicate and return a new technology instance """
         new_tech = deepcopy(self)
@@ -661,6 +689,7 @@ class Technology(models.Model):
             tech_param.pk = None
             tech_param.technology_id = new_tech.id
             tech_param.model_id = model_id
+            # Timeseries
             tmeta = deepcopy(tech_param.timeseries_meta)
             if tmeta is not None:
                 original_pk = tmeta.pk
@@ -681,16 +710,11 @@ class Technology(models.Model):
                     tech_param.value = tmeta.pk
                     tmetas[original_pk] = tmeta
             tech_param.save()
+        new_tech.update_calliope_pretty_name()
         return new_tech
 
     def update(self, form_data):
         """ Update the Technology parameters stored in Tech_Param """
-        if 'is_linear' in form_data.keys():
-            self.is_linear = bool(int(form_data['is_linear']))
-            self.save()
-        if 'is_expansion' in form_data.keys():
-            self.is_expansion = bool(int(form_data['is_expansion']))
-            self.save()
         METHODS = ['essentials', 'add', 'edit', 'delete']
         for method in METHODS:
             if method in form_data.keys():
@@ -746,41 +770,24 @@ class Tech_Param(models.Model):
                         model_id=technology.model_id,
                         technology_id=technology.id,
                         parameter_id=key,
-                        value=value.replace(',', ''))
+                        value=ParamsManager.clean_str_val(value))
             technology.save()
-
-        if technology.pretty_tag:
-            tech_full_name = '{} [{}]'.format(technology.pretty_name,
-                                              technology.pretty_tag)
-        else:
-            tech_full_name = technology.pretty_name
-        tech_full_name_record = cls.objects.filter(
-            model_id=technology.model_id,
-            technology_id=technology.id,
-            parameter_id=2)
-        if len(tech_full_name_record) == 0:
-            cls.objects.create(
-                model_id=technology.model_id,
-                technology_id=technology.id,
-                parameter_id=2,
-                value=tech_full_name)
-        else:
-            tech_full_name_record.update(value=tech_full_name)
+        technology.update_calliope_pretty_name()
 
     @classmethod
     def _cplus_carriers(cls, technology, carriers, ratios):
         """ Update a technologies (Conversion Plus) carrier parameters """
-        RATIOS_ID = 7
         ratios_dict = {}
         for param_id in carriers.keys():
             # Delete Old Parameter
             cls.objects.filter(
                 model_id=technology.model_id,
                 technology_id=technology.id,
-                parameter_id__in=[param_id, RATIOS_ID]).hard_delete()
-            # Create New Parameter
-            val = ','.join([v for v in carriers[param_id] if v != ''])
-            if val:
+                parameter_id__in=[param_id, CARRIER_RATIOS_ID]).hard_delete()
+            # Create New Parameters
+            vals = [v for v in carriers[param_id] if v != '']
+            if vals:
+                val = vals[0] if len(vals) == 1 else json.dumps(vals)
                 cls.objects.create(
                     model_id=technology.model_id,
                     technology_id=technology.id,
@@ -792,18 +799,18 @@ class Tech_Param(models.Model):
                     ratios_dict[name] = {}
                 for carrier, ratio in zip(carriers[param_id],
                                           ratios[param_id]):
-                    try:
-                        ratio_val = float(ratio) if float(ratio) >= 0 else 1
-                    except ValueError:
-                        ratio_val = 1
                     if carrier:
-                        ratios_dict[name][carrier] = ratio_val
+                        try:
+                            val = float(ratio) if float(ratio) >= 0 else 1
+                        except ValueError:
+                            val = 1
+                        ratios_dict[name][carrier] = val
         # Update Ratios Parameter
         ratios_val = json.dumps(ratios_dict)
         cls.objects.create(
             model_id=technology.model_id,
             technology_id=technology.id,
-            parameter_id=RATIOS_ID,
+            parameter_id=CARRIER_RATIOS_ID,
             value=ratios_val)
 
     @classmethod
@@ -822,7 +829,7 @@ class Tech_Param(models.Model):
                         technology_id=technology.id,
                         year=years[i],
                         parameter_id=key,
-                        value=vals[0],
+                        value=ParamsManager.clean_str_val(vals[0]),
                         raw_value=vals[1] if len(vals) > 1 else vals[0]))
                 cls.objects.bulk_create(new_objects)
 
@@ -840,7 +847,7 @@ class Tech_Param(models.Model):
                     model_id=technology.model_id,
                     technology_id=technology.id,
                     parameter_id=key,
-                    value=vals[0],
+                    value=ParamsManager.clean_str_val(vals[0]),
                     raw_value=vals[1] if len(vals) > 1 else vals[0])
         if 'timeseries' in data:
             for key, value in data['timeseries'].items():
@@ -852,7 +859,7 @@ class Tech_Param(models.Model):
                     model_id=technology.model_id,
                     technology_id=technology.id,
                     parameter_id=key,
-                    value=value,
+                    value=ParamsManager.clean_str_val(value),
                     timeseries_meta_id=value,
                     timeseries=True)
         if 'parameter_instance' in data:
@@ -864,7 +871,7 @@ class Tech_Param(models.Model):
                 if 'value' in value_dict:
                     vals = str(value_dict['value']).split('||')
                     parameter_instance.update(
-                        value=vals[0],
+                        value=ParamsManager.clean_str_val(vals[0]),
                         raw_value=vals[1] if len(vals) > 1 else vals[0])
                 if 'year' in value_dict:
                     parameter_instance.update(year=value_dict['year'])
@@ -992,7 +999,7 @@ class Loc_Tech_Param(models.Model):
                         loc_tech_id=loc_tech.id,
                         year=years[i],
                         parameter_id=key,
-                        value=vals[0],
+                        value=ParamsManager.clean_str_val(vals[0]),
                         raw_value=vals[1] if len(vals) > 1 else vals[0]))
                 cls.objects.bulk_create(new_objects)
 
@@ -1010,7 +1017,7 @@ class Loc_Tech_Param(models.Model):
                     model_id=loc_tech.model_id,
                     loc_tech_id=loc_tech.id,
                     parameter_id=key,
-                    value=vals[0],
+                    value=ParamsManager.clean_str_val(vals[0]),
                     raw_value=vals[1] if len(vals) > 1 else vals[0])
         if 'timeseries' in data:
             for key, value in data['timeseries'].items():
@@ -1022,7 +1029,7 @@ class Loc_Tech_Param(models.Model):
                     model_id=loc_tech.model_id,
                     loc_tech_id=loc_tech.id,
                     parameter_id=key,
-                    value=value,
+                    value=ParamsManager.clean_str_val(value),
                     timeseries_meta_id=value,
                     timeseries=True)
         if 'parameter_instance' in data:
@@ -1034,7 +1041,7 @@ class Loc_Tech_Param(models.Model):
                 if 'value' in value_dict:
                     vals = str(value_dict['value']).split('||')
                     parameter_instance.update(
-                        value=vals[0],
+                        value=ParamsManager.clean_str_val(vals[0]),
                         raw_value=vals[1] if len(vals) > 1 else vals[0])
                 if 'year' in value_dict:
                     parameter_instance.update(year=value_dict['year'])
@@ -1101,7 +1108,7 @@ class Scenario(models.Model):
             if param.name == "name":
                 value = "{}: {}".format(new_scenario.model.name, name)
             else:
-                value = param.default_value
+                value = ParamsManager.clean_str_val(param.default_value)
             Scenario_Param.objects.create(
                 scenario=new_scenario, run_parameter=param,
                 value=value, model=new_scenario.model
@@ -1179,7 +1186,7 @@ class Scenario_Param(models.Model):
     scenario = models.ForeignKey(Scenario, on_delete=models.CASCADE)
     run_parameter = models.ForeignKey(Run_Parameter, on_delete=models.CASCADE)
     year = models.IntegerField(default=0)
-    value = models.CharField(max_length=200)
+    value = models.TextField()
     model = models.ForeignKey(Model, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
@@ -1208,7 +1215,7 @@ class Scenario_Param(models.Model):
                         model_id=scenario.model_id,
                         scenario_id=scenario.id,
                         year=cls.int_or_zero(years[i]),
-                        value=values[i]))
+                        value=ParamsManager.clean_str_val(values[i])))
             cls.objects.bulk_create(new_objects)
 
     @classmethod
@@ -1227,7 +1234,7 @@ class Scenario_Param(models.Model):
                     model_id=scenario.model_id,
                     scenario_id=scenario.id,
                     id=key)
-                param.update(value=val)
+                param.update(value=ParamsManager.clean_str_val(val))
 
     @classmethod
     def _delete(cls, scenario, data):
@@ -1291,12 +1298,8 @@ class ParamsManager():
         # Get Params based on Level
         if level == '0_abstract':
             technology = Technology.objects.get(id=id)
-            is_linear = technology.is_linear
-            is_expansion = technology.is_expansion
             params = Abstract_Tech_Param.objects.filter(
-                Q(abstract_tech=technology.abstract_tech),
-                Q(parameter__is_linear=is_linear) | Q(parameter__is_linear=None),
-                Q(parameter__is_expansion=is_expansion) | Q(parameter__is_expansion=None)
+                abstract_tech=technology.abstract_tech
             ).order_by('parameter__category', 'parameter__pretty_name')
             values += ["default_value"]
 
@@ -1368,15 +1371,17 @@ class ParamsManager():
         carrier_ratios = essential_params[essential_params.parameter_id == 7]
         for _, row in essential_params.iterrows():
             ratios_val = None
-            if row.parameter_id in [4, 5, 6, 66, 67, 68, 69]:
-                val = row.value.split(',')
+            val = row.value
+            if row.parameter_id in CARRIER_IDS:
+                try:
+                    val = json.loads(row.value)
+                except Exception:
+                    val = [row.value]
                 try:
                     ratios = json.loads(carrier_ratios.value[0])
                     ratios_val = ratios[row.parameter_name]
                 except Exception:
                     pass
-            else:
-                val = row.value
             essentials[row.parameter_id] = {
                 'name': row.parameter_pretty_name,
                 'value': val,
@@ -1388,6 +1393,42 @@ class ParamsManager():
 
     @staticmethod
     def simplify_name(name):
-        simple_name = name.replace(' ', '_')
-        simple_name = re.sub('\W+', '', simple_name)
+        simple_name = name.strip().replace(" ", "_")
+        simple_name = re.sub(r"\W+", "", simple_name)
         return simple_name
+
+    @staticmethod
+    def clean_str_val(value):
+        value = str(value)
+        clean_value = value.replace(',', '')
+        try:
+            if '.' in clean_value:
+                return str(float(clean_value))
+            else:
+                return str(int(clean_value))
+        except ValueError:
+            return value
+
+    @staticmethod
+    def parse_carrier_name(carrier):
+        return carrier.split(" [")[0].strip()
+
+    @staticmethod
+    def parse_carrier_units(carrier):
+        try:
+            return re.search(r"\[([A-Za-z0-9_]+)\]", carrier).group(1)
+        except Exception:
+            return "kW"
+
+    @classmethod
+    def emission_categories(cls):
+        queryset = Parameter.objects.filter(category__contains="Emissions")
+        categories = sorted(list(set([param.category for param in queryset])))
+        return categories
+
+    @classmethod
+    def cost_classes(cls):
+        queryset = Parameter.objects.filter(category__contains="Emissions")
+        categories = {param.category: param.root for param in queryset}
+        categories['Costs'] = 'costs.monetary'
+        return categories

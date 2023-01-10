@@ -33,7 +33,7 @@ Create a folder ``.envs`` in the root directory of project, then within ``.envs`
     DJANGO_SECRET_KEY=YN3ZBsDH8r7r0QBjWc7nSmGqU5Cr0tMHdLufTQNl
 
     # PostgreSQL
-    POSTGRES_HOST=engage-postgres
+    POSTGRES_HOST=calliope-postgres
     POSTGRES_PORT=5432
     POSTGRES_DB=postgres
     POSTGRES_USER=postgres
@@ -94,7 +94,6 @@ Execute the ``app`` service, and enter the docker container.
 
 .. code-block::
 
-    $ docker-compose up --detach
     $ docker-compose exec app bash
 
 Next, we need to migreate django models, create a superuser and load sample data into database.

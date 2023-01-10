@@ -8,7 +8,7 @@
 		<tr class="tbl-header" style="border-left: solid 20px grey">
 			<th class="sticky" colspan=2></th>
 			<th class="sticky text-sm">{% trans "Technologies" %}</th>
-			<th class="sticky text-sm">{% trans "Scenario Tag" %}</th>
+			<th class="sticky text-sm">{% trans "Version Tag" %}</th>
 			<th class="sticky text-sm">{% trans "Locations" %}</th>
 			<th class="sticky text-sm centered"></th>
 		</tr>
@@ -24,7 +24,7 @@
 			  </select>
 			</th>
 			<th class="text-sm">
-			  <select class="form-control" id="tag-filter" data-toggle="tooltip" data-placement="left" title="{% trans 'Filter nodes by scenario tag.' %}">
+			  <select class="form-control" id="tag-filter" data-toggle="tooltip" data-placement="left" title="{% trans 'Filter nodes by version tag.' %}">
 			  	<option selected value="">-</option>
 			  	{% for unique in unique_tags %}
 			    <option value="{{ unique }}">{{ unique }}</option>

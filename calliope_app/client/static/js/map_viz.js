@@ -3,13 +3,14 @@
 var total_radius = 40,
     buffer_radius = 10,
     calc_zoom_scale = function(current_zoom) {
+        return 0.3;
         var nodes_scale = 1 / Math.sqrt(nodes.length + 1);
         var map_scale = 2 * Math.pow(1.2 + nodes_scale, current_zoom - initial_map_zoom);
         var scale = nodes_scale * map_scale;
         return scale;
     },
     radius_multiplier = function(d) {
-        return 1 + Math.log10(link_counts[d.loc])
+        return 1 + 1.5 * Math.log10(n_loc_techs(d)) + 0.5 * Math.log10(link_counts[d.loc])
     },
     mapbox_styles = {
         'Streets': 'mapbox/streets-v11',
@@ -21,7 +22,7 @@ var total_radius = 40,
     },
     map_style = localStorage.getItem("mapstyle") || Object.values(mapbox_styles)[0],
     buffer_divisor = 5,
-    stroke_multiplier = 10,
+    stroke_multiplier = 12,
     inactive_opacity = 0.1,
     active_opacity = function() {
         return 1;
@@ -87,7 +88,7 @@ var total_radius = 40,
     trans_production = {},
     selected_tech = null,
     selected_carrier = 'all',
-    animation_speed = 200,
+    animation_speed = 600,
     animation_interval = null,
     wait_d3_interval = null,
     wait_mapbox_interval = null,
@@ -288,8 +289,6 @@ function load_data() {
     // console.log('loading data...');
     model_uuid = $('#viz-container').data('model_uuid');
     run_id = $('#viz-main').data('run_id');
-    // console.log('model_uuid = ' + model_uuid);
-    // console.log('run_id = ' + run_id);
     $.ajax({
         url: '/' + LANGUAGE_CODE + '/component/map_outputs/',
         type: 'POST',
@@ -310,39 +309,39 @@ function load_data() {
             if (data_loaded == false) {
 
                 // load colors & techs
-                data.responseJSON['inputs_colors'].split('\n').slice(0, -1).map(function(line) {
-                    var d = line.split(',');
-                    colors[d[0]] = d[1];
-                    techs.push(d[0]);
+                var [headers, lines] = parse_data(data, 'inputs_colors');
+                lines.map(function(d) {
+                    colors[d[headers.techs]] = d[headers.colors];
+                    techs.push(d[headers.techs]);
                 });
                 
                 // load names
-                data.responseJSON['inputs_names'].split('\n').slice(0, -1).map(function(line) {
-                    var d = line.split(',');
-                    names[d[0]] = d[1];
+                var [headers, lines] = parse_data(data, 'inputs_names');
+                lines.map(function(d) {
+                    names[d[headers.techs]] = d[headers.names];
                 });
                 
                 // load parents & groups
-                data.responseJSON['inputs_inheritance'].split('\n').slice(0, -1).map(function(line) {
-                    var d = line.split(',');
-                    parents[d[0]] = d[1];
-                    if (Object.keys(tech_groups).indexOf(d[1]) == -1) {
-                        tech_groups[d[1]] = [d[0]];
+                var [headers, lines] = parse_data(data, 'inputs_inheritance');
+                lines.map(function(d) {
+                    parents[d[headers.techs]] = d[headers.inheritance];
+                    if (Object.keys(tech_groups).indexOf(d[headers.inheritance]) == -1) {
+                        tech_groups[d[headers.inheritance]] = [d[headers.techs]];
                     } else {
-                        tech_groups[d[1]].push(d[0]);
+                        tech_groups[d[headers.inheritance]].push(d[headers.techs]);
                     }
                 });
                 
                 // load coordinates
                 var lats = [], lons = [];
-                data.responseJSON['inputs_loc_coordinates'].split('\n').slice(0, -1).map(function(line) {
-                    var d = line.split(',');
-                    assign(coordinates, [d[1], d[0]], +d[2]);
-                    if (d[0] == 'lat') {
-                        lats.push(+d[2])
+                var [headers, lines] = parse_data(data, 'inputs_loc_coordinates');
+                lines.map(function(d) {
+                    assign(coordinates, [d[headers.locs], d[headers.coordinates]], +d[headers.loc_coordinates]);
+                    if (d[headers.coordinates] == 'lat') {
+                        lats.push(+d[headers.loc_coordinates])
                     };
-                    if (d[0] == 'lon') {
-                        lons.push(+d[2])
+                    if (d[headers.coordinates] == 'lon') {
+                        lons.push(+d[headers.loc_coordinates])
                     };
                 });
                 lat_buffer = (Math.max.apply(Math, lats) - Math.min.apply(Math, lats)) / buffer_divisor;
@@ -357,28 +356,28 @@ function load_data() {
                 }
                 
                 // load capacities
-                data.responseJSON['results_energy_cap'].split('\n').slice(0, -1).map(function(line) {
-                    var d = line.split(',');
-                    if (techs.includes(d[1])) {
+                var [headers, lines] = parse_data(data, 'results_energy_cap');
+                lines.map(function(d) {
+                    if (techs.includes(d[headers.techs])) {
                         nodes.push({
-                            'loc': d[0],
-                            'tech': d[1],
-                            'capacity': +d[2]
+                            'loc': d[headers.locs],
+                            'tech': d[headers.techs],
+                            'capacity': +d[headers.energy_cap]
                         });
-                        locations[d[0]].push(d[1]);
-                        assign(capacities, [d[0], d[1]], +d[2]);
+                        locations[d[headers.locs]].push(d[headers.techs]);
+                        assign(capacities, [d[headers.locs], d[headers.techs]], +d[headers.energy_cap]);
                     } else {
                         links.push({
-                            'loc1': d[0],
-                            'loc2': d[1].split(':')[1],
-                            'tech': d[1].split(':')[0],
-                            'capacity': +d[2]
+                            'loc1': d[headers.locs],
+                            'loc2': d[headers.techs].split(':')[1],
+                            'tech': d[headers.techs].split(':')[0],
+                            'capacity': +d[headers.energy_cap]
                         });
                         
                         // Cache # of links from each node:
-                        link_counts[d[0]] ++;
+                        link_counts[d[headers.locs]] ++;
                         
-                        assign(trans_capacities, [d[0], d[1].split(':')[0], d[1].split(':')[1]], +d[2]);
+                        assign(trans_capacities, [d[headers.locs], d[headers.techs].split(':')[0], d[headers.techs].split(':')[1]], +d[headers.energy_cap]);
                     };
                 });
 
@@ -389,34 +388,34 @@ function load_data() {
                 production = {}
                 trans_production = {}
             }
-            
+
             // load consumption
-            data.responseJSON['results_carrier_con'].split('\n').slice(0, -1).map(function(line) {
-                var d = line.split(',');
-                if (techs.includes(d[1])) {
-                    if (!carriers.includes(d[2])) {
-                        carriers.push(d[2])
+            var [headers, lines] = parse_data(data, 'results_carrier_con');
+            lines.map(function(d) {
+                if (techs.includes(d[headers.techs])) {
+                    if (!carriers.includes(d[headers.carriers])) {
+                        carriers.push(d[headers.carriers])
                     }
-                    if (!timestamps.includes(d[3])) {
-                        timestamps.push(d[3])
-                        production[d[3]] = []
+                    if (!timestamps.includes(d[headers.timesteps])) {
+                        timestamps.push(d[headers.timesteps])
+                        production[d[headers.timesteps]] = []
                     }
-                    production[d[3]].push({
-                        'loc': d[0],
-                        'tech': d[1],
-                        'carrier': d[2],
-                        'production': +d[4]
+                    production[d[headers.timesteps]].push({
+                        'loc': d[headers.locs],
+                        'tech': d[headers.techs],
+                        'carrier': d[headers.carriers],
+                        'production': +d[headers.carrier_con]
                     });
                 } else {
-                    if (trans_production[d[3]] == undefined) {
-                        trans_production[d[3]] = []
+                    if (trans_production[d[headers.timesteps]] == undefined) {
+                        trans_production[d[headers.timesteps]] = []
                     };
-                    trans_production[d[3]].push({
-                        'loc1': d[0],
-                        'loc2': d[1].split(':')[1],
-                        'tech': d[1].split(':')[0],
-                        'carrier': d[2],
-                        'production': -d[4]
+                    trans_production[d[headers.timesteps]].push({
+                        'loc1': d[headers.locs],
+                        'loc2': d[headers.techs].split(':')[1],
+                        'tech': d[headers.techs].split(':')[0],
+                        'carrier': d[headers.carriers],
+                        'production': -d[headers.carrier_con]
                     });
                 }
             });
@@ -424,27 +423,27 @@ function load_data() {
             // load production
             max_prod = 0;
             var max_prods = {};
-            data.responseJSON['results_carrier_prod'].split('\n').slice(0, -1).map(function(line) {
-                var d = line.split(',');
-                if (!carriers.includes(d[2])) {
-                    carriers.push(d[2])
+            var [headers, lines] = parse_data(data, 'results_carrier_prod');
+            lines.map(function(d) {
+                if (!carriers.includes(d[headers.carriers])) {
+                    carriers.push(d[headers.carriers])
                 }
-                if (techs.includes(d[1])) {
-                    max_prods[d[3]] = (max_prods[d[3]] || 0) + +d[4];
-                    production[d[3]].push({
-                        'loc': d[0],
-                        'tech': d[1],
-                        'carrier': d[2],
-                        'production': +d[4]
+                if (techs.includes(d[headers.techs])) {
+                    max_prods[d[headers.timesteps]] = (max_prods[d[headers.timesteps]] || 0) + +d[headers.carrier_prod];
+                    production[d[headers.timesteps]].push({
+                        'loc': d[headers.locs],
+                        'tech': d[headers.techs],
+                        'carrier': d[headers.carriers],
+                        'production': +d[headers.carrier_prod]
                     });
                 } else {
                     // NOTE: USING CONSUMPTION DATA INSTEAD (ABOVE)
-                    // trans_production[d[3]].push({
-                    //     'loc1': d[0],
-                    //     'loc2': d[1].split(':')[1],
-                    //     'tech': d[1].split(':')[0],
-                    //     'carrier': d[2],
-                    //     'production': +d[4]
+                    // trans_production[d[headers.timesteps]].push({
+                    //     'loc1': d[headers.locs],
+                    //     'loc2': d[headers.techs].split(':')[1],
+                    //     'tech': d[headers.techs].split(':')[0],
+                    //     'carrier': d[headers.carriers],
+                    //     'production': +d[headers.carrier_prod]
                     // });
                 };
             });
@@ -455,6 +454,14 @@ function load_data() {
         }
     });
 }
+
+function parse_data(data, key) {
+    var lines = data.responseJSON[key].split('\n'),
+        headers = lines[0].split(',');
+    headers = headers.reduce(function(a, b, i) { return (a[b] = i, a) }, {});
+    lines = lines.slice(1, -1).map(function(a) { return a.split(',') });
+    return [headers, lines];
+};
 
 //---------------- BUILD VISUALIZATION
 
@@ -570,20 +577,6 @@ function initiate_viz() {
         .on('mousemove', timeline_drag_move)
         .append("g");
     
-    // Initiate Hatch Fill for Consumption
-    svg_main
-        .append('defs')
-        .append('pattern')
-        .attr('id', 'diagonalHatch')
-        .attr('patternUnits', 'userSpaceOnUse')
-        .attr('width', 8)
-        .attr('height', 8)
-        .append('path')
-        .attr('d', 'M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2')
-        .attr('transform', 'scale(2)')
-        .attr('stroke', '#fff')
-        .attr('stroke-width', 1);
-    
     //---- Build Legend
     
     // Add Carriers
@@ -661,11 +654,6 @@ function initiate_viz() {
 
                     viz.main.selectAll(".trans_production")
                         .data(trans_production[ts])
-                        .style("opacity", function(d) {
-                            return active_opacity();
-                        })
-                    viz.main.selectAll(".capacity-datum")
-                        .data(nodes)
                         .style("opacity", function(d) {
                             return active_opacity();
                         })
@@ -758,11 +746,6 @@ function initiate_viz() {
                         .style("opacity", function(d) {
                             return active_opacity();
                         })
-                    viz.main.selectAll(".capacity-datum")
-                        .data(nodes)
-                        .style("opacity", function(d) {
-                            return active_opacity();
-                        })
                     viz.main.selectAll(".production")
                         .data(production[ts])
                         .style("opacity", function(d) {
@@ -816,6 +799,22 @@ function initiate_viz() {
     
     map.on('load', function() {
         fix_height();
+        map.addSource('mapbox-dem', {
+            'type': 'raster-dem',
+            'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+            'tileSize': 512,
+            'maxzoom': 14
+        });
+        map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
+        map.addLayer({
+            'id': 'sky',
+            'type': 'sky',
+            'paint': {
+                'sky-type': 'atmosphere',
+                'sky-atmosphere-sun': [0.0, 0.0],
+                'sky-atmosphere-sun-intensity': 15
+            }
+        });
     });
     
     map.on('move', function() {
@@ -986,7 +985,7 @@ function build_viz() {
         .data(links)
         .enter().append("line")
         .attr("class", "trans_capacities")
-        .attr("stroke-width", 1 + stroke_multiplier * zoom_scale)
+        .attr("stroke-width", (1 + stroke_multiplier * zoom_scale) * 0.4)
         .attr("x1", function(d) {
             return project(coordinates[d.loc1]).x;
         })
@@ -999,8 +998,8 @@ function build_viz() {
         .attr("y2", function(d) {
             return project(coordinates[d.loc2]).y;
         })
-        .style("stroke", "gray")
-        .style("opacity", 0.2)
+        .style("stroke", "silver")
+        .style("opacity", 0.4)
         .style("stroke-linecap", "round")
         .attr("cursor", "crosshair")
         .attr("pointer-events", "visible")
@@ -1063,11 +1062,12 @@ function build_viz() {
         .attr("transform", function(d) {
             return translate(coordinates[d.loc])
         })
-        .attr("fill", "white")
-        .attr("stroke", "black")
-        .attr("stroke-width", 0.5)
+        .attr("stroke", "silver")
+        .attr("stroke-width", 1)
         .attr("d", static_arc)
-        .style("opacity", 0.7)
+        .style("opacity", 0.4)
+        .style("fill", "gray")
+        .style("fill-opacity", 0.8)
         .attr("cursor", "crosshair")
         .attr("pointer-events", "visible")
         .on("mouseenter", function(d) {
@@ -1083,28 +1083,6 @@ function build_viz() {
         .on("mouseleave", function(d) {
             popup_content = '';
         });
-	
-	// draw capacity datums
-    d3.selectAll(".capacity-datum").remove();
-    viz.main.selectAll(".capacity-datum")
-        .data(nodes)
-        .enter().append("line")
-        .attr("class", "capacity-datum")
-        .attr("transform", function(d) {
-            return translate(coordinates[d.loc])
-        })
-        .attr("x1", 0).attr("y1", function(d) {
-            return -get_iRadius(d);
-        })
-        .attr("x2", 0).attr("y2", function(d) {
-            return -get_oRadius(d);
-        })
-        .attr("stroke-width", 1 + stroke_multiplier * zoom_scale)
-        .attr("stroke", function(d) {
-            return colors[d.tech]
-        })
-        .attr("d", static_arc)
-        .moveToFront();
 
     // draw initial production
     d3.selectAll(".production").remove();
@@ -1120,33 +1098,36 @@ function build_viz() {
         .attr("fill", function(d) {
             return colors[d.tech];
         })
-    .attr("stroke", "black")
-    .attr("stroke-width", 0.5)
+    .attr("stroke", "transparent")
+    // .attr("stroke", "black")
+    .attr("stroke-width", 1)
     .attr("d", dynamic_arc)
         .each(function(d) {
             this._current = d;
         });
 
-    // Draw initial consumption (hatch fill)
-    d3.selectAll(".consumption").remove();
-    viz.main.selectAll(".consumption")
-        .data(production[timestamps[0]])
-        .enter().append("path")
-        .attr("class", function(d) {
-            return "consumption carrier carrier-" + d.carrier
-        })
-        .attr("transform", function(d) {
-            return translate(coordinates[d.loc])
-        })
-        .attr("fill", "url(#diagonalHatch)")
-        .attr("opacity", function(d) {
-            if (d.production >= 0) {
-                return 0
-            } else {
-                return 1
-            };
-        })
-        .attr("d", dynamic_arc);
+    // Draw initial consumption
+    // d3.selectAll(".consumption").remove();
+    // viz.main.selectAll(".consumption")
+    //     .data(production[timestamps[0]])
+    //     .enter().append("path")
+    //     .attr("class", function(d) {
+    //         return "consumption carrier carrier-" + d.carrier
+    //     })
+    //     .attr("transform", function(d) {
+    //         return translate(coordinates[d.loc])
+    //     })
+    //     .attr("fill", function(d) {
+    //         return colors[d.tech];
+    //     })
+    //     .attr("opacity", function(d) {
+    //         if (d.production >= 0) {
+    //             return 0
+    //         } else {
+    //             return 1
+    //         };
+    //     })
+    //     .attr("d", dynamic_arc);
 
     //---- Draw timeline initially
     redraw_timeline();
@@ -1176,12 +1157,12 @@ function update_viz(ts, immediate) {
 		// duration = 0;
         map_bounds = map.getBounds();
         zoom_scale = calc_zoom_scale(map.getZoom());
-		
+
         // update static transmission lines
         viz.main.selectAll(".trans_capacities")
             .data(links)
             .transition().duration(duration)
-            .attr("stroke-width", stroke_multiplier * zoom_scale)
+            .attr("stroke-width", (1 + stroke_multiplier * zoom_scale) * 0.4)
             .attr("x1", function(d) {
                 return project(coordinates[d.loc1]).x;
             })
@@ -1202,22 +1183,6 @@ function update_viz(ts, immediate) {
             .attr("transform", function(d) {
                 return translate(coordinates[d.loc])
             })
-            .attr("d", static_arc);
-
-		// update capacity datums
-        viz.main.selectAll(".capacity-datum")
-            .data(nodes)
-            .transition().duration(duration)
-            .attr("transform", function(d) {
-                return translate(coordinates[d.loc])
-            })
-            .attr("x1", 0).attr("y1", function(d) {
-                return -get_iRadius(d);
-            })
-            .attr("x2", 0).attr("y2", function(d) {
-                return -get_oRadius(d);
-            })
-            .attr("stroke-width", 1 + stroke_multiplier * zoom_scale)
             .attr("d", static_arc);
         
         // workaround for rendering bug when
@@ -1249,12 +1214,6 @@ function update_viz(ts, immediate) {
                     return (selected_tech == d.tech ? active_opacity() : inactive_opacity);
                 };
             });
-            viz.main.selectAll(".capacity-datum")
-                .data(nodes)
-                .transition().duration(duration)
-                .style("opacity", function(d) {
-                    return (selected_tech == d.tech ? active_opacity() : inactive_opacity);
-                });
     }
     
     if (selected_carrier !== 'all') {
@@ -1277,12 +1236,6 @@ function update_viz(ts, immediate) {
                     return (selected_carrier == d.carrier ? active_opacity() : inactive_opacity);
                 };
             });
-            viz.main.selectAll(".capacity-datum")
-                .data(nodes)
-                .transition().duration(duration)
-                .style("opacity", function(d) {
-                    return (selected_carrier == d.carrier ? active_opacity() : inactive_opacity);
-                });
     }
     
     // draw trans_production
@@ -1313,7 +1266,6 @@ function update_viz(ts, immediate) {
 
     // Draw production / consumption
 
-
     // update production
     viz.main.selectAll(".production")
         .data(production[ts])
@@ -1324,14 +1276,13 @@ function update_viz(ts, immediate) {
         });
 
     // update consumption
-    viz.main.selectAll(".consumption")
-        .data(production[ts])
-        .transition().duration(duration)
-        .attrTween("d", arcTween)
-        .attr("fill", "url(#diagonalHatch)")
-        .attr("transform", function(d) {
-            return translate(coordinates[d.loc])
-        });
+    // viz.main.selectAll(".consumption")
+    //     .data(production[ts])
+    //     .transition().duration(duration)
+    //     .attrTween("d", arcTween)
+    //     .attr("transform", function(d) {
+    //         return translate(coordinates[d.loc])
+    //     });
         
     // Update the Clock
     var print_ts;

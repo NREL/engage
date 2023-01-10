@@ -8,7 +8,7 @@
       "can_evolve": "False",
       "name": "calliope_version",
       "pretty_name": "Calliope version",
-      "default_value": "0.6.3",
+      "default_value": "0.6.7",
       "description": "Calliope framework version this model is intended for",
       "choices": "[]"
     }
@@ -23,7 +23,7 @@
       "name": "group_share",
       "pretty_name": "Group share",
       "default_value": "",
-      "description": "Optional settings for the group_share constraint. Configurable in JSON format (e.g. {\"pv,wind,bio\":{\"energy_prod_min\": 0.5}})",
+      "description": "Optional settings for the group_share constraint. Configurable in JSON format: {\"pv,wind,bio\":{\"energy_prod_min\": 0.5}}",
       "choices": "[]"
     }
   },
@@ -32,7 +32,7 @@
     "model": "api.run_parameter",
     "fields": {
       "root": "model",
-      "user_visibility": "True",
+      "user_visibility": "False",
       "can_evolve": "False",
       "name": "name",
       "pretty_name": "Model Name",
@@ -79,7 +79,7 @@
       "name": "subset_time",
       "pretty_name": "Subset time",
       "default_value": "",
-      "description": "Subset of timesteps as a two-element list giving the range, e.g. [\u20182005-01-01\u2019, \u20182005-01-05\u2019], or a single string, e.g. \u20182005-01\u2019",
+      "description": "Subset of timesteps as a two-element list giving the range, e.g. [\"2005-01-01\", \"2005-01-05\"], or a single string, e.g. \"2005-01\"",
       "choices": "[]"
     }
   },
@@ -162,7 +162,7 @@
       "can_evolve": "False",
       "name": "bigM",
       "pretty_name": "Unmet demand cost",
-      "default_value": "1000000000",
+      "default_value": "1e6",
       "description": "Used for unmet demand, but should be of a similar order of magnitude as the largest cost that the model could achieve. Too high and the model will not converge",
       "choices": "[]"
     }
@@ -177,7 +177,7 @@
       "name": "cyclic_storage",
       "pretty_name": "Cyclic storage",
       "default_value": "True",
-      "description": "If True, storage in the last timestep of the timeseries is considered to be the \u2018previous timestep\u2019 in the first timestep of the timeseries",
+      "description": "If True, storage in the last timestep of the timeseries is considered to be the \"previous timestep\" in the first timestep of the timeseries",
       "choices": "[\"True\",\"False\"]"
     }
   },
@@ -205,7 +205,7 @@
       "name": "mode",
       "pretty_name": "Optimization mode",
       "default_value": "plan",
-      "description": "Which mode to run the model in: \u2018plan\u2019 or \u2018operate\u2019",
+      "description": "Which mode to run the model in: \"plan\" or \"operate\"",
       "choices": "[\"plan\",\"operate\"]"
     }
   },
@@ -219,7 +219,7 @@
       "name": "objective_options",
       "pretty_name": "Objective options",
       "default_value": "",
-      "description": "Arguments to pass to objective function. If cost-based objective function in use, should include \u2018cost_class\u2019 and \u2018sense\u2019 (maximize/minimize)",
+      "description": "Arguments to pass to objective function. If cost-based objective function in use, should include \"cost_class\" and \"sense\" (maximize/minimize)",
       "choices": "[]"
     }
   },
@@ -333,6 +333,48 @@
       "default_value": "1.00E-10",
       "description": "Any value coming out of the backend that is smaller than this threshold (due to floating point errors, probably) will be set to zero",
       "choices": "[]"
+    }
+  },
+  {
+    "pk": 25,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "group_constraints",
+      "user_visibility": "True",
+      "can_evolve": "True",
+      "name": "",
+      "pretty_name": "Group constraints",
+      "default_value": "",
+      "description": "Optional settings for the group_constraints constraint. Configurable in JSON format: {\"renewables\": {\"techs\": [\"pv\", \"wind\"], \"locs\": [\"Region 1\"], \"demand_share_min\": {\"electricity\": 0.5}}}",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 26,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "run.objective_options",
+      "user_visibility": "True",
+      "can_evolve": "False",
+      "name": "cost_class",
+      "pretty_name": "Weights of cost classes",
+      "default_value": "{'monetary': 1, 'co2': 0, 'ch4': 0, 'n2o': 0, 'co2e': 0}",
+      "description": "A dictionary of cost classes and their weights in the objective. By default, the weights of emissions are zero, monetary's is 1.",
+      "choices": "[]"
+    }
+  },
+  {
+    "pk": 27,
+    "model": "api.run_parameter",
+    "fields": {
+      "root": "run.objective_options",
+      "user_visibility": "True",
+      "can_evolve": "False",
+      "name": "sense",
+      "pretty_name": "Sense",
+      "default_value": "minimize",
+      "description": "'sense' value choices: 'minimize', or 'maximize'.",
+      "choices": "[\"minimize\",\"maximize\"]"
     }
   }
 ]

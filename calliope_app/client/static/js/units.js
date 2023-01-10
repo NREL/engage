@@ -123,12 +123,14 @@ function autocomplete_units(inp) {
 
 function initiate_units() {
 
-	math.createUnit('percent', {definition: '1', aliases: ['percent', 'percentage'], baseName: 'percent'});
-	math.createUnit('dpercent', {definition: '100 percent', aliases: ['dpercent', 'dpercentage']});
+	math.createUnit('units', {definition: '1', aliases: ['units'], baseName: 'units'});
+	math.createUnit('percent', {definition: '0.01', aliases: ['percent', 'percentage'], baseName: 'percent'});
 	math.createUnit('dollar', {definition: '1', aliases: ['dollar', 'dollars'], baseName: 'dollar'});
 	math.createUnit('cent', {definition: '0.01 dollar', aliases: ['c', 'cent', 'cents']});
   math.createUnit('calorie', {definition: '4.1868 joules', aliases: ['calorie', 'calories']});
   math.createUnit('Calorie', {definition: '3.968 BTU', aliases: ['Calorie', 'Calories']});
+  math.createUnit('kgal', {definition: '1000 gallons', aliases: ['kgal', 'kilogallon', 'kgals', 'kilogallons'], baseName: 'kgal'});
+  math.createUnit('mbtu', {definition: '1 MMBTU', aliases: ['mbtu']});
 
 	user_defined_units.forEach(function(item) {
 		var pretty_name = item['name'],
@@ -166,9 +168,10 @@ function convert_units(old_units, new_units, strict) {
 
 function _clean_units(units) {
 	units = String(units);
+  units = units.replaceAll('units', 'unit').replaceAll('unit', 'units');
 	units = units.replaceAll('$', 'dollar');
 	units = units.replaceAll(',', '');
-	units = units.replaceAll('%<sub>/100</sub>', 'dpercent').replaceAll('%', 'percent');
+	units = units.replaceAll('%', 'percent');
 	units = units.replaceAll('<sup>2</sup>', '^2');
 	user_defined_units.forEach(function(item) {
 		var pretty_name = item['name'],
@@ -179,6 +182,18 @@ function _clean_units(units) {
 }
 
 var user_defined_units = [
+  {
+    "name": "Gravity[9.81m/s^2]",
+    "value": "9.81 m/s^2"
+  },
+  {
+    "name": "Fresh_Water_Density[1000kg/m^3]",
+    "value": "1000 kg/m^3"
+  },
+  {
+    "name": "Surface_Seawater_Density[1023.6kg/m^3]",
+    "value": "1023.6 kg/m^3"
+  },
   {
     "name": "Crude_Oil_Low_Volume_Energy[28MJ/L]",
     "value": "28 MJ/L"
@@ -514,5 +529,45 @@ var user_defined_units = [
   {
     "name": "Oil_Mass_Energy[2.4e7J/lbm]",
     "value": "2.4e7 J/lbm"
+  },
+  {
+    "name": "Natural_Uranium_LWR_Mass_Energy[650GJ/kg]",
+    "value": "650 GJ/kg"
+  },
+  {
+    "name": "Natural_Uranium_FNR_Mass_Energy[28000GJ/kg]",
+    "value": "28000 GJ/kg"
+  },
+  {
+    "name": "Enriched_Uranium_LWR_Mass_Energy[3900GJ/kg]",
+    "value": "3900 GJ/kg"
+  },
+  {
+    "name": "Firewood_Mass_Energy[16MJ/kg]",
+    "value": "16 MJ/kg"
+  },
+  {
+    "name":"Therm[100,000 BTU]",
+    "value":"100000 BTU"
+  },
+  {
+    "name":"thm[100,000 BTU]",
+    "value":"100000 BTU"
+  },
+  {
+    "name":"cf[ft^3]",
+    "value":"1 ft^3"
+  },
+  {
+    "name":"Gasoline_Gallon_Equivalent[114,118.8 BTU]",
+    "value":"114118.8 BTU"
+  },
+  {
+    "name":"GGE[114,118.8 BTU]",
+    "value":"114118.8 BTU"
+  },
+  {
+    "name":"gge[114,118.8 BTU]",
+    "value":"114118.8 BTU"
   }
 ]

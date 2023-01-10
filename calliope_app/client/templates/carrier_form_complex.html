@@ -9,12 +9,24 @@
 	</div>
 	<div class="col-7">
 		{% for val in carrier.value %}
-		<input {% if not can_edit %}disabled{% endif %} list="carriers_list" style="width:80%" class="tech_carrier {% if not val and required %}table-danger{% elif not val %}table-secondary{% endif %}" type="text" name='essentials[cplus_carrier][{{ carrier_id }}][]' value="{{ val }}" data-val="{{ val }}">
-		<input {% if not can_edit %}disabled{% endif %} style="width:18%" class="tech_carrier_ratio {% if not val %}table-secondary{% endif %}" type="number" min=0 name='essentials[cplus_ratio][{{ carrier_id }}][]' value="{% if carrier.ratios|return_item:val >= 0 %}{{ carrier.ratios|return_item:val }}{% else %}1.0{% endif %}">
+	    <select {% if not can_edit %}disabled{% endif %} style="width:80%" type="text" class="tech_carrier {% if not val and required %}table-danger{% elif not val %}table-secondary{% endif %}" name="essentials[cplus_carrier][{{ carrier_id }}][]" data-value="{{ val }}">
+	        <option></option>
+	        <option value="-- New Carrier --">-- New Carrier --</option>
+	        {% for choice in carriers %}
+	        <option value="{{ choice }}" {% if choice == val %}selected{% endif %}>{{ choice }}</option>
+	        {% endfor %}
+	    </select>
+		<input {% if not can_edit %}disabled{% endif %} style="width:19%" class="tech_carrier_ratio {% if not val %}table-secondary{% endif %}" type="number" min=0 name='essentials[cplus_ratio][{{ carrier_id }}][]' value="{% if carrier.ratios|return_item:val >= 0 %}{{ carrier.ratios|return_item:val }}{% else %}1.0{% endif %}">
 		{% endfor %}
 		<div class="new_carrier_form hide">
-			<input {% if not can_edit %}disabled{% endif %} list="carriers_list" style="width:80%" class="tech_carrier" type="text" name='essentials[cplus_carrier][{{ carrier_id }}][]'>
-			<input {% if not can_edit %}disabled{% endif %} style="width:18%" class="tech_carrier_ratio" type="number" min=0 name='essentials[cplus_ratio][{{ carrier_id }}][]' value="1.0">
+		    <select {% if not can_edit %}disabled{% endif %} style="width:80%" type="text" class="tech_carrier" name="essentials[cplus_carrier][{{ carrier_id }}][]">
+		        <option selected></option>
+		        <option value="-- New Carrier --">-- New Carrier --</option>
+		        {% for choice in carriers %}
+		        <option value="{{ choice }}" {% if choice == val %}selected{% endif %}>{{ choice }}</option>
+		        {% endfor %}
+		    </select>
+			<input {% if not can_edit %}disabled{% endif %} style="width:19%" class="tech_carrier_ratio" type="number" min=0 name='essentials[cplus_ratio][{{ carrier_id }}][]' value="1.0">
 		</div>
 	</div>
 </div>

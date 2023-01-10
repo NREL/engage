@@ -9,7 +9,7 @@
 <style>
     html, body {
       height: 100%;
-      overflow-y: hidden;
+      overflow: hidden;
     }
 </style>
 {% endblock %}
@@ -23,11 +23,12 @@
 <div id="subheader2" class="row content_navigation">
 	<span class="nav-dropdown centered" style="cursor:default;padding-top:15px;font-size:1.4em"><b>{% trans "All Locations" %}</b></span>
 </div>
-<div class="row">
-	<div class="col-12" id="map" style="height:350px; border:solid;"></div>
-    <div class="col-12" id="map-legend-container"><div id="map-legend"></div></div>
-</div>
-<div class="row" style="overflow-y: scroll; height: calc(100% - 495px);" id="locations_dashboard">
-	{% include "locations_dashboard.html" %}
+<div style="height: calc(100% - 160px);">
+    <!-- Map -->
+    {% include "map_container.html" %}
+    <!-- Splitter -->
+    {% include "splitter.html" with label="locations list" %}
+    <!-- Dashboard -->
+    {% include "locations_dashboard.html" %}
 </div>
 {% endblock %}

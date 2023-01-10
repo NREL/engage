@@ -25,7 +25,7 @@ WSGI_APPLICATION = 'calliope_app.wsgi.application'
 ROOT_URLCONF = 'calliope_app.urls'
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = '/'
 
 # APPS
 # ------------------------------------------------------------------------------
@@ -37,10 +37,12 @@ DJANGO_APPS = [
     'django.contrib.humanize',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles'
+    'django.contrib.staticfiles',
+    'crispy_forms'
 ]
 
 LOCAL_APPS = [
+    'account.apps.AccountConfig',
     'api.apps.ApiConfig',
     'client.apps.ClientConfig',
     'taskmeta.apps.TaskmetaConfig',
@@ -104,6 +106,8 @@ X_FRAME_OPTIONS = 'SAMEORIGIN'
 STATIC_URL = '/static/'
 STATIC_ROOT = '/static'
 
+CRISPY_TEMPLATE_PACK="bootstrap4"
+
 # MEDIA
 # ------------------------------------------------------------------------------
 # Media files
@@ -151,8 +155,14 @@ MAPBOX_TOKEN = env.str("MAPBOX_TOKEN", "")
 # AWS
 # --------------------------------------------------------------------------------
 # AWS Credentials
+AWS_REGION_NAME = env.str('AWS_REGION_NAME', 'us-west-2')
 AWS_ACCESS_KEY_ID = env.str('AWS_ACCESS_KEY_ID', None)
 AWS_SECRET_ACCESS_KEY = env.str('AWS_SECRET_ACCESS_KEY', None)
+
+# Batch Service
+AWS_BATCH_TAGS = env.str('AWS_BATCH_TAGS', '')
+AWS_BATCH_JOB_QUEUE = env.str('AWS_BATCH_JOB_QUEUE', '')
+AWS_BATCH_JOB_LIMIT = env.int('AWS_BATCH_JOB_LIMIT', 3)
 
 # SES EMAIL
 AWS_SES_REGION_NAME = env.str('AWS_SES_REGION_NAME', '')
@@ -166,3 +176,7 @@ AWS_S3_BUCKET_NAME = env.str('AWS_S3_BUCKET_NAME', '')
 # ------------------------------------------------------------------------------
 CAMBIUM_URL = env.str("CAMBIUM_URL", "")
 CAMBIUM_API_KEY = env.str("CAMBIUM_API_KEY", "")
+
+# AUTOFIELD
+# --------------------------------------------------------------------------------
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

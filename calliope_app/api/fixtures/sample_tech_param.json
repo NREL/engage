@@ -66,7 +66,7 @@
       "technology_id": "1",
       "year": "0",
       "parameter_id": "18",
-      "value": "0.5",
+      "value": "50",
       "timeseries": "False",
       "model_id": "1"
     }
@@ -90,7 +90,7 @@
       "technology_id": "1",
       "year": "0",
       "parameter_id": "21",
-      "value": "0.8",
+      "value": "80",
       "timeseries": "False",
       "model_id": "1"
     }
@@ -114,7 +114,7 @@
       "technology_id": "1",
       "year": "0",
       "parameter_id": "57",
-      "value": "0.10",
+      "value": "10",
       "timeseries": "False",
       "model_id": "1"
     }
@@ -210,7 +210,7 @@
       "technology_id": "2",
       "year": "0",
       "parameter_id": "8",
-      "value": "1",
+      "value": "100",
       "timeseries": "False",
       "model_id": "1"
     }
@@ -222,7 +222,7 @@
       "technology_id": "2",
       "year": "0",
       "parameter_id": "46",
-      "value": "0.002",
+      "value": "0.2",
       "timeseries": "False",
       "model_id": "1"
     }
@@ -246,7 +246,7 @@
       "technology_id": "2",
       "year": "0",
       "parameter_id": "18",
-      "value": "0.4",
+      "value": "40",
       "timeseries": "False",
       "model_id": "1"
     }
@@ -258,7 +258,7 @@
       "technology_id": "2",
       "year": "0",
       "parameter_id": "27",
-      "value": "0.9",
+      "value": "90",
       "timeseries": "False",
       "model_id": "1"
     }
@@ -306,7 +306,7 @@
       "technology_id": "2",
       "year": "0",
       "parameter_id": "57",
-      "value": "0.10",
+      "value": "10",
       "timeseries": "False",
       "model_id": "1"
     }
@@ -366,7 +366,7 @@
       "technology_id": "2",
       "year": "0",
       "parameter_id": "61",
-      "value": "0.002",
+      "value": "0.2",
       "timeseries": "False",
       "model_id": "1"
     }
@@ -450,7 +450,7 @@
       "technology_id": "3",
       "year": "0",
       "parameter_id": "8",
-      "value": "4",
+      "value": "400",
       "timeseries": "False",
       "model_id": "1"
     }
@@ -462,7 +462,7 @@
       "technology_id": "3",
       "year": "0",
       "parameter_id": "18",
-      "value": "0.95",
+      "value": "95",
       "timeseries": "False",
       "model_id": "1"
     }
@@ -498,7 +498,7 @@
       "technology_id": "3",
       "year": "0",
       "parameter_id": "57",
-      "value": "0.10",
+      "value": "10",
       "timeseries": "False",
       "model_id": "1"
     }
@@ -618,7 +618,7 @@
       "technology_id": "5",
       "year": "0",
       "parameter_id": "18",
-      "value": "0.85",
+      "value": "85",
       "timeseries": "False",
       "model_id": "1"
     }
@@ -642,7 +642,7 @@
       "technology_id": "5",
       "year": "0",
       "parameter_id": "57",
-      "value": "0.10",
+      "value": "10",
       "timeseries": "False",
       "model_id": "1"
     }
@@ -666,7 +666,7 @@
       "technology_id": "5",
       "year": "0",
       "parameter_id": "61",
-      "value": "0.002",
+      "value": "0.2",
       "timeseries": "False",
       "model_id": "1"
     }
@@ -738,7 +738,7 @@
       "technology_id": "6",
       "year": "0",
       "parameter_id": "18",
-      "value": "1.0",
+      "value": "100",
       "timeseries": "False",
       "model_id": "1"
     }
