@@ -21,7 +21,8 @@ $(document).ready(function () {
 			sd = new Date(start_date),
 			ed = new Date(end_date),
 			run_env = $('#run-environment option:selected').text(),
-			years = $('#years').val();
+			years = $('#years').val(),
+			notes = $('#notes').val();
 
 		// fix timezone issues
 		sd = new Date(sd.getTime() + sd.getTimezoneOffset() * 60000);
@@ -56,7 +57,8 @@ $(document).ready(function () {
 				  'manual':manual,
 				  'timestep':timestep,
 				  'run_env': run_env,
-				  'years':years
+				  'years':years,
+				  'notes':notes
 				},
 				dataType: 'json',
 				success: function (data) {
