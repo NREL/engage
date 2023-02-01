@@ -47,6 +47,14 @@
 							{% endif %}
 							<input {% if not can_edit %}disabled{% endif %} style="display: none" class="check_delete" type="checkbox" name="delete[{{ param.id }}]">
 						</td>
+
+                        {% if param.run_parameter.root == "group_constraints" %}
+                            <td> 
+                                <button {% if not can_edit %}disabled{% endif %} type="button" class="scenario-settings-dialog-btn btn btn-sm" style="margin-top:7px;" name="dialog[value][{{ param.id }}]"><i class="fas fa-edit"></i></button>
+                            </td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
 					</tr>
 
 					{% ifchanged param.run_parameter.pretty_name %}
@@ -70,6 +78,14 @@
 								<textarea rows=1 {% if not can_edit %}disabled{% endif %} style="text-align:left;" class="form-control add-run-parameter-value" name="add[{{ param.run_parameter_id }}][values][]"></textarea>
 								{% endif %}
 							</td>
+
+                            {% if param.run_parameter.root == "group_constraints" %}
+                                <td> 
+                                    <button data-param_id="{{ param.run_parameter.id }}" {% if not can_edit %}disabled{% endif %} type="button" class="scenario-settings-dialog-btn btn btn-sm" name="dialog[value][{{ param.id }}]" style="margin-top:7px;"><i class="fas fa-edit"></i></button>
+                                </td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
 						</tr>
 					{% endifchanged %}
 
@@ -98,6 +114,14 @@
 							<textarea rows=1 {% if not can_edit %}disabled{% endif %} style="text-align:left;" class="form-control run-parameter-value" value="{{ param.value }}" name="edit[value][{{ param.id }}]" data-toggle="tooltip" data-placement="left" title="{{ param.value }}">{{ param.value }}</textarea>
 							{% endif %}
 						</td>
+
+                        {% if param.run_parameter.root == "group_constraints" %}
+                            <td> 
+                                <button data-param_id="{{ param.run_parameter.id }}" {% if not can_edit %}disabled{% endif %} type="button" class="scenario-settings-dialog-btn btn btn-sm" name="dialog[value][{{ param.id }}]" style="margin-top:7px;"><i class="fas fa-edit"></i></button>
+                            </td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
 					</tr>
 				{% endif %}
 			{% endfor %}
