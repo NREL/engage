@@ -1,8 +1,4 @@
 var bulk_confirmation = false,
-    dialogInputId = null,
-    dialogInputValue = null,
-    dialogObj = {},
-    disable_new_constraint = true,
 	map_mode = 'scenarios';
 
 $( document ).ready(function() {
@@ -43,14 +39,6 @@ $( document ).ready(function() {
 		var model_uuid = $('#header').data('model_uuid');
 		window.location = '/' + model_uuid + '/scenarios/';
 	});
-
-    $("#new_constraint_name").on("input", function(){
-        if ($('#new_constraint_name').val() && $('#new_constraint_name').val().trim().length > 0 ) {
-            $('#new_constraint_btn').removeAttr("disabled");
-        } else {
-            $('#new_constraint_btn').attr("disabled", true);
-        }
-    });
 
 	get_scenario_configuration();
 
@@ -180,42 +168,6 @@ function get_scenario_configuration() {
 	};
 };
 
-function updateDialogConstraints() {
-    $('#dialog-inputs').empty();
-    Object.keys(dialogObj).forEach(constraint => {
-        console.log(constraint, dialogObj[constraint]);
-        $('#dialog-inputs').append( "<div id='" + constraint + "'>");
-        $('#dialog-inputs').append( "<h5><b>Group Constraint Name: " + constraint +  "</b></h5>");
-
-        //Display techs and locs first
-        if (!dialogObj[constraint].techs) {
-            dialogObj[constraint].techs = "";
-        }
-        $('#dialog-inputs').append( "<label><b>Technologies</b></label>");
-        $('#dialog-inputs').append( "<p class='help-text'>Optionally enter a comma seperated list of technologies.</p>");
-        $('#dialog-inputs').append( "<input id='" + constraint + "_techs' name='dialogObj[constraint].techs' class='form-control' placeholder='Technologies' value='" + dialogObj[constraint].techs + "'></input><br>" );
-    
-        if (!dialogObj[constraint].locs) {
-            dialogObj[constraint].locs = "";
-        }
-        $('#dialog-inputs').append( "<label><b>Locations</b></label>");
-        $('#dialog-inputs').append( "<p class='help-text'>Optionally enter a comma seperated list of locations.</p>");
-        $('#dialog-inputs').append( "<input id='" + constraint + "_locs' name='dialogObj[constraint].locs' class='form-control' placeholder='Locations'  value='" + dialogObj[constraint].locs + "'></input><br>" );
-
-        $('#dialog-inputs').append( "<label><b>Constraints</b></label>");
-        $('#dialog-inputs').append( "<p class='help-text'>Enter a comma seperated list, formatted 'contraint name: constraint value,'. See Constraint column in Calliope documentation for value options.</p>");
-        Object.keys(dialogObj[constraint]).forEach(fieldKey => {
-            if (fieldKey !== "locs" && fieldKey !== "techs" ) {
-                $('#dialog-inputs').append( "<label><b>" + fieldKey + "</b></label>");
-                $('#dialog-inputs').append( "<input id='" + fieldKey + "_constraint' name='dialogObj[constraint][fieldKey]' class='form-control' placeholder='' value='" + dialogObj[constraint][fieldKey] + "'></input><br>" );
-            }
-        });
-        $('#dialog-inputs').append( "</div>");
-        $('#dialog-inputs').append( "<hr>" );
-    });
-
-}
-
 function activate_scenario_settings() {
 	$('.run-parameter-value, .run-parameter-year').on('input change paste', function() {
 		$(this).parents('tr').addClass('table-warning')
@@ -232,102 +184,6 @@ function activate_scenario_settings() {
 		row.addClass('table-danger')
 		row.find('.check_delete').prop("checked", true)
 	});
-
-    // Group Constraints Modal
-	//$('.scenario-settings:visible').attr('disabled', false);
-	//$('.scenario-settings').unbind();
-	$('.scenario-settings-dialog-btn').on('click', function() {
-
-        // Get dialog data
-        dialogInputId = this.name.slice(6);
-        dialogInputValue = dialogInputId ? $('textarea[name="edit' + dialogInputId + '"]').text() : console.log("Dialog input id not found!");
-
-        // display dialog
-		$('#pvwatts_form').hide();
-        $('#wtk_form').hide();
-		$('#scenario_settings_json_form').show();
-		$("#data-source-modal").css('display', "block");
-
-        // Set dialog data
-        dialogObj = JSON.parse(dialogInputValue ? dialogInputValue : {});
-
-        Object.keys(dialogObj).forEach(constraint => {
-            Object.keys(dialogObj[constraint]).forEach(fieldKey => {
-                if (fieldKey === "techs") {
-                    var newTechs = "";
-                    if (dialogObj[constraint].techs && dialogObj[constraint].techs.length > 0) {
-                        for (var tech in dialogObj[constraint].techs) {
-                            newTechs += dialogObj[constraint].techs[tech];
-                            if (Number(tech) !== dialogObj[constraint].techs.length-1) {
-                                newTechs += ","
-                            }
-                        }
-                    } 
-                    dialogObj[constraint].techs = newTechs;
-                }
-                if (fieldKey === "locs") {
-                    var newLocs = "";
-                    if (dialogObj[constraint].locs && dialogObj[constraint].locs.length > 0) {
-                        for (var loc in dialogObj[constraint].locs) {
-                            newLocs += dialogObj[constraint].locs[loc];
-                            if (Number(loc) !== dialogObj[constraint].locs.length-1) {
-                                newLocs += ","
-                            }
-                        }
-                    }
-                    dialogObj[constraint].locs = newLocs;
-                }
-            });
-
-        });
-
-        updateDialogConstraints();
-
-	});
-
-    $('#settings_import_data').on('click', function() {
-        Object.keys(dialogObj).forEach(constraint => {
-            //Display techs and locs first
-            var techsInput = $("#" + constraint + "_techs").val();
-            if (techsInput && techsInput.length > 0) {
-                dialogObj[constraint].techs = techsInput.split(',');
-            } else {
-                delete dialogObj[constraint].techs;
-            }
-
-            var locsInput = $("#" + constraint + "_locs").val();
-            if (locsInput && locsInput.length > 0) {
-                dialogObj[constraint].locs = locsInput.split(',');
-            } else {
-                delete dialogObj[constraint].locs;
-            }
-    
-            //add constraints
-            /*Object.keys(dialogObj[constraint]).forEach(fieldKey => {
-                if (fieldKey !== "locs" && fieldKey !== "techs" ) {
-
-                }
-            });*/
-
-        });
-        $('textarea[name="edit' + dialogInputId + '"]').text(JSON.stringify(dialogObj));
-        $('#data-source-modal').hide();
-	});
-
-    $('#group-constraints-close').on('click', function() {
-        $('#data-source-modal').hide();
-    });
-
-
-    $('#new_constraint_btn').on('click', function() {
-        var newGroupConstraint = $('#new_constraint_name').val().trim();
-        if (newGroupConstraint.length > 0) {
-            dialogObj[newGroupConstraint] = {};
-            $('#new_constraint_name').val("");
-            updateDialogConstraints();
-        }
-    });
-
 }
 
 function filter_nodes() {
@@ -365,6 +221,3 @@ function toggle_scenario_loc_tech(loc_tech_ids, add) {
 		});
 	};
 }
-
-
-
