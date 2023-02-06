@@ -1,4 +1,6 @@
 from django.db import models
+from api.models.calliope import Abstract_Tech, Parameter
+from api.models.configuration import Location
 
 # Create your models here.
 class Template(models.Model):
@@ -37,8 +39,6 @@ class Template_Loc_Structure(models.Model):
     latitude_offset = models.FloatField()
     longitude_offset = models.FloatField()
     template = models.ForeignKey(template, on_delete=models.CASCADE)
-
-    #Can this be pulled in across databases?
     primary_location = models.ForeignKey(Location,
                                 on_delete=models.CASCADE,
                                 related_name="primary_location",
@@ -53,7 +53,6 @@ class Template_Tech_Structure(models.Model):
         verbose_name_plural = "[Admin] Template Tech Structure"
 
     name = models.CharField(max_length=200)
-    #Can this be pulled in across databases?
     abstract_tech = models.ForeignKey(Abstract_Tech, on_delete=models.CASCADE)
     #Should we model carrier in and out similar to technologies?
     carrier_in = models.CharField(max_length=200)
@@ -90,8 +89,7 @@ class Template_Parameter(models.Model):
         verbose_name_plural = "[Admin] Template Parameter"
 
     template_tech = models.ForeignKey(template_locs_tech_structure, on_delete=models.CASCADE)
-    #db_table = "parameter" can this be pulled in across databases?
-    parameter = models.ForeignKey(parameter, on_delete=models.CASCADE)
+    parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE)
     equation = models.CharField(max_length=200)
 
     def __str__(self):
