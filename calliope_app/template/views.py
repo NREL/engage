@@ -4,7 +4,6 @@ from django.conf import settings
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
-from template import Help_Guide
 from api.models.configuration import Model, Model_User
 from template.models import Template
 
@@ -31,7 +30,7 @@ def templates_view(request):
         snapshot_version=None,
         public=True)
     user_models = list(user_models)
-    template_models = Template.objects
+    template_models = list(Template.objects)
 
     if len(user_models) > 0:
         last_model = user_models[0].model
@@ -47,7 +46,6 @@ def templates_view(request):
         "public_models": public_models,
         "snapshots": snapshots,
         "mapbox_token": settings.MAPBOX_TOKEN,
-        "help_content": Help_Guide.get_safe_html('home'),
         "template_models": template_models
     }
 
