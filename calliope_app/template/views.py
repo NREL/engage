@@ -8,7 +8,7 @@ from api.models.configuration import Model, Model_User
 from template.models import Template
 
 @login_required
-def templates_view(request):
+def templates_view(request, model_uuid):
     """
     View the "Templates" page
 
@@ -17,8 +17,7 @@ def templates_view(request):
     Example:
     http://0.0.0.0:8000/
     """
-
-    model_uuid = request.POST["model_uuid"]
+    
     model = Model.by_uuid(model_uuid)
     
     user_models = Model_User.objects.filter(
@@ -33,7 +32,7 @@ def templates_view(request):
         snapshot_version=None,
         public=True)
     user_models = list(user_models)
-    template_models = list(Template.objects)
+    #template_models = list(Template.objects)
 
     if len(user_models) > 0:
         last_model = user_models[0].model
@@ -49,8 +48,8 @@ def templates_view(request):
         "public_models": public_models,
         "snapshots": snapshots,
         "mapbox_token": settings.MAPBOX_TOKEN,
-        "template_models": template_models,
-        "model_uuid": model_uuid
+        #"template_models": template_models,
+        "model": model,
     }
 
-    return render(request, "templates/templates.html", context)
+    return render(request, "templates.html", context)
