@@ -30,7 +30,7 @@ urlpatterns += i18n_patterns(
     path('', include('client.urls')),
     path('', include('account.urls')),
     path('api/', include('api.urls')),
-    path('template/', include('template.urls')),
+    path('', include('template.urls')),
     path('admin/', admin.site.urls),
     prefix_default_language=True
 )
