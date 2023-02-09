@@ -18,6 +18,9 @@ def templates_view(request):
     http://0.0.0.0:8000/
     """
 
+    model_uuid = request.POST["model_uuid"]
+    model = Model.by_uuid(model_uuid)
+    
     user_models = Model_User.objects.filter(
         user=request.user,
         model__snapshot_version=None,
@@ -46,7 +49,8 @@ def templates_view(request):
         "public_models": public_models,
         "snapshots": snapshots,
         "mapbox_token": settings.MAPBOX_TOKEN,
-        "template_models": template_models
+        "template_models": template_models,
+        "model_uuid": model_uuid
     }
 
     return render(request, "templates/templates.html", context)
