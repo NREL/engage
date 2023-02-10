@@ -32,7 +32,7 @@ def templates_view(request, model_uuid):
         snapshot_version=None,
         public=True)
     user_models = list(user_models)
-    #template_models = list(Template.objects)
+    template_models = Template.objects
 
     if len(user_models) > 0:
         last_model = user_models[0].model
@@ -48,7 +48,7 @@ def templates_view(request, model_uuid):
         "public_models": public_models,
         "snapshots": snapshots,
         "mapbox_token": settings.MAPBOX_TOKEN,
-        #"template_models": template_models,
+        "template_models": template_models,
         "model": model,
     }
 
