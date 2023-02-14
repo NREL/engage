@@ -522,36 +522,37 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                             if new_loc_tech['constraints']['storage_cap_max'] < 0:
                                 new_loc_tech['constraints']['storage_cap_max'] = 0
 
-                        new_loctechs['locations'][l]['techs'][t] = new_loc_tech
+                        new_loctechs['locations'][l]['techs'][t] = new_loc_tech                        
                         for x in loc_tech_b:
-                            for y in loc_tech_b[x]:
-                                try:
-                                    # Copy over timeseries files for old techs, updating year to match new year
-                                    if 'file=' in loc_tech_b[x][y]:
-                                        filename=loc_tech_b[x][y].replace('file=','').replace('.csv:value','')
-                                        ts_df = pd.read_csv(old_inputs+'/'+filename+'.csv')
-                                        ts_df['Unnamed: 0'] = pd.to_datetime(ts_df['Unnamed: 0'])
-                                        freq = pd.infer_freq(ts_df['Unnamed: 0'])
-                                        if not calendar.isleap(new_year):
-                                            feb_29_mask = (ts_df['Unnamed: 0'].month == 2) & (ts_df['Unnamed: 0'].index.day == 29)
-                                            ts_df = ts_df[~feb_29_mask]
-                                            ts_df['Unnamed: 0'] = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
-                                        elif not calendar.isleap(old_year):
-                                            ts_df['Unnamed: 0'] = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
-                                            ts_df.index = ts_df['Unnamed: 0']
+                            for y in loc_tech_b[x].keys():
+                                # Copy over timeseries files for old techs, updating year to match new year
+                                if 'file=' in str(loc_tech_b[x][y]):
+                                    filename=loc_tech_b[x][y].replace('file=','').replace('.csv:value','')
+                                    ts_df = pd.read_csv(old_inputs+'/'+filename+'.csv')
+                                    ts_df['Unnamed: 0'] = pd.to_datetime(ts_df['Unnamed: 0'])
+                                    freq = pd.infer_freq(ts_df['Unnamed: 0'])
+                                    if not calendar.isleap(new_year):
+                                        feb_29_mask = (ts_df['Unnamed: 0'].dt.month == 2) & (ts_df['Unnamed: 0'].dt.day == 29)
+                                        ts_df = ts_df[~feb_29_mask]
+                                        ts_df['Unnamed: 0'] = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                                    elif not calendar.isleap(old_year):
+                                        ts_df['Unnamed: 0'] = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                                        ts_df.index = ts_df['Unnamed: 0']
+                                        idx = pd.date_range(ts_df.index.min(),ts_df.index.max(),freq=freq)
+                                        ts_df = ts_df.reindex(idx, fill_value=0)
 
-                                            # Leap Year Handling (Fill w/ Feb 28th)
-                                            feb_28_mask = (ts_df.index.month == 2) & (ts_df.index.day == 28)
-                                            feb_29_mask = (ts_df.index.month == 2) & (ts_df.index.day == 29)
-                                            feb_28 = ts_df.loc[feb_28_mask, 'value'].values
-                                            feb_29 = ts_df.loc[feb_29_mask, 'value'].values
-                                            if ((len(feb_29) > 0) & (len(feb_28) > 0)):
-                                                ts_df.loc[feb_29_mask, 'value'] = feb_28
-                                            ts_df['Unnamed: 0'] = ts_df.index
-                                        ts_df.to_csv(new_inputs+filename+'-'+str(old_year)+'.csv',index=False)
-                                        loc_tech_b[x][y] = 'file='+filename+'-'+str(old_year)+'.csv:value'
-                                except TypeError:
-                                    continue
+                                        # Leap Year Handling (Fill w/ Feb 28th)
+                                        feb_28_mask = (ts_df.index.month == 2) & (ts_df.index.day == 28)
+                                        feb_29_mask = (ts_df.index.month == 2) & (ts_df.index.day == 29)
+                                        feb_28 = ts_df.loc[feb_28_mask, 'value'].values
+                                        feb_29 = ts_df.loc[feb_29_mask, 'value'].values
+                                        if ((len(feb_29) > 0) & (len(feb_28) > 0)):
+                                            ts_df.loc[feb_29_mask, 'value'] = feb_28
+                                        ts_df['Unnamed: 0'] = ts_df.index
+                                    else:
+                                        ts_df['Unnamed: 0'] = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                                    ts_df.to_csv(os.path.join(new_inputs,filename+'-'+str(old_year)+'.csv'),index=False)
+                                    loc_tech_b[x][y] = 'file='+filename+'-'+str(old_year)+'.csv:value'
 
                         if l not in built_loc_techs:
                             built_loc_techs[l] = {}
@@ -573,15 +574,35 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
         tech_b['essentials']['name'] += ' '+str(old_year)
 
         for x in tech_b:
-            for y in tech_b[x]:
-                try:
-                    if 'file=' in tech_b[x][y]:
-                        filename=tech_b[x][y].replace('file=','').replace('.csv:value','')
-                        shutil.copy(old_inputs+filename+'.csv',new_inputs+filename+'-'+str(old_year)+'.csv')
+            for y in tech_b[x].keys():
+                # Copy over timeseries files for old techs, updating year to match new year
+                if 'file=' in str(tech_b[x][y]):
+                    filename=tech_b[x][y].replace('file=','').replace('.csv:value','')
+                    ts_df = pd.read_csv(old_inputs+'/'+filename+'.csv')
+                    ts_df['Unnamed: 0'] = pd.to_datetime(ts_df['Unnamed: 0'])
+                    freq = pd.infer_freq(ts_df['Unnamed: 0'])
+                    if not calendar.isleap(new_year):
+                        feb_29_mask = (ts_df['Unnamed: 0'].dt.month == 2) & (ts_df['Unnamed: 0'].dt.day == 29)
+                        ts_df = ts_df[~feb_29_mask]
+                        ts_df['Unnamed: 0'] = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                    elif not calendar.isleap(old_year):
+                        ts_df['Unnamed: 0'] = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                        ts_df.index = ts_df['Unnamed: 0']
+                        idx = pd.date_range(ts_df.index.min(),ts_df.index.max(),freq=freq)
+                        ts_df = ts_df.reindex(idx, fill_value=0)
 
-                        tech_b[x][y] = 'file='+filename+'-'+str(old_year)+'.csv:value'
-                except (TypeError,FileNotFoundError):
-                    continue
+                        # Leap Year Handling (Fill w/ Feb 28th)
+                        feb_28_mask = (ts_df.index.month == 2) & (ts_df.index.day == 28)
+                        feb_29_mask = (ts_df.index.month == 2) & (ts_df.index.day == 29)
+                        feb_28 = ts_df.loc[feb_28_mask, 'value'].values
+                        feb_29 = ts_df.loc[feb_29_mask, 'value'].values
+                        if ((len(feb_29) > 0) & (len(feb_28) > 0)):
+                            ts_df.loc[feb_29_mask, 'value'] = feb_28
+                        ts_df['Unnamed: 0'] = ts_df.index
+                    else:
+                        ts_df['Unnamed: 0'] = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                    ts_df.to_csv(os.path.join(new_inputs,filename+'-'+str(old_year)+'.csv'),index=False)
+                    tech_b[x][y] = 'file='+filename+'-'+str(old_year)+'.csv:value'
         built_techs[t+'_'+str(old_year)] = tech_b
         new_techs['techs'][t+'_'+str(old_year)] = tech_b
 

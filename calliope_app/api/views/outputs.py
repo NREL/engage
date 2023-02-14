@@ -67,6 +67,7 @@ def build(request):
     manual = (request.GET.get("manual", 'false') == 'true')
     run_env = request.GET.get("run_env", None)
     timestep = request.GET.get("timestep", '1H')
+    notes = request.GET.get("notes","")
     years = [int(y) for y in request.GET.get("years",'').split(',') if y.strip() != '']
     try:
         pd.tseries.frequencies.to_offset(timestep)
@@ -117,13 +118,14 @@ def build(request):
                 manual=manual,
                 timestep=timestep,
                 compute_environment=compute_environment,
-                group=groupname
+                group=groupname,
+                description=notes
             )
 
             # Generate File Path
             model_name = ParamsManager.simplify_name(model.name)
             scenario_name = ParamsManager.simplify_name(scenario.name)
-            if not groupname:
+            if groupname:
                 inputs_path = "{}/{}/{}/{}/{}/{}/{}/{}/inputs".format(
                     settings.DATA_STORAGE,
                     model.uuid,
