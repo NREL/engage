@@ -95,8 +95,25 @@
 					<div style="float:right">&nbsp;&nbsp;&nbsp;<img src="{% static 'images/nrel_logo_full.jpg' %}" height="36px" />&nbsp;&nbsp;&nbsp;</div>
 				</a>
 
+				<!-- Timezone -->
+				{% if timezones %}
+				<div class="btn-group" style="height:30px;margin-top:3px;float:right">
+					<form style="font-size:13px;" action="{% url 'set_timezone' %}" method="post" >{% csrf_token %}
+						<input name="next" type="hidden" value="{{ request.path }}">
+						<select name="timezone" onchange="this.form.submit()" class="btn-default" style="margin-left:3px;width:100px;height:30px !important;border-radius:0;">
+							<option disabled>Select your timezone...</option>
+							{% for timezone in timezones %}
+								<option value="{{ timezone }}"{% if timezone == user.user_profile.timezone %} selected{% endif %}>
+									{{ timezone }}
+								</option>
+							{% endfor %}
+						</select>
+					</form>
+				</div>
+				{% endif %}
+				
 				<!-- Languages -->
-				<!-- <div class="btn-group" style="height:30px;margin-top:3px;float:right">
+				<div class="btn-group" style="height:30px;margin-top:3px;float:right">
 					<form style="font-size:13px;" action="{% url 'set_language' %}" method="post" >{% csrf_token %}
 						<input name="next" type="hidden" value="{{ redirect_to }}">
 						<select name="language" onchange="this.form.submit()" class="btn-default" style="margin-left:3px;width:60px;height:30px !important;border-radius:0;">
@@ -111,12 +128,12 @@
 							{% endfor %}
 						</select>
 					</form>
-				</div> -->
+				</div>
 				{% get_current_language as LANGUAGE_CODE %}
 				<script type="application/javascript">
 					var LANGUAGE_CODE = '{{ LANGUAGE_CODE }}';
 				</script>
-
+				
 				{% if model %}
 				{% if can_edit == False %}<div class="text-sm" style="background-color: yellow; color: black; float: right; height: 30px; padding: 4px; margin-top: 3px;">&nbsp;<b>{% trans "VIEW ONLY" %}</b>&nbsp;</div>{% endif %}
 					<!-- Model -->
@@ -145,22 +162,6 @@
 							<li><a href="/logout/?next=/login/"><h6>&nbsp;&nbsp;<i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;{% trans "Log out" %}</a>&nbsp;&nbsp;</h6></a></li>
 						</ul>
 					</div>
-					<!-- Timezone -->
-					{% if timezones %}
-					<div class="btn-group" style="height:30px;margin-top:3px;float:right">
-						<form style="font-size:13px;" action="{% url 'set_timezone' %}" method="post" >{% csrf_token %}
-							<input name="next" type="hidden" value="{{ request.path }}">
-							<select name="timezone" onchange="this.form.submit()" class="btn-default" style="margin-left:3px;width:100px;height:30px !important;border-radius:0;">
-								<option disabled>Select your timezone...</option>
-								{% for timezone in timezones %}
-									<option value="{{ timezone }}"{% if timezone == user.user_profile.timezone %} selected{% endif %}>
-										{{ timezone }}
-									</option>
-								{% endfor %}
-							</select>
-						</form>
-					</div>
-					{% endif %}
 				{% else %}
 					<!-- Login -->
 					<a href="{% url 'home' %}"><button class="btn-primary text-sm" style="height:30px;margin-top:3px;float:right">&nbsp;&nbsp;<i class="fas fa-user"></i>&nbsp;&nbsp;{% trans "LOGIN" %}&nbsp;&nbsp;</button></a>
