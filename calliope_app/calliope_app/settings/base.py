@@ -7,7 +7,7 @@ from django.contrib.messages import constants as messages
 
 env = environ.Env()
 
-ROOT_DIR = (environ.Path(__file__) - 4)
+ROOT_DIR = (environ.Path(__file__) - 3)
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -142,7 +142,7 @@ MODELTRANSLATION_TRANSLATION_FILES = (
 
 # LOCALE
 LOCALE_PATHS = (
-    os.path.join(ROOT_DIR, 'calliope_app', 'locale'),
+    os.path.join(ROOT_DIR, 'locale'),
 )
 
 ## NREL API Key
