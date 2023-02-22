@@ -227,7 +227,7 @@ msgstr "Aucun autre scénario existant encore"
 #: client/templates/scenario_configuration.html:10
 #: client/templates/technologies.html:16
 msgid "Technologies"
-msgstr "Technologies"
+msgstr "Les technologies"
 
 #: client/templates/add_technology.html:18
 msgid "Name of new technology"
