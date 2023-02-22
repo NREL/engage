@@ -1,2178 +1,2620 @@
 [
   {
     "pk": 1,
-    "model": "api.parameter",
     "fields": {
-      "root": "essentials",
       "category": "Essentials",
-      "name": "parent",
       "pretty_name": "Parent Technology",
+      "description": "Name of the base technology group (supply, supply_plus, demand, storage, transmission, conversion, conversion_plus)",
+      "root": "essentials",
+      "name": "parent",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "",
-      "description": "Name of the base technology group (supply, supply_plus, demand, storage, transmission, conversion, conversion_plus)",
       "is_essential": true,
       "is_carrier": false,
       "choices": "[\"supply\",\"supply_plus\",\"demand\",\"storage\",\"transmission\",\"conversion\",\"conversion_plus\"]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 2,
-    "model": "api.parameter",
     "fields": {
-      "root": "essentials",
       "category": "Essentials",
-      "name": "name",
       "pretty_name": "Name",
+      "description": "Name of the technology",
+      "root": "essentials",
+      "name": "name",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "",
-      "description": "Name of the technology",
       "is_essential": true,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 3,
-    "model": "api.parameter",
     "fields": {
-      "root": "essentials",
       "category": "Essentials",
-      "name": "color",
       "pretty_name": "Color",
+      "description": "Representative color for visualizations",
+      "root": "essentials",
+      "name": "color",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "hex color code",
-      "description": "Representative color for visualizations",
       "is_essential": true,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 4,
-    "model": "api.parameter",
     "fields": {
-      "root": "essentials",
       "category": "Essentials",
+      "pretty_name": "Carrier",
+      "description": "[Required] Carrier is a general purpose name for an energy form or substance that is produced by a supply or supply + technology from a resource, transported by a transmission technology, consumed in one timestep by a storage technology and dispatched in a subsequent timestep, converted from one form or substance into another by a conversion or conversion + technology, or consumed (taken out of the system) by a demand technology or export feature of a supply or conversion technology. Examples of arbitrary, user defined energy forms or substances assigned to carriers in a model might be electricity, heat, gas, water, fuel, etc.",
+      "root": "essentials",
       "name": "carrier",
-      "pretty_name": "Energy carrier",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "",
-      "description": "[Required] Energy carrier (electricity, heat, gas, etc.)",
       "is_essential": true,
       "is_carrier": true,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 5,
-    "model": "api.parameter",
     "fields": {
-      "root": "essentials",
       "category": "Essentials",
-      "name": "carrier_in",
       "pretty_name": "Input Carrier",
+      "description": "[Required] Input energy carrier (electricity, heat, gas, etc.)",
+      "root": "essentials",
+      "name": "carrier_in",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "",
-      "description": "[Required] Input energy carrier (electricity, heat, gas, etc.)",
       "is_essential": true,
       "is_carrier": true,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 6,
-    "model": "api.parameter",
     "fields": {
-      "root": "essentials",
       "category": "Essentials",
-      "name": "carrier_out",
       "pretty_name": "Output Carrier",
+      "description": "[Required] Output energy carrier (electricity, heat, gas, etc.)",
+      "root": "essentials",
+      "name": "carrier_out",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "",
-      "description": "[Required] Output energy carrier (electricity, heat, gas, etc.)",
       "is_essential": true,
       "is_carrier": true,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 7,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
-      "name": "carrier_ratios",
       "pretty_name": "Carrier ratios",
+      "description": "[Optional] Ratio of summed output of carriers in [\u201a\u00c4\u00f2out_2\u201a\u00c4\u00f4, \u201a\u00c4\u00f2out_3\u201a\u00c4\u00f4] / [\u201a\u00c4\u00f2in_2\u201a\u00c4\u00f4, \u201a\u00c4\u00f2in_3\u201a\u00c4\u00f4] to the summed output of carriers in \u201a\u00c4\u00f2out\u201a\u00c4\u00f4 / \u201a\u00c4\u00f2in\u201a\u00c4\u00f4. given in a nested dictionary.",
+      "root": "constraints",
+      "name": "carrier_ratios",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "<sub>ABC</sub>",
-      "description": "[Optional] Ratio of summed output of carriers in [\u2018out_2\u2019, \u2018out_3\u2019] / [\u2018in_2\u2019, \u2018in_3\u2019] to the summed output of carriers in \u2018out\u2019 / \u2018in\u2019. given in a nested dictionary.",
       "is_essential": true,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 8,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Storage",
+      "pretty_name": "Maximum C-rate",
+      "description": "Calliope: energy_cap_per_storage_cap_max | ratio of maximum charge/discharge (kW) for a given storage capacity (kWh).<br><br>Maximum consumption/production capacity per storage capacity, a cap on the C-rate of the storage, or a floor on the \"duration\" (inverse of the C-rate) of the storage.<br><br>For batteries, a ceiling on the numerical C-rate or maximum charge or discharge power per electrical energy capacity.<br><br>For thermal storage, a ceiling on the maximum applied heat transfer rate per thermal energy capacity.<br><br>For liquid or other mass storage, a ceiling on the maximum mass or volumetric transfer or flow rate per mass or volumetric storage capacity.",
+      "root": "constraints",
       "name": "energy_cap_per_storage_cap_max",
-      "pretty_name": "Maximum energy capacity per storage capacity",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "%/hour",
-      "description": "ratio of maximum charge/discharge (kW) for a given storage capacity (kWh).",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 9,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
+      "pretty_name": "Production capacity",
+      "description": "Calliope: energy_cap_equals | fixes maximum/minimum of decision variables carrier_prod/carrier_con and overrides _max/ _min constraints.<br><br>Production capacity sets the upper limit of carrier that can be produced by the node per timestep. If specified, Engage does not solve for production capacity but sets it, as would be appropriate for a node that already exists or has known or programmed (future) production capacity. If not specified, in planning mode, Engage will solve for production capacity of the node, and upper and lower bounds of production capacity can be set with the maximum production capacity and minimum production capacity constraints. Production per timestep is split between export of the export carrier of the node and carrier supplied into the system by the node.",
+      "root": "constraints",
       "name": "energy_cap_equals",
-      "pretty_name": "Installed energy capacity",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kW",
-      "description": "fixes maximum/minimum if decision variables carrier_prod/carrier_con and overrides _max/ _min constraints.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 10,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
+      "pretty_name": "Production capacity (systemwide)",
+      "description": "Calliope: constraints.energy_cap_equals_systemwide | fixes the sum to a maximum/minimum, for a particular technology, of the decision variables carrier_prod/carrier_con over all locations.<br><br>Systemwide production capacity sets an upper limit on the total production capacity for all nodes of the subject technology across the entire scenario system. This includes all the planning nodes (those with maximum production capacity and (optionally) minimum production capacity set, and the nodes where production capacity has been set with the production capacity constraint.<br>",
+      "root": "constraints",
       "name": "energy_cap_equals_systemwide",
-      "pretty_name": "Installed energy capacity (System-wide)",
       "timeseries_enabled": "False",
       "is_systemwide": true,
       "units": "kW",
-      "description": "fixes the sum to a maximum/minimum, for a particular technology, of the decision variables carrier_prod/carrier_conover all locations.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 11,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
+      "pretty_name": "Maximum production capacity",
+      "description": "Calliope: energy_cap_max | Limits decision variables carrier_prod/carrier_con to a maximum/minimum.<br><br>Maximum production capacity sets an upper bound on the production capacity Engage will determine for the node in planning mode. Configure this constraint to specify an upper limit on the production capacity Engage can determine for the node if you wish for Engage to solve for production capacity of the node.",
+      "root": "constraints",
       "name": "energy_cap_max",
-      "pretty_name": "Maximum installed energy capacity",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kW",
-      "description": "Limits decision variables carrier_prod/carrier_con to a maximum/minimum.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 12,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
+      "pretty_name": "Maximum production capacity (systemwide)",
+      "description": "Calliope: energy_cap_max_systemwide | Limits the sum to a maxi- mum/minimum, for a particular technology, of the decision variables carrier_prod/carrier_con over all locations.<br><br>Systemwide production capacity sets an upper limit on the total production capacity for all nodes of the subject technology across the entire scenario system. This includes all the planning elements (those with Maximum production capacity and (optionally) Minimum production capacity set, and the elements where capacity has been set with the Production capacity  constraint.",
+      "root": "constraints",
       "name": "energy_cap_max_systemwide",
-      "pretty_name": "Maximum installed energy capacity (System-wide)",
       "timeseries_enabled": "False",
       "is_systemwide": true,
       "units": "kW",
-      "description": "Limits the sum to a maximum/minimum, for a particular technology, of the decision variables carrier_prod/carrier_conover all locations.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 13,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
+      "pretty_name": "Minimum production capacity",
+      "description": "Calliope: energy_cap_min | Limits decision variables carrier_prod/carrier_con to a maximum/minimum.<br><br>Minimum production capacity sets a lower bound on the production capacity Engage will determine for the node in planning mode. Configure this constraint to specify a lower limit on the production capacity Engage can determine for the node if you wish for Engage to solve for production capacity of the node.",
+      "root": "constraints",
       "name": "energy_cap_min",
-      "pretty_name": "Minimum installed energy capacity",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kW",
-      "description": "Limits decision variables carrier_prod/carrier_con to a minimum/maximum.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 14,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
+      "pretty_name": "Minimum operating level",
+      "description": "Calliope: energy_cap_min_use | Set to a value between 0 and 1 to force minimum carrier production as a fraction of the technology maxi- mum energy capacity. If non-zero and technology is not defined by units, this will force the technology to operate above its minimum value at every timestep.<br><br>Minimum operating level is the minimum output level at which the technology will operate, specified as a percentage of production capacity. As the Calliope documentation says, if this constraint is specified and nonzero, the technology will operate at every timestep at or above the minimum operating level, unless the technology is defined by units, in which case the technology will be allowed not to operate, i.e., have output zero during some timesteps, but during operating timesteps it will output at or above minimum operating level.",
+      "root": "constraints",
       "name": "energy_cap_min_use",
-      "pretty_name": "Minimum operating use of capacity",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "%",
-      "description": "Set to a value between 0 and 1 to force minimum carrer production as a fraction of the technology maximum energy capacity. If non-zero and technology is not defined by units, this will force the technology to operate above its minimum value at every timestep.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 15,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
+      "pretty_name": "Unit production capacity",
+      "description": "Calliope: energy_cap_per_unit | Set the capacity of each integer unit of a technology purchased<br><br>Unit production capacity is used when defining a technology in terms of units of the technology (e.g., to specify that a particular design of generator has a nameplate capacity of 2500kW and each one (each unit) costs $325,000 (unit cost is specified using the Unit cost constraint), as opposed to specifying cost per kW using the production capacity constraint).<br><br>Warning: defining a technology in terms of units and unit costs increases the computational complexity and time exponentially by converting the problem for Engage to solve from a linear program (LP) to a mixed integer linear program (MILP). This should be avoided with practical. MILPs of similar size (number of nodes and elements) to LPs that solve quickly may fail to resolve in any reasoanable time and may time out with reasonable Engage server settings designed to limit use of compute resources. Use with caution.",
+      "root": "constraints",
       "name": "energy_cap_per_unit",
-      "pretty_name": "Energy capacity per purchased unit",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kW/unit",
-      "description": "Set the capacity of each integer unit of a technology purchased",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 16,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
+      "pretty_name": "Production capacity scale factor",
+      "description": "Calliope: constraints.energy_cap_scale | Scale all energy_cap_min/max/equals/total_max/total_equals constraints by this value<br><br>Production capacity scale factor provides a factor by which Engage will scale all production capacity constraints--minimum, maximum, systemwide, minimum systemwide, maximum systemwide.",
+      "root": "constraints",
       "name": "energy_cap_scale",
-      "pretty_name": "Energy capacity scale factor",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "&#8593;",
-      "description": "Scale all energy_capmin/max/equals/total_max/total_equals constraints by this value",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 17,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
-      "name": "energy_con",
       "pretty_name": "Allow energy consumption",
+      "description": "Allow this technology to consume energy from the carrier (static boolean, or from file as timeseries).",
+      "root": "constraints",
+      "name": "energy_con",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "<sup>T</sup>/<sub>F</sub>",
-      "description": "Allow this technology to consume energy from the carrier (static boolean, or from file as timeseries).",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[\"True\",\"False\"]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 18,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
+      "pretty_name": "Conversion efficiency",
+      "description": "Calliope: energy_eff | conversion efficiency (static, or from file as timeseries), from resource/storage/carrier_in (tech dependent) to carrier_out.<br><br>For supply, supply+, efficiency of conversion from resource to production carrier.<br><br>For conversion, efficiency of conversion from consumption carrier (carrier_con) to production carriers (carrier_prod).<br><br>For conversion+, a factor that, in combination with the carrier ratios for the carrier_in carriers and the carrier_out carriers, determines number of units of carrier_out per unit of carrier_in. See Calliope documentation of Advanced Constraints -> conversion plus.",
+      "root": "constraints",
       "name": "energy_eff",
-      "pretty_name": "Energy efficiency",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "%",
-      "description": "conversion efficiency (static, or from file as timeseries), from resource/storage/carrier_in (tech dependent) to carrier_out.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 19,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
+      "pretty_name": "Carrying efficiency per distance",
+      "description": "Calliope: energy_eff_per_distance | Set as value between 1 (no loss) and 0 (all energy lost).<br><br>Configure carrying efficiency per distance along with the distance constraint to have Engage calculate the carrying efficiency of transmission based on its length. Overall efficiency of the transmission element is the carrying efficiency to the power of the distance: efficiency = carrying efficiency per distance ^ distance.<br><br>Overall efficiency of the element is the product of the carrying efficiency constraint (which can be a time series) and the per distance carrying efficiency to the power of the distance.",
+      "root": "constraints",
       "name": "energy_eff_per_distance",
-      "pretty_name": "Energy efficiency per distance",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "%/km",
-      "description": "Set as value between 1 (no loss) and 0 (all energy lost).",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 20,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
-      "name": "energy_prod",
       "pretty_name": "Allow energy production",
+      "description": "Allow this technology to supply energy to the carrier (static boolean, or from file as timeseries).",
+      "root": "constraints",
+      "name": "energy_prod",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "<sup>T</sup>/<sub>F</sub>",
-      "description": "Allow this technology to supply energy to the carrier (static boolean, or from file as timeseries).",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[\"True\",\"False\"]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 21,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
+      "pretty_name": "Maximum ramp rate (as % of production capacity)",
+      "description": "Calliope: constraints.energy_ramping | Set to null to disable ramping constraints, otherwise limit maximum carrier production to a fraction of maximum capacity, which increases by that fraction at each timestep.<br><br>Maximum ramp rate, when set, specifies a ceiling on the change in production rate (i.e., production quantity per timestep) of the node between consecutive timesteps.",
+      "root": "constraints",
       "name": "energy_ramping",
-      "pretty_name": "Ramping rate",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "%/hour",
-      "description": "Set to False to disable ramping constraints, otherwise limit maximum carrier production to a fraction of maximum capacity, which increases by that fraction at each timestep.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 22,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
-      "name": "export_cap",
       "pretty_name": "Export capacity",
+      "description": "Calliope: constraints.export_cap | Maximum allowed export of produced energy carrier for a technology.",
+      "root": "constraints",
+      "name": "export_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kW",
-      "description": "Maximum allowed export of produced energy carrier for a technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 23,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
-      "name": "export_carrier",
       "pretty_name": "Export carrier",
+      "description": "Calliope: constraints.export_carrier | Name of carrier to be exported. Must be an output carrier of the technology",
+      "root": "constraints",
+      "name": "export_carrier",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "<sub>ABC</sub>",
-      "description": "Name of carrier to be exported. Must be an output carrier of the technology",
       "is_essential": false,
       "is_carrier": true,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 24,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Resource",
+      "pretty_name": "Consume resource at resource capacity and resource area",
+      "description": "Calliope: force_resource | Forces this technology to use all available resource, rather than making it a maximum upper boundary (for production) or minimum lower boundary (for consumption). Static boolean, or from file as timeseries<br><br>The capability of a supply technology to consume a resource is determined by the more limiting of resource area (a planning decision variable set when resource unit is set to energy_per area) and resource capacity (a planning decision variable in supply+) or production capacity (a planning decision variable in supply). Setting consume resource at resource capacity and resource area to true forces the technology to utilize resource to the lesser of its capacity to consume the resource or the availability of the resource in each timestep.<br><br>If the supply tech archetype is used to model solar PV, for example, consume at resource capacity and resource area=true precludes the technology from curtailing production below the available resource. Consume at resource capacity and resource area=false allows the technology to curtail production.",
+      "root": "constraints",
       "name": "force_resource",
-      "pretty_name": "Force all resource",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "<sup>T</sup>/<sub>F</sub>",
-      "description": "Forces this technology to use all available resource, rather than making it a maximum upper boundary (for production) or minimum lower boundary (for consumption). Static boolean, or from file as timeseries",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[\"True\",\"False\"]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 25,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
+      "pretty_name": "Lifetime and amortization period",
+      "description": "Calliope: constraints.lifetime | Must be defined if fixed capital costs are defined. A reasonable value for many technologies is around 20-25 years.<br><br>Engage uses the technology lifetime and amortization period to calculate the annual capital investment payment (including interest) for the technology. Because Engage/Calliope uses the annual cost of each technology (annual capital cost, annual fixed O&M cost, annual cost of resource area, and variable O&M) as a basis for comparison of costs among technologies, it calculates a depreciation rate (a value between 0 and 1) by which the total capital and resource area costs are multiplied to get the portion of the costs representing annual outlay for the capital cost.",
+      "root": "constraints",
       "name": "lifetime",
-      "pretty_name": "Technology lifetime",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "years",
-      "description": "Must be defined if fixed capital costs are defined. A reasonable value for many technologies is around 20-25 years.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 26,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
+      "pretty_name": "One-way",
+      "description": "Calliope: one_way | Transmission may only go from Location 1 to Location 2",
+      "root": "constraints",
       "name": "one_way",
-      "pretty_name": "One way transmission",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "<sup>T</sup>/<sub>F</sub>",
-      "description": "Transmission may only go from Location 1 to Location 2",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[\"True\",\"False\"]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 27,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
-      "name": "parasitic_eff",
       "pretty_name": "Plant parasitic efficiency",
+      "description": "Calliope: constraints.parasitic_eff | Additional losses as energy gets transferred from the plant to the carrier (static, or from file as timeseries), e.g. due to plant parasitic consumption",
+      "root": "constraints",
+      "name": "parasitic_eff",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "%",
-      "description": "Additional losses as energy gets transferred from the plant to the carrier (static, or from file as timeseries), e.g. due to plant parasitic consumption",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 28,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Resource",
+      "pretty_name": "Resource: supply(+) / demand(-)",
+      "description": "Calliope: constraints.resource | Maximum available resource (static, or from file as timeseries). Unit dictated by resource_unit. Demand data must be negative.<br><br>Resource can be scaled by resource scale factor and resource area constraint or decision variable if resource unit is set to resource_per_area.",
+      "root": "constraints",
       "name": "resource",
-      "pretty_name": "Available resource: supply(+) or demand(-)",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "kWh",
-      "description": "Maximum available resource (static, or from file as timeseries). Unit dictated by resource_unit. Demand data must be negative.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 29,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Resource",
+      "pretty_name": "Resource area",
+      "description": "Calliope: constraints.resource_area_equals",
+      "root": "constraints",
       "name": "resource_area_equals",
-      "pretty_name": "Installed area",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "m<sup>2</sup>",
-      "description": "",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 30,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Resource",
+      "pretty_name": "Maximum resource area",
+      "description": "Calliope: constraints.resource_area_max | Set to False by default in order to disable this constraint<br><br>Use when planning resource area for the technology in planning mode with resource unit for the technology or node set to energy_per_area.",
+      "root": "constraints",
       "name": "resource_area_max",
-      "pretty_name": "Maximum installed area",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "m<sup>2</sup>",
-      "description": "Set to False by default in order to disable this constraint",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 31,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Resource",
+      "pretty_name": "Minimum usable resource area",
+      "description": "Calliope: resource_area_min<br><br>If set to a finite value, forces the resource area used by the technology to be equal to or greater than this value.<br><br>The resource area constraints are a convenient way to assign cost to and constrain use of resource area (e.g., solar collector area or land) by a technology separately from Production capacity (e.g., nameplate inverter power capacity for a solar installation), and, if available resource is set to be scaled with resource area (by setting Resource unit to energy_per_area), plan resource area separately from production capacity. If, for example, cost minimization of collector area separate from inverter capacity, or, if dual constraints on land availability and production capacity are at play, or, if land availability is the constraint and inverter capacity is for practical purposes unconstrained except by cost, the resource area decision variable can be used.",
+      "root": "constraints",
       "name": "resource_area_min",
-      "pretty_name": "Minimum installed area",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "m<sup>2</sup>",
-      "description": "",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 32,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Resource",
+      "pretty_name": "Ratio of resource area to production capacity",
+      "description": "Calliope: constraints.resource_area_per_energy_cap | If set, forces resource_area to follow energy_cap with the given numerical ratio (e.g. setting to 1.5 means that resource_area == 1.5 * energy_cap)",
+      "root": "constraints",
       "name": "resource_area_per_energy_cap",
-      "pretty_name": "Ratio of resource area to energy capacity",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "m<sup>2</sup>/kW",
-      "description": "If set, forces resource_area to follow energy_cap with the given numerical ratio (e.g. setting to 1.5 means that resource_area == 1.5 *energy_cap)",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 33,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Resource",
+      "pretty_name": "Resource consumption capacity",
+      "description": "Calliope: constraints.resource_cap_equals | overrides _max and _min constraints.<br><br>Resource capacity sets the resource capacity of the technology or node.",
+      "root": "constraints",
       "name": "resource_cap_equals",
-      "pretty_name": "Installed resource consumption capacity",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kW",
-      "description": "overrides _max and _min constraints.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 34,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Resource",
-      "name": "resource_cap_equals_energy_cap",
       "pretty_name": "Resource capacity equals energy capacity",
+      "description": "Calliope: resource_cap_equals_energy_cap | If True, resource_cap is forced to equal energy_cap<br><br>",
+      "root": "constraints",
+      "name": "resource_cap_equals_energy_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "<sup>T</sup>/<sub>F</sub>",
-      "description": "If True, resource_cap is forced to equal energy_cap",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[\"True\",\"False\"]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 35,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Resource",
+      "pretty_name": "Maximum resource consumption capacity",
+      "description": "Calliope: constraints.resource_cap_max | ",
+      "root": "constraints",
       "name": "resource_cap_max",
-      "pretty_name": "Maximum installed resource consumption capacity",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kW",
-      "description": "",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 36,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Resource",
+      "pretty_name": "Minimum resource consumption capacity",
+      "description": "Calliope: constraints.resource_cap_min",
+      "root": "constraints",
       "name": "resource_cap_min",
-      "pretty_name": "Minimum installed resource consumption capacity",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kW",
-      "description": "",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 37,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Resource",
+      "pretty_name": "Resource consumption efficiency",
+      "description": "Calliope: constraints.resource_eff | Efficiency (static, or from file as timeseries) in capturing resource before it reaches storage (if storage is present) or conversion to carrier.",
+      "root": "constraints",
       "name": "resource_eff",
-      "pretty_name": "Resource efficiency",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "%",
-      "description": "Efficiency (static, or from file as timeseries) in capturing resource before it reaches storage (if storage is present) or conversion to carrier.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 38,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Resource",
+      "pretty_name": "Minimum resource consumption (as % of production capacity or resource capacity)",
+      "description": "Calliope: constraints.resource_min_use | Set to a value between 0 and 1 to force minimum resource consumption for production technologies<br><br>",
+      "root": "constraints",
       "name": "resource_min_use",
-      "pretty_name": "Minimum resource consumption",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "%",
-      "description": "Set to a value between 0 and 1 to force minimum resource consumption for production technologies",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 39,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Resource",
-      "name": "resource_scale",
       "pretty_name": "Resource scale factor",
+      "description": "Calliope: constraints.resource_scale | Scale resource (either static value or all values in timeseries) by this value",
+      "root": "constraints",
+      "name": "resource_scale",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "&#8593;",
-      "description": "Scale resource (either static value or all values in timeseries) by this value",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 40,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Resource",
+      "pretty_name": "Scale resource with...",
+      "description": "Calliope: resource_unit | Sets the unit of resource to either energy (i.e. kWh), energy_per_area(i.e. kWh/m2), or energy_per_cap (i.e. kWh/kW). energy_per_area uses the resource_area decision variable to scale the available resource while energy_per_cap uses the energy_cap decision variable.<br><br>Set to \"energy_per_cap\" to have Engage scale the resource scalar or time series value(s) with the production capacity parameter or decision variable. Set to \"energy_per_area\" to have Engage scale the resource scalar or time series value(s) with the resource area parameter or decision variable. Set to \"energy\" to have Engage not scale the resource value(s).",
+      "root": "constraints",
       "name": "resource_unit",
-      "pretty_name": "Resource unit",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "<sub>ABC</sub>",
-      "description": "Sets the unit of resource to either energy (i.e. kWh), energy_per_area(i.e. kWh/m2), or energy_per_cap (i.e. kWh/kW). energy_per_area uses the resource_area decision variable to scale the available resource while energy_per_cap uses the energy_capdecision variable.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[\"energy\",\"energy_per_area\",\"energy_per_cap\"]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 41,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Storage",
-      "name": "storage_cap_equals",
       "pretty_name": "Storage capacity",
+      "description": "Calliope: constraints.storage_cap_equals | If not defined, energy_cap_equals * energy_cap_per_storage_cap will be used as the capacity and will override max and min constraints.",
+      "root": "constraints",
+      "name": "storage_cap_equals",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kWh",
-      "description": "If not defined, energy_cap_equals * energy_cap_per_storage_cap will be used as the capacity and will override max and min constraints.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 42,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Storage",
-      "name": "storage_cap_max",
       "pretty_name": "Maximum storage capacity",
+      "description": "Calliope: constraints.storage_cap_max | If not defined, energy_cap_max * energy_cap_per_storage_cap_max will be used as the capacity.",
+      "root": "constraints",
+      "name": "storage_cap_max",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kWh",
-      "description": "If not defined, energy_cap_max * energy_cap_per_storage_cap_max will be used as the capacity.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 43,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Storage",
-      "name": "storage_cap_min",
       "pretty_name": "Minimum storage capacity",
+      "description": "Calliope: storage_cap_min<br><br>Minimum storage capacity sets a lower bound on the storage capacity Engage will determine for the node in planning mode. Configure this constraint to specify a lower limit on the storage capacity Engage can determine for the node if you wish for Engage to solve for the storage capacity of the node.<br><br>Note: pay careful attention to the C-rate settings in combination with the storage capacity settings that you do not overconstrain the model by setting constraints that are inconsistent with one another.",
+      "root": "constraints",
+      "name": "storage_cap_min",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kWh",
-      "description": "",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 44,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Storage",
+      "pretty_name": "Unit storage capacity",
+      "description": "Calliope: constraints.storage_cap_per_unit | Set the storage capacity of each integer unit of a technology purchased.<br><br>Unit storage capacity is used when defining a technology in terms of units of the technology (e.g., to specify that a particular design of generator has a nameplate capacity of 2500kW and each one (each unit) costs $325,000 (unit cost is specified using the Unit cost constraint), as opposed to specifying cost per kW using the production capacity constraint).<br><br>Warning: defining a technology in terms of units and unit costs increases the computational complexity and time exponentially by converting the problem for Engage to solve from a linear program (LP) to a mixed integer linear program (MILP). This should be avoided with practical. MILPs of similar size (number of nodes and elements) to LPs that solve quickly may fail to resolve in any reasoanable time and may time out with reasonable Engage server settings designed to limit use of compute resources. Use with caution.\"",
+      "root": "constraints",
       "name": "storage_cap_per_unit",
-      "pretty_name": "Storage capacity per purchased unit",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kWh/unit",
-      "description": "Set the storage capacity of each integer unit of a technology purchased.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 45,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Storage",
+      "pretty_name": "Initial storage level (as % of storage capacity)",
+      "description": "Calliope: constraints.storage_initial | Set stored energy in device at the first timestep, as a fraction of total storage capacity.",
+      "root": "constraints",
       "name": "storage_initial",
-      "pretty_name": "Initial storage level",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "%",
-      "description": "Set stored energy in device at the first timestep, as a fraction of total storage capacity",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 46,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Storage",
+      "pretty_name": "Hourly storage loss rate (as % of remaining charge)",
+      "description": "Calliope: constraints.storage_loss | rate of storage loss per hour (static, or from file as timeseries), used to calculate lost stored energy as (1 -storage_loss)^hours_per_timestep",
+      "root": "constraints",
       "name": "storage_loss",
-      "pretty_name": "Storage loss rate",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "%/hour",
-      "description": "rate of storage loss per hour (static, or from file as timeseries), used to calculate lost stored energy as (1 -storage_loss)^hours_per_timestep",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 47,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Storage",
-      "name": "storage_time_max",
       "pretty_name": "Maximum storage time",
+      "description": "Maximum storage time",
+      "root": "constraints",
+      "name": "storage_time_max",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "hour",
-      "description": "Maximum storage time",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 48,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
+      "pretty_name": "Number of units",
+      "description": "Calliope: constraints.units_equals | Turns the model from LP to MILP.<br><br>Number of units is used to set the number of units of a technology when defining the technology in terms of units of the technology (e.g., to specify that a particular design of generator has a nameplate capacity of 2500kW and each one (each unit) costs $325,000 (unit cost is specified using the Unit cost constraint), as opposed to specifying cost per kW using the production capacity constraint).<br><br>Warning: defining a technology in terms of units, number of units or minimum and/or maximum number of units and unit costs increases the computational complexity and time exponentially by converting the problem for Engage to solve from a linear program (LP) to a mixed integer linear program (MILP). This should be avoided with practical. MILPs of similar size (number of nodes and elements) to LPs that solve quickly may fail to resolve in any reasoanable time and may time out with reasonable Engage server settings designed to limit use of compute resources. Use with caution.\"\"\"",
+      "root": "constraints",
       "name": "units_equals",
-      "pretty_name": "Number of purchased units",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "units",
-      "description": "Turns the model from LP to MILP.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 49,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
+      "pretty_name": "Number of units (systemwide)",
+      "description": "Calliope: units_equals_systemwide | fixes the sum to a specific value, for a particular technology, of the decision variables carrier_prod/carrier_con over all locations. [this may be an error in the Calliope documentation]<br><br>The number of units (systemwide) constraint, when applied in planning mode, sets the number of units of the subject technology that the solution will find across all nodes of the technology for which units of the subject technology are being planned. For example, if there are two nodes, each of which is configured with a maximum number of units of 5 and the number of units (systemwide) is set to 7, the model might find a solution of 5 at one location and 2 at the other, 3 at one location and 4 at the other, etc.",
+      "root": "constraints",
       "name": "units_equals_systemwide",
-      "pretty_name": "Number of purchased units (System-wide)",
       "timeseries_enabled": "False",
       "is_systemwide": true,
       "units": "units",
-      "description": "fixes the sum to a specific value, for a particular technology, of the decision variables carrier_prod/carrier_conover all locations.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 50,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
+      "pretty_name": "Maximum number of units",
+      "description": "Calliope: units_max | Turns the model from LP to MILP.",
+      "root": "constraints",
       "name": "units_max",
-      "pretty_name": "Maximum number of purchased units",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "units",
-      "description": "Turns the model from LP to MILP.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 51,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
+      "pretty_name": "Maximum number of units (systemwide)",
+      "description": "Calliope: units_max_systemwide | Limits the sum to a maximum/minimum, for a particular technology, of the decision variables carrier_prod/carrier_con over all locations.<br><br>The maximum number of units (systemwide) constraint, when applied in planning mode, sets a ceiling on the number of units of the subject technology that the solution will find across all nodes of the technology for which units of the subject technology are being planned. For example, if there are two nodes, each of which is configured with a maximum number of units of 5 and the maximum number of units (systemwide) is set to 7, the model might find a solution of 5 at one location and 2 at the other, 3 at one location and 2 at the other, etc., as long as the total number of units across the two nodes is 7 or less.",
+      "root": "constraints",
       "name": "units_max_systemwide",
-      "pretty_name": "Maximum number of purchased units (System-wide)",
       "timeseries_enabled": "False",
       "is_systemwide": true,
       "units": "units",
-      "description": "Limits the sum to a maximum/minimum, for a particular technology, of the decision variables carrier_prod/carrier_conover all locations.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 52,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
+      "pretty_name": "Minimum number of units",
+      "description": "Calliope: units_min_systemwide | Limits the sum to a maximum/minimum, for a particular technology, of the decision variables carrier_prod/carrier_con over all locations.<br><br>The minmum number of units (systemwide) constraint, when applied in planning mode, sets a floor on the number of units of the subject technology that the solution will find across all nodes of the technology for which units of the subject technology are being planned. For example, if there are two nodes, each of which is configured with a minimum number of units of 5 and the minimum number of units (systemwide) is set to 7, the model might find a solution of 5 at one location and 2 at the other, 5 at one location and 3 at the other, etc., as long as the total number of units across the two nodes is 7 or more.",
+      "root": "constraints",
       "name": "units_min",
-      "pretty_name": "Minimum number of purchased units",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "units",
-      "description": "Turns the model from LP to MILP.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 53,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.monetary",
       "category": "Costs: Monetary",
+      "pretty_name": "Cost of production capacity",
+      "description": "Calliope: costs.monetary.energy_cap<br><br>Cost of production capacity of the technology sets the cost per unit of producdtion capacity. For energy carrier production technologies, cost of production capacity might, for example, be specified in units of dollars per kW or dollars per MW.",
+      "root": "costs.monetary",
       "name": "energy_cap",
-      "pretty_name": "Cost of energy capacity",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "$/kW",
-      "description": "",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 54,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.monetary",
       "category": "Costs: Monetary",
+      "pretty_name": "Cost of carrier capacity per unit length",
+      "description": "Calliope: costs.monetary.energy_cap_per_distance | Applied to transmission links only<br><br>Cost of transmission can be specified in terms of, for example, dollars per kW km and can be used to specify transmission cost of capacity when the length of the transmission is known. Use this parameter with the length parameter. If this parameter is used without the length parameter specified, Calliope will attempt to calculate the length by treating the latitude and longitude location parameters as Cartesian coordinates, which is incorrect for geograhpic distance calculations, so use of the length parameter is recommended when this parameter is used.",
+      "root": "costs.monetary",
       "name": "energy_cap_per_distance",
-      "pretty_name": "Cost of energy capacity, per unit distance",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "$/kW/km",
-      "description": "Applied to transmission links only",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 55,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.monetary",
       "category": "Costs: Monetary",
-      "name": "export",
       "pretty_name": "Carrier export cost",
+      "description": "Calliope: costs.monetary.export | Usually used in the negative sense, as a subsidy.<br><br>Carrier export cost can be specified as a scalar or as a timeseries. It is usually set to a negative number which can represent revenue for export of the energy or commodity.",
+      "root": "costs.monetary",
+      "name": "export",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "$/kWh",
-      "description": "Usually used in the negative sense, as a subsidy.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 56,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.monetary",
       "category": "Costs: Monetary",
-      "name": "depreciation_rate",
       "pretty_name": "Depreciation rate",
+      "description": "",
+      "root": "costs.monetary",
+      "name": "depreciation_rate",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "$/year",
-      "description": "",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 57,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.monetary",
       "category": "Costs: Monetary",
-      "name": "interest_rate",
       "pretty_name": "Interest rate",
+      "description": "Calliope: costs.monetary.interest_rate | Used when computing levelized costs<br><br>Interest rate is used to amortize capital cost of the asset over the amortization period / asset life to determine the annual payment of capital cost. Interest rate and amortization period are required inputs when there is a production or storage capacity cost. If it is desired to count the entire cost of the asset in the year of installation, set amortization period to 1 and interest rate to zero. This will unfairly disadvantage long-lived assets with high up-front costs against assets with lower up-front costs and higher operating costs such as some fossil-fuel technologies.",
+      "root": "costs.monetary",
+      "name": "interest_rate",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "%",
-      "description": "Used when computing levelized costs",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 58,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.monetary",
       "category": "Costs: Monetary",
+      "pretty_name": "Annual fixed O&M cost",
+      "description": "Calliope: costs.monetary.om_annual<br><br>Annual fixed O&M cost applies a monetary cost per unit nameplate capacity to the node or transmission element.",
+      "root": "costs.monetary",
       "name": "om_annual",
-      "pretty_name": "Yearly O&M costs",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "$/kW",
-      "description": "",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 59,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.monetary",
       "category": "Costs: Monetary",
+      "pretty_name": "Fractional yearly O&M costs (as % of total investment)",
+      "description": "Calliope: cost.monetary.om_annual_investment_fraction<br><br>It is common with utility assets to specify fixed O&M costs as a percentage of total capital cost. This cost parameter allows for this approach in lieu of specificaion in terms of cost per unit capacity.",
+      "root": "costs.monetary",
       "name": "om_annual_investment_fraction",
-      "pretty_name": "Fractional yearly O&M costs (of total investment)",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "%",
-      "description": "",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 60,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.monetary",
       "category": "Costs: Monetary",
-      "name": "om_con",
       "pretty_name": "Carrier consumption cost",
+      "description": "Calliope: costs.om_con | Applied to carrier consumption of a technology",
+      "root": "costs.monetary",
+      "name": "om_con",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "$/kWh",
-      "description": "Applied to carrier consumption of a technology",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 61,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.monetary",
       "category": "Costs: Monetary",
-      "name": "om_prod",
       "pretty_name": "Carrier production cost",
+      "description": "Calliope: costs.monetary.om_prod Applied to carrier production of a technology<br><br>Cost applied per unit of carrier produced.",
+      "root": "costs.monetary",
+      "name": "om_prod",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "$/kWh",
-      "description": "Applied to carrier production of a technology",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 62,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.monetary",
       "category": "Costs: Monetary",
+      "pretty_name": "Unit cost",
+      "description": "Calliope: cost.monetary.purchase | Triggers a binary variable for that technology to say that it has been purchased or is applied to integer variable units",
+      "root": "costs.monetary",
       "name": "purchase",
-      "pretty_name": "Purchase cost",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "$/unit",
-      "description": "Triggers a binary variable for that technology to say that it has been purchased or is applied to integer variable units",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 63,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.monetary",
       "category": "Costs: Monetary",
+      "pretty_name": "Cost per unit resource area",
+      "description": "Calliope: costs.monetary.resource_area",
+      "root": "costs.monetary",
       "name": "resource_area",
-      "pretty_name": "Cost of resource area",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "$/m<sup>2</sup>",
-      "description": "",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 64,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.monetary",
       "category": "Costs: Monetary",
-      "name": "resource_cap",
       "pretty_name": "Cost of resource consumption capacity",
+      "description": "Calliope: costs.resource_cap | Cost of resource consumption capacity",
+      "root": "costs.monetary",
+      "name": "resource_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "$/kW",
-      "description": "",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 65,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.monetary",
       "category": "Costs: Monetary",
-      "name": "storage_cap",
       "pretty_name": "Cost of storage capacity",
+      "description": "Calliope: costs.storage_cap | Cost of storage capacity",
+      "root": "costs.monetary",
+      "name": "storage_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "$/kWh",
-      "description": "",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 66,
-    "model": "api.parameter",
     "fields": {
-      "root": "essentials",
       "category": "Essentials",
+      "pretty_name": "Input Carrier Group 2",
+      "description": "[Optional] Second input carrier group that can accommodate any number of carriers (electricity, heat, gas, etc.)",
+      "root": "essentials",
       "name": "carrier_in_2",
-      "pretty_name": "Input Carrier 2",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "",
-      "description": "[Optional] Second input energy carrier (electricity, heat, gas, etc.)",
       "is_essential": true,
       "is_carrier": true,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 67,
-    "model": "api.parameter",
     "fields": {
-      "root": "essentials",
       "category": "Essentials",
+      "pretty_name": "Output Carrier Group 2",
+      "description": "[Optional] Second output carrier group that may accommodate any number of carriers (electricity, heat, gas, etc.)",
+      "root": "essentials",
       "name": "carrier_out_2",
-      "pretty_name": "Output Carrier 2",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "",
-      "description": "[Optional] Second output energy carrier (electricity, heat, gas, etc.)",
       "is_essential": true,
       "is_carrier": true,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 68,
-    "model": "api.parameter",
     "fields": {
-      "root": "essentials",
       "category": "Essentials",
+      "pretty_name": "Input Carrier Group 3",
+      "description": "[Optional] Third input carrier group that may accommodate any number of carriers (electricity, heat, gas, etc.)",
+      "root": "essentials",
       "name": "carrier_in_3",
-      "pretty_name": "Input Carrier 3",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "",
-      "description": "[Optional] Third input energy carrier (electricity, heat, gas, etc.)",
       "is_essential": true,
       "is_carrier": true,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 69,
-    "model": "api.parameter",
     "fields": {
-      "root": "essentials",
       "category": "Essentials",
+      "pretty_name": "Output Carrier Group 3",
+      "description": "[Optional] Third output carrier group that can accommodate any number of carriers (electricity, heat, gas, etc.)",
+      "root": "essentials",
       "name": "carrier_out_3",
-      "pretty_name": "Output Carrier 3",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "",
-      "description": "[Optional] Third output energy carrier (electricity, heat, gas, etc.)",
       "is_essential": true,
       "is_carrier": true,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 70,
-    "model": "api.parameter",
     "fields": {
-      "root": "essentials",
       "category": "Costs: Monetary",
+      "pretty_name": "Primary input carrier",
+      "description": "Calliope: essentials.primary_carrier_in<br><br>The primary input carrier can be assigned to any carrier in any input carrier group (1, 2, or 3) and is the carrier to which consumption costs are assigned.",
+      "root": "essentials",
       "name": "primary_carrier_in",
-      "pretty_name": "Primary Input Carrier",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "",
-      "description": "Primary input energy carrier (electricity, heat, gas, etc.)",
       "is_essential": false,
       "is_carrier": true,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 71,
-    "model": "api.parameter",
     "fields": {
-      "root": "essentials",
       "category": "Costs: Monetary",
+      "pretty_name": "Primary output carrier",
+      "description": "Calliope: essentials.primary_carrier_in<br><br>The primary output carrier can be assigned to any carrier in any output carrier group (1, 2, or 3) and is the carrier to which production costs are assigned, so that production cost for the subject node is calculated based on the quantity produced of that carrier.",
+      "root": "essentials",
       "name": "primary_carrier_out",
-      "pretty_name": "Primary Output Carrier",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "",
-      "description": "Primary output energy carrier (electricity, heat, gas, etc.)",
       "is_essential": false,
       "is_carrier": true,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 72,
-    "model": "api.parameter",
     "fields": {
-      "root": "",
       "category": "Constraints: Technology",
+      "pretty_name": "Length",
+      "description": "Calliope: constraints.distance | Exact distance of transmission line from Location 1 to Location 2<br><br>The length parameter should be set when using the cost of carrying capacity per length parameter to allow Engage to correctly calculate cost associated with capacity. If this is not specified, Calliope will treat the latitude and longitude of the location as Cartesian coordinates for calculation of length, which is inapprpriate for geographic locations as they are specified in Engage.",
+      "root": "",
       "name": "distance",
-      "pretty_name": "Distance",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "km",
-      "description": "Exact distance of transmission line from Location 1 to Location 2",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 73,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Storage",
+      "pretty_name": "Minimum depth of discharge (as % of storage capacity)",
+      "description": "Calliope: constraints.storage_discharge_depth",
+      "root": "constraints",
       "name": "storage_discharge_depth",
-      "pretty_name": "Storage depth of discharge",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "%",
-      "description": "Defines the minimum level of storage state of charge, as a fraction of total storage capacity",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 74,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Technology",
+      "pretty_name": "Asynchronous production and consumption",
+      "description": "Calliope: force_asynchronous_prod_con | If True, carrier_prod and carrier_con cannot both occur in the same timestep<br><br>Asynchronous production and consumption fixes a storage technology to only be able to produce or consume carrier in a given timestep and fixes transmission to only be able to transmit a carrier in one or the other direction in a single timestep. This helps ensure that unphysical dissipation of energy does not occur in these technologies. This is needed because if a model has excess carrier for whatever reason, the model will sometimes burn off excess carrier by pushing the carrier in opposite directions in the same timestep in non-lossless storage or transmission. This setting prevents such behavior at the cost of some computational burden. Therefore, if the model can be crafted to avoid such suboptimal simulation behavior without using this setting, that is preferable. The need for this setting can be checked by analyzing the production and consumption time series for technologies in the solution for timesteps in which both are nonzero in the same timestep",
+      "root": "constraints",
       "name": "force_asynchronous_prod_con",
-      "pretty_name": "Force asynchronous energy production & consumption",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "<sup>T</sup>/<sub>F</sub>",
-      "description": "fix a storage or transmission technology to only be able to produce or consume energy in a given timestep. This ensures that unphysical dissipation of energy cannot occur in these technologies",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[\"True\",\"False\"]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 75,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Storage",
+      "pretty_name": "Minimum C-rate",
+      "description": "Calliope: constraints.energy_cap_per_storage_cap_min | ratio of maximum charge/discharge (kW) for a given storage capacity (kWh).",
+      "root": "constraints",
       "name": "energy_cap_per_storage_cap_min",
-      "pretty_name": "Minimum energy capacity per storage capacity",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "%/hour",
-      "description": "ratio of maximum charge/discharge (kW) for a given storage capacity (kWh).",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 76,
-    "model": "api.parameter",
     "fields": {
-      "root": "constraints",
       "category": "Constraints: Storage",
+      "pretty_name": "C-rate",
+      "description": "Calliope: constraints.energy_cap_per_storage_cap_equals<br><br>",
+      "root": "constraints",
       "name": "energy_cap_per_storage_cap_equals",
-      "pretty_name": "Fixed energy capacity per storage capacity",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "%/hour",
-      "description": "ratio of charge/discharge (kW) for a given storage capacity (kWh).",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 77,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2",
       "category": "Emissions: CO2",
-      "name": "energy_cap",
       "pretty_name": "Embodied qty. per unit production capacity",
+      "description": "Embodied or one-time emissions per unit production capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "root": "costs.co2",
+      "name": "energy_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/kW",
-      "description": "Embodied or one-time emissions per unit production capacity. May be useful for, e.g, embodied emissions in the technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 78,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2",
       "category": "Emissions: CO2",
-      "name": "energy_cap_per_distance",
       "pretty_name": "Embodied qty. per distance",
+      "description": "Embodied or one-time emissions per unit length/distance of transmission technology",
+      "root": "costs.co2",
+      "name": "energy_cap_per_distance",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/kW/km",
-      "description": "Embodied or one-time emissions per unit length/distance of transmission technology",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 79,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2",
       "category": "Emissions: CO2",
+      "pretty_name": "Qty. per unit exported carrier",
+      "description": "Calliope: costs.CO2.export<br><br>Emissions per unit of carrier exported. Note that carrier exported is always taken from carrier produced, so emissions associated with carrier produced are best associated with 'om_prod' and this should only be set if there are additional emissions associated with export.",
+      "root": "costs.co2",
       "name": "export",
-      "pretty_name": "Post-process qty. per unit export",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "kg/kWh",
-      "description": "Emissions per unit energy content of, in particular, carrier exported. Note that carrier exported is always taken from carrier produced, so emissions associated with carrier produced are best associated with 'om_prod' and this should only be set if there are additional emissions associated with export.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 80,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2",
       "category": "Emissions: CO2",
-      "name": "depreciation_rate",
       "pretty_name": "Depreciation Rate",
+      "description": "",
+      "root": "costs.co2",
+      "name": "depreciation_rate",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/year",
-      "description": "",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 81,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2",
       "category": "Emissions: CO2",
+      "pretty_name": "Interest rate",
+      "description": "Calliope: costs.CO2.interest_rate<br><br>Interest rate is probably not meaningful when treating emissions as costs, so recommdation is to set interest rate to 0 and lifetime or amortization period to 1 so that, e.g., embedded emissions occur in year zero in total (see Engage documentation on Engage/Calliope treatment of cash flows).",
+      "root": "costs.co2",
       "name": "interest_rate",
-      "pretty_name": "Interest Rate",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "%",
-      "description": "",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 82,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2",
       "category": "Emissions: CO2",
+      "pretty_name": "Annual qty. per unit production capacity",
+      "description": "Calliope: costs.CO2.om_annual<br><br>Fixed annual emissions quantity per unit production capacity. Can be used, e.g., for fixed annual emissions associated with production capacity of the technology.",
+      "root": "costs.co2",
       "name": "om_annual",
-      "pretty_name": "Annual qty. per unit capacity",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/kW/year",
-      "description": "Fixed annual emissions per unit production capacity. Can be used, e.g., for fixed annual emissions associated with production capacity of the technology, or, e.g., if the technology uses resource area propoortional to capacity, annual emissions in proportion to resource area used.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 83,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2",
       "category": "Emissions: CO2",
-      "name": "om_annual_investment_fraction",
       "pretty_name": "Annual qty. as fraction of embodied",
+      "description": "Calliope: costs.CO2.om_annual_investment_fraction<br><br>Annual emissions as a fraction of embodied or one-time emissions associated wtih implementation of the technology.",
+      "root": "costs.co2",
+      "name": "om_annual_investment_fraction",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "%/year",
-      "description": "Annual emissions as a fraction of embodied or one-time emissions associated wtih implementation of the technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 84,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2",
       "category": "Emissions: CO2",
+      "pretty_name": "Qty. per unit consumption",
+      "description": "Emissions per unit energy content of resource or consumption consumed. May be useful for pre-conversion, e.g., pre-combustion emissions associated with fuel.",
+      "root": "costs.co2",
       "name": "om_con",
-      "pretty_name": "Pre-process qty. per unit consumption",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "kg/kWh",
-      "description": "Emissions per unit energy content of resource or consumption consumed. May be useful for pre-conversion, e.g., pre-combustion emissions associated with fuel.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 85,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2",
       "category": "Emissions: CO2",
+      "pretty_name": "Qty. per unit production",
+      "description": "Calliope: costs.CO2.om_prod | Applied to carrier production of a technology<br><br>Emissions per unit of carrier produced.",
+      "root": "costs.co2",
       "name": "om_prod",
-      "pretty_name": "Post-process qty. per unit production",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "kg/kWh",
-      "description": "Emissions per unit energy content of carrier produced.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 86,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2",
       "category": "Emissions: CO2",
-      "name": "purchase",
       "pretty_name": "Embodied qty. per technology unit",
+      "description": "Calliope: costs.CO2.purchase<br><br>If unit technology (integer technology representation) is being utilized, quantity of embodied emissions associated with one unit of the technology.",
+      "root": "costs.co2",
+      "name": "purchase",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg",
-      "description": "If unit technology (integer technology representation) is being utilized, quantity of embodied emissions associated with one unit of the technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 87,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2",
       "category": "Emissions: CO2",
+      "pretty_name": "Qty. per unit resource area",
+      "description": "Calliope: costs.CO2.resource_area<br><br>Embodied or one-time emissions per unit resource area utilized. May be useful for representing one-time emissions associated with, e.g., site preparation for the technology to be built. Resource area is set with the resource area parameter or solved for as a decision variable when \"Scale resource with...\" is set to \"resource area\".",
+      "root": "costs.co2",
       "name": "resource_area",
-      "pretty_name": "Area qty.",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/m2",
-      "description": "Embodied or one-time emissions per unit resource area utilized. May be useful for representing one-time emissions associated with, e.g., site preparation for the technology to be built.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 88,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2",
       "category": "Emissions: CO2",
-      "name": "resource_cap",
       "pretty_name": "Embodied qty. per unit resource consumption capacity",
+      "description": "Calliope: costs.CO2.resource_cap<br><br>Embodied or one-time emissions per unit resource consumption capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "root": "costs.co2",
+      "name": "resource_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/kW",
-      "description": "Embodied or one-time emissions per unit resource consumption capacity. May be useful for, e.g, embodied emissions in the technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 89,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2",
       "category": "Emissions: CO2",
-      "name": "storage_cap",
       "pretty_name": "Embodied qty. per unit storage capacity",
+      "description": "Calliope: costs.CO2.storage_cap<br><br>Embodied or one-time emissions per unit storage capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "root": "costs.co2",
+      "name": "storage_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/kWh",
-      "description": "Embodied or one-time emissions per unit storage capacity. May be useful for, e.g, embodied emissions in the technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 90,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.ch4",
       "category": "Emissions: CH4",
-      "name": "energy_cap",
       "pretty_name": "Embodied qty. per unit production capacity",
+      "description": "Cappiope: costs.CH4.energy_cap<br><br>Embodied or one-time emissions per unit production capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "root": "costs.ch4",
+      "name": "energy_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/kW",
-      "description": "Embodied or one-time emissions per unit production capacity. May be useful for, e.g, embodied emissions in the technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 91,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.ch4",
       "category": "Emissions: CH4",
-      "name": "energy_cap_per_distance",
       "pretty_name": "Embodied qty. per distance",
+      "description": "Calliope: costs.CH4.energy_cap_per_distance<br><br>Embodied or one-time emissions per unit length/distance of transmission technology",
+      "root": "costs.ch4",
+      "name": "energy_cap_per_distance",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/kW/km",
-      "description": "Embodied or one-time emissions per unit length/distance of transmission technology",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 92,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.ch4",
       "category": "Emissions: CH4",
+      "pretty_name": "Qty. per unit exported carrier",
+      "description": "Calliope: costs.CH4.export<br><br>Emissions per unit energy content of, in particular, carrier exported. Note that carrier exported is always taken from carrier produced, so emissions associated with carrier produced are best associated with 'om_prod' and this should only be set if there are additional emissions associated with export.",
+      "root": "costs.ch4",
       "name": "export",
-      "pretty_name": "Post-process qty. per unit export",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "kg/kWh",
-      "description": "Emissions per unit energy content of, in particular, carrier exported. Note that carrier exported is always taken from carrier produced, so emissions associated with carrier produced are best associated with 'om_prod' and this should only be set if there are additional emissions associated with export.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 93,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.ch4",
       "category": "Emissions: CH4",
-      "name": "depreciation_rate",
       "pretty_name": "Depreciation Rate",
+      "description": "",
+      "root": "costs.ch4",
+      "name": "depreciation_rate",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/year",
-      "description": "",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 94,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.ch4",
       "category": "Emissions: CH4",
+      "pretty_name": "Interest rate",
+      "description": "Calliope: costs.CH4.interest_rate<br><br>Interest rate is probably not meaningful when treating emissions as costs, so recommdation is to set interest rate to 0 and lifetime or amortization period to 1 so that, e.g., embedded emissions occur in year zero in total (see Engage documentation on Engage/Calliope treatment of cash flows).",
+      "root": "costs.ch4",
       "name": "interest_rate",
-      "pretty_name": "Interest Rate",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "%",
-      "description": "",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 95,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.ch4",
       "category": "Emissions: CH4",
+      "pretty_name": "Annual qty. per unit production capacity",
+      "description": "Calliope: costs.CH4.om_annual<br><br>Fixed annual emissions per unit production capacity. Can be used, e.g., for fixed annual emissions associated with production capacity of the technology. Note that if resource area is tied to production capacity with the ratio of resource area to production capacity parameter or the resource capacity equals energy capacity parameter, this annual qty. CH4 emissions will be affected if this parameter is nonzero. ",
+      "root": "costs.ch4",
       "name": "om_annual",
-      "pretty_name": "Annual qty. per unit capacity",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/kW/year",
-      "description": "Fixed annual emissions per unit production capacity. Can be used, e.g., for fixed annual emissions associated with production capacity of the technology, or, e.g., if the technology uses resource area propoortional to capacity, annual emissions in proportion to resource area used.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 96,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.ch4",
       "category": "Emissions: CH4",
-      "name": "om_annual_investment_fraction",
       "pretty_name": "Annual qty. as fraction of embodied",
+      "description": "Calliope: costs.CO2.om_annual_investment_fraction<br><br>Annual emissions as a fraction of embodied or one-time emissions associated wtih implementation of the technology.",
+      "root": "costs.ch4",
+      "name": "om_annual_investment_fraction",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "%/year",
-      "description": "Annual emissions as a fraction of embodied or one-time emissions associated wtih implementation of the technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 97,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.ch4",
       "category": "Emissions: CH4",
+      "pretty_name": "Qty. per unit consumption",
+      "description": "Calliope: costs.CH4.om_con | Applied to carrier consumption of a technology<br><br>Equivalent emissions per unit resource or carrier consumed. May be useful for pre-conversion, e.g., pre-combustion emissions associated with fuel.",
+      "root": "costs.ch4",
       "name": "om_con",
-      "pretty_name": "Pre-process qty. per unit consumption",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "kg/kWh",
-      "description": "Emissions per unit energy content of resource or consumption consumed. May be useful for pre-conversion, e.g., pre-combustion emissions associated with fuel.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 98,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.ch4",
       "category": "Emissions: CH4",
+      "pretty_name": "Qty. per unit production",
+      "description": "Calliope: costs.CH4.om_prod | Applied to carrier production of a technology<br><br>Equivalent emissions per unit carrier produced.",
+      "root": "costs.ch4",
       "name": "om_prod",
-      "pretty_name": "Post-process qty. per unit production",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "kg/kWh",
-      "description": "Emissions per unit energy content of carrier produced.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 99,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.ch4",
       "category": "Emissions: CH4",
-      "name": "purchase",
       "pretty_name": "Embodied qty. per technology unit",
+      "description": "Calliope: costs.CH4.purchase<br><br>If unit technology (integer technology representation) is being utilized, quantity of embodied emissions associated with one unit of the technology.",
+      "root": "costs.ch4",
+      "name": "purchase",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg",
-      "description": "If unit technology (integer technology representation) is being utilized, quantity of embodied emissions associated with one unit of the technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 100,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.ch4",
       "category": "Emissions: CH4",
+      "pretty_name": "Qty. per unit resource area",
+      "description": "Calliope: costs.CH4.resource_area<br><br>Embodied or one-time emissions per unit resource area utilized. May be useful for representing one-time emissions associated with, e.g., site preparation for the technology to be built. Resource area is set with the resource area parameter or solved for as a decision variable when \"Scale resource with...\" is set to \"resource area\".",
+      "root": "costs.ch4",
       "name": "resource_area",
-      "pretty_name": "Area qty.",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/m2",
-      "description": "Embodied or one-time emissions per unit resource area utilized. May be useful for representing one-time emissions associated with, e.g., site preparation for the technology to be built.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 101,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.ch4",
       "category": "Emissions: CH4",
-      "name": "resource_cap",
       "pretty_name": "Embodied qty. per unit resource consumption capacity",
+      "description": "Calliope: costs.CH4.resource_cap | Cost of resource consumption capacity<br><br>Embodied or one-time emissions per unit resource consumption capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "root": "costs.ch4",
+      "name": "resource_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/kW",
-      "description": "Embodied or one-time emissions per unit resource consumption capacity. May be useful for, e.g, embodied emissions in the technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 102,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.ch4",
       "category": "Emissions: CH4",
-      "name": "storage_cap",
       "pretty_name": "Embodied qty. per unit storage capacity",
+      "description": "Calliope: costs.CH4.storage_cap<br><br>Embodied or one-time emissions per unit storage capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "root": "costs.ch4",
+      "name": "storage_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/kWh",
-      "description": "Embodied or one-time emissions per unit storage capacity. May be useful for, e.g, embodied emissions in the technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 103,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.n2o",
       "category": "Emissions: N2O",
-      "name": "energy_cap",
       "pretty_name": "Embodied qty. per unit production capacity",
+      "description": "Calliope: costs.N2O.energy_cap<br><br>Embodied or one-time emissions per unit production capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "root": "costs.n2o",
+      "name": "energy_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/kW",
-      "description": "Embodied or one-time emissions per unit production capacity. May be useful for, e.g, embodied emissions in the technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 104,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.n2o",
       "category": "Emissions: N2O",
+      "pretty_name": "Embodied qty. per unit length",
+      "description": "Calliope: costs.N2O.energy_cap_per_distance<br><br>Embodied or one-time emissions per unit length/distance of the transmission technology. Set the length parameter when using this parameter in Engage or Calliope will incorrectly calcuate length using the lat/long of the end locations of the transmission as Cartesian coordinates.",
+      "root": "costs.n2o",
       "name": "energy_cap_per_distance",
-      "pretty_name": "Embodied qty. per distance",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/kW/km",
-      "description": "Embodied or one-time emissions per unit length/distance of transmission technology",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 105,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.n2o",
       "category": "Emissions: N2O",
+      "pretty_name": "Qty. per unit exported carrier",
+      "description": "Calliope: costs.N2O.export<br><br>Emissions per unit of carrier exported. Note that carrier exported is always taken from carrier produced, so emissions associated with carrier produced are best associated with qty. per unit production (costs.N2O.om_prod) and as a practice this parameter only set if there are additional emissions associated with export.",
+      "root": "costs.n2o",
       "name": "export",
-      "pretty_name": "Post-process qty. per unit export",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "kg/kWh",
-      "description": "Emissions per unit energy content of, in particular, carrier exported. Note that carrier exported is always taken from carrier produced, so emissions associated with carrier produced are best associated with 'om_prod' and this should only be set if there are additional emissions associated with export.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 106,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.n2o",
       "category": "Emissions: N2O",
-      "name": "depreciation_rate",
       "pretty_name": "Depreciation Rate",
+      "description": "",
+      "root": "costs.n2o",
+      "name": "depreciation_rate",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/year",
-      "description": "",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 107,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.n2o",
       "category": "Emissions: N2O",
+      "pretty_name": "Interest rate",
+      "description": "Calliope: costs.N2O.interest_rate<br><br>Interest rate is probably not meaningful when treating emissions as costs, so recommdation is to set interest rate to 0 and lifetime or amortization period to 1 so that, e.g., embedded emissions occur in year zero in total (see Engage documentation on Engage/Calliope treatment of cash flows).",
+      "root": "costs.n2o",
       "name": "interest_rate",
-      "pretty_name": "Interest Rate",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "%",
-      "description": "",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 108,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.n2o",
       "category": "Emissions: N2O",
+      "pretty_name": "Annual qty. per unit production capacity",
+      "description": "Calliope: costs.N2O.om_annual<br><br>Fixed annual emissions per unit production capacity. Can be used, e.g., for fixed annual emissions associated with production capacity of the technology. Note that if resource area is tied to production capacity with the ratio of resource area to production capacity parameter or the resource capacity equals energy capacity parameter, this annual qty. CH4 emissions will be affected if this parameter is nonzero. ",
+      "root": "costs.n2o",
       "name": "om_annual",
-      "pretty_name": "Annual qty. per unit capacity",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/kW/year",
-      "description": "Fixed annual emissions per unit production capacity. Can be used, e.g., for fixed annual emissions associated with production capacity of the technology, or, e.g., if the technology uses resource area propoortional to capacity, annual emissions in proportion to resource area used.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 109,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.n2o",
       "category": "Emissions: N2O",
-      "name": "om_annual_investment_fraction",
       "pretty_name": "Annual qty. as fraction of embodied",
+      "description": "Calliope: costs.N2O.om_annual_investment_fraction<br><br>Annual emissions as a fraction of embodied or one-time equivalent emissions associated wtih implementation of the technology.",
+      "root": "costs.n2o",
+      "name": "om_annual_investment_fraction",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "%/year",
-      "description": "Annual emissions as a fraction of embodied or one-time emissions associated wtih implementation of the technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 110,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.n2o",
       "category": "Emissions: N2O",
+      "pretty_name": "Qty. per unit consumption",
+      "description": "Calliope: costs.N2O.om_con | Applied to carrier consumption of a technology<br><br>Emissions per unit resource or carrier consumed. May be useful for pre-conversion, e.g., pre-combustion emissions associated with fuel.",
+      "root": "costs.n2o",
       "name": "om_con",
-      "pretty_name": "Pre-process qty. per unit consumption",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "kg/kWh",
-      "description": "Emissions per unit energy content of resource or consumption consumed. May be useful for pre-conversion, e.g., pre-combustion emissions associated with fuel.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 111,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.n2o",
       "category": "Emissions: N2O",
+      "pretty_name": "Qty. per unit production",
+      "description": "Calliope: costs.N2O.om_prod | Applied to carrier production of a technology<br><br>Emissions per unit carrier produced.",
+      "root": "costs.n2o",
       "name": "om_prod",
-      "pretty_name": "Post-process qty. per unit production",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "kg/kWh",
-      "description": "Emissions per unit energy content of carrier produced.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 112,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.n2o",
       "category": "Emissions: N2O",
-      "name": "purchase",
       "pretty_name": "Embodied qty. per technology unit",
+      "description": "Calliope: costs.N2O.purchase<br><br>If unit technology (integer technology representation) is being utilized, quantity of embodied emissions associated with one unit of the technology.",
+      "root": "costs.n2o",
+      "name": "purchase",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg",
-      "description": "If unit technology (integer technology representation) is being utilized, quantity of embodied emissions associated with one unit of the technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 113,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.n2o",
       "category": "Emissions: N2O",
+      "pretty_name": "Qty. per unit resource area",
+      "description": "Calliope: costs.N2O.resource_area<br><br>Embodied or one-time emissions per unit resource area utilized. May be useful for representing one-time emissions associated with, e.g., site preparation for the technology to be built. Resource area is set with the resource area parameter or solved for as a decision variable when \"Scale resource with...\" is set to \"resource area\".",
+      "root": "costs.n2o",
       "name": "resource_area",
-      "pretty_name": "Area qty.",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/m2",
-      "description": "Embodied or one-time emissions per unit resource area utilized. May be useful for representing one-time emissions associated with, e.g., site preparation for the technology to be built.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 114,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.n2o",
       "category": "Emissions: N2O",
-      "name": "resource_cap",
       "pretty_name": "Embodied qty. per unit resource consumption capacity",
+      "description": "Calliope: costs.N2O.resource_cap | Cost of resource consumption capacity<br><br>Embodied or one-time emissions per unit resource consumption capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "root": "costs.n2o",
+      "name": "resource_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/kW",
-      "description": "Embodied or one-time emissions per unit resource consumption capacity. May be useful for, e.g, embodied emissions in the technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 115,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.n2o",
       "category": "Emissions: N2O",
-      "name": "storage_cap",
       "pretty_name": "Embodied qty. per unit storage capacity",
+      "description": "Calliope: costs.N2O.storage_cap<br><br>Embodied or one-time emissions per unit storage capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "root": "costs.n2o",
+      "name": "storage_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/kWh",
-      "description": "Embodied or one-time emissions per unit storage capacity. May be useful for, e.g, embodied emissions in the technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 116,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2e",
       "category": "Emissions: CO2e",
-      "name": "energy_cap",
       "pretty_name": "Embodied qty. per unit production capacity",
+      "description": "Cappiope: costs.CO2e.energy_cap<br><br>Equivalent embodied or one-time emissions per unit production capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "root": "costs.co2e",
+      "name": "energy_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/kW",
-      "description": "Embodied or one-time equivalent emissions per unit production capacity. May be useful for, e.g, embodied emissions in the technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 117,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2e",
       "category": "Emissions: CO2e",
-      "name": "energy_cap_per_distance",
       "pretty_name": "Embodied qty. per distance",
+      "description": "Calliope: costs.CO2e.energy_cap_per_distance<br><br>Equivalent embodied or one-time emissions per unit length/distance of transmission technology",
+      "root": "costs.co2e",
+      "name": "energy_cap_per_distance",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/kW/km",
-      "description": "Embodied or one-time equivalent emissions per unit length/distance of transmission technology",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 118,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2e",
       "category": "Emissions: CO2e",
+      "pretty_name": "Qty. per unit exported carrier",
+      "description": "Calliope: costs.CO2e.export<br><br>Equivalent emissions per unit of carrier exported. Note that carrier exported is always taken from carrier produced, so emissions associated with carrier produced are best associated with qty. per unit production (costs.N2O.om_prod) and as a practice this parameter only set if there are additional emissions associated with export.",
+      "root": "costs.co2e",
       "name": "export",
-      "pretty_name": "Post-process qty. per unit export",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "kg/kWh",
-      "description": "Equivalent emissions per unit energy content of, in particular, carrier exported. Note that carrier exported is always taken from carrier produced, so emissions associated with carrier produced are best associated with 'om_prod' and this should only be set if there are additional emissions associated with export.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 119,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2e",
       "category": "Emissions: CO2e",
+      "pretty_name": "",
+      "description": "",
+      "root": "costs.co2e",
       "name": "depreciation_rate",
-      "pretty_name": "Depreciation Rate",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/year",
-      "description": "",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 120,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2e",
       "category": "Emissions: CO2e",
+      "pretty_name": "Interest rate",
+      "description": "Calliope: costs.CO2e.interest_rate<br><br>Interest rate is probably not meaningful when treating emissions as costs, so recommdation is to set interest rate to 0 and lifetime or amortization period to 1 so that, e.g., embedded emissions occur in year zero in total (see Engage documentation on Engage/Calliope treatment of cash flows).",
+      "root": "costs.co2e",
       "name": "interest_rate",
-      "pretty_name": "Interest Rate",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "%",
-      "description": "",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 121,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2e",
       "category": "Emissions: CO2e",
+      "pretty_name": "Annual qty. per unit production capacity",
+      "description": "Calliope: costs.CO2e.om_annual<br><br>Fixed annual equivalent emissions quantity per unit production capacity. Can be used, e.g., for fixed annual emissions associated with production capacity of the technology.",
+      "root": "costs.co2e",
       "name": "om_annual",
-      "pretty_name": "Annual qty. per unit capacity",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/kW/year",
-      "description": "Fixed annual equivalent emissions per unit production capacity. Can be used, e.g., for fixed annual emissions associated with production capacity of the technology, or, e.g., if the technology uses resource area propoortional to capacity, annual emissions in proportion to resource area used.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 122,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2e",
       "category": "Emissions: CO2e",
-      "name": "om_annual_investment_fraction",
       "pretty_name": "Annual qty. as fraction of embodied",
+      "description": "Calliope: costs.CO2e.om_annual_investment_fraction<br><br>Annual emissions as a fraction of embodied or one-time equivalent emissions associated wtih implementation of the technology.",
+      "root": "costs.co2e",
+      "name": "om_annual_investment_fraction",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "%/year",
-      "description": "Annual emissions as a fraction of embodied or one-time equivalent emissions associated wtih implementation of the technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 123,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2e",
       "category": "Emissions: CO2e",
+      "pretty_name": "Qty. per unit consumption",
+      "description": "Calliope: costs.CO2e.om_con | Applied to carrier consumption of a technology<br><br>Equivalent emissions per unit resource or carrier consumed. May be useful for pre-conversion, e.g., pre-combustion emissions associated with fuel.",
+      "root": "costs.co2e",
       "name": "om_con",
-      "pretty_name": "Pre-process qty. per unit consumption",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "kg/kWh",
-      "description": "Equivalent emissions per unit energy content of resource or consumption consumed. May be useful for pre-conversion, e.g., pre-combustion emissions associated with fuel.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 124,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2e",
       "category": "Emissions: CO2e",
+      "pretty_name": "Qty. per unit production",
+      "description": "Calliope: costs.CO2e.om_prod | Applied to carrier production of a technology<br><br>Equivalent emissions per unit carrier produced.",
+      "root": "costs.co2e",
       "name": "om_prod",
-      "pretty_name": "Post-process qty. per unit production",
       "timeseries_enabled": "True",
       "is_systemwide": false,
       "units": "kg/kWh",
-      "description": "Equivalent emissions per unit energy content of carrier produced.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 125,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2e",
       "category": "Emissions: CO2e",
-      "name": "purchase",
       "pretty_name": "Embodied qty. per technology unit",
+      "description": "Calliope: costs.CO2e.purchase<br><br>If unit technology (integer technology representation) is being utilized, quantity of embodied equivalent emissions associated with one unit of the technology.",
+      "root": "costs.co2e",
+      "name": "purchase",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg",
-      "description": "If unit technology (integer technology representation) is being utilized, quantity of embodied equivalent emissions associated with one unit of the technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 126,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2e",
       "category": "Emissions: CO2e",
+      "pretty_name": "Qty. per unit resource area",
+      "description": "Calliope: costs.CO2e.resource_area<br><br>Embodied or one-time emissions per unit resource area utilized. May be useful for representing one-time emissions associated with, e.g., site preparation for the technology to be built. Resource area is set with the resource area parameter or solved for as a decision variable when \"Scale resource with...\" is set to \"resource area\".",
+      "root": "costs.co2e",
       "name": "resource_area",
-      "pretty_name": "Area qty.",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/m2",
-      "description": "Embodied or one-time equivalent emissions per unit resource area utilized. May be useful for representing one-time emissions associated with, e.g., site preparation for the technology to be built.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 127,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2e",
       "category": "Emissions: CO2e",
-      "name": "resource_cap",
       "pretty_name": "Embodied qty. per unit resource consumption capacity",
+      "description": "Calliope: costs.CO2e.resource_cap<br><br>Embodied or one-time equivalent emissions per unit resource consumption capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "root": "costs.co2e",
+      "name": "resource_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/kW",
-      "description": "Embodied or one-time equivalent emissions per unit resource consumption capacity. May be useful for, e.g, embodied emissions in the technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
   },
   {
     "pk": 128,
-    "model": "api.parameter",
     "fields": {
-      "root": "costs.co2e",
       "category": "Emissions: CO2e",
-      "name": "storage_cap",
       "pretty_name": "Embodied qty. per unit storage capacity",
+      "description": "Calliope: costs.CO2e.storage_cap<br><br>Equivalent embodied or one-time emissions per unit storage capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "root": "costs.co2e",
+      "name": "storage_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "kg/kWh",
-      "description": "Embodied or one-time equivalent emissions per unit storage capacity. May be useful for, e.g, embodied emissions in the technology.",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
-    }
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 129,
+    "fields": {
+      "category": "Constraints: Technology",
+      "pretty_name": "Maximum carrying capacity",
+      "description": "Calliope: energy_cap_max | Limits decision variables carrier_prod/carrier_con to a maximum/minimum.<br><br>Maximum carrying capacity sets an upper bound on the carrying capacity Engage will determine for the transmission element in planning mode. Configure this constraint to specify an upper limit on the carrying capacity Engage can determine for the transmission element if you wish for Engage to solve for production capacity of the element.",
+      "root": "constraints",
+      "name": "energy_cap_max",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kW",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 130,
+    "fields": {
+      "category": "Constraints: technology",
+      "pretty_name": "Carrying capacity",
+      "description": "Calliope: energy_cap_equals | fixes maximum/minimum of decision variables carrier_prod/carrier_con and overrides _max/ _min constraints.<br><br>Carrying capacity sets the upper limit of carrier that can be carried by the transmission element per timestep. If specified, Engage does not solve for carrying capacity but sets it, as would be appropriate for a transmission element that already exists or has known or programmed (future) carrying capacity. If not specified, in planning mode, Engage will solve for carrying capacity of the element, and upper and lower bounds of carrying capacity can be set with the maximum carrying capacity and minimum carrying capacity constraints. This is a limit on the amount of carrier that can be input into the transmission element per timestep. For transmission with <100% efficiency, output will always be less. ",
+      "root": "constraints",
+      "name": "energy_cap_equals",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kW",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 131,
+    "fields": {
+      "category": "Constraints: Technology",
+      "pretty_name": "Carrying capacity (systemwide)",
+      "description": "Calliope: energy_cap_equals_systemwide | fixes the sum to a maximum/minimum, for a particular technology, of the decision variables carrier_prod/carrier_con over all locations.<br><br>Systemwide carrying capacity sets an upper limit on the total carrying capacity for all elements of the subject transmission technology across the entire scenario system. This includes all the planning elements (those with maximum carrying capacity and (optionally) minimum carrying capacity set, and the elements where  capacity has been set with the carrying capacity constraint.",
+      "root": "constraints",
+      "name": "energy_cap_equals_systemwide",
+      "timeseries_enabled": "False",
+      "is_systemwide": true,
+      "units": "kW",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 132,
+    "fields": {
+      "category": "Constraints: Technology",
+      "pretty_name": "Maximum carrying capacity (systemwide)",
+      "description": "Calliope: energy_cap_max_systemwide | Limits the sum to a maxi- mum/minimum, for a particular technology, of the decision variables carrier_prod/carrier_con over all locations.<br><br>Systemwide carrying capacity sets an upper limit on the total carrying capacity for all transmission elements of the subject technology across the entire scenario system. This includes all the planning elements (those with Maximum carrying capacity and (optionally) Minimum carrying capacity set, and the elements where capacity has been set with the Carrying capacity constraint.",
+      "root": "constraints",
+      "name": "energy_cap_max_systemwide",
+      "timeseries_enabled": "False",
+      "is_systemwide": true,
+      "units": "kW",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 133,
+    "fields": {
+      "category": "Constraints: Technology",
+      "pretty_name": "Carrying efficiency",
+      "description": "Calliope: energy_eff | conversion efficiency (static, or from file as timeseries), from resource/storage/carrier_in (tech dependent) to carrier_out.<br><br>Ratio of carrier produced (energy_prod) to carrier consumed (energy_con).",
+      "root": "constraints",
+      "name": "energy_eff",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "%",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 134,
+    "fields": {
+      "category": "Constraints: Technology",
+      "pretty_name": "One-way efficiency",
+      "description": "Calliope: energy_eff | conversion efficiency (static, or from file as timeseries), from resource/storage/carrier_in (tech dependent) to carrier_out.<br><br>Storage applies one-way efficiency on charging and on discharging, so round-trip efficiency is the square of one-way efficiency. If round-trip efficiency is known, set one-way efficiency to SQRT(round-trip efficiency).",
+      "root": "constraints",
+      "name": "energy_eff",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "%",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 135,
+    "fields": {
+      "category": "Constraints: Resource",
+      "pretty_name": "Demand equal to available resource",
+      "description": "Calliope: force_resource | Forces this technology to use all available resource, rather than making it a maximum upper boundary (for production) or minimum lower boundary (for consumption). Static boolean, or from file as timeseries<br><br>The possible level of consumption of its carrier of a demand technology is determined by its available resource, its resource scale factor, and the resource area if resource unit is set to energy_per_area. Demand technologies have demand equal available resourse set by default so that demand is inflexible.<br><br>When demand equal available resource is not set, Engage will curtail demand if it will lead to a lower cost solution in cost minimization optimization. When there is no carrier consumption cost set, curtailment of demand is often least cost, so the defaul is often appropriate. However, negative carrier consumption cost can be set to represent sales revenue such that demand curtailment need not be the least cost solution.",
+      "root": "constraints",
+      "name": "force_resource",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "<sup>T</sup>/<sub>F</sub>",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[\"True\",\"False\"]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 136,
+    "fields": {
+      "category": "Constraints: Resource",
+      "pretty_name": "Scale resource with...",
+      "description": "Calliope: resource_unit | Sets the unit of resource to either energy (i.e. kWh), energy_per_area(i.e. kWh/m2), or energy_per_cap (i.e. kWh/kW). energy_per_area uses the resource_area decision variable to scale the available resource while energy_per_cap uses the energy_cap decision variable.<br><br>Set to \"energy_per_area\" to have Engage scale the resource scalar or time series value(s) with the resource area parameter. Set to \"energy\" to have Engage not scale the resource value(s).",
+      "root": "constraints",
+      "name": "resource_unit",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "<sub>ABC</sub>",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[\"energy\",\"energy_per_area\",\"energy_per_cap\"]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 137,
+    "fields": {
+      "category": "Constraints: Technology",
+      "pretty_name": "Carrying capacity scale factor",
+      "description": "Calliope: constraints.energy_cap_scale | Scale all energy_cap_min/max/equals/total_max/total_equals constraints by this value<br><br>Carrying capacity scale factor provides a factor by which Engage will scale all carrying capacity constraints--carrying capacity itself, and minimum and maximum.",
+      "root": "constraints",
+      "name": "energy_cap_scale",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "&#8593;",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 138,
+    "fields": {
+      "category": "Essentials",
+      "pretty_name": "Input Carrier Group",
+      "description": "[Required] Input carrier group that can accommodate any number of carriers (electricity, heat, gas, etc.)",
+      "root": "essentials",
+      "name": "carrier_in",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "",
+      "is_essential": true,
+      "is_carrier": true,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 139,
+    "fields": {
+      "category": "Essentials",
+      "pretty_name": "Output Carrier Group",
+      "description": "[Required] Output carrier group that may accommodate any number of carriers (electricity, heat, gas, etc.)",
+      "root": "essentials",
+      "name": "carrier_out",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "",
+      "is_essential": true,
+      "is_carrier": true,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 140,
+    "fields": {
+      "category": "Emissions: CO2",
+      "pretty_name": "Annual qty. per unit carrying capacity",
+      "description": "Calliope: costs.CO2.om_annual<br><br>Fixed annual emissions quantity per unit carrying capacity. Can be used, e.g., for fixed annual emissions associated with carrying capacity of the technology.",
+      "root": "costs.co2",
+      "name": "om_annual",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW/year",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 141,
+    "fields": {
+      "category": "Emissions: CH4",
+      "pretty_name": "Embodied qty. per unit carrying capacity",
+      "description": "Cappiope: costs.CH4.energy_cap<br><br>Embodied or one-time emissions per unit carrying capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "root": "costs.ch4",
+      "name": "energy_cap",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 142,
+    "fields": {
+      "category": "Costs: Monetary",
+      "pretty_name": "Resource consumption cost",
+      "description": "Calliope: costs.om_con | Applied to carrier consumption of a technology",
+      "root": "costs.monetary",
+      "name": "om_con",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "$/kWh",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 143,
+    "fields": {
+      "category": "Emissions: CO2e",
+      "pretty_name": "Qty. per unit delivered",
+      "description": "Calliope: costs.CO2e.om_prod | Applied to carrier production of a technology<br><br>Equivalent emissions per unit carrier delivered.",
+      "root": "costs.co2e",
+      "name": "om_prod",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "kg/kWh",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 144,
+    "fields": {
+      "category": "Emissions: CO2",
+      "pretty_name": "Embodied qty. per unit carrying capacity",
+      "description": "Embodied or one-time emissions per unit carrying capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "root": "costs.co2",
+      "name": "energy_cap",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 145,
+    "fields": {
+      "category": "Costs: Monetary",
+      "pretty_name": "Cost of carrying capacity",
+      "description": "Calliope: costs.monetary.energy_cap<br><br>Cost of carrrying capacity of the technology sets the cost per unit of carrying capacity. For energy carrier transmission technologies, cost of carrying capacity might, for example, be specified in units of dollars per kW or dollars per MW.",
+      "root": "costs.monetary",
+      "name": "energy_cap",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "$/kW",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 146,
+    "fields": {
+      "category": "Emissions: CO2",
+      "pretty_name": "Qty. per unit delivered",
+      "description": "Calliope: costs.CO2.om_prod | Applied to carrier production of a technology<br><br>Emissions per unit of carrier delivered.",
+      "root": "costs.co2",
+      "name": "om_prod",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "kg/kWh",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 147,
+    "fields": {
+      "category": "Emissions: N2O",
+      "pretty_name": "Embodied qty. per unit carrying capacity",
+      "description": "Calliope: costs.N2O.energy_cap<br><br>Embodied or one-time emissions per unit carrying capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "root": "costs.n2o",
+      "name": "energy_cap",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 148,
+    "fields": {
+      "category": "Costs: Monetary",
+      "pretty_name": "Carrier delivery cost",
+      "description": "Calliope: costs.monetary.om_prod Applied to carrier production of a technology<br><br>Cost applied per unit of carrier delivered.",
+      "root": "costs.monetary",
+      "name": "om_prod",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "$/kWh",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 149,
+    "fields": {
+      "category": "Emissions: CH4",
+      "pretty_name": "Annual qty. per unit carrying capacity",
+      "description": "Calliope: costs.CH4.om_annual<br><br>Fixed annual emissions per unit carrying capacity. Can be used, e.g., for fixed annual emissions associated with carrying capacity of the technology.",
+      "root": "costs.ch4",
+      "name": "om_annual",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW/year",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 150,
+    "fields": {
+      "category": "Emissions: N2O",
+      "pretty_name": "Annual qty. per unit carrying capacity",
+      "description": "Calliope: costs.N2O.om_annual<br><br>Fixed annual emissions per unit carrying capacity. Can be used, e.g., for fixed annual emissions associated with carrying capacity of the technology.",
+      "root": "costs.n2o",
+      "name": "om_annual",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW/year",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 151,
+    "fields": {
+      "category": "Emissions: CH4",
+      "pretty_name": "Qty. per unit delivered",
+      "description": "Calliope: costs.CH4.om_prod | Applied to carrier production of a technology<br><br>Equivalent emissions per unit carrier delivered.",
+      "root": "costs.ch4",
+      "name": "om_prod",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "kg/kWh",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 152,
+    "fields": {
+      "category": "Emissions: N2O",
+      "pretty_name": "Qty. per unit delivered",
+      "description": "Calliope: costs.N2O.om_prod | Applied to carrier production of a technology<br><br>Emissions per unit carrier delivered.",
+      "root": "costs.n2o",
+      "name": "om_prod",
+      "timeseries_enabled": "True",
+      "is_systemwide": false,
+      "units": "kg/kWh",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 153,
+    "fields": {
+      "category": "Emissions: CO2e",
+      "pretty_name": "Embodied qty. per unit carrying capacity",
+      "description": "Cappiope: costs.CO2e.energy_cap<br><br>Equivalent embodied or one-time emissions per unit carrying capacity. May be useful for, e.g, embodied emissions in the technology.",
+      "root": "costs.co2e",
+      "name": "energy_cap",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 154,
+    "fields": {
+      "category": "Emissions: CO2e",
+      "pretty_name": "Annual qty. per unit carying capacity",
+      "description": "Calliope: costs.CO2e.om_annual<br><br>Fixed annual equivalent emissions quantity per unit carrying capacity. Can be used, e.g., for fixed annual emissions associated with production capacity of the technology.",
+      "root": "costs.co2e",
+      "name": "om_annual",
+      "timeseries_enabled": "False",
+      "is_systemwide": false,
+      "units": "kg/kW/year",
+      "is_essential": false,
+      "is_carrier": false,
+      "choices": "[]"
+    },
+    "model": "api.parameter"
   }
 ]
