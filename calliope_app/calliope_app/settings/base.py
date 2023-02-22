@@ -127,7 +127,7 @@ MESSAGE_TAGS = {
 gettext = lambda s: s
 LANGUAGES = [
     ('en', gettext('English')),
-    ('es', gettext('Spanish')),
+    # ('es', gettext('Spanish')),
     ('fr', gettext('French')),
     # Add new langugage here
 ]
