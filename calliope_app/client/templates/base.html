@@ -92,7 +92,11 @@
 
 				{% if user.is_authenticated %}
 					<!-- Model Sharing -->
-					<a href="{% url 'settings' %}"><button class="btn btn-sm" style="height:100%;"><i class="fas fa-users"></i>&nbsp;&nbsp;{% trans "Model Sharing" %}</button></a>
+					{% if model %}
+						<a href="{% url 'settings' %}?model_uuid={{model.uuid}}"><button class="btn btn-sm" style="height:100%;"><i class="fas fa-users"></i>&nbsp;&nbsp;{% trans "Model Sharing" %}</button></a>
+					{% else %}
+						<a href="{% url 'settings' %}"><button class="btn btn-sm" style="height:100%;"><i class="fas fa-users"></i>&nbsp;&nbsp;{% trans "Model Sharing" %}</button></a>
+					{% endif %}
 				{% endif %}
 
 				<a href="https://www.nrel.gov/" target="_blank">
