@@ -56,12 +56,12 @@ var total_radius = 40,
         },
         conversion: {
             description: 'Converts energy from one carrier to another.',
-            icon: '<i class="fab fa-nintendo-switch"></i>',
+            icon: '<i class=\"fa-solid fa-shuffle\"></i>',
             pretty_name: 'Conversion'
         },
         conversion_plus: {
             description: 'Converts energy from one carrier to another.',
-            icon: '<i class="fab fa-nintendo-switch"></i> <i class="fas fa-plus"></i>',
+            icon: '<i class=\"fa-solid fa-shuffle\"></i> <i class="fas fa-plus"></i>',
             pretty_name: 'Conversion Plus'
         }
     },
@@ -127,7 +127,7 @@ if (LANGUAGE_CODE === "fr") {
         supply: {
             description: "Fournit de l'énergie à un transporteur, a une ressource positive.",
             icon: '<i class="fas fa-bolt"></i>',
-            pretty_name: "D'approvisionnement"
+            pretty_name: "Supply"
         },
         supply_plus: {
             description: "Fournit de l'énergie à un transporteur, a une ressource positive. D'autres contraintes possibles, notamment l'efficacité et le stockage, distinguent cela de l'approvisionnement.",
@@ -137,12 +137,12 @@ if (LANGUAGE_CODE === "fr") {
         demand: {
             description: "Demande de l'énergie à un transporteur, a une ressource négative.",
             icon: '<i class="far fa-building"></i>',
-            pretty_name: 'Demande'
+            pretty_name: 'Demand'
         },
         storage: {
             description: "Stocke l'énergie.",
             icon: '<i class="fas fa-battery-three-quarters"></i>',
-            pretty_name: 'Stockage'
+            pretty_name: 'Storage'
         },
         transmission: {
             description: "Transmet l'énergie d'un endroit à un autre.",
@@ -151,12 +151,12 @@ if (LANGUAGE_CODE === "fr") {
         },
         conversion: {
             description: "Convertit l'énergie d'un transporteur à un autre.",
-            icon: '<i class="fab fa-nintendo-switch"></i>',
+            icon: '<i class=\"fa-solid fa-shuffle\"></i>',
             pretty_name: 'Conversion'
         },
         conversion_plus: {
             description: "Convertit l'énergie d'un transporteur à un autre.",
-            icon: '<i class="fab fa-nintendo-switch"></i> <i class="fas fa-plus"></i>',
+            icon: '<i class=\"fa-solid fa-shuffle\"></i> <i class="fas fa-plus"></i>',
             pretty_name: 'Conversion Plus'
         }
     }

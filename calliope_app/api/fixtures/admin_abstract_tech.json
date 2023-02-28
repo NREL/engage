@@ -62,7 +62,7 @@
       "pretty_name": "Conversion",
       "image": "data/images/conversion.png",
       "description": "Converts energy from one carrier to another.",
-      "icon": "<i class=\"fab fa-nintendo-switch\"></i>"
+      "icon": "<i class=\"fa-solid fa-shuffle\"></i>"
     }
   },
   {
@@ -73,7 +73,7 @@
       "pretty_name": "Conversion Plus",
       "image": "data/images/conversion_plus.png",
       "description": "Converts energy from one carrier to another.",
-      "icon": "<i class=\"fab fa-nintendo-switch\"></i> <i class=\"fas fa-plus\"></i>"
+      "icon": "<i class=\"fa-solid fa-shuffle\"></i> <i class=\"fas fa-plus\"></i>"
     }
   }
 ]
