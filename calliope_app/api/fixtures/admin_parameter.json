@@ -2195,7 +2195,7 @@
   {
     "pk": 130,
     "fields": {
-      "category": "Constraints: technology",
+      "category": "Constraints: Technology",
       "pretty_name": "Carrying capacity",
       "description": "Calliope: energy_cap_equals | fixes maximum/minimum of decision variables carrier_prod/carrier_con and overrides _max/ _min constraints.<br><br>Carrying capacity sets the upper limit of carrier that can be carried by the transmission element per timestep. If specified, Engage does not solve for carrying capacity but sets it, as would be appropriate for a transmission element that already exists or has known or programmed (future) carrying capacity. If not specified, in planning mode, Engage will solve for carrying capacity of the element, and upper and lower bounds of carrying capacity can be set with the maximum carrying capacity and minimum carrying capacity constraints. This is a limit on the amount of carrier that can be input into the transmission element per timestep. For transmission with <100% efficiency, output will always be less. ",
       "root": "constraints",
