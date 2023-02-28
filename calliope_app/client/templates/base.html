@@ -36,6 +36,10 @@
 	
 	<!-- Internal -->
 	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+	{% get_current_language as LANGUAGE_CODE %}
+	<script type="application/javascript">
+		var LANGUAGE_CODE = '{{ LANGUAGE_CODE }}';
+	</script>
 	<script type="text/javascript" src="{% static 'js/main.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/units.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/data_imports.js' %}"></script>
@@ -100,7 +104,7 @@
 				<div class="btn-group" style="height:30px;margin-top:3px;float:right">
 					<form style="font-size:13px;" action="{% url 'set_timezone' %}" method="post" >{% csrf_token %}
 						<input name="next" type="hidden" value="{{ request.path }}">
-						<select name="timezone" onchange="this.form.submit()" class="btn-default" style="margin-left:3px;width:100px;height:30px !important;border-radius:0;">
+						<select name="timezone" onchange="this.form.submit()" class="btn-default" style="margin-left:3px;width:150px;height:30px !important;border-radius:0;">
 							<option disabled>Select your timezone...</option>
 							{% for timezone in timezones %}
 								<option value="{{ timezone }}"{% if timezone == user.user_profile.timezone %} selected{% endif %}>
@@ -116,7 +120,7 @@
 				<div class="btn-group" style="height:30px;margin-top:3px;float:right">
 					<form style="font-size:13px;" action="{% url 'set_language' %}" method="post" >{% csrf_token %}
 						<input name="next" type="hidden" value="{{ redirect_to }}">
-						<select name="language" onchange="this.form.submit()" class="btn-default" style="margin-left:3px;width:60px;height:30px !important;border-radius:0;">
+						<select name="language" onchange="this.form.submit()" class="btn-default" style="margin-left:3px;width:150px;height:30px !important;border-radius:0;">
 							{% get_current_language as LANGUAGE_CODE %}
 							{% get_available_languages as LANGUAGES %}
 							{% get_language_info_list for LANGUAGES as languages %}
@@ -129,10 +133,6 @@
 						</select>
 					</form>
 				</div>
-				{% get_current_language as LANGUAGE_CODE %}
-				<script type="application/javascript">
-					var LANGUAGE_CODE = '{{ LANGUAGE_CODE }}';
-				</script>
 				
 				{% if model %}
 				{% if can_edit == False %}<div class="text-sm" style="background-color: yellow; color: black; float: right; height: 30px; padding: 4px; margin-top: 3px;">&nbsp;<b>{% trans "VIEW ONLY" %}</b>&nbsp;</div>{% endif %}
@@ -152,7 +152,7 @@
 
 				{% if user.is_authenticated %}
 					<!-- User -->
-					<div class="btn-group" style="height:30px;margin-top:3px;float:right">
+					<div class="btn-group" style="height:30px;margin-top:3px;margin-left:3px;float:right">
 						<button class="btn-primary dropdown-toggle text-sm" type="button" data-toggle="dropdown">
 							&nbsp;&nbsp;<i class="fas fa-user"></i>&nbsp;&nbsp;<span class="caret"></span>&nbsp;
 						</button>

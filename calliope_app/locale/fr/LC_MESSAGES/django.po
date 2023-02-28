@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-04 02:17+0000\n"
+"POT-Creation-Date: 2023-02-28 04:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,42 +47,49 @@ msgid "Enter the same password as above, for verification."
 msgstr "Insérez le même mot passe pour vérifier"
 
 #: account/forms.py:95
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "Please enter a correct (username)s and password. Note that both fields "
+#| "may be case-sensitive."
 msgid ""
-"Please enter a correct (username)s and password. Note that both fields may "
+"Please enter a correct %(username)s and password. Note that both fields may "
 "be case-sensitive."
-msgstr "Prière entrer (un nom d'utilisateur) et un mot de passe correctes. Il est à noter que les champs de saisie sont sensibles aux majuscules et minuscules."
+msgstr ""
+"Prière entrer (un nom d'utilisateur) et un mot de passe correctes. Il est à "
+"noter que les champs de saisie sont sensibles aux majuscules et minuscules."
 
 #: account/forms.py:98
 msgid ""
 "This account is inactive, please activate it with link sent via email, or "
 "contact Engage team."
-msgstr "Ce compte est inactif, veuillez l'activer en cliquant sur le lien envoyé par e-mail, ou contacter l'équipe Engage"
+msgstr ""
+"Ce compte est inactif, veuillez l'activer en cliquant sur le lien envoyé par "
+"e-mail, ou contacter l'équipe Engage"
 
 #: account/validators.py:9
 msgid ""
 "Enter a valid string consisting of unicode letters, numbers, underscores or "
 "hyphens."
-msgstr "Veuillez insérer une chaîne unicode de lettres, chiffres, tiret bas, ou tiret."
+msgstr ""
+"Veuillez insérer une chaîne unicode de lettres, chiffres, tiret bas, ou "
+"tiret."
 
 #: account/validators.py:19
 msgid ""
 "Enter a valid email consisting of letters, numbers, and @/./+/-/_ characters."
-msgstr "Veuillez insérer un email contenant des lettres, chiffres, et des caractères spéciaux @/./+/-/_"
+msgstr ""
+"Veuillez insérer un email contenant des lettres, chiffres, et des caractères "
+"spéciaux @/./+/-/_"
 
 #: calliope_app/settings/base.py:129
 msgid "English"
 msgstr "Anglais"
 
-#: calliope_app/settings/base.py:130
-msgid "Spanish"
-msgstr "Espagnol"
-
 #: calliope_app/settings/base.py:131
 msgid "French"
 msgstr "Français"
 
-#: client/templates/activity.html:16 client/templates/base.html:130
+#: client/templates/activity.html:16 client/templates/base.html:147
 #: client/templates/home_my_models.html:6
 msgid "Activity"
 msgstr "Activité"
@@ -117,7 +124,7 @@ msgid "less"
 msgstr "Moins"
 
 #: client/templates/add_run.html:12 client/templates/configure.html:44
-#: client/templates/run.html:31
+#: client/templates/map_viz.html:100 client/templates/run.html:31
 msgid "Runs"
 msgstr "Exécute"
 
@@ -127,7 +134,7 @@ msgstr "Sélectionner"
 
 #: client/templates/add_run.html:26
 msgid "a time period"
-msgstr ""
+msgstr "une période de temps"
 
 #: client/templates/add_run.html:26 client/templates/add_scenario.html:26
 #: client/templates/add_technology.html:26
@@ -150,6 +157,10 @@ msgstr "années passées"
 msgid "Loading"
 msgstr "Téléchargement"
 
+#: client/templates/add_run.html:54
+msgid "Run Options"
+msgstr "Options d'exécution"
+
 #: client/templates/add_run.html:57
 msgid "Enable Clustered Run:"
 msgstr "Activer l'exécution groupée"
@@ -165,6 +176,14 @@ msgstr "Exécuter le pas de temps"
 #: client/templates/add_run.html:71
 msgid "Select Run Environment:"
 msgstr "Sélectionner l'environnement d'exécution"
+
+#: client/templates/add_run.html:81
+msgid "Run Notes"
+msgstr "Notes d'exécution"
+
+#: client/templates/add_run_precheck.html:7
+msgid "Recent Periods"
+msgstr "Périodes récentes"
 
 #: client/templates/add_run_precheck.html:23
 msgid "Timeseries is missing for"
@@ -215,6 +234,10 @@ msgid "an existing scenario to duplicate"
 msgstr "un scénario existant pour la duplication"
 
 #: client/templates/add_scenario.html:26
+msgid "OPTIONAL"
+msgstr "FACULTATIF"
+
+#: client/templates/add_scenario.html:26
 msgid "Existing"
 msgstr "existant"
 
@@ -263,74 +286,74 @@ msgstr "existant"
 msgid "publicly available"
 msgstr "publiquement disponible"
 
-#: client/templates/base.html:87
+#: client/templates/base.html:91
 msgid "Help"
 msgstr "Aide"
 
-#: client/templates/base.html:91 client/templates/share.html:14
+#: client/templates/base.html:95 client/templates/share.html:14
 msgid "Model Sharing"
 msgstr "Partage du modèle"
 
-#: client/templates/base.html:121 client/templates/home_my_models.html:51
+#: client/templates/base.html:138 client/templates/home_my_models.html:51
 #: client/templates/home_public_models.html:20
 msgid "VIEW ONLY"
 msgstr "Lecture seulement"
 
-#: client/templates/base.html:131
-#: client/templates/technology_parameters.html:59
+#: client/templates/base.html:148
+#: client/templates/technology_parameters.html:65
 #: client/templates/timeseries.html:95
 msgid "Timeseries"
 msgstr "séries temporelles"
 
-#: client/templates/base.html:144 client/templates/password.html:11
+#: client/templates/base.html:161 client/templates/password.html:11
 msgid "Change Password"
 msgstr "Changer le mot de passe"
 
-#: client/templates/base.html:145
+#: client/templates/base.html:162
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: client/templates/base.html:166
+#: client/templates/base.html:167
 msgid "LOGIN"
 msgstr "Se connecter"
 
-#: client/templates/base.html:194
+#: client/templates/base.html:195
 msgid "Help Guide"
 msgstr "Guide d'assistance"
 
-#: client/templates/base.html:204 client/templates/registration/login.html:20
+#: client/templates/base.html:205 client/templates/registration/login.html:20
 #: client/templates/registration/registration.html:20
 msgid "OPEN ACCESS ENERGY SYSTEM PLANNING"
 msgstr "OUVRIR L'ACCES AU PLANIFICATEUR DU SYSTÈME D'ENERGIE"
 
-#: client/templates/base.html:205 client/templates/registration/login.html:21
+#: client/templates/base.html:206 client/templates/registration/login.html:21
 #: client/templates/registration/registration.html:21
 msgid "Supported on Modern"
 msgstr "support sur moderne"
 
-#: client/templates/base.html:205 client/templates/registration/login.html:22
+#: client/templates/base.html:206 client/templates/registration/login.html:22
 #: client/templates/registration/registration.html:22
 msgid "and"
 msgstr "et"
 
-#: client/templates/base.html:205 client/templates/registration/login.html:24
+#: client/templates/base.html:206 client/templates/registration/login.html:24
 #: client/templates/registration/registration.html:24
 msgid "Browsers"
 msgstr "navigateurs"
 
-#: client/templates/base.html:209 client/templates/registration/login.html:31
+#: client/templates/base.html:210 client/templates/registration/login.html:31
 #: client/templates/registration/registration.html:31
 msgid "Project Assistance"
 msgstr "Assitance au projet"
 
-#: client/templates/base.html:218 client/templates/registration/login.html:59
+#: client/templates/base.html:219 client/templates/registration/login.html:59
 #: client/templates/registration/login.html:66
 #: client/templates/registration/registration.html:59
 #: client/templates/registration/registration.html:66
 msgid "Documentation"
 msgstr "Documentation"
 
-#: client/templates/base.html:226
+#: client/templates/base.html:227
 msgid "Close"
 msgstr "Fermer"
 
@@ -371,6 +394,10 @@ msgstr "Enregistrer"
 msgid "New"
 msgstr "Nouveau"
 
+#: client/templates/home.html:37
+msgid "Videos"
+msgstr "Vidéos"
+
 #: client/templates/home_my_models.html:3
 msgid "My Models"
 msgstr "Mes modèles"
@@ -387,11 +414,11 @@ msgstr "Collaborateurs"
 
 #: client/templates/home_my_models.html:8
 msgid "Permissions"
-msgstr "Permissions"
+msgstr "Autorisations"
 
 #: client/templates/home_my_models.html:31
 msgid "Notifications"
-msgstr "Notifications"
+msgstr "Avis"
 
 #: client/templates/home_my_models.html:41
 msgid "Share"
@@ -588,7 +615,10 @@ msgstr "Importer les données"
 msgid ""
 "Generates a timeseries of solar capacity factor data. Find and inspect it on "
 "the Timeseries page, linked below."
-msgstr "crée une série temporelle de données sur le facteur de la capacité solaire. Veuillez le trouvez et l'inspecter sur la page de séries temporelles, lien ci-dessous"
+msgstr ""
+"crée une série temporelle de données sur le facteur de la capacité solaire. "
+"Veuillez le trouvez et l'inspecter sur la page de séries temporelles, lien "
+"ci-dessous"
 
 #: client/templates/pvwatts_form.html:53 client/templates/wtk_form.html:43
 msgid "Timeseries Page"
@@ -602,7 +632,14 @@ msgid ""
 "model, intuitive interface and visualization capabilities facilitate "
 "collaboration and communication among diverse stakeholder groups, teams, and "
 "experts modeling systems from district energy / microgrid to national scales."
-msgstr "Engage est un modèle de planification de l'énergie en ligne, ultra accessible et flexible, qui sert à rapidement explorer des scénarios multi-sectoriels. Son modèle de données partagées virtuellement, son interface intuitive et ses capacités de visiualisation, facilitent la collaboration et la communication entre divers groupes de parties prenantes, des équipes, des experts travaillant sur des systèmes de modélisation du secteur de l'énergie/ mini-réseau à des niveaux nationaux."
+msgstr ""
+"Engage est un modèle de planification de l'énergie en ligne, ultra "
+"accessible et flexible, qui sert à rapidement explorer des scénarios multi-"
+"sectoriels. Son modèle de données partagées virtuellement, son interface "
+"intuitive et ses capacités de visiualisation, facilitent la collaboration et "
+"la communication entre divers groupes de parties prenantes, des équipes, des "
+"experts travaillant sur des systèmes de modélisation du secteur de "
+"l'énergie/ mini-réseau à des niveaux nationaux."
 
 #: client/templates/registration/login.html:29
 #: client/templates/registration/registration.html:29
@@ -669,7 +706,9 @@ msgstr "Changer mot de passe"
 msgid ""
 "The password reset link was invalid, possibly because it has already been "
 "used."
-msgstr "Le lien de réinitialisation du mot de passe est invalide, probablement parce qu'il a été déjà utilisé"
+msgstr ""
+"Le lien de réinitialisation du mot de passe est invalide, probablement parce "
+"qu'il a été déjà utilisé"
 
 #: client/templates/registration/pw_reset_confirm.html:22
 msgid "Please request a new password"
@@ -683,17 +722,25 @@ msgstr "REINITIALISATION"
 msgid ""
 "We've emailed you instructions for setting your password, if an account "
 "exists with the email you entered. You should receive them shortly."
-msgstr "Si un compte existe avec cette adresse e-mail,  vous  recevrez des instructions pour établir votre mot de passe. Un e-mail vous sera envoyé de suite."
+msgstr ""
+"Si un compte existe avec cette adresse e-mail,  vous  recevrez des "
+"instructions pour établir votre mot de passe. Un e-mail vous sera envoyé de "
+"suite."
 
 #: client/templates/registration/pw_reset_done.html:17
 msgid ""
 "If you don't receive an email, please make sure you've entered the address "
 "you registered with, and check your spam folder."
-msgstr "Si aucun e-mail n'a été reçu, veuillez vous assurer que vous avez utilisé l'adresse e-mail avec laquelle vous vous êtes enregistré, et vérifiez votre spam"
+msgstr ""
+"Si aucun e-mail n'a été reçu, veuillez vous assurer que vous avez utilisé "
+"l'adresse e-mail avec laquelle vous vous êtes enregistré, et vérifiez votre "
+"spam"
 
 #: client/templates/registration/pw_reset_email.html:4
 msgid "To initiate the password reset process for your ENGAGE Account"
-msgstr "Pour lancer le processus de réinitialisation du mot de passe de votre compte ENGAGE"
+msgstr ""
+"Pour lancer le processus de réinitialisation du mot de passe de votre compte "
+"ENGAGE"
 
 #: client/templates/registration/pw_reset_email.html:5
 msgid "click the link below"
@@ -703,7 +750,9 @@ msgstr "cliquez sur le lien ci-dessous"
 msgid ""
 "If clicking the link above doesn't work, please copy and paste the URL in a "
 "new browser window instead."
-msgstr "Si le lien ci-dessous n'est pas actif, veuillez copier et coller l'URL dans une nouvelle fenêtre de navigation."
+msgstr ""
+"Si le lien ci-dessous n'est pas actif, veuillez copier et coller l'URL dans "
+"une nouvelle fenêtre de navigation."
 
 #: client/templates/registration/pw_reset_email.html:11
 msgid "Sincerely"
@@ -717,7 +766,9 @@ msgstr "L'équipe Engage de NREL"
 msgid ""
 "Enter your email address below, and we'll email instructions for setting a "
 "new one."
-msgstr "Veuillez entrer votre email ci-dessous, et des instructions de réinitialisation vous seront envoyées."
+msgstr ""
+"Veuillez entrer votre email ci-dessous, et des instructions de "
+"réinitialisation vous seront envoyées."
 
 #: client/templates/registration/pw_reset_form.html:17
 msgid "Reset my password"
@@ -827,23 +878,23 @@ msgstr "Publication lancée"
 msgid "Publishing run"
 msgstr "publication du lancement"
 
-#: client/templates/run_dashboard.html:136
+#: client/templates/run_dashboard.html:137
 msgid "OUT OF DATE"
 msgstr "OBSOLETE"
 
-#: client/templates/run_dashboard.html:138
+#: client/templates/run_dashboard.html:139
 msgid "UP TO DATE"
 msgstr "MIS A JOUR"
 
-#: client/templates/run_dashboard.html:144
+#: client/templates/run_dashboard.html:145
 msgid "FEATURE UNDER DEVELOPMENT"
 msgstr "FONCTIONALITE EN COURS DE DEVELOPPEMENT"
 
-#: client/templates/run_dashboard.html:144
+#: client/templates/run_dashboard.html:145
 msgid "Diff"
 msgstr "Diff"
 
-#: client/templates/run_dashboard.html:146
+#: client/templates/run_dashboard.html:147
 msgid "Delete run"
 msgstr "Supprimer le lancement"
 
@@ -886,7 +937,7 @@ msgstr "Sélectionnez un scénario"
 
 #: client/templates/scenario_settings.html:23
 #: client/templates/scenario_settings.html:28
-#: client/templates/technology_parameters.html:124
+#: client/templates/technology_parameters.html:130
 msgid "Row"
 msgstr "Ligne"
 
@@ -906,6 +957,30 @@ msgstr "Sélectionnez un modèle"
 msgid "Select a user"
 msgstr "Sélectionnez un utilisateur"
 
+#: client/templates/share.html:59
+#, fuzzy
+#| msgid "Remove model"
+msgid "Remove"
+msgstr "Supprimer le modèle"
+
+#: client/templates/share.html:60
+msgid "View Only"
+msgstr "Afficher uniquement"
+
+#: client/templates/share.html:61 client/templates/share.html:80
+msgid "Can Edit"
+msgstr "Peut modifier"
+
+#: client/templates/share.html:77
+msgid "Administrator"
+msgstr "Administrateur"
+
+#: client/templates/splitter.html:5
+#: client/templates/technology_parameters.html:100
+#: client/templates/technology_parameters.html:105
+msgid "Hide"
+msgstr "Masquer"
+
 #: client/templates/technology_essentials.html:15
 msgid "Technology Definition"
 msgstr "Définition de la technologie"
@@ -914,49 +989,46 @@ msgstr "Définition de la technologie"
 msgid ""
 "Version tags are used to differentiate multiple versions of the same "
 "technology"
-msgstr "Les étiquettes des versions sont utilisées pour distinguer les versions multiples d'une même technologie. "
+msgstr ""
+"Les étiquettes des versions sont utilisées pour distinguer les versions "
+"multiples d'une même technologie. "
 
 #: client/templates/technology_essentials.html:80
 msgid "Description"
 msgstr "Description"
 
-#: client/templates/technology_parameters.html:40
-#: client/templates/technology_parameters.html:43
 #: client/templates/technology_parameters.html:46
+#: client/templates/technology_parameters.html:49
+#: client/templates/technology_parameters.html:52
 msgid "Mark parameter as favorite"
 msgstr "Marquer paramètre comme favoris"
 
-#: client/templates/technology_parameters.html:93
-#: client/templates/technology_parameters.html:98
+#: client/templates/technology_parameters.html:99
+#: client/templates/technology_parameters.html:104
 msgid "Show"
 msgstr "Montrer"
 
-#: client/templates/technology_parameters.html:94
-#: client/templates/technology_parameters.html:99
-msgid "Hide"
-msgstr "Cacher"
-
-#: client/templates/technology_parameters.html:119
+#: client/templates/technology_parameters.html:125
 msgid "Default"
 msgstr "Défault"
 
-#: client/templates/technology_parameters.html:123
+#: client/templates/technology_parameters.html:129
 msgid "Evolve this parameter by year"
 msgstr "Evoluer ce paramètre par année"
 
-#: client/templates/technology_parameters.html:133
+#: client/templates/technology_parameters.html:139
 msgid "This parameter is configured to evolve over multiple years"
 msgstr "Ce paramètre est configuré pour évoluer sur plusieurs années"
 
-#: client/templates/technology_parameters.html:134
+#: client/templates/technology_parameters.html:140
 msgid "Year"
 msgstr "Année"
 
-#: client/templates/technology_parameters.html:135
+#: client/templates/technology_parameters.html:141
 msgid "Value"
 msgstr "Valeur"
 
-#: client/templates/technology_parameters.html:229
+#: client/templates/technology_parameters.html:235
 msgid "Remove a row"
 msgstr "Supprimer une ligne"
 
@@ -1009,7 +1081,10 @@ msgid ""
 "If this box is checked, the first line of the file will be ignored. If a "
 "header exists and this box is unchecked, the header will be interpreted as "
 "data and will result in an error."
-msgstr "Ci cette case est cochée, la première ligne du fichier sera ignorée. Si une entête existe et cette case n'est pas cochée, l'entête sera considérée comme donnée et affichera une erreur"
+msgstr ""
+"Ci cette case est cochée, la première ligne du fichier sera ignorée. Si une "
+"entête existe et cette case n'est pas cochée, l'entête sera considérée comme "
+"donnée et affichera une erreur"
 
 #: client/templates/timeseries_new.html:23
 msgid "The first row of this CSV file is a header row."
@@ -1039,4 +1114,15 @@ msgstr "Aucune série temporelle n'a été créée"
 msgid ""
 "Generates a timeseries of wind capacity factor data. Find and inspect it on "
 "the Timeseries page, linked below."
-msgstr "Produit une série temporelle de données du facteur de la capacité éolienne. Veuillez la trouver et la vérifier sur la page série temporelle, lien ci-dessous."
+msgstr ""
+"Produit une série temporelle de données du facteur de la capacité éolienne. "
+"Veuillez la trouver et la vérifier sur la page série temporelle, lien ci-"
+"dessous."
+
+#, fuzzy
+#~| msgid "Hide"
+#~ msgid "Hide List"
+#~ msgstr "Masquer la liste"
+
+#~ msgid "Spanish"
+#~ msgstr "Espagnol"

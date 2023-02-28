@@ -4,7 +4,7 @@
 <div class="row">
 	{% if prev_dates %}
 	<div class="col-12 centered">
-		<h5>Recent:</h5>
+		<h5>{% trans "Recent Periods" %}</h5>
 	</div>
 	{% for prev_date in prev_dates %}
 	<div class="col-4 offset-4 centered selection_tile text-sm" data-start_date="{{ prev_date.0 }}" data-end_date="{{ prev_date.1 }}">
