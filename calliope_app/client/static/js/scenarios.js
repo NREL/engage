@@ -208,7 +208,8 @@ function getModelCarriers() {
     });
 }
 
-function updateDialogConstraints() {
+function updateDialogConstraints(onlyUpdateConstraints) {
+    console.log(dialogObj);
     $('#dialog-inputs').empty();
     $('#dialog-inputs').append( "<h5><b>Group Constraints</b></h5>");
     Object.keys(dialogObj).forEach(constraint => {
@@ -222,31 +223,48 @@ function updateDialogConstraints() {
         $(constraintId).append( "<label><b>Technologies</b></label>");
         $(constraintId).append( "<p class='help-text'>Optionally enter a comma seperated list of technologies.</p>");
         $(constraintId).append( "<input id='" + constraint + "_techs' name='dialogObj[constraint].techs' class='form-control' placeholder='Technologies' value='" + dialogObj[constraint].techs + "'></input><br>" );
-    
+        $('#' + constraint + '_techs').change(function() {
+            dialogObj[constraint].techs = this.value;
+        });
         dialogObj[constraint].techs_lhs = dialogObj[constraint].techs_lhs ? dialogObj[constraint].techs_lhs : "";
         $(constraintId).append( "<label><b>Technologies Left Hand-side</b></label>");
         $(constraintId).append( "<p class='help-text'>Optionally enter a comma seperated list of left hand-side technologies.</p>");
         $(constraintId).append( "<input id='" + constraint + "_techs_lhs' name='dialogObj[constraint].techs_lhs' class='form-control' placeholder='Technologies Left' value='" + dialogObj[constraint].techs_lhs + "'></input><br>" );
-    
+        $('#' + constraint + '_techs_lhs').change(function() {
+            dialogObj[constraint].techs_lhs = this.value;
+        });
+
         dialogObj[constraint].techs_rhs = dialogObj[constraint].techs_rhs ? dialogObj[constraint].techs_rhs : "";
         $(constraintId).append( "<label><b>Technologies Right Hand-side</b></label>");
         $(constraintId).append( "<p class='help-text'>Optionally enter a comma seperated list of right hand-side technologies.</p>");
         $(constraintId).append( "<input id='" + constraint + "_techs_rhs' name='dialogObj[constraint].techs_rhs' class='form-control' placeholder='Technologies Right' value='" + dialogObj[constraint].techs_rhs + "'></input><br>" );
-    
+        $('#' + constraint + '_techs_rhs').change(function() {
+            dialogObj[constraint].techs_rhs = this.value;
+        });
+
         dialogObj[constraint].locs = dialogObj[constraint].locs ? dialogObj[constraint].locs : "";
         $(constraintId).append( "<label><b>Locations</b></label>");
         $(constraintId).append( "<p class='help-text'>Optionally enter a comma seperated list of locations.</p>");
         $(constraintId).append( "<input id='" + constraint + "_locs' name='dialogObj[constraint].locs' class='form-control' placeholder='Locations'  value='" + dialogObj[constraint].locs + "'></input><br>" );
+        $('#' + constraint + '_locs').change(function() {
+            dialogObj[constraint].locs = this.value;
+        });
 
         dialogObj[constraint].locs_lhs = dialogObj[constraint].locs_lhs ? dialogObj[constraint].locs_lhs : "";
         $(constraintId).append( "<label><b>Locations Left Hand-side</b></label>");
         $(constraintId).append( "<p class='help-text'>Optionally enter a comma seperated list of left hand-side locations.</p>");
         $(constraintId).append( "<input id='" + constraint + "_locs_lhs' name='dialogObj[constraint].locs_lhs' class='form-control' placeholder='Locations Left'  value='" + dialogObj[constraint].locs_lhs + "'></input><br>" );
+        $('#' + constraint + '_locs_lhs').change(function() {
+            dialogObj[constraint].locs_lhs = this.value;
+        });
 
         dialogObj[constraint].locs_rhs = dialogObj[constraint].locs_rhs ? dialogObj[constraint].locs_rhs : "";
         $(constraintId).append( "<label><b>Locations Right Hand-side</b></label>");
         $(constraintId).append( "<p class='help-text'>Optionally enter a comma seperated list of right hand-side locations.</p>");
-        $(constraintId).append( "<input id='" + constraint + "_locs_rhs' name='dialogObj[constraint].locs_rhs' class='form-control' placeholder='Locations Right'  value='" + dialogObj[constraint].locs_lhs + "'></input><br>" );
+        $(constraintId).append( "<input id='" + constraint + "_locs_rhs' name='dialogObj[constraint].locs_rhs' class='form-control' placeholder='Locations Right'  value='" + dialogObj[constraint].locs_rhs + "'></input><br>" );
+        $('#' + constraint + '_locs_rhs').change(function() {
+            dialogObj[constraint].locs_rhs = this.value;
+        });
 
         $(constraintId).append( "<label><b>Constraints</b></label>");
         $(constraintId).append( "<p class='help-text'>Multiple constraints can be added to a single group constraint. Cost and carriers are a key and value pair whereas all other types are a value. See Constraint column in Calliope documentation for value options.</p>");
@@ -516,6 +534,7 @@ function activate_scenario_settings() {
             dialogObj[newGroupConstraint] = {};
             $('#new_group_constraint_name').val("");
             updateDialogConstraints();
+            $('#new_group_constraint_btn').attr("disabled", true);
         }
     });
 
