@@ -3,7 +3,19 @@ var bulk_confirmation = false,
     dialogInputValue = null,
     dialogObj = {},
     disable_new_constraint = true,
-	map_mode = 'scenarios';
+	map_mode = 'scenarios',
+    carriers = null,
+    constraints = ["demand_share_min", "demand_share_max", "demand_share_equals",
+     "demand_share_per_timestep_min", "demand_share_per_timestep_max", "demand_share_per_timestep_equals",
+      "demand_share_per_timestep_decision", "carrier_prod_share_min", "carrier_prod_share_max",
+       "carrier_prod_share_equals", "carrier_prod_share_per_timestep_min", "carrier_prod_share_per_timestep_max",
+        "carrier_prod_share_per_timestep_equals", "net_import_share_min", "net_import_share_max",
+         "net_import_share_equals", "carrier_prod_min", "carrier_prod_max", "carrier_prod_equals", 
+         "carrier_con_min", "carrier_con_max", "carrier_con_equals", "cost_max", "cost_min",
+       "cost_equals", "cost_var_max", "cost_var_min", "cost_var_equals", "cost_investment_max",
+    "cost_investment_min", "cost_investment_equals", "energy_cap_share_min", "energy_cap_share_max",
+"energy_cap_share_equals", "energy_cap_min", "energy_cap_max", "energy_cap_equals", "resource_area_min",
+"resource_area_max", "resource_area_equals", "storage_cap_min", "storage_cap_max", "storage_cap_equals"];
 
 $( document ).ready(function() {
 
@@ -44,11 +56,11 @@ $( document ).ready(function() {
 		window.location = '/' + model_uuid + '/scenarios/';
 	});
 
-    $("#new_constraint_name").on("input", function(){
-        if ($('#new_constraint_name').val() && $('#new_constraint_name').val().trim().length > 0 ) {
-            $('#new_constraint_btn').removeAttr("disabled");
+    $("#new_group_constraint_name").on("input", function(){
+        if ($('#new_constraint_name').val() && $('#new_group_constraint_name').val().trim().length > 0 ) {
+            $('#new_group_constraint_btn').removeAttr("disabled");
         } else {
-            $('#new_constraint_btn').attr("disabled", true);
+            $('#new_group_constraint_btn').attr("disabled", true);
         }
     });
 
@@ -180,6 +192,22 @@ function get_scenario_configuration() {
 	};
 };
 
+function getModelCarriers() {
+    var model_uuid = $('#header').data('model_uuid');
+    
+    $.ajax({
+        url: '/' + LANGUAGE_CODE + '/component/model_carriers/',
+        async: false,
+        data: {
+            'model_uuid': model_uuid,
+        },
+        dataType: 'json',
+        success: function (data) {
+            carriers = data.carriers;
+        }
+    });
+}
+
 function updateDialogConstraints() {
     $('#dialog-inputs').empty();
     Object.keys(dialogObj).forEach(constraint => {
@@ -203,11 +231,58 @@ function updateDialogConstraints() {
         $('#dialog-inputs').append( "<input id='" + constraint + "_locs' name='dialogObj[constraint].locs' class='form-control' placeholder='Locations'  value='" + dialogObj[constraint].locs + "'></input><br>" );
 
         $('#dialog-inputs').append( "<label><b>Constraints</b></label>");
-        $('#dialog-inputs').append( "<p class='help-text'>Enter a comma seperated list, formatted 'contraint name: constraint value,'. See Constraint column in Calliope documentation for value options.</p>");
+        $('#dialog-inputs').append( "<p class='help-text'>Multiple constraints can be added to a single group constraint. See Constraint column in Calliope documentation for value options.</p>");
         Object.keys(dialogObj[constraint]).forEach(fieldKey => {
             if (fieldKey !== "locs" && fieldKey !== "techs" ) {
-                $('#dialog-inputs').append( "<label><b>" + fieldKey + "</b></label>");
-                $('#dialog-inputs').append( "<input id='" + fieldKey + "_constraint' name='dialogObj[constraint][fieldKey]' class='form-control' placeholder='' value='" + dialogObj[constraint][fieldKey] + "'></input><br>" );
+
+                $('#dialog-inputs').append( "<div class='input-field'>" );
+                $('#dialog-inputs').append( "<label><b>Constraint Type: </b></label>");
+                $('#dialog-inputs').append( "<select style='margin-bottom:1em' class='form-control' id='constraint-dropdown-" + constraint + fieldKey + "' data-toggle='tooltip' data-placement='left'></select>" );
+                for (let i = 0; i < constraints.length; i++) {
+                    if (fieldKey == constraints[i]) {
+                        $('#constraint-dropdown-' + constraint + fieldKey).append( "<option selected value=" + constraints[i] + ">" + constraints[i] + "</option>" );
+                    } else {
+                        $('#constraint-dropdown-' + constraint + fieldKey).append( "<option value=" + constraints[i] + ">" + constraints[i] + "</option>" );
+                    }
+                }
+                $('#dialog-inputs').append( "</div>");
+
+                if (constraints.indexOf(fieldKey) <= 30) {
+                    const key = Object.keys(dialogObj[constraint][fieldKey])[0];
+                    const val = dialogObj[constraint][fieldKey][Object.keys(dialogObj[constraint][fieldKey])[0]];
+                    $('#dialog-inputs').append( "<div class='input-field'><label><b>Constraint Key: </b></label>");
+                    if (carriers.indexOf(key) === -1) {
+                        carriers.push(key);
+                    }
+                    $('#dialog-inputs').append( "<select style='margin-bottom:1em' class='form-control' id='" + constraint + fieldKey + "-key' name='dialogObj[constraint][fieldKey].name' data-toggle='tooltip' data-placement='left'></select>" );
+                    for (let i = 0; i < carriers.length; i++) {
+                        if (key == carriers[i]) {
+                            $('#' + constraint + fieldKey + '-key').append( "<option selected value=" + carriers[i] + ">" + carriers[i] + "</option>" );
+                        } else {
+                            $('#' + constraint + fieldKey + '-key').append( "<option value=" + carriers[i] + ">" + carriers[i] + "</option>" );
+                        }
+                    }
+                    $('#dialog-inputs').append( "</div>");
+
+                    $('#dialog-inputs').append( "<div class='input-field'><label><b>Constraint Value: </b></label>");
+                    $('#dialog-inputs').append( "<input id='" + constraint + fieldKey + "_val' name='dialogObj[constraint][fieldKey].value' class='form-control' placeholder='' value='" + val + "'></input><br></div>" );
+                } else {
+                    $('#dialog-inputs').append( "<div class='input-field'><label><b>Constraint Value: </b></label>");
+                    $('#dialog-inputs').append( "<input id='" + constraint + fieldKey + "_val' name='dialogObj[constraint][fieldKey]' class='form-control' placeholder='' value='" + dialogObj[constraint][fieldKey] + "'></input><br></div>" );
+                }
+
+                $('#dialog-inputs').append("<div class='form-group col-md-8'><input id='new_constraint_btn_" + constraint + fieldKey + "' type='submit' class='btn btn-sm btn-success' name='' value='+ constraint'></div>");
+
+                $("#new_constraint_btn_" + constraint + fieldKey).on('click', function() {
+                    console.log("#new_constraint_btn_" + constraint + fieldKey);
+                    /*
+                    if (newGroupConstraint.length > 0) {
+                        dialogObj[newGroupConstraint] = {};
+                        $('#new_constraint_name').val("");
+                        updateDialogConstraints();
+                    }
+                    */
+                });
             }
         });
         $('#dialog-inputs').append( "</div>");
@@ -281,7 +356,10 @@ function activate_scenario_settings() {
 
         });
 
-        updateDialogConstraints();
+        getModelCarriers();
+        if (carriers) {
+            updateDialogConstraints();
+        }
 
 	});
 
@@ -319,7 +397,7 @@ function activate_scenario_settings() {
     });
 
 
-    $('#new_constraint_btn').on('click', function() {
+    $('#new_group_constraint_btn').on('click', function() {
         var newGroupConstraint = $('#new_constraint_name').val().trim();
         if (newGroupConstraint.length > 0) {
             dialogObj[newGroupConstraint] = {};

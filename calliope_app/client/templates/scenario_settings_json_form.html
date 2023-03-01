@@ -4,7 +4,11 @@
 .help-text {
     font-size: .8em;
 }
+.input-field {
+    display: inline-block;
+}
 </style>
+
 
 <form id="scenario_settings_json_form" method="post" tabindex="-1" role="dialog"  onsubmit="return false;">
     <div class="modal-header">
@@ -26,9 +30,9 @@
         <hr>
         <div class="form-group col-md-8">
             <p style="font-size:.8em">{% trans "Enter a custom name." %}</p>
-			<input type="text" class="form-control" id="new_constraint_name" name="" placeholder="{% trans 'New Group Constraint Name' %}">
+			<input type="text" class="form-control" id="new_group_constraint_name" name="" placeholder="{% trans 'New Group Constraint Name' %}">
             <br>
-			<input disabled id="new_constraint_btn" type="submit" class="btn btn-sm btn-success" name="" value="{% trans '+ group constraint' %}">
+			<input disabled id="new_group_constraint_btn" type="submit" class="btn btn-sm btn-success" name="" value="{% trans '+ group constraint' %}">
 		</div>
 		<div class="form-group col-md-6"></div>
 		<div class="form-group col-md-12">

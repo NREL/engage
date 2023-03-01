@@ -14,6 +14,29 @@ from datetime import datetime, timedelta
 import string
 import pandas as pd
 
+@csrf_protect
+def model_carriers(request):
+    """
+    Retrieve all carriers for a model
+
+    Parameters:
+    model_uuid (uuid): required
+
+    Returns: HttpResponse
+
+    Example:
+    GET: /component/model_carriers/
+    """
+
+    model_uuid = request.GET['model_uuid']
+    model = Model.by_uuid(model_uuid)
+
+    response = {
+        "carriers": model.carriers
+    }
+
+    return JsonResponse(response, safe=False)
+
 
 @csrf_protect
 def location_coordinates(request):
