@@ -57,7 +57,7 @@ $( document ).ready(function() {
 	});
 
     $("#new_group_constraint_name").on("input", function(){
-        if ($('#new_constraint_name').val() && $('#new_group_constraint_name').val().trim().length > 0 ) {
+        if ($('#new_group_constraint_name').val() && $('#new_group_constraint_name').val().trim().length > 0 ) {
             $('#new_group_constraint_btn').removeAttr("disabled");
         } else {
             $('#new_group_constraint_btn').attr("disabled", true);
@@ -210,51 +210,47 @@ function getModelCarriers() {
 
 function updateDialogConstraints() {
     $('#dialog-inputs').empty();
+    $('#dialog-inputs').append( "<h5><b>Group Constraints</b></h5>");
     Object.keys(dialogObj).forEach(constraint => {
-        console.log(constraint, dialogObj[constraint]);
-        $('#dialog-inputs').append( "<div id='" + constraint + "'>");
-        $('#dialog-inputs').append( "<h5><b>Group Constraint Name: " + constraint +  "</b></h5>");
+         
+        $('#dialog-inputs').append( "<div id='" + constraint + "' style='padding-top:1.5em'>");
+        let constraintId = "#" + constraint;
+        $(constraintId).append( "<h5 style='color:#007bff;'>" + constraint +  "</h5>");
 
         //Display techs and locs first
         if (!dialogObj[constraint].techs) {
             dialogObj[constraint].techs = "";
         }
-        $('#dialog-inputs').append( "<label><b>Technologies</b></label>");
-        $('#dialog-inputs').append( "<p class='help-text'>Optionally enter a comma seperated list of technologies.</p>");
-        $('#dialog-inputs').append( "<input id='" + constraint + "_techs' name='dialogObj[constraint].techs' class='form-control' placeholder='Technologies' value='" + dialogObj[constraint].techs + "'></input><br>" );
+        $(constraintId).append( "<label><b>Technologies</b></label>");
+        $(constraintId).append( "<p class='help-text'>Optionally enter a comma seperated list of technologies.</p>");
+        $(constraintId).append( "<input id='" + constraint + "_techs' name='dialogObj[constraint].techs' class='form-control' placeholder='Technologies' value='" + dialogObj[constraint].techs + "'></input><br>" );
     
         if (!dialogObj[constraint].locs) {
             dialogObj[constraint].locs = "";
         }
-        $('#dialog-inputs').append( "<label><b>Locations</b></label>");
-        $('#dialog-inputs').append( "<p class='help-text'>Optionally enter a comma seperated list of locations.</p>");
-        $('#dialog-inputs').append( "<input id='" + constraint + "_locs' name='dialogObj[constraint].locs' class='form-control' placeholder='Locations'  value='" + dialogObj[constraint].locs + "'></input><br>" );
+        $(constraintId).append( "<label><b>Locations</b></label>");
+        $(constraintId).append( "<p class='help-text'>Optionally enter a comma seperated list of locations.</p>");
+        $(constraintId).append( "<input id='" + constraint + "_locs' name='dialogObj[constraint].locs' class='form-control' placeholder='Locations'  value='" + dialogObj[constraint].locs + "'></input><br>" );
 
-        $('#dialog-inputs').append( "<label><b>Constraints</b></label>");
-        $('#dialog-inputs').append( "<p class='help-text'>Multiple constraints can be added to a single group constraint. See Constraint column in Calliope documentation for value options.</p>");
+        $(constraintId).append( "<label><b>Constraints</b></label>");
+        $(constraintId).append( "<p class='help-text'>Multiple constraints can be added to a single group constraint. See Constraint column in Calliope documentation for value options.</p>");
         Object.keys(dialogObj[constraint]).forEach(fieldKey => {
             if (fieldKey !== "locs" && fieldKey !== "techs" ) {
 
-                $('#dialog-inputs').append( "<div class='input-field'>" );
-                $('#dialog-inputs').append( "<label><b>Constraint Type: </b></label>");
-                $('#dialog-inputs').append( "<select style='margin-bottom:1em' class='form-control' id='constraint-dropdown-" + constraint + fieldKey + "' data-toggle='tooltip' data-placement='left'></select>" );
-                for (let i = 0; i < constraints.length; i++) {
-                    if (fieldKey == constraints[i]) {
-                        $('#constraint-dropdown-' + constraint + fieldKey).append( "<option selected value=" + constraints[i] + ">" + constraints[i] + "</option>" );
-                    } else {
-                        $('#constraint-dropdown-' + constraint + fieldKey).append( "<option value=" + constraints[i] + ">" + constraints[i] + "</option>" );
-                    }
-                }
-                $('#dialog-inputs').append( "</div>");
-
+                $(constraintId).append( "<label><b>Constraint Type </b></label><span style='float:right'>" + fieldKey + "</span><br>");
+                let constraintFields = "#fields-" + constraint + fieldKey;
+                $(constraintId).append("<div id='fields-" + constraint + fieldKey + "' style='padding-left:5em'></div>");
                 if (constraints.indexOf(fieldKey) <= 30) {
-                    const key = Object.keys(dialogObj[constraint][fieldKey])[0];
-                    const val = dialogObj[constraint][fieldKey][Object.keys(dialogObj[constraint][fieldKey])[0]];
-                    $('#dialog-inputs').append( "<div class='input-field'><label><b>Constraint Key: </b></label>");
+                    if (!dialogObj[constraint][fieldKey] || typeof dialogObj[constraint][fieldKey] !== 'object') {
+                        dialogObj[constraint][fieldKey] = {};
+                    }
+                    const key = Object.keys(dialogObj[constraint][fieldKey]).length !== 0 ? Object.keys(dialogObj[constraint][fieldKey])[0] : "";
+                    const val = key ? dialogObj[constraint][fieldKey][Object.keys(dialogObj[constraint][fieldKey])[0]] : "";
+                    $(constraintFields).append( "<div class='input-field'><label><b>Key </b></label>");
                     if (carriers.indexOf(key) === -1) {
                         carriers.push(key);
                     }
-                    $('#dialog-inputs').append( "<select style='margin-bottom:1em' class='form-control' id='" + constraint + fieldKey + "-key' name='dialogObj[constraint][fieldKey].name' data-toggle='tooltip' data-placement='left'></select>" );
+                    $(constraintFields).append( "<select style='margin-bottom:1em' class='form-control' id='" + constraint + fieldKey + "-key' name='dialogObj[constraint][fieldKey].name' data-toggle='tooltip' data-placement='left'></select>" );
                     for (let i = 0; i < carriers.length; i++) {
                         if (key == carriers[i]) {
                             $('#' + constraint + fieldKey + '-key').append( "<option selected value=" + carriers[i] + ">" + carriers[i] + "</option>" );
@@ -262,31 +258,42 @@ function updateDialogConstraints() {
                             $('#' + constraint + fieldKey + '-key').append( "<option value=" + carriers[i] + ">" + carriers[i] + "</option>" );
                         }
                     }
-                    $('#dialog-inputs').append( "</div>");
 
-                    $('#dialog-inputs').append( "<div class='input-field'><label><b>Constraint Value: </b></label>");
-                    $('#dialog-inputs').append( "<input id='" + constraint + fieldKey + "_val' name='dialogObj[constraint][fieldKey].value' class='form-control' placeholder='' value='" + val + "'></input><br></div>" );
+                    $(constraintFields).append( "<div class='input-field'><label><b>Value </b></label>");
+                    $(constraintFields).append( "<input id='" + constraint + fieldKey + "-val' name='dialogObj[constraint][fieldKey].value' class='form-control' placeholder='' value='" + val + "'></input><br></div>" );
                 } else {
-                    $('#dialog-inputs').append( "<div class='input-field'><label><b>Constraint Value: </b></label>");
-                    $('#dialog-inputs').append( "<input id='" + constraint + fieldKey + "_val' name='dialogObj[constraint][fieldKey]' class='form-control' placeholder='' value='" + dialogObj[constraint][fieldKey] + "'></input><br></div>" );
+                    $(constraintFields).append( "<div class='input-field'><label><b>Value </b></label>");
+                    $(constraintFields).append( "<input id='" + constraint + fieldKey + "-val' name='dialogObj[constraint][fieldKey]' class='form-control' placeholder='' value='" + dialogObj[constraint][fieldKey] + "'></input><br></div>" );
                 }
-
-                $('#dialog-inputs').append("<div class='form-group col-md-8'><input id='new_constraint_btn_" + constraint + fieldKey + "' type='submit' class='btn btn-sm btn-success' name='' value='+ constraint'></div>");
-
-                $("#new_constraint_btn_" + constraint + fieldKey).on('click', function() {
-                    console.log("#new_constraint_btn_" + constraint + fieldKey);
-                    /*
-                    if (newGroupConstraint.length > 0) {
-                        dialogObj[newGroupConstraint] = {};
-                        $('#new_constraint_name').val("");
-                        updateDialogConstraints();
-                    }
-                    */
-                });
             }
         });
-        $('#dialog-inputs').append( "</div>");
-        $('#dialog-inputs').append( "<hr>" );
+
+        $(constraintId).append( "<br><label><b>New Constraint Type </b></label>");
+        $(constraintId).append( "<select style='margin-bottom:1em' class='form-control' id='new-constraint-dropdown-" + constraint + "' data-toggle='tooltip' data-placement='left'></select>" );
+        $('#new-constraint-dropdown-' + constraint ).append( "<option></option>" );
+        for (let i = 0; i < constraints.length; i++) {
+            $('#new-constraint-dropdown-' + constraint ).append( "<option value=" + constraints[i] + ">" + constraints[i] + "</option>" );
+        }
+
+        $(constraintId).append("<div class='form-group col-md-8'><input disabled id='new_constraint_btn_" + constraint + "' type='submit' class='btn btn-sm btn-success' name='' value='+ Constraint'></div>");
+        $("#new_constraint_btn_" + constraint).on('click', function() {
+            let con = this.id.replace("new_constraint_btn_", "");
+            let newConstraint = $("#new-constraint-dropdown-" + con).val();
+            if (newConstraint && newConstraint.length > 0) {
+                dialogObj[con][newConstraint] = "";
+            }
+            updateDialogConstraints();
+        });
+
+        $("#new-constraint-dropdown-" + constraint).change(function () {
+            let con = this.id.replace("new-constraint-dropdown-", "");
+            if (this.value && this.value.length > 0 ) {
+                $("#new_constraint_btn_" + con).removeAttr("disabled");
+            } else {
+                $('#new_constraint_btn_' + con).attr("disabled", true);
+            }
+        });
+        $(constraintId).append( "<hr>" );
     });
 
 }
@@ -381,27 +388,35 @@ function activate_scenario_settings() {
             }
     
             //add constraints
-            /*Object.keys(dialogObj[constraint]).forEach(fieldKey => {
+            Object.keys(dialogObj[constraint]).forEach(fieldKey => {
                 if (fieldKey !== "locs" && fieldKey !== "techs" ) {
-
+                    let value = $("#" + constraint + fieldKey + "-val").val();
+                    if (constraints.indexOf(fieldKey) <= 30) {
+                        let key = $("#" + constraint + fieldKey + "-key").val();
+                        dialogObj[constraint][fieldKey] = {};
+                        if (key) {
+                            dialogObj[constraint][fieldKey][key] = value;
+                        }
+                    } else {
+                        dialogObj[constraint][fieldKey] = value;
+                    } 
                 }
-            });*/
-
+            });
         });
         $('textarea[name="edit' + dialogInputId + '"]').text(JSON.stringify(dialogObj));
         $('#data-source-modal').hide();
 	});
 
-    $('#group-constraints-close').on('click', function() {
+    $('.group-constraints-close').on('click', function() {
         $('#data-source-modal').hide();
     });
 
 
     $('#new_group_constraint_btn').on('click', function() {
-        var newGroupConstraint = $('#new_constraint_name').val().trim();
+        var newGroupConstraint = $('#new_group_constraint_name').val().trim();
         if (newGroupConstraint.length > 0) {
             dialogObj[newGroupConstraint] = {};
-            $('#new_constraint_name').val("");
+            $('#new_group_constraint_name').val("");
             updateDialogConstraints();
         }
     });
