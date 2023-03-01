@@ -215,7 +215,7 @@ function updateDialogConstraints() {
          
         $('#dialog-inputs').append( "<div id='" + constraint + "' style='padding-top:1.5em'>");
         let constraintId = "#" + constraint;
-        $(constraintId).append( "<h5 style='color:#007bff;'>" + constraint +  "</h5>");
+        $(constraintId).append( "<h5 style='color:#007bff;'><b>" + constraint +  "</b></h5>");
 
         //Display techs and locs first
         dialogObj[constraint].techs = dialogObj[constraint].techs ? dialogObj[constraint].techs : "";
