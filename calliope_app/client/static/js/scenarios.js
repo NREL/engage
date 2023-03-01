@@ -218,24 +218,40 @@ function updateDialogConstraints() {
         $(constraintId).append( "<h5 style='color:#007bff;'>" + constraint +  "</h5>");
 
         //Display techs and locs first
-        if (!dialogObj[constraint].techs) {
-            dialogObj[constraint].techs = "";
-        }
+        dialogObj[constraint].techs = dialogObj[constraint].techs ? dialogObj[constraint].techs : "";
         $(constraintId).append( "<label><b>Technologies</b></label>");
         $(constraintId).append( "<p class='help-text'>Optionally enter a comma seperated list of technologies.</p>");
         $(constraintId).append( "<input id='" + constraint + "_techs' name='dialogObj[constraint].techs' class='form-control' placeholder='Technologies' value='" + dialogObj[constraint].techs + "'></input><br>" );
     
-        if (!dialogObj[constraint].locs) {
-            dialogObj[constraint].locs = "";
-        }
+        dialogObj[constraint].techs_lhs = dialogObj[constraint].techs_lhs ? dialogObj[constraint].techs_lhs : "";
+        $(constraintId).append( "<label><b>Technologies Left Hand-side</b></label>");
+        $(constraintId).append( "<p class='help-text'>Optionally enter a comma seperated list of left hand-side technologies.</p>");
+        $(constraintId).append( "<input id='" + constraint + "_techs_lhs' name='dialogObj[constraint].techs_lhs' class='form-control' placeholder='Technologies Left' value='" + dialogObj[constraint].techs_lhs + "'></input><br>" );
+    
+        dialogObj[constraint].techs_rhs = dialogObj[constraint].techs_rhs ? dialogObj[constraint].techs_rhs : "";
+        $(constraintId).append( "<label><b>Technologies Right Hand-side</b></label>");
+        $(constraintId).append( "<p class='help-text'>Optionally enter a comma seperated list of right hand-side technologies.</p>");
+        $(constraintId).append( "<input id='" + constraint + "_techs_rhs' name='dialogObj[constraint].techs_rhs' class='form-control' placeholder='Technologies Right' value='" + dialogObj[constraint].techs_rhs + "'></input><br>" );
+    
+        dialogObj[constraint].locs = dialogObj[constraint].locs ? dialogObj[constraint].locs : "";
         $(constraintId).append( "<label><b>Locations</b></label>");
         $(constraintId).append( "<p class='help-text'>Optionally enter a comma seperated list of locations.</p>");
         $(constraintId).append( "<input id='" + constraint + "_locs' name='dialogObj[constraint].locs' class='form-control' placeholder='Locations'  value='" + dialogObj[constraint].locs + "'></input><br>" );
 
+        dialogObj[constraint].locs_lhs = dialogObj[constraint].locs_lhs ? dialogObj[constraint].locs_lhs : "";
+        $(constraintId).append( "<label><b>Locations Left Hand-side</b></label>");
+        $(constraintId).append( "<p class='help-text'>Optionally enter a comma seperated list of left hand-side locations.</p>");
+        $(constraintId).append( "<input id='" + constraint + "_locs_lhs' name='dialogObj[constraint].locs_lhs' class='form-control' placeholder='Locations Left'  value='" + dialogObj[constraint].locs_lhs + "'></input><br>" );
+
+        dialogObj[constraint].locs_rhs = dialogObj[constraint].locs_rhs ? dialogObj[constraint].locs_rhs : "";
+        $(constraintId).append( "<label><b>Locations Right Hand-side</b></label>");
+        $(constraintId).append( "<p class='help-text'>Optionally enter a comma seperated list of right hand-side locations.</p>");
+        $(constraintId).append( "<input id='" + constraint + "_locs_rhs' name='dialogObj[constraint].locs_rhs' class='form-control' placeholder='Locations Right'  value='" + dialogObj[constraint].locs_lhs + "'></input><br>" );
+
         $(constraintId).append( "<label><b>Constraints</b></label>");
-        $(constraintId).append( "<p class='help-text'>Multiple constraints can be added to a single group constraint. See Constraint column in Calliope documentation for value options.</p>");
+        $(constraintId).append( "<p class='help-text'>Multiple constraints can be added to a single group constraint. Cost and carriers are a key and value pair whereas all other types are a value. See Constraint column in Calliope documentation for value options.</p>");
         Object.keys(dialogObj[constraint]).forEach(fieldKey => {
-            if (fieldKey !== "locs" && fieldKey !== "techs" ) {
+            if (fieldKey !== "locs" && fieldKey !== "techs" && fieldKey !== "techs_lhs" && fieldKey !== "techs_rhs" && fieldKey !== "locs_lhs" && fieldKey !== "locs_rhs") {
 
                 $(constraintId).append( "<label><b>Constraint Type </b></label><span style='float:right'>" + fieldKey + "</span><br>");
                 let constraintFields = "#fields-" + constraint + fieldKey;
@@ -247,15 +263,16 @@ function updateDialogConstraints() {
                     const key = Object.keys(dialogObj[constraint][fieldKey]).length !== 0 ? Object.keys(dialogObj[constraint][fieldKey])[0] : "";
                     const val = key ? dialogObj[constraint][fieldKey][Object.keys(dialogObj[constraint][fieldKey])[0]] : "";
                     $(constraintFields).append( "<div class='input-field'><label><b>Key </b></label>");
-                    if (carriers.indexOf(key) === -1) {
-                        carriers.push(key);
+                    let dropdownArray = constraints.indexOf(fieldKey) <= 21 ? carriers : ["co2", "ch4", "co2e", "n20"];
+                    if (dropdownArray.indexOf(key) === -1) {
+                        dropdownArray.push(key);
                     }
                     $(constraintFields).append( "<select style='margin-bottom:1em' class='form-control' id='" + constraint + fieldKey + "-key' name='dialogObj[constraint][fieldKey].name' data-toggle='tooltip' data-placement='left'></select>" );
-                    for (let i = 0; i < carriers.length; i++) {
-                        if (key == carriers[i]) {
-                            $('#' + constraint + fieldKey + '-key').append( "<option selected value=" + carriers[i] + ">" + carriers[i] + "</option>" );
+                    for (let i = 0; i < dropdownArray.length; i++) {
+                        if (key == dropdownArray[i]) {
+                            $('#' + constraint + fieldKey + '-key').append( "<option selected value=" + dropdownArray[i] + ">" + dropdownArray[i] + "</option>" );
                         } else {
-                            $('#' + constraint + fieldKey + '-key').append( "<option value=" + carriers[i] + ">" + carriers[i] + "</option>" );
+                            $('#' + constraint + fieldKey + '-key').append( "<option value=" + dropdownArray[i] + ">" + dropdownArray[i] + "</option>" );
                         }
                     }
 
@@ -335,6 +352,7 @@ function activate_scenario_settings() {
 
         Object.keys(dialogObj).forEach(constraint => {
             Object.keys(dialogObj[constraint]).forEach(fieldKey => {
+                // Technologies
                 if (fieldKey === "techs") {
                     var newTechs = "";
                     if (dialogObj[constraint].techs && dialogObj[constraint].techs.length > 0) {
@@ -347,6 +365,32 @@ function activate_scenario_settings() {
                     } 
                     dialogObj[constraint].techs = newTechs;
                 }
+                if (fieldKey === "techs_lhs") {
+                    var newTechs = "";
+                    if (dialogObj[constraint].techs_lhs && dialogObj[constraint].techs_lhs.length > 0) {
+                        for (var tech in dialogObj[constraint].techs_lhs) {
+                            newTechs += dialogObj[constraint].techs_lhs[tech];
+                            if (Number(tech) !== dialogObj[constraint].techs_lhs.length-1) {
+                                newTechs += ","
+                            }
+                        }
+                    } 
+                    dialogObj[constraint].techs_lhs = newTechs;
+                }
+                if (fieldKey === "techs_rhs") {
+                    var newTechs = "";
+                    if (dialogObj[constraint].techs_rhs && dialogObj[constraint].techs_rhs.length > 0) {
+                        for (var tech in dialogObj[constraint].techs_rhs) {
+                            newTechs += dialogObj[constraint].techs_rhs[tech];
+                            if (Number(tech) !== dialogObj[constraint].techs_rhs.length-1) {
+                                newTechs += ","
+                            }
+                        }
+                    } 
+                    dialogObj[constraint].techs_rhs = newTechs;
+                }
+
+                // Locations
                 if (fieldKey === "locs") {
                     var newLocs = "";
                     if (dialogObj[constraint].locs && dialogObj[constraint].locs.length > 0) {
@@ -358,6 +402,30 @@ function activate_scenario_settings() {
                         }
                     }
                     dialogObj[constraint].locs = newLocs;
+                }
+                if (fieldKey === "locs_lhs") {
+                    var newLocs = "";
+                    if (dialogObj[constraint].locs_lhs && dialogObj[constraint].locs_lhs.length > 0) {
+                        for (var loc in dialogObj[constraint].locs_lhs) {
+                            newLocs += dialogObj[constraint].locs_lhs[loc];
+                            if (Number(loc) !== dialogObj[constraint].locs_lhs.length-1) {
+                                newLocs += ","
+                            }
+                        }
+                    }
+                    dialogObj[constraint].locs_lhs = newLocs;
+                }
+                if (fieldKey === "locs_rhs") {
+                    var newLocs = "";
+                    if (dialogObj[constraint].locs_rhs && dialogObj[constraint].locs_rhs.length > 0) {
+                        for (var loc in dialogObj[constraint].locs_rhs) {
+                            newLocs += dialogObj[constraint].locs_rhs[loc];
+                            if (Number(loc) !== dialogObj[constraint].locs_rhs.length-1) {
+                                newLocs += ","
+                            }
+                        }
+                    }
+                    dialogObj[constraint].locs_rhs = newLocs;
                 }
             });
 
@@ -372,7 +440,8 @@ function activate_scenario_settings() {
 
     $('#settings_import_data').on('click', function() {
         Object.keys(dialogObj).forEach(constraint => {
-            //Display techs and locs first
+
+            //Technologies
             var techsInput = $("#" + constraint + "_techs").val();
             if (techsInput && techsInput.length > 0) {
                 dialogObj[constraint].techs = techsInput.split(',');
@@ -380,16 +449,45 @@ function activate_scenario_settings() {
                 delete dialogObj[constraint].techs;
             }
 
+            techsInput = $("#" + constraint + "_techs_lhs").val();
+            if (techsInput && techsInput.length > 0) {
+                dialogObj[constraint].techs_lhs = techsInput.split(',');
+            } else {
+                delete dialogObj[constraint].techs_lhs;
+            }
+
+            techsInput = $("#" + constraint + "_techs_rhs").val();
+            if (techsInput && techsInput.length > 0) {
+                dialogObj[constraint].techs_rhs = techsInput.split(',');
+            } else {
+                delete dialogObj[constraint].techs_rhs;
+            }
+            
+            // Locations
             var locsInput = $("#" + constraint + "_locs").val();
             if (locsInput && locsInput.length > 0) {
                 dialogObj[constraint].locs = locsInput.split(',');
             } else {
                 delete dialogObj[constraint].locs;
             }
+
+            locsInput = $("#" + constraint + "_locs_lhs").val();
+            if (locsInput && locsInput.length > 0) {
+                dialogObj[constraint].locs_lhs = locsInput.split(',');
+            } else {
+                delete dialogObj[constraint].locs_lhs;
+            }
+
+            locsInput = $("#" + constraint + "_locs_rhs").val();
+            if (locsInput && locsInput.length > 0) {
+                dialogObj[constraint].locs_rhs = locsInput.split(',');
+            } else {
+                delete dialogObj[constraint].locs_rhs;
+            }
     
             //add constraints
             Object.keys(dialogObj[constraint]).forEach(fieldKey => {
-                if (fieldKey !== "locs" && fieldKey !== "techs" ) {
+                if (fieldKey !== "locs" && fieldKey !== "techs" && fieldKey !== "techs_lhs" && fieldKey !== "techs_rhs" && fieldKey !== "locs_lhs" && fieldKey !== "locs_rhs") {
                     let value = $("#" + constraint + fieldKey + "-val").val();
                     if (constraints.indexOf(fieldKey) <= 30) {
                         let key = $("#" + constraint + fieldKey + "-key").val();
