@@ -575,6 +575,3 @@ function toggle_scenario_loc_tech(loc_tech_ids, add) {
 		});
 	};
 }
-
-
-
