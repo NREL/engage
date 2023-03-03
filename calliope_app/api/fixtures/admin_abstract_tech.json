@@ -3,10 +3,12 @@
     "pk": 1,
     "model": "api.abstract_tech",
     "fields": {
-      "name": "supply",
       "pretty_name": "Supply",
-      "image": "data/images/supply.png",
+      "pretty_name_fr": "Supply",
       "description": "Supplies energy to a carrier, has a positive resource.",
+      "description_fr": "Fournir de l'\u00e9nergie \u00e0 un transporteur, a une ressource positive.",
+      "name": "supply",
+      "image": "data/images/supply.png",
       "icon": "<i class=\"fas fa-bolt\"></i>"
     }
   },
@@ -14,10 +16,12 @@
     "pk": 2,
     "model": "api.abstract_tech",
     "fields": {
-      "name": "supply_plus",
       "pretty_name": "Supply + Storage",
+      "pretty_name_fr": "Suppy + Storage",
+      "description": "Supplies energy to a carrier, has a positive resource. Additional possible constraints, including efficiencies and storage, distinguish this from\u00ac\u2020supply.",
+      "description_fr": "Fournir de l'\u00e9nergie \u00e0 un transporteur, a une ressource positive. D'autres contraintes possibles, y compris l'efficacit\u00e9 et le stockage, distinguent cela de l'approvisionnement.",
+      "name": "supply_plus",
       "image": "data/images/supply_plus.png",
-      "description": "Supplies energy to a carrier, has a positive resource. Additional possible constraints, including efficiencies and storage, distinguish this from\u00a0supply.",
       "icon": "<i class=\"fas fa-battery-three-quarters\"></i> <i class=\"fas fa-bolt\"></i>"
     }
   },
@@ -25,10 +29,12 @@
     "pk": 3,
     "model": "api.abstract_tech",
     "fields": {
-      "name": "demand",
       "pretty_name": "Demand",
-      "image": "data/images/demand.png",
+      "pretty_name_fr": "Demand",
       "description": "Demands energy from a carrier, has a negative resource.",
+      "description_fr": "Demande de l'\u00e9nergie \u00e0 un transporteur, a une ressource n\u00e9gative.",
+      "name": "demand",
+      "image": "data/images/demand.png",
       "icon": "<i class=\"far fa-building\"></i>"
     }
   },
@@ -36,10 +42,12 @@
     "pk": 4,
     "model": "api.abstract_tech",
     "fields": {
-      "name": "storage",
       "pretty_name": "Storage",
-      "image": "data/images/storage.png",
+      "pretty_name_fr": "Storage",
       "description": "Stores energy.",
+      "description_fr": "Stocke l'\u00e9nergie.",
+      "name": "storage",
+      "image": "data/images/storage.png",
       "icon": "<i class=\"fas fa-battery-three-quarters\"></i>"
     }
   },
@@ -47,10 +55,12 @@
     "pk": 5,
     "model": "api.abstract_tech",
     "fields": {
-      "name": "transmission",
       "pretty_name": "Transmission",
-      "image": "data/images/transmission.png",
+      "pretty_name_fr": "Transmission",
       "description": "Transmits energy from one location to another.",
+      "description_fr": "Transmet l'\u00e9nergie d'un endroit \u00e0 un autre.",
+      "name": "transmission",
+      "image": "data/images/transmission.png",
       "icon": "<i class=\"fas fa-exchange-alt\"></i>"
     }
   },
@@ -58,10 +68,12 @@
     "pk": 6,
     "model": "api.abstract_tech",
     "fields": {
-      "name": "conversion",
       "pretty_name": "Conversion",
-      "image": "data/images/conversion.png",
+      "pretty_name_fr": "Conversion",
       "description": "Converts energy from one carrier to another.",
+      "description_fr": "Convertit l'\u00e9nergie d'un transporteur \u00e0 un autre.",
+      "name": "conversion",
+      "image": "data/images/conversion.png",
       "icon": "<i class=\"fa-solid fa-shuffle\"></i>"
     }
   },
@@ -69,10 +81,12 @@
     "pk": 7,
     "model": "api.abstract_tech",
     "fields": {
-      "name": "conversion_plus",
       "pretty_name": "Conversion Plus",
-      "image": "data/images/conversion_plus.png",
+      "pretty_name_fr": "Conversion Plus",
       "description": "Converts energy from one carrier to another.",
+      "description_fr": "Convertit l'\u00e9nergie d'un transporteur \u00e0 un autre.",
+      "name": "conversion_plus",
+      "image": "data/images/conversion_plus.png",
       "icon": "<i class=\"fa-solid fa-shuffle\"></i> <i class=\"fas fa-plus\"></i>"
     }
   }
