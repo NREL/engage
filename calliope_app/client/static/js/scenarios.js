@@ -281,7 +281,7 @@ function updateDialogConstraints(onlyUpdateConstraints) {
                     const key = Object.keys(dialogObj[constraint][fieldKey]).length !== 0 ? Object.keys(dialogObj[constraint][fieldKey])[0] : "";
                     const val = key ? dialogObj[constraint][fieldKey][Object.keys(dialogObj[constraint][fieldKey])[0]] : "";
                     $(constraintFields).append( "<div class='input-field'><label><b>Key </b></label>");
-                    let dropdownArray = constraints.indexOf(fieldKey) <= 21 ? carriers : ["co2", "ch4", "co2e", "n20"];
+                    let dropdownArray = constraints.indexOf(fieldKey) <= 21 ? carriers : ["co2", "ch4", "co2e", "n2o", "Monetary"];
                     if (dropdownArray.indexOf(key) === -1) {
                         dropdownArray.push(key);
                     }
