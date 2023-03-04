@@ -1,0 +1,58 @@
+<!-- Modal -->
+<div class="modal fade" id="templatesModal" tabindex="-1" role="dialog" aria-labelledby="templateModalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div id="modalContent" class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="templateModalTitle">Templates</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="col-3" style="margin-top:15px;margin-left:80%;">
+                <button id="addTemplate" class="btn btn-success btn-sm" type="button">
+                    + Template
+                </button>
+            </div>
+            <div id="modalBody" class="modal-body">
+            <!-- Header -->
+            <br><br>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <div id="modalEdit" class="modal-content" aria-hidden="true">
+            <div class="modal-header" aria-hidden="true">
+            <h5 id="editModalTitle" class="modal-title">Edit Template: </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div id="editModalBody" class="modal-body">
+            <!-- Header -->
+            <br><br>
+            <label><b>Template Name</b></label>
+            <input id='templateName' name='templateName' style="margin-bottom:1em" class='form-control' placeholder='Template Name'  value=''></input>
+
+            <div class='input-field'><label><b>Template Type</b></label>
+            <select style="margin-bottom:1em" class="form-control" id='templateType' name='templateType' data-toggle='tooltip' data-placement='left'></select>
+
+            <div class='input-field'><label><b>Primary Location</b></label>
+            <select style="margin-bottom:1em" class="form-control" id='primaryLocation' name='primaryLocation' data-toggle='tooltip' data-placement='left'>
+                {% for loc in model.locations %}
+                <option value="{{ loc }}" {% if loc == val %}selected{% endif %}>{{ loc }}</option>
+                {% endfor %}
+            </select>
+    
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="saveTemplate" class="btn btn-success btn-sm" type="button" style="width:64px;height:38px;">
+                    Save
+                </button>
+            </div>
+            </div>
+
+        </div>
+    </div>
+</div>

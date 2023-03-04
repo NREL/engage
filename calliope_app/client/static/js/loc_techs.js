@@ -1,10 +1,23 @@
 var map_mode = 'loc_techs';
+//import { getTemplateData } from 'templates.js';
 
 $( document ).ready(function() {
 
 	initiate_units();
 
-	$('#master-new').remove();
+    //Templates
+    $("#master-new").show();
+    $("#master-new").html("Templates");
+    $('#master-new').attr('data-target','#templatesModal');
+    $('#master-new').attr('data-toggle','modal');
+    $('#master-new').on('click', function() {
+		getTemplates();
+	});
+
+    $('#addTemplate').on('click', function() {
+		addTemplate();
+	});
+    //End Templates
 
 	$('#technology').on('change', function() {
 		get_loc_techs();
@@ -85,3 +98,38 @@ $( document ).ready(function() {
 	$('#master-bulk-down').attr("href", function() { return $(this).attr("href")+"&file_list=loc_techs"});
 
 });
+
+var modelTemplates = ["Platte River Hydropower Plant", "Valley View Hotsprings Geothermal"];
+//var edittingTemplate = false;
+function getTemplates() {
+    $("#modalContent").show();
+    $("#modalEdit").hide();
+    $('#modalBody').empty();
+    for (var i = 0; i <  modelTemplates.length; i++) {
+        let id = "edit-" + modelTemplates[i].replace(/\s+/g, '-');
+        $('#modalBody').append( "<label><b>" + modelTemplates[i] + "</b></label>");
+        $('#modalBody').append( "<button type='button' id='" + id + "' class='btn btn-sm' style='padding-bottom:6px' name='" + modelTemplates[i] + "'><i class='fas fa-edit'></i></button><br>");
+        //$('#modalBody').append("<div class='form-group col-md-8'><input id='edit-" + modelTemplates[i] + "' type='submit' class='btn btn-sm btn-success' name='' value='+ Constraint'></div>");
+        $('#' + id).on('click', function() {
+            console.log("hi");
+            editTemplate(this);
+        });
+    }
+}
+
+function editTemplate(el) {
+    console.log(el.id);
+    let name = el.id.substr(5).replace(/-/g, ' ');
+    $("#modalContent").hide();
+    $("#modalEdit").show();
+    $("#templateName").val(name);
+    $("#editModalTitle").html("Edit Tamplate: " + name);
+}
+
+function addTemplate() {
+    $("#modalContent").hide();
+    $("#modalEdit").show();
+    $("#templateName").val("");
+    $("#editModalTitle").html("Add Tamplate");
+}
+
