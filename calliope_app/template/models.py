@@ -73,7 +73,7 @@ class Template_Type_Techs(models.Model):
 
 class Template_Type_Loc_Techs(models.Model):
     class Meta:
-        db_table = "template_Type_locs_techs"
+        db_table = "template_type_locs_techs"
         verbose_name_plural = "[Admin] Template Type Loc Techs"
 
     template = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
@@ -85,7 +85,7 @@ class Template_Type_Loc_Techs(models.Model):
 
 class Template_Type_Parameters(models.Model):
     class Meta:
-        db_table = "template_Type_parameters"
+        db_table = "template_type_parameters"
         verbose_name_plural = "[Admin] Template Type Parameters"
 
     template_tech = models.ForeignKey(Template_Type_Loc_Techs, on_delete=models.CASCADE)
