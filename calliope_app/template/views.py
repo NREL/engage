@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
 from api.models.configuration import Model, Model_User
-from template.models import Template
+from template.models import Template_Types
 
 @login_required
 def templates_view(request, model_uuid):
@@ -32,7 +32,7 @@ def templates_view(request, model_uuid):
         snapshot_version=None,
         public=True)
     user_models = list(user_models)
-    template_models = Template.objects
+    #template_models = Template_Type.objects
 
     if len(user_models) > 0:
         last_model = user_models[0].model
