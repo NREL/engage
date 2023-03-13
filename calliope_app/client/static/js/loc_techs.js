@@ -123,13 +123,13 @@ function editTemplate(el) {
     $("#modalContent").hide();
     $("#modalEdit").show();
     $("#templateName").val(name);
-    $("#editModalTitle").html("Edit Tamplate: " + name);
+    $("#editModalTitle").html("Edit Template: " + name);
 }
 
 function addTemplate() {
     $("#modalContent").hide();
     $("#modalEdit").show();
     $("#templateName").val("");
-    $("#editModalTitle").html("Add Tamplate");
+    $("#editModalTitle").html("Add Template");
 }
 
