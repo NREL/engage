@@ -74,7 +74,7 @@ class Template_Type_Techs(models.Model):
 
 class Template_Type_Loc_Techs(models.Model):
     class Meta:
-        db_table = "template_type_locs_techs"
+        db_table = "template_type_loc_techs"
         verbose_name_plural = "[Admin] Template Type Loc Techs"
 
     template_type = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
