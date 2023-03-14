@@ -39,7 +39,7 @@ class Template_Type_Locs(models.Model):
     name = models.CharField(max_length=200)
     latitude_offset = models.FloatField()
     longitude_offset = models.FloatField()
-    template = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
+    template_type = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
     primary_location = models.ForeignKey(Location,
                                 on_delete=models.CASCADE,
                                 related_name="primary_location",
@@ -59,7 +59,7 @@ class Template_Type_Techs(models.Model):
     carrier_in = models.CharField(max_length=200)
     carrier_out = models.CharField(max_length=200)
     #color = models.CharField(max_length=200) looks like technologies is doing something fancy with this
-    template = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
+    template_type = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
 
     # @property
     # def carrier_in(self):
@@ -77,7 +77,7 @@ class Template_Type_Loc_Techs(models.Model):
         db_table = "template_type_locs_techs"
         verbose_name_plural = "[Admin] Template Type Loc Techs"
 
-    template = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
+    template_type = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
     template_loc = models.ForeignKey(Template_Type_Locs, on_delete=models.CASCADE)
     template_tech = models.ForeignKey(Template_Type_Techs, on_delete=models.CASCADE)
 
