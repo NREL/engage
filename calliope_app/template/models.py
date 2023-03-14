@@ -25,7 +25,8 @@ class Template_Type_Variables(models.Model):
     units = models.CharField(max_length=200)
     default_value = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
-    template = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
+    template_type = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
+    timeseries_enabled = models.BooleanField()
 
     def __str__(self):
         return '%s' % (self.pretty_name)
@@ -88,7 +89,7 @@ class Template_Type_Parameters(models.Model):
         db_table = "template_type_parameters"
         verbose_name_plural = "[Admin] Template Type Parameters"
 
-    template_tech = models.ForeignKey(Template_Type_Loc_Techs, on_delete=models.CASCADE)
+    template_loc_tech = models.ForeignKey(Template_Type_Loc_Techs, on_delete=models.CASCADE)
     parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE)
     equation = models.CharField(max_length=200)
 
