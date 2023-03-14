@@ -48,7 +48,7 @@ def templates_view(request, model_uuid):
         "public_models": public_models,
         "snapshots": snapshots,
         "mapbox_token": settings.MAPBOX_TOKEN,
-        "template_models": template_models,
+        #"template_models": template_models,
         "model": model,
     }
 
