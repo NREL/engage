@@ -8,16 +8,17 @@ from api.models.configuration import Model, Model_User
 from template.models import Template_Types
 
 @login_required
-def templates_view(request, model_uuid):
+def templates_admin_view(request):
     """
-    View the "Templates" page
+    Get "Templates" data
 
     Returns: HttpResponse
 
     Example:
-    http://0.0.0.0:8000/
+    GET: /template/admin/
     """
     
+    model_uuid = request.GET['model_uuid']
     model = Model.by_uuid(model_uuid)
     
     user_models = Model_User.objects.filter(
@@ -41,7 +42,7 @@ def templates_view(request, model_uuid):
     else:
         last_model = None
 
-    context = {
+    response = {
         "timezones": common_timezones,
         "last_model": last_model,
         "user_models": user_models,
@@ -52,4 +53,8 @@ def templates_view(request, model_uuid):
         "model": model,
     }
 
-    return render(request, "templates.html", context)
+    response = {
+        "carriers": model.carriers
+    }
+
+    return JsonResponse(response, safe=False)

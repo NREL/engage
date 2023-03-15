@@ -6,9 +6,7 @@ from django.urls import path
 from template import views
 
 urlpatterns = [
-    path('<model_uuid>/templates/',
-         views.templates_view,
-         name='templates')
+    path('template/admin/',
+         views.templates_admin_view,
+         name='templates_admin')
 ]
-
-
