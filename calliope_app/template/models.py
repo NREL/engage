@@ -1,6 +1,7 @@
 from django.db import models
 from api.models.calliope import Abstract_Tech, Parameter
 from api.models.configuration import Location
+from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
 class Template_Types(models.Model):
@@ -11,6 +12,8 @@ class Template_Types(models.Model):
     name = models.CharField(max_length=200)
     pretty_name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
+    category = models.CharField(max_length=200, blank=True, null=True)
+    choices = ArrayField(models.CharField(max_length=10), blank=True, null=True)
 
     def __str__(self):
         return '%s' % (self.pretty_name)
@@ -26,10 +29,10 @@ class Template_Type_Variables(models.Model):
     default_value = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
     template_type = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
-    timeseries_enabled = models.BooleanField()
+    timeseries_enabled = models.BooleanField(blank=True, null=True)
 
     def __str__(self):
-        return '%s' % (self.pretty_name)
+        return '%s' % (self.name)
 
 class Template_Type_Locs(models.Model):
     class Meta:
@@ -46,7 +49,7 @@ class Template_Type_Locs(models.Model):
                                 blank=True, null=True)
 
     def __str__(self):
-        return '%s' % (self.pretty_name)
+        return '%s' % (self.name)
 
 class Template_Type_Techs(models.Model):
     class Meta:
@@ -70,19 +73,19 @@ class Template_Type_Techs(models.Model):
     #     return ','.join(list(p.values_list('value', flat=True)))
 
     def __str__(self):
-        return '%s' % (self.pretty_name)
+        return '%s' % (self.name)
 
 class Template_Type_Loc_Techs(models.Model):
     class Meta:
         db_table = "template_type_loc_techs"
         verbose_name_plural = "[Admin] Template Type Loc Techs"
-
+    name = models.CharField(max_length=200)
     template_type = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
     template_loc = models.ForeignKey(Template_Type_Locs, on_delete=models.CASCADE)
     template_tech = models.ForeignKey(Template_Type_Techs, on_delete=models.CASCADE)
 
     def __str__(self):
-        return '%s' % (self.pretty_name)
+        return '%s' % (self.name)
 
 class Template_Type_Parameters(models.Model):
     class Meta:
@@ -94,4 +97,4 @@ class Template_Type_Parameters(models.Model):
     equation = models.CharField(max_length=200)
 
     def __str__(self):
-        return '%s' % (self.pretty_name)
+        return '%s' % (self.equation)

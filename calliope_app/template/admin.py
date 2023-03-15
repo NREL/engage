@@ -22,7 +22,7 @@ class Template_Type_Loc_Techs_Admin(admin.ModelAdmin):
     # Add a different filter name?
     #list_filter = ['model']
     #Do loc_techs need a name too?
-    list_display = ['id', 'template_type', 'template_loc', 'template_tech']
+    list_display = ['id', 'template_type', 'name', 'template_loc', 'template_tech']
 class Template_Type_Parameters_Admin(admin.ModelAdmin):
     # Add a different filter name?
     #list_filter = ['model']
