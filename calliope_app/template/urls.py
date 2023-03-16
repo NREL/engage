@@ -6,7 +6,7 @@ from django.urls import path
 from template import views
 
 urlpatterns = [
-    path('template/admin/',
+    path('templates/admin/',
          views.templates_admin_view,
          name='templates_admin')
 ]

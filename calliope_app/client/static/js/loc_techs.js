@@ -1,4 +1,5 @@
 var map_mode = 'loc_techs';
+let template_types = [];
 //import { getTemplateData } from 'templates.js';
 
 $( document ).ready(function() {
@@ -102,6 +103,7 @@ $( document ).ready(function() {
 var modelTemplates = ["Platte River Hydropower Plant", "Valley View Hotsprings Geothermal"];
 //var edittingTemplate = false;
 function getTemplates() {
+    getTemplatesAdmin();
     $("#modalContent").show();
     $("#modalEdit").hide();
     $('#modalBody').empty();
@@ -115,6 +117,23 @@ function getTemplates() {
             editTemplate(this);
         });
     }
+}
+
+function getTemplatesAdmin() {
+    var model_uuid = $('#header').data('model_uuid');
+
+    $.ajax({
+        url: '/' + LANGUAGE_CODE + '/templates/admin/',
+        async: false,
+        data: {
+            'model_uuid': model_uuid,
+            'csrfmiddlewaretoken': getCookie('csrftoken'),
+        },
+        dataType: 'json',
+        success: function (data) {
+            template_types = data.template_types;
+        }
+    });
 }
 
 function editTemplate(el) {
