@@ -17,7 +17,7 @@ class Template_Types_Admin(admin.ModelAdmin):
 class Template_Type_Variables_Admin(admin.ModelAdmin):
     # Add a different filter name?
     #list_filter = ['model']
-    list_display = ['id', 'template_type', 'name', 'units', 'default_value', 'description', 'timeseries_enabled']
+    list_display = ['id', 'template_type', 'name', 'units', 'category', 'choices', 'description', 'timeseries_enabled']
 class Template_Type_Locs_Admin(admin.ModelAdmin):
     # Add a different filter name?
     #list_filter = ['model']

@@ -14,8 +14,6 @@ class Template_Types(models.Model):
     name = models.CharField(max_length=200)
     pretty_name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
-    category = models.CharField(max_length=200, blank=True, null=True)
-    choices = ArrayField(models.CharField(max_length=10), blank=True, null=True)
 
     def __str__(self):
         return '%s' % (self.pretty_name)
@@ -27,11 +25,13 @@ class Template_Type_Variables(models.Model):
         verbose_name_plural = "[Admin] Template Type Variables"
 
     name = models.CharField(max_length=200)
-    units = models.CharField(max_length=200)
-    default_value = models.CharField(max_length=200)
-    description = models.TextField(blank=True, null=True)
     template_type = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
+    units = models.CharField(max_length=200)
+    default_value = models.CharField(max_length=200, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
     timeseries_enabled = models.BooleanField(blank=True, null=True)
+    category = models.CharField(max_length=200, blank=True, null=True)
+    choices = ArrayField(models.CharField(max_length=10), blank=True, null=True)
 
     def __str__(self):
         return '%s' % (self.name)
@@ -42,9 +42,9 @@ class Template_Type_Locs(models.Model):
         verbose_name_plural = "[Admin] Template Type Locs"
 
     name = models.CharField(max_length=200)
+    template_type = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
     latitude_offset = models.FloatField()
     longitude_offset = models.FloatField()
-    template_type = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
 
     def __str__(self):
         return '%s' % (self.name)
@@ -55,12 +55,12 @@ class Template_Type_Techs(models.Model):
         verbose_name_plural = "[Admin] Template Type Techs"
 
     name = models.CharField(max_length=200)
+    template_type = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
     abstract_tech = models.ForeignKey(Abstract_Tech, on_delete=models.CASCADE)
     #Should we model carrier in and out similar to technologies?
     carrier_in = models.CharField(max_length=200)
     carrier_out = models.CharField(max_length=200)
     #color = models.CharField(max_length=200) looks like technologies is doing something fancy with this
-    template_type = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
 
     # @property
     # def carrier_in(self):
@@ -103,11 +103,9 @@ class Templates(models.Model):
         verbose_name_plural = "Templates"
         ordering = ['name']
     objects = EngageManager()
-    #????????
     objects_all = models.Manager()
 
     name = models.CharField(max_length=200)
-    #look into template type
     template_type = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
     model = models.ForeignKey(Model, on_delete=models.CASCADE)
     location = models.ForeignKey(Location,
@@ -128,7 +126,6 @@ class Template_Variables(models.Model):
     objects = EngageManager()
     objects_all = models.Manager()
 
-    #look into template type
     template = models.ForeignKey(Templates, on_delete=models.CASCADE)
     template_type_variable = models.ForeignKey(Template_Type_Variables, on_delete=models.CASCADE)
     value = models.CharField(max_length=200)
