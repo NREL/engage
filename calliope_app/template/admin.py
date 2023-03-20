@@ -1,7 +1,15 @@
 from django.contrib import admin
-from template.models import Template_Types, Template_Type_Variables, Template_Type_Locs, Template_Type_Techs, Template_Type_Loc_Techs, Template_Type_Parameters
+from template.models import Templates, Template_Variables, Template_Types, Template_Type_Variables, Template_Type_Locs, Template_Type_Techs, Template_Type_Loc_Techs, Template_Type_Parameters
 
 # Register your models here.
+class Templates_View(admin.ModelAdmin):
+    # Add a different filter name?
+    #list_filter = ['model']
+    list_display = ['id', 'name', 'template_type', 'model', 'location', 'created', 'updated']
+class Template_Variables_View(admin.ModelAdmin):
+    # Add a different filter name?
+    #list_filter = ['model']
+    list_display = ['id', 'template', 'template_type_variable', 'value', 'timeseries', 'timeseries_meta', 'updated']
 class Template_Types_Admin(admin.ModelAdmin):
     # Add a different filter name?
     #list_filter = ['model']
@@ -13,7 +21,7 @@ class Template_Type_Variables_Admin(admin.ModelAdmin):
 class Template_Type_Locs_Admin(admin.ModelAdmin):
     # Add a different filter name?
     #list_filter = ['model']
-    list_display = ['id', 'template_type', 'name', 'latitude_offset', 'longitude_offset', 'primary_location']
+    list_display = ['id', 'template_type', 'name', 'latitude_offset', 'longitude_offset']
 class Template_Type_Techs_Admin(admin.ModelAdmin):
     # Add a different filter name?
     #list_filter = ['model']
@@ -28,6 +36,8 @@ class Template_Type_Parameters_Admin(admin.ModelAdmin):
     #list_filter = ['model']
     list_display = ['id', 'template_loc_tech', 'parameter', 'equation']
 
+admin.site.register(Templates, Templates_View)
+admin.site.register(Template_Variables, Template_Variables_View)
 admin.site.register(Template_Types, Template_Types_Admin)
 admin.site.register(Template_Type_Variables, Template_Type_Variables_Admin)
 admin.site.register(Template_Type_Locs, Template_Type_Locs_Admin)

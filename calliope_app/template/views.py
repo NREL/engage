@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse, HttpResponse
 from api.models.configuration import Model, Model_User
-from template.models import Template_Types, Template_Type_Variables, Template_Type_Locs, Template_Type_Techs, Template_Type_Loc_Techs, Template_Type_Parameters
+from template.models import Templates, Template_Variables, Template_Types, Template_Type_Variables, Template_Type_Locs, Template_Type_Techs, Template_Type_Loc_Techs, Template_Type_Parameters
 from django.core.serializers import serialize
 from django.core.serializers.json import DjangoJSONEncoder
 
@@ -31,16 +31,21 @@ def templates_admin_view(request):
     model_uuid = request.GET['model_uuid']
     #model = Model.by_uuid(model_uuid)
     
+    templates = list(Templates.objects.all().values('name', 'template_type', 'model', 'location', 'created', 'updated'))
+    template_variables = list(Template_Variables.objects.all().values('template', 'template_type_variable', 'value', 'timeseries', 'timeseries_meta', 'updated'))
+
     template_types = list(Template_Types.objects.all().values('name', 'pretty_name', 'description'))
     #template_types = serialize('jsonl', Template_Types.objects.all(), cls=LazyEncoder)
     template_type_variables = list(Template_Type_Variables.objects.all().values('name', 'template_type', 'units', 'default_value', 'description', 'timeseries_enabled'))
-    template_type_locs = list(Template_Type_Locs.objects.all().values('name', 'template_type', 'latitude_offset', 'longitude_offset', 'primary_location'))
+    template_type_locs = list(Template_Type_Locs.objects.all().values('name', 'template_type', 'latitude_offset', 'longitude_offset'))
     template_type_techs = list(Template_Type_Techs.objects.all().values('name', 'template_type', 'abstract_tech', 'carrier_in', 'carrier_out'))
     template_type_loc_techs = list(Template_Type_Loc_Techs.objects.all().values('name', 'template_type', 'template_loc', 'template_tech'))
     template_type_parameters = list(Template_Type_Parameters.objects.all().values('template_loc_tech', 'parameter', 'equation'))
 
     response = {
         #"model": model,
+        "templates": templates,
+        "template_variables": template_variables,
         "template_types": template_types,
         "template_type_variables": template_type_variables,
         "template_type_locs": template_type_locs,

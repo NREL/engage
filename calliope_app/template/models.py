@@ -1,7 +1,9 @@
 from django.db import models
 from api.models.calliope import Abstract_Tech, Parameter
-from api.models.configuration import Location
+from api.models.configuration import Location, Model, Timeseries_Meta
 from django.contrib.postgres.fields import ArrayField
+
+from api.models.utils import EngageManager
 
 # Create your models here.
 class Template_Types(models.Model):
@@ -43,10 +45,6 @@ class Template_Type_Locs(models.Model):
     latitude_offset = models.FloatField()
     longitude_offset = models.FloatField()
     template_type = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
-    primary_location = models.ForeignKey(Location,
-                                on_delete=models.CASCADE,
-                                related_name="primary_location",
-                                blank=True, null=True)
 
     def __str__(self):
         return '%s' % (self.name)
@@ -98,3 +96,50 @@ class Template_Type_Parameters(models.Model):
 
     def __str__(self):
         return '%s' % (self.equation)
+
+class Templates(models.Model):
+    class Meta:
+        db_table = "templates"
+        verbose_name_plural = "Templates"
+        ordering = ['name']
+    objects = EngageManager()
+    #????????
+    objects_all = models.Manager()
+
+    name = models.CharField(max_length=200)
+    #look into template type
+    template_type = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
+    model = models.ForeignKey(Model, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location,
+                            on_delete=models.CASCADE,
+                            related_name="location",
+                            blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True, null=True)
+    updated = models.DateTimeField(auto_now=True, null=True)
+    deleted = models.DateTimeField(default=None, editable=False, null=True)
+
+    def __str__(self):
+        return '%s' % (self.name)
+
+class Template_Variables(models.Model):
+    class Meta:
+        db_table = "template_variables"
+        verbose_name_plural = "Template Variables"
+    objects = EngageManager()
+    objects_all = models.Manager()
+
+    #look into template type
+    template = models.ForeignKey(Templates, on_delete=models.CASCADE)
+    template_type_variable = models.ForeignKey(Template_Type_Variables, on_delete=models.CASCADE)
+    value = models.CharField(max_length=200)
+    timeseries = models.BooleanField(default=False)
+    timeseries_meta = models.ForeignKey(Timeseries_Meta,
+                                        on_delete=models.CASCADE,
+                                        blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True, null=True)
+    updated = models.DateTimeField(auto_now=True, null=True)
+    deleted = models.DateTimeField(default=None, editable=False, null=True)
+
+    def __str__(self):
+        return '%s' % (self.template)
+
