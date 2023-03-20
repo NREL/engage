@@ -123,7 +123,7 @@ function getTemplatesAdmin() {
     var model_uuid = $('#header').data('model_uuid');
 
     $.ajax({
-        url: '/' + LANGUAGE_CODE + '/templates/admin/',
+        url: '/' + LANGUAGE_CODE + '/templates/model/',
         async: false,
         data: {
             'model_uuid': model_uuid,
