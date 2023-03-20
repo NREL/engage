@@ -141,5 +141,5 @@ class Template_Variables(models.Model):
     deleted = models.DateTimeField(default=None, editable=False, null=True)
 
     def __str__(self):
-        return '%s' % (self.template)
+        return '%s' % (self.template_type_variable)
 
