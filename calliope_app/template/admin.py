@@ -17,20 +17,20 @@ class Template_Types_Admin(admin.ModelAdmin):
 class Template_Type_Variables_Admin(admin.ModelAdmin):
     # Add a different filter name?
     #list_filter = ['model']
-    list_display = ['id', 'template_type', 'name', 'units', 'category', 'choices', 'description', 'timeseries_enabled']
+    list_display = ['id', 'name', 'template_type', 'units', 'category', 'choices', 'description', 'timeseries_enabled']
 class Template_Type_Locs_Admin(admin.ModelAdmin):
     # Add a different filter name?
     #list_filter = ['model']
-    list_display = ['id', 'template_type', 'name', 'latitude_offset', 'longitude_offset']
+    list_display = ['id', 'name', 'template_type', 'latitude_offset', 'longitude_offset']
 class Template_Type_Techs_Admin(admin.ModelAdmin):
     # Add a different filter name?
     #list_filter = ['model']
-    list_display = ['id', 'template_type', 'name', 'abstract_tech', 'carrier_in', 'carrier_out']
+    list_display = ['id', 'name', 'template_type', 'abstract_tech', 'carrier_in', 'carrier_out']
 class Template_Type_Loc_Techs_Admin(admin.ModelAdmin):
     # Add a different filter name?
     #list_filter = ['model']
     #Do loc_techs need a name too?
-    list_display = ['id', 'template_type', 'name', 'template_loc', 'template_tech']
+    list_display = ['id', 'name', 'template_type', 'template_loc', 'template_tech']
 class Template_Type_Parameters_Admin(admin.ModelAdmin):
     # Add a different filter name?
     #list_filter = ['model']
