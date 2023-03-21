@@ -81,13 +81,13 @@ class Run_Parameter_Admin(admin.ModelAdmin):
 class Location_Admin(admin.ModelAdmin):
     list_filter = ['model']
     list_display = ['id', 'pretty_name', 'name', 'latitude', 'longitude',
-                    'available_area', 'model', 'created', 'updated']
+                    'available_area', 'model', 'created', 'updated', 'template']
 
 
 class Technology_Admin(admin.ModelAdmin):
     list_filter = ['model']
     list_display = ['id', 'pretty_name', 'abstract_tech', 'name', 'tag',
-                    'pretty_tag', 'model', 'created', 'updated']
+                    'pretty_tag', 'model', 'created', 'updated', 'template_type']
 
 
 class Tech_Param_Admin(admin.ModelAdmin):
@@ -100,7 +100,7 @@ class Tech_Param_Admin(admin.ModelAdmin):
 class Loc_Tech_Admin(admin.ModelAdmin):
     list_filter = ['model']
     list_display = ['id', 'location_1', 'location_2', 'technology',
-                    'model', 'created', 'updated']
+                    'model', 'created', 'updated', 'template']
 
 
 class Loc_Tech_Param_Admin(admin.ModelAdmin):
