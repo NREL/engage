@@ -37,13 +37,19 @@
 
             <div class='input-field'><label><b>{% trans "Template Type" %}</b></label>
             <select style="margin-bottom:1em" class="form-control" id='templateType' name='templateType' data-toggle='tooltip' data-placement='left'></select>
-
+            </div>
             <div class='input-field'><label><b>{% trans "Primary Location" %}</b></label>
             <select style="margin-bottom:1em" class="form-control" id='primaryLocation' name='primaryLocation' data-toggle='tooltip' data-placement='left'></select>
-    
             </div>
+            <div id="templateVars" style="margin-bottom:1em">
+            </div>
+            <span id="templateError" hidden="true" style="color:red;margin-bottom:1em">
+                {% trans "Please fill out all template fields before saving!" %}
+            </span>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
+                <button id="modelEditBack" class="btn btn-secondary" type="button" style="width:64px;height:38px;float:left;">
+                    {% trans "Back to Templates" %}
+                </button>
                 <button id="saveTemplate" class="btn btn-success btn-sm" type="button" style="width:64px;height:38px;">
                     {% trans "Save" %}
                 </button>

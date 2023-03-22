@@ -23,7 +23,7 @@ def model_templates(request):
     
     model_uuid = request.GET['model_uuid']
     model = Model.by_uuid(model_uuid)
-    templates = list(Templates.objects.all().values('id', 'name', 'template_type', 'model', 'location', 'created', 'updated'))
+    templates = list(Templates.objects.filter(model_id=model.id).values('id', 'name', 'template_type', 'model', 'location', 'created', 'updated'))
     template_variables = list(Template_Variables.objects.all().values('id', 'template', 'template_type_variable', 'value', 'timeseries', 'timeseries_meta', 'updated'))
 
     template_types = list(Template_Types.objects.all().values('id', 'name', 'pretty_name', 'description'))
@@ -69,13 +69,18 @@ def add_template(request):
     model_uuid = request.POST["model_uuid"]
     template_id = int(request.POST.get("template_id", 0))
     name = request.POST["name"]
-    template_type_name = request.POST["template_type"]
+    template_type_id = request.POST["template_type"]
     location_id = request.POST["location"]
 
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
-    template_type = Template_Types.objects.filter(name=template_type_name).first()
+    template_type = Template_Types.objects.filter(id=template_type_id).first()
     location = Location.objects.filter(id=location_id).first()
+    template_type_variables = list(Template_Type_Variables.objects.filter(template_id=template_type_id).values('id', 'name', 'pretty_name', 'description'))
+    #template_type_locs = list(Template_Type_Locs.objects.all().values('id', 'name', 'template_type', 'latitude_offset', 'longitude_offset'))
+    #template_type_techs = list(Template_Type_Techs.objects.all().values('id', 'name', 'template_type', 'abstract_tech', 'carrier_in', 'carrier_out'))
+    #template_type_loc_techs = list(Template_Type_Loc_Techs.objects.all().values('id', 'name', 'template_type', 'template_loc', 'template_tech'))
+    #template_type_parameters = list(Template_Type_Parameters.objects.all().values('id', 'template_loc_tech', 'parameter', 'equation'))
 
     if template_id:
         # Log Activity
@@ -106,6 +111,7 @@ def add_template(request):
     # Return new list of active loc tech IDs
     request.session["template_id"] = template.id
     payload = {"message": "added template",
-               "template_id": template.id}
+                "template_id": template.id,
+                }
 
     return HttpResponse(json.dumps(payload), content_type="application/json")

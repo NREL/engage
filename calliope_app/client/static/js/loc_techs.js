@@ -24,8 +24,29 @@ $( document ).ready(function() {
 		saveTemplate();
 	});
 
+    $('#modelEditBack').on('click', function() {
+		modelEditBack();
+	});
+
+    $('#templateType').on('change', function() {
+        $('#templateVars').empty();
+        var templateType = $('#templateType').val();
+        if (!templateType && templateType.length === 0) {
+            return;
+        }
+        $('#templateVars').append( "<hr><h6>Template Type Variables for " + template_data.template_types.find(o => o.id == parseInt(templateType)).pretty_name + "<h6>" );
+        var template_type_vars = template_data.template_type_variables.filter(obj => {
+            return obj.template_type == parseInt(templateType);
+        });
+        for (var i = 0; i < template_type_vars.length; i++) {
+            $('#templateVars').append( "<label><b>" + template_type_vars[i].name + "</b></label>");
+            $('#templateVars').append( "<input id='template_type_var_" + template_type_vars[i].id + "' style='margin-bottom:1em' class='form-control' value=''></input>");
+        }
+	});
+
     //On modal close
     $('#templatesModal').on('hidden.bs.modal', function () {
+        $('#templateError').hide();
         $("#templateType").val([]);
         $("#primaryLocation").val([]);
         $("#templateName").val('');
@@ -143,9 +164,9 @@ function getTemplates() {
         $("#templateType").append( "<option value=''></option>");
         for (let i = 0; i < template_data.template_types.length; i++) {
             if (template_edit.name == template_data.template_types[i]) {
-                $("#templateType").append( "<option selected value=" + template_data.template_types[i].name + ">" + template_data.template_types[i].pretty_name + "</option>");
+                $("#templateType").append( "<option selected value=" + template_data.template_types[i].id + ">" + template_data.template_types[i].pretty_name + "</option>");
             } else {
-                $("#templateType").append( "<option value=" + template_data.template_types[i].name + ">" + template_data.template_types[i].pretty_name + "</option>" );
+                $("#templateType").append( "<option value=" + template_data.template_types[i].id + ">" + template_data.template_types[i].pretty_name + "</option>" );
             }
         }
     }
@@ -183,7 +204,34 @@ function addTemplate() {
     $("#editModalTitle").html("Add Template");
 }
 
+function closeTemplateModal() {
+    $('#templateError').hide();
+    $("#templateType").val([]);
+    $("#primaryLocation").val([]);
+    $("#templateName").val('');
+    $("#templatesModal").modal('hide');
+}
+
+function modelEditBack() {
+    $("#modalContent").show();
+    $("#modalEdit").hide();
+}
+
 function saveTemplate() {
+    var templateVarElements = $("#templateVars :input");
+    var templateVars = [];
+    if (!$('#templateName').val() || !$('#templateType').val() || !$('#primaryLocation').val()) {
+        $('#templateError').attr("hidden", false);
+        return;
+    }
+    for (var i = 0; i < templateVarElements.length; i++) {
+        if (!templateVarElements[i].value) {
+            $('#templateError').attr("hidden", false);
+            return;
+        }
+        templateVars.push({id: templateVarElements[i].id.replace("template_type_var_", ""), value: templateVarElements[i].value});
+    }
+    $('#templateError').attr("hidden", true);
     $.ajax({
         url: '/' + LANGUAGE_CODE + '/model/templates/create/',
         type: 'POST',
@@ -193,9 +241,11 @@ function saveTemplate() {
             'template_type': $('#templateType').val(),
             'location': $('#primaryLocation').val(),
             'csrfmiddlewaretoken': getCookie('csrftoken'),
+            'templateVars': templateVars,
         },
         dataType: 'json',
         success: function (data) {
+            closeTemplateModal();
             var response = data;
         }
     });
