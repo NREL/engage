@@ -6,10 +6,10 @@ from django.urls import path
 from template import views
 
 urlpatterns = [
-    path('templates/model/',
-         views.templates_admin_view,
-         name='templates_admin'),
-    path('templates/model/create/',
-         views.add_template,
-         name='add_template')
+    path('model/templates/',
+        views.model_templates,
+         name='templates'),
+    path('model/templates/create/',
+          views.add_template,
+          name='add_template')
 ]

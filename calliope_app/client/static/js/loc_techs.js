@@ -1,12 +1,13 @@
 var map_mode = 'loc_techs';
-let template_types = [];
+let template_data = {};
+let template_edit = {};
 //import { getTemplateData } from 'templates.js';
 
 $( document ).ready(function() {
 
 	initiate_units();
 
-    //Templates
+    //------------Start Templates------------//
     $("#master-new").show();
     $("#master-new").html("Templates");
     $('#master-new').attr('data-target','#templatesModal');
@@ -18,7 +19,18 @@ $( document ).ready(function() {
     $('#addTemplate').on('click', function() {
 		addTemplate();
 	});
-    //End Templates
+
+    $('#saveTemplate').on('click', function() {
+		saveTemplate();
+	});
+
+    //On modal close
+    $('#templatesModal').on('hidden.bs.modal', function () {
+        $("#templateType").val([]);
+        $("#primaryLocation").val([]);
+        $("#templateName").val('');
+    });
+    //------------End Templates------------//
 
 	$('#technology').on('change', function() {
 		get_loc_techs();
@@ -100,22 +112,42 @@ $( document ).ready(function() {
 
 });
 
-var modelTemplates = ["Platte River Hydropower Plant", "Valley View Hotsprings Geothermal"];
 //var edittingTemplate = false;
 function getTemplates() {
     getTemplatesAdmin();
     $("#modalContent").show();
     $("#modalEdit").hide();
     $('#modalBody').empty();
-    for (var i = 0; i <  modelTemplates.length; i++) {
-        let id = "edit-" + modelTemplates[i].replace(/\s+/g, '-');
-        $('#modalBody').append( "<label><b>" + modelTemplates[i] + "</b></label>");
-        $('#modalBody').append( "<button type='button' id='" + id + "' class='btn btn-sm' style='padding-bottom:6px' name='" + modelTemplates[i] + "'><i class='fas fa-edit'></i></button><br>");
-        //$('#modalBody').append("<div class='form-group col-md-8'><input id='edit-" + modelTemplates[i] + "' type='submit' class='btn btn-sm btn-success' name='' value='+ Constraint'></div>");
+    for (var i = 0; i < template_data.templates.length; i++) {
+        let id = "edit-" + template_data.templates[i].name.replace(/\s+/g, '-');
+        $('#modalBody').append( "<label><b>" + template_data.templates[i].name + "</b></label>");
+        $('#modalBody').append( "<button type='button' id='" + id + "' class='btn btn-sm' style='padding-bottom:6px' name='" + template_data.templates[i].name + "'><i class='fas fa-edit'></i></button><br>");
         $('#' + id).on('click', function() {
             console.log("hi");
             editTemplate(this);
         });
+    }
+
+    if ($("#primaryLocation").children('option').length === 0) {
+        $("#primaryLocation").prepend( "<option selected value=''></option>");
+        for (let i = 0; i < locations.length; i++) {
+            if (template_edit.id == locations[i].id) {
+                $("#primaryLocation").append( "<option selected value=" + locations[i].id + ">" + locations[i].pretty_name + "</option>");
+            } else {
+                $("#primaryLocation").append( "<option value=" + locations[i].id + ">" +locations[i].pretty_name + "</option>" );
+            }
+        }
+    }
+
+    if ($("#templateType").children('option').length === 0) {
+        $("#templateType").append( "<option value=''></option>");
+        for (let i = 0; i < template_data.template_types.length; i++) {
+            if (template_edit.name == template_data.template_types[i]) {
+                $("#templateType").append( "<option selected value=" + template_data.template_types[i].name + ">" + template_data.template_types[i].pretty_name + "</option>");
+            } else {
+                $("#templateType").append( "<option value=" + template_data.template_types[i].name + ">" + template_data.template_types[i].pretty_name + "</option>" );
+            }
+        }
     }
 }
 
@@ -123,7 +155,7 @@ function getTemplatesAdmin() {
     var model_uuid = $('#header').data('model_uuid');
 
     $.ajax({
-        url: '/' + LANGUAGE_CODE + '/templates/model/',
+        url: '/' + LANGUAGE_CODE + '/model/templates/',
         async: false,
         data: {
             'model_uuid': model_uuid,
@@ -131,13 +163,12 @@ function getTemplatesAdmin() {
         },
         dataType: 'json',
         success: function (data) {
-            template_types = data.template_types;
+            template_data = data;
         }
     });
 }
 
 function editTemplate(el) {
-    console.log(el.id);
     let name = el.id.substr(5).replace(/-/g, ' ');
     $("#modalContent").hide();
     $("#modalEdit").show();
@@ -152,3 +183,20 @@ function addTemplate() {
     $("#editModalTitle").html("Add Template");
 }
 
+function saveTemplate() {
+    $.ajax({
+        url: '/' + LANGUAGE_CODE + '/model/templates/create/',
+        type: 'POST',
+        data: {
+            'model_uuid': $('#header').data('model_uuid'),
+            'name': $('#templateName').val(),
+            'template_type': $('#templateType').val(),
+            'location': $('#primaryLocation').val(),
+            'csrfmiddlewaretoken': getCookie('csrftoken'),
+        },
+        dataType: 'json',
+        success: function (data) {
+            var response = data;
+        }
+    });
+}

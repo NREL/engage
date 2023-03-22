@@ -24,7 +24,7 @@
         </div>
         <div id="modalEdit" class="modal-content" aria-hidden="true">
             <div class="modal-header" aria-hidden="true">
-            <h5 id="editModalTitle" class="modal-title">{% trans "Edit Template: " %}</h5>
+            <h5 id="editModalTitle" class="modal-title">{% trans "Edit Template" %}:</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -39,11 +39,7 @@
             <select style="margin-bottom:1em" class="form-control" id='templateType' name='templateType' data-toggle='tooltip' data-placement='left'></select>
 
             <div class='input-field'><label><b>{% trans "Primary Location" %}</b></label>
-            <select style="margin-bottom:1em" class="form-control" id='primaryLocation' name='primaryLocation' data-toggle='tooltip' data-placement='left'>
-                {% for loc in model.locations %}
-                <option value="{{ loc }}" {% if loc == val %}selected{% endif %}>{{ loc }}</option>
-                {% endfor %}
-            </select>
+            <select style="margin-bottom:1em" class="form-control" id='primaryLocation' name='primaryLocation' data-toggle='tooltip' data-placement='left'></select>
     
             </div>
             <div class="modal-footer">
