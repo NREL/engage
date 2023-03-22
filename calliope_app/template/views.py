@@ -50,15 +50,14 @@ def model_templates(request):
 @csrf_protect
 def add_template(request):
     """
-    Add a new node (location + technology). An argument for location_2_id is
-    only required for nodes with a transmission technology.
+    Add a new template.
 
     Parameters:
     model_uuid (uuid): required
-    technology_id (int): required
-    location_1_id (int): required
-    location_2_id (int): optional
-    loc_tech_description (str): optional
+    template_id (int): optional
+    name: required
+    template_type_id: required
+    location: required
 
     Returns (json): Action Confirmation
 
