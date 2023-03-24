@@ -602,6 +602,7 @@ class Technology(models.Model):
     description = models.TextField(blank=True, null=True)
     model = models.ForeignKey(Model, on_delete=models.CASCADE)
     template_type_id = models.BigIntegerField(blank=True, null=True)
+    template_type_tech_id = models.BigIntegerField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
@@ -913,6 +914,7 @@ class Location(models.Model):
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
     template_id = models.BigIntegerField(blank=True, null=True)
+    template_type_loc_id = models.BigIntegerField(blank=True, null=True)
     
     def __str__(self):
         return '%s' % (self.pretty_name)
@@ -927,7 +929,6 @@ class Loc_Tech(models.Model):
                     'location_1', 'location_2']
     objects = EngageManager()
     objects_all = models.Manager()
-
     location_1 = models.ForeignKey(Location,
                                    on_delete=models.CASCADE,
                                    related_name="location_1")
@@ -939,6 +940,7 @@ class Loc_Tech(models.Model):
     description = models.TextField(blank=True, null=True)
     model = models.ForeignKey(Model, on_delete=models.CASCADE)
     template_id = models.BigIntegerField(blank=True, null=True)
+    template_type_loc_tech_id = models.BigIntegerField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
