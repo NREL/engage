@@ -34,13 +34,19 @@ $( document ).ready(function() {
         if (!templateType && templateType.length === 0) {
             return;
         }
-        $('#templateVars').append( "<hr><h6>Template Type Variables for " + template_data.template_types.find(o => o.id == parseInt(templateType)).pretty_name + "<h6>" );
+        var template_type = template_data.template_types.find(o => o.id == parseInt(templateType))
+        $('#templateVars').append( "<hr><h6>Template Type Variables for " + template_type.pretty_name + "<h6>" );
+        $('#templateVars').append( "<p>" + template_type.description + "<p>" );
         var template_type_vars = template_data.template_type_variables.filter(obj => {
             return obj.template_type == parseInt(templateType);
         });
         for (var i = 0; i < template_type_vars.length; i++) {
             $('#templateVars').append( "<label><b>" + template_type_vars[i].name + "</b></label>");
+            $('#templateVars').append( "<p class='help-text'>" + template_type_vars[i].description + ". Units are in " + template_type_vars[i].units + ".</p>");
             $('#templateVars').append( "<input id='template_type_var_" + template_type_vars[i].id + "' style='margin-bottom:1em' class='form-control' value=''></input>");
+            if (template_type_vars[i].default_value) {
+                $('#template_type_var_' + template_type_vars[i].id).val(template_type_vars[i].default_value);
+            }
         }
 	});
 

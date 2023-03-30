@@ -87,7 +87,7 @@ class Location_Admin(admin.ModelAdmin):
 class Technology_Admin(admin.ModelAdmin):
     list_filter = ['model']
     list_display = ['id', 'pretty_name', 'abstract_tech', 'name', 'tag',
-                    'pretty_tag', 'model', 'created', 'updated', 'template_type_id', 'template_type_tech_id']
+                    'pretty_tag', 'model', 'created', 'updated', 'template_id', 'template_type_tech_id']
 
 
 class Tech_Param_Admin(admin.ModelAdmin):

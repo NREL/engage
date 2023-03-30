@@ -27,7 +27,7 @@ def model_templates(request):
     template_variables = list(Template_Variables.objects.all().values('id', 'template', 'template_type_variable', 'value', 'timeseries', 'timeseries_meta', 'updated'))
 
     template_types = list(Template_Types.objects.all().values('id', 'name', 'pretty_name', 'description'))
-    template_type_variables = list(Template_Type_Variables.objects.all().values('id', 'name', 'template_type', 'units', 'category', 'choices', 'description', 'timeseries_enabled'))
+    template_type_variables = list(Template_Type_Variables.objects.all().values('id', 'name', 'template_type', 'units', 'default_value', 'category', 'choices', 'description', 'timeseries_enabled'))
     template_type_locs = list(Template_Type_Locs.objects.all().values('id', 'name', 'template_type', 'latitude_offset', 'longitude_offset'))
     template_type_techs = list(Template_Type_Techs.objects.all().values('id', 'name', 'template_type', 'abstract_tech', 'carrier_in', 'carrier_out'))
     template_type_loc_techs = list(Template_Type_Loc_Techs.objects.all().values('id', 'name', 'template_type', 'template_loc_1', 'template_loc_2', 'template_tech'))
@@ -117,7 +117,7 @@ def add_template(request):
         )
 
         new_locations = add_template_locations(template_type_locs, model, name, location, template)
-        new_technologies = add_template_technologies(template_type_techs, model, name, template_type_id)
+        new_technologies = add_template_technologies(template_type_techs, model, name, template)
         new_loc_techs = add_template_loc_techs(template_type_loc_techs, model, name, new_technologies, new_locations, template_type_id, template)
         new_template_variables = add_template_variables(templateVars, template)
 
@@ -172,7 +172,7 @@ def add_template_locations(template_type_locs, model, name, location, template):
     return new_locations
 
 # Create template technologies
-def add_template_technologies(template_type_techs, model, name, template_type_id):
+def add_template_technologies(template_type_techs, model, name, template):
     new_technologies = {}
     for template_type_tech in template_type_techs:
         #get abstract tech
@@ -183,7 +183,7 @@ def add_template_technologies(template_type_techs, model, name, template_type_id
             pretty_name=name + ' - ' + template_type_tech['name'],
             name=template_type_tech['name'].replace(' ', '-'),
             model=model,
-            template_type_id=template_type_id,
+            template_id=template.id,
             template_type_tech_id=template_type_tech['id'],
         )
         new_technologies[template_type_tech['id']] = new_tech
@@ -234,7 +234,7 @@ def add_template_loc_techs(template_type_loc_techs, model, name, new_technologie
             #tech = next(x for x in new_technologies if x['template_type_loc_id'] == template_type_loc_tech['template_tech'] )
             new_loc_tech = Loc_Tech.objects.create(
                 model=model,
-                technology=Technology.objects.filter(model_id=model.id, template_type_id=template_type_id, template_type_tech_id=template_type_loc_tech['template_tech']).first(),
+                technology=Technology.objects.filter(model_id=model.id, template_id=template.id, template_type_tech_id=template_type_loc_tech['template_tech']).first(),
                 location_1=Location.objects.filter(model_id=model.id, template_id=template.id, template_type_loc_id=template_type_loc_tech['template_loc_1']).first(),
                 location_2=Location.objects.filter(model_id=model.id, template_id=template.id, template_type_loc_id=template_type_loc_tech['template_loc_2']).first(),
                 description="Node created by " + name + " template",
@@ -244,11 +244,12 @@ def add_template_loc_techs(template_type_loc_techs, model, name, new_technologie
         else:
             new_loc_tech = Loc_Tech.objects.create(
                 model=model,
-                technology=Technology.objects.filter(model_id=model.id, template_type_id=template_type_id, template_type_tech_id=template_type_loc_tech['template_tech']).first(),
+                technology=Technology.objects.filter(model_id=model.id, template_id=template.id, template_type_tech_id=template_type_loc_tech['template_tech']).first(),
                 location_1=Location.objects.filter(model_id=model.id, template_id=template.id, template_type_loc_id=template_type_loc_tech['template_loc_1']).first(),
                 description="Node created by " + name + " template",
                 template_id=template.id,
                 template_type_loc_tech_id=template_type_loc_tech['id'],
             )
-        #new_loc_techs.append(new_loc_tech)
+            print ("new_loc_tech.id" + str(new_loc_tech.id))
+        new_technologies[template_type_loc_tech['id']] = new_loc_tech
         return new_loc_techs
