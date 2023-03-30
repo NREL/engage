@@ -22,7 +22,7 @@ class Template_Type_Techs_Admin(admin.ModelAdmin):
     list_display = ['id', 'name', 'template_type', 'abstract_tech', 'carrier_in', 'carrier_out']
 class Template_Type_Loc_Techs_Admin(admin.ModelAdmin):
     list_filter = ['id']
-    list_display = ['id', 'name', 'template_type', 'template_loc', 'template_tech']
+    list_display = ['id', 'name', 'template_type', 'template_loc_1', 'template_loc_2' , 'template_tech']
 class Template_Type_Parameters_Admin(admin.ModelAdmin):
     list_filter = ['id']
     list_display = ['id', 'template_loc_tech', 'parameter', 'equation']

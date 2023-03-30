@@ -59,7 +59,7 @@ class Template_Type_Techs(models.Model):
     abstract_tech = models.ForeignKey(Abstract_Tech, on_delete=models.CASCADE)
     #Should we model carrier in and out similar to technologies?
     carrier_in = models.CharField(max_length=200)
-    carrier_out = models.CharField(max_length=200)
+    carrier_out = models.CharField(max_length=200, blank=True, null=True)
     #color = models.CharField(max_length=200) looks like technologies is doing something fancy with this
 
     # @property
@@ -79,7 +79,13 @@ class Template_Type_Loc_Techs(models.Model):
         verbose_name_plural = "[Admin] Template Type Loc Techs"
     name = models.CharField(max_length=200)
     template_type = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
-    template_loc = models.ForeignKey(Template_Type_Locs, on_delete=models.CASCADE)
+    template_loc_1 = models.ForeignKey(Template_Type_Locs,
+                                   on_delete=models.CASCADE,
+                                   related_name="template_loc_1")
+    template_loc_2 = models.ForeignKey(Template_Type_Locs,
+                                   on_delete=models.CASCADE,
+                                   related_name="template_loc_2",
+                                   blank=True, null=True)
     template_tech = models.ForeignKey(Template_Type_Techs, on_delete=models.CASCADE)
 
     def __str__(self):

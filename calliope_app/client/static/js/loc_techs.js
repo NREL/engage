@@ -140,11 +140,10 @@ function getTemplates() {
     $("#modalEdit").hide();
     $('#modalBody').empty();
     for (var i = 0; i < template_data.templates.length; i++) {
-        let id = "edit-" + template_data.templates[i].name.replace(/\s+/g, '-');
+        let id = "edit-" + template_data.templates[i].id;
         $('#modalBody').append( "<label><b>" + template_data.templates[i].name + "</b></label>");
         $('#modalBody').append( "<button type='button' id='" + id + "' class='btn btn-sm' style='padding-bottom:6px' name='" + template_data.templates[i].name + "'><i class='fas fa-edit'></i></button><br>");
         $('#' + id).on('click', function() {
-            console.log("hi");
             editTemplate(this);
         });
     }
@@ -190,14 +189,23 @@ function getTemplatesAdmin() {
 }
 
 function editTemplate(el) {
-    let name = el.id.substr(5).replace(/-/g, ' ');
+    let id = parseInt(el.id.substr(5));//.replace(/-/g, ' ');
+    template_edit = template_data.templates.find(temp => temp.id === id);
+    $('#templateType').val(String(template_edit.template_type)).change();
+    $('#templateType').attr("disabled", true);
+    $('#primaryLocation').val(String(template_edit.location));
+    $('#primaryLocation').attr("disabled", true);
     $("#modalContent").hide();
     $("#modalEdit").show();
-    $("#templateName").val(name);
-    $("#editModalTitle").html("Edit Template: " + name);
+    $("#templateName").val(template_edit.name);
+    $("#editModalTitle").html("Edit Template: " + template_edit.name);
+
+    //Set template type variarbles
 }
 
 function addTemplate() {
+    $('#templateType').attr("disabled", false);
+    $('#primaryLocation').attr("disabled", false);
     $("#modalContent").hide();
     $("#modalEdit").show();
     $("#templateName").val("");
@@ -229,8 +237,11 @@ function saveTemplate() {
             $('#templateError').attr("hidden", false);
             return;
         }
-        templateVars.push({id: templateVarElements[i].id.replace("template_type_var_", ""), value: templateVarElements[i].value});
+        var id = templateVarElements[i].id.replace("template_type_var_", "");
+        var value = templateVarElements[i].value;
+        templateVars.push({"id": id, "value": value});
     }
+
     $('#templateError').attr("hidden", true);
     $.ajax({
         url: '/' + LANGUAGE_CODE + '/model/templates/create/',
@@ -241,7 +252,7 @@ function saveTemplate() {
             'template_type': $('#templateType').val(),
             'location': $('#primaryLocation').val(),
             'csrfmiddlewaretoken': getCookie('csrftoken'),
-            'templateVars': templateVars,
+            'form_data': JSON.stringify({"templateVars": templateVars})
         },
         dataType: 'json',
         success: function (data) {

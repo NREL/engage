@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
-from api.models.configuration import Model, Model_User, Location, Model_Comment
+from api.models.configuration import Model, Model_User, Location, Model_Comment, Technology, Abstract_Tech, Loc_Tech, Tech_Param, Parameter
 from template.models import Templates, Template_Variables, Template_Types, Template_Type_Variables, Template_Type_Locs, Template_Type_Techs, Template_Type_Loc_Techs, Template_Type_Parameters
 from django.urls import reverse
 
@@ -30,7 +30,7 @@ def model_templates(request):
     template_type_variables = list(Template_Type_Variables.objects.all().values('id', 'name', 'template_type', 'units', 'category', 'choices', 'description', 'timeseries_enabled'))
     template_type_locs = list(Template_Type_Locs.objects.all().values('id', 'name', 'template_type', 'latitude_offset', 'longitude_offset'))
     template_type_techs = list(Template_Type_Techs.objects.all().values('id', 'name', 'template_type', 'abstract_tech', 'carrier_in', 'carrier_out'))
-    template_type_loc_techs = list(Template_Type_Loc_Techs.objects.all().values('id', 'name', 'template_type', 'template_loc', 'template_tech'))
+    template_type_loc_techs = list(Template_Type_Loc_Techs.objects.all().values('id', 'name', 'template_type', 'template_loc_1', 'template_loc_2', 'template_tech'))
     template_type_parameters = list(Template_Type_Parameters.objects.all().values('id', 'template_loc_tech', 'parameter', 'equation'))
 
     response = {
@@ -65,23 +65,40 @@ def add_template(request):
     POST: /model/templates/create/
     """
 
+    template = {}
     model_uuid = request.POST["model_uuid"]
-    template_id = int(request.POST.get("template_id", 0))
+    template_id = request.POST.get("template_id", False)
     name = request.POST["name"]
     template_type_id = request.POST["template_type"]
     location_id = request.POST["location"]
+    varData = json.loads(request.POST["form_data"])
+    templateVars = []
+    if varData:
+        templateVars = varData['templateVars']
+    print(templateVars)
+# if templateVars:
+#     print ("ids")
+#     for x in templateVars:
+#         print (str(x.id))
+    #print ('\n'.join(tv.value for tv in templateVars))
 
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
     template_type = Template_Types.objects.filter(id=template_type_id).first()
     location = Location.objects.filter(id=location_id).first()
-    template_type_variables = list(Template_Type_Variables.objects.filter(template_id=template_type_id).values('id', 'name', 'pretty_name', 'description'))
-    #template_type_locs = list(Template_Type_Locs.objects.all().values('id', 'name', 'template_type', 'latitude_offset', 'longitude_offset'))
-    #template_type_techs = list(Template_Type_Techs.objects.all().values('id', 'name', 'template_type', 'abstract_tech', 'carrier_in', 'carrier_out'))
-    #template_type_loc_techs = list(Template_Type_Loc_Techs.objects.all().values('id', 'name', 'template_type', 'template_loc', 'template_tech'))
-    #template_type_parameters = list(Template_Type_Parameters.objects.all().values('id', 'template_loc_tech', 'parameter', 'equation'))
+    #template_type_variables = list(Template_Type_Variables.objects.filter(template_id=template_type_id).values('id', 'name', 'pretty_name', 'description'))
+    template_type_locs = list(Template_Type_Locs.objects.filter(template_type_id=template_type_id).values('id', 'name', 'template_type', 'latitude_offset', 'longitude_offset'))
+    template_type_techs = list(Template_Type_Techs.objects.filter(template_type_id=template_type_id).values('id', 'name', 'template_type', 'abstract_tech', 'carrier_in', 'carrier_out'))
+    template_type_loc_techs = list(Template_Type_Loc_Techs.objects.filter(template_type_id=template_type_id).values('id', 'name', 'template_type', 'template_loc_1', 'template_loc_2', 'template_tech'))
+    #get by node?
+    #template_type_parameters = list(Template_Type_Parameters.objects.filter(template_type_id=template_type_id).values('id', 'template_loc_tech', 'parameter', 'equation'))
 
     if template_id:
+        print ("Editing a template")
+        template = Templates.objects.filter(id=template_id).first()
+        #if template is not None:
+        #    template.name = name
+        #    Templates.objects.update(template)
         # Log Activity
         comment = "{} updated a template: {} of template type: {}.".format(
             request.user.get_full_name(),
@@ -91,12 +108,23 @@ def add_template(request):
         Model_Comment.objects.create(model=model, comment=comment, type="add")
         model.notify_collaborators(request.user)
     else:
+        print ("Creating a new template")
         template = Templates.objects.create(
             name=name,
             template_type=template_type,
             model=model,
             location=location,
         )
+
+        new_locations = add_template_locations(template_type_locs, model, name, location, template)
+        new_technologies = add_template_technologies(template_type_techs, model, name, template_type_id)
+        new_loc_techs = add_template_loc_techs(template_type_loc_techs, model, name, new_technologies, new_locations, template_type_id, template)
+        new_template_variables = add_template_variables(templateVars, template)
+
+
+        # loop though template_type_parameters
+        # check for Template Type Variables in equation
+        # get value from template variables
 
         # Log Activity
         comment = "{} added a template: {} of template type: {}.".format(
@@ -111,6 +139,116 @@ def add_template(request):
     request.session["template_id"] = template.id
     payload = {"message": "added template",
                 "template_id": template.id,
+                #"new_technologies": list(new_technologies),
+                #"new_locations": list(new_locations),
                 }
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
+
+def add_template_variables(templateVars, template):
+    new_template_variables = {}
+    for templateVar in templateVars:
+        new_template_var = Template_Variables.objects.create(
+            template_type_variable_id=templateVar["id"],
+            value=templateVar["value"],
+            template_id=template.id,
+        )
+        new_template_variables[new_template_var.template_type_variable.name] = new_template_var
+    return new_template_variables
+
+def add_template_locations(template_type_locs, model, name, location, template):
+    new_locations = {}
+    for template_type_loc in template_type_locs:
+        new_location = Location.objects.create(
+            pretty_name=name + ' - ' + template_type_loc['name'],
+            name=template_type_loc['name'].replace(' ', '-'),
+            latitude=location.latitude+template_type_loc['latitude_offset'], #40.1
+            longitude=location.longitude+template_type_loc['longitude_offset'], #-108.2
+            model=model,
+            template_id=template.id,
+            template_type_loc_id=template_type_loc['id'],
+        )
+        new_locations[template_type_loc['id']] = new_location
+    return new_locations
+
+# Create template technologies
+def add_template_technologies(template_type_techs, model, name, template_type_id):
+    new_technologies = {}
+    for template_type_tech in template_type_techs:
+        #get abstract tech
+        abstract_tech = Abstract_Tech.objects.filter(
+                id=template_type_tech['id']).first()
+        new_tech = Technology.objects.create(
+            abstract_tech=abstract_tech,
+            pretty_name=name + ' - ' + template_type_tech['name'],
+            name=template_type_tech['name'].replace(' ', '-'),
+            model=model,
+            template_type_id=template_type_id,
+            template_type_tech_id=template_type_tech['id'],
+        )
+        new_technologies[template_type_tech['id']] = new_tech
+
+        #set 'name' and 'parent' paramters
+        Tech_Param.objects.create(
+            model=model,
+            technology=new_tech,
+            parameter_id=1,
+            value=abstract_tech.name,
+        )
+        Tech_Param.objects.create(
+            model=model,
+            technology=new_tech,
+            parameter_id=2,
+            value=new_tech.pretty_name,
+        )
+
+        #set technology params from template parameters
+        if template_type_tech['carrier_in'] is not None and template_type_tech['carrier_out'] is not None:
+            Tech_Param.objects.create(
+                model=model, 
+                technology=new_tech, 
+                parameter_id=5, 
+                value=template_type_tech['carrier_in']
+            )
+            Tech_Param.objects.create(
+                model=model,
+                technology=new_tech,
+                parameter_id=6,
+                value=template_type_tech['carrier_out']
+            )
+        else:
+            Tech_Param.objects.create(
+                model=model,
+                technology=new_tech,
+                parameter_id=4,
+                value=template_type_tech['carrier_in'],
+            )
+    return new_technologies
+
+def add_template_loc_techs(template_type_loc_techs, model, name, new_technologies, new_locations, template_type_id, template):
+    new_loc_techs = {}
+    for template_type_loc_tech in template_type_loc_techs:
+        print('template_tech' + str(template_type_loc_tech['template_tech']))
+        print('template_loc_1' + str(template_type_loc_tech['template_loc_1']))
+        if template_type_loc_tech['template_loc_2']:
+            #tech = next(x for x in new_technologies if x['template_type_loc_id'] == template_type_loc_tech['template_tech'] )
+            new_loc_tech = Loc_Tech.objects.create(
+                model=model,
+                technology=Technology.objects.filter(model_id=model.id, template_type_id=template_type_id, template_type_tech_id=template_type_loc_tech['template_tech']).first(),
+                location_1=Location.objects.filter(model_id=model.id, template_id=template.id, template_type_loc_id=template_type_loc_tech['template_loc_1']).first(),
+                location_2=Location.objects.filter(model_id=model.id, template_id=template.id, template_type_loc_id=template_type_loc_tech['template_loc_2']).first(),
+                description="Node created by " + name + " template",
+                template_id=template.id,
+                template_type_loc_tech_id=template_type_loc_tech['id'],
+            )
+        else:
+            new_loc_tech = Loc_Tech.objects.create(
+                model=model,
+                technology=Technology.objects.filter(model_id=model.id, template_type_id=template_type_id, template_type_tech_id=template_type_loc_tech['template_tech']).first(),
+                location_1=Location.objects.filter(model_id=model.id, template_id=template.id, template_type_loc_id=template_type_loc_tech['template_loc_1']).first(),
+                description="Node created by " + name + " template",
+                template_id=template.id,
+                template_type_loc_tech_id=template_type_loc_tech['id'],
+            )
+        #new_loc_techs.append(new_loc_tech)
+        return new_loc_techs
