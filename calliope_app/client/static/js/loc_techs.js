@@ -42,8 +42,8 @@ $( document ).ready(function() {
         });
         for (var i = 0; i < template_type_vars.length; i++) {
             $('#templateVars').append( "<label><b>" + template_type_vars[i].name + "</b></label>");
-            $('#templateVars').append( "<p class='help-text'>" + template_type_vars[i].description + ". Units are in " + template_type_vars[i].units + ".</p>");
-            $('#templateVars').append( "<input id='template_type_var_" + template_type_vars[i].id + "' style='margin-bottom:1em' class='form-control' value=''></input>");
+            $('#templateVars').append( "<p class='help-text'>" + template_type_vars[i].description + ".</p>");
+            $('#templateVars').append( "<div><input id='template_type_var_" + template_type_vars[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input><span style='width:80px;margin-left:.4em' class='text-sm parameter-units'>" + template_type_vars[i].units + "</span></div><br>");
             if (template_type_vars[i].default_value) {
                 $('#template_type_var_' + template_type_vars[i].id).val(template_type_vars[i].default_value);
             }

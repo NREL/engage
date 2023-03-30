@@ -5,7 +5,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
-from api.models.configuration import Model, Model_User, Location, Model_Comment, Technology, Abstract_Tech, Loc_Tech, Tech_Param, Parameter
+from api.utils import convert_units, initialize_units, convert_units_no_pipe
+from api.models.configuration import Model, Model_User, Location, Model_Comment, Technology, Abstract_Tech, Loc_Tech, Tech_Param, Loc_Tech_Param
 from template.models import Templates, Template_Variables, Template_Types, Template_Type_Variables, Template_Type_Locs, Template_Type_Techs, Template_Type_Loc_Techs, Template_Type_Parameters
 from django.urls import reverse
 
@@ -91,8 +92,7 @@ def add_template(request):
     template_type_techs = list(Template_Type_Techs.objects.filter(template_type_id=template_type_id).values('id', 'name', 'template_type', 'abstract_tech', 'carrier_in', 'carrier_out'))
     template_type_loc_techs = list(Template_Type_Loc_Techs.objects.filter(template_type_id=template_type_id).values('id', 'name', 'template_type', 'template_loc_1', 'template_loc_2', 'template_tech'))
     #get by node?
-    #template_type_parameters = list(Template_Type_Parameters.objects.filter(template_type_id=template_type_id).values('id', 'template_loc_tech', 'parameter', 'equation'))
-
+    
     if template_id:
         print ("Editing a template")
         template = Templates.objects.filter(id=template_id).first()
@@ -121,10 +121,30 @@ def add_template(request):
         new_loc_techs = add_template_loc_techs(template_type_loc_techs, model, name, new_technologies, new_locations, template_type_id, template)
         new_template_variables = add_template_variables(templateVars, template)
 
-
+        ureg = initialize_units()
         # loop though template_type_parameters
         # check for Template Type Variables in equation
         # get value from template variables
+        # call convert units
+        # create loc tech parameter
+            # is there a double pipe split to value and raw value
+            # otherwise set to both values
+        for template_loc_tech_id, loc_tech in new_loc_techs.items():
+            template_type_parameters = Template_Type_Parameters.objects.filter(template_loc_tech_id=template_loc_tech_id)
+            for template_type_parameter in template_type_parameters: 
+                equation = template_type_parameter.equation
+                for name, template_variable in new_template_variables.items(): 
+                    print("name " + name)
+                    print("equation " + equation)
+                    equation = equation.replace('||'+name+'||', template_variable.value)
+                value, rawValue  = convert_units_no_pipe(ureg, equation, template_type_parameter.parameter.units)
+                Loc_Tech_Param.objects.create(
+                    parameter=template_type_parameter.parameter,
+                    loc_tech=loc_tech,
+                    value=value,
+                    raw_value=rawValue,
+                    model=model,
+                )
 
         # Log Activity
         comment = "{} added a template: {} of template type: {}.".format(
@@ -251,5 +271,5 @@ def add_template_loc_techs(template_type_loc_techs, model, name, new_technologie
                 template_type_loc_tech_id=template_type_loc_tech['id'],
             )
             print ("new_loc_tech.id" + str(new_loc_tech.id))
-        new_technologies[template_type_loc_tech['id']] = new_loc_tech
+        new_loc_techs[template_type_loc_tech['id']] = new_loc_tech
         return new_loc_techs
