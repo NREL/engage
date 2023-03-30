@@ -77,22 +77,15 @@ def add_template(request):
     if varData:
         templateVars = varData['templateVars']
     print(templateVars)
-# if templateVars:
-#     print ("ids")
-#     for x in templateVars:
-#         print (str(x.id))
-    #print ('\n'.join(tv.value for tv in templateVars))
 
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
     template_type = Template_Types.objects.filter(id=template_type_id).first()
     location = Location.objects.filter(id=location_id).first()
-    #template_type_variables = list(Template_Type_Variables.objects.filter(template_id=template_type_id).values('id', 'name', 'pretty_name', 'description'))
     template_type_locs = list(Template_Type_Locs.objects.filter(template_type_id=template_type_id).values('id', 'name', 'template_type', 'latitude_offset', 'longitude_offset'))
     template_type_techs = list(Template_Type_Techs.objects.filter(template_type_id=template_type_id).values('id', 'name', 'template_type', 'abstract_tech', 'carrier_in', 'carrier_out'))
     template_type_loc_techs = list(Template_Type_Loc_Techs.objects.filter(template_type_id=template_type_id).values('id', 'name', 'template_type', 'template_loc_1', 'template_loc_2', 'template_tech'))
-    #get by node?
-    
+ 
     if template_id:
         print ("Editing a template")
         template = Templates.objects.filter(id=template_id).first()
@@ -122,13 +115,6 @@ def add_template(request):
         new_template_variables = add_template_variables(templateVars, template)
 
         ureg = initialize_units()
-        # loop though template_type_parameters
-        # check for Template Type Variables in equation
-        # get value from template variables
-        # call convert units
-        # create loc tech parameter
-            # is there a double pipe split to value and raw value
-            # otherwise set to both values
         for template_loc_tech_id, loc_tech in new_loc_techs.items():
             template_type_parameters = Template_Type_Parameters.objects.filter(template_loc_tech_id=template_loc_tech_id)
             for template_type_parameter in template_type_parameters: 
