@@ -41,8 +41,10 @@ $( document ).ready(function() {
             return obj.template_type == parseInt(templateType);
         });
         var uniqueCategories = [...new Set(template_type_vars.map(obj => obj.category))];
-        uniqueCategories = uniqueCategories.filter(item => item !== "Geotechnical tool input parameters");
-        uniqueCategories.unshift("Geotechnical tool input parameters");
+        if (uniqueCategories.includes("Geotechnical tool input parameters")) {
+            uniqueCategories = uniqueCategories.filter(item => item !== "Geotechnical tool input parameters");
+            uniqueCategories.unshift("Geotechnical tool input parameters");
+        }
         for (var i = 0; i < uniqueCategories.length; i++) {
             if (uniqueCategories[i]) {
                 $('#templateVars').append(
