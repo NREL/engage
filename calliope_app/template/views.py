@@ -180,7 +180,7 @@ def add_template_locations(template_type_locs, model, name, location, template):
     return new_locations
 
 # Create template technologies
-def add_template_technologies(template_type_techs, model, name, template_type_id):
+def add_template_technologies(template_type_techs, model, template_type_id):
     new_technologies = {}
     for template_type_tech in template_type_techs:
 
@@ -191,7 +191,7 @@ def add_template_technologies(template_type_techs, model, name, template_type_id
                     id=template_type_tech['id']).first()
             new_tech = Technology.objects.create(
                 abstract_tech=abstract_tech,
-                pretty_name=name + ' - ' + template_type_tech['name'],
+                pretty_name=template_type_tech['name'],
                 name=template_type_tech['name'].replace(' ', '-'),
                 model=model,
                 template_type_id=template_type_id,
