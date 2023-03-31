@@ -25,6 +25,7 @@ class Template_Type_Variables(models.Model):
         verbose_name_plural = "[Admin] Template Type Variables"
 
     name = models.CharField(max_length=200)
+    pretty_name = models.CharField(max_length=200)
     template_type = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
     units = models.CharField(max_length=200)
     default_value = models.CharField(max_length=200, blank=True, null=True)

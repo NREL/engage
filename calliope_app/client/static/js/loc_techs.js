@@ -35,18 +35,38 @@ $( document ).ready(function() {
             return;
         }
         var template_type = template_data.template_types.find(o => o.id == parseInt(templateType))
-        $('#templateVars').append( "<hr><h6>Template Type Variables for " + template_type.pretty_name + "<h6>" );
+        $('#templateVars').append( "<hr><h4>Template Type Parameters for " + template_type.pretty_name + "<h6>" );
         $('#templateVars').append( "<p>" + template_type.description + "<p>" );
         var template_type_vars = template_data.template_type_variables.filter(obj => {
             return obj.template_type == parseInt(templateType);
         });
+        var uniqueCategories = [...new Set(template_type_vars.map(obj => obj.category))];
+        uniqueCategories = uniqueCategories.filter(item => item !== "Geotechnical tool input parameters");
+        uniqueCategories.unshift("Geotechnical tool input parameters");
+        for (var i = 0; i < uniqueCategories.length; i++) {
+            if (uniqueCategories[i]) {
+                $('#templateVars').append(
+                    "<div id='"+ uniqueCategories[i].replace(/\s/g, '') + "'><h5>" + uniqueCategories[i] + "</h5></div>"
+                );
+            }
+        }
         for (var i = 0; i < template_type_vars.length; i++) {
-            $('#templateVars').append( "<label><b>" + template_type_vars[i].name + "</b></label>");
-            $('#templateVars').append( "<p class='help-text'>" + template_type_vars[i].description + ".</p>");
-            $('#templateVars').append( "<div><input id='template_type_var_" + template_type_vars[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input><span style='width:80px;margin-left:.4em' class='text-sm parameter-units'>" + template_type_vars[i].units + "</span></div><br>");
+            var categoryId = template_type_vars[i].category ? template_type_vars[i].category.replace(/\s/g, '') : 'templateVars';
+            $('#'+ categoryId).append( "<label><b>" + template_type_vars[i].pretty_name + "</b></label>");
+            $('#'+ categoryId).append( "<p class='help-text'>" + template_type_vars[i].description + "</p>");
+            if (template_type_vars[i].units && template_type_vars[i].units != "NA") {
+                $('#'+ categoryId).append( "<div><input id='template_type_var_" + template_type_vars[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input><span style='width:80px;margin-left:.4em' class='text-sm parameter-units'>" + template_type_vars[i].units + "</span></div><br>");
+            } else {
+                $('#'+ categoryId).append( "<div><input id='template_type_var_" + template_type_vars[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input><span style='width:80px;margin-left:.4em' class='text-sm parameter-units'></span></div><br>");
+            }
             if (template_type_vars[i].default_value) {
                 $('#template_type_var_' + template_type_vars[i].id).val(template_type_vars[i].default_value);
             }
+        }
+
+        var showAPIButtons = document.getElementById("Geotechnical tool input parameters".replace(/\s/g, '')) != null;
+        if (showAPIButtons) {
+            $("#Geotechnical tool input parameters".replace(/\s/g, '')).append( "<div style='padding: 1rem;border-top: 1px solid white;'><button id='runGeophires' class='btn btn-success btn-sm' type='button' style='width:130px;height:38px;'>Run GEOPHIRES</button><button id='runGETEM' class='btn btn-success btn-sm' type='button' style='width:100px;height:38px;margin-left:1em'>Run GETEM</button></div>");
         }
 	});
 
@@ -139,9 +159,7 @@ $( document ).ready(function() {
 
 });
 
-//var edittingTemplate = false;
-function getTemplates() {
-    getTemplatesAdmin();
+function renderTemplateModal() {
     $("#modalContent").show();
     $("#modalEdit").hide();
     $('#modalBody').empty();
@@ -156,11 +174,11 @@ function getTemplates() {
 
     if ($("#primaryLocation").children('option').length === 0) {
         $("#primaryLocation").prepend( "<option selected value=''></option>");
-        for (let i = 0; i < locations.length; i++) {
-            if (template_edit.id == locations[i].id) {
-                $("#primaryLocation").append( "<option selected value=" + locations[i].id + ">" + locations[i].pretty_name + "</option>");
+        for (let i = 0; i < template_data.locations.length; i++) {
+            if (template_edit.id == template_data.locations[i].id) {
+                $("#primaryLocation").append( "<option selected value=" + template_data.locations[i].id + ">" + template_data.locations[i].pretty_name + "</option>");
             } else {
-                $("#primaryLocation").append( "<option value=" + locations[i].id + ">" +locations[i].pretty_name + "</option>" );
+                $("#primaryLocation").append( "<option value=" + template_data.locations[i].id + ">" + template_data.locations[i].pretty_name + "</option>" );
             }
         }
     }
@@ -177,7 +195,7 @@ function getTemplates() {
     }
 }
 
-function getTemplatesAdmin() {
+function getTemplates() {
     var model_uuid = $('#header').data('model_uuid');
 
     $.ajax({
@@ -190,6 +208,7 @@ function getTemplatesAdmin() {
         dataType: 'json',
         success: function (data) {
             template_data = data;
+            renderTemplateModal();
         }
     });
 }
@@ -232,7 +251,7 @@ function modelEditBack() {
 }
 
 function saveTemplate() {
-    var templateVarElements = $("#templateVars :input");
+    var templateVarElements = $("#templateVars :input:not(:button)");
     var templateVars = [];
     if (!$('#templateName').val() || !$('#templateType').val() || !$('#primaryLocation').val()) {
         $('#templateError').attr("hidden", false);

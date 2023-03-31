@@ -15,7 +15,7 @@
     <div class="modal-dialog" role="document">
         <div id="modalContent" class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title" id="templateModalTitle">{% trans "Templates" %}</h5>
+            <h2 class="modal-title" id="templateModalTitle">{% trans "Templates" %}</h2>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -27,7 +27,6 @@
             </div>
             <div id="modalBody" class="modal-body">
             <!-- Header -->
-            <br><br>
             </div>
             <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
@@ -35,7 +34,7 @@
         </div>
         <div id="modalEdit" class="modal-content" aria-hidden="true">
             <div class="modal-header" aria-hidden="true">
-            <h5 id="editModalTitle" class="modal-title">{% trans "Edit Template" %}:</h5>
+            <h2 id="editModalTitle" class="modal-title">{% trans "Edit Template" %}:</h2>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -61,7 +60,7 @@
                 {% trans "Please fill out all template fields before saving!" %}
             </span>
             <div class="modal-footer">
-                <button id="modelEditBack" class="btn btn-secondary" type="button" style="width:64px;height:38px;float:left;">
+                <button id="modelEditBack" class="btn btn-secondary" type="button" style="width:160px;height:38px;float:left;">
                     {% trans "Back to Templates" %}
                 </button>
                 <button id="saveTemplate" class="btn btn-success btn-sm" type="button" style="width:64px;height:38px;">

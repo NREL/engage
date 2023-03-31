@@ -13,7 +13,7 @@ class Template_Types_Admin(admin.ModelAdmin):
     list_display = ['id', 'name', 'pretty_name', 'description']
 class Template_Type_Variables_Admin(admin.ModelAdmin):
     list_filter = ['id']
-    list_display = ['id', 'name', 'template_type', 'units', 'default_value', 'category', 'choices', 'description', 'timeseries_enabled']
+    list_display = ['id', 'name', 'pretty_name', 'template_type', 'units', 'default_value', 'category', 'choices', 'description', 'timeseries_enabled']
 class Template_Type_Locs_Admin(admin.ModelAdmin):
     list_filter = ['id']
     list_display = ['id', 'name', 'template_type', 'latitude_offset', 'longitude_offset']
