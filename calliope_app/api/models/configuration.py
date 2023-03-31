@@ -601,7 +601,7 @@ class Technology(models.Model):
     pretty_tag = models.CharField(max_length=200, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     model = models.ForeignKey(Model, on_delete=models.CASCADE)
-    template_id = models.BigIntegerField(blank=True, null=True)
+    template_type_id = models.BigIntegerField(blank=True, null=True)
     template_type_tech_id = models.BigIntegerField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)

@@ -112,7 +112,7 @@ def add_template(request):
         )
 
         new_locations = add_template_locations(template_type_locs, model, name, location, template)
-        new_technologies = add_template_technologies(template_type_techs, model, name, template)
+        new_technologies = add_template_technologies(template_type_techs, model, name, template_type_id)
         new_loc_techs = add_template_loc_techs(template_type_loc_techs, model, name, new_technologies, new_locations, template_type_id, template)
         new_template_variables = add_template_variables(templateVars, template)
 
@@ -180,57 +180,60 @@ def add_template_locations(template_type_locs, model, name, location, template):
     return new_locations
 
 # Create template technologies
-def add_template_technologies(template_type_techs, model, name, template):
+def add_template_technologies(template_type_techs, model, name, template_type_id):
     new_technologies = {}
     for template_type_tech in template_type_techs:
-        #get abstract tech
-        abstract_tech = Abstract_Tech.objects.filter(
-                id=template_type_tech['id']).first()
-        new_tech = Technology.objects.create(
-            abstract_tech=abstract_tech,
-            pretty_name=name + ' - ' + template_type_tech['name'],
-            name=template_type_tech['name'].replace(' ', '-'),
-            model=model,
-            template_id=template.id,
-            template_type_tech_id=template_type_tech['id'],
-        )
-        new_technologies[template_type_tech['id']] = new_tech
 
-        #set 'name' and 'parent' paramters
-        Tech_Param.objects.create(
-            model=model,
-            technology=new_tech,
-            parameter_id=1,
-            value=abstract_tech.name,
-        )
-        Tech_Param.objects.create(
-            model=model,
-            technology=new_tech,
-            parameter_id=2,
-            value=new_tech.pretty_name,
-        )
+        existingTech = Technology.objects.filter(model_id=model.id, template_type_id=template_type_id, template_type_tech_id=template_type_tech['id']).first(),
 
-        #set technology params from template parameters
-        if template_type_tech['carrier_in'] is not None and template_type_tech['carrier_out'] is not None:
+        if existingTech is None:
+            abstract_tech = Abstract_Tech.objects.filter(
+                    id=template_type_tech['id']).first()
+            new_tech = Technology.objects.create(
+                abstract_tech=abstract_tech,
+                pretty_name=name + ' - ' + template_type_tech['name'],
+                name=template_type_tech['name'].replace(' ', '-'),
+                model=model,
+                template_type_id=template_type_id,
+                template_type_tech_id=template_type_tech['id'],
+            )
+            new_technologies[template_type_tech['id']] = new_tech
+
+            #set 'name' and 'parent' paramters
             Tech_Param.objects.create(
-                model=model, 
-                technology=new_tech, 
-                parameter_id=5, 
-                value=template_type_tech['carrier_in']
+                model=model,
+                technology=new_tech,
+                parameter_id=1,
+                value=abstract_tech.name,
             )
             Tech_Param.objects.create(
                 model=model,
                 technology=new_tech,
-                parameter_id=6,
-                value=template_type_tech['carrier_out']
+                parameter_id=2,
+                value=new_tech.pretty_name,
             )
-        else:
-            Tech_Param.objects.create(
-                model=model,
-                technology=new_tech,
-                parameter_id=4,
-                value=template_type_tech['carrier_in'],
-            )
+
+            #set technology params from template parameters
+            if template_type_tech['carrier_in'] is not None and template_type_tech['carrier_out'] is not None:
+                Tech_Param.objects.create(
+                    model=model, 
+                    technology=new_tech, 
+                    parameter_id=5, 
+                    value=template_type_tech['carrier_in']
+                )
+                Tech_Param.objects.create(
+                    model=model,
+                    technology=new_tech,
+                    parameter_id=6,
+                    value=template_type_tech['carrier_out']
+                )
+            else:
+                Tech_Param.objects.create(
+                    model=model,
+                    technology=new_tech,
+                    parameter_id=4,
+                    value=template_type_tech['carrier_in'],
+                )
     return new_technologies
 
 def add_template_loc_techs(template_type_loc_techs, model, name, new_technologies, new_locations, template_type_id, template):
@@ -242,7 +245,7 @@ def add_template_loc_techs(template_type_loc_techs, model, name, new_technologie
             #tech = next(x for x in new_technologies if x['template_type_loc_id'] == template_type_loc_tech['template_tech'] )
             new_loc_tech = Loc_Tech.objects.create(
                 model=model,
-                technology=Technology.objects.filter(model_id=model.id, template_id=template.id, template_type_tech_id=template_type_loc_tech['template_tech']).first(),
+                technology=Technology.objects.filter(model_id=model.id, template_type_id=template_type_id, template_type_tech_id=template_type_loc_tech['template_tech']).first(),
                 location_1=Location.objects.filter(model_id=model.id, template_id=template.id, template_type_loc_id=template_type_loc_tech['template_loc_1']).first(),
                 location_2=Location.objects.filter(model_id=model.id, template_id=template.id, template_type_loc_id=template_type_loc_tech['template_loc_2']).first(),
                 description="Node created by " + name + " template",
@@ -252,7 +255,7 @@ def add_template_loc_techs(template_type_loc_techs, model, name, new_technologie
         else:
             new_loc_tech = Loc_Tech.objects.create(
                 model=model,
-                technology=Technology.objects.filter(model_id=model.id, template_id=template.id, template_type_tech_id=template_type_loc_tech['template_tech']).first(),
+                technology=Technology.objects.filter(model_id=model.id, template_type_id=template_type_id, template_type_tech_id=template_type_loc_tech['template_tech']).first(),
                 location_1=Location.objects.filter(model_id=model.id, template_id=template.id, template_type_loc_id=template_type_loc_tech['template_loc_1']).first(),
                 description="Node created by " + name + " template",
                 template_id=template.id,

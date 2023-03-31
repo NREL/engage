@@ -2,6 +2,8 @@ from django.db import models
 from api.models.calliope import Abstract_Tech, Parameter
 from api.models.configuration import Location, Model, Timeseries_Meta
 from django.contrib.postgres.fields import ArrayField
+from django.db.models.signals import pre_delete 
+from django.dispatch import receiver
 
 from api.models.utils import EngageManager
 
@@ -125,6 +127,18 @@ class Templates(models.Model):
 
     def __str__(self):
         return '%s' % (self.name)
+
+    @receiver(pre_delete)
+    def delete_repo(sender, instance, **kwargs):
+        print ("delete_repo " + instance)
+        if sender == Templates:
+            #shutil.rmtree(instance.repo) import shutil
+            print ("sender delete_repo " + instance)
+    
+    @classmethod
+    def _delete(cls, template, data):
+        print ("_delete " + data + template)
+
 
 class Template_Variables(models.Model):
     class Meta:
