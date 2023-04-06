@@ -4048,5 +4048,14 @@
       "parameter_id": "154",
       "default_value": ""
     }
+  },
+  {
+    "pk": 451,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "2",
+      "parameter_id": "33",
+      "default_value": ""
+    }
   }
 ]
