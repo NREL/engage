@@ -28,7 +28,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-CARRIER_IDS = [4, 5, 6, 23, 66, 67, 68, 69, 70, 71]
+CARRIER_IDS = [4, 5, 6, 23, 66, 67, 68, 69, 70, 71, 138, 139]
 PRIMARY_CARRIER_IDS = [70, 71]
 CARRIER_RATIOS_ID = 7
 
@@ -190,7 +190,7 @@ class Model(models.Model):
         """ Get all configured carrier strings """
         carriers = Tech_Param.objects.filter(
             model=self,
-            parameter_id__in=CARRIER_IDS)
+            parameter__is_carrier=True)
         carriers = carriers.values_list('value', flat=True)
         carriers_list = []
         for carrier in carriers:
@@ -1384,7 +1384,7 @@ class ParamsManager():
         for _, row in essential_params.iterrows():
             ratios_val = None
             val = row.value
-            if row.parameter_id in CARRIER_IDS:
+            if row.parameter_is_carrier:
                 try:
                     val = json.loads(row.value)
                 except Exception:

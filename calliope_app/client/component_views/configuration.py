@@ -119,11 +119,12 @@ def all_tech_params(request):
     timeseries = Timeseries_Meta.objects.filter(model=model, failure=False,
                                                 is_uploading=False)
 
+    print(essentials)
     # Technology Definition
     context = {"technology": technology,
                "essentials": essentials,
                "carriers": model.carriers,
-               "required_carrier_ids": [4, 5, 6],
+               "required_carrier_ids": [4, 5, 6, 138, 139],
                "cplus_carrier_ids": [66, 67, 68, 69],
                "can_edit": can_edit}
     html_essentials = list(render(request,
