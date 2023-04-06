@@ -119,7 +119,6 @@ def all_tech_params(request):
     timeseries = Timeseries_Meta.objects.filter(model=model, failure=False,
                                                 is_uploading=False)
 
-    print(essentials)
     # Technology Definition
     context = {"technology": technology,
                "essentials": essentials,
