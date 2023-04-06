@@ -5,6 +5,7 @@ from django.forms.models import model_to_dict
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.utils.html import mark_safe
+from django.utils.translation import get_language
 
 from api.exceptions import ModelAccessException, ModelNotExistException
 from api.models.utils import EngageManager
@@ -27,7 +28,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-CARRIER_IDS = [4, 5, 6, 23, 66, 67, 68, 69, 70, 71]
+CARRIER_IDS = [4, 5, 6, 23, 66, 67, 68, 69, 70, 71, 138, 139]
 PRIMARY_CARRIER_IDS = [70, 71]
 CARRIER_RATIOS_ID = 7
 
@@ -189,7 +190,7 @@ class Model(models.Model):
         """ Get all configured carrier strings """
         carriers = Tech_Param.objects.filter(
             model=self,
-            parameter_id__in=CARRIER_IDS)
+            parameter__is_carrier=True)
         carriers = carriers.values_list('value', flat=True)
         carriers_list = []
         for carrier in carriers:
@@ -1284,37 +1285,48 @@ class ParamsManager():
         excl_ids: Parameters IDs to exclude from return list
         systemwide: include system-wide parameters
         """
+        # Deal with field with language specified
+        language = get_language()
+        if language == "en":
+            parameter__category = "parameter__category"
+            parameter__pretty_name = "parameter__pretty_name"
+            parameter__description = "parameter__description"
+        else:
+            parameter__category = "parameter__category" + "_" + language
+            parameter__pretty_name = "parameter__pretty_name" + "_" + language
+            parameter__description = "parameter__description" + "_" + language
+
         data = []
         if excl_ids is None:
             excl_ids = []
         new_excl_ids = excl_ids.copy()
         values = ["id", "parameter__root",
-            "parameter__category", "parameter__category", "parameter_id",
-            "parameter__name", "parameter__pretty_name",
-            "parameter__description", "parameter__is_essential",
+            parameter__category, "parameter_id",
+            "parameter__name", parameter__pretty_name,
+            parameter__description, "parameter__is_essential",
             "parameter__is_carrier", "parameter__units", "parameter__choices",
             "parameter__timeseries_enabled"]
-
+        
         # Get Params based on Level
         if level == '0_abstract':
             technology = Technology.objects.get(id=id)
             params = Abstract_Tech_Param.objects.filter(
                 abstract_tech=technology.abstract_tech
-            ).order_by('parameter__category', 'parameter__pretty_name')
+            ).order_by(parameter__category, parameter__pretty_name)
             values += ["default_value"]
 
         elif level == '1_tech':
             technology = Technology.objects.get(id=id)
             params = Tech_Param.objects.filter(
                 technology_id=id
-            ).order_by('parameter__category', 'parameter__pretty_name', 'year')
+            ).order_by(parameter__category, parameter__pretty_name, 'year')
 
         elif level == '2_loc_tech':
             loc_tech = Loc_Tech.objects.get(id=id)
             technology = loc_tech.technology
             params = Loc_Tech_Param.objects.filter(
                 loc_tech_id=id
-            ).order_by('parameter__category', 'parameter__pretty_name', 'year')
+            ).order_by(parameter__category, parameter__pretty_name, 'year')
 
         if level in ['1_tech', '2_loc_tech']:
             values += ["year", "timeseries", "timeseries_meta_id",
@@ -1336,11 +1348,11 @@ class ParamsManager():
                 'year': param["year"] if 'year' in param.keys() else 0,
                 'technology_id': technology.id,
                 'parameter_root': param["parameter__root"],
-                'parameter_category': param["parameter__category"],
+                'parameter_category': param[parameter__category],
                 'parameter_id': param["parameter_id"],
                 'parameter_name': param["parameter__name"],
-                'parameter_pretty_name': param["parameter__pretty_name"],
-                'parameter_description': param["parameter__description"],
+                'parameter_pretty_name': param[parameter__pretty_name],
+                'parameter_description': param[parameter__description],
                 'parameter_is_essential': param["parameter__is_essential"],
                 'parameter_is_carrier': param["parameter__is_carrier"],
                 'units': param["parameter__units"],
@@ -1372,7 +1384,7 @@ class ParamsManager():
         for _, row in essential_params.iterrows():
             ratios_val = None
             val = row.value
-            if row.parameter_id in CARRIER_IDS:
+            if row.parameter_is_carrier:
                 try:
                     val = json.loads(row.value)
                 except Exception:

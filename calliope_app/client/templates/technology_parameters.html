@@ -5,6 +5,12 @@
 {% load return_item %}
 {% load add_commas %}
 
+<style>
+	.tooltip-inner {
+		text-align: left;
+	}
+</style>
+
 <table id="param_table" class="table table-hover table-sm" style="white-space:nowrap">
 	<tbody>
 		{% for param in parameters %}
@@ -47,7 +53,7 @@
 					<td style="width:250px;" class="table-primary"><i class="fas fa-link"></i>&nbsp;&nbsp;{{ param.parameter_category }}</td>
 					{% endif %}
 					<!-- Parameter Names -->
-					<td style="cursor:help;width:450px;" data-toggle="tooltip" data-placement="bottom" title="{{ param.parameter_root }}.{{ param.parameter_name }}: {{ param.parameter_description }}">
+					<td style="cursor:help;width:450px;" data-toggle="tooltip" data-html="true" data-placement="bottom" title="{{ param.parameter_root }}.{{ param.parameter_name }}: {{ param.parameter_description }}">
 						&nbsp;&nbsp;
 						<span class="text-sm"></span><b>{{ param.parameter_pretty_name }}</b>
 					</td>

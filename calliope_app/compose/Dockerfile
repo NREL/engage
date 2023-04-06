@@ -16,6 +16,7 @@ RUN apt-get update -y --fix-missing \
     libz-dev \
     libreadline-dev \
     libncurses5-dev \
+    gettext \
     postgresql-client \
     wget \
     && rm -rf /var/lib/apt/lists/*
