@@ -80,7 +80,6 @@ class Template_Type_Loc_Techs(models.Model):
     class Meta:
         db_table = "template_type_loc_techs"
         verbose_name_plural = "[Admin] Template Type Loc Techs"
-    name = models.CharField(max_length=200)
     template_type = models.ForeignKey(Template_Types, on_delete=models.CASCADE)
     template_loc_1 = models.ForeignKey(Template_Type_Locs,
                                    on_delete=models.CASCADE,
@@ -130,14 +129,14 @@ class Templates(models.Model):
 
     @receiver(pre_delete)
     def delete_repo(sender, instance, **kwargs):
-        print ("delete_repo " + instance)
+        print ("delete_repo " + str(instance))
         if sender == Templates:
             #shutil.rmtree(instance.repo) import shutil
-            print ("sender delete_repo " + instance)
+            print ("sender delete_repo " + str(instance))
     
-    @classmethod
-    def _delete(cls, template, data):
-        print ("_delete " + data + template)
+    # @classmethod
+    # def _delete(cls, template, data):
+    #     print ("_delete " + data + template)
 
 
 class Template_Variables(models.Model):
