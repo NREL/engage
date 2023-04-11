@@ -36,6 +36,9 @@
 					&nbsp;&nbsp;
 					{% trans "End Date" %}
 					</h5>
+					<h5>{% trans "Gradient Years" %}
+						<input id="years" class="centered" type="text">
+					</h5>
 				</div>
 			</div>
 			<div id="add_run_precheck">
@@ -48,7 +51,7 @@
 			</div>
 		</div>
 		<div class="col-2">
-			<h5>Run Options:</h5>
+			<h5>{% trans "Run Options" %}:</h5>
 
 			<h6>
 				{% trans "Enable Clustered Run:" %}
@@ -73,6 +76,11 @@
 					{% endfor %}
 				</select>
 			</div>
+
+			<h6>
+				{% trans "Run Notes" %}
+				<input id="notes" class="centered" type="text">
+			</h6>
 
 		</div>
 	</div>

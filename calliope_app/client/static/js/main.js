@@ -405,7 +405,12 @@ function get_loc_tech_parameters() {
 			}
 		});
 	} else {
-		var msg = '<div class="col-12 centered"><br><br><h4>Please select or create a node.</h4></div>'
+		console.log(LANGUAGE_CODE)
+		if (LANGUAGE_CODE === 'fr') {
+			var msg = '<div class="col-12 centered"><br><br><h4>Veuillez sélectionner ou créer un nœud.</h4></div>'
+		} else {
+			var msg = '<div class="col-12 centered"><br><br><h4>Please select or create a node.</h4></div>'
+		}
 		$('#tech_parameters').html(msg);
 		retrieve_map(false, undefined, technology_id);
 	};
@@ -1273,9 +1278,16 @@ function toFixed(x) {
 
 }
 
-var maximize_label = '<i class="fas fa-chevron-up"></i>&nbsp;&nbsp;&nbsp;Show',
-	minimize_label = '<i class="fas fa-chevron-down"></i>&nbsp;&nbsp;&nbsp;Hide',
-	minimize_threshold = 0.1;
+// Hardcoded translation in JS
+if (LANGUAGE_CODE === 'fr') {
+	var maximize_label = '<i class="fas fa-chevron-up"></i>&nbsp;&nbsp;&nbsp;Afficher',
+		minimize_label = '<i class="fas fa-chevron-down"></i>&nbsp;&nbsp;&nbsp;Masquer',
+		minimize_threshold = 0.1;
+} else {
+	var maximize_label = '<i class="fas fa-chevron-up"></i>&nbsp;&nbsp;&nbsp;Show',
+		minimize_label = '<i class="fas fa-chevron-down"></i>&nbsp;&nbsp;&nbsp;Hide',
+		minimize_threshold = 0.1;
+}
 
 function splitter_resize() {
 	var upper = $('.splitter_upper'),

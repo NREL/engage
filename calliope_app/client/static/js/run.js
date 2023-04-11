@@ -314,7 +314,10 @@ function activate_runs() {
 				'scenario_id': $("#scenario option:selected").data('id'),
 				'start_date': $(this).attr('data-dates').split(' to ')[0],
 				'end_date': $(this).attr('data-dates').split(' to ')[1],
-				'cluster': $(this).attr('cluster')
+				'cluster': $(this).attr('cluster'),
+				'manual': $(this).attr('manual'),
+				'run_env': $(this).attr('run_env'),
+				'timestep': $(this).attr('timestep')
 			},
 			dataType: 'json',
 			success: function (data) {

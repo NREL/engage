@@ -123,7 +123,7 @@ def all_tech_params(request):
     context = {"technology": technology,
                "essentials": essentials,
                "carriers": model.carriers,
-               "required_carrier_ids": [4, 5, 6],
+               "required_carrier_ids": [4, 5, 6, 138, 139],
                "cplus_carrier_ids": [66, 67, 68, 69],
                "can_edit": can_edit}
     html_essentials = list(render(request,
