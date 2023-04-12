@@ -7,7 +7,7 @@ class Templates_View(admin.ModelAdmin):
     list_display = ['id', 'name', 'template_type', 'model', 'location', 'created', 'updated']
 class Template_Variable_View(admin.ModelAdmin):
     list_filter = ['id', 'template', 'template_type_variable']
-    list_display = ['id', 'template', 'template_type_variable', 'value', 'timeseries', 'timeseries_meta', 'updated']
+    list_display = ['id', 'template', 'template_type_variable', 'value', 'raw_value', 'timeseries', 'timeseries_meta', 'updated']
 class Template_Type_Admin(admin.ModelAdmin):
     list_filter = ['id', 'name']
     list_display = ['id', 'name', 'pretty_name', 'description']

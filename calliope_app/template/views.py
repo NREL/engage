@@ -22,7 +22,7 @@ def model_templates(request):
     model_uuid = request.GET['model_uuid']
     model = Model.by_uuid(model_uuid)
     templates = list(Template.objects.filter(model_id=model.id).values('id', 'name', 'template_type', 'model', 'location', 'created', 'updated'))
-    template_variables = list(Template_Variable.objects.all().values('id', 'template', 'template_type_variable', 'value', 'timeseries', 'timeseries_meta', 'updated'))
+    template_variables = list(Template_Variable.objects.all().values('id', 'template', 'template_type_variable', 'value', 'raw_value', 'timeseries', 'timeseries_meta', 'updated'))
 
     template_types = list(Template_Type.objects.all().values('id', 'name', 'pretty_name', 'description'))
     template_type_variables = list(Template_Type_Variable.objects.all().values('id', 'name', 'pretty_name', 'template_type', 'units', 'default_value', 'category', 'choices', 'description', 'timeseries_enabled'))

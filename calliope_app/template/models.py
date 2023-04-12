@@ -149,6 +149,7 @@ class Template_Variable(models.Model):
     template = models.ForeignKey(Template, on_delete=models.CASCADE)
     template_type_variable = models.ForeignKey(Template_Type_Variable, on_delete=models.CASCADE)
     value = models.CharField(max_length=200)
+    raw_value = models.CharField(max_length=200, blank=True, null=True)
     timeseries = models.BooleanField(default=False)
     timeseries_meta = models.ForeignKey(Timeseries_Meta,
                                         on_delete=models.CASCADE,
