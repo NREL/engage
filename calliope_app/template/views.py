@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.http import JsonResponse, HttpResponse
 from api.utils import initialize_units, convert_units_no_pipe
 from api.models.configuration import Model, Model_User, Location, Model_Comment, Technology, Abstract_Tech, Loc_Tech, Tech_Param, Loc_Tech_Param
-from template.models import Templates, Template_Variables, Template_Types, Template_Type_Variables, Template_Type_Locs, Template_Type_Techs, Template_Type_Loc_Techs, Template_Type_Parameters
+from template.models import Template, Template_Variable, Template_Type, Template_Type_Variable, Template_Type_Loc, Template_Type_Tech, Template_Type_Loc_Tech, Template_Type_Parameter
 
 @login_required
 @csrf_protect
@@ -21,15 +21,15 @@ def model_templates(request):
     
     model_uuid = request.GET['model_uuid']
     model = Model.by_uuid(model_uuid)
-    templates = list(Templates.objects.filter(model_id=model.id).values('id', 'name', 'template_type', 'model', 'location', 'created', 'updated'))
-    template_variables = list(Template_Variables.objects.all().values('id', 'template', 'template_type_variable', 'value', 'timeseries', 'timeseries_meta', 'updated'))
+    templates = list(Template.objects.filter(model_id=model.id).values('id', 'name', 'template_type', 'model', 'location', 'created', 'updated'))
+    template_variables = list(Template_Variable.objects.all().values('id', 'template', 'template_type_variable', 'value', 'timeseries', 'timeseries_meta', 'updated'))
 
-    template_types = list(Template_Types.objects.all().values('id', 'name', 'pretty_name', 'description'))
-    template_type_variables = list(Template_Type_Variables.objects.all().values('id', 'name', 'pretty_name', 'template_type', 'units', 'default_value', 'category', 'choices', 'description', 'timeseries_enabled'))
-    template_type_locs = list(Template_Type_Locs.objects.all().values('id', 'name', 'template_type', 'latitude_offset', 'longitude_offset'))
-    template_type_techs = list(Template_Type_Techs.objects.all().values('id', 'name', 'template_type', 'abstract_tech', 'carrier_in', 'carrier_out'))
-    template_type_loc_techs = list(Template_Type_Loc_Techs.objects.all().values('id', 'template_type', 'template_loc_1', 'template_loc_2', 'template_tech'))
-    template_type_parameters = list(Template_Type_Parameters.objects.all().values('id', 'template_loc_tech', 'parameter', 'equation'))
+    template_types = list(Template_Type.objects.all().values('id', 'name', 'pretty_name', 'description'))
+    template_type_variables = list(Template_Type_Variable.objects.all().values('id', 'name', 'pretty_name', 'template_type', 'units', 'default_value', 'category', 'choices', 'description', 'timeseries_enabled'))
+    template_type_locs = list(Template_Type_Loc.objects.all().values('id', 'name', 'template_type', 'latitude_offset', 'longitude_offset'))
+    template_type_techs = list(Template_Type_Tech.objects.all().values('id', 'name', 'template_type', 'abstract_tech', 'carrier_in', 'carrier_out'))
+    template_type_loc_techs = list(Template_Type_Loc_Tech.objects.all().values('id', 'template_type', 'template_loc_1', 'template_loc_2', 'template_tech'))
+    template_type_parameters = list(Template_Type_Parameter.objects.all().values('id', 'template_loc_tech', 'parameter', 'equation'))
     locations = list(Location.objects.filter(model_id=model.id).values('id', 'pretty_name', 'name', 'latitude', 'longitude', 'available_area', 'model', 'created', 'updated', 'template_id', 'template_type_loc_id'))
 
     response = {
@@ -83,15 +83,15 @@ def add_template(request):
 
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
-    template_type = Template_Types.objects.filter(id=template_type_id).first()
+    template_type = Template_Type.objects.filter(id=template_type_id).first()
     location = Location.objects.filter(id=location_id).first()
-    template_type_locs = list(Template_Type_Locs.objects.filter(template_type_id=template_type_id).values('id', 'name', 'template_type', 'latitude_offset', 'longitude_offset'))
-    template_type_techs = list(Template_Type_Techs.objects.filter(template_type_id=template_type_id).values('id', 'name', 'template_type', 'abstract_tech', 'carrier_in', 'carrier_out'))
-    template_type_loc_techs = list(Template_Type_Loc_Techs.objects.filter(template_type_id=template_type_id).values('id', 'template_type', 'template_loc_1', 'template_loc_2', 'template_tech'))
+    template_type_locs = list(Template_Type_Loc.objects.filter(template_type_id=template_type_id).values('id', 'name', 'template_type', 'latitude_offset', 'longitude_offset'))
+    template_type_techs = list(Template_Type_Tech.objects.filter(template_type_id=template_type_id).values('id', 'name', 'template_type', 'abstract_tech', 'carrier_in', 'carrier_out'))
+    template_type_loc_techs = list(Template_Type_Loc_Tech.objects.filter(template_type_id=template_type_id).values('id', 'template_type', 'template_loc_1', 'template_loc_2', 'template_tech'))
  
     if template_id:
         print ("Editing a template")
-        template = Templates.objects.filter(id=template_id).first()
+        template = Template.objects.filter(id=template_id).first()
         #if template is not None:
         #    template.name = name
         #    Templates.objects.update(template)
@@ -105,7 +105,7 @@ def add_template(request):
         model.notify_collaborators(request.user)
     else:
         print ("Creating a new template")
-        template = Templates.objects.create(
+        template = Template.objects.create(
             name=name,
             template_type=template_type,
             model=model,
@@ -120,7 +120,7 @@ def add_template(request):
         if new_loc_techs is not None:
             ureg = initialize_units()
             for template_loc_tech_id, loc_tech in new_loc_techs.items():
-                template_type_parameters = Template_Type_Parameters.objects.filter(template_loc_tech_id=template_loc_tech_id)
+                template_type_parameters = Template_Type_Parameter.objects.filter(template_loc_tech_id=template_loc_tech_id)
                 for template_type_parameter in template_type_parameters: 
                     equation = template_type_parameter.equation
                     for name, template_variable in new_template_variables.items(): 
@@ -158,7 +158,7 @@ def add_template(request):
 def add_template_variables(templateVars, template):
     new_template_variables = {}
     for templateVar in templateVars:
-        new_template_var = Template_Variables.objects.create(
+        new_template_var = Template_Variable.objects.create(
             template_type_variable_id=templateVar["id"],
             value=templateVar["value"],
             template_id=template.id,
