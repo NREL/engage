@@ -10,7 +10,7 @@ from api.utils import initialize_units, convert_units_no_pipe
 def request_geophires(request):
     """
     Parameters:
-    location: required
+    location: required(?)
     reservoir_heat_capacity: required
     reservoir_density: required 
     reservoir_thermal_conductivity: required
