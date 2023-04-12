@@ -161,6 +161,7 @@ def add_template_variables(templateVars, template):
         new_template_var = Template_Variable.objects.create(
             template_type_variable_id=templateVar["id"],
             value=templateVar["value"],
+            raw_value=templateVar["value"],
             template_id=template.id,
         )
         new_template_variables[new_template_var.template_type_variable.name] = new_template_var
