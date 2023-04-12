@@ -1,15 +1,11 @@
 import json
-from pytz import common_timezones
-from django.conf import settings
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.core.exceptions import ValidationError
-from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
-from api.utils import convert_units, initialize_units, convert_units_no_pipe
+from django.http import JsonResponse, HttpResponse
+from api.utils import initialize_units, convert_units_no_pipe
 from api.models.configuration import Model, Model_User, Location, Model_Comment, Technology, Abstract_Tech, Loc_Tech, Tech_Param, Loc_Tech_Param
 from template.models import Templates, Template_Variables, Template_Types, Template_Type_Variables, Template_Type_Locs, Template_Type_Techs, Template_Type_Loc_Techs, Template_Type_Parameters
-from django.urls import reverse
 
 @login_required
 @csrf_protect
@@ -51,6 +47,7 @@ def model_templates(request):
 
     return JsonResponse(response, safe=False)
 
+@login_required
 @csrf_protect
 def add_template(request):
     """
