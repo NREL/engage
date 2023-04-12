@@ -69,6 +69,10 @@ $( document ).ready(function() {
         var showAPIButtons = document.getElementById("Geotechnical tool input parameters".replace(/\s/g, '')) != null;
         if (showAPIButtons) {
             $("#Geotechnical tool input parameters".replace(/\s/g, '')).append( "<div style='padding: 1rem;border-top: 1px solid white;'><button id='runGeophires' class='btn btn-success btn-sm' type='button' style='width:130px;height:38px;'>Run GEOPHIRES</button><button id='runGETEM' class='btn btn-success btn-sm' type='button' style='width:100px;height:38px;margin-left:1em'>Run GETEM</button></div>");
+            $("#Geotechnical tool input parameters".replace(/\s/g, '')).append( "<span id='geophiresError' hidden='true' style='color:red;margin-bottom:1em'>Please fill out all Geotechincal input parameters and a primary location.</span>");
+            $('#runGeophires').on('click', function() {
+                requestGeophires();
+            });
         }
 	});
 
@@ -250,6 +254,44 @@ function closeTemplateModal() {
 function modelEditBack() {
     $("#modalContent").show();
     $("#modalEdit").hide();
+}
+
+function requestGeophires() {
+    var templateVarElements = $("#Geotechnicaltoolinputparameters :input:not(:button)");
+    var templateVars = {};
+    if (!$('#primaryLocation').val()) {
+        $('#geophiresError').attr("hidden", false);
+        return;
+    }
+
+    for (var i = 0; i < templateVarElements.length; i++) {
+        if (!templateVarElements[i].value) {
+            $('#geophiresError').attr("hidden", false);
+            return;
+        }
+        var id = Number(templateVarElements[i].id.replace("template_type_var_", ""));
+        var name = template_data.template_type_variables.filter(obj => {
+            return obj.id === id
+          })[0].name;
+        var value = templateVarElements[i].value;
+        templateVars[name] = value;
+    }
+
+    $('#geophiresError').attr("hidden", true);
+    $.ajax({
+        url: '/' + LANGUAGE_CODE + '/geophires/',
+        type: 'POST',
+        data: {
+            'csrfmiddlewaretoken': getCookie('csrftoken'),
+            'location': $('#primaryLocation').val(),
+            'form_data': JSON.stringify(templateVars)
+        },
+        dataType: 'json',
+        success: function (data) {
+            //fill in output parameters
+            var response = data;
+        }
+    });
 }
 
 function saveTemplate() {

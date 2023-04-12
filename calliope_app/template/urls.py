@@ -4,6 +4,7 @@ from django.conf.urls import url
 from django.urls import path
 
 from template import views
+from template import geophires
 
 urlpatterns = [
     path('model/templates/',
@@ -11,5 +12,8 @@ urlpatterns = [
          name='templates'),
     path('model/templates/create/',
           views.add_template,
-          name='add_template')
+          name='add_template'),
+    path('geophires/',
+          geophires.request_geophires,
+          name='request_geophires')
 ]
