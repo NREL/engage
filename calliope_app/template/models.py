@@ -91,7 +91,7 @@ class Template_Type_Loc_Tech(models.Model):
     template_tech = models.ForeignKey(Template_Type_Tech, on_delete=models.CASCADE)
 
     def __str__(self):
-        return '%s' % (self.name)
+        return '%s' % (self.template_type)
 
 class Template_Type_Parameter(models.Model):
     class Meta:
