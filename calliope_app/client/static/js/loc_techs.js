@@ -54,12 +54,11 @@ $( document ).ready(function() {
         }
         for (var i = 0; i < template_type_vars.length; i++) {
             var categoryId = template_type_vars[i].category ? template_type_vars[i].category.replace(/\s/g, '') : 'templateVars';
-            $('#'+ categoryId).append( "<label><b>" + template_type_vars[i].pretty_name + "</b></label>");
             $('#'+ categoryId).append( "<p class='help-text'>" + template_type_vars[i].description + "</p>");
             if (template_type_vars[i].units && template_type_vars[i].units != "NA") {
-                $('#'+ categoryId).append( "<div><input id='template_type_var_" + template_type_vars[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input><span style='width:80px;margin-left:.4em' class='text-sm parameter-units'>" + template_type_vars[i].units + "</span></div><br>");
+                $('#'+ categoryId).append( "<div><label><b>" + template_type_vars[i].pretty_name + "</b></label><input id='template_type_var_" + template_type_vars[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input><span style='width:80px;margin-left:.4em' class='text-sm parameter-units'>" + template_type_vars[i].units + "</span></div><br>");
             } else {
-                $('#'+ categoryId).append( "<div><input id='template_type_var_" + template_type_vars[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input><span style='width:80px;margin-left:.4em' class='text-sm parameter-units'></span></div><br>");
+                $('#'+ categoryId).append( "<div><label><b>" + template_type_vars[i].pretty_name + "</b></label><input id='template_type_var_" + template_type_vars[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input><span style='width:80px;margin-left:.4em' class='text-sm parameter-units'></span></div><br>");
             }
             if (template_type_vars[i].default_value) {
                 $('#template_type_var_' + template_type_vars[i].id).val(template_type_vars[i].default_value);
@@ -68,7 +67,7 @@ $( document ).ready(function() {
 
         var showAPIButtons = document.getElementById("Geotechnical tool input parameters".replace(/\s/g, '')) != null;
         if (showAPIButtons) {
-            $("#Geotechnical tool input parameters".replace(/\s/g, '')).append( "<div style='padding: 1rem;border-top: 1px solid white;'><button id='runGeophires' class='btn btn-success btn-sm' type='button' style='width:130px;height:38px;'>Run GEOPHIRES</button><button id='runGETEM' class='btn btn-success btn-sm' type='button' style='width:100px;height:38px;margin-left:1em'>Run GETEM</button></div>");
+            $("#Geotechnical tool input parameters".replace(/\s/g, '')).append( "<div style='padding: 1rem;border-top: 1px solid white;'><button id='runGeophires' class='btn btn-success btn-sm' type='button' style='width:130px;height:38px;'>Run GEOPHIRES</button><button id='runGETEM' disabled class='btn btn-success btn-sm' type='button' style='width:100px;height:38px;margin-left:1em'>Run GETEM</button></div>");
             $("#Geotechnical tool input parameters".replace(/\s/g, '')).append( "<span id='geophiresError' hidden='true' style='color:red;margin-bottom:1em'>Please fill out all Geotechincal input parameters and a primary location.</span>");
             $('#runGeophires').on('click', function() {
                 requestGeophires();
@@ -169,13 +168,18 @@ function renderTemplateModal() {
     $("#modalContent").show();
     $("#modalEdit").hide();
     $('#modalBody').empty();
-    for (var i = 0; i < template_data.templates.length; i++) {
-        let id = "edit-" + template_data.templates[i].id;
-        $('#modalBody').append( "<label><b>" + template_data.templates[i].name + "</b></label>");
-        $('#modalBody').append( "<button type='button' id='" + id + "' class='btn btn-sm' style='padding-bottom:6px' name='" + template_data.templates[i].name + "'><i class='fas fa-edit'></i></button><br>");
-        $('#' + id).on('click', function() {
-            editTemplate(this);
-        });
+    if (template_data.templates.length > 0) {
+        $('#modalBody').append( "<h6>Existing Templates:</h6>");
+        for (var i = 0; i < template_data.templates.length; i++) {
+            let id = "edit-" + template_data.templates[i].id;
+            $('#modalBody').append( "<label><b>" + template_data.templates[i].name + "</b></label>");
+            $('#modalBody').append( "<button type='button' id='" + id + "' class='btn btn-sm' style='padding-bottom:6px' name='" + template_data.templates[i].name + "'><i class='fas fa-edit'></i></button><br>");
+            $('#' + id).on('click', function() {
+                editTemplate(this);
+            });
+        }
+    } else {
+        $('#modalBody').append( "<h6>This model doesn't have an existing templates yet.</h6>");
     }
 
     if ($("#primaryLocation").children('option').length === 0) {
