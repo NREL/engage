@@ -5,14 +5,23 @@
         font-size: .8em;
     }
     #templatesModal input {
+        max-width: 250px;
+        padding: 0;
+        padding-right: 6px;
         width: 70%;
     }
     #templatesModal select {
+        max-width: 250px;
+        padding: 0;
+        padding-right: 6px;
         width: 70%;
+    }
+    #templatesDialog {
+        min-width: 80% !important;
     }
 </style>
 <div class="modal fade" id="templatesModal" tabindex="-1" role="dialog" aria-labelledby="templateModalTitle" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div id="templatesDialog" class="modal-dialog" role="document">
         <div id="modalContent" class="modal-content">
             <div class="modal-header">
             <h2 class="modal-title" id="templateModalTitle">{% trans "Templates" %}</h2>
