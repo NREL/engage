@@ -186,8 +186,7 @@ def add_template_locations(template_type_locs, model, name, location, template):
 def add_template_technologies(template_type_techs, model, template_type_id):
     new_technologies = {}
     for template_type_tech in template_type_techs:
-
-        existingTech = Technology.objects.filter(model_id=model.id, template_type_id=template_type_id, template_type_tech_id=template_type_tech['id']).first(),
+        existingTech = Technology.objects.filter(model_id=model.id, template_type_id=template_type_id, template_type_tech_id=template_type_tech['id']).first()
 
         if existingTech is None:
             abstract_tech = Abstract_Tech.objects.filter(
@@ -242,8 +241,7 @@ def add_template_technologies(template_type_techs, model, template_type_id):
 def add_template_loc_techs(template_type_loc_techs, model, name, template_type_id, template):
     new_loc_techs = {}
     for template_type_loc_tech in template_type_loc_techs:
-        print('template_tech' + str(template_type_loc_tech['template_tech']))
-        print('template_loc_1' + str(template_type_loc_tech['template_loc_1']))
+        
         if template_type_loc_tech['template_loc_2']:
             new_loc_tech = Loc_Tech.objects.create(
                 model=model,
