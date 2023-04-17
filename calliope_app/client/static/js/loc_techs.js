@@ -9,7 +9,8 @@ $( document ).ready(function() {
 
     //------------Start Templates------------//
     $("#master-new").show();
-    $("#master-new").html("Templates");
+    $("#master-new").html("Node Groups");
+    $('#master-new').css({ "font-size:": '13px'});
     $('#master-new').attr('data-target','#templatesModal');
     $('#master-new').attr('data-toggle','modal');
     $('#master-new').on('click', function() {
@@ -45,21 +46,35 @@ $( document ).ready(function() {
             uniqueCategories = uniqueCategories.filter(item => item !== "Geotechnical tool input parameters");
             uniqueCategories.unshift("Geotechnical tool input parameters");
         }
+        if (uniqueCategories.includes(null)) {
+            uniqueCategories = uniqueCategories.filter(item => item !== null);
+            uniqueCategories.unshift(null);
+        }
         for (var i = 0; i < uniqueCategories.length; i++) {
             if (uniqueCategories[i]) {
                 $('#templateVars').append(
-                    "<div id='"+ uniqueCategories[i].replace(/\s/g, '') + "'><h5>" + uniqueCategories[i] + "</h5></div>"
+                    "<div id='"+ uniqueCategories[i].replace(/\s/g, '') + "'><h5>" + uniqueCategories[i] + "</h5><div id='" + uniqueCategories[i].replace(/\s/g, '') + "-row' class='row'></div></div>"
+                );
+            } else {
+                $('#templateVars').append(
+                    "<div id='null-category'><div id='null-category-row' class='row'></div></div>"
                 );
             }
         }
         for (var i = 0; i < template_type_vars.length; i++) {
-            var categoryId = template_type_vars[i].category ? template_type_vars[i].category.replace(/\s/g, '') : 'templateVars';
-            $('#'+ categoryId).append( "<p class='help-text'>" + template_type_vars[i].description + "</p>");
+            //class='row'
+            var categoryId = template_type_vars[i].category ? template_type_vars[i].category.replace(/\s/g, '') + "-row" : 'null-category-row';
+            var units = "";
             if (template_type_vars[i].units && template_type_vars[i].units != "NA") {
-                $('#'+ categoryId).append( "<div><label><b>" + template_type_vars[i].pretty_name + "</b></label><input id='template_type_var_" + template_type_vars[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input><span style='width:80px;margin-left:.4em' class='text-sm parameter-units'>" + template_type_vars[i].units + "</span></div><br>");
+                units = "<span style='width:80px;margin-left:.4em' class='text-sm parameter-units'>" + template_type_vars[i].units + "</span>"
             } else {
-                $('#'+ categoryId).append( "<div><label><b>" + template_type_vars[i].pretty_name + "</b></label><input id='template_type_var_" + template_type_vars[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input><span style='width:80px;margin-left:.4em' class='text-sm parameter-units'></span></div><br>");
+                units = "<span style='width:80px;margin-left:.4em' class='text-sm parameter-units'></span>"
             }
+
+            $('#'+ categoryId).append( "<div class='col-5' data-toggle='tooltip' data-placement='left' title='' data-original-title='" + template_type_vars[i].description + "'><label><b>" + template_type_vars[i].pretty_name + "</b></label></div>"
+            + "<div class='col-7'><input id='template_type_var_" + template_type_vars[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input>" 
+            + units + "</div>");
+        
             if (template_type_vars[i].default_value) {
                 $('#template_type_var_' + template_type_vars[i].id).val(template_type_vars[i].default_value);
             }
@@ -169,7 +184,7 @@ function renderTemplateModal() {
     $("#modalEdit").hide();
     $('#modalBody').empty();
     if (template_data.templates.length > 0) {
-        $('#modalBody').append( "<h6>Existing Templates:</h6>");
+        $('#modalBody').append( "<h6>Existing Node Groups:</h6>");
         for (var i = 0; i < template_data.templates.length; i++) {
             let id = "edit-" + template_data.templates[i].id;
             $('#modalBody').append( "<label><b>" + template_data.templates[i].name + "</b></label>");
@@ -179,7 +194,7 @@ function renderTemplateModal() {
             });
         }
     } else {
-        $('#modalBody').append( "<h6>This model doesn't have any existing templates yet.</h6>");
+        $('#modalBody').append( "<h6>This model doesn't have any existing node groups yet.</h6>");
     }
 
     if ($("#primaryLocation").children('option').length === 0) {
@@ -244,7 +259,7 @@ function addTemplate() {
     $("#modalContent").hide();
     $("#modalEdit").show();
     $("#templateName").val("");
-    $("#editModalTitle").html("Add Template");
+    $("#editModalTitle").html("Add Node Group to Model");
 }
 
 function closeTemplateModal() {
