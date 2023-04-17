@@ -179,7 +179,7 @@ function renderTemplateModal() {
             });
         }
     } else {
-        $('#modalBody').append( "<h6>This model doesn't have an existing templates yet.</h6>");
+        $('#modalBody').append( "<h6>This model doesn't have any existing templates yet.</h6>");
     }
 
     if ($("#primaryLocation").children('option').length === 0) {
