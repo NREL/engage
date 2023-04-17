@@ -92,12 +92,9 @@ class Template_Type_Loc_Tech(models.Model):
 
     def __str__(self):
         if self.template_loc_2:
-            return '%s <-> %s | %s [%s]' % (self.template_loc_1, self.template_loc_2,
-                                            self.template_tech,
-                                            self.template_tech.abstract_tech)
+            return '%s[%s] at %s <-> %s' % (self.template_tech, self.template_tech.abstract_tech, self.template_loc_1, self.template_loc_2)
         else:
-            return '%s | %s [%s]' % (self.template_loc_1, self.template_tech,
-                                     self.template_tech.abstract_tech)
+            return '%s[%s] at %s' % (self.template_tech, self.template_tech.abstract_tech, self.template_loc_1)
 
 class Template_Type_Parameter(models.Model):
     class Meta:
