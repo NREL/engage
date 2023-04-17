@@ -91,7 +91,13 @@ class Template_Type_Loc_Tech(models.Model):
     template_tech = models.ForeignKey(Template_Type_Tech, on_delete=models.CASCADE)
 
     def __str__(self):
-        return '%s' % (self.template_type)
+        if self.template_loc_2:
+            return '%s <-> %s | %s [%s]' % (self.template_loc_1, self.template_loc_2,
+                                            self.template_tech,
+                                            self.template_tech.abstract_tech)
+        else:
+            return '%s | %s [%s]' % (self.template_loc_1, self.template_tech,
+                                     self.template_tech.abstract_tech)
 
 class Template_Type_Parameter(models.Model):
     class Meta:
