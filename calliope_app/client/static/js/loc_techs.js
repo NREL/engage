@@ -71,7 +71,7 @@ $( document ).ready(function() {
                 units = "<span style='width:80px;margin-left:.4em' class='text-sm parameter-units'></span>"
             }
 
-            $('#'+ categoryId).append( "<div class='col-5' data-toggle='tooltip' data-placement='left' title='' data-original-title='" + template_type_vars[i].description + "'><label><b>" + template_type_vars[i].pretty_name + "</b></label></div>"
+            $('#'+ categoryId).append( "<div class='col-5' data-toggle='tooltip' data-placement='bottom' title='" + template_type_vars[i].description + "' data-original-title='" + template_type_vars[i].description + "'><label><b>" + template_type_vars[i].pretty_name + "</b></label></div>"
             + "<div class='col-7'><input id='template_type_var_" + template_type_vars[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input>" 
             + units + "</div>");
         
@@ -88,6 +88,7 @@ $( document ).ready(function() {
                 requestGeophires();
             });
         }
+        $("[data-toggle='tooltip']").tooltip();
 	});
 
     //On modal close
