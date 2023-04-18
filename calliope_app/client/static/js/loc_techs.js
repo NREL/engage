@@ -1,6 +1,7 @@
 var map_mode = 'loc_techs';
 let template_data = {};
 let template_edit = {};
+
 //import { getTemplateData } from 'templates.js';
 
 $( document ).ready(function() {
@@ -21,7 +22,7 @@ $( document ).ready(function() {
 		addTemplate();
 	});
 
-    $('#saveTemplate').on('click', function() {
+    $('#createTemplate, #editTemplate').on('click', function() {
 		saveTemplate();
 	});
 
@@ -36,7 +37,7 @@ $( document ).ready(function() {
             return;
         }
         var template_type = template_data.template_types.find(o => o.id == parseInt(templateType))
-        $('#templateVars').append( "<hr><h4>Template Type Parameters for " + template_type.pretty_name + "<h6>" );
+        $('#templateVars').append( "<h4>Node Group Parameters for " + template_type.pretty_name + "<h6>" );
         $('#templateVars').append( "<p>" + template_type.description + "<p>" );
         var template_type_vars = template_data.template_type_variables.filter(obj => {
             return obj.template_type == parseInt(templateType);
@@ -51,18 +52,14 @@ $( document ).ready(function() {
             uniqueCategories.unshift(null);
         }
         for (var i = 0; i < uniqueCategories.length; i++) {
-            if (uniqueCategories[i]) {
-                $('#templateVars').append(
-                    "<div id='"+ uniqueCategories[i].replace(/\s/g, '') + "'><h5>" + uniqueCategories[i] + "</h5><div id='" + uniqueCategories[i].replace(/\s/g, '') + "-row' class='row'></div></div>"
-                );
-            } else {
-                $('#templateVars').append(
-                    "<div id='null-category'><div id='null-category-row' class='row'></div></div>"
-                );
-            }
+            var catCarrot = uniqueCategories[i] ? "<div style='float: right;'><i class='fas fa-caret-down'></i><i class='fas fa-caret-up hide'></i></div>" : "";
+            var catId = uniqueCategories[i] ? uniqueCategories[i].replace(/\s/g, '') : "null-category";
+            var catName = uniqueCategories[i] ? uniqueCategories[i] : "";
+            $('#templateVars').append(
+                "<div id='"+ catId + "' class='template-category hiding_rows'><a><h5>" + catName + catCarrot + "</h5></a></div><div id='" + catId + "-row' class='row hide'></div>"
+            );
         }
         for (var i = 0; i < template_type_vars.length; i++) {
-            //class='row'
             var categoryId = template_type_vars[i].category ? template_type_vars[i].category.replace(/\s/g, '') + "-row" : 'null-category-row';
             var units = "";
             if (template_type_vars[i].units && template_type_vars[i].units != "NA") {
@@ -71,8 +68,8 @@ $( document ).ready(function() {
                 units = "<span style='width:80px;margin-left:.4em' class='text-sm parameter-units'></span>"
             }
 
-            $('#'+ categoryId).append( "<div class='col-5' data-toggle='tooltip' data-placement='bottom' title='" + template_type_vars[i].description + "' data-original-title='" + template_type_vars[i].description + "'><label><b>" + template_type_vars[i].pretty_name + "</b></label></div>"
-            + "<div class='col-7'><input id='template_type_var_" + template_type_vars[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input>" 
+            $('#'+ categoryId).append( "<div class='col-6' data-toggle='tooltip' data-placement='bottom' title='" + template_type_vars[i].description + "' data-original-title='" + template_type_vars[i].description + "'><label><b>" + template_type_vars[i].pretty_name + "</b></label></div>"
+            + "<div class='col-6'><input id='template_type_var_" + template_type_vars[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input>" 
             + units + "</div>");
         
             if (template_type_vars[i].default_value) {
@@ -82,18 +79,43 @@ $( document ).ready(function() {
 
         var showAPIButtons = document.getElementById("Geotechnical tool input parameters".replace(/\s/g, '')) != null;
         if (showAPIButtons) {
-            $("#Geotechnical tool input parameters".replace(/\s/g, '')).append( "<div style='padding: 1rem;border-top: 1px solid white;'><button id='runGeophires' class='btn btn-success btn-sm' type='button' style='width:130px;height:38px;'>Run GEOPHIRES</button><button id='runGETEM' disabled class='btn btn-success btn-sm' type='button' style='width:100px;height:38px;margin-left:1em'>Run GETEM</button></div>");
-            $("#Geotechnical tool input parameters".replace(/\s/g, '')).append( "<span id='geophiresError' hidden='true' style='color:red;margin-bottom:1em'>Please fill out all Geotechincal input parameters and a primary location.</span>");
+            $("#Geotechnical tool input parameters".replace(/\s/g, '')+"-row").append( "<div id='geophiresActions' class='col-12'></div>");
+            $("#geophiresActions").append( "<button id='runGeophires' class='btn btn-success btn-sm' type='button' style='width:130px;height:38px;'>Run GEOPHIRES</button><button id='runGETEM' disabled class='btn btn-success btn-sm' type='button' style='width:100px;height:38px;margin-left:1em'>Run GETEM</button>");
+            $("#geophiresActions").append( "<span id='geophiresError' hidden='true' style='color:red;margin-bottom:1em'>Please fill out all Geotechincal input parameters and a primary location.</span>");
             $('#runGeophires').on('click', function() {
                 requestGeophires();
             });
         }
         $("[data-toggle='tooltip']").tooltip();
+        $('.template-category').unbind();
+        $('.template-category').on('click', function(){
+            var rows = $(this).nextUntil('.template-category');
+            if ($(this).hasClass('hiding_rows')) {
+                rows.removeClass('hide');
+                $(this).removeClass('hiding_rows');
+                $(this).find('.fa-caret-up').removeClass('hide');
+                $(this).find('.fa-caret-down').addClass('hide');
+            } else {
+                rows.addClass('hide');
+                $(this).addClass('hiding_rows');
+                $(this).find('.fa-caret-up').addClass('hide');
+                $(this).find('.fa-caret-down').removeClass('hide');
+            }
+        });
+
+        
+        $('.form-control').on('change', function() {
+            var formFilledOut = validateTemplateParameters();
+            if (formFilledOut) {
+                $("#editTemplate, #createTemplate").prop("disabled",false);
+            } else {
+                $("#editTemplate, #createTemplate").prop("disabled",true);
+            }
+        });
 	});
 
     //On modal close
     $('#templatesModal').on('hidden.bs.modal', function () {
-        $('#templateError').hide();
         $("#templateType").val([]);
         $("#primaryLocation").val([]);
         $("#templateName").val('');
@@ -248,8 +270,10 @@ function editTemplate(el) {
     $('#primaryLocation').attr("disabled", true);
     $("#modalContent").hide();
     $("#modalEdit").show();
+    $("#createTemplate").hide();
+    $("#editTemplate").show();
     $("#templateName").val(template_edit.name);
-    $("#editModalTitle").html("Edit Template: " + template_edit.name);
+    $("#editModalTitle").html("Update Node Group: " + template_edit.name);
 
     //Set template type variarbles
 }
@@ -259,12 +283,13 @@ function addTemplate() {
     $('#primaryLocation').attr("disabled", false);
     $("#modalContent").hide();
     $("#modalEdit").show();
+    $("#createTemplate").show();
+    $("#editTemplate").hide();
     $("#templateName").val("");
     $("#editModalTitle").html("Add Node Group to Model");
 }
 
 function closeTemplateModal() {
-    $('#templateError').hide();
     $("#templateType").val([]);
     $("#primaryLocation").val([]);
     $("#templateName").val('');
@@ -277,6 +302,7 @@ function modelEditBack() {
 }
 
 function requestGeophires() {
+    $("#runGeophires").prop("disabled",true);
     var templateVarElements = $("#Geotechnicaltoolinputparameters :input:not(:button)");
     var templateVars = {};
     if (!$('#primaryLocation').val()) {
@@ -310,20 +336,36 @@ function requestGeophires() {
         success: function (data) {
             //fill in output parameters
             var response = data;
+            $("#runGeophires").prop("disabled",false);
+        },
+        error: function (data) {
+            $("#runGeophires").prop("disabled",false);
         }
     });
 }
 
-function saveTemplate() {
-    var templateVarElements = $("#templateVars :input:not(:button)");
-    var templateVars = [];
+function validateTemplateParameters() {
     if (!$('#templateName').val() || !$('#templateType').val() || !$('#primaryLocation').val()) {
-        $('#templateError').attr("hidden", false);
-        return;
+        return false;
     }
+    var templateVarElements = $("#templateVars :input:not(:button)");
     for (var i = 0; i < templateVarElements.length; i++) {
         if (!templateVarElements[i].value) {
-            $('#templateError').attr("hidden", false);
+            return false;
+        }
+    }
+    return true;
+}
+
+function saveTemplate() {
+    $("#editTemplate, #createTemplate").prop("disabled",true);
+    var templateVars = [];
+    if (!$('#templateName').val() || !$('#templateType').val() || !$('#primaryLocation').val()) {
+        return ;
+    }
+    var templateVarElements = $("#templateVars :input:not(:button)");
+    for (var i = 0; i < templateVarElements.length; i++) {
+        if (!templateVarElements[i].value) {
             return;
         }
         var id = templateVarElements[i].id.replace("template_type_var_", "");
@@ -331,7 +373,6 @@ function saveTemplate() {
         templateVars.push({"id": id, "value": value});
     }
 
-    $('#templateError').attr("hidden", true);
     $.ajax({
         url: '/' + LANGUAGE_CODE + '/model/templates/create/',
         type: 'POST',
@@ -347,6 +388,10 @@ function saveTemplate() {
         success: function (data) {
             closeTemplateModal();
             var response = data;
+            $("#editTemplate, #createTemplate").prop("disabled",false);
+        },
+        error: function (data) {
+            $("#editTemplate, #createTemplate").prop("disabled",false);
         }
     });
 }

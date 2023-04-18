@@ -23,6 +23,34 @@
         float: left;
         margin-right: 4em;
     }
+    .modal-footer {
+        border-top: 2px solid black !important;
+        margin: 0 -16px 10px -16px;
+    }
+    .modal-header {
+        border-bottom: 2px solid black !important;
+    }
+    #basicTemplateVars {
+        margin: 0 -16px 10px -16px;
+    }
+    .template-category {
+        font-size: 24px;
+        background-color: #c1c1c1;
+        cursor: pointer;
+    }
+    .template-category h5 {
+        margin-left: .6em;
+        padding: 0 .7em;
+    }
+    .template-category {
+        border-radius: 3px
+    }
+    #geophiresActions {
+        display: flex;
+        justify-content: flex-end;
+        padding: 1rem;
+        border-top: 1px solid white;
+    }
 </style>
 <div class="modal fade" id="templatesModal" tabindex="-1" role="dialog" aria-labelledby="templateModalTitle" aria-hidden="true">
     <div id="templatesDialog" class="modal-dialog" role="document">
@@ -55,37 +83,39 @@
             <div id="editModalBody" class="modal-body">
             <!-- Header -->
             <br><br>
-            <div class="row">
-                <div class="col-5" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Enter the custom node group name.">
+            <div id="basicTemplateVars" class="row">
+                <div class="col-6" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Enter the custom node group name.">
                     <label><b>{% trans "Node Group Name" %}</b></label>
                 </div>
-                <div class="col-7">
-                    <input id='templateName' name='templateName' style="margin-bottom:1em" class='form-control' placeholder='Template Name' aria-label="Tempalte Name" value=''></input>
+                <div class="col-6">
+                    <input id='templateName' name='templateName' style="margin-bottom:1em" class='form-control' placeholder='Node Group Name' aria-label="Node Group Name" value=''></input>
                 </div>
-                <div class="col-5" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Select a node group type from the dropdown. There will be additional form variables to fill out depending on your selection.">
-                    <label><b>{% trans "Node Group Type" %}</b></label>
-                </div>
-                <div class="col-7">
-                    <select style="margin-bottom:1em" class="form-control" id='templateType' name='templateType' data-toggle='tooltip' data-placement='left'></select>
-                </div>
-                <div class="col-5" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Select a primary location from which all other node group locations will be offsetted from.">
+                <hr>
+                <div class="col-6" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Select a primary location from which all other node group locations will be offsetted from.">
                     <label><b>{% trans "Primary Location" %}</b></label>
                 </div>
-                <div class="col-7">
+                <div class="col-6">
                     <select style="margin-bottom:1em" class="form-control" id='primaryLocation' name='primaryLocation' data-toggle='tooltip' data-placement='left'></select>
+                </div>
+                <hr>
+                <div class="col-6" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Select a node group type from the dropdown. There will be additional form variables to fill out depending on your selection.">
+                    <label><b>{% trans "Node Group Type" %}</b></label>
+                </div>
+                <div class="col-6">
+                    <select style="margin-bottom:1em" class="form-control" id='templateType' name='templateType' data-toggle='tooltip' data-placement='left'></select>
                 </div>
             </div>
             <div id="templateVars" style="margin-bottom:1em">
             </div>
-            <span id="templateError" hidden="true" style="color:red;margin-bottom:1em">
-                {% trans "Please fill out all node group fields before saving!" %}
-            </span>
             <div class="modal-footer">
                 <button id="modelEditBack" class="btn btn-secondary" type="button" style="width:200px;height:38px;float:left;">
                     {% trans "Back to Node Groups" %}
                 </button>
-                <button id="saveTemplate" class="btn btn-success btn-sm" type="button" style="width:64px;height:38px;">
-                    {% trans "Save" %}
+                <button id="editTemplate" class="btn btn-success btn-sm" disabled type="button" style="width:180px;height:38px;">
+                    {% trans "Update Node Group" %}
+                </button>
+                <button id="createTemplate" class="btn btn-success btn-sm" disabled type="button" style="width:160px;height:38px;">
+                    {% trans "Add Node Group" %}
                 </button>
             </div>
             </div>
