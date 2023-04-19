@@ -37,8 +37,8 @@ $( document ).ready(function() {
             return;
         }
         var template_type = template_data.template_types.find(o => o.id == parseInt(templateType))
-        $('#templateVars').append( "<h4>Node Group Parameters for " + template_type.pretty_name + "<h6>" );
-        $('#templateVars').append( "<p>" + template_type.description + "<p>" );
+        $('#templateVars').append( "<h4 style='padding-left:16px'>Node Group Parameters for " + template_type.pretty_name + "<h6>" );
+        $('#templateVars').append( "<p style='padding-left:16px'>" + template_type.description + "<p>" );
         var template_type_vars = template_data.template_type_variables.filter(obj => {
             return obj.template_type == parseInt(templateType);
         });
@@ -68,13 +68,15 @@ $( document ).ready(function() {
                 units = "<span style='width:80px;margin-left:.4em' class='text-sm parameter-units'></span>"
             }
 
-            $('#'+ categoryId).append( "<div class='col-6' data-toggle='tooltip' data-placement='bottom' title='" + template_type_vars[i].description + "' data-original-title='" + template_type_vars[i].description + "'><label><b>" + template_type_vars[i].pretty_name + "</b></label></div>"
-            + "<div class='col-6'><input id='template_type_var_" + template_type_vars[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input>" 
+            $('#'+ categoryId).append( "<div class='col-6 tech-params' data-toggle='tooltip' data-placement='bottom' title='" + template_type_vars[i].description + "' data-original-title='" + template_type_vars[i].description + "'><label><b>" + template_type_vars[i].pretty_name + "</b></label></div>"
+            + "<div class='col-6 tech-params'><input id='template_type_var_" + template_type_vars[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input>" 
             + units + "</div>");
         
             if (template_type_vars[i].default_value) {
                 $('#template_type_var_' + template_type_vars[i].id).val(template_type_vars[i].default_value);
             }
+
+            $('#'+ categoryId).append("<hr>")
         }
 
         var showAPIButtons = document.getElementById("Geotechnical tool input parameters".replace(/\s/g, '')) != null;
