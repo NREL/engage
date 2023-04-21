@@ -68,7 +68,7 @@ $( document ).ready(function() {
                 units = "<span style='width:80px;margin-left:.4em' class='text-sm parameter-units'></span>"
             }
 
-            $('#'+ categoryId).append( "<div class='col-6 tech-params' data-toggle='tooltip' data-placement='bottom' title='" + template_type_vars[i].description + "' data-original-title='" + template_type_vars[i].description + "'><label><b>" + template_type_vars[i].pretty_name + "</b></label></div>"
+            $('#'+ categoryId).append( "<div class='col-6 tech-params' data-toggle='tooltip' data-placement='bottom' title='" + template_type_vars[i].description + "' data-original-title='" + template_type_vars[i].description + "'><label class='template-label'><b>" + template_type_vars[i].pretty_name + "</b></label></div>"
             + "<div class='col-6 tech-params'><input id='template_type_var_" + template_type_vars[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input>" 
             + units + "</div>");
         
@@ -82,7 +82,7 @@ $( document ).ready(function() {
         var showAPIButtons = document.getElementById("Geotechnical tool input parameters".replace(/\s/g, '')) != null;
         if (showAPIButtons) {
             $("#Geotechnical tool input parameters".replace(/\s/g, '')+"-row").append( "<div id='geophiresActions' class='col-12'></div>");
-            $("#geophiresActions").append( "<button id='runGeophires' class='btn btn-success btn-sm' type='button' style='width:130px;height:38px;'>Run GEOPHIRES</button><button id='runGETEM' disabled class='btn btn-success btn-sm' type='button' style='width:100px;height:38px;margin-left:1em'>Run GETEM</button>");
+            $("#geophiresActions").append( "<button id='runGeophires' class='btn btn-success btn-sm' type='button' style='width:130px;height:38px;'>Run GEOPHIRES</button><button id='runGETEM' disabled class='btn btn-success btn-sm' type='button' style='width:100px;height:38px;margin: 0 1em;'>Run GETEM</button>");
             $("#geophiresActions").append( "<span id='geophiresError' hidden='true' style='color:red;margin-bottom:1em'>Please fill out all Geotechincal input parameters and a primary location.</span>");
             $('#runGeophires').on('click', function() {
                 requestGeophires();
