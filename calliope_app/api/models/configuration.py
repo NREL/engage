@@ -499,6 +499,36 @@ class DuplicateModelManager():
             Model_Comment.objects.create(
                 model=self.model, comment=comment, type="version")
 
+class Job_Meta(models.Model):
+    class Meta:
+        db_table = "job_meta"
+        verbose_name_plural = "[0] Job Meta"
+        ordering = ['-created']
+    objects = EngageManager()
+    objects_all = models.Manager()
+
+    type = models.CharField(max_length=200, blank=True, null=True)
+    inputs = models.JSONField(blank=True, null=True) #{min:2, max:3, depth: 5}
+    #input_path = models.JSONField(blank=True, null=True)
+    output_path = models.CharField(max_length=200, blank=True, null=True)
+    status = models.CharField(max_length=200)
+    #message = models.TextField(blank=True, null=True)
+    #log_path = models.CharField(blank=True, null=True)
+
+    created = models.DateTimeField(auto_now_add=True, null=True)
+    deleted = models.DateTimeField(default=None, editable=False, null=True)
+    job_task = models.ForeignKey(
+        to=CeleryTask,
+        to_field="id",
+        related_name="api_meta",
+        null=True,
+        on_delete=models.PROTECT,
+        default=None
+    )
+
+    def __str__(self):
+        s = "%s - %s" % (self.type, self.created)
+        return s
 
 class Timeseries_Meta(models.Model):
     class Meta:

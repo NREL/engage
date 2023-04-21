@@ -6,7 +6,7 @@ from api.models.calliope import Abstract_Tech, Abstract_Tech_Param, \
 from api.models.configuration import Model, Model_User, Model_Comment, \
     Location, Technology, Tech_Param, Model_Favorite, User_File, \
     Loc_Tech, Loc_Tech_Param, Timeseries_Meta, Scenario, \
-    Scenario_Loc_Tech, Scenario_Param
+    Scenario_Loc_Tech, Scenario_Param, Job_Meta
 from api.models.outputs import Run
 from api.models.engage import User_Profile, ComputeEnvironment
 
@@ -108,7 +108,9 @@ class Loc_Tech_Param_Admin(admin.ModelAdmin):
     list_display = ['id', 'loc_tech', 'year', 'parameter', 'value',
                     'raw_value', 'timeseries', 'timeseries_meta', 'model',
                     'created', 'updated']
-
+class Job_Meta_Admin(admin.ModelAdmin):
+    list_display = ['id', 'type', 'output_path', 'status', 'created',
+                    'deleted', 'job_task']
 
 class Timeseries_Meta_Admin(admin.ModelAdmin):
     list_filter = ['model']
@@ -161,6 +163,7 @@ admin.site.register(Technology, Technology_Admin)
 admin.site.register(Tech_Param, Tech_Param_Admin)
 admin.site.register(Loc_Tech, Loc_Tech_Admin)
 admin.site.register(Loc_Tech_Param, Loc_Tech_Param_Admin)
+admin.site.register(Job_Meta, Job_Meta_Admin)
 admin.site.register(Timeseries_Meta, Timeseries_Meta_Admin)
 admin.site.register(Scenario, Scenario_Admin)
 admin.site.register(Scenario_Loc_Tech, Scenario_Loc_Tech_Admin)
