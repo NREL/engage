@@ -362,6 +362,9 @@ function validateTemplateParameters() {
 }
 
 function saveTemplate() {
+    if ($('#editTemplate').is(':disabled') || $('#createTemplate').is(':disabled')) {
+        return;
+    }
     $("#editTemplate, #createTemplate").prop("disabled",true);
     var templateVars = [];
     if (!$('#templateName').val() || !$('#templateType').val() || !$('#primaryLocation').val()) {
