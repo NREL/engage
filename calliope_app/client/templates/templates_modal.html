@@ -59,7 +59,10 @@
     #editModalBody {
         padding: 16px 0;
     }
-    #basicTemplateVars, .template-label {
+    #basicTemplateVars {
+        padding: 0 16px;
+    }
+    #templateVars .row {
         padding: 0 16px;
     }
 </style>
@@ -94,7 +97,7 @@
             <div id="editModalBody" class="modal-body">
             <!-- Header -->
             <br><br>
-            <div id="basicTemplateVars" class="row category">
+            <div id="basicTemplateVars" class="row">
                 <div class="col-6" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Enter the custom node group name.">
                     <label><b>{% trans "Node Group Name" %}</b></label>
                 </div>

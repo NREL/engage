@@ -55,8 +55,9 @@ $( document ).ready(function() {
             var catCarrot = uniqueCategories[i] ? "<div style='float: right;'><i class='fas fa-caret-down'></i><i class='fas fa-caret-up hide'></i></div>" : "";
             var catId = uniqueCategories[i] ? uniqueCategories[i].replace(/\s/g, '') : "null-category";
             var catName = uniqueCategories[i] ? uniqueCategories[i] : "";
+            var catClasses = uniqueCategories[i] ? "row hide" : "row";
             $('#templateVars').append(
-                "<div id='"+ catId + "' class='template-category hiding_rows'><a><h5>" + catName + catCarrot + "</h5></a></div><div id='" + catId + "-row' class='row hide'></div>"
+                "<div id='"+ catId + "' class='template-category hiding_rows'><a><h5>" + catName + catCarrot + "</h5></a></div><div id='" + catId + "-row' class='" + catClasses + "'></div>"
             );
         }
         for (var i = 0; i < template_type_vars.length; i++) {
@@ -88,6 +89,7 @@ $( document ).ready(function() {
                 requestGeophires();
             });
         }
+        
         $("[data-toggle='tooltip']").tooltip();
         $('.template-category').unbind();
         $('.template-category').on('click', function(){
@@ -106,7 +108,7 @@ $( document ).ready(function() {
         });
 
         
-        $('.form-control').on('change', function() {
+        $('.form-control').on('input', function() {
             var formFilledOut = validateTemplateParameters();
             if (formFilledOut) {
                 $("#editTemplate, #createTemplate").prop("disabled",false);
@@ -118,9 +120,7 @@ $( document ).ready(function() {
 
     //On modal close
     $('#templatesModal').on('hidden.bs.modal', function () {
-        $("#templateType").val([]);
-        $("#primaryLocation").val([]);
-        $("#templateName").val('');
+        closeTemplateModal();
     });
     //------------End Templates------------//
 
@@ -296,6 +296,8 @@ function closeTemplateModal() {
     $("#primaryLocation").val([]);
     $("#templateName").val('');
     $("#templatesModal").modal('hide');
+    $("#templateVars").empty();
+    $("#editTemplate, #createTemplate").prop("disabled",true);
 }
 
 function modelEditBack() {
