@@ -27,7 +27,7 @@ def model_templates(request):
     template_types = list(Template_Type.objects.all().values('id', 'name', 'pretty_name', 'description'))
     template_type_variables = list(Template_Type_Variable.objects.all().values('id', 'name', 'pretty_name', 'template_type', 'units', 'default_value', 'category', 'choices', 'description', 'timeseries_enabled'))
     template_type_locs = list(Template_Type_Loc.objects.all().values('id', 'name', 'template_type', 'latitude_offset', 'longitude_offset'))
-    template_type_techs = list(Template_Type_Tech.objects.all().values('id', 'name', 'template_type', 'abstract_tech', 'carrier_in', 'carrier_out'))
+    template_type_techs = list(Template_Type_Tech.objects.all().values('id', 'name', 'template_type', 'abstract_tech', 'carrier_in', 'carrier_out', 'carrier_in_2', 'carrier_out_2', 'carrier_in_3', 'carrier_out_3', 'carrier_ratios'))
     template_type_loc_techs = list(Template_Type_Loc_Tech.objects.all().values('id', 'template_type', 'template_loc_1', 'template_loc_2', 'template_tech'))
     template_type_parameters = list(Template_Type_Parameter.objects.all().values('id', 'template_loc_tech', 'parameter', 'equation'))
     locations = list(Location.objects.filter(model_id=model.id).values('id', 'pretty_name', 'name', 'latitude', 'longitude', 'available_area', 'model', 'created', 'updated', 'template_id', 'template_type_loc_id'))
@@ -216,25 +216,54 @@ def add_template_technologies(template_type_techs, model, template_type_id):
             )
 
             #set technology params from template parameters
-            if template_type_tech['carrier_in'] is not None and template_type_tech['carrier_out'] is not None:
+            if template_type_tech['carrier_in'] is not None:
                 Tech_Param.objects.create(
                     model=model, 
                     technology=new_tech, 
                     parameter_id=5, 
                     value=template_type_tech['carrier_in']
                 )
+            if template_type_tech['carrier_out'] is not None:
                 Tech_Param.objects.create(
                     model=model,
                     technology=new_tech,
                     parameter_id=6,
                     value=template_type_tech['carrier_out']
                 )
-            else:
+            if template_type_tech['carrier_in_2'] is not None:
+                Tech_Param.objects.create(
+                    model=model, 
+                    technology=new_tech, 
+                    parameter_id=66, 
+                    value=template_type_tech['carrier_in_2']
+                )
+            if template_type_tech['carrier_out_2'] is not None:
                 Tech_Param.objects.create(
                     model=model,
                     technology=new_tech,
-                    parameter_id=4,
-                    value=template_type_tech['carrier_in'],
+                    parameter_id=67,
+                    value=template_type_tech['carrier_out_2']
+                )
+            if template_type_tech['carrier_in_3'] is not None:
+                Tech_Param.objects.create(
+                    model=model, 
+                    technology=new_tech, 
+                    parameter_id=68, 
+                    value=template_type_tech['carrier_in_3']
+                )
+            if template_type_tech['carrier_out_3'] is not None:
+                Tech_Param.objects.create(
+                    model=model,
+                    technology=new_tech,
+                    parameter_id=69,
+                    value=template_type_tech['carrier_out_3']
+                )
+            if template_type_tech['carrier_ratios'] is not None:
+                Tech_Param.objects.create(
+                    model=model,
+                    technology=new_tech,
+                    parameter_id=7,
+                    value=template_type_tech['carrier_ratios']
                 )
     return new_technologies
 

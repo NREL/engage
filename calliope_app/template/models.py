@@ -60,9 +60,13 @@ class Template_Type_Tech(models.Model):
     name = models.CharField(max_length=200)
     template_type = models.ForeignKey(Template_Type, on_delete=models.CASCADE)
     abstract_tech = models.ForeignKey(Abstract_Tech, on_delete=models.CASCADE)
-    #Should we model carrier in and out similar to technologies?
-    carrier_in = models.CharField(max_length=200)
+    carrier_in = models.CharField(max_length=200, blank=True, null=True)
     carrier_out = models.CharField(max_length=200, blank=True, null=True)
+    carrier_in_2 = models.CharField(max_length=200, blank=True, null=True)
+    carrier_out_2 = models.CharField(max_length=200, blank=True, null=True)
+    carrier_in_3 = models.CharField(max_length=200, blank=True, null=True)
+    carrier_out_3 = models.CharField(max_length=200, blank=True, null=True)
+    carrier_ratios = models.CharField(max_length=200, blank=True, null=True)
     #color = models.CharField(max_length=200) looks like technologies is doing something fancy with this
 
     # @property
