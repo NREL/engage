@@ -83,7 +83,7 @@ $( document ).ready(function() {
         var showAPIButtons = document.getElementById("Geotechnical tool input parameters".replace(/\s/g, '')) != null;
         if (showAPIButtons) {
             $("#Geotechnical tool input parameters".replace(/\s/g, '')+"-row").append( "<div id='geophiresActions' class='col-12'></div>");
-            $("#geophiresActions").append( "<button id='runGeophires' class='btn btn-success btn-sm' type='button' style='width:130px;height:38px;'>Run GEOPHIRES</button><button id='runGETEM' disabled class='btn btn-success btn-sm' type='button' style='width:100px;height:38px;margin: 0 1em;'>Run GETEM</button>");
+            $("#geophiresActions").append( "<button id='runGeophires' class='btn btn-success btn-sm' type='button' style='width:130px;height:38px;'>Run GEOPHIRES</button><button id='runGETEM' disabled class='btn btn-success btn-sm' type='button'>Run GETEM</button>");
             $("#geophiresActions").append( "<span id='geophiresError' hidden='true' style='color:red;margin-bottom:1em'>Please fill out all Geotechincal input parameters and a primary location.</span>");
             $('#runGeophires').on('click', function() {
                 requestGeophires();
@@ -306,6 +306,9 @@ function modelEditBack() {
 }
 
 function requestGeophires() {
+    if ($('#runGeophires').is(':disabled')) {
+        return;
+    }
     $("#runGeophires").prop("disabled",true);
     var templateVarElements = $("#Geotechnicaltoolinputparameters :input:not(:button)");
     var templateVars = {};
