@@ -80,16 +80,18 @@ $( document ).ready(function() {
             $('#template_type_var_' + template_type_vars[i].id).attr({
                 "max" : template_type_vars[i].max,
                 "min" : template_type_vars[i].min
-             });
+            });
 
             $('#template_type_var_' + template_type_vars[i].id).on('input', function() {
                 var min = parseInt($(this).attr('min'));
                 var max = parseInt($(this).attr('max'));
-                var value = parseInt($(this).val());
-                if (value < min) {
-                  $(this).val(min);
-                } else if (value > max) {
-                  $(this).val(max);
+                if (min || max) {
+                    var value = parseInt($(this).val());
+                    if (value < min) {
+                        $(this).val(min);
+                    } else if (value > max) {
+                        $(this).val(max);
+                    }
                 }
             });
 
