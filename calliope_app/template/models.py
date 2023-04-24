@@ -31,6 +31,8 @@ class Template_Type_Variable(models.Model):
     template_type = models.ForeignKey(Template_Type, on_delete=models.CASCADE)
     units = models.CharField(max_length=200)
     default_value = models.CharField(max_length=200, blank=True, null=True)
+    min = models.CharField(max_length=200, blank=True, null=True)
+    max = models.CharField(max_length=200, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     timeseries_enabled = models.BooleanField(blank=True, null=True)
     category = models.CharField(max_length=200, blank=True, null=True)
