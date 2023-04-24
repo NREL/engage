@@ -62,7 +62,7 @@ def request_geophires(request):
     #seralize data
     #check if row exists
         #if it does return results meta record id and readResults()
-    #if it doesn't exist create one and start celery process
+    #if it doesn't exist create one and start celery process - call new function tasks.py apply_async
     if None in (location_id, formData["reservoir_heat_capacity"], formData["reservoir_density"], formData["reservoir_thermal_conductivity"], formData["gradient"],
         formData["min_temperature"], formData["max_temperature"], formData["min_reservoir_depth"], formData["max_reservoir_depth"], formData["min_production_wells"],
         formData["max_production_wells"], formData["min_injection_wells"], formData["max_injection_wells"]):
