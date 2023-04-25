@@ -14,6 +14,12 @@ urlpatterns = [
           views.add_template,
           name='add_template'),
     path('geophires/',
-          geophires.request_geophires,
-          name='request_geophires')
+          geophires.geophires_request,
+          name='geophires_request'),
+    path('geophires/status',
+          geophires.geophires_request_status,
+          name='geophires_request_status'),
+    path('geophires/response',
+          geophires.geophires_response,
+          name='geophires_response')
 ]
