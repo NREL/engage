@@ -56,52 +56,62 @@ $( document ).ready(function() {
             var catId = uniqueCategories[i] ? uniqueCategories[i].replace(/\s/g, '') : "null-category";
             var catName = uniqueCategories[i] ? uniqueCategories[i] : "";
             var catClasses = uniqueCategories[i] ? "row hide" : "row";
+            var catClass = uniqueCategories[i] ? "template-category hiding_rows" : "hiding_rows";
             $('#templateVars').append(
-                "<div id='"+ catId + "' class='template-category hiding_rows'><a><h5>" + catName + catCarrot + "</h5></a></div><div id='" + catId + "-row' class='" + catClasses + "'></div>"
+                "<div id='"+ catId + "' class='" + catClass + "'><a><h5>" + catName + catCarrot + "</h5></a></div><div id='" + catId + "-row' class='" + catClasses + "'></div>"
             );
-            var template_type_vars_category = template_type_vars.filter(obj => {
-                return obj.category == uniqueCategories[i];
-            });
-            template_type_vars_category.sort((a, b) => (a.pretty_name > b.pretty_name) ? 1 : -1)
-            for (var i = 0; i < template_type_vars_category.length; i++) {
-                var categoryId = template_type_vars_category[i].category ? template_type_vars_category[i].category.replace(/\s/g, '') + "-row" : 'null-category-row';
-                var units = "";
-                if (template_type_vars_category[i].units && template_type_vars_category[i].units != "NA") {
-                    units = "<span style='width:80px;margin-left:.4em' class='text-sm parameter-units'>" + template_type_vars_category[i].units + "</span>"
-                } else {
-                    units = "<span style='width:80px;margin-left:.4em' class='text-sm parameter-units'></span>"
-                }
-    
-                $('#'+ categoryId).append( "<div class='col-6 tech-params' data-toggle='tooltip' data-placement='bottom' title='" + template_type_vars_category[i].description + "' data-original-title='" + template_type_vars_category[i].description + "'><label class='template-label'><b>" + template_type_vars_category[i].pretty_name + "</b></label></div>"
-                + "<div class='col-6 tech-params'><input id='template_type_var_" + template_type_vars_category[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input>" 
-                + units + "</div>");
-            
-                if (template_type_vars_category[i].default_value) {
-                    $('#template_type_var_' + template_type_vars_category[i].id).val(template_type_vars_category[i].default_value);
-                }
-    
-                $('#template_type_var_' + template_type_vars_category[i].id).attr({
-                    "max" : template_type_vars_category[i].max,
-                    "min" : template_type_vars_category[i].min
-                });
-    
-                $('#template_type_var_' + template_type_vars_category[i].id).on('input', function() {
-                    var min = parseInt($(this).attr('min'));
-                    var max = parseInt($(this).attr('max'));
-                    if (min || max) {
-                        var value = parseInt($(this).val());
-                        if (value < min) {
-                            $(this).val(min);
-                        } else if (value > max) {
-                            $(this).val(max);
-                        }
-                    }
-                });
-    
-                $('#'+ categoryId).append("<hr>")
-            }
+
+            appendCategoryVars(template_type_vars, uniqueCategories[i]);
         }
 
+        displayAPIButtons();
+        setTemplateVarsClassLogic();
+        
+	});
+
+    function appendCategoryVars(template_type_vars, category) {
+        var categoryVariables = template_type_vars.filter(obj => obj.category == category);
+        categoryVariables.sort((a, b) => (a.pretty_name > b.pretty_name) ? 1 : -1);
+        var categoryId = category ? category.replace(/\s/g, '') + "-row" : 'null-category-row';
+
+        for (var i = 0; i < categoryVariables.length; i++) {
+            var units = "";
+            if (categoryVariables[i].units && categoryVariables[i].units != "NA") {
+                units = "<span style='width:80px;margin-left:.4em' class='text-sm parameter-units'>" + categoryVariables[i].units + "</span>"
+            } else {
+                units = "<span style='width:80px;margin-left:.4em' class='text-sm parameter-units'></span>"
+            }
+
+            $('#'+ categoryId).append( "<div class='col-6 tech-params' data-toggle='tooltip' data-placement='bottom' title='" + categoryVariables[i].description +
+                "' data-original-title='" + categoryVariables[i].description + "'><label class='template-label'><b>" + categoryVariables[i].pretty_name + "</b></label></div>"
+            + "<div class='col-6 tech-params'><input id='template_type_var_" + categoryVariables[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input>" 
+            + units + "</div>");
+        
+            if (categoryVariables[i].default_value) {
+                $('#template_type_var_' + categoryVariables[i].id).val(categoryVariables[i].default_value);
+            }
+
+            $('#template_type_var_' + categoryVariables[i].id).attr({
+                "max" : categoryVariables[i].max,
+                "min" : categoryVariables[i].min
+            });
+
+            $('#template_type_var_' + categoryVariables[i].id).on('input', function() {
+                var min = parseInt($(this).attr('min'));
+                var max = parseInt($(this).attr('max'));
+                if (min || max) {
+                    var value = parseInt($(this).val());
+                    if (value < min) {
+                        $(this).val(min);
+                    } else if (value > max) {
+                        $(this).val(max);
+                    }
+                }
+            });
+        }
+    }
+
+    function displayAPIButtons() {
         var showAPIButtons = document.getElementById("Geotechnical tool input parameters".replace(/\s/g, '')) != null;
         if (showAPIButtons) {
             $("#Geotechnical tool input parameters".replace(/\s/g, '')+"-row").append( "<div id='geophiresActions' class='col-12'></div>");
@@ -111,7 +121,9 @@ $( document ).ready(function() {
                 requestGeophires();
             });
         }
-        
+    }
+
+    function setTemplateVarsClassLogic() {
         $("[data-toggle='tooltip']").tooltip();
         $('.template-category').unbind();
         $('.template-category').on('click', function(){
@@ -138,7 +150,7 @@ $( document ).ready(function() {
                 $("#editTemplate, #createTemplate").prop("disabled",true);
             }
         });
-	});
+    }
 
     //On modal close
     $('#templatesModal').on('hidden.bs.modal', function () {
