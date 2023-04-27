@@ -51,7 +51,6 @@ def geophires_request_status(request):
 def geophires_request(request):
     """
     Parameters:
-    location: required(?)
     reservoir_heat_capacity: required
     reservoir_density: required 
     reservoir_thermal_conductivity: required
@@ -70,7 +69,6 @@ def geophires_request(request):
     Example:
     POST: /geophires/
     """
-    location_id = request.POST["location"]
     formData = json.loads(request.POST["form_data"])
 
     payload = {"message": "starting runnning geophires"}
@@ -91,7 +89,7 @@ def geophires_request(request):
         "max_injection_wells": formData["max_injection_wells"],
     }
 
-    if None in (location_id, formData["reservoir_heat_capacity"], formData["reservoir_density"], formData["reservoir_thermal_conductivity"], formData["gradient"],
+    if None in (formData["reservoir_heat_capacity"], formData["reservoir_density"], formData["reservoir_thermal_conductivity"], formData["gradient"],
         formData["min_temperature"], formData["max_temperature"], formData["min_reservoir_depth"], formData["max_reservoir_depth"], formData["min_production_wells"],
         formData["max_production_wells"], formData["min_injection_wells"], formData["max_injection_wells"]):
         raise ValidationError(f"Error: Required field not provided for GEOPHIRES.")
