@@ -106,10 +106,10 @@ def geophires_request(request):
                     "params": inputs,
                 }
             )
-            build_task = CeleryTask.objects.get(task_id=async_result.id)
-            job_meta.job_task = build_task
+            celery_task = CeleryTask.objects.get(task_id=async_result.id)
+            job_meta.job_task = celery_task
             job_meta.save()
-            logger.info("Model run %s starts to build in celery worker.", build_task.id)
+            logger.info("Geophires task %s starts to run in celery worker.", job_meta.id)
         
         else:
             payload["jobPreexisting"] = True

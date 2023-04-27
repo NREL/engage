@@ -15,6 +15,19 @@ class GeophiresTestCase(TestCase):
         start_time = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 
         plant = 'binary_subcritical'
+
+        reservoir_heat_capacity: float
+        reservoir_density: float
+        reservoir_thermal_conductivity: float
+        gradient: float
+        min_temperature: int
+        max_temperature: int
+        min_reservoir_depth: float
+        max_reservoir_depth: float
+        min_production_wells: int
+        max_production_wells: int
+        min_injection_wells: int
+        max_injection_wells: int
         
         ##depths
         depths = np.arange(1.0,5.0,0.1)
