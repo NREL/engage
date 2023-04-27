@@ -283,7 +283,6 @@ function requestGeophires() {
         type: 'POST',
         data: {
             'csrfmiddlewaretoken': getCookie('csrftoken'),
-            'location': $('#primaryLocation').val(),
             'form_data': JSON.stringify(templateVars)
         },
         dataType: 'json',
