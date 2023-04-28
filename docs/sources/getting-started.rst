@@ -113,6 +113,8 @@ Next, we need to migreate django models, create a superuser and load sample data
 
 * Load Admin Data
 
+Load parameters
+
 .. code-block::
 
     python3 manage.py loaddata --app api \
@@ -120,6 +122,19 @@ Next, we need to migreate django models, create a superuser and load sample data
       admin_parameter.json \
       admin_abstract_tech.json \
       admin_abstract_tech_param.json
+
+Load templates
+
+.. code-block::
+
+    python3 manage.py loaddata --app template \
+      admin_template_type.json \
+      admin_template_type_variables.json \
+      admin_template_type_techs.json \
+      admin_template_type_locs.json \
+      admin_template_type_loc_techs.json \
+      admin_template_type_parameters.json
+
 
 * Load Sample Model (Optional)
 
