@@ -1,0 +1,11 @@
+[
+    {
+        "model": "template.template_type_parameter",
+        "pk": 1,
+        "fields": {
+            "template_loc_tech": 1,
+            "parameter": 64,
+            "equation": "||cost_of_resource_consumption_capacity||+Fat_Volume_Energy[31.68MJ/L]"
+        }
+    }
+]

@@ -40,14 +40,26 @@ class GeophiresParams:
     reservoir_density: float
     reservoir_thermal_conductivity: float
     gradient: float
+
+    # max temperature
     min_temperature: int
     max_temperature: int
+    temperature_step: float
+
+    # reservoir depth
     min_reservoir_depth: float
     max_reservoir_depth: float
+    reservoir_depth_step: float
+
+    # production wells should
     min_production_wells: int
     max_production_wells: int
+    production_wells_step: int
+
+    # Injection wells
     min_injection_wells: int
     max_injection_wells: int
+    injection_wells_step: int
 
 
 class Geophires(object):
@@ -122,7 +134,19 @@ class Geophires(object):
             
             df_final.to_csv(output_file, index=False, encoding='utf-8')
 
-        return output_file
+        # TODO: refactor and get the results
+        output_params = {
+            "om_annual": 100,
+            "energy_cap_per_storage_cap_equals": 13.1,
+            "energy_cap": 3000,
+            "resource_cap": 119.1,
+            "interest_rate": 6,
+            "lifetime": 50,
+            "maximum_production_capacity": 21677,
+            "maximum_resource_consumption_capacity": 171400
+        }
+
+        return output_params, output_file
 
     def generate_config_files(self, input_params):
         """Generate input file-like config of geophires based on given parameters
@@ -133,30 +157,30 @@ class Geophires(object):
         """
         config_files = []
 
-        reservoir_depths = np.range(
-            input_params.minimum_reservoir_depth,
-            input_params.maximum_reservoir_depth,
-            0.1
+        reservoir_depths = np.arange(
+            input_params.min_reservoir_depth,
+            input_params.max_reservoir_depth + input_params.reservoir_depth_step,
+            input_params.reservoir_depth_step
         )
-        number_of_production_wells = np.range(
-            input_params.minimum_number_of_production_wells,
-            input_params.maximum_number_of_production_wells,
-            1
+        production_wells = np.arange(
+            input_params.min_production_wells,
+            input_params.max_production_wells + input_params.production_wells_step,
+            input_params.production_wells_step
         )
-        number_of_injection_wells = np.range(
-            input_params.minimum_number_of_injection_wells,
-            input_params.maximum_number_of_injection_wells,
-            1
+        injection_wells = np.arange(
+            input_params.min_injection_wells,
+            input_params.max_injection_wells + input_params.injection_wells_step,
+            input_params.injection_wells_step
         )
-        temperatures = np.range(
-            input_params.minimum_temperature,
-            input_params.maximum_temperature,
-            1
+        temperatures = np.arange(
+            input_params.min_temperature,
+            input_params.max_temperature + input_params.temperature_step,
+            input_params.temperature_step
         )
 
         for depth in reservoir_depths:
-            for pnum in number_of_production_wells:
-                for inum in number_of_injection_wells:
+            for pnum in production_wells:
+                for inum in injection_wells:
                     for temp in temperatures:
                         lines = []
                         for line in self.template_data:

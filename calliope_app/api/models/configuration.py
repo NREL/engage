@@ -509,11 +509,9 @@ class Job_Meta(models.Model):
 
     type = models.CharField(max_length=200, blank=True, null=True)
     inputs = models.JSONField(blank=True, null=True) #{min:2, max:3, depth: 5}
-    #input_path = models.JSONField(blank=True, null=True)
-    output_path = models.CharField(max_length=200, blank=True, null=True)
+    outputs = models.JSONField(blank=True, null=True)
     status = models.CharField(max_length=200)
-    #message = models.TextField(blank=True, null=True)
-    #log_path = models.CharField(blank=True, null=True)
+    message = models.TextField(blank=True, null=True)
 
     created = models.DateTimeField(auto_now_add=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)

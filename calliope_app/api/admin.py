@@ -108,9 +108,9 @@ class Loc_Tech_Param_Admin(admin.ModelAdmin):
     list_display = ['id', 'loc_tech', 'year', 'parameter', 'value',
                     'raw_value', 'timeseries', 'timeseries_meta', 'model',
                     'created', 'updated']
+
 class Job_Meta_Admin(admin.ModelAdmin):
-    list_display = ['id', 'type', 'output_path', 'status', 'created',
-                    'deleted', 'job_task']
+    list_display = ['id', 'type', 'status', 'inputs', 'outputs', 'message', 'created', 'job_task']
 
 class Timeseries_Meta_Admin(admin.ModelAdmin):
     list_filter = ['model']

@@ -1,0 +1,359 @@
+[
+    {
+        "model": "template.template_type_variable",
+        "pk": 1,
+        "fields": {
+            "name": "reservoir_heat_capacity",
+            "pretty_name": "Reservoir Heat Capacity",
+            "template_type": 1,
+            "units": "J/kg/K",
+            "default_value": "774",
+            "min": null,
+            "max": null,
+            "description": "Constant and uniform reservoir rock heat capacity",
+            "timeseries_enabled": null,
+            "category": "Geotechnical tool input parameters",
+            "choices": "[]"
+        }
+    },
+    {
+        "model": "template.template_type_variable",
+        "pk": 2,
+        "fields": {
+            "name": "cost_of_resource_consumption_capacity",
+            "pretty_name": "Cost of resource consumption capacity",
+            "template_type": 1,
+            "units": "$/kW",
+            "default_value": "118.7",
+            "min": null,
+            "max": null,
+            "description": "",
+            "timeseries_enabled": null,
+            "category": "Geotechnical tool output parameters",
+            "choices": "[]"
+        }
+    },
+    {
+        "model": "template.template_type_variable",
+        "pk": 3,
+        "fields": {
+            "name": "Tech_Var",
+            "pretty_name": "Tech Var",
+            "template_type": 4,
+            "units": "C",
+            "default_value": null,
+            "min": null,
+            "max": null,
+            "description": "",
+            "timeseries_enabled": null,
+            "category": null,
+            "choices": "[]"
+        }
+    },
+    {
+        "model": "template.template_type_variable",
+        "pk": 4,
+        "fields": {
+            "name": "reservoir_density",
+            "pretty_name": "Reservoir Density",
+            "template_type": 1,
+            "units": "kg/m3",
+            "default_value": "1463",
+            "min": null,
+            "max": null,
+            "description": "Constant and uniform reservoir rock density (granite assumed by default)",
+            "timeseries_enabled": null,
+            "category": "Geotechnical tool input parameters",
+            "choices": "[]"
+        }
+    },
+    {
+        "model": "template.template_type_variable",
+        "pk": 5,
+        "fields": {
+            "name": "min_temperature",
+            "pretty_name": "Temperature Minimum",
+            "template_type": 1,
+            "units": "C",
+            "default_value": "200",
+            "min": "100",
+            "max": "200",
+            "description": "Minimum reservoir temperature.",
+            "timeseries_enabled": null,
+            "category": "Geotechnical tool input parameters",
+            "choices": "[]"
+        }
+    },
+    {
+        "model": "template.template_type_variable",
+        "pk": 6,
+        "fields": {
+            "name": "max_temperature",
+            "pretty_name": "Temperature Maximum",
+            "template_type": 1,
+            "units": "C",
+            "default_value": "200",
+            "min": "100",
+            "max": "200",
+            "description": "Maximum reservoir temperature.",
+            "timeseries_enabled": null,
+            "category": "Geotechnical tool input parameters",
+            "choices": "[]"
+        }
+    },
+    {
+        "model": "template.template_type_variable",
+        "pk": 7,
+        "fields": {
+            "name": "reservoir_thermal_conductivity",
+            "pretty_name": "Reservoir Thermal Conductivity",
+            "template_type": 1,
+            "units": "W/m/K",
+            "default_value": "3.4",
+            "min": null,
+            "max": null,
+            "description": "Magmatic rocks, default value based on Granite.",
+            "timeseries_enabled": null,
+            "category": "Geotechnical tool input parameters",
+            "choices": "[]"
+        }
+    },
+    {
+        "model": "template.template_type_variable",
+        "pk": 8,
+        "fields": {
+            "name": "min_reservoir_depth",
+            "pretty_name": "Reservoir Depth Minimum",
+            "template_type": 1,
+            "units": "km",
+            "default_value": ".5",
+            "min": null,
+            "max": null,
+            "description": "Minimum depth of the reservoir.",
+            "timeseries_enabled": null,
+            "category": "Geotechnical tool input parameters",
+            "choices": "[]"
+        }
+    },
+    {
+        "model": "template.template_type_variable",
+        "pk": 9,
+        "fields": {
+            "name": "max_reservoir_depth",
+            "pretty_name": "Reservoir Depth Maximum",
+            "template_type": 1,
+            "units": "km",
+            "default_value": "5",
+            "min": null,
+            "max": null,
+            "description": "Maximum depth of the reservoir.",
+            "timeseries_enabled": null,
+            "category": "Geotechnical tool input parameters",
+            "choices": "[]"
+        }
+    },
+    {
+        "model": "template.template_type_variable",
+        "pk": 10,
+        "fields": {
+            "name": "min_production_wells",
+            "pretty_name": "Number of Production Wells Minimum",
+            "template_type": 1,
+            "units": "NA",
+            "default_value": "1",
+            "min": null,
+            "max": null,
+            "description": "Minimum number of production wells at the power plant.",
+            "timeseries_enabled": null,
+            "category": "Geotechnical tool input parameters",
+            "choices": "[]"
+        }
+    },
+    {
+        "model": "template.template_type_variable",
+        "pk": 11,
+        "fields": {
+            "name": "max_production_wells",
+            "pretty_name": "Number of Production Wells Maximum",
+            "template_type": 1,
+            "units": "NA",
+            "default_value": "6",
+            "min": null,
+            "max": null,
+            "description": "Maximum number of production wells at the power plant.",
+            "timeseries_enabled": null,
+            "category": "Geotechnical tool input parameters",
+            "choices": "[]"
+        }
+    },
+    {
+        "model": "template.template_type_variable",
+        "pk": 12,
+        "fields": {
+            "name": "min_injection_wells",
+            "pretty_name": "Number of Injection Wells Minimum",
+            "template_type": 1,
+            "units": "NA",
+            "default_value": "1",
+            "min": null,
+            "max": null,
+            "description": "Minimum number of injection wells at the power plant.",
+            "timeseries_enabled": null,
+            "category": "Geotechnical tool input parameters",
+            "choices": "[]"
+        }
+    },
+    {
+        "model": "template.template_type_variable",
+        "pk": 13,
+        "fields": {
+            "name": "max_injection_wells",
+            "pretty_name": "Number of Injection Wells Maximum",
+            "template_type": 1,
+            "units": "NA",
+            "default_value": "6",
+            "min": null,
+            "max": null,
+            "description": "Maximum number of injection wells at the power plant.",
+            "timeseries_enabled": null,
+            "category": "Geotechnical tool input parameters",
+            "choices": "[]"
+        }
+    },
+    {
+        "model": "template.template_type_variable",
+        "pk": 14,
+        "fields": {
+            "name": "gradient",
+            "pretty_name": "Gradient",
+            "template_type": 1,
+            "units": "C/km",
+            "default_value": "65",
+            "min": null,
+            "max": null,
+            "description": "",
+            "timeseries_enabled": null,
+            "category": "Geotechnical tool input parameters",
+            "choices": "[]"
+        }
+    },
+    {
+        "model": "template.template_type_variable",
+        "pk": 15,
+        "fields": {
+            "name": "cost_of_production_capacity",
+            "pretty_name": "Cost of production capacity",
+            "template_type": 1,
+            "units": "$/kW",
+            "default_value": "3014.1",
+            "min": null,
+            "max": null,
+            "description": "",
+            "timeseries_enabled": null,
+            "category": "Geotechnical tool output parameters",
+            "choices": "[]"
+        }
+    },
+    {
+        "model": "template.template_type_variable",
+        "pk": 16,
+        "fields": {
+            "name": "annual_fixed_om_cost",
+            "pretty_name": "Annual fixed O&M cost",
+            "template_type": 1,
+            "units": "$/kW",
+            "default_value": "97.7",
+            "min": null,
+            "max": null,
+            "description": "",
+            "timeseries_enabled": null,
+            "category": "Geotechnical tool output parameters",
+            "choices": "[]"
+        }
+    },
+    {
+        "model": "template.template_type_variable",
+        "pk": 17,
+        "fields": {
+            "name": "maximum_resource_consumption_capacity",
+            "pretty_name": "Resource consumption capacity maximum",
+            "template_type": 1,
+            "units": "W",
+            "default_value": "171411",
+            "min": null,
+            "max": null,
+            "description": "",
+            "timeseries_enabled": null,
+            "category": "Geotechnical tool output parameters",
+            "choices": "[]"
+        }
+    },
+    {
+        "model": "template.template_type_variable",
+        "pk": 18,
+        "fields": {
+            "name": "c_rate",
+            "pretty_name": "C-Rate",
+            "template_type": 1,
+            "units": "%/hour",
+            "default_value": "12.6",
+            "min": null,
+            "max": null,
+            "description": "",
+            "timeseries_enabled": null,
+            "category": "Geotechnical tool output parameters",
+            "choices": "[]"
+        }
+    },
+    {
+        "model": "template.template_type_variable",
+        "pk": 19,
+        "fields": {
+            "name": "lifetime_and_amortization_period",
+            "pretty_name": "Lifetime and amortization period",
+            "template_type": 1,
+            "units": "years",
+            "default_value": "25",
+            "min": null,
+            "max": null,
+            "description": "",
+            "timeseries_enabled": null,
+            "category": "Geotechnical tool output parameters",
+            "choices": "[]"
+        }
+    },
+    {
+        "model": "template.template_type_variable",
+        "pk": 20,
+        "fields": {
+            "name": "interest_rate",
+            "pretty_name": "Interest Rate",
+            "template_type": 1,
+            "units": "%",
+            "default_value": "5",
+            "min": null,
+            "max": null,
+            "description": "",
+            "timeseries_enabled": null,
+            "category": "Geotechnical tool output parameters",
+            "choices": "[]"
+        }
+    },
+    {
+        "model": "template.template_type_variable",
+        "pk": 21,
+        "fields": {
+            "name": "maximum_production_capacity",
+            "pretty_name": "Production capacity maximum",
+            "template_type": 1,
+            "units": "kW",
+            "default_value": "21607",
+            "min": null,
+            "max": null,
+            "description": "",
+            "timeseries_enabled": null,
+            "category": "Geotechnical tool output parameters",
+            "choices": "[]"
+        }
+    }
+]

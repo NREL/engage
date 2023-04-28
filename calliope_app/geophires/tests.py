@@ -1,7 +1,5 @@
 import os
 import datetime
-import uuid
-import numpy as np
 
 from django.conf import settings
 from django.test import TestCase
@@ -16,44 +14,35 @@ class GeophiresTestCase(TestCase):
 
         plant = 'binary_subcritical'
 
-        reservoir_heat_capacity: float
-        reservoir_density: float
-        reservoir_thermal_conductivity: float
-        gradient: float
-        min_temperature: int
-        max_temperature: int
-        min_reservoir_depth: float
-        max_reservoir_depth: float
-        min_production_wells: int
-        max_production_wells: int
-        min_injection_wells: int
-        max_injection_wells: int
-        
-        ##depths
-        depths = np.arange(1.0,5.0,0.1)
-        depths = np.around(depths, decimals=1)
+        # subsurface parameters
+        inputs = dict(
+            reservoir_heat_capacity = 700,
+            reservoir_density = 1400,
+            reservoir_thermal_conductivity = 4,
+            gradient = 60,
 
-        ##wells
-        wells_prod = np.arange(1.0,7.0,1)
-        wells_prod = np.around(wells_prod, decimals=0)
+            min_temperature = 200,
+            max_temperature = 200,
+            temperature_step = 25,
 
-        wells_inj = np.arange(1.0,7.0,1)
-        wells_inj = np.around(wells_inj, decimals=0)
+            min_reservoir_depth = 1,
+            max_reservoir_depth = 5,
+            reservoir_depth_step = 0.1,
 
-        ##Maximum Temperature
-        temps = [200]
-        temps = np.around(temps, decimals=0)
+            min_production_wells = 1,
+            max_production_wells = 7,
+            production_wells_step = 1,
 
-        ## Run
-        input_params = GeophiresParams(
-            reservoir_depths=depths,
-            number_of_injection_wells=wells_prod,
-            number_of_production_wells=wells_inj,
-            max_temperatures=temps
+            min_injection_wells = 1,
+            max_injection_wells = 7,
+            injection_wells_step = 1
         )
+        
+        ## Run
+        input_params = GeophiresParams(**inputs)
 
-        template_id = '456'
-        result_file = os.path.join(settings.DATA_STORAGE, f"{template_id}__{plant}__final_result__{start_time}.csv")
+        job_meta_id = '123'
+        result_file = os.path.join(settings.DATA_STORAGE, "geophires", f"{job_meta_id}__{plant}__{start_time}.csv")
         
         geophiers = Geophires(plant)
         geophiers.run(input_params=input_params, output_file=result_file)
