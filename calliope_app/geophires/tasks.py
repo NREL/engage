@@ -20,7 +20,7 @@ class GeophiresTask(Task):
         """
         job_meta = Job_Meta.objects.get(id=kwargs["job_meta_id"])
         job_meta.status = task_status.SUCCESS
-        job_meta.output_path = retval
+        job_meta.outputs = retval
         job_meta.save()
 
     def on_failure(self, exc, task_id, args, kwargs, einfo):
@@ -34,18 +34,18 @@ class GeophiresTask(Task):
         # Update the status of run in db
         job_meta = Job_Meta.objects.get(id=kwargs["job_meta_id"])
         job_meta.status = task_status.FAILURE
-        # job_meta.message = exc
+        job_meta.message = exc
         job_meta.save()
 
 
 @app.task(
     base=GeophiresTask,
     queue="short_queue",
-    soft_time_limit=3600-60,
-    ime_limit=3600,
+    soft_time_limit=600-6,
+    ime_limit=600,
     ignore_result=True
 )
-def run_geophires(job_meta_id, plant, params, **kwargs):
+def run_geophires(job_meta_id, plant, params, *args, **kwargs):
     """Run geophires task
 
     Parameters
@@ -64,8 +64,12 @@ def run_geophires(job_meta_id, plant, params, **kwargs):
     input_params = GeophiresParams(**params)
 
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    result_file = os.path.join(settings.DATA_STORAGE, f"{job_meta_id}__{plant}__{timestamp}.csv")
+    result_file = os.path.join(settings.DATA_STORAGE, "geophires", f"{job_meta_id}__{plant}__{timestamp}.csv")
     
     geophiers = Geophires(plant)
-    output_file = geophiers.run(input_params=input_params, output_file=result_file)
-    return output_file
+    output_params, output_file = geophiers.run(input_params=input_params, output_file=result_file)
+    
+    return {
+        "output_params": output_params,
+        "output_file": output_file
+    }

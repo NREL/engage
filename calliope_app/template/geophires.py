@@ -43,7 +43,16 @@ def geophires_request_status(request):
     """
     job_meta_id = request.POST["job_meta_id"]
     job_meta = Job_Meta.objects.filter(id=job_meta_id).first()
-    return HttpResponse(json.dumps(job_meta), content_type="application/json")
+    if job_meta:
+        job_meta_dict = {
+            "type": job_meta.type,
+            "inputs": job_meta.inputs,
+            "outputs": job_meta.outputs,
+            "status": job_meta.status
+        }
+    else:
+        job_meta_dict = {}
+    return HttpResponse(json.dumps(job_meta_dict), content_type="application/json")
 
 
 @login_required
@@ -74,19 +83,28 @@ def geophires_request(request):
     payload = {"message": "starting runnning geophires"}
 
     #seralize data
-    inputs = {
-        "reservoir_heat_capacity": formData["reservoir_heat_capacity"],
-        "reservoir_density": formData["reservoir_density"],
-        "reservoir_thermal_conductivity": formData["reservoir_thermal_conductivity"],
-        "gradient": formData["gradient"],
-        "min_temperature": formData["min_temperature"],
-        "max_temperature": formData["max_temperature"],
-        "min_reservoir_depth": formData["min_reservoir_depth"],
-        "max_reservoir_depth": formData["max_reservoir_depth"],
-        "min_production_wells": formData["min_production_wells"],
-        "max_production_wells": formData["max_production_wells"],
-        "min_injection_wells": formData["min_injection_wells"],
-        "max_injection_wells": formData["max_injection_wells"],
+    input_params = {
+        "reservoir_heat_capacity": float(formData["reservoir_heat_capacity"]),
+        "reservoir_density": float(formData["reservoir_density"]),
+        "reservoir_thermal_conductivity": float(formData["reservoir_thermal_conductivity"]),
+        "gradient": float(formData["gradient"]),
+        
+        # TODO: Step sizes are hardcoded, need to refactor later
+        "min_temperature": float(formData["min_temperature"]),
+        "max_temperature": float(formData["max_temperature"]),
+        "temperature_step": 25.0,
+        
+        "min_reservoir_depth": float(formData["min_reservoir_depth"]),
+        "max_reservoir_depth": float(formData["max_reservoir_depth"]),
+        "reservoir_depth_step": 0.1,
+
+        "min_production_wells": int(formData["min_production_wells"]),
+        "max_production_wells": int(formData["max_production_wells"]),
+        "production_wells_step": 1,
+        
+        "min_injection_wells": int(formData["min_injection_wells"]),
+        "max_injection_wells": int(formData["max_injection_wells"]),
+        "injection_wells_step": 1
     }
 
     if None in (formData["reservoir_heat_capacity"], formData["reservoir_density"], formData["reservoir_thermal_conductivity"], formData["gradient"],
@@ -95,6 +113,10 @@ def geophires_request(request):
         raise ValidationError(f"Error: Required field not provided for GEOPHIRES.")
 
     try:
+        inputs = {
+            "input_plant": "binary_subcritical",
+            "input_params": input_params
+        }
         job_meta = Job_Meta.objects.filter(inputs=inputs).first()
         if job_meta is None:
             payload["jobPreexisting"] = False
@@ -102,14 +124,14 @@ def geophires_request(request):
             async_result = run_geophires.apply_async(
                 kwargs={
                     "job_meta_id": job_meta.id,
-                    "plant": "type_name",  # TODO: template type?
-                    "params": inputs,
+                    "plant": inputs["input_plant"],
+                    "params": inputs["input_params"],
                 }
             )
-            build_task = CeleryTask.objects.get(task_id=async_result.id)
-            job_meta.job_task = build_task
+            celery_task = CeleryTask.objects.get(task_id=async_result.id)
+            job_meta.job_task = celery_task
             job_meta.save()
-            logger.info("Model run %s starts to build in celery worker.", build_task.id)
+            logger.info("Geophires task %s starts to run in celery worker.", job_meta.id)
         
         else:
             payload["jobPreexisting"] = True
