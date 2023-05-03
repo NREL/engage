@@ -76,6 +76,13 @@
     #templateVars .row {
         padding: 0 16px;
     }
+    #loadingGeophires {
+        margin-bottom: 1em;
+    }
+    .center {
+        margin-left: auto;
+        margin-right: auto;
+    }
 </style>
 <div class="modal fade" id="templatesModal" tabindex="-1" role="dialog" aria-labelledby="templateModalTitle" aria-hidden="true">
     <div id="templatesDialog" class="modal-dialog" role="document">
@@ -147,4 +154,13 @@
 
         </div>
     </div>
+</div>
+
+<!-- Helper elements (inserted in javascript)-->
+<div id="loadingGeophires" class="center">
+    <div class="spinner-border text-secondary" style="margin-left:50%" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+    <br>
+    {% trans "Loading Geophires results, this may take a few minutes. Please stay on this modal." %}
 </div>

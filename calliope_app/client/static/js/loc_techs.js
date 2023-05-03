@@ -1,7 +1,6 @@
 var map_mode = 'loc_techs';
 let template_data = {};
 let template_edit = {};
-let intervalId = ""
 
 //import { getTemplateData } from 'templates.js';
 
@@ -277,6 +276,7 @@ function requestGeophires() {
         templateVars[name] = value;
     }
 
+    $("#loadingGeophires").show();
     $('#geophiresError').attr("hidden", true);
     $.ajax({
         url: '/' + LANGUAGE_CODE + '/geophires/',
@@ -288,11 +288,10 @@ function requestGeophires() {
         dataType: 'json',
         success: function (data) {
             var response = data;
-            if (response.job_status == "SUCCESS" || response.job_status == "FAILURE") { 
-                getGeophiresResponse(response.job_meta_id);
+            if (response.status == "SUCCESS" || response.status == "FAILURE") { 
+                renderGeophiresResponse(response);
             } else {
-                //Check status every 20 seconds
-                intervalId = setInterval(requestGeophiresRunStatus(response.job_meta_id, 20000));
+                checkGeophiresRunStatus(response.id);
             }
         },
         error: function (data) {
@@ -301,35 +300,38 @@ function requestGeophires() {
     });
 }
 
-function getGeophiresResponse(job_meta_id) {
+function renderGeophiresResponse(job) {
+    var templateType = $('#templateType').val();
+    var template_type_vars = template_data.template_type_variables.filter(obj => {
+        return obj.template_type == parseInt(templateType) && obj.category == "Geotechnical tool output parameters";
+    });
+    for (var i in template_type_vars) {
+        if (job.outputs && job.outputs.output_params && job.outputs.output_params[template_type_vars[i].name]) {
+            $("template_type_var_" + template_type_vars[i].id).val(job.outputs.output_params[template_type_vars[i].name]);
+        } else {
+            console.log("Output variable not found: " + template_type_vars[i].name);
+        }
+    }
+
     $.ajax({
         url: '/' + LANGUAGE_CODE + '/geophires/response',
         type: 'POST',
         data: {
             'csrfmiddlewaretoken': getCookie('csrftoken'),
-            'job_meta_id': job_meta_id
+            'job_meta_id': job.id
         },
         dataType: 'json',
         success: function (data) {
-            if (intervalId && (data.status == 'SUCESS' || data.status == 'FAILURE')) {
-                clearInterval(intervalId)
-                renderGeophiresResponse(data)
-            } 
-            renderGeophiresResponse();
+            //Get graph plot points
         },
-        error: function (data) {
+        error: function () {
             resetGeophiresButton();
         }
     });
 }
 
-function renderGeophiresResponse(response) {
-    // render graphs and update input boxes 
-    // look at examples from runs tab
-    return;
-}
-
-function requestGeophiresRunStatus(job_meta_id) {
+function checkGeophiresRunStatus(job_meta_id) {
+    console.log("Getting geophires status");
     $.ajax({
         url: '/' + LANGUAGE_CODE + '/geophires/status',
         type: 'POST',
@@ -339,11 +341,14 @@ function requestGeophiresRunStatus(job_meta_id) {
         },
         dataType: 'json',
         success: function (data) {
-            if (intervalId && (data.job_meta.status == 'SUCCESS' || data.job_meta.status == 'FAILURE')) {
-                clearInterval(intervalId);
-                getGeophiresResponse(job_meta_id);
+            if (data.status == 'SUCCESS' || data.status == 'FAILURE') {
+                renderGeophiresResponse(data);
                 $("#runGeophires").prop("disabled",false);
-            } 
+            } else {
+                setTimeout(function() {
+                    checkGeophiresRunStatus(job_meta_id);
+                }, 20000);
+            }
         },
         error: function (data) {
             resetGeophiresButton();
@@ -464,13 +469,16 @@ function appendCategoryVars(template_type_vars, category) {
 function displayAPIButtons() {
     var showAPIButtons = document.getElementById("Geotechnical tool input parameters".replace(/\s/g, '')) != null;
     if (showAPIButtons) {
-        $("#Geotechnical tool input parameters".replace(/\s/g, '')+"-row").append( "<div id='geophiresActions' class='col-12'></div>");
-        $("#geophiresActions").append( "<button id='runGeophires' class='btn btn-success btn-sm' type='button' style='width:130px;height:38px;'>Run GEOPHIRES</button>");
+        var geoId = "#Geotechnical tool input parameters".replace(/\s/g, '')+"-row";
+        $(geoId).append( "<div id='geophiresActions' class='col-12'></div>");
+        $("#geophiresActions").append( "<button id='runGeophires' class='btn btn-success btn-sm' type='button' style='width:130px;height:38px;'>Run GEOPHIRES</button><br>");
         //<button id='runGETEM' disabled class='btn btn-success btn-sm' type='button'>Run GETEM</button>
-        $("#geophiresActions").append( "<span id='geophiresError' hidden='true' style='color:red;margin-bottom:1em'>An error occured running Geophires.</span>");
+        $(geoId).append( "<span id='geophiresError' class='center' hidden='true' style='color:red;margin-bottom:1em'>An error occured running Geophires! Please contact Support.</span>");
         $('#runGeophires').on('click', function() {
             requestGeophires();
         });
+        $(geoId).append($("#loadingGeophires"));
+        $("#loadingGeophires").hide()
     }
     return showAPIButtons;
 }
@@ -516,4 +524,5 @@ function setTemplateVarsClassLogic(showAPIButtons) {
 function resetGeophiresButton() {
     $("#runGeophires").prop("disabled",false);
     $('#geophiresError').attr("hidden", false);
+    $("#loadingGeophires").hide();
 }
