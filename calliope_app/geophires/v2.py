@@ -19,6 +19,7 @@ from typing import Union
 
 import numpy as np
 import pandas as pd
+from scipy.optimize import curve_fit
 
 from django.conf import settings
 
@@ -73,7 +74,7 @@ class Geophires(object):
         self.plant = plant
         self.template_file = GEO_TEMPLATE_FILES[self.plant]
         self.template_data = self.get_template_data(self.template_file)
-        self.dataframe_results = []
+        self.results = []
     
     def get_template_data(self, template_file):
         """Read template into dictionary."""
@@ -88,7 +89,7 @@ class Geophires(object):
 
         # Export xlsx result file
         if self.plant == 'direct_use':
-            df_final = pd.DataFrame(self.dataframe_results, columns = [
+            df_final = pd.DataFrame(self.results, columns = [
                 'Depth (m)',
                 'Number of Prod/Inj Wells',
                 'Wellfield Cost ($M)',
@@ -111,7 +112,7 @@ class Geophires(object):
             df_final.to_csv(output_file, index=False, encoding='utf-8')
 
         else:
-            df_final = pd.DataFrame(self.dataframe_results, columns = [
+            df_final = pd.DataFrame(self.results, columns = [
                 'Depth (m)',
                 'Number of Prod Wells',
                 'Number of Inj Wells',
@@ -3062,14 +3063,14 @@ class Geophires(object):
                 print('  {0:2.0f}    {1:8.4f}    {2:8.2f}      {3:8.4f}   {4:8.4f}  {5:8.4f}  {6:8.4f}'.format(i, ProducedTemperature[i*timestepsperyear]/ProducedTemperature[0], ProducedTemperature[i*timestepsperyear], PumpingPower[i*timestepsperyear], NetElectricityProduced[i*timestepsperyear],HeatProduced[i*timestepsperyear],FirstLawEfficiency[i*timestepsperyear]*100))        
         
         if self.plant == 'direct_use':
-            self.dataframe_results.append([
+            self.results.append([
                 depth,nprod,ninj,Cwell,Cplant,Cexpl,Cgath,Coamwell,Coamplant,Coamwater,np.average(HeatExtracted),Tmax
                 # np.average(ElectricityProduced)
             ])                       
         else:
-            self.dataframe_results.append([
+            self.results.append([
                 depth,nprod,ninj,Tmax,Cwell,Cplant,Cexpl,Cgath,Coamwell,Coamplant,Coamwater,np.average(HeatExtracted),
                 np.average(ElectricityProduced)
-            ])      
+            ])
 
-        return self.dataframe_results
+        return self.results
