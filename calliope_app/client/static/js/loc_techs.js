@@ -344,7 +344,7 @@ function requestGeophiresRunStatus(job_meta_id) {
             } else {
                 setTimeout(function() {
                     requestGeophiresRunStatus(job_meta_id);
-                }, 4000);
+                }, 20000);
             }
         },
         error: function (data) {
