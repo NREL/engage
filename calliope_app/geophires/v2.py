@@ -35,6 +35,11 @@ GEO_TEMPLATE_FILES = {
 }
 
 
+def objective(x, a, b):
+    """A simple objective function"""
+    return a * x + b
+
+
 @dataclass
 class GeophiresParams:
     reservoir_heat_capacity: float
@@ -74,7 +79,7 @@ class Geophires(object):
         self.plant = plant
         self.template_file = GEO_TEMPLATE_FILES[self.plant]
         self.template_data = self.get_template_data(self.template_file)
-        self.results = []
+        self.results = {"data": [], "params": {}}
     
     def get_template_data(self, template_file):
         """Read template into dictionary."""
@@ -89,7 +94,7 @@ class Geophires(object):
 
         # Export xlsx result file
         if self.plant == 'direct_use':
-            df_final = pd.DataFrame(self.results, columns = [
+            df_final = pd.DataFrame(self.results["data"], columns = [
                 'Depth (m)',
                 'Number of Prod/Inj Wells',
                 'Wellfield Cost ($M)',
@@ -112,7 +117,7 @@ class Geophires(object):
             df_final.to_csv(output_file, index=False, encoding='utf-8')
 
         else:
-            df_final = pd.DataFrame(self.results, columns = [
+            df_final = pd.DataFrame(self.results["data"], columns = [
                 'Depth (m)',
                 'Number of Prod Wells',
                 'Number of Inj Wells',
@@ -135,17 +140,70 @@ class Geophires(object):
             
             df_final.to_csv(output_file, index=False, encoding='utf-8')
 
-        # TODO: refactor and get the results
-        output_params = {
-            "om_annual": 100,
-            "energy_cap_per_storage_cap_equals": 13.1,
-            "energy_cap": 3000,
-            "resource_cap": 119.1,
-            "interest_rate": 6,
-            "lifetime": 50,
-            "maximum_production_capacity": 21677,
-            "maximum_resource_consumption_capacity": 171400
-        }
+        ########################################
+        ######### Mapping of Variable ##########
+        ########################################
+        df_line = df_line.append(pd.Series(0, index=df_line.columns), ignore_index=True)
+        
+        ###Scatter
+        thermal_capacity            = np.array(df_final['Average Reservoir Heat Extraction (MWth)'])
+        electric_capacity           = np.array(df_final['Average Total Electricity Generation (MWe)'])
+        subsurface_cost             = np.add(np.array(df_final['Wellfield Cost ($M)']), np.array(df_final['Field Gathering System Cost ($M)']))
+        surface_cost                = np.array(df_final['Surface Plant Cost ($M)'])
+        subsurface_o_m_cost         = np.add(np.array(df_final['Wellfield O&M Cost ($M/year)']),np.array(df_final['Make-Up Water O&M Cost ($M/year)']))
+        surface_o_m_cost            = np.array(df_final['Surface Plant O&M Cost ($M/year)'])
+
+        x1              = thermal_capacity
+        y1              = subsurface_cost
+        popt, _         = curve_fit(objective, x1, y1) 
+        a1, b1          = popt  #slope of line
+
+        x2              = electric_capacity
+        y2              = surface_cost
+        popt, _         = curve_fit(objective, x2, y2) 
+        a2, b2          = popt #a2 slope of the line
+        
+        x3              = thermal_capacity
+        y3              = subsurface_o_m_cost
+        popt, _         = curve_fit(objective, x3, y3) 
+        a3, b3         = popt
+        
+        x4              = electric_capacity
+        y4              = surface_o_m_cost
+        popt, _         = curve_fit(objective, x4, y4) 
+        a4, b4          = popt
+
+        ####    Supply(Subsurface) + Conversion (Surface) 
+        ####    Supply Carrier (Thermal)
+        ####    Conversion Input Carrier (Thermal) -> Output Carrier (Power)
+
+        ElectricityProduced = self.resutls["params"]["ElectricityProduced"]
+        FirstLawEfficiency = self.resutls["params"]["FirstLawEfficiency"]
+        HeatProduced = self.resutls["params"]["HeatProduced"]
+        
+        output_params = dict(
+            max_electricity_cap                     = np.max(ElectricityProduced),   ### Conversion (Surface)    ->      Maximum production capacity	
+            surface_plant_efficiency                = FirstLawEfficiency,            ### Conversion (Surface)    ->      Conversion Efficiency
+            surface_cost_to_electric_slope          = a2,                            ### Conversion (Surface)    ->      Cost of Production Capacity
+            surface_om_cost_to_electric_slope       = a3,                            ### Conversion (Surface)    ->      Annual Fixed O&M Cost
+            max_heat_cap                            = np.max(HeatProduced),          ### Supply     (Subsurface) ->      Maximum production capacity	
+            subsurface_cost_to_thermal_slope        = a1,                            ### Supply     (Subsurface) ->      Cost of Production Capacity
+            subsurface_om_cost_to_thermal_slope     = a4,                            ### Supply     (Subsurface) ->      Annual Fixed O&M Cost
+        )
+
+        # energy_params = {
+        #     "om_annual": 100,
+        #     "energy_cap_per_storage_cap_equals": 13.1,
+        #     "energy_cap": 3000,
+        #     "resource_cap": 119.1,
+        #     "interest_rate": 6,
+        #     "lifetime": 50,
+        #     "maximum_production_capacity": 21677,
+        #     "maximum_resource_consumption_capacity": 171400
+        # }
+
+        ########################################
+        ########################################
 
         return output_params, output_file
 
@@ -3063,14 +3121,18 @@ class Geophires(object):
                 print('  {0:2.0f}    {1:8.4f}    {2:8.2f}      {3:8.4f}   {4:8.4f}  {5:8.4f}  {6:8.4f}'.format(i, ProducedTemperature[i*timestepsperyear]/ProducedTemperature[0], ProducedTemperature[i*timestepsperyear], PumpingPower[i*timestepsperyear], NetElectricityProduced[i*timestepsperyear],HeatProduced[i*timestepsperyear],FirstLawEfficiency[i*timestepsperyear]*100))        
         
         if self.plant == 'direct_use':
-            self.results.append([
+            self.results["data"].append([
                 depth,nprod,ninj,Cwell,Cplant,Cexpl,Cgath,Coamwell,Coamplant,Coamwater,np.average(HeatExtracted),Tmax
                 # np.average(ElectricityProduced)
             ])                       
         else:
-            self.results.append([
+            self.results["data"].append([
                 depth,nprod,ninj,Tmax,Cwell,Cplant,Cexpl,Cgath,Coamwell,Coamplant,Coamwater,np.average(HeatExtracted),
                 np.average(ElectricityProduced)
             ])
+        
+        self.results["params"]["ElectricityProduced"] = ElectricityProduced
+        self.results["params"]["FirstLawEfficiency"] = FirstLawEfficiency
+        self.results["params"]["HeatProduced"] = HeatProduced
 
         return self.results
