@@ -288,10 +288,10 @@ function requestGeophires() {
         dataType: 'json',
         success: function (data) {
             var response = data;
-            if (response.job_meta_status == "SUCCESS" || response.job_meta_status == "FAILURE") { 
-                getGeophiresResponse(response.job_meta_id);
+            if (response.status == "SUCCESS" || response.status == "FAILURE") { 
+                renderGeophiresResponse(response);
             } else {
-                requestGeophiresRunStatus(response.job_meta_id);
+                checkGeophiresRunStatus(response.id);
             }
         },
         error: function (data) {
@@ -300,34 +300,37 @@ function requestGeophires() {
     });
 }
 
-function getGeophiresResponse(job_meta_id) {
+function renderGeophiresResponse(job) {
+    var templateType = $('#templateType').val();
+    var template_type_vars = template_data.template_type_variables.filter(obj => {
+        return obj.template_type == parseInt(templateType) && obj.category == "Geotechnical tool output parameters";
+    });
+    for (var i in template_type_vars) {
+        if (job.outputs && job.outputs.output_params && job.outputs.output_params[template_type_vars[i].name]) {
+            $("template_type_var_" + template_type_vars[i].id).val(job.outputs.output_params[template_type_vars[i].name]);
+        } else {
+            console.log("Output variable not found: " + template_type_vars[i].name);
+        }
+    }
+
     $.ajax({
         url: '/' + LANGUAGE_CODE + '/geophires/response',
         type: 'POST',
         data: {
             'csrfmiddlewaretoken': getCookie('csrftoken'),
-            'job_meta_id': job_meta_id
+            'job_meta_id': job.id
         },
         dataType: 'json',
         success: function (data) {
-            if (data.status == 'SUCESS' || data.status == 'FAILURE') {
-                renderGeophiresResponse(data)
-            } 
-            renderGeophiresResponse();
+            //Get graph plot points
         },
-        error: function (data) {
+        error: function () {
             resetGeophiresButton();
         }
     });
 }
 
-function renderGeophiresResponse(response) {
-    // render graphs and update input boxes 
-    // look at examples from runs tab
-    return;
-}
-
-function requestGeophiresRunStatus(job_meta_id) {
+function checkGeophiresRunStatus(job_meta_id) {
     console.log("Getting geophires status");
     $.ajax({
         url: '/' + LANGUAGE_CODE + '/geophires/status',
@@ -339,11 +342,11 @@ function requestGeophiresRunStatus(job_meta_id) {
         dataType: 'json',
         success: function (data) {
             if (data.status == 'SUCCESS' || data.status == 'FAILURE') {
-                getGeophiresResponse(job_meta_id);
+                renderGeophiresResponse(data);
                 $("#runGeophires").prop("disabled",false);
             } else {
                 setTimeout(function() {
-                    requestGeophiresRunStatus(job_meta_id);
+                    checkGeophiresRunStatus(job_meta_id);
                 }, 20000);
             }
         },

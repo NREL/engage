@@ -137,8 +137,10 @@ def geophires_request(request):
             payload["jobPreexisting"] = True
 
         payload.update({
-            "job_meta_status": job_meta.status,
-            "job_meta_id": job_meta.id,
+            "type": job_meta.type,
+            "inputs": job_meta.inputs,
+            "outputs": job_meta.outputs,
+            "status": job_meta.status
         })
     
     except Exception as e:
