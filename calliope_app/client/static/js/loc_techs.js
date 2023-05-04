@@ -66,7 +66,7 @@ $( document ).ready(function() {
 
         var showAPIButtons = displayAPIButtons();
         setTemplateVarsClassLogic(showAPIButtons);
-        
+
 	});
 
     //On modal close
@@ -288,7 +288,7 @@ function requestGeophires() {
         dataType: 'json',
         success: function (data) {
             var response = data;
-            if (response.status == "SUCCESS" || response.status == "FAILURE") { 
+            if (response.status == "SUCCESS" || response.status == "FAILURE") {
                 renderGeophiresResponse(response);
             } else {
                 checkGeophiresRunStatus(response.id);
@@ -314,7 +314,7 @@ function renderGeophiresResponse(job) {
     }
 
     $.ajax({
-        url: '/' + LANGUAGE_CODE + '/geophires/response',
+        url: '/' + LANGUAGE_CODE + '/geophires/response/',
         type: 'POST',
         data: {
             'csrfmiddlewaretoken': getCookie('csrftoken'),
@@ -333,7 +333,7 @@ function renderGeophiresResponse(job) {
 function checkGeophiresRunStatus(job_meta_id) {
     console.log("Getting geophires status");
     $.ajax({
-        url: '/' + LANGUAGE_CODE + '/geophires/status',
+        url: '/' + LANGUAGE_CODE + '/geophires/status/',
         type: 'POST',
         data: {
             'csrfmiddlewaretoken': getCookie('csrftoken'),
@@ -439,9 +439,9 @@ function appendCategoryVars(template_type_vars, category) {
 
         $('#'+ categoryId).append( "<div class='col-6 tech-params' data-toggle='tooltip' data-placement='bottom' title='" + categoryVariables[i].description +
             "' data-original-title='" + categoryVariables[i].description + "'><label class='template-label'><b>" + categoryVariables[i].pretty_name + "</b></label></div>"
-        + "<div class='col-6 tech-params'><input id='template_type_var_" + categoryVariables[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input>" 
+        + "<div class='col-6 tech-params'><input id='template_type_var_" + categoryVariables[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input>"
         + units + "</div>");
-    
+
         if (categoryVariables[i].default_value) {
             $('#template_type_var_' + categoryVariables[i].id).val(categoryVariables[i].default_value);
         }
@@ -501,7 +501,7 @@ function setTemplateVarsClassLogic(showAPIButtons) {
         }
     });
 
-    
+
     $('.form-control').on('input', function() {
         var formFilledOut = validateTemplateParameters();
         if (formFilledOut) {

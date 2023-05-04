@@ -1,0 +1,36 @@
+# https://editorconfig.org/
+
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+end_of_line = lf
+charset = utf-8
+
+[*.py]
+max_line_length = 120
+
+[*.html]
+indent_size = 2
+
+[*.js]
+indent_style = space
+indent_size = 2
+
+[**.min.js]
+indent_style = ignore
+insert_final_newline = ignore
+
+[*.json]
+indent_size = 2
+insert_final_newline = ignore
+
+[*.{yml,yaml}]
+indent_size = 2
+
+[Makefile]
+indent_style = space
+indent_size = 2
