@@ -19,6 +19,7 @@ from typing import Union
 
 import numpy as np
 import pandas as pd
+from scipy.optimize import curve_fit
 
 from django.conf import settings
 
@@ -32,6 +33,11 @@ GEO_TEMPLATE_FILES = {
     "flash_double": os.path.join(TEMPLATE_DIR, "flash_double.txt"),
     "flash_single": os.path.join(TEMPLATE_DIR, "flash_single.txt")
 }
+
+
+def objective(x, a, b):
+    """A simple objective function"""
+    return a * x + b
 
 
 @dataclass
@@ -73,8 +79,8 @@ class Geophires(object):
         self.plant = plant
         self.template_file = GEO_TEMPLATE_FILES[self.plant]
         self.template_data = self.get_template_data(self.template_file)
-        self.dataframe_results = []
-    
+        self.results = {"data": [], "params": {}}
+
     def get_template_data(self, template_file):
         """Read template into dictionary."""
         with open(template_file, "r") as f:
@@ -88,7 +94,7 @@ class Geophires(object):
 
         # Export xlsx result file
         if self.plant == 'direct_use':
-            df_final = pd.DataFrame(self.dataframe_results, columns = [
+            df_final = pd.DataFrame(self.results["data"], columns = [
                 'Depth (m)',
                 'Number of Prod/Inj Wells',
                 'Wellfield Cost ($M)',
@@ -107,11 +113,11 @@ class Geophires(object):
                 'Depth (m)',
                 'Number of Prod/Inj Wells'
             ], ascending=[True, True])
-            
+
             df_final.to_csv(output_file, index=False, encoding='utf-8')
 
         else:
-            df_final = pd.DataFrame(self.dataframe_results, columns = [
+            df_final = pd.DataFrame(self.results["data"], columns = [
                 'Depth (m)',
                 'Number of Prod Wells',
                 'Number of Inj Wells',
@@ -126,25 +132,72 @@ class Geophires(object):
                 'Average Reservoir Heat Extraction (MWth)',
                 'Average Total Electricity Generation (MWe)',
             ])
-            
+
             df_final = df_final.sort_values(by=[
                 'Depth (m)',
                 'Number of Prod Wells'
             ], ascending=[True, True])
-            
+
             df_final.to_csv(output_file, index=False, encoding='utf-8')
 
-        # TODO: refactor and get the results
-        output_params = {
-            "om_annual": 100,
-            "energy_cap_per_storage_cap_equals": 13.1,
-            "energy_cap": 3000,
-            "resource_cap": 119.1,
-            "interest_rate": 6,
-            "lifetime": 50,
-            "maximum_production_capacity": 21677,
-            "maximum_resource_consumption_capacity": 171400
-        }
+        ########################################
+        ######### Mapping of Variable ##########
+        ########################################
+        df_line = df_final
+        df_line = df_line.append(pd.Series(0, index=df_line.columns), ignore_index=True)
+
+        max_e_cap               = np.max(df_line['Average Total Electricity Generation (MWe)'])     ####ADDEDD
+        max_h_cap               = np.max(df_line['Average Reservoir Heat Extraction (MWth)'])       ####ADDEDD
+        plant_efficiency        = np.average(df_line['Efficiency'])                                 ####ADDEDD
+        lifecycle               = df_final['Lifetime'][1]                                            ####ADDEDD
+        rate                    = df_final['Interest Rate'][1]                                       ####ADDEDD
+
+        thermal_capacity         = np.array(df_final['Average Reservoir Heat Extraction (MWth)'])
+        electric_capacity        =  np.array(df_final['Average Total Electricity Generation (MWe)'])
+        subsurface_cost          = np.add(np.array(df_final['Wellfield Cost ($M)']), np.array(df_final['Field Gathering System Cost ($M)']))
+        surface_cost             = np.array(df_final['Surface Plant Cost ($M)'])
+        subsurface_o_m_cost      = np.add(np.array(df_final['Wellfield O&M Cost ($M/year)']), np.array(df_final['Make-Up Water O&M Cost ($M/year)']))
+        surface_o_m_cost         = np.array(df_final['Surface Plant O&M Cost ($M/year)'])
+
+        x1              = thermal_capacity
+        y1              = subsurface_cost
+        popt, _         = curve_fit(objective, x1, y1)
+        a1, b1          = popt  #slope of line
+
+        x2              = electric_capacity
+        y2              = surface_cost
+        popt, _         = curve_fit(objective, x2, y2)
+        a2, b2          = popt #a2 slope of the line
+
+        x3              = thermal_capacity
+        y3              = subsurface_o_m_cost
+        popt, _         = curve_fit(objective, x3, y3)
+        a3, b3         = popt
+
+        x4              = electric_capacity #Raw
+        y4              = surface_o_m_cost  #raw
+        popt, _         = curve_fit(objective, x4, y4)
+        a4, b4         = popt
+
+        ####    Supply(Subsurface) + Conversion (Surface)
+        ####    Supply Carrier (Thermal)
+        ####    Conversion Input Carrier (Thermal) -> Output Carrier (Power)
+
+        output_params = dict(
+            max_electricity_cap                     = max_e_cap*1000,  ### [kW] Conversion (Surface)       ->     Maximum production capacity
+            surface_plant_efficiency                = plant_efficiency,                ### [] Conversion (Surface)         ->       Conversion Efficiency (instead of c-rate)
+            surface_cost_to_electric_slope          = a2*1000,                           ###[kW] Conversion (Surface)    -   >      Cost of Production Capacity
+            surface_om_cost_to_electric_slope       = a3*1000,                           ###[kW] Conversion (Surface)    -   >      Annual Fixed O&M Cost
+
+            max_heat_cap                            = max_h_cap*1000,         ###[kW] Supply     (Subsurface)     ->      Maximum production capacity
+            subsurface_cost_to_thermal_slope        = a1*1000,                           ###[kW] Supply     (Subsurface)     ->      Cost of Production Capacity
+            subsurface_om_cost_to_thermal_slope     = a4*1000,                           ###[kW] Supply     (Subsurface)      ->      Annual Fixed O&M Cost
+            interest_rate                           = rate*100,                  #maps to both conversion and supply  ->     Interest rate
+            lifetime                                = lifecycle                    #maps to both conversion and supply   ->    Lifetime and amortization period
+        )
+
+        ########################################
+        ########################################
 
         return output_params, output_file
 
@@ -229,13 +282,13 @@ class Geophires(object):
                         filelike.writelines(lines)
                         filelike.seek(0)
                         config_files.append(filelike)
-        
+
         return config_files
 
     #########################################################################################
     # The following code is from GEOPHIERESV2.0, and refactored for Engage integration.
     #########################################################################################
-    def densitywater(self, Twater):   
+    def densitywater(self, Twater):
         T = Twater + 273.15
         rhowater = (.7983223 + (1.50896E-3 - 2.9104E-6*T) * T) * 1E3 #water density correlation as used in Geophires v1.2 [kg/m3]
         return  rhowater
@@ -247,7 +300,7 @@ class Geophires(object):
         #muwater = np.interp(Twater,xp,fp)
         return muwater
 
-    def heatcapacitywater(self, Twater): 
+    def heatcapacitywater(self, Twater):
         Twater = (Twater + 273.15)/1000
         A = -203.6060
         B = 1523.290
@@ -257,7 +310,7 @@ class Geophires(object):
         cpwater = (A + B*Twater + C*Twater**2 + D*Twater**3 + E/(Twater**2))/18.02*1000 #water specific heat capacity in J/kg-K
         return cpwater
 
-    def vaporpressurewater(self, Twater): 
+    def vaporpressurewater(self, Twater):
         if Twater < 100:
             A = 8.07131
             B = 1730.63
@@ -265,7 +318,7 @@ class Geophires(object):
         else:
             A = 8.14019
             B = 1810.94
-            C = 244.485 
+            C = 244.485
         vaporpressurewater = 133.322*(10**(A-B/(C+Twater)))/1000 #water vapor pressure in kPa using Antione Equation
         return vaporpressurewater;
 
@@ -278,14 +331,14 @@ class Geophires(object):
         #   external reservoir output filename
         #   tough2file name
         #   distance for surface pipe
-        
+
         #enduseoption
         #enduseoption = 1: electricity
         #enduseoption = 2: direct-use heat
         #enduseoption = 3: cogen topping cycle
         #enduseoption = 4: cogen bottoming cycle
         #enduseoption = 5: cogen split of mass flow rate
-       
+
         try:
             enduseoption = int(content[[i for i, s in enumerate(content) if 'End-Use Option,' in s][0]].split(',')[1].strip('\n'))
             if not (enduseoption in [1,2,31,32,41,42,51,52]):
@@ -293,7 +346,7 @@ class Geophires(object):
                 print("Warning: Provided end-use option is not 1, 2, 31, 32, 41, 42, 51, or 52. GEOPHIRES will assume default end-use option (1: electricity)")
         except:
             enduseoption = 1
-            print("Warning: No valid end-use option provided. GEOPHIRES will assume default end-use option (1: electricity)") 
+            print("Warning: No valid end-use option provided. GEOPHIRES will assume default end-use option (1: electricity)")
 
         #pptype: power plant type
         #pptype = 1: Subcritical ORC
@@ -312,14 +365,14 @@ class Geophires(object):
 
         #pumpeff: pump efficiency (-)
         try:
-            pumpeff = float(content[[i for i, s in enumerate(content) if 'Circulation Pump Efficiency,' in s][0]].split(',')[1].strip('\n'))   
+            pumpeff = float(content[[i for i, s in enumerate(content) if 'Circulation Pump Efficiency,' in s][0]].split(',')[1].strip('\n'))
             if pumpeff < 0.1 or pumpeff > 1:
                 pumpeff = 0.75
                 print("Warning: Provided circulation pump efficiency outside of range 0.1-1. GEOPHIRES will assume default circulation pump efficiency (0.75)")
         except:
             pumpeff = 0.75
             print("Warning: No valid circulation pump efficiency provided. GEOPHIRES will assume default circulation pump efficiency (0.75)")
-            
+
         #utilfactor: utilization factor (-)
         try:
             utilfactor = float(content[[i for i, s in enumerate(content) if 'Utilization Factor,' in s][0]].split(',')[1].strip('\n'))
@@ -328,7 +381,7 @@ class Geophires(object):
                 print("Warning: Provided utilization factor outside of range 0.1-1. GEOPHIRES will assume default utilization factor (0.9)")
         except:
             utilfactor = 0.9
-            print("Warning: No valid utilization factor provided. GEOPHIRES will assume default utilization factor (0.9)")    
+            print("Warning: No valid utilization factor provided. GEOPHIRES will assume default utilization factor (0.9)")
 
         #enduseefficiencyfactor: end-use efficiency for direct-use heat component [-]
         if enduseoption in [2,31,32,41,42,51,52]:
@@ -336,7 +389,7 @@ class Geophires(object):
                 enduseefficiencyfactor = float(content[[i for i, s in enumerate(content) if 'End-Use Efficiency Factor,' in s][0]].split(',')[1].strip('\n'))
                 if enduseefficiencyfactor < 0.1 or enduseefficiencyfactor > 1:
                     enduseefficiencyfactor = 0.9
-                    print("Warning: Provided end-use efficiency factor outside of range 0.1-1. GEOPHIRES will assume default end-use efficiency factor (0.9)")            
+                    print("Warning: Provided end-use efficiency factor outside of range 0.1-1. GEOPHIRES will assume default end-use efficiency factor (0.9)")
             except:
                 enduseefficiencyfactor = 0.9
                 print("Warning: No valid end-use efficiency factor provided. GEOPHIRES will assume default end-use efficiency factor (0.9)")
@@ -347,20 +400,20 @@ class Geophires(object):
                 chpfraction = float(content[[i for i, s in enumerate(content) if 'CHP Fraction,' in s][0]].split(',')[1].strip('\n'))
                 if chpfraction < 0.0001 or chpfraction > 0.9999:
                     chpfraction = 0.5
-                    print("Warning: Provided CHP fraction outside of range 0.0001-0.9999. GEOPHIRES will assume default CHP fraction (0.5)")            
+                    print("Warning: Provided CHP fraction outside of range 0.0001-0.9999. GEOPHIRES will assume default CHP fraction (0.5)")
             except:
                 chpfraction = 0.5
-                print("Warning: No valid CHP fraction provided. GEOPHIRES will assume default CHP fraction (0.5)")          
+                print("Warning: No valid CHP fraction provided. GEOPHIRES will assume default CHP fraction (0.5)")
 
         #Tinj: injection temperature (C)
         try:
-            Tinj = float(content[[i for i, s in enumerate(content) if 'Injection Temperature,' in s][0]].split(',')[1].strip('\n'))   
+            Tinj = float(content[[i for i, s in enumerate(content) if 'Injection Temperature,' in s][0]].split(',')[1].strip('\n'))
             if Tinj < 0 or Tinj > 200:
                 Tinj = 70
-                print("Warning: Provided injection temperature outside range of 0-200. GEOPHIRES will assume default injection temperature (70 deg.C)")        
+                print("Warning: Provided injection temperature outside range of 0-200. GEOPHIRES will assume default injection temperature (70 deg.C)")
         except:
             Tinj = 70
-            print("Warning: No valid injection temperature provided. GEOPHIRES will assume default injection temperature (70 deg.C)")    
+            print("Warning: No valid injection temperature provided. GEOPHIRES will assume default injection temperature (70 deg.C)")
 
 
         #Tmax: Maximum allowable Reservoir Temperature (C)
@@ -368,11 +421,11 @@ class Geophires(object):
             Tmax = float(content[[i for i, s in enumerate(content) if 'Maximum Temperature,' in s][0]].split(',')[1].strip('\n'))
             if Tmax < 50 or Tmax > 1000:
                 Tmax = 400
-                print("Warning: Provided maximum temperature outside of range 50-1000. GEOPHIRES will assume default maximum temperature (400 deg.C)")       
+                print("Warning: Provided maximum temperature outside of range 50-1000. GEOPHIRES will assume default maximum temperature (400 deg.C)")
         except:
             Tmax = 400
-            print("Warning: No valid maximum temperature provided. GEOPHIRES will assume default maximum temperature (400 deg.C)")       
-            
+            print("Warning: No valid maximum temperature provided. GEOPHIRES will assume default maximum temperature (400 deg.C)")
+
 
         #Tchpbottom: power plant entering temperature in the CHP Bottom cycle (in deg.C)
         if enduseoption in [41,42]:
@@ -380,36 +433,36 @@ class Geophires(object):
                 Tchpbottom = float(content[[i for i, s in enumerate(content) if 'CHP Bottoming Entering Temperature,' in s][0]].split(',')[1].strip('\n'))
                 if Tchpbottom < Tinj or Tchpbottom > Tmax:
                     Tchpbottom = 150
-                    print("Warning: Provided CHP bottoming entering temperature outside of range Tinj-Tmax. GEOPHIRES will assume default CHP bottom temperature (150 deg.C)")              
+                    print("Warning: Provided CHP bottoming entering temperature outside of range Tinj-Tmax. GEOPHIRES will assume default CHP bottom temperature (150 deg.C)")
             except:
                 Tchpbottom = 150
-                print("Warning: Provided CHP bottoming entering temperature outside of range Tinj-Tmax. GEOPHIRES will assume default CHP bottom temperature (150 deg.C)")              
+                print("Warning: Provided CHP bottoming entering temperature outside of range Tinj-Tmax. GEOPHIRES will assume default CHP bottom temperature (150 deg.C)")
 
         #Tsurf: surface temperature used for calculating bottomhole temperature (in deg.C)
         try:
             Tsurf = float(content[[i for i, s in enumerate(content) if 'Surface Temperature,' in s][0]].split(',')[1].strip('\n'))
             if Tsurf < -50 or Tsurf > 50:
                 Tsurf = 15
-                print("Warning: Provided surface temperature outside of range -50 to 50. GEOPHIRES will assume default surface temperature (15 deg.C)")              
+                print("Warning: Provided surface temperature outside of range -50 to 50. GEOPHIRES will assume default surface temperature (15 deg.C)")
         except:
             Tsurf = 15
-            print("Warning: No valid surface temperature provided. GEOPHIRES will assume default surface temperature (15 deg.C)")    
-            
+            print("Warning: No valid surface temperature provided. GEOPHIRES will assume default surface temperature (15 deg.C)")
+
         #Tenv: ambient temperature (in deg.C)
         if enduseoption in [1,31,32,41,42,51,52]:
             try:
-                Tenv = float(content[[i for i, s in enumerate(content) if 'Ambient Temperature,' in s][0]].split(',')[1].strip('\n'))        
+                Tenv = float(content[[i for i, s in enumerate(content) if 'Ambient Temperature,' in s][0]].split(',')[1].strip('\n'))
                 if Tenv < -50 or Tenv > 50:
                     Tenv = 15
-                    print("Warning: Provided ambient temperature outside of range -50 to 50. GEOPHIRES will assume default ambient temperature (15 deg.C)")            
+                    print("Warning: Provided ambient temperature outside of range -50 to 50. GEOPHIRES will assume default ambient temperature (15 deg.C)")
             except:
                 Tenv = 15
                 print("Warning: No valid ambient temperature provided. GEOPHIRES will assume default ambient temperature (15 deg.C)")
 
 
         #resoption: Reservoir Option
-        #   resoption = 1  Multiple parallel fractures model (LANL)                            
-        #   resoption = 2  Volumetric block model (1D linear heat sweep model (Stanford))                       
+        #   resoption = 1  Multiple parallel fractures model (LANL)
+        #   resoption = 2  Volumetric block model (1D linear heat sweep model (Stanford))
         #   resoption = 3  Drawdown parameter model (Tester)
         #   resoption = 4  Thermal drawdown percentage model (GETEM)
         #   resoption = 5  Generic user-provided temperature profile
@@ -419,7 +472,7 @@ class Geophires(object):
         except:
             resoption = 4
             print("Warning: Parameter 'Reservoir Model' not found. GEOPHIRES will run default reservoir model (Thermal Drawdown Percentage Model)")
-        if not (resoption in [1,2,3,4,5,6]):    
+        if not (resoption in [1,2,3,4,5,6]):
             print("Warning: Selected Reservoir Model not valid. GEOPHIRES will run default reservoir model (Thermal Drawdown Percentage Model)")
             resoption = 4
 
@@ -436,7 +489,7 @@ class Geophires(object):
                         print("Warning: Provided drawdown parameter outside of range 0-0.2. GEOPHIRES will assume default drawdown parameter (0.0001 kg/s/m2) for reservoir model 3")
                     elif resoption == 4:
                         drawdp = 0.005
-                        print("Warning: Provided drawdown parameter outside of range 0-0.2. GEOPHIRES will assume default drawdown parameter (0.5 %/year) for reservoir model 4")            
+                        print("Warning: Provided drawdown parameter outside of range 0-0.2. GEOPHIRES will assume default drawdown parameter (0.5 %/year) for reservoir model 4")
             except:
                 if resoption == 3:
                     drawdp = 0.0001
@@ -464,8 +517,8 @@ class Geophires(object):
                 usebuiltintough2model = 1
             else:
                 usebuiltintough2model = 0
-            
-            
+
+
         #depth: Measured depth of the well (provided in km by user and converted here to m).
         try:
             depth = float(content[[i for i, s in enumerate(content) if 'Reservoir Depth,' in s][0]].split(',')[1].strip('\n'))
@@ -481,10 +534,10 @@ class Geophires(object):
         try:
             numseg = int(content[[i for i, s in enumerate(content) if 'Number of Segments,' in s][0]].split(',')[1].strip('\n'))
             if not (numseg in [1,2,3,4]):
-                print("Warning: Provided number of segments outside of range 1-4. GEOPHIRES will assume default number of segments (1)")   
+                print("Warning: Provided number of segments outside of range 1-4. GEOPHIRES will assume default number of segments (1)")
         except:
             numseg = 1
-            print("Warning: No valid number of segments provided. GEOPHIRES will assume default number of segments (1)")  
+            print("Warning: No valid number of segments provided. GEOPHIRES will assume default number of segments (1)")
 
         #gradient(i): geothermal gradient of layer i (provided in C/km and converted to C/m)
         #layerthickness(i): thickness of layer i (provided in km and converted to m)
@@ -493,66 +546,66 @@ class Geophires(object):
         try:
             gradient[0] = float(content[[i for i, s in enumerate(content) if 'Gradient 1,' in s][0]].split(',')[1].strip('\n'))/1000
             if gradient[0] < 0 or gradient[0] > 0.5:
-                print("Warning: Provided geothermal gradient for layer 1 outside of range 0-500. GEOPHIRES will assume default geothermal gradient (50 deg.C/km)")       
+                print("Warning: Provided geothermal gradient for layer 1 outside of range 0-500. GEOPHIRES will assume default geothermal gradient (50 deg.C/km)")
                 gradient[0] = 50./1000
         except:
             gradient[0] = 50./1000
-            print("Warning: No valid geothermal gradient for layer 1 provided. GEOPHIRES will assume default geothermal gradient (50 deg.C/km)")          
+            print("Warning: No valid geothermal gradient for layer 1 provided. GEOPHIRES will assume default geothermal gradient (50 deg.C/km)")
 
         if numseg>1:
-            try:    
+            try:
                 gradient[1] = float(content[[i for i, s in enumerate(content) if 'Gradient 2,' in s][0]].split(',')[1].strip('\n'))/1000
                 if gradient[1] < 0 or gradient[1] > 0.5:
-                    print("Warning: Provided geothermal gradient for layer 2 outside of range 0-500. GEOPHIRES will assume default geothermal gradient (50 deg.C/km)")       
+                    print("Warning: Provided geothermal gradient for layer 2 outside of range 0-500. GEOPHIRES will assume default geothermal gradient (50 deg.C/km)")
                     gradient[1] = 50./1000
             except:
                 gradient[1] = 50./1000
-                print("Warning: No valid geothermal gradient for layer 2 provided. GEOPHIRES will assume default geothermal gradient (50 deg.C/km)")           
-            try:    
+                print("Warning: No valid geothermal gradient for layer 2 provided. GEOPHIRES will assume default geothermal gradient (50 deg.C/km)")
+            try:
                 layerthickness[0] = float(content[[i for i, s in enumerate(content) if 'Thickness 1,' in s][0]].split(',')[1].strip('\n'))*1000
                 if layerthickness[0] < 10 or layerthickness[0] > 100000:
-                    print("Warning: Provided thickness for layer 1 outside of range 0.01-100. GEOPHIRES will assume default layer thickness (2 km)")       
+                    print("Warning: Provided thickness for layer 1 outside of range 0.01-100. GEOPHIRES will assume default layer thickness (2 km)")
                     layerthickness[0] = 2.*1000
             except:
                 layerthickness[0] = 2.*1000
-                print("Warning: No valid thickness for layer 1 provided. GEOPHIRES will assume default layer thickness (2 km)")       
+                print("Warning: No valid thickness for layer 1 provided. GEOPHIRES will assume default layer thickness (2 km)")
 
         if numseg > 2:
-            try:    
+            try:
                 gradient[2] = float(content[[i for i, s in enumerate(content) if 'Gradient 3,' in s][0]].split(',')[1].strip('\n'))/1000
                 if gradient[2] < 0 or gradient[2] > 0.5:
-                    print("Warning: Provided geothermal gradient for layer 3 outside of range 0-500. GEOPHIRES will assume default geothermal gradient (50 deg.C/km)")       
+                    print("Warning: Provided geothermal gradient for layer 3 outside of range 0-500. GEOPHIRES will assume default geothermal gradient (50 deg.C/km)")
                     gradient[2] = 50./1000
             except:
                 gradient[2] = 50./1000
-                print("Warning: No valid geothermal gradient for layer 3 provided. GEOPHIRES will assume default geothermal gradient (50 deg.C/km)")           
-            try:    
+                print("Warning: No valid geothermal gradient for layer 3 provided. GEOPHIRES will assume default geothermal gradient (50 deg.C/km)")
+            try:
                 layerthickness[1] = float(content[[i for i, s in enumerate(content) if 'Thickness 2,' in s][0]].split(',')[1].strip('\n'))*1000
                 if layerthickness[1] < 10 or layerthickness[1] > 100000:
-                    print("Warning: Provided thickness for layer 2 outside of range 0.01-100. GEOPHIRES will assume default layer thickness (2 km)")       
+                    print("Warning: Provided thickness for layer 2 outside of range 0.01-100. GEOPHIRES will assume default layer thickness (2 km)")
                     layerthickness[1] = 2.*1000
             except:
                 layerthickness[1] = 2.*1000
-                print("Warning: No valid thickness for layer 2 provided. GEOPHIRES will assume default layer thickness (2 km)")     
-            
-        if numseg > 3:  
-            try:    
+                print("Warning: No valid thickness for layer 2 provided. GEOPHIRES will assume default layer thickness (2 km)")
+
+        if numseg > 3:
+            try:
                 gradient[3] = float(content[[i for i, s in enumerate(content) if 'Gradient 4,' in s][0]].split(',')[1].strip('\n'))/1000
                 if gradient[3] < 0 or gradient[3] > 0.5:
-                    print("Warning: Provided geothermal gradient for layer 4 outside of range 0-500. GEOPHIRES will assume default geothermal gradient (50 deg.C/km)")       
+                    print("Warning: Provided geothermal gradient for layer 4 outside of range 0-500. GEOPHIRES will assume default geothermal gradient (50 deg.C/km)")
                     gradient[3] = 50./1000
             except:
                 gradient[3] = 50./1000
-                print("Warning: No valid geothermal gradient for layer 4 provided. GEOPHIRES will assume default geothermal gradient (50 deg.C/km)")           
-            try:    
+                print("Warning: No valid geothermal gradient for layer 4 provided. GEOPHIRES will assume default geothermal gradient (50 deg.C/km)")
+            try:
                 layerthickness[2] = float(content[[i for i, s in enumerate(content) if 'Thickness 3,' in s][0]].split(',')[1].strip('\n'))*1000
                 if layerthickness[2] < 10 or layerthickness[2] > 100000:
-                    print("Warning: Provided thickness for layer 3 outside of range 0.01-100. GEOPHIRES will assume default layer thickness (2 km)")       
+                    print("Warning: Provided thickness for layer 3 outside of range 0.01-100. GEOPHIRES will assume default layer thickness (2 km)")
                     layerthickness[2] = 2.*1000
             except:
                 layerthickness[2] = 2.*1000
-                print("Warning: No valid thickness for layer 3 provided. GEOPHIRES will assume default layer thickness (2 km)")  
-                
+                print("Warning: No valid thickness for layer 3 provided. GEOPHIRES will assume default layer thickness (2 km)")
+
         # set thickness of bottom segment to large number to override lower, unused segments
         layerthickness[numseg-1] = 100000
         # convert 0 C/m gradients to very small number, avoids divide by zero errors later
@@ -564,44 +617,44 @@ class Geophires(object):
         try:
             nprod = float(content[[i for i, s in enumerate(content) if 'Number of Production Wells,' in s][0]].split(',')[1].strip('\n'))
             if not (nprod in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]):
-                print("Warning: Provided number of production wells is outside range 1-20. GEOPHIRES will assume default number of production wells (2)") 
+                print("Warning: Provided number of production wells is outside range 1-20. GEOPHIRES will assume default number of production wells (2)")
                 nprod = 2
         except:
-            print("Warning: No valid number of production wells provided. GEOPHIRES will assume default number of production wells (2)") 
+            print("Warning: No valid number of production wells provided. GEOPHIRES will assume default number of production wells (2)")
             nprod = 2
         try:
             ninj = float(content[[i for i, s in enumerate(content) if 'Number of Injection Wells,' in s][0]].split(',')[1].strip('\n'))
             if not (ninj in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]):
-                print("Warning: Provided number of injection wells is outside range 1-20. GEOPHIRES will assume default number of injection wells (2)") 
+                print("Warning: Provided number of injection wells is outside range 1-20. GEOPHIRES will assume default number of injection wells (2)")
                 ninj = 2
         except:
-            print("Warning: No valid number of injection wells provided. GEOPHIRES will assume default number of injection wells (2)") 
+            print("Warning: No valid number of injection wells provided. GEOPHIRES will assume default number of injection wells (2)")
             ninj = 2
-            
+
         #prodwelldiam: production well diameter (input as inch and converted to m)
         #injwelldiam: injection well diameter (input as inch and converted to m)
         try:
             prodwelldiam = float(content[[i for i, s in enumerate(content) if 'Production Well Diameter,' in s][0]].split(',')[1].strip('\n'))*0.0254
             if prodwelldiam/0.0254 < 1 or prodwelldiam/0.0254 > 30:
                 prodwelldiam = 8*0.0254
-                print("Warning: Provided production well diameter is outside range 1-30. GEOPHIRES will assume default production well diameter (8 inch)") 
+                print("Warning: Provided production well diameter is outside range 1-30. GEOPHIRES will assume default production well diameter (8 inch)")
         except:
             prodwelldiam = 8*0.0254
-            print("Warning: No valid production well diameter provided. GEOPHIRES will assume default production well diameter (8 inch)") 
+            print("Warning: No valid production well diameter provided. GEOPHIRES will assume default production well diameter (8 inch)")
 
         try:
             injwelldiam = float(content[[i for i, s in enumerate(content) if 'Injection Well Diameter,' in s][0]].split(',')[1].strip('\n'))*0.0254
             if injwelldiam/0.0254 < 1 or injwelldiam/0.0254 > 30:
                 injwelldiam = 8*0.0254
-                print("Warning: Provided injection well diameter is outside range 1-30. GEOPHIRES will assume default injection well diameter (8 inch)") 
+                print("Warning: Provided injection well diameter is outside range 1-30. GEOPHIRES will assume default injection well diameter (8 inch)")
         except:
             injwelldiam = 8*0.0254
-            print("Warning: No valid injection well diameter provided. GEOPHIRES will assume default injection well diameter (8 inch)") 
+            print("Warning: No valid injection well diameter provided. GEOPHIRES will assume default injection well diameter (8 inch)")
 
         #rameyoptionprod
         #rameyoptionprod = 0: use tempdrop to calculate production well temperature drop
         #rameyoptionprod = 1: use Ramey model to calculate production well temperature drop
-        try: 
+        try:
             rameyoptionprod = int(content[[i for i, s in enumerate(content) if 'Ramey Production Wellbore Model,' in s][0]].split(',')[1].strip('\n'))
             if not (rameyoptionprod in [0,1]):
                 rameyoptionprod = 1
@@ -642,11 +695,11 @@ class Geophires(object):
             print("Warning: No valid production wellbore flow rate is provided. GEOPHIRES will assume default flow rate per production well (50 kg/s)")
 
         #resvoloption: Rock mass volume option
-        #   resvoloption = 1  Specify fracnumb, fracsep                                 
-        #   resvoloption = 2  specify resvol, fracsep                                
+        #   resvoloption = 1  Specify fracnumb, fracsep
+        #   resvoloption = 2  specify resvol, fracsep
         #   resvoloption = 3  Specify resvol, fracnumb
         #   resvoloption = 4: Specify resvol only (sufficient for reservoir models 3, 4, 5 and 6)
-        try: 
+        try:
             resvoloption = int(content[[i for i, s in enumerate(content) if 'Reservoir Volume Option,' in s][0]].split(',')[1].strip('\n'))
             if not resvoloption in [1,2,3,4]:
                 if resoption in [1,2]:
@@ -661,16 +714,16 @@ class Geophires(object):
                     print("Warning: No valid reservoir volume option provided. GEOPHIRES will assume default reservoir volume option (3)")
             else:
                 resvoloption = 4
-                print("Warning: No valid reservoir volume option provided. GEOPHIRES will assume default reservoir volume option (4)")    
+                print("Warning: No valid reservoir volume option provided. GEOPHIRES will assume default reservoir volume option (4)")
 
         if resvoloption == 4 and resoption in [1,2]:
             resvoloption = 3
-            print("Warning: If user-selected reservoir model is 1 or 2, then user-selected reservoir volume option cannot be 4 but should be 1, 2, or 3. GEOPHIRES will assume reservoir volume option 3.")    
-                
+            print("Warning: If user-selected reservoir model is 1 or 2, then user-selected reservoir volume option cannot be 4 but should be 1, 2, or 3. GEOPHIRES will assume reservoir volume option 3.")
+
         if resoption in [1,2] or resvoloption in [1,2,3] :    #the first two reservoir models require fracture geometry
             #fracshape: Shape of fractures
-            #   fracshape = 1  Circular fracture with known area                                  
-            #   fracshape = 2  Circular fracture with known diameter                                   
+            #   fracshape = 1  Circular fracture with known area
+            #   fracshape = 2  Circular fracture with known diameter
             #   fracshape = 3  Square fracture
             #   fracshape = 4  Rectangular fracture
             try:
@@ -681,9 +734,9 @@ class Geophires(object):
             except:
                 fracshape = 1
                 print("Warning: No valid fracture shape provided. GEOPHIRES will assume default fracture shape (1)")
-            
+
             #fracarea: Effective heat transfer area per fracture (m2) (required if fracshape = 1)
-            if fracshape == 1:  
+            if fracshape == 1:
                 try:
                     fracarea = float(content[[i for i, s in enumerate(content) if 'Fracture Area,' in s][0]].split(',')[1].strip('\n'))
                     if fracarea < 1 or fracarea > 100000000:
@@ -692,9 +745,9 @@ class Geophires(object):
                 except:
                     fracarea = 250000
                     print("Warning: No valid fracture area provided. GEOPHIRES will assume default fracture area (250,000 m2)")
-            
+
             #fracheight: Height of fracture = well separation (m)
-            if fracshape in [2,3,4]:    
+            if fracshape in [2,3,4]:
                 try:
                     fracheight = float(content[[i for i, s in enumerate(content) if 'Fracture Height,' in s][0]].split(',')[1].strip('\n'))
                     if fracheight < 1 or fracheight > 10000:
@@ -703,7 +756,7 @@ class Geophires(object):
                 except:
                     fracheight = 500
                     print("Warning: No valid fracture height provided. GEOPHIRES will assume default fracture height (500 m)")
-                    
+
             #fracwidth: Width of fracture (m)
             if fracshape == 4:
                 try:
@@ -713,8 +766,8 @@ class Geophires(object):
                         print("Warning: Provided fracture width outside of range 1-10000. GEOPHIRES will assume default fracture width (500 m)")
                 except:
                     fracwidth = 500
-                    print("Warning: No valid fracture width provided. GEOPHIRES will assume default fracture width (500 m)") 
-                    
+                    print("Warning: No valid fracture width provided. GEOPHIRES will assume default fracture width (500 m)")
+
             #calculate fracture geometry:
             #fracshape = 1: calculate diameter of circular fracture
             #fracshape = 2: calculate area of circular fracture
@@ -732,7 +785,7 @@ class Geophires(object):
             elif fracshape == 4:
                 fracarea = fracheight*fracwidth
 
-            
+
 
         #fracnumb: number of fractures
         if resvoloption in [1,3]:
@@ -767,7 +820,7 @@ class Geophires(object):
             except:
                 resvol = 500.*500*500
                 print("Warning: No valid reservoir volume provided. GEOPHIRES will assume default reservoir volume (1.25E8 m3)")
-                
+
         #calculate reservoir geometry:
         #resvoloption = 1: calculate volume of fractured rock mass
         #resvoloption = 2: calculate number of fractures
@@ -803,12 +856,12 @@ class Geophires(object):
                 impedancemodelallowed = 0
                 productionwellpumping = 0
                 setinjectionpressurefixed = 1
-        elif enduseoption in [41,42]: 
+        elif enduseoption in [41,42]:
             if pptype in [3,4]: #co-generation bottoming cycle with single- or double-flash power plant assumes production well pumping
                 impedancemodelallowed = 0
                 setinjectionpressurefixed = 1
-        elif enduseoption in [51,52]:         
-            if pptype in [3,4]: #co-generation parallel cycle with single- or double-flash power plant assumes production well pumping            
+        elif enduseoption in [51,52]:
+            if pptype in [3,4]: #co-generation parallel cycle with single- or double-flash power plant assumes production well pumping
                 impedancemodelallowed = 0
                 setinjectionpressurefixed = 1
 
@@ -817,25 +870,25 @@ class Geophires(object):
             try:
                 #impedance: impedance per wellpair (input as GPa*s/m^3 and converted to KPa/kg/s (assuming 1000 for density; density will be corrected for later))
                 impedance = float(content[[i for i, s in enumerate(content) if 'Reservoir Impedance,' in s][0]].split(',')[1].strip('\n'))*1E6/1E3
-                impedancemodelused = 1        
+                impedancemodelused = 1
                 if impedance < 0.0001*1000 or impedance > 10000:
                     impedance = 0.1*1E6/1E3
                     print("Warning: Provided reservoir impedance outside of range 0.0001-1000. GEOPHIRES will assume default reservoir impedance (0.1 GPa*s/m3)")
             except:
                 impedancemodelused = 0
-                
+
         if impedancemodelallowed == 0 or impedancemodelused == 0:
             try:
                 #reservoir hydrostatic pressure [kPa]
-                Phydrostatic = float(content[[i for i, s in enumerate(content) if 'Reservoir Hydrostatic Pressure,' in s][0]].split(',')[1].strip('\n')) 
+                Phydrostatic = float(content[[i for i, s in enumerate(content) if 'Reservoir Hydrostatic Pressure,' in s][0]].split(',')[1].strip('\n'))
                 usebuiltinhydrostaticpressurecorrelation = 0
                 if Phydrostatic < 100 or Phydrostatic > 100000:
                     usebuiltinhydrostaticpressurecorrelation = 1
                     print("Warning: Provided reservoir hydrostatic pressure outside of range 100-100000 kPa. GEOPHIRES will assume built-in reservoir hydrostatic pressure correlation")
             except:
                 usebuiltinhydrostaticpressurecorrelation = 1
-                print("Warning: No valid reservoir hydrostatic pressure provided. GEOPHIRES will assume built-in reservoir hydrostatic pressure correlation")    
-            
+                print("Warning: No valid reservoir hydrostatic pressure provided. GEOPHIRES will assume built-in reservoir hydrostatic pressure correlation")
+
             try:
                 #injectivity index [kg/s/bar]
                 II = float(content[[i for i, s in enumerate(content) if 'Injectivity Index,' in s][0]].split(',')[1].strip('\n'))
@@ -845,7 +898,7 @@ class Geophires(object):
             except:
                 II = 10
                 print("Warning: No valid injectivity index provided. GEOPHIRES will assume default injectivity index (10 kg/s/bar)")
-            
+
             if productionwellpumping == 1:
                 try:
                     #productivity index [kg/s/bar]
@@ -856,13 +909,13 @@ class Geophires(object):
                 except:
                     PI = 10
                     print("Warning: No valid productivity index provided. GEOPHIRES will assume default productivity index (10 kg/s/bar)")
-                
+
                 try:
                     #production wellhead pressure [kPa]
                     ppwellhead = float(content[[i for i, s in enumerate(content) if 'Production Wellhead Pressure,' in s][0]].split(',')[1].strip('\n'))
-                    usebuiltinppwellheadcorrelation = 0            
+                    usebuiltinppwellheadcorrelation = 0
                     if ppwellhead < 0 or ppwellhead > 10000:
-                        usebuiltinppwellheadcorrelation = 1                
+                        usebuiltinppwellheadcorrelation = 1
                         print("Warning: Provided production wellhead pressure outside of range 0-10000 kPa. GEOPHIRES will calculate production wellhead pressure using built-in correlation")
                 except:
                     usebuiltinppwellheadcorrelation = 1
@@ -871,7 +924,7 @@ class Geophires(object):
             try:
                 #plant outlet pressure [kPa]
                 Pplantoutlet = float(content[[i for i, s in enumerate(content) if 'Plant Outlet Pressure,' in s][0]].split(',')[1].strip('\n'))
-                usebuiltinoutletplantcorrelation = 0            
+                usebuiltinoutletplantcorrelation = 0
                 if Pplantoutlet < 0 or Pplantoutlet > 10000:
                     if setinjectionpressurefixed == 1:
                         Pplantoutlet = 100
@@ -881,14 +934,14 @@ class Geophires(object):
                         print("Warning: Provided plant outlet pressure outside of range 0-10000 kPa. GEOPHIRES will calculate plant outlet pressure based on production wellhead pressure and surface equipment pressure drop of 10 psi")
             except:
                 if setinjectionpressurefixed == 1:
-                    usebuiltinoutletplantcorrelation = 0            
+                    usebuiltinoutletplantcorrelation = 0
                     Pplantoutlet = 100
                     print("Warning: No valid plant outlet pressure provided. GEOPHIRES will assume default plant outlet pressure (100 kPa)")
                 else:
                     usebuiltinoutletplantcorrelation = 1
                     print("Warning: No valid plant outlet pressure provided. GEOPHIRES will calculate plant outlet pressure based on production wellhead pressure and surface equipment pressure drop of 10 psi")
-            
-                
+
+
         #impedance: impedance per wellpair (input as GPa*s/m^3 and converted to KPa/kg/s (assuming 1000 for density))
         #try:
         #    impedance = float(content[[i for i, s in enumerate(content) if 'Reservoir Impedance,' in s][0]].split(',')[1].strip('\n'))*1E6/1E3
@@ -902,27 +955,27 @@ class Geophires(object):
         #maxdrawdown: maximum allowable drawdown before redrilling (only works with built in reservoir models)
         if resoption in [1,2,3,4]:
             try:
-                maxdrawdown = float(content[[i for i, s in enumerate(content) if 'Maximum Drawdown,' in s][0]].split(',')[1].strip('\n'))   
+                maxdrawdown = float(content[[i for i, s in enumerate(content) if 'Maximum Drawdown,' in s][0]].split(',')[1].strip('\n'))
                 if maxdrawdown <0 or maxdrawdown > 1:
                     maxdrawdown = 1
-                    print("Warning: Provided maximum drawdown outside of range 0-1. GEOPHIRES will assume default maximum drawdown (1)")  
+                    print("Warning: Provided maximum drawdown outside of range 0-1. GEOPHIRES will assume default maximum drawdown (1)")
             except:
                 maxdrawdown = 1
-                print("Warning: No valid maximum drawdown provided. GEOPHIRES will assume default maximum drawdown (1)") 
+                print("Warning: No valid maximum drawdown provided. GEOPHIRES will assume default maximum drawdown (1)")
 
         #cprock: reservoir heat capacity (in J/kg/K)
         try:
-            cprock = float(content[[i for i, s in enumerate(content) if 'Reservoir Heat Capacity,' in s][0]].split(',')[1].strip('\n'))   
+            cprock = float(content[[i for i, s in enumerate(content) if 'Reservoir Heat Capacity,' in s][0]].split(',')[1].strip('\n'))
             if cprock < 100 or cprock > 10000:
                 cprock = 1000
-                print("Warning: Provided reservoir heat capacity outside of range 100-10000. GEOPHIRES will assume default reservoir heat capacity (1000 J/kg/K)") 
+                print("Warning: Provided reservoir heat capacity outside of range 100-10000. GEOPHIRES will assume default reservoir heat capacity (1000 J/kg/K)")
         except:
             cprock = 1000
-            print("Warning: No valid reservoir heat capacity provided. GEOPHIRES will assume default reservoir heat capacity (1000 J/kg/K)") 
-            
+            print("Warning: No valid reservoir heat capacity provided. GEOPHIRES will assume default reservoir heat capacity (1000 J/kg/K)")
+
         #rhorock: reservoir density (in kg/m3)
         try:
-            rhorock = float(content[[i for i, s in enumerate(content) if 'Reservoir Density,' in s][0]].split(',')[1].strip('\n'))      
+            rhorock = float(content[[i for i, s in enumerate(content) if 'Reservoir Density,' in s][0]].split(',')[1].strip('\n'))
             if rhorock < 100 or rhorock > 20000:
                 rhorock = 2700
                 print("Warning: Provided reservoir density outside of range 100-10000. GEOPHIRES will assume default reservoir density (2700 J/kg/K)")
@@ -931,31 +984,31 @@ class Geophires(object):
             print("Warning: No valid reservoir density provided. GEOPHIRES will assume default reservoir density (2700 J/kg/K)")
 
         #krock: reservoir thermal conductivity (in W/m/K)
-        if rameyoptionprod == 1 or resoption in [1,2,3] or (resoption == 6 and usebuiltintough2model == 1):   
+        if rameyoptionprod == 1 or resoption in [1,2,3] or (resoption == 6 and usebuiltintough2model == 1):
             try:
-                krock = float(content[[i for i, s in enumerate(content) if 'Reservoir Thermal Conductivity,' in s][0]].split(',')[1].strip('\n'))   
+                krock = float(content[[i for i, s in enumerate(content) if 'Reservoir Thermal Conductivity,' in s][0]].split(',')[1].strip('\n'))
                 if krock < 0.01 or krock > 100:
                     krock = 3
                     print("Warning: Provided reservoir thermal conductivity outside of range 0.01-100. GEOPHIRES will assume default reservoir thermal conductivity (3 W/m/K)")
             except:
                 krock = 3
                 print("Warning: No valid reservoir thermal conductivity provided. GEOPHIRES will assume default reservoir thermal conductivity (3 W/m/K)")
-                
+
         #porrock: reservoir porosity (-)
         if resoption == 2 or (resoption == 6 and usebuiltintough2model == 1):
             try:
-                porrock = float(content[[i for i, s in enumerate(content) if 'Reservoir Porosity,' in s][0]].split(',')[1].strip('\n'))   
+                porrock = float(content[[i for i, s in enumerate(content) if 'Reservoir Porosity,' in s][0]].split(',')[1].strip('\n'))
                 if porrock < 0.001 or porrock > 0.99:
                     porrock = 0.04
                     print("Warning: Provided reservoir porosity outside of range 0.001-0.99. GEOPHIRES will assume default reservoir porosity (0.04)")
             except:
                 porrock = 0.04
                 print("Warning: No valid reservoir porosity provided. GEOPHIRES will assume default reservoir porosity (0.04)")
-            
+
         #permrock: reservoir permeability (m2)
         if resoption == 6 and usebuiltintough2model == 1:
             try:
-                permrock = float(content[[i for i, s in enumerate(content) if 'Reservoir Permeability,' in s][0]].split(',')[1].strip('\n'))   
+                permrock = float(content[[i for i, s in enumerate(content) if 'Reservoir Permeability,' in s][0]].split(',')[1].strip('\n'))
                 if permrock < 1E-20 or permrock > 1E-5:
                     permrock = 1E-13
                     print("Warning: Provided reservoir permeability outside of range 1E-20 to 1E-5. GEOPHIRES will assume default reservoir permeability (1E-13 m^2)")
@@ -966,7 +1019,7 @@ class Geophires(object):
         #resthickness: reservoir thickness (m)
         if resoption == 6 and usebuiltintough2model == 1:
             try:
-                resthickness = float(content[[i for i, s in enumerate(content) if 'Reservoir Thickness,' in s][0]].split(',')[1].strip('\n'))   
+                resthickness = float(content[[i for i, s in enumerate(content) if 'Reservoir Thickness,' in s][0]].split(',')[1].strip('\n'))
                 if resthickness < 10 or resthickness > 10000:
                     resthickness = 250
                     print("Warning: Provided reservoir thickness outside of range 10-10000. GEOPHIRES will assume default reservoir thickness (250 m)")
@@ -977,7 +1030,7 @@ class Geophires(object):
         #reswidth: reservoir width (m)
         if resoption == 6 and usebuiltintough2model == 1:
             try:
-                reswidth = float(content[[i for i, s in enumerate(content) if 'Reservoir Width,' in s][0]].split(',')[1].strip('\n'))   
+                reswidth = float(content[[i for i, s in enumerate(content) if 'Reservoir Width,' in s][0]].split(',')[1].strip('\n'))
                 if reswidth < 10 or reswidth > 10000:
                     reswidth = 500
                     print("Warning: Provided reservoir width outside of range 10-10000. GEOPHIRES will assume default reservoir width (500 m)")
@@ -988,23 +1041,23 @@ class Geophires(object):
         #wellsep: well separation (m)
         if resoption == 6 and usebuiltintough2model == 1:
             try:
-                wellsep = float(content[[i for i, s in enumerate(content) if 'Well Separation,' in s][0]].split(',')[1].strip('\n'))   
+                wellsep = float(content[[i for i, s in enumerate(content) if 'Well Separation,' in s][0]].split(',')[1].strip('\n'))
                 if wellsep < 10 or wellsep > 10000:
                     wellsep = 1000
                     print("Warning: Provided well seperation outside of range 10-10000. GEOPHIRES will assume default well seperation (1000 m)")
             except:
                 wellsep = 1000
-                print("Warning: No valid well seperation provided (necessary for using built-in TOUGH2 model). GEOPHIRES will assume default well seperation (1000 m)")          
-            
+                print("Warning: No valid well seperation provided (necessary for using built-in TOUGH2 model). GEOPHIRES will assume default well seperation (1000 m)")
+
         #plantlifetime: plant lifetime (years)
         try:
-            plantlifetime = int(content[[i for i, s in enumerate(content) if 'Plant Lifetime,' in s][0]].split(',')[1].strip('\n'))         
+            plantlifetime = int(content[[i for i, s in enumerate(content) if 'Plant Lifetime,' in s][0]].split(',')[1].strip('\n'))
             if not (plantlifetime in list(range(1,101))):
                 plantlifetime = 30
-                print("Warning: Provided plant lifetime outside of range 1-100. GEOPHIRES will assume default plant lifetime (30 years)")  
+                print("Warning: Provided plant lifetime outside of range 1-100. GEOPHIRES will assume default plant lifetime (30 years)")
         except:
             plantlifetime = 30
-            print("Warning: No valid plant lifetime provided. GEOPHIRES will assume default plant lifetime (30 years)")      
+            print("Warning: No valid plant lifetime provided. GEOPHIRES will assume default plant lifetime (30 years)")
 
 
         #econmodel
@@ -1015,10 +1068,10 @@ class Geophires(object):
             econmodel = int(content[[i for i, s in enumerate(content) if 'Economic Model,' in s][0]].split(',')[1].strip('\n'))
             if not (econmodel in [1,2,3]):
                 econmodel = 2
-                print("Warning: Provided economic model should be 1, 2, or 3. GEOPHIRES will assume default economic model (2)")  
+                print("Warning: Provided economic model should be 1, 2, or 3. GEOPHIRES will assume default economic model (2)")
         except:
             econmodel = 2
-            print("Warning: No valid economic model provided. GEOPHIRES will assume default economic model (2)")  
+            print("Warning: No valid economic model provided. GEOPHIRES will assume default economic model (2)")
 
         #FCR: fixed charge rate required if econmodel = 1
         if econmodel == 1:
@@ -1026,10 +1079,10 @@ class Geophires(object):
                 FCR = float(content[[i for i, s in enumerate(content) if 'Fixed Charge Rate,' in s][0]].split(',')[1].strip('\n'))
                 if FCR < 0 or FCR > 1:
                     FCR = 0.1
-                    print("Warning: Provided fixed charge rate is outside of range 0-1. GEOPHIRES will assume default fixed charge rate (0.1)")  
+                    print("Warning: Provided fixed charge rate is outside of range 0-1. GEOPHIRES will assume default fixed charge rate (0.1)")
             except:
                 FCR = 0.1
-                print("Warning: No valid fixed charge rate provided. GEOPHIRES will assume default fixed charge rate (0.1)")  
+                print("Warning: No valid fixed charge rate provided. GEOPHIRES will assume default fixed charge rate (0.1)")
 
         #discountrate: discount rate required if econmodel = 2
         if econmodel == 2:
@@ -1037,111 +1090,111 @@ class Geophires(object):
                 discountrate = float(content[[i for i, s in enumerate(content) if 'Discount Rate,' in s][0]].split(',')[1].strip('\n'))
                 if discountrate < 0 or discountrate > 1:
                     discountrate = 0.07
-                    print("Warning: Provided discount rate is outside of range 0-1. GEOPHIRES will assume default discount rate (0.07)")  
+                    print("Warning: Provided discount rate is outside of range 0-1. GEOPHIRES will assume default discount rate (0.07)")
             except:
                 discountrate = 0.07
-                print("Warning: No valid discount rate provided. GEOPHIRES will assume default discount rate (0.07)")          
+                print("Warning: No valid discount rate provided. GEOPHIRES will assume default discount rate (0.07)")
 
         #a whole bunch of BICYCLE parameters provided if econmodel = 3
         if econmodel == 3:
-            #bicycle parameters 
+            #bicycle parameters
             #FIB: fraction of investment in bonds (-)
             try:
                 FIB = float(content[[i for i, s in enumerate(content) if 'Fraction of Investment in Bonds,' in s][0]].split(',')[1].strip('\n'))
                 if FIB < 0 or FIB > 1:
                     FIB = 0.5
-                    print("Warning: Provided fraction of investment in bonds is outside of range 0-1. GEOPHIRES will assume default fraction of investment in bonds (0.5)")  
+                    print("Warning: Provided fraction of investment in bonds is outside of range 0-1. GEOPHIRES will assume default fraction of investment in bonds (0.5)")
             except:
                 FIB = 0.5
-                print("Warning: No valid fraction of investment in bonds provided. GEOPHIRES will assume default fraction of investment in bonds (0.5)")  
-            
+                print("Warning: No valid fraction of investment in bonds provided. GEOPHIRES will assume default fraction of investment in bonds (0.5)")
+
             #BIR: inflated bonds interest rate (-)
             try:
                 BIR = float(content[[i for i, s in enumerate(content) if 'Inflated Bond Interest Rate,' in s][0]].split(',')[1].strip('\n'))
                 if BIR < 0 or BIR > 1:
                     BIR = 0.05
-                    print("Warning: Provided inflated bond interest rate is outside of range 0-1. GEOPHIRES will assume default inflated bond interest rate (0.05)")  
+                    print("Warning: Provided inflated bond interest rate is outside of range 0-1. GEOPHIRES will assume default inflated bond interest rate (0.05)")
             except:
                 BIR = 0.05
-                print("Warning: No valid inflated bond interest rate provided. GEOPHIRES will assume default inflated bond interest rate (0.05)")  
-            
+                print("Warning: No valid inflated bond interest rate provided. GEOPHIRES will assume default inflated bond interest rate (0.05)")
+
             #EIR: inflated equity interest rate (-)
             try:
                 EIR = float(content[[i for i, s in enumerate(content) if 'Inflated Equity Interest Rate,' in s][0]].split(',')[1].strip('\n'))
                 if EIR < 0 or EIR > 1:
                     EIR = 0.1
-                    print("Warning: Provided inflated equity interest rate is outside of range 0-1. GEOPHIRES will assume default inflated equity interest rate (0.1)")  
+                    print("Warning: Provided inflated equity interest rate is outside of range 0-1. GEOPHIRES will assume default inflated equity interest rate (0.1)")
             except:
                 EIR = 0.1
                 print("Warning: No valid inflated equity interest rate provided. GEOPHIRES will assume default inflated equity interest rate (0.1)")
-            
+
             #RINFL: inflation rate (-)
             try:
                 RINFL = float(content[[i for i, s in enumerate(content) if 'Inflation Rate,' in s][0]].split(',')[1].strip('\n'))
                 if RINFL < -0.1 or RINFL > 1:
                     RINFL = 0.02
-                    print("Warning: Provided inflation rate is outside of range -0.1 to 1. GEOPHIRES will assume default inflation rate (0.02)")  
+                    print("Warning: Provided inflation rate is outside of range -0.1 to 1. GEOPHIRES will assume default inflation rate (0.02)")
             except:
                 RINFL = 0.02
                 print("Warning: No valid inflation rate provided. GEOPHIRES will assume default inflation rate (0.02)")
-            
+
             #CTR: combined income tax rate in fraction (-)
             try:
                 CTR = float(content[[i for i, s in enumerate(content) if 'Combined Income Tax Rate,' in s][0]].split(',')[1].strip('\n'))
                 if CTR < 0 or CTR > 1:
                     CTR = 0.3
-                    print("Warning: Provided combined income tax rate is outside of range 0 to 1. GEOPHIRES will assume default combined income tax rate (0.3)")  
+                    print("Warning: Provided combined income tax rate is outside of range 0 to 1. GEOPHIRES will assume default combined income tax rate (0.3)")
             except:
                 CTR = 0.3
                 print("Warning: No valid combined income tax rate provided. GEOPHIRES will assume default combined income tax rate (0.3)")
-                
+
             #GTR: gross revenue tax rate in fraction (-)
             try:
                 GTR = float(content[[i for i, s in enumerate(content) if 'Gross Revenue Tax Rate,' in s][0]].split(',')[1].strip('\n'))
                 if GTR < 0 or GTR > 1:
                     GTR = 0
-                    print("Warning: Provided gross revenue tax rate is outside of range 0 to 1. GEOPHIRES will assume default gross revenue tax rate (0)")  
+                    print("Warning: Provided gross revenue tax rate is outside of range 0 to 1. GEOPHIRES will assume default gross revenue tax rate (0)")
             except:
                 GTR = 0
-                print("Warning: No valid gross revenue tax rate provided. GEOPHIRES will assume default gross revenue tax rate (0)")    
-            
+                print("Warning: No valid gross revenue tax rate provided. GEOPHIRES will assume default gross revenue tax rate (0)")
+
             #RITC: investment tax credit rate in fraction (-)
             try:
                 RITC = float(content[[i for i, s in enumerate(content) if 'Investment Tax Credit Rate,' in s][0]].split(',')[1].strip('\n'))
                 if RITC < 0 or RITC > 1:
                     RITC = 0
-                    print("Warning: Provided investment tax credit rate is outside of range 0 to 1. GEOPHIRES will assume default investment tax credit rate (0)")  
+                    print("Warning: Provided investment tax credit rate is outside of range 0 to 1. GEOPHIRES will assume default investment tax credit rate (0)")
             except:
                 RITC = 0
                 print("Warning: No valid investment tax credit rate provided. GEOPHIRES will assume default investment tax credit rate (0)")
-                
+
             #PTR: property tax rate in fraction (-)
             try:
                 PTR = float(content[[i for i, s in enumerate(content) if 'Property Tax Rate,' in s][0]].split(',')[1].strip('\n'))
                 if PTR < 0 or PTR > 1:
                     PTR = 0
-                    print("Warning: Provided property rate is outside of range 0 to 1. GEOPHIRES will assume default property tax rate (0)")  
+                    print("Warning: Provided property rate is outside of range 0 to 1. GEOPHIRES will assume default property tax rate (0)")
             except:
                 PTR = 0
-                print("Warning: No valid property tax rate provided. GEOPHIRES will assume default property tax rate (0)")    
+                print("Warning: No valid property tax rate provided. GEOPHIRES will assume default property tax rate (0)")
 
         #inflrateconstruction: inflation rate during construction (-)
         try:
             inflrateconstruction = float(content[[i for i, s in enumerate(content) if 'Inflation Rate During Construction,' in s][0]].split(',')[1].strip('\n'))
             if inflrateconstruction < 0 or inflrateconstruction > 1:
                 inflrateconstruction = 0
-                print("Warning: Provided inflation rate during construction is outside of range 0 to 1. GEOPHIRES will assume default inflation rate during construction (0)")  
+                print("Warning: Provided inflation rate during construction is outside of range 0 to 1. GEOPHIRES will assume default inflation rate during construction (0)")
         except:
             inflrateconstruction = 0
-            print("Warning: No valid inflation rate during construction provided. GEOPHIRES will assume default inflation rate during construction (0)") 
+            print("Warning: No valid inflation rate during construction provided. GEOPHIRES will assume default inflation rate during construction (0)")
 
         #capital cost parameters
         try: #user can provide total capital cost (M$)
             totalcapcost = float(content[[i for i, s in enumerate(content) if 'Total Capital Cost,' in s][0]].split(',')[1].strip('\n'))
-            totalcapcostprovided = 1    
+            totalcapcostprovided = 1
             if totalcapcost < 0 or totalcapcost > 1000:
-                totalcapcostvalid = 0        
-                print("Warning: Provided total capital cost outside of range 0 to 1000. GEOPHIRES will calculate total capital cost using user-provided costs or built-in correlations for each category.")  
+                totalcapcostvalid = 0
+                print("Warning: Provided total capital cost outside of range 0 to 1000. GEOPHIRES will calculate total capital cost using user-provided costs or built-in correlations for each category.")
             else:
                 totalcapcostvalid = 1
         except:
@@ -1153,7 +1206,7 @@ class Geophires(object):
             ccwellfixed = float(content[[i for i, s in enumerate(content) if 'Well Drilling and Completion Capital Cost,' in s][0]].split(',')[1].strip('\n'))
             ccwellfixedprovided = 1
             if ccwellfixed < 0 or ccwellfixed > 200:
-                ccwellfixedvalid = 0        
+                ccwellfixedvalid = 0
             else:
                 ccwellfixedvalid = 1
         except:
@@ -1190,16 +1243,16 @@ class Geophires(object):
                 wellcorrelation = int(content[[i for i, s in enumerate(content) if 'Well Drilling Cost Correlation,' in s][0]].split(',')[1].strip('\n'))
                 if not (wellcorrelation in [1,2,3,4]):
                     wellcorrelation = 1
-                    print("Warning: Selected well drilling cost correlation number should be 1, 2, 3 or 4. GEOPHIRES will assume default well drilling cost correlation (1)") 
+                    print("Warning: Selected well drilling cost correlation number should be 1, 2, 3 or 4. GEOPHIRES will assume default well drilling cost correlation (1)")
             except:
                 wellcorrelation = 1
-                print("Warning: No valid well drilling cost correlation number provided. GEOPHIRES will assume default well drilling cost correlation (1)") 
+                print("Warning: No valid well drilling cost correlation number provided. GEOPHIRES will assume default well drilling cost correlation (1)")
         #ccstimfixed: reservoir stimulation cost in M$
         try:
             ccstimfixed = float(content[[i for i, s in enumerate(content) if 'Reservoir Stimulation Capital Cost,' in s][0]].split(',')[1].strip('\n'))
-            ccstimfixedprovided = 1    
+            ccstimfixedprovided = 1
             if ccstimfixed < 0 or ccstimfixed > 100:
-                ccstimfixedvalid = 0        
+                ccstimfixedvalid = 0
             else:
                 ccstimfixedvalid = 1
         except:
@@ -1233,9 +1286,9 @@ class Geophires(object):
         #ccplantfixed: surface plant cost in M$
         try:
             ccplantfixed = float(content[[i for i, s in enumerate(content) if 'Surface Plant Capital Cost,' in s][0]].split(',')[1].strip('\n'))
-            ccplantfixedprovided = 1    
+            ccplantfixedprovided = 1
             if ccplantfixed < 0 or ccplantfixed > 1000:
-                ccplantfixedvalid = 0        
+                ccplantfixedvalid = 0
             else:
                 ccplantfixedvalid = 1
         except:
@@ -1276,9 +1329,9 @@ class Geophires(object):
         #ccgathfixed: field gathering system network cost in M$
         try:
             ccgathfixed = float(content[[i for i, s in enumerate(content) if 'Field Gathering System Capital Cost,' in s][0]].split(',')[1].strip('\n'))
-            ccgathfixedprovided = 1    
+            ccgathfixedprovided = 1
             if ccgathfixed < 0 or ccgathfixed > 100:
-                ccgathfixedvalid = 0        
+                ccgathfixedvalid = 0
             else:
                 ccgathfixedvalid = 1
         except:
@@ -1319,9 +1372,9 @@ class Geophires(object):
         #ccexplfixed: exploration cost in M$
         try:
             ccexplfixed = float(content[[i for i, s in enumerate(content) if 'Exploration Capital Cost,' in s][0]].split(',')[1].strip('\n'))
-            ccexplfixedprovided = 1    
+            ccexplfixedprovided = 1
             if ccexplfixed < 0 or ccexplfixed > 100:
-                ccexplfixedvalid = 0        
+                ccexplfixedvalid = 0
             else:
                 ccexplfixedvalid = 1
         except:
@@ -1366,15 +1419,15 @@ class Geophires(object):
                 print("Warning: Provided surface transmission piping length outside of range 0-100. GEOPHIRES will assume default piping length (5km)")
         except:
             pipinglength = 0
-            
+
         #O&M cost parameters
         #oamtotalfixed: total O&M cost in M$/year
         try: #user can provide total O&M cost (M$)
             oamtotalfixed = float(content[[i for i, s in enumerate(content) if 'Total O&M Cost,' in s][0]].split(',')[1].strip('\n'))
-            oamtotalfixedprovided = 1    
+            oamtotalfixedprovided = 1
             if oamtotalfixed < 0 or oamtotalfixed > 100:
-                oamtotalfixedvalid = 0        
-                print("Warning: Provided total annual O&M cost outside of range 0 to 100. GEOPHIRES will calculate total O&M cost using user-provided costs or built-in correlations for each category.")  
+                oamtotalfixedvalid = 0
+                print("Warning: Provided total annual O&M cost outside of range 0 to 100. GEOPHIRES will calculate total O&M cost using user-provided costs or built-in correlations for each category.")
             else:
                 oamtotalfixedvalid = 1
         except:
@@ -1384,9 +1437,9 @@ class Geophires(object):
         #oamwellfixed: total wellfield O&M cost in M$/year
         try:
             oamwellfixed = float(content[[i for i, s in enumerate(content) if 'Wellfield O&M Cost,' in s][0]].split(',')[1].strip('\n'))
-            oamwellfixedprovided = 1    
+            oamwellfixedprovided = 1
             if oamwellfixed < 0 or oamwellfixed > 100:
-                oamwellfixedvalid = 0        
+                oamwellfixedvalid = 0
             else:
                 oamwellfixedvalid = 1
         except:
@@ -1426,9 +1479,9 @@ class Geophires(object):
         #oamplantfixed: plant O&M cost in M$/year
         try:
             oamplantfixed = float(content[[i for i, s in enumerate(content) if 'Surface Plant O&M Cost,' in s][0]].split(',')[1].strip('\n'))
-            oamplantfixedprovided = 1    
+            oamplantfixedprovided = 1
             if oamplantfixed < 0 or oamplantfixed > 100:
-                oamplantfixedvalid = 0        
+                oamplantfixedvalid = 0
             else:
                 oamplantfixedvalid = 1
         except:
@@ -1468,9 +1521,9 @@ class Geophires(object):
         #oamwaterfixed: total water cost in M$/year
         try:
             oamwaterfixed = float(content[[i for i, s in enumerate(content) if 'Water Cost,' in s][0]].split(',')[1].strip('\n'))
-            oamwaterfixedprovided = 1    
+            oamwaterfixedprovided = 1
             if oamwaterfixed < 0 or oamwaterfixed > 100:
-                oamwaterfixedvalid = 0        
+                oamwaterfixedvalid = 0
             else:
                 oamwaterfixedvalid = 1
         except:
@@ -1508,23 +1561,23 @@ class Geophires(object):
                 oamwateradjfactor = 1
 
         #elecprice: electricity price (in $/kWh) to calculate pumping cost in case of direct-use or additional revenue stream from electricity sales in co-gen option
-        if enduseoption in [2,32,42,52]: 
+        if enduseoption in [2,32,42,52]:
             try:
                     elecprice = float(content[[i for i, s in enumerate(content) if 'Electricity Rate' in s][0]].split(',')[1].strip('\n'))
                     if elecprice < 0 or elecprice > 1:
                         elecprice = 0.07
-                        print("Warning: Provided electricty rate is outside of range 0-1. GEOPHIRES will assume default electricity rate ($0.07/kWh)")  
+                        print("Warning: Provided electricty rate is outside of range 0-1. GEOPHIRES will assume default electricity rate ($0.07/kWh)")
             except:
                     elecprice = 0.07
                     print("Warning: No valid electricity rate provided. GEOPHIRES will assume default electricity rate ($0.07/kWh)")
-                
+
         #heatprice: heat price (in $/kWh) to calculate additional revenue stream from heat sales in co-gen option
-        if enduseoption in [31,41,51]: 
+        if enduseoption in [31,41,51]:
             try:
                     heatprice = float(content[[i for i, s in enumerate(content) if 'Heat Rate' in s][0]].split(',')[1].strip('\n'))
                     if heatprice < 0 or heatprice > 1:
                         heatprice = 0.02
-                        print("Warning: Provided heat rate is outside of range 0-1. GEOPHIRES will assume default heat rate ($0.02/kWh)")  
+                        print("Warning: Provided heat rate is outside of range 0-1. GEOPHIRES will assume default heat rate ($0.02/kWh)")
             except:
                     heatprice = 0.02
                     print("Warning: No valid heat rate provided. GEOPHIRES will assume default heat rate ($0.02/kWh)")
@@ -1536,13 +1589,13 @@ class Geophires(object):
             printoutput = int(content[[i for i, s in enumerate(content) if 'Print Output to Console' in s][0]].split(',')[1].strip('\n'))
             if not (printoutput in [0,1]):
                 printoutput = 1
-                print("Warning: Provided print output option should be 0 or 1. GEOPHIRES will assume default print output option (1)")  
+                print("Warning: Provided print output option should be 0 or 1. GEOPHIRES will assume default print output option (1)")
         except:
             printoutput = 1
             print("Warning: No valid print output option provided. GEOPHIRES will assume default print output option (1)")
 
         #number of timesteps per year [1/year]
-        try: 
+        try:
             timestepsperyear = int(content[[i for i, s in enumerate(content) if 'Time steps per year' in s][0]].split(',')[1].strip('\n'))
             if not (timestepsperyear in list(range(1,101))):
                 timestepsperyear = 4
@@ -1560,7 +1613,7 @@ class Geophires(object):
             maxdepth = (Tmax-Tsurf)/gradient[0]
         else:
             maxdepth = 0
-            intersecttemperature[0] = Tsurf+gradient[0]*layerthickness[0]      
+            intersecttemperature[0] = Tsurf+gradient[0]*layerthickness[0]
             for i in range(1,numseg-1):
                 intersecttemperature[i] = intersecttemperature[i-1]+gradient[i]*layerthickness[i]
             layerindex = next(loc for loc, val in enumerate(intersecttemperature) if val > Tmax)
@@ -1597,18 +1650,18 @@ class Geophires(object):
         rhowater = self.densitywater(Tinj*0.5+(Trock*0.9+Tinj*0.1)*0.5)
 
         # temperature gain in injection wells
-        Tinj = Tinj + tempgaininj 
+        Tinj = Tinj + tempgaininj
 
         # calculate reservoir temperature output (internal or external)
-        #   resoption = 1  Multiple parallel fractures model (LANL)                            
-        #   resoption = 2  Volumetric block model (1D linear heat sweep model (Stanford))                       
+        #   resoption = 1  Multiple parallel fractures model (LANL)
+        #   resoption = 2  Volumetric block model (1D linear heat sweep model (Stanford))
         #   resoption = 3  Drawdown parameter model (Tester)
         #   resoption = 4  Thermal drawdown percentage model (GETEM)
         #   resoption = 5  Generic user-provided temperature profile
         #   resoption = 6  Tough2 is called
 
         if resoption == 1:
-            
+
             # convert flowrate to volumetric rate
             q = nprod*prodwellflowrate/rhowater # m^3/s
 
@@ -1620,7 +1673,7 @@ class Geophires(object):
 
             # calculate non-dimensional temperature array
             Twnd = []
-            try:    
+            try:
                 for t in range(1, len(timevector)):
                     Twnd = Twnd + [float(invertlaplace(fp, td[t], method='talbot'))]
             except:
@@ -1632,9 +1685,9 @@ class Geophires(object):
             # calculate dimensional temperature, add initial rock temperature to beginning of array
             Tresoutput = Trock - (Twnd*(Trock-Tinj))
             Tresoutput = np.append([Trock], Tresoutput)
-            
+
         elif resoption == 2:
-            
+
             # specify rock properties
             phi = porrock # porosity [%]
             h = 500. # heat transfer coefficient [W/m^2 K]
@@ -1677,9 +1730,9 @@ class Geophires(object):
             Tresoutput = Twnd*(Trock-Tinj) + Tinj
             Tresoutput = np.append([Trock], Tresoutput)
             Tresoutput = np.asarray([Trock if x>Trock or x<Tinj else x for x in Tresoutput])
-            
+
         elif resoption == 3:
-            
+
             Tresoutput[0] = Trock
             for i in range(1,len(timevector)): Tresoutput[i] = math.erf(1./drawdp/cpwater*math.sqrt(krock*rhorock*cprock/timevector[i]/(365.*24.*3600.)))*(Trock-Tinj)+Tinj
 
@@ -1689,11 +1742,11 @@ class Geophires(object):
 
         elif resoption == 5:
 
-            Tresoutput[0] = Trock    
-            restempfname = filenamereservoiroutput    
-            try:    
+            Tresoutput[0] = Trock
+            restempfname = filenamereservoiroutput
+            try:
                 with open(restempfname) as f:
-                    contentprodtemp = f.readlines()    
+                    contentprodtemp = f.readlines()
             except:
                 print('Error: GEOPHIRES could not read reservoir output file ('+filenamereservoiroutput+') and will abort simulation.')
                 sys.exit()
@@ -1705,7 +1758,7 @@ class Geophires(object):
                 Tresoutput[i] = float(contentprodtemp[i].split(',')[1].strip('\n'))
 
         elif resoption == 6:
-            
+
             # GEOPHIRES assumes TOUGH2 executable and input file are in same directory as GEOPHIRESv2.py
 
             #create tough2 input file
@@ -1728,7 +1781,7 @@ class Geophires(object):
                 DeltaYgrid = reservoirwidth/11
                 DeltaZgrid = reservoirthickness/5
                 flowrate = prodwellflowrate
-                
+
                 #convert injection temperature to injection enthalpy
                 arraytinj = np.array([1.8,    11.4,  23.4,  35.4,  47.4,  59.4,  71.3,  83.3,  95.2, 107.1, 118.9])
                 arrayhinj = np.array([1.0E4, 5.0E4, 1.0E5, 1.5E5, 2.0E5, 2.5E5, 3.0E5, 3.5E5, 4.0E5, 4.5E5, 5.0E5])
@@ -1777,28 +1830,28 @@ class Geophires(object):
                 f.write('A36 2  012\n')
                 f.write('A3616  021\n')
                 f.write('\n')
-                f.write('ENDCY\n')    
+                f.write('ENDCY\n')
                 f.close()
                 print("GEOPHIRES will run TOUGH2 simulation with built-in Doublet model ...")
-            
+
             else:
                 infile = tough2modelfilename
                 outfile = str('tough2output.out')
-                print("GEOPHIRES will run TOUGH2 simulation with user-provided input file = "+tough2modelfilename+" ...") 
+                print("GEOPHIRES will run TOUGH2 simulation with user-provided input file = "+tough2modelfilename+" ...")
 
-            # run TOUGH2 executable            
+            # run TOUGH2 executable
             try:
                 os.system('%s < %s > %s' % (path_to_exe, infile, outfile))
             except:
-                print("Error: GEOPHIRES could not run TOUGH2 and will abort simulation.")        
+                print("Error: GEOPHIRES could not run TOUGH2 and will abort simulation.")
                 sys.exit()
 
             # read output temperature and pressure
-            try:    
+            try:
                 fname = 'FOFT'
                 with open(fname) as f:
                     content = f.readlines()
-            
+
                 NumerOfResults = len(content)
                 SimTimes = np.zeros(NumerOfResults)
                 ProdPressure = np.zeros(NumerOfResults)
@@ -1807,12 +1860,12 @@ class Geophires(object):
                     SimTimes[i] = float(content[i].split(',')[1].strip('\n'))
                     ProdPressure[i] = float(content[i].split(',')[8].strip('\n'))
                     ProdTemperature[i] = float(content[i].split(',')[9].strip('\n'))
-                
-                #print(ProdTemperature)    
+
+                #print(ProdTemperature)
                 Tresoutput = np.interp(timevector*365*24*3600,SimTimes,ProdTemperature)
             except:
                 print("Error: GEOPHIRES could not import production temperature and pressure from TOUGH2 output file ("+fname+") and will abort simulation.")
-                
+
             # define function to extract temperature profile from outfile (move up to top of script?)
 
         #calculate wellbore temperature drop
@@ -1821,16 +1874,16 @@ class Geophires(object):
             ProdTempDrop = tempdropprod
         elif rameyoptionprod == 1:
             alpharock = krock/(rhorock*cprock)
-            framey = np.zeros(len(timevector))    
+            framey = np.zeros(len(timevector))
             framey[1:] = -np.log(1.1*(prodwelldiam/2.)/np.sqrt(4.*alpharock*timevector[1:]*365.*24.*3600.*utilfactor))-0.29
             framey[0] = -np.log(1.1*(prodwelldiam/2.)/np.sqrt(4.*alpharock*timevector[1]*365.*24.*3600.*utilfactor))-0.29 #assume outside diameter of casing is 10% larger than inside diameter of production pipe (=prodwelldiam)
-            #assume borehole thermal resistance negligible to rock thermal resistance        
+            #assume borehole thermal resistance negligible to rock thermal resistance
             rameyA = prodwellflowrate*cpwater*framey/2/math.pi/krock
             #this code is only valid so far for 1 gradient and deviation = 0 !!!!!!!!   For multiple gradients, use Ramey's model for every layer
-                
+
             ProdTempDrop = -((Trock - Tresoutput) - averagegradient*(depth - rameyA) + (Tresoutput - averagegradient*rameyA - Trock)*np.exp(-depth/rameyA))
 
-        ProducedTemperature = Tresoutput-ProdTempDrop    
+        ProducedTemperature = Tresoutput-ProdTempDrop
 
         #redrilling
         redrill = 0
@@ -1841,7 +1894,7 @@ class Geophires(object):
                 ProducedTemperatureRepeatead = np.tile(ProducedTemperature[0:indexfirstmaxdrawdown],redrill+1)
                 ProducedTemperature = ProducedTemperatureRepeatead[0:len(ProducedTemperature)]
 
-            
+
 
         #------------------------------------------
         #calculate pressure drops and pumping power
@@ -1856,14 +1909,14 @@ class Geophires(object):
         if Rewaterprodaverage < 2300. :
             f3 = 64./Rewaterprod
         else:
-            relroughness = 1E-4/prodwelldiam    
+            relroughness = 1E-4/prodwelldiam
             f3 = 1./np.power(-2*np.log10(relroughness/3.7+5.74/np.power(Rewaterprod,0.9)),2.)
             f3 = 1./np.power((-2*np.log10(relroughness/3.7+2.51/Rewaterprod/np.sqrt(f3))),2.)
             f3 = 1./np.power((-2*np.log10(relroughness/3.7+2.51/Rewaterprod/np.sqrt(f3))),2.)
             f3 = 1./np.power((-2*np.log10(relroughness/3.7+2.51/Rewaterprod/np.sqrt(f3))),2.)
             f3 = 1./np.power((-2*np.log10(relroughness/3.7+2.51/Rewaterprod/np.sqrt(f3))),2.)
             f3 = 1./np.power((-2*np.log10(relroughness/3.7+2.51/Rewaterprod/np.sqrt(f3))),2.) #6 iterations to converge
-            
+
         #injection well conditions
         Tinjaverage = Tinj
         rhowaterinj = self.densitywater(Tinjaverage)*np.linspace(1,1,len(ProducedTemperature))
@@ -1880,34 +1933,34 @@ class Geophires(object):
             f1 = 1./np.power((-2*np.log10(relroughness/3.7+2.51/Rewaterinj/np.sqrt(f1))),2.)
             f1 = 1./np.power((-2*np.log10(relroughness/3.7+2.51/Rewaterinj/np.sqrt(f1))),2.)
             f1 = 1./np.power((-2*np.log10(relroughness/3.7+2.51/Rewaterinj/np.sqrt(f1))),2.)
-            f1 = 1./np.power((-2*np.log10(relroughness/3.7+2.51/Rewaterinj/np.sqrt(f1))),2.)  #6 iterations to converge 
-            
+            f1 = 1./np.power((-2*np.log10(relroughness/3.7+2.51/Rewaterinj/np.sqrt(f1))),2.)  #6 iterations to converge
+
         if impedancemodelused == 1: #assumed everything stays liquid throughout
             #injecion well pressure drop [kPa]
             DP1 = f1*(rhowaterinj*vinj**2/2)*(depth/injwelldiam)/1E3      #/1E3 to convert from Pa to kPa
-            
+
             #reservoir pressure drop [kPa]
             rhowaterreservoir = self.densitywater(0.1*Tinj+0.9*Tresoutput)    #based on TARB in Geophires v1.2
             DP2 = impedance*nprod*prodwellflowrate*1000./rhowaterreservoir
-            
+
             #production well pressure drop [kPa]
             DP3 = f3*(rhowaterprod*vprod**2/2.)*(depth/prodwelldiam)/1E3     #/1E3 to convert from Pa to kPa
-            
+
             #buoyancy pressure drop [kPa]
             DP4 = (rhowaterprod-rhowaterinj)*depth*9.81/1E3 # /1E3 to convert from Pa to kPa
-            
+
             #overall pressure drop
             DP = DP1 + DP2 + DP3 + DP4
 
             #calculate pumping power [MWe] (approximate)
-            PumpingPower = DP*nprod*prodwellflowrate*(1+waterloss)/rhowaterinj/pumpeff/1E3   
+            PumpingPower = DP*nprod*prodwellflowrate*(1+waterloss)/rhowaterinj/pumpeff/1E3
 
             #in GEOPHIRES v1.2, negative pumping power values become zero (b/c we are not generating electricity)
             PumpingPower = [0. if x<0. else x for x in PumpingPower]
 
         else: #PI and II are used
             #reservoir hydrostatic pressure [kPa]
-            if usebuiltinhydrostaticpressurecorrelation == 1:    
+            if usebuiltinhydrostaticpressurecorrelation == 1:
                 CP = 4.64E-7
                 CT = 9E-4/(30.796*Trock**(-0.552))
                 Phydrostatic = 0+1./CP*(math.exp(self.densitywater(Tsurf)*9.81*CP/1000*(depth-CT/2*averagegradient*depth**2))-1)
@@ -1922,8 +1975,8 @@ class Geophires(object):
                     Pprodwellhead = ppwellhead
                     if Pprodwellhead < Pminimum:
                         Pprodwellhead = Pminimum
-                        print("Warning: provided production wellhead pressure under minimum pressure. GEOPHIRES will assume minimum wellhead pressure") 
-                
+                        print("Warning: provided production wellhead pressure under minimum pressure. GEOPHIRES will assume minimum wellhead pressure")
+
                 PIkPa = PI/100 #convert PI from kg/s/bar to kg/s/kPa
 
                 #calculate pumping depth
@@ -1931,18 +1984,18 @@ class Geophires(object):
                 pumpdepthfinal = np.max(pumpdepth)
                 if pumpdepthfinal < 0:
                     pumpdepthfinal = 0
-                    print("Warning: GEOPHIRES calculates negative production well pumping depth. No production well pumps will be assumed") 
+                    print("Warning: GEOPHIRES calculates negative production well pumping depth. No production well pumps will be assumed")
                 elif pumpdepthfinal > 600:
-                    print("Warning: GEOPHIRES calculates pump depth to be deeper than 600 m. Verify reservoir pressure, production well flow rate and production well dimensions")  
-            
+                    print("Warning: GEOPHIRES calculates pump depth to be deeper than 600 m. Verify reservoir pressure, production well flow rate and production well dimensions")
+
                 #calculate production well pumping pressure [kPa]
                 DP3 = Pprodwellhead - (Phydrostatic - prodwellflowrate/PIkPa - rhowaterprod*9.81*depth/1E3 - f3*(rhowaterprod*vprod**2/2.)*(depth/prodwelldiam)/1E3)
-                #DP3 = [0 if x<0 else x for x in DP3] #set negative values to 0        
+                #DP3 = [0 if x<0 else x for x in DP3] #set negative values to 0
                 PumpingPowerProd = DP3*nprod*prodwellflowrate/rhowaterprod/pumpeff/1E3 #[MWe] total pumping power for production wells
                 PumpingPowerProd = np.array([0. if x<0. else x for x in PumpingPowerProd])
-            
-            IIkPa = II/100 #convert II from kg/s/bar to kg/s/kPa    
-            
+
+            IIkPa = II/100 #convert II from kg/s/bar to kg/s/kPa
+
             #necessary injection wellhead pressure [kPa]
             Pinjwellhead = Phydrostatic + prodwellflowrate*(1+waterloss)*nprod/ninj/IIkPa - rhowaterinj*9.81*depth/1E3 + f1*(rhowaterinj*vinj**2/2)*(depth/injwelldiam)/1E3
 
@@ -1956,12 +2009,12 @@ class Geophires(object):
             #DP1 = [0 if x<0 else x for x in DP1] #set negative values to 0
             PumpingPowerInj = DP1*nprod*prodwellflowrate*(1+waterloss)/rhowaterinj/pumpeff/1E3 #[MWe] total pumping power for injection wells
             PumpingPowerInj = np.array([0. if x<0. else x for x in PumpingPowerInj])
-            
+
             #total pumping power
             if productionwellpumping == 1:
                 PumpingPower = PumpingPowerInj + PumpingPowerProd
             else:
-                PumpingPower = PumpingPowerInj 
+                PumpingPower = PumpingPowerInj
 
             #negative pumping power values become zero (b/c we are not generating electricity)
             PumpingPower = [0. if x<0. else x for x in PumpingPower]
@@ -1972,7 +2025,7 @@ class Geophires(object):
         if enduseoption == 2: #direct-use
             HeatExtracted = nprod*prodwellflowrate*cpwater*(ProducedTemperature - Tinj)/1E6 #heat extracted from geofluid [MWth]
             HeatProduced = HeatExtracted*enduseefficiencyfactor #useful direct-use heat provided to application [MWth]
-        else:    
+        else:
             if (math.floor(enduseoption/10) == 4):
                 TenteringPP = Tchpbottom
             else:
@@ -1985,7 +2038,7 @@ class Geophires(object):
             T1 = TenteringPP + 273.15
             T2 = Tenv + 273.15
             Availability = ((A-B*T0)*(T1-T2)+(B-C*T0)/2.0*(T1**2-T2**2)+C/3.0*(T1**3-T2**3)-A*T0*np.log(T1/T2))*2.2046/947.83    #MJ/kg
-            
+
             if pptype == 1: #Subcritical ORC
                 if (Tenv < 15.):
                     C1 = 2.746E-3
@@ -2019,7 +2072,7 @@ class Geophires(object):
                 ReinjTemp = (1.-Tfraction)*reinjtll + Tfraction*reinjtul
             elif pptype == 2: #Supercritical ORC
                 if (Tenv < 15.):
-                    C2 = -1.55E-5             
+                    C2 = -1.55E-5
                     C1 = 7.604E-3
                     C0 = -3.78E-1
                     D2 = -1.499E-5
@@ -2027,7 +2080,7 @@ class Geophires(object):
                     D0 = -3.7915E-1
                     Tfraction = (Tenv-5.)/10.
                 else:
-                    C2 = -1.499E-5           
+                    C2 = -1.499E-5
                     C1 = 7.4268E-3
                     C0 = -3.7915E-1
                     D2 = -1.55E-5
@@ -2051,7 +2104,7 @@ class Geophires(object):
                     Tfraction = (Tenv-15.)/10.
                 reinjtll = C1*TenteringPP + C0
                 reinjtul = D1*TenteringPP + D0
-                ReinjTemp = (1.-Tfraction)*reinjtll + Tfraction*reinjtul        
+                ReinjTemp = (1.-Tfraction)*reinjtll + Tfraction*reinjtul
             elif pptype == 3: #single-flash
                 if (Tenv < 15.):
                     C2 = -4.27318E-7
@@ -2130,11 +2183,11 @@ class Geophires(object):
                 reinjtll = C2*TenteringPP**2 + C1*TenteringPP + C0
                 reinjtul = D2*TenteringPP**2 + D1*TenteringPP + D0
                 ReinjTemp = (1.-Tfraction)*reinjtll + Tfraction*reinjtul
-            
+
             #check if reinjectemp (model calculated) >= Tinj (user provided)
             if enduseoption == 1: #pure electricity
                 if np.min(ReinjTemp) < Tinj:
-                    Tinj = np.min(ReinjTemp)    
+                    Tinj = np.min(ReinjTemp)
                     print("Warning: injection temperature lowered")
             elif (math.floor(enduseoption/10) == 3): #enduseoption = 3: cogen topping cycle
                 if np.min(ReinjTemp) < Tinj:
@@ -2148,23 +2201,23 @@ class Geophires(object):
                 if np.min(ReinjTemp) < Tinj:
                     #Tinj = np.min(ReinjTemp)
                     print("Warning: injection temperature incorrect but cannot be lowered")
-                    #chpfraction*Tinj+(1-chpfraction)     
-            
+                    #chpfraction*Tinj+(1-chpfraction)
+
             #calculate electricity/heat
             if enduseoption == 1: #pure electricity
-                ElectricityProduced = Availability*etau*nprod*prodwellflowrate        
+                ElectricityProduced = Availability*etau*nprod*prodwellflowrate
                 HeatExtracted = nprod*prodwellflowrate*cpwater*(ProducedTemperature - Tinj)/1E6 #Heat extracted from geofluid [MWth]
                 HeatExtractedTowardsElectricity = HeatExtracted
             elif (math.floor(enduseoption/10) == 3): #enduseoption = 3: cogen topping cycle
                 ElectricityProduced = Availability*etau*nprod*prodwellflowrate
-                HeatExtracted = nprod*prodwellflowrate*cpwater*(ProducedTemperature - Tinj)/1E6 #Heat extracted from geofluid [MWth]        
-                HeatProduced = enduseefficiencyfactor*nprod*prodwellflowrate*cpwater*(ReinjTemp - Tinj)/1E6 #Useful heat for direct-use application [MWth] 
+                HeatExtracted = nprod*prodwellflowrate*cpwater*(ProducedTemperature - Tinj)/1E6 #Heat extracted from geofluid [MWth]
+                HeatProduced = enduseefficiencyfactor*nprod*prodwellflowrate*cpwater*(ReinjTemp - Tinj)/1E6 #Useful heat for direct-use application [MWth]
                 HeatExtractedTowardsElectricity = nprod*prodwellflowrate*cpwater*(ProducedTemperature - ReinjTemp)/1E6
             elif (math.floor(enduseoption/10) == 4): #enduseoption = 4: cogen bottoming cycle
                 ElectricityProduced = Availability*etau*nprod*prodwellflowrate
                 HeatExtracted = nprod*prodwellflowrate*cpwater*(ProducedTemperature - Tinj)/1E6 #Heat extracted from geofluid [MWth]
                 HeatProduced = enduseefficiencyfactor*nprod*prodwellflowrate*cpwater*(ProducedTemperature - Tchpbottom)/1E6 #Useful heat for direct-use application [MWth]
-                HeatExtractedTowardsElectricity = nprod*prodwellflowrate*cpwater*(Tchpbottom - Tinj)/1E6        
+                HeatExtractedTowardsElectricity = nprod*prodwellflowrate*cpwater*(Tchpbottom - Tinj)/1E6
             elif (math.floor(enduseoption/10) == 5): #enduseoption = 5: cogen split of mass flow rate
                 ElectricityProduced = Availability*etau*nprod*prodwellflowrate*(1.-chpfraction) #electricity part [MWe]
                 HeatExtracted = nprod*prodwellflowrate*cpwater*(ProducedTemperature - Tinj)/1E6 #Total amount of heat extracted from geofluid [MWth]
@@ -2172,14 +2225,14 @@ class Geophires(object):
                 HeatExtractedTowardsElectricity = (1.-chpfraction)*nprod*prodwellflowrate*cpwater*(ProducedTemperature - Tinj)/1E6
 
             #subtract pumping power for net electricity and  calculate first law efficiency
-            if enduseoption == 1 or enduseoption > 2:    
+            if enduseoption == 1 or enduseoption > 2:
                 NetElectricityProduced = ElectricityProduced - PumpingPower
                 FirstLawEfficiency = NetElectricityProduced/HeatExtractedTowardsElectricity
-                
+
         #-------------
         #capital costs
         #-------------
-        #well costs (using GeoVision drilling correlations). These are calculated whether or not totalcapcostvalid = 1  
+        #well costs (using GeoVision drilling correlations). These are calculated whether or not totalcapcostvalid = 1
         if ccwellfixedvalid == 1:
             C1well = ccwellfixed
             Cwell = C1well*(nprod+ninj)
@@ -2193,15 +2246,15 @@ class Geophires(object):
             elif wellcorrelation == 4: #deviated liner, large diameter
                 C1well = (0.2553*depth**2 + 1716.7157*depth + 500867.)*1E-6
             if depth < 500.:
-                print ("Warning: drilling cost correlation extrapolated for drilling depth < 500 m")      
+                print ("Warning: drilling cost correlation extrapolated for drilling depth < 500 m")
             if depth > 7000.:
-                print ("Warning: drilling cost correlation extrapolated for drilling depth > 7000 m")      
+                print ("Warning: drilling cost correlation extrapolated for drilling depth > 7000 m")
             C1well = ccwelladjfactor*C1well
             Cwell = 1.05*C1well*(nprod+ninj) #1.05 for 5% indirect costs
 
-        #reservoir stimulation costs (M$/injection well). These are calculated whether or not totalcapcostvalid = 1 
+        #reservoir stimulation costs (M$/injection well). These are calculated whether or not totalcapcostvalid = 1
         if ccstimfixedvalid == 1:
-            Cstim = ccstimfixed    
+            Cstim = ccstimfixed
         else:
             Cstim = 1.05*1.15*ccstimadjfactor*ninj*1.25 #1.15 for 15% contingency and 1.05 for 5% indirect costs
 
@@ -2210,7 +2263,7 @@ class Geophires(object):
             Cgath = ccgathfixed
         else:
             #Cgath = ccgathadjfactor*50-6*np.max(HeatExtracted)*1000. (GEOPHIRES v1 correlation)
-            
+
             if impedancemodelused == 1:
                 pumphp = np.max(PumpingPower)*1341
                 numberofpumps = np.ceil(pumphp/2000) #pump can be maximum 2,000 hp
@@ -2218,14 +2271,14 @@ class Geophires(object):
                     Cpumps =0
                 else:
                     pumphpcorrected = pumphp/numberofpumps
-                    Cpumps = numberofpumps*1.5*((1750*(pumphpcorrected)**0.7)*3*(pumphpcorrected)**(-0.11)) 
+                    Cpumps = numberofpumps*1.5*((1750*(pumphpcorrected)**0.7)*3*(pumphpcorrected)**(-0.11))
             else:
                 if productionwellpumping == 1:
                     prodpumphp = np.max(PumpingPowerProd)/nprod*1341
                     Cpumpsprod = nprod*1.5*(1750*(prodpumphp)**0.7 + 5750*(prodpumphp)**0.2  + 10000 + np.max(pumpdepth)*50*3.281) #see page 46 in user's manual asusming rental of rig for 1 day.
                 else:
                     Cpumpsprod = 0
-                    
+
                 injpumphp = np.max(PumpingPowerInj)*1341
                 numberofinjpumps = np.ceil(injpumphp/2000) #pump can be maximum 2,000 hp
                 if numberofinjpumps == 0:
@@ -2233,11 +2286,11 @@ class Geophires(object):
                 else:
                     injpumphpcorrected = injpumphp/numberofinjpumps
                     Cpumpsinj = numberofinjpumps*1.5*(1750*(injpumphpcorrected)**0.7)*3*(injpumphpcorrected)**(-0.11)
-                
+
                 Cpumps = Cpumpsinj + Cpumpsprod
-                
+
             Cgath = 1.15*ccgathadjfactor*1.12*((nprod+ninj)*750*500. + Cpumps)/1E6 #Based on GETEM 2016 #1.15 for 15% contingency and 1.12 for 12% indirect costs
-            
+
             #plant costs
         if enduseoption == 2: #direct-use
             if ccplantfixedvalid == 1:
@@ -2249,137 +2302,137 @@ class Geophires(object):
                 MaxProducedTemperature = np.max(TenteringPP)
                 if (MaxProducedTemperature < 150.):
                     C3 = -1.458333E-3
-                    C2 = 7.6875E-1 
-                    C1 = -1.347917E2 
-                    C0 = 1.0075E4 
+                    C2 = 7.6875E-1
+                    C1 = -1.347917E2
+                    C0 = 1.0075E4
                     CCAPP1 = C3*MaxProducedTemperature**3 + C2*MaxProducedTemperature**2 + C1*MaxProducedTemperature + C0
                 else:
-                    CCAPP1 = 2231 - 2*(MaxProducedTemperature-150.) 
+                    CCAPP1 = 2231 - 2*(MaxProducedTemperature-150.)
                 Cplantcorrelation = CCAPP1*math.pow(np.max(ElectricityProduced)/15.,-0.06)*np.max(ElectricityProduced)*1000./1E6
 
             elif pptype == 2: #supercritical ORC
                 MaxProducedTemperature = np.max(TenteringPP)
                 if (MaxProducedTemperature < 150.):
                     C3 = -1.458333E-3
-                    C2 = 7.6875E-1 
-                    C1 = -1.347917E2 
-                    C0 = 1.0075E4 
+                    C2 = 7.6875E-1
+                    C1 = -1.347917E2
+                    C0 = 1.0075E4
                     CCAPP1 = C3*MaxProducedTemperature**3 + C2*MaxProducedTemperature**2 + C1*MaxProducedTemperature + C0
                 else:
-                    CCAPP1 = 2231 - 2*(MaxProducedTemperature-150.) 
+                    CCAPP1 = 2231 - 2*(MaxProducedTemperature-150.)
                 Cplantcorrelation = 1.1*CCAPP1*math.pow(np.max(ElectricityProduced)/15.,-0.06)*np.max(ElectricityProduced)*1000./1E6        #factor 1.1 to make supercritical 10% more expansive than subcritical
-                
+
             elif pptype == 3: #single-flash
                 if (np.max(ElectricityProduced)<10.):
-                    C2 = 4.8472E-2 
+                    C2 = 4.8472E-2
                     C1 = -35.2186
                     C0 = 8.4474E3
-                    D2 = 4.0604E-2 
+                    D2 = 4.0604E-2
                     D1 = -29.3817
                     D0 = 6.9911E3
                     PLL = 5.
                     PRL = 10.
                 elif (np.max(ElectricityProduced)<25.):
-                    C2 = 4.0604E-2 
+                    C2 = 4.0604E-2
                     C1 = -29.3817
-                    C0 = 6.9911E3	  
-                    D2 = 3.2773E-2 
+                    C0 = 6.9911E3
+                    D2 = 3.2773E-2
                     D1 = -23.5519
-                    D0 = 5.5263E3        
+                    D0 = 5.5263E3
                     PLL = 10.
                     PRL = 25.
                 elif (np.max(ElectricityProduced)<50.):
-                    C2 = 3.2773E-2 
+                    C2 = 3.2773E-2
                     C1 = -23.5519
                     C0 = 5.5263E3
-                    D2 = 3.4716E-2 
+                    D2 = 3.4716E-2
                     D1 = -23.8139
-                    D0 = 5.1787E3	          
+                    D0 = 5.1787E3
                     PLL = 25.
                     PRL = 50.
                 elif (np.max(ElectricityProduced)<75.):
-                    C2 = 3.4716E-2 
+                    C2 = 3.4716E-2
                     C1 = -23.8139
-                    C0 = 5.1787E3	
-                    D2 = 3.5271E-2 
+                    C0 = 5.1787E3
+                    D2 = 3.5271E-2
                     D1 = -24.3962
-                    D0 = 5.1972E3          
+                    D0 = 5.1972E3
                     PLL = 50.
                     PRL = 75.
                 else:
-                    C2 = 3.5271E-2 
+                    C2 = 3.5271E-2
                     C1 = -24.3962
-                    C0 = 5.1972E3	
-                    D2 = 3.3908E-2 
+                    C0 = 5.1972E3
+                    D2 = 3.3908E-2
                     D1 = -23.4890
-                    D0 = 5.0238E3          
+                    D0 = 5.0238E3
                     PLL = 75.
                     PRL = 100.
                 maxProdTemp = np.max(TenteringPP)
                 CCAPPLL = C2*maxProdTemp**2 + C1*maxProdTemp + C0
-                CCAPPRL = D2*maxProdTemp**2 + D1*maxProdTemp + D0  
+                CCAPPRL = D2*maxProdTemp**2 + D1*maxProdTemp + D0
                 b = math.log(CCAPPRL/CCAPPLL)/math.log(PRL/PLL)
                 a = CCAPPRL/PRL**b
                 Cplantcorrelation = 0.8*a*math.pow(np.max(ElectricityProduced),b)*np.max(ElectricityProduced)*1000./1E6 #factor 0.75 to make double flash 25% more expansive than single flash
-                
+
             elif pptype == 4: #double-flash
                 if (np.max(ElectricityProduced)<10.):
-                    C2 = 4.8472E-2 
+                    C2 = 4.8472E-2
                     C1 = -35.2186
                     C0 = 8.4474E3
-                    D2 = 4.0604E-2 
+                    D2 = 4.0604E-2
                     D1 = -29.3817
                     D0 = 6.9911E3
                     PLL = 5.
                     PRL = 10.
                 elif (np.max(ElectricityProduced)<25.):
-                    C2 = 4.0604E-2 
+                    C2 = 4.0604E-2
                     C1 = -29.3817
-                    C0 = 6.9911E3	  
-                    D2 = 3.2773E-2 
+                    C0 = 6.9911E3
+                    D2 = 3.2773E-2
                     D1 = -23.5519
-                    D0 = 5.5263E3        
+                    D0 = 5.5263E3
                     PLL = 10.
                     PRL = 25.
                 elif (np.max(ElectricityProduced)<50.):
-                    C2 = 3.2773E-2 
+                    C2 = 3.2773E-2
                     C1 = -23.5519
                     C0 = 5.5263E3
-                    D2 = 3.4716E-2 
+                    D2 = 3.4716E-2
                     D1 = -23.8139
-                    D0 = 5.1787E3	          
+                    D0 = 5.1787E3
                     PLL = 25.
                     PRL = 50.
                 elif (np.max(ElectricityProduced)<75.):
-                    C2 = 3.4716E-2 
+                    C2 = 3.4716E-2
                     C1 = -23.8139
-                    C0 = 5.1787E3	
-                    D2 = 3.5271E-2 
+                    C0 = 5.1787E3
+                    D2 = 3.5271E-2
                     D1 = -24.3962
-                    D0 = 5.1972E3          
+                    D0 = 5.1972E3
                     PLL = 50.
                     PRL = 75.
                 else:
-                    C2 = 3.5271E-2 
+                    C2 = 3.5271E-2
                     C1 = -24.3962
-                    C0 = 5.1972E3	
-                    D2 = 3.3908E-2 
+                    C0 = 5.1972E3
+                    D2 = 3.3908E-2
                     D1 = -23.4890
-                    D0 = 5.0238E3          
+                    D0 = 5.0238E3
                     PLL = 75.
                     PRL = 100.
                 maxProdTemp = np.max(TenteringPP)
                 CCAPPLL = C2*maxProdTemp**2 + C1*maxProdTemp + C0
-                CCAPPRL = D2*maxProdTemp**2 + D1*maxProdTemp + D0  
+                CCAPPRL = D2*maxProdTemp**2 + D1*maxProdTemp + D0
                 b = math.log(CCAPPRL/CCAPPLL)/math.log(PRL/PLL)
                 a = CCAPPRL/PRL**b
                 Cplantcorrelation = a*math.pow(np.max(ElectricityProduced),b)*np.max(ElectricityProduced)*1000./1E6
-            
+
             if ccplantfixedvalid == 1:
                 Cplant = ccplantfixed
             else:
                 Cplant = 1.12*1.15*ccplantadjfactor*Cplantcorrelation*1.02 #1.02 to convert cost from 2012 to 2016 #factor 1.15 for 15% contingency and 1.12 for 12% indirect costs.
-                
+
         #add direct-use plant cost of co-gen system to Cplant (only of no total ccplant was provided)
         if ccplantfixedvalid == 0: #1.15 below for contingency and 1.12 for indirect costs
             if (math.floor(enduseoption/10) == 3): #enduseoption = 3: cogen topping cycle
@@ -2389,7 +2442,7 @@ class Geophires(object):
             elif (math.floor(enduseoption/10) == 5): #enduseoption = 5: cogen parallel cycle
                 Cplant = Cplant + 1.12*1.15*ccplantadjfactor*250E-6*np.max(HeatProduced/enduseefficiencyfactor)*1000.
 
-        if totalcapcostvalid == 0:  
+        if totalcapcostvalid == 0:
             #exploration costs (same as in Geophires v1.2) (M$)
             if ccexplfixedvalid == 1:
                 Cexpl = ccexplfixed
@@ -2398,7 +2451,7 @@ class Geophires(object):
 
             #Surface Piping Length Costs (M$) #assumed $750k/km
             Cpiping = 750/1000*pipinglength
-                
+
             Ccap = Cexpl + Cwell + Cstim + Cgath + Cplant + Cpiping
         else:
             Ccap = totalcapcost
@@ -2419,29 +2472,29 @@ class Geophires(object):
                 else:
                     Claborcorrelation = (589.*math.log(np.max(HeatExtracted)/5.)-304.)/1E3 #M$/year
             Claborcorrelation = Claborcorrelation*1.1  #1.1 to convert from 2012 to 2016$ with BLS employment cost index (for utilities in March)
-            
+
             #plant O&M cost
             if oamplantfixedvalid == 1:
                 Coamplant = oamplantfixed
             else:
-                Coamplant = oamplantadjfactor*(1.5/100.*Cplant + 0.75*Claborcorrelation)     
-            
+                Coamplant = oamplantadjfactor*(1.5/100.*Cplant + 0.75*Claborcorrelation)
+
             #wellfield O&M cost
             if oamwellfixedvalid == 1:
                 Coamwell = oamwellfixed
             else:
-                Coamwell = oamwelladjfactor*(1./100.*(Cwell + Cgath) + 0.25*Claborcorrelation)        
-            
+                Coamwell = oamwelladjfactor*(1./100.*(Cwell + Cgath) + 0.25*Claborcorrelation)
+
             #water O&M cost
             if oamwaterfixedvalid == 1:
                 Coamwater = oamwaterfixed
             else:
-                Coamwater = oamwateradjfactor*(nprod*prodwellflowrate*waterloss*utilfactor*365.*24.*3600./1E6*925./1E6) #here is assumed 1 l per kg maybe correct with real temp. (M$/year) 925$/ML = 3.5$/1,000 gallon            
-            
+                Coamwater = oamwateradjfactor*(nprod*prodwellflowrate*waterloss*utilfactor*365.*24.*3600./1E6*925./1E6) #here is assumed 1 l per kg maybe correct with real temp. (M$/year) 925$/ML = 3.5$/1,000 gallon
+
             Coam = Coamwell + Coamplant + Coamwater #total O&M cost (M$/year)
         else:
             Coam = oamtotalfixed #total O&M cost (M$/year)
-            
+
         if redrill>0:   #account for well redrilling
             Coam = Coam + (Cwell + Cstim)*redrill/plantlifetime
 
@@ -2452,10 +2505,10 @@ class Geophires(object):
         PumpingkWh = np.zeros(plantlifetime)
         for i in range(0,plantlifetime):
             HeatkWhExtracted[i] = np.trapz(HeatExtracted[(0+i*timestepsperyear):((i+1)*timestepsperyear)+1],dx = 1./timestepsperyear*365.*24.)*1000.*utilfactor
-            PumpingkWh[i] = np.trapz(PumpingPower[(0+i*timestepsperyear):((i+1)*timestepsperyear)+1],dx = 1./timestepsperyear*365.*24.)*1000.*utilfactor   
+            PumpingkWh[i] = np.trapz(PumpingPower[(0+i*timestepsperyear):((i+1)*timestepsperyear)+1],dx = 1./timestepsperyear*365.*24.)*1000.*utilfactor
         if enduseoption == 1 or enduseoption>2: #all these end-use options have an electricity generation component
             TotalkWhProduced = np.zeros(plantlifetime)
-            NetkWhProduced = np.zeros(plantlifetime) 
+            NetkWhProduced = np.zeros(plantlifetime)
             for i in range(0,plantlifetime):
                 TotalkWhProduced[i] = np.trapz(ElectricityProduced[(0+i*timestepsperyear):((i+1)*timestepsperyear)+1],dx = 1./timestepsperyear*365.*24.)*1000.*utilfactor
                 NetkWhProduced[i] = np.trapz(NetElectricityProduced[(0+i*timestepsperyear):((i+1)*timestepsperyear)+1],dx = 1./timestepsperyear*365.*24.)*1000.*utilfactor
@@ -2464,9 +2517,9 @@ class Geophires(object):
             for i in range(0,plantlifetime):
                 HeatkWhProduced[i] = np.trapz(HeatProduced[(0+i*timestepsperyear):((i+1)*timestepsperyear)+1],dx = 1./timestepsperyear*365.*24.)*1000.*utilfactor
 
-        #-------------------------------- 
+        #--------------------------------
         #calculate reservoir heat content
-        #-------------------------------- 
+        #--------------------------------
         InitialReservoirHeatContent = resvol*rhorock*cprock*(Trock-Tinj)/1E15   #10^15 J
         RemainingReservoirHeatContent = InitialReservoirHeatContent-np.cumsum(HeatkWhExtracted)*3600*1E3/1E15
 
@@ -2483,7 +2536,7 @@ class Geophires(object):
             elif enduseoption > 2: #cogeneration
                 if enduseoption % 10 == 1: #heat sales is additional income revenue stream
                     averageannualheatincome = np.average(HeatkWhProduced)*heatprice/1E6 #M$/year ASSUMING heatprice IS IN $/KWH FOR HEAT SALES
-                    Price = (FCR*(1+inflrateconstruction)*Ccap + Coam - averageannualheatincome)/np.average(NetkWhProduced)*1E8 #cents/kWh   
+                    Price = (FCR*(1+inflrateconstruction)*Ccap + Coam - averageannualheatincome)/np.average(NetkWhProduced)*1E8 #cents/kWh
                 elif enduseoption % 10 == 2: #electricity sales is additional income revenue stream
                     averageannualelectricityincome =  np.average(NetkWhProduced)*elecprice/1E6 #M$/year
                     Price = (FCR*(1+inflrateconstruction)*Ccap + Coam - averageannualelectricityincome)/np.average(HeatkWhProduced)*1E8 #cents/kWh
@@ -2513,7 +2566,7 @@ class Geophires(object):
             NPVfc = np.sum((1+inflrateconstruction)*Ccap*PTR*inflationvector*discountvector)
             NPVit = np.sum(CTR/(1-CTR)*((1+inflrateconstruction)*Ccap*CRF-Ccap/plantlifetime)*discountvector)
             NPVitc = (1+inflrateconstruction)*Ccap*RITC/(1-CTR)
-            if enduseoption == 1:            
+            if enduseoption == 1:
                 NPVoandm = np.sum(Coam*inflationvector*discountvector)
                 NPVgrt = GTR/(1-GTR)*(NPVcap + NPVoandm + NPVfc + NPVit - NPVitc)
                 Price  = (NPVcap + NPVoandm + NPVfc + NPVit + NPVgrt - NPVitc)/np.sum(NetkWhProduced*inflationvector*discountvector)*1E8
@@ -2527,20 +2580,20 @@ class Geophires(object):
             elif enduseoption > 2:
                 if enduseoption % 10 == 1: #heat sales is additional income revenue stream
                     annualheatincome = HeatkWhProduced*heatprice/1E6 #M$/year ASSUMING ELECPRICE IS IN $/KWH FOR HEAT SALES
-                    NPVoandm = np.sum(Coam*inflationvector*discountvector)            
+                    NPVoandm = np.sum(Coam*inflationvector*discountvector)
                     NPVgrt = GTR/(1-GTR)*(NPVcap + NPVoandm + NPVfc + NPVit - NPVitc)
-                    Price  = (NPVcap + NPVoandm + NPVfc + NPVit + NPVgrt - NPVitc - np.sum(annualheatincome*inflationvector*discountvector))/np.sum(NetkWhProduced*inflationvector*discountvector)*1E8 
+                    Price  = (NPVcap + NPVoandm + NPVfc + NPVit + NPVgrt - NPVitc - np.sum(annualheatincome*inflationvector*discountvector))/np.sum(NetkWhProduced*inflationvector*discountvector)*1E8
                 elif enduseoption % 10 == 2: #electricity sales is additional income revenue stream
                     annualelectricityincome = NetkWhProduced*elecprice/1E6 #M$/year
                     NPVoandm = np.sum(Coam*inflationvector*discountvector)
                     NPVgrt = GTR/(1-GTR)*(NPVcap + NPVoandm + NPVfc + NPVit - NPVitc)
                     Price  = (NPVcap + NPVoandm + NPVfc + NPVit + NPVgrt - NPVitc - np.sum(annualelectricityincome*inflationvector*discountvector))/np.sum(HeatkWhProduced*inflationvector*discountvector)*1E8
                     Price = Price*2.931 #$/MMBTU
-        
+
         # #---------------------------------------
         # #write results to output file and screen
         # #---------------------------------------
-        
+
         # # Export txt result file
         # with open(TODO,'w+') as f:
         #     f.write('                               *****************\n')
@@ -2559,12 +2612,12 @@ class Geophires(object):
         #     elif enduseoption == 32: #topping cycle
         #         f.write("      End-Use Option = Cogeneration Topping Cycle\n")
         #         f.write("      Electricity sales considered as extra income\n")
-        #     elif enduseoption == 41: #bottoming cycle  
+        #     elif enduseoption == 41: #bottoming cycle
         #         f.write("      End-Use Option = Cogeneration Bottoming Cycle\n")
         #         f.write("      Heat Sales considered as extra income\n")
-        #     elif enduseoption == 42: #bottoming cycle  
+        #     elif enduseoption == 42: #bottoming cycle
         #         f.write("      End-Use Option = Cogeneration Bottoming Cycle\n")
-        #         f.write("      Electricity sales considered as extra income\n")            
+        #         f.write("      Electricity sales considered as extra income\n")
         #     elif enduseoption == 51: #cogen split of mass flow rate
         #         f.write("      End-Use Option = Cogeneration Parallel Cycle\n")
         #         f.write("      Heat sales considered as extra income\n")
@@ -2580,31 +2633,31 @@ class Geophires(object):
         #     if (enduseoption % 10) == 1:    #levelized cost expressed as LCOE
         #         f.write("      Electricity breakeven price (cents/kWh)           " + "{0:10.2f}".format(Price)+"\n")
         #     elif (enduseoption % 10) == 2:    #levelized cost expressed as LCOH
-        #         f.write("      Direct-Use heat breakeven price ($/MMBTU)         " + "{0:10.2f}".format(Price)+"\n")           
+        #         f.write("      Direct-Use heat breakeven price ($/MMBTU)         " + "{0:10.2f}".format(Price)+"\n")
 
-        #     f.write("      Number of production wells                     " + "{0:10.0f}".format(nprod)+"\n")  
-        #     f.write("      Number of injection wells                      " + "{0:10.0f}".format(ninj)+"\n")  
+        #     f.write("      Number of production wells                     " + "{0:10.0f}".format(nprod)+"\n")
+        #     f.write("      Number of injection wells                      " + "{0:10.0f}".format(ninj)+"\n")
         #     f.write("      Flowrate per production well (kg/s)              " + "{0:10.1f}".format(prodwellflowrate)+"\n")
-        #     f.write("      Well depth (m)                                   " + "{0:10.1f}".format(depth)+"\n")  
+        #     f.write("      Well depth (m)                                   " + "{0:10.1f}".format(depth)+"\n")
         #     if numseg == 1:
         #         f.write('      Geothermal gradient (deg.C/km)                   '+"{0:10.1f}".format((gradient[0]*1E3))+'\n')
         #     elif numseg == 2:
         #         f.write('      Segment 1 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[0]*1E3))+'\n')
-        #         f.write('      Segment 1 thickness (km)                       '+"{0:10.0f}".format((layerthickness[0]/1E3))+'\n')    
+        #         f.write('      Segment 1 thickness (km)                       '+"{0:10.0f}".format((layerthickness[0]/1E3))+'\n')
         #         f.write('      Segment 2 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[1]*1E3))+'\n')
         #     elif numseg == 3:
         #         f.write('      Segment 1 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[0]*1E3))+'\n')
-        #         f.write('      Segment 1 thickness (km)                       '+"{0:10.0f}".format((layerthickness[0]/1E3))+'\n')    
+        #         f.write('      Segment 1 thickness (km)                       '+"{0:10.0f}".format((layerthickness[0]/1E3))+'\n')
         #         f.write('      Segment 2 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[1]*1E3))+'\n')
-        #         f.write('      Segment 2 thickness (km)                       '+"{0:10.0f}".format((layerthickness[1]/1E3))+'\n')    
-        #         f.write('      Segment 3 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[2]*1E3))+'\n')    
-        #     elif numseg == 4:    
-        #         f.write('      Segment 1 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[0]*1E3))+'\n')
-        #         f.write('      Segment 1 thickness (km)                       '+"{0:10.0f}".format((layerthickness[0]/1E3))+'\n')    
-        #         f.write('      Segment 2 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[1]*1E3))+'\n')
-        #         f.write('      Segment 2 thickness (km)                       '+"{0:10.0f}".format((layerthickness[1]/1E3))+'\n')    
+        #         f.write('      Segment 2 thickness (km)                       '+"{0:10.0f}".format((layerthickness[1]/1E3))+'\n')
         #         f.write('      Segment 3 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[2]*1E3))+'\n')
-        #         f.write('      Segment 3 thickness (km)                       '+"{0:10.0f}".format((layerthickness[2]/1E3))+'\n')    
+        #     elif numseg == 4:
+        #         f.write('      Segment 1 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[0]*1E3))+'\n')
+        #         f.write('      Segment 1 thickness (km)                       '+"{0:10.0f}".format((layerthickness[0]/1E3))+'\n')
+        #         f.write('      Segment 2 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[1]*1E3))+'\n')
+        #         f.write('      Segment 2 thickness (km)                       '+"{0:10.0f}".format((layerthickness[1]/1E3))+'\n')
+        #         f.write('      Segment 3 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[2]*1E3))+'\n')
+        #         f.write('      Segment 3 thickness (km)                       '+"{0:10.0f}".format((layerthickness[2]/1E3))+'\n')
         #         f.write('      Segment 4 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[3]*1E3))+'\n')
 
 
@@ -2620,9 +2673,9 @@ class Geophires(object):
         #         f.write("      Interest Rate (%)                                 " + "{0:10.2f}".format((discountrate*100))+'\n')
         #     elif econmodel == 3:
         #         f.write("      Economic Model  = BICYCLE Model\n")
-        #     f.write('      Accrued financing during construction (%)         '+"{0:10.2f}".format((inflrateconstruction*100))+'\n')    
-        #     f.write('      Project lifetime (years)                       '+"{0:10.0f}".format((plantlifetime))+'\n')    
-        #     f.write('      Capacity factor (%)                              '+"{0:10.1f}".format((utilfactor)*100)+'\n')    
+        #     f.write('      Accrued financing during construction (%)         '+"{0:10.2f}".format((inflrateconstruction*100))+'\n')
+        #     f.write('      Project lifetime (years)                       '+"{0:10.0f}".format((plantlifetime))+'\n')
+        #     f.write('      Capacity factor (%)                              '+"{0:10.1f}".format((utilfactor)*100)+'\n')
 
         #     f.write('\n')
         #     f.write('                          ***ENGINEERING PARAMETERS***\n')
@@ -2632,24 +2685,24 @@ class Geophires(object):
         #     f.write("      Pump efficiency (%)                              " + "{0:10.1f}".format(pumpeff*100)+"\n")
         #     f.write("      Injection temperature (deg.C)                    " + "{0:10.1f}".format(Tinj)+"\n")
         #     if rameyoptionprod == 1:
-        #         f.write("      Production Wellbore heat transmission calculated with Ramey's model\n")    
-        #         f.write("      Average production well temperature drop (deg.C) "+"{0:10.1f}".format(np.average(ProdTempDrop))+"\n")    
+        #         f.write("      Production Wellbore heat transmission calculated with Ramey's model\n")
+        #         f.write("      Average production well temperature drop (deg.C) "+"{0:10.1f}".format(np.average(ProdTempDrop))+"\n")
         #     elif rameyoptionprod == 0:
         #         f.write("      User-provided production well temperature drop\n")
-        #         f.write("      Constant production well temperature drop (deg.C)"+"{0:10.1f}".format(tempdropprod)+"\n")  
+        #         f.write("      Constant production well temperature drop (deg.C)"+"{0:10.1f}".format(tempdropprod)+"\n")
         #     f.write("      Flowrate per production well (kg/s)              " + "{0:10.1f}".format(prodwellflowrate)+"\n")
         #     f.write("      Injection well casing ID (inches)                  " + "{0:10.3f}".format(injwelldiam/0.0254)+"\n")
         #     f.write("      Produciton well casing ID (inches)                 " + "{0:10.3f}".format(prodwelldiam/0.0254)+"\n")
         #     f.write("      Number of times redrilling                     " + "{0:10.0f}".format(redrill)+"\n")
         #     if enduseoption == 1 or enduseoption > 2:
         #         if pptype == 1:
-        #             f.write("      Power plant type                                        Subcritical ORC\n")        
-        #         elif pptype == 2:       
-        #             f.write("      Power plant type                                        Supercritical ORC\n")        
-        #         elif pptype == 3:        
-        #             f.write("      Power plant type                                        Single-Flash\n")  
-        #         elif pptype == 4:        
-        #             f.write("      Power plant type                                        Double-Flash\n")  
+        #             f.write("      Power plant type                                        Subcritical ORC\n")
+        #         elif pptype == 2:
+        #             f.write("      Power plant type                                        Supercritical ORC\n")
+        #         elif pptype == 3:
+        #             f.write("      Power plant type                                        Single-Flash\n")
+        #         elif pptype == 4:
+        #             f.write("      Power plant type                                        Double-Flash\n")
         #     f.write('\n')
         #     f.write('\n')
         #     f.write('                         ***RESOURCE CHARACTERISTICS***\n')
@@ -2660,23 +2713,23 @@ class Geophires(object):
         #         f.write('      Geothermal gradient (deg.C/km)                   '+"{0:10.1f}".format((gradient[0]*1E3))+'\n')
         #     elif numseg == 2:
         #         f.write('      Segment 1 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[0]*1E3))+'\n')
-        #         f.write('      Segment 1 thickness (km)                       '+"{0:10.0f}".format((layerthickness[0]/1E3))+'\n')    
+        #         f.write('      Segment 1 thickness (km)                       '+"{0:10.0f}".format((layerthickness[0]/1E3))+'\n')
         #         f.write('      Segment 2 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[1]*1E3))+'\n')
         #     elif numseg == 3:
         #         f.write('      Segment 1 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[0]*1E3))+'\n')
-        #         f.write('      Segment 1 thickness (km)                       '+"{0:10.0f}".format((layerthickness[0]/1E3))+'\n')    
+        #         f.write('      Segment 1 thickness (km)                       '+"{0:10.0f}".format((layerthickness[0]/1E3))+'\n')
         #         f.write('      Segment 2 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[1]*1E3))+'\n')
-        #         f.write('      Segment 2 thickness (km)                       '+"{0:10.0f}".format((layerthickness[1]/1E3))+'\n')    
-        #         f.write('      Segment 3 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[2]*1E3))+'\n')    
-        #     elif numseg == 4:    
-        #         f.write('      Segment 1 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[0]*1E3))+'\n')
-        #         f.write('      Segment 1 thickness (km)                       '+"{0:10.0f}".format((layerthickness[0]/1E3))+'\n')    
-        #         f.write('      Segment 2 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[1]*1E3))+'\n')
-        #         f.write('      Segment 2 thickness (km)                       '+"{0:10.0f}".format((layerthickness[1]/1E3))+'\n')    
+        #         f.write('      Segment 2 thickness (km)                       '+"{0:10.0f}".format((layerthickness[1]/1E3))+'\n')
         #         f.write('      Segment 3 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[2]*1E3))+'\n')
-        #         f.write('      Segment 3 thickness (km)                       '+"{0:10.0f}".format((layerthickness[2]/1E3))+'\n')    
+        #     elif numseg == 4:
+        #         f.write('      Segment 1 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[0]*1E3))+'\n')
+        #         f.write('      Segment 1 thickness (km)                       '+"{0:10.0f}".format((layerthickness[0]/1E3))+'\n')
+        #         f.write('      Segment 2 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[1]*1E3))+'\n')
+        #         f.write('      Segment 2 thickness (km)                       '+"{0:10.0f}".format((layerthickness[1]/1E3))+'\n')
+        #         f.write('      Segment 3 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[2]*1E3))+'\n')
+        #         f.write('      Segment 3 thickness (km)                       '+"{0:10.0f}".format((layerthickness[2]/1E3))+'\n')
         #         f.write('      Segment 4 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[3]*1E3))+'\n')
-                
+
         #     f.write('\n')
         #     f.write('\n')
         #     f.write('                           ***RESERVOIR PARAMETERS***\n')
@@ -2687,7 +2740,7 @@ class Geophires(object):
         #         f.write("      Reservoir Model = 1-D Linear Heat Sweep Model\n")
         #     elif resoption == 3:
         #         f.write("      Reservoir Model = Single Fracture m/A Thermal Drawdown Model\n")
-        #         f.write("      m/A Drawdown Parameter (kg/s/m^2)                       " + "{0:.5f}".format(drawdp)+"\n" )    
+        #         f.write("      m/A Drawdown Parameter (kg/s/m^2)                       " + "{0:.5f}".format(drawdp)+"\n" )
         #     elif resoption == 4:
         #         f.write("      Reservoir Model = Annual Percentage Thermal Drawdown Model\n")
         #         f.write("      Annual Thermal Drawdown (%/year)                        " + "{0:.3f}".format(drawdp*100) + "\n" )
@@ -2698,47 +2751,47 @@ class Geophires(object):
 
         #     f.write("      Bottom-hole temperature (deg.C)                   "+"{0:10.2f}".format((Trock))+'\n')
         #     if resoption >3:
-        #         f.write('      Warning: the reservoir dimensions and thermo-physical properties \n')    
-        #         f.write('               listed below are default values if not provided by the user.   \n')    
+        #         f.write('      Warning: the reservoir dimensions and thermo-physical properties \n')
+        #         f.write('               listed below are default values if not provided by the user.   \n')
         #         f.write('               They are only used for calculating remaining heat content.  \n')
 
         #     if resoption == 1 or resoption == 2:
         #         if fracshape == 1:
         #             f.write('      Fracture model = circular fracture with known area \n')
         #             f.write("      Well seperation = fracture diameter (m)           "+"{0:10.2f}".format(fracheight)+'\n')
-        #         elif fracshape == 2:    
-        #             f.write('      Fracture model = circular fracture with known diameter\n')        
+        #         elif fracshape == 2:
+        #             f.write('      Fracture model = circular fracture with known diameter\n')
         #             f.write("      Well seperation = fracture diameter (m)           "+"{0:10.2f}".format(fracheight)+'\n')
-        #         elif fracshape == 3:    
+        #         elif fracshape == 3:
         #             f.write('      Fracture model = square fracture with known fracture height\n')
-        #             f.write("      Well seperation = fracture height (m)             "+"{0:10.2f}".format(fracheight)+'\n')        
+        #             f.write("      Well seperation = fracture height (m)             "+"{0:10.2f}".format(fracheight)+'\n')
         #         elif fracshape == 4:
         #             f.write('      Fracture model = rectangular fracture with known fracture height and width\n')
-        #             f.write("      Well seperation = fracture height (m)             "+"{0:10.2f}".format(fracheight)+'\n')        
+        #             f.write("      Well seperation = fracture height (m)             "+"{0:10.2f}".format(fracheight)+'\n')
         #             f.write("      Fracture width (m)                                "+"{0:10.2f}".format(fracwidth)+'\n')
         #         f.write("      Fracture area (m^2)                            "+"{0:10.0f}".format(fracarea)+'\n')
         #     if resvoloption == 1:
         #         f.write('      Reservoir volume calculated with fracture separation and number of fractures as input\n')
         #     elif resvoloption == 2:
-        #         f.write('      Number of fractures calculated with reservoir volume and fracture separation as input\n')    
-        #     elif resvoloption == 3:    
-        #         f.write('      Fracture separation calculated with reservoir volume and number of fractures as input\n')    
-        #     elif resvoloption == 4:    
-        #         f.write('      Reservoir volume provided as input\n')  
+        #         f.write('      Number of fractures calculated with reservoir volume and fracture separation as input\n')
+        #     elif resvoloption == 3:
+        #         f.write('      Fracture separation calculated with reservoir volume and number of fractures as input\n')
+        #     elif resvoloption == 4:
+        #         f.write('      Reservoir volume provided as input\n')
         #     if resvoloption in [1,2,3]:
         #         f.write("      Number of fractures                               "+"{0:10.2f}".format(fracnumb)+'\n')
         #         f.write("      Fracture separation (m)                           "+"{0:10.2f}".format(fracsep)+'\n')
         #     f.write("      Reservoir volume (m^3)                         "+"{0:10.0f}".format(resvol)+'\n')
         #     if impedancemodelused == 1:
-        #         f.write("      Reservoir impedance (GPa/m^3/s)                   "+"{0:10.2f}".format((impedance/1000))+'\n')    
+        #         f.write("      Reservoir impedance (GPa/m^3/s)                   "+"{0:10.2f}".format((impedance/1000))+'\n')
         #     else:
-        #         f.write("      Reservoir hydrostatic pressure (kPa)              "+"{0:10.2f}".format(Phydrostatic)+'\n')    
-        #         f.write("      Plant outlet pressure (kPa)                       "+"{0:10.2f}".format(Pplantoutlet)+'\n')    
+        #         f.write("      Reservoir hydrostatic pressure (kPa)              "+"{0:10.2f}".format(Phydrostatic)+'\n')
+        #         f.write("      Plant outlet pressure (kPa)                       "+"{0:10.2f}".format(Pplantoutlet)+'\n')
         #         if productionwellpumping == 1:
         #             f.write("      Production wellhead pressure (kPa)                "+"{0:10.2f}".format(Pprodwellhead)+'\n')
         #             f.write("      Productivity Index (kg/s/bar)                     "+"{0:10.2f}".format(PI)+'\n')
         #         f.write("      Injectivity Index (kg/s/bar)                      "+"{0:10.2f}".format(II)+'\n')
-                
+
         #     f.write("      Reservoir density (kg/m^3)                        "+"{0:10.2f}".format((rhorock))+'\n')
         #     if rameyoptionprod == 1 or resoption in [1,2,3,6]:
         #         f.write("      Reservoir thermal conductivity (W/m/K)            "+"{0:10.2f}".format((krock))+'\n')
@@ -2762,13 +2815,13 @@ class Geophires(object):
         #         f.write('      Surface power plant costs                         '+"{0:10.2f}".format((Cplant))+'\n')
         #         f.write('      Field gathering system costs                      '+"{0:10.2f}".format((Cgath))+'\n')
         #         if pipinglength > 0:
-        #             f.write('      Transmission pipeline cost                        '+"{0:10.2f}".format((Cpiping))+'\n')    
+        #             f.write('      Transmission pipeline cost                        '+"{0:10.2f}".format((Cpiping))+'\n')
         #         f.write('      Total surface equipment costs                     '+"{0:10.2f}".format((Cplant+Cgath))+'\n')
         #         f.write('      Exploration costs                                 '+"{0:10.2f}".format((Cexpl))+'\n')
         #     if totalcapcostvalid == 1 and redrill > 0:
         #         f.write('      Drilling and completion costs (for redrilling)    '+"{0:10.2f}".format((Cwell))+'\n')
         #         f.write('      Drilling and completion costs per redrilled well  '+"{0:10.2f}".format((Cwell/(nprod+ninj)))+'\n')
-        #         f.write('      Stimulation costs (for redrilling)                '+"{0:10.2f}".format((Cstim))+'\n')    
+        #         f.write('      Stimulation costs (for redrilling)                '+"{0:10.2f}".format((Cstim))+'\n')
         #     f.write('      Total capital costs                               '+"{0:10.2f}".format((Ccap))+'\n')
 
         #     if econmodel == 1:
@@ -2784,7 +2837,7 @@ class Geophires(object):
         #         f.write('      Wellfield maintenance costs                       '+"{0:10.2f}".format((Coamwell))+'\n')
         #         f.write('      Power plant maintenance costs                     '+"{0:10.2f}".format((Coamplant))+'\n')
         #         f.write('      Water costs                                       '+"{0:10.2f}".format((Coamwater))+'\n')
-        #         if enduseoption == 2:  
+        #         if enduseoption == 2:
         #             f.write('      Average annual pumping costs                      '+"{0:10.2f}".format((averageannualpumpingcosts))+'\n')
         #             f.write('      Total operating and maintenance costs             '+"{0:10.2f}".format((Coam+averageannualpumpingcosts))+'\n')
         #         else:
@@ -2806,7 +2859,7 @@ class Geophires(object):
         #         f.write('      Average direct-use heat production (MWth)         '+"{0:10.2f}".format(np.average(HeatProduced))+'\n')
         #         f.write('      Average annual heat production (GWh/yr)           '+"{0:10.2f}".format(np.average(HeatkWhProduced/1E6))+'\n')
 
-        #     if impedancemodelused == 1:         
+        #     if impedancemodelused == 1:
         #         f.write('      Average total geofluid pressure drop (kPa)       '+"{0:10.1f}".format(np.average(DP))+'\n')
         #         f.write('      Average injection well pressure drop (kPa)       '+"{0:10.1f}".format(np.average(DP1))+'\n')
         #         f.write('      Average reservoir pressure drop (kPa)            '+"{0:10.1f}".format(np.average(DP2))+'\n')
@@ -2839,7 +2892,7 @@ class Geophires(object):
         #         f.write('                  DRAWDOWN                  TEMPERATURE                  POWER                  POWER                    HEAT                   EFFICIENCY\n')
         #         f.write('                                              (deg C)                    (MWe)                  (MWe)                   (MWth)                      (%)\n')
         #         for i in range(0, plantlifetime+1):
-        #             f.write('  {0:2.0f}              {1:8.4f}                   {2:8.2f}                  {3:8.4f}               {4:8.4f}                   {5:8.4f}                    {6:8.4f}'.format(i, ProducedTemperature[i*timestepsperyear]/ProducedTemperature[0], ProducedTemperature[i*timestepsperyear], PumpingPower[i*timestepsperyear], NetElectricityProduced[i*timestepsperyear],HeatProduced[i*timestepsperyear],FirstLawEfficiency[i*timestepsperyear]*100)+'\n')        
+        #             f.write('  {0:2.0f}              {1:8.4f}                   {2:8.2f}                  {3:8.4f}               {4:8.4f}                   {5:8.4f}                    {6:8.4f}'.format(i, ProducedTemperature[i*timestepsperyear]/ProducedTemperature[0], ProducedTemperature[i*timestepsperyear], PumpingPower[i*timestepsperyear], NetElectricityProduced[i*timestepsperyear],HeatProduced[i*timestepsperyear],FirstLawEfficiency[i*timestepsperyear]*100)+'\n')
         #     f.write('\n')
 
         #     f.write('\n')
@@ -2882,7 +2935,7 @@ class Geophires(object):
         #     print(" Simulation Date = "+ currentdate)
         #     print(" Simulation Time = "+ currenttime)
         #     print(" Calculation Time = "+"{0:.3f}".format((time.time()-tic)) +" s")
-            
+
         #     print("")
         #     print("2. Summary of Simulation Results")
         #     print("--------------------------------")
@@ -2898,18 +2951,18 @@ class Geophires(object):
         #         elif enduseoption == 32: #topping cycle
         #             print(" End-Use Option = Cogeneration Topping Cycle")
         #             print(" Electricity sales considered as extra income")
-        #         elif enduseoption == 41: #bottoming cycle  
+        #         elif enduseoption == 41: #bottoming cycle
         #             print(" End-Use Option = Cogeneration Bottoming Cycle")
         #             print(" Heat Sales considered as extra income")
-        #         elif enduseoption == 42: #bottoming cycle  
+        #         elif enduseoption == 42: #bottoming cycle
         #             print(" End-Use Option = Cogeneration Bottoming Cycle")
-        #             print(" Electricity sales considered as extra income")            
+        #             print(" Electricity sales considered as extra income")
         #         elif enduseoption == 51: #cogen split of mass flow rate
         #             print(" End-Use Option = Cogeneration Parallel Cycle")
         #             print(" Heat sales considered as extra income")
         #         elif enduseoption == 52: #cogen split of mass flow rate
         #             print(" End-Use Option = Cogeneration Parallel Cycle")
-        #             print(" Electricity sales considered as extra income")    
+        #             print(" Electricity sales considered as extra income")
         #         #say what type of power plant
         #         if enduseoption == 1 or enduseoption > 2:
         #             if pptype == 1:
@@ -2920,13 +2973,13 @@ class Geophires(object):
         #                 print(" Power Plant Type = Single-Flash")
         #             elif pptype == 4:
         #                 print(" Power Plant Type = Double-Flash")
-                
+
         #         #print(NetElectricityProduced)
-        #         if enduseoption == 1 or enduseoption > 2:    
+        #         if enduseoption == 1 or enduseoption > 2:
         #             print(" Average Net Electricity Generation = " + "{0:.2f}".format(np.average(NetElectricityProduced)) +" MWe" )
         #         if enduseoption > 1:
-        #             print(" Average Net Heat Production = " + "{0:.2f}".format(np.average(HeatProduced)) +" MWth" )        
-                
+        #             print(" Average Net Heat Production = " + "{0:.2f}".format(np.average(HeatProduced)) +" MWth" )
+
         #         #print LCOE/LCOH
         #         if enduseoption == 1:
         #             print(" LCOE = " + "{0:.1f}".format((Price)) +" cents/kWh")
@@ -2937,7 +2990,7 @@ class Geophires(object):
         #             print(" Additional average annual revenue from heat sales = " + "{0:.1f}".format(np.average(annualheatincome)) +" M$/year")
         #         elif enduseoption % 10 == 1: #electricity sales is additional income revenuw stream
         #             print(" LCOH = " + "{0:.1f}".format((Price)) +" $/MMBTU")
-        #             print(" Additional average annual revenue from electricity sales = " + "{0:.1f}".format(np.average(annualelectricityincome)) +" M$/year")    
+        #             print(" Additional average annual revenue from electricity sales = " + "{0:.1f}".format(np.average(annualelectricityincome)) +" M$/year")
         #         #say what type of economic model is used
         #         if econmodel == 1:
         #             print(" Economic Model Used = Fixed Charge Rate (FCR) Model")
@@ -2947,7 +3000,7 @@ class Geophires(object):
         #             print(" Discount Rate = " + "{0:.2f}".format((discountrate*100))+"%")
         #         elif econmodel == 3:
         #             print(" Economic Model Used = BICYCLE Model")
-                
+
         #         print("")
         #         print("3. Reservoir Simulation Results")
         #         print("-------------------------------")
@@ -2957,7 +3010,7 @@ class Geophires(object):
         #             print(" Reservoir Model = 1-D Linear Heat Sweep Model")
         #         elif resoption == 3:
         #             print(" Reservoir Model = Single Fracture m/A Thermal Drawdown Model")
-        #             print(" m/A Drawdown Parameter = " + "{0:.5f}".format(drawdp) + " kg/s/m^2" )    
+        #             print(" m/A Drawdown Parameter = " + "{0:.5f}".format(drawdp) + " kg/s/m^2" )
         #         elif resoption == 4:
         #             print(" Reservoir Model = Annual Percentage Thermal Drawdown Model")
         #             print(" Annual Thermal Drawdown = " + "{0:.3f}".format(drawdp*100) + " %/year" )
@@ -2971,12 +3024,12 @@ class Geophires(object):
         #         print(" Number of Times Redrilling = " + "{0:.0f}".format((redrill)))
         #         print(" Well Depth = " + "{0:.1f}".format((depth)) + " m")
         #         print(" Flow Rate per Production Well = " + "{0:.0f}".format((prodwellflowrate))+" kg/s")
-        #         print(" Initial Reservoir Temperature = " + "{0:.1f}".format(Trock) + "°C" )  
-        #         print(" Maximum Production Temperature = " + "{0:.1f}".format(np.max(ProducedTemperature)) + "°C" )    
-        #         print(" Average Production Temperature = " + "{0:.1f}".format(np.average(ProducedTemperature)) + "°C" )    
+        #         print(" Initial Reservoir Temperature = " + "{0:.1f}".format(Trock) + "°C" )
+        #         print(" Maximum Production Temperature = " + "{0:.1f}".format(np.max(ProducedTemperature)) + "°C" )
+        #         print(" Average Production Temperature = " + "{0:.1f}".format(np.average(ProducedTemperature)) + "°C" )
         #         print(" Minimum Production Temperature = " + "{0:.1f}".format(np.min(ProducedTemperature)) + "°C" )
         #         print(" Initial Production Temperature = " + "{0:.1f}".format((ProducedTemperature[0])) +"°C" )
-        #         print(" Average Reservoir Heat Extraction = " + "{0:.2f}".format(np.average(HeatExtracted)) +" MWth" )  
+        #         print(" Average Reservoir Heat Extraction = " + "{0:.2f}".format(np.average(HeatExtracted)) +" MWth" )
         #         if rameyoptionprod == 1:
         #             print(" Production Wellbore Heat Transmission Model = Ramey Model")
         #             print(" Average Production Well Temperature Drop = " +"{0:.1f}".format(np.average(ProdTempDrop))  +"°C" )
@@ -2992,54 +3045,54 @@ class Geophires(object):
         #             print(" Average Injection Well Pump Pressure Drop = "+"{0:.1f}".format(np.average(DP1)) +" kPa")
         #             if productionwellpumping == 1:
         #                 print(" Average Production Well Pump Pressure Drop = "+"{0:.1f}".format(np.average(DP3)) +" kPa")
-                
+
         #         print("")
         #         print("4. Surface Equipment Simulation Results")
         #         print("---------------------------------------")
-        #         if enduseoption == 1 or enduseoption > 2:    
-        #             print(" Maximum Total Electricity Generation = " + "{0:.2f}".format(np.max(ElectricityProduced)) +" MWe" )        
-        #             print(" Average Total Electricity Generation = " + "{0:.2f}".format(np.average(ElectricityProduced)) +" MWe" )        
+        #         if enduseoption == 1 or enduseoption > 2:
+        #             print(" Maximum Total Electricity Generation = " + "{0:.2f}".format(np.max(ElectricityProduced)) +" MWe" )
+        #             print(" Average Total Electricity Generation = " + "{0:.2f}".format(np.average(ElectricityProduced)) +" MWe" )
         #             print(" Minimum Total Electricity Generation = " + "{0:.2f}".format(np.min(ElectricityProduced)) +" MWe" )
-        #             print(" Initial Total Electricity Generation = " + "{0:.2f}".format((ElectricityProduced[0])) +" MWe" )        
-        #             print(" Maximum Net Electricity Generation = " + "{0:.2f}".format(np.max(NetElectricityProduced)) +" MWe" )        
-        #             print(" Average Net Electricity Generation = " + "{0:.2f}".format(np.average(NetElectricityProduced)) +" MWe" )        
-        #             print(" Minimum Net Electricity Generation = " + "{0:.2f}".format(np.min(NetElectricityProduced)) +" MWe" )        
+        #             print(" Initial Total Electricity Generation = " + "{0:.2f}".format((ElectricityProduced[0])) +" MWe" )
+        #             print(" Maximum Net Electricity Generation = " + "{0:.2f}".format(np.max(NetElectricityProduced)) +" MWe" )
+        #             print(" Average Net Electricity Generation = " + "{0:.2f}".format(np.average(NetElectricityProduced)) +" MWe" )
+        #             print(" Minimum Net Electricity Generation = " + "{0:.2f}".format(np.min(NetElectricityProduced)) +" MWe" )
         #             print(" Initial Net Electricity Generation = " + "{0:.2f}".format((NetElectricityProduced[0])) +" MWe" )
         #             print(" Average Annual Total Electricity Generation = " + "{0:.2f}".format(np.average(TotalkWhProduced/1E6)) +" GWh")
         #             print(" Average Annual Net Electricity Generation = " + "{0:.2f}".format(np.average(NetkWhProduced/1E6)) +" GWh")
         #         if enduseoption > 1:
         #             print(" Maximum Net Heat Production = " + "{0:.2f}".format(np.max(HeatProduced)) +" MWth" )
-        #             print(" Average Net Heat Production = " + "{0:.2f}".format(np.average(HeatProduced)) +" MWth" )  
-        #             print(" Minimum Net Heat Production = " + "{0:.2f}".format(np.min(HeatProduced)) +" MWth" )  
+        #             print(" Average Net Heat Production = " + "{0:.2f}".format(np.average(HeatProduced)) +" MWth" )
+        #             print(" Minimum Net Heat Production = " + "{0:.2f}".format(np.min(HeatProduced)) +" MWth" )
         #             print(" Initial Net Heat Production = " + "{0:.2f}".format((HeatProduced[0])) +" MWth" )
         #             print(" Average Annual Heat Production = " + "{0:.2f}".format(np.average(HeatkWhProduced/1E6)) +" GWh")
-        #         print(" Average Pumping Power = " + "{0:.2f}".format(np.average(PumpingPower)) +" MWe" )        
+        #         print(" Average Pumping Power = " + "{0:.2f}".format(np.average(PumpingPower)) +" MWe" )
 
         #         print("")
         #         print("5. Capital and O&M Costs")
         #         print("------------------------")
         #         print(" Total Capital Cost = " + "{0:.2f}".format(Ccap) +" M$" )
-        #         if totalcapcostvalid == 0:        
-        #             print("   Wellfield Cost = " + "{0:.2f}".format(Cwell) +" M$" )  
-        #             print("   Surface Plant Cost = " + "{0:.2f}".format(Cplant) +" M$" )  
-        #             print("   Exploration Cost = " + "{0:.2f}".format(Cexpl) +" M$" )      
+        #         if totalcapcostvalid == 0:
+        #             print("   Wellfield Cost = " + "{0:.2f}".format(Cwell) +" M$" )
+        #             print("   Surface Plant Cost = " + "{0:.2f}".format(Cplant) +" M$" )
+        #             print("   Exploration Cost = " + "{0:.2f}".format(Cexpl) +" M$" )
         #             print("   Field Gathering System Cost = " + "{0:.2f}".format(Cgath) +" M$" )
         #             if pipinglength > 0:
-        #                 print("   Transmission Pipeline Cost = " + "{0:.2f}".format(Cpiping) +" M$" )            
-        #             print("   Stimulation Cost = " + "{0:.2f}".format(Cstim) +" M$" )            
+        #                 print("   Transmission Pipeline Cost = " + "{0:.2f}".format(Cpiping) +" M$" )
+        #             print("   Stimulation Cost = " + "{0:.2f}".format(Cstim) +" M$" )
         #         if enduseoption == 2:
         #             print(" Total O&M Cost = " + "{0:.2f}".format(Coam+averageannualpumpingcosts) +" M$/year" )
         #         else:
-        #             print(" Total O&M Cost = " + "{0:.2f}".format(Coam) +" M$/year" )            
+        #             print(" Total O&M Cost = " + "{0:.2f}".format(Coam) +" M$/year" )
         #         if oamtotalfixedvalid == 0:
-        #             print("   Wellfield O&M Cost = " + "{0:.2f}".format(Coamwell) +" M$/year" )      
-        #             print("   Surface Plant O&M Cost = " + "{0:.2f}".format(Coamplant) +" M$/year" )      
+        #             print("   Wellfield O&M Cost = " + "{0:.2f}".format(Coamwell) +" M$/year" )
+        #             print("   Surface Plant O&M Cost = " + "{0:.2f}".format(Coamplant) +" M$/year" )
         #             print("   Make-Up Water O&M Cost = " + "{0:.2f}".format(Coamwater) +" M$/year" )
         #             if enduseoption == 2:
-        #                 print("   Average annual pumping costs = " + "{0:.2f}".format(averageannualpumpingcosts) +" M$/year" )    
+        #                 print("   Average annual pumping costs = " + "{0:.2f}".format(averageannualpumpingcosts) +" M$/year" )
 
         #         print("")
-        #         print("6. Power Generation Profile")    
+        #         print("6. Power Generation Profile")
         #         print("---------------------------")
 
         if enduseoption == 1:   #only electricity
@@ -3059,17 +3112,24 @@ class Geophires(object):
             print('         DRAWDOWN     TEMPERATURE   POWER     POWER     HEAT      EFFICIENCY')
             print('         (-)          (deg C)       (MWe)     (MWe)     (MWth)    (%)')
             for i in range(0, plantlifetime+1):
-                print('  {0:2.0f}    {1:8.4f}    {2:8.2f}      {3:8.4f}   {4:8.4f}  {5:8.4f}  {6:8.4f}'.format(i, ProducedTemperature[i*timestepsperyear]/ProducedTemperature[0], ProducedTemperature[i*timestepsperyear], PumpingPower[i*timestepsperyear], NetElectricityProduced[i*timestepsperyear],HeatProduced[i*timestepsperyear],FirstLawEfficiency[i*timestepsperyear]*100))        
-        
+                print('  {0:2.0f}    {1:8.4f}    {2:8.2f}      {3:8.4f}   {4:8.4f}  {5:8.4f}  {6:8.4f}'.format(i, ProducedTemperature[i*timestepsperyear]/ProducedTemperature[0], ProducedTemperature[i*timestepsperyear], PumpingPower[i*timestepsperyear], NetElectricityProduced[i*timestepsperyear],HeatProduced[i*timestepsperyear],FirstLawEfficiency[i*timestepsperyear]*100))
+
         if self.plant == 'direct_use':
-            self.dataframe_results.append([
+            self.results["data"].append([
                 depth,nprod,ninj,Cwell,Cplant,Cexpl,Cgath,Coamwell,Coamplant,Coamwater,np.average(HeatExtracted),Tmax
                 # np.average(ElectricityProduced)
-            ])                       
+            ])
         else:
-            self.dataframe_results.append([
+            self.results["data"].append([
                 depth,nprod,ninj,Tmax,Cwell,Cplant,Cexpl,Cgath,Coamwell,Coamplant,Coamwater,np.average(HeatExtracted),
                 np.average(ElectricityProduced)
-            ])      
+            ])
 
-        return self.dataframe_results
+        try:
+            self.results["params"]["ElectricityProduced"] = ElectricityProduced
+            self.results["params"]["FirstLawEfficiency"] = FirstLawEfficiency
+            self.results["params"]["HeatProduced"] = HeatProduced
+        except Exception as e:
+            pass
+
+        return self.results
