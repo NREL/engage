@@ -105,8 +105,11 @@ class Geophires(object):
                 'Surface Plant O&M Cost ($M/year)',
                 'Make-Up Water O&M Cost ($M/year)',
                 'Average Reservoir Heat Extraction (MWth)',
-                'Maximum reservoir temperature (deg.C)'
-                # 'Average Total Electricity Generation (MWe)'
+                'Maximum reservoir temperature (deg.C)',
+                # 'Average Total Electricity Generation (MWe)',
+                "Efficiency",                                   ####ADDEDD
+                "Interest Rate",                                ####ADDEDD
+                "Lifetime"                                      ####ADDEDD
             ])
 
             df_final = df_final.sort_values(by=[
@@ -131,6 +134,9 @@ class Geophires(object):
                 'Make-Up Water O&M Cost ($M/year)',
                 'Average Reservoir Heat Extraction (MWth)',
                 'Average Total Electricity Generation (MWe)',
+                "Efficiency",                                   ####ADDEDD
+                "Interest Rate",                                ####ADDEDD
+                "Lifetime"                                      ####ADDEDD
             ])
 
             df_final = df_final.sort_values(by=[
@@ -148,16 +154,16 @@ class Geophires(object):
 
         max_e_cap               = np.max(df_line['Average Total Electricity Generation (MWe)'])     ####ADDEDD
         max_h_cap               = np.max(df_line['Average Reservoir Heat Extraction (MWth)'])       ####ADDEDD
-        plant_efficiency        = np.average(df_line['Efficiency'])                                 ####ADDEDD
-        lifecycle               = df_final['Lifetime'][1]                                            ####ADDEDD
-        rate                    = df_final['Interest Rate'][1]                                       ####ADDEDD
+        plant_efficiency        = float(np.average(df_line['Efficiency']))                          ####ADDEDD
+        lifecycle               = int(df_line['Lifetime'][1])                                       ####ADDEDD
+        rate                    = float(df_line['Interest Rate'][1])                                ####ADDEDD
 
-        thermal_capacity         = np.array(df_final['Average Reservoir Heat Extraction (MWth)'])
-        electric_capacity        =  np.array(df_final['Average Total Electricity Generation (MWe)'])
-        subsurface_cost          = np.add(np.array(df_final['Wellfield Cost ($M)']), np.array(df_final['Field Gathering System Cost ($M)']))
-        surface_cost             = np.array(df_final['Surface Plant Cost ($M)'])
-        subsurface_o_m_cost      = np.add(np.array(df_final['Wellfield O&M Cost ($M/year)']), np.array(df_final['Make-Up Water O&M Cost ($M/year)']))
-        surface_o_m_cost         = np.array(df_final['Surface Plant O&M Cost ($M/year)'])
+        thermal_capacity         = np.array(df_line['Average Reservoir Heat Extraction (MWth)'])
+        electric_capacity        =  np.array(df_line['Average Total Electricity Generation (MWe)'])
+        subsurface_cost          = np.add(np.array(df_line['Wellfield Cost ($M)']), np.array(df_line['Field Gathering System Cost ($M)']))
+        surface_cost             = np.array(df_line['Surface Plant Cost ($M)'])
+        subsurface_o_m_cost      = np.add(np.array(df_line['Wellfield O&M Cost ($M/year)']), np.array(df_line['Make-Up Water O&M Cost ($M/year)']))
+        surface_o_m_cost         = np.array(df_line['Surface Plant O&M Cost ($M/year)'])
 
         x1              = thermal_capacity
         y1              = subsurface_cost
@@ -2590,6 +2596,14 @@ class Geophires(object):
                     Price  = (NPVcap + NPVoandm + NPVfc + NPVit + NPVgrt - NPVitc - np.sum(annualelectricityincome*inflationvector*discountvector))/np.sum(HeatkWhProduced*inflationvector*discountvector)*1E8
                     Price = Price*2.931 #$/MMBTU
 
+        # TODO: Get Geophires interest rate, it's only applied econmodel == 2
+        if econmodel == 1:
+            pass
+        elif econmodel == 2:
+            interest_rate = discountrate
+        elif econmodel == 3:
+            pass
+
         # #---------------------------------------
         # #write results to output file and screen
         # #---------------------------------------
@@ -3116,20 +3130,14 @@ class Geophires(object):
 
         if self.plant == 'direct_use':
             self.results["data"].append([
-                depth,nprod,ninj,Cwell,Cplant,Cexpl,Cgath,Coamwell,Coamplant,Coamwater,np.average(HeatExtracted),Tmax
-                # np.average(ElectricityProduced)
+                depth,nprod,ninj,Cwell,Cplant,Cexpl,Cgath,Coamwell,Coamplant,Coamwater,np.average(HeatExtracted),Tmax,
+                # np.average(ElectricityProduced),
+                np.average(FirstLawEfficiency)*100, interest_rate, plantlifetime
             ])
         else:
             self.results["data"].append([
                 depth,nprod,ninj,Tmax,Cwell,Cplant,Cexpl,Cgath,Coamwell,Coamplant,Coamwater,np.average(HeatExtracted),
-                np.average(ElectricityProduced)
+                np.average(ElectricityProduced), np.average(FirstLawEfficiency)*100, interest_rate, plantlifetime
             ])
-
-        try:
-            self.results["params"]["ElectricityProduced"] = ElectricityProduced
-            self.results["params"]["FirstLawEfficiency"] = FirstLawEfficiency
-            self.results["params"]["HeatProduced"] = HeatProduced
-        except Exception as e:
-            pass
 
         return self.results

@@ -182,6 +182,7 @@ def geophires_outputs(request):
     job_meta_id = request.GET.get('id')
     job_meta = Job_Meta.objects.get(id=job_meta_id)
 
+    plant = job_meta.outputs["plant"]
     output_params = job_meta.outputs["output_params"]
     output_file = job_meta.outputs["output_file"]
 
@@ -234,6 +235,7 @@ def geophires_outputs(request):
     label_b4        = f"y={a4:.4f}x+{np.min(b4_values):.4f}" if np.min(b4_values) > 0 else f"y={a4:.4f}x{np.min(b4_values):.4f}"
 
     outputs = {
+        "plant": plant,
         "params": output_params,
         "plot1": {
             "x1": x1.tolist(),
