@@ -1,1 +1,0 @@
-[{"model": "template.template_type_loc_tech", "pk": 1, "fields": {"template_type": 1, "template_loc_1": 1, "template_loc_2": null, "template_tech": 1}}, {"model": "template.template_type_loc_tech", "pk": 2, "fields": {"template_type": 1, "template_loc_1": 1, "template_loc_2": null, "template_tech": 6}}]
