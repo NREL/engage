@@ -27,7 +27,7 @@ def model_templates(request):
     template_types = list(Template_Type.objects.all().values('id', 'name', 'pretty_name', 'description'))
     template_type_variables = list(Template_Type_Variable.objects.all().values('id', 'name', 'pretty_name', 'template_type', 'units', 'default_value', 'min', 'max', 'category', 'choices', 'description', 'timeseries_enabled'))
     template_type_locs = list(Template_Type_Loc.objects.all().values('id', 'name', 'template_type', 'latitude_offset', 'longitude_offset'))
-    template_type_techs = list(Template_Type_Tech.objects.all().values('id', 'name', 'template_type', 'abstract_tech', 'carrier_in', 'carrier_out', 'carrier_in_2', 'carrier_out_2', 'carrier_in_3', 'carrier_out_3', 'carrier_ratios'))
+    template_type_techs = list(Template_Type_Tech.objects.all().values('id', 'name', 'template_type', 'abstract_tech', 'energy_carrier', 'carrier_in', 'carrier_out', 'carrier_in_2', 'carrier_out_2', 'carrier_in_3', 'carrier_out_3', 'carrier_ratios'))
     template_type_loc_techs = list(Template_Type_Loc_Tech.objects.all().values('id', 'template_type', 'template_loc_1', 'template_loc_2', 'template_tech'))
     template_type_parameters = list(Template_Type_Parameter.objects.all().values('id', 'template_loc_tech', 'parameter', 'equation'))
     locations = list(Location.objects.filter(model_id=model.id).values('id', 'pretty_name', 'name', 'latitude', 'longitude', 'available_area', 'model', 'created', 'updated', 'template_id', 'template_type_loc_id'))
@@ -79,16 +79,15 @@ def add_template(request):
     templateVars = []
     if varData:
         templateVars = varData['templateVars']
-    print(templateVars)
 
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
     template_type = Template_Type.objects.filter(id=template_type_id).first()
     location = Location.objects.filter(id=location_id).first()
     template_type_locs = list(Template_Type_Loc.objects.filter(template_type_id=template_type_id).values('id', 'name', 'template_type', 'latitude_offset', 'longitude_offset'))
-    template_type_techs = list(Template_Type_Tech.objects.filter(template_type_id=template_type_id).values('id', 'name', 'template_type', 'abstract_tech', 'carrier_in', 'carrier_out'))
+    template_type_techs = list(Template_Type_Tech.objects.filter(template_type_id=template_type_id).values('id', 'name', 'template_type', 'abstract_tech', 'energy_carrier', 'carrier_in', 'carrier_out', 'carrier_in_2', 'carrier_out_2', 'carrier_in_3', 'carrier_out_3', 'carrier_ratios'))
     template_type_loc_techs = list(Template_Type_Loc_Tech.objects.filter(template_type_id=template_type_id).values('id', 'template_type', 'template_loc_1', 'template_loc_2', 'template_tech'))
- 
+
     if template_id:
         print ("Editing a template")
         template = Template.objects.filter(id=template_id).first()
@@ -124,8 +123,6 @@ def add_template(request):
                 for template_type_parameter in template_type_parameters: 
                     equation = template_type_parameter.equation
                     for name, template_variable in new_template_variables.items(): 
-                        print("name " + name)
-                        print("equation " + equation)
                         equation = equation.replace('||'+name+'||', template_variable.value)
                     value, rawValue  = convert_units_no_pipe(ureg, equation, template_type_parameter.parameter.units)
                     Loc_Tech_Param.objects.create(
@@ -216,6 +213,13 @@ def add_template_technologies(template_type_techs, model, template_type_id):
             )
 
             #set technology params from template parameters
+            if template_type_tech['energy_carrier'] is not None:
+                Tech_Param.objects.create(
+                    model=model, 
+                    technology=new_tech, 
+                    parameter_id=4, 
+                    value=template_type_tech['energy_carrier']
+                )
             if template_type_tech['carrier_in'] is not None:
                 Tech_Param.objects.create(
                     model=model, 
@@ -269,8 +273,8 @@ def add_template_technologies(template_type_techs, model, template_type_id):
 
 def add_template_loc_techs(template_type_loc_techs, model, name, template_type_id, template):
     new_loc_techs = {}
+
     for template_type_loc_tech in template_type_loc_techs:
-        
         if template_type_loc_tech['template_loc_2']:
             new_loc_tech = Loc_Tech.objects.create(
                 model=model,
@@ -290,6 +294,7 @@ def add_template_loc_techs(template_type_loc_techs, model, name, template_type_i
                 template_id=template.id,
                 template_type_loc_tech_id=template_type_loc_tech['id'],
             )
-            print ("new_loc_tech.id " + str(new_loc_tech.id))
+        print ("new_loc_tech.id " + str(new_loc_tech.id))
         new_loc_techs[template_type_loc_tech['id']] = new_loc_tech
-        return new_loc_techs
+
+    return new_loc_techs

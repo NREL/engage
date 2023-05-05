@@ -190,16 +190,16 @@ class Geophires(object):
         ####    Conversion Input Carrier (Thermal) -> Output Carrier (Power)
 
         output_params = dict(
-            max_electricity_cap                     = max_e_cap*1000,  ### [kW] Conversion (Surface)       ->     Maximum production capacity
-            surface_plant_efficiency                = plant_efficiency,                ### [] Conversion (Surface)         ->       Conversion Efficiency (instead of c-rate)
-            surface_cost_to_electric_slope          = a2*1000,                           ###[kW] Conversion (Surface)    -   >      Cost of Production Capacity
-            surface_om_cost_to_electric_slope       = a3*1000,                           ###[kW] Conversion (Surface)    -   >      Annual Fixed O&M Cost
+            max_electricity_cap                     = max_e_cap,                       ### [MW] Conversion (Surface)                   ->     Maximum production capacity
+            surface_plant_efficiency                = plant_efficiency,                ### [%] Conversion (Surface)                    ->     Conversion Efficiency (instead of c-rate)
+            surface_cost_to_electric_slope          = a2,                              ### [$/MW] Conversion (Surface)                   ->     Cost of Production Capacity
+            surface_om_cost_to_electric_slope       = a3,                              ### [$/MW] Conversion (Surface)                   ->     Annual Fixed O&M Cost
 
-            max_heat_cap                            = max_h_cap*1000,         ###[kW] Supply     (Subsurface)     ->      Maximum production capacity
-            subsurface_cost_to_thermal_slope        = a1*1000,                           ###[kW] Supply     (Subsurface)     ->      Cost of Production Capacity
-            subsurface_om_cost_to_thermal_slope     = a4*1000,                           ###[kW] Supply     (Subsurface)      ->      Annual Fixed O&M Cost
-            interest_rate                           = rate*100,                  #maps to both conversion and supply  ->     Interest rate
-            lifetime                                = lifecycle                    #maps to both conversion and supply   ->    Lifetime and amortization period
+            max_heat_cap                            = max_h_cap,                       ### [MW] Supply     (Subsurface)                ->     Maximum production capacity
+            subsurface_cost_to_thermal_slope        = a1,                              ### [$/MW] Supply     (Subsurface)                ->     Cost of Production Capacity
+            subsurface_om_cost_to_thermal_slope     = a4,                              ### [$/MW] Supply     (Subsurface)                ->     Annual Fixed O&M Cost
+            interest_rate                           = rate*100,                        ### [%] maps to both conversion and supply      ->     Interest rate
+            lifetime                                = lifecycle                        ### [years] maps to both conversion and supply  ->     Lifetime and amortization period
         )
 
         ########################################

@@ -25,14 +25,5 @@
             "pretty_name": "DC-Coupled Solar+BESS",
             "description": ""
         }
-    },
-    {
-        "model": "template.template_type",
-        "pk": 4,
-        "fields": {
-            "name": "Test_Technologies",
-            "pretty_name": "Test Technologies",
-            "description": ""
-        }
     }
 ]
