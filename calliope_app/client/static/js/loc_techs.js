@@ -528,6 +528,7 @@ function resetGeophiresButton(showError, job_meta_id) {
         }
         $("#geophiresGraphs").show();
         $("#geoGraphButton").attr("href", "/en/geophires/plotting/?id=" + job_meta_id);
+        $("#editTemplate, #createTemplate").prop("disabled",false);
     }
     $("#loadingGeophires").hide();  
 }
