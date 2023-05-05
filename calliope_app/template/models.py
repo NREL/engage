@@ -62,6 +62,7 @@ class Template_Type_Tech(models.Model):
     name = models.CharField(max_length=200)
     template_type = models.ForeignKey(Template_Type, on_delete=models.CASCADE)
     abstract_tech = models.ForeignKey(Abstract_Tech, on_delete=models.CASCADE)
+    energy_carrier = models.CharField(max_length=200, blank=True, null=True)
     carrier_in = models.CharField(max_length=200, blank=True, null=True)
     carrier_out = models.CharField(max_length=200, blank=True, null=True)
     carrier_in_2 = models.CharField(max_length=200, blank=True, null=True)

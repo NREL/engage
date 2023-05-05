@@ -19,7 +19,7 @@ class Template_Type_Loc_Admin(admin.ModelAdmin):
     list_display = ['id', 'name', 'template_type', 'latitude_offset', 'longitude_offset']
 class Template_Type_Tech_Admin(admin.ModelAdmin):
     list_filter = ['id']
-    list_display = ['id', 'name', 'template_type', 'abstract_tech', 'carrier_in', 'carrier_out', 'carrier_in_2', 'carrier_out_2', 'carrier_in_3', 'carrier_out_3', 'carrier_ratios']
+    list_display = ['id', 'name', 'template_type', 'abstract_tech', 'energy_carrier', 'carrier_in', 'carrier_out', 'carrier_in_2', 'carrier_out_2', 'carrier_in_3', 'carrier_out_3', 'carrier_ratios']
 class Template_Type_Loc_Tech_Admin(admin.ModelAdmin):
     list_filter = ['id']
     list_display = ['id', 'template_type', 'template_loc_1', 'template_loc_2' , 'template_tech']
