@@ -33,42 +33,7 @@ $( document ).ready(function() {
 	});
 
     $('#templateType').on('change', function() {
-        $('#templateVars').empty();
-        var templateType = $('#templateType').val();
-        if (!templateType && templateType.length === 0) {
-            return;
-        }
-        var template_type = template_data.template_types.find(o => o.id == parseInt(templateType))
-        $('#templateVars').append( "<h4 style='padding-left:16px'>Node Group Parameters for " + template_type.pretty_name + "<h6>" );
-        $('#templateVars').append( "<p style='padding-left:16px'>" + template_type.description + "<p>" );
-        var template_type_vars = template_data.template_type_variables.filter(obj => {
-            return obj.template_type == parseInt(templateType);
-        });
-        var uniqueCategories = [...new Set(template_type_vars.map(obj => obj.category))];
-        if (uniqueCategories.includes(geoInputs)) {
-            uniqueCategories = uniqueCategories.filter(item => item !== geoInputs);
-            uniqueCategories.unshift(geoInputs);
-        }
-        if (uniqueCategories.includes(null)) {
-            uniqueCategories = uniqueCategories.filter(item => item !== null);
-            uniqueCategories.unshift(null);
-        }
-        for (var i = 0; i < uniqueCategories.length; i++) {
-            var catCarrot = uniqueCategories[i] ? "<div style='float: right;'><i class='fas fa-caret-down'></i><i class='fas fa-caret-up hide'></i></div>" : "";
-            var catId = uniqueCategories[i] ? uniqueCategories[i].replace(/\s/g, '') : "null-category";
-            var catName = uniqueCategories[i] ? uniqueCategories[i] : "";
-            var catClasses = uniqueCategories[i] ? "row hide" : "row";
-            var catClass = uniqueCategories[i] ? "template-category hiding_rows" : "hiding_rows";
-            $('#templateVars').append(
-                "<div id='"+ catId + "' class='" + catClass + "'><a><h5>" + catName + catCarrot + "</h5></a></div><div id='" + catId + "-row' class='" + catClasses + "'></div>"
-            );
-
-            appendCategoryVars(template_type_vars, uniqueCategories[i]);
-        }
-
-        var showAPIButtons = displayAPIButtons();
-        setTemplateVarsClassLogic(showAPIButtons);
-
+        appendTemplateCategories();
 	});
 
     //On modal close
@@ -217,31 +182,46 @@ function getTemplates() {
 }
 
 function editTemplateModal(el) {
-    let id = parseInt(el.id.substr(5));//.replace(/-/g, ' ');
+    let id = parseInt(el.id.substr(5));
     template_edit = template_data.templates.find(temp => temp.id === id);
+    // Set basic inputs
     $('#templateType').val(String(template_edit.template_type)).change();
     $('#templateType').attr("disabled", true);
     $('#primaryLocation').val(String(template_edit.location));
     $('#primaryLocation').attr("disabled", true);
+
+    // Change modal view
     $("#modalContent").hide();
     $("#modalEdit").show();
     $("#createTemplate").hide();
     $("#editTemplate").show();
+    $('#editTemplate').attr("disabled", false);
     $("#templateName").val(template_edit.name);
     $("#editModalTitle").html("Update Node Group: " + template_edit.name);
-    
-    //Set template type variarbles
+    appendTemplateCategories();
+    var template_variables = template_data.template_variables.filter(temp => temp.template === id);
+    template_variables.forEach(function (template_var) {
+        $("#template_type_var_" + template_var.template_type_variable).val(template_var.value);
+    });
 }
 
 function addTemplateModal() {
+    // Reset basic inputs
     $('#templateType').attr("disabled", false);
+    $("#templateType").val([]);
     $('#primaryLocation').attr("disabled", false);
+    $("#primaryLocation").val([]);
+    $("#templateName").val("");
+
+    // Change modal view
     $("#modalContent").hide();
     $("#modalEdit").show();
     $("#createTemplate").show();
     $("#editTemplate").hide();
-    $("#templateName").val("");
     $("#editModalTitle").html("Add Node Group to Model");
+
+    // Reset category inputs 
+    $('#templateVars').empty();
 }
 
 function closeTemplateModal() {
@@ -410,7 +390,45 @@ function saveTemplate() {
     });
 }
 
-function appendCategoryVars(template_type_vars, category) {
+function appendTemplateCategories() {
+    $('#templateVars').empty();
+    var templateType = $('#templateType').val();
+    if (!templateType && templateType.length === 0) {
+        return;
+    }
+    var template_type = template_data.template_types.find(o => o.id == parseInt(templateType))
+    $('#templateVars').append( "<h4 style='padding-left:16px'>Node Group Parameters for " + template_type.pretty_name + "<h6>" );
+    $('#templateVars').append( "<p style='padding-left:16px'>" + template_type.description + "<p>" );
+    var template_type_vars = template_data.template_type_variables.filter(obj => {
+        return obj.template_type == parseInt(templateType);
+    });
+    var uniqueCategories = [...new Set(template_type_vars.map(obj => obj.category))];
+    if (uniqueCategories.includes(geoInputs)) {
+        uniqueCategories = uniqueCategories.filter(item => item !== geoInputs);
+        uniqueCategories.unshift(geoInputs);
+    }
+    if (uniqueCategories.includes(null)) {
+        uniqueCategories = uniqueCategories.filter(item => item !== null);
+        uniqueCategories.unshift(null);
+    }
+    for (var i = 0; i < uniqueCategories.length; i++) {
+        var catCarrot = uniqueCategories[i] ? "<div style='float: right;'><i class='fas fa-caret-down'></i><i class='fas fa-caret-up hide'></i></div>" : "";
+        var catId = uniqueCategories[i] ? uniqueCategories[i].replace(/\s/g, '') : "null-category";
+        var catName = uniqueCategories[i] ? uniqueCategories[i] : "";
+        var catClasses = uniqueCategories[i] ? "row hide" : "row";
+        var catClass = uniqueCategories[i] ? "template-category hiding_rows" : "hiding_rows";
+        $('#templateVars').append(
+            "<div id='"+ catId + "' class='" + catClass + "'><a><h5>" + catName + catCarrot + "</h5></a></div><div id='" + catId + "-row' class='" + catClasses + "'></div>"
+        );
+
+        appendCategoryVariables(template_type_vars, uniqueCategories[i]);
+    }
+
+    var showAPIButtons = displayAPIButtons();
+    setTemplateVarsClassLogic(showAPIButtons);
+}
+
+function appendCategoryVariables(template_type_vars, category) {
     var categoryVariables = template_type_vars.filter(obj => obj.category == category);
     categoryVariables.sort((a, b) => (a.pretty_name > b.pretty_name) ? 1 : -1);
     var categoryId = category ? category.replace(/\s/g, '') + "-row" : 'null-category-row';
@@ -430,6 +448,8 @@ function appendCategoryVars(template_type_vars, category) {
 
         if (categoryVariables[i].default_value) {
             $('#template_type_var_' + categoryVariables[i].id).val(categoryVariables[i].default_value);
+        } else {
+            $('#template_type_var_' + categoryVariables[i].id).val("");
         }
 
         $('#template_type_var_' + categoryVariables[i].id).attr({
@@ -491,6 +511,7 @@ function setTemplateVarsClassLogic(showAPIButtons) {
         }
     });
 
+    //$('#template_type_var_' + categoryVariables[i].id).on('input', function() {
 
     $('.form-control').on('input', function() {
         var formFilledOut = validateTemplateParameters();
@@ -509,6 +530,7 @@ function setTemplateVarsClassLogic(showAPIButtons) {
             }
         }
     });
+    
 }
 
 function resetGeophiresButton(showError, job_meta_id) {
