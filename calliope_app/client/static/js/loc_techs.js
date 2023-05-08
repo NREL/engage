@@ -1,8 +1,8 @@
 var map_mode = 'loc_techs';
 let template_data = {};
 let template_edit = {};
-let geoInputs = "Geophires Inputs";
-let geoOutputs = "Geophires Outputs";
+let geoInputs = "GEOPHIRES Inputs";
+let geoOutputs = "GEOPHIRES Outputs";
 
 //import { getTemplateData } from 'templates.js';
 
