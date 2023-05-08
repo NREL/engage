@@ -346,9 +346,6 @@ function checkGeophiresRunStatus(job_meta_id) {
 }
 
 function validateGeophiresParameters() {
-    /*if (!$('#primaryLocation').val()) {
-        return false;
-    }*/
     var templateVarElements = $("#" + geoInputs.replace(/\s/g, '') + "-row :input:not(:button)");
     for (var i = 0; i < templateVarElements.length; i++) {
         if (!templateVarElements[i].value) {
