@@ -460,8 +460,9 @@ function displayAPIButtons() {
     if (showAPIButtons) {
         var geoId = "#" + geoInputs.replace(/\s/g, '')+"-row";
         $(geoId).append( "<div id='geophiresActions' class='col-12'></div>");
-        $("#geophiresActions").append( "<button id='runGeophires' class='btn btn-success btn-sm' type='button' style='width:130px;height:38px;'>Run GEOPHIRES</button>");
-        $(geoId).append( "<div class='col-12'><span style='font-size: .8em;margin-bottom:1em;float: right;'>For more information about Geophires please see the <a target='_blank' href='https://www.osti.gov/biblio/1600135'>Geophires abstract</a>.<span>");
+        $("#geophiresActions").append("<button id='runGeophires' class='btn btn-success btn-sm' type='button' style='width:130px;height:38px;'>Run GEOPHIRES</button>");
+        var geophiresDesc = "GEOPHIRES v2.0 is a geothermal techno-economic simulation tool used in Engage to calculate Geothermal related parameters. GEOPHIRES combines reservoir, wellbore, and surface plant technical models with cost correlations and levelized cost models to estimate the capital and operation and maintenance costs, instantaneous and lifetime energy production, and overall levelized cost of energy of a geothermal plant."
+        $(geoId).append( "<div class='col-12'><span style='font-size: .8em;margin-bottom:1em;float: right;'>For more information about Geophires please see the <div data-toggle='tooltip' data-placement='bottom' title='" + geophiresDesc + "' data-original-title='" + geophiresDesc + "' style='display: inline-block;'><a target='_blank' href='https://www.osti.gov/biblio/1600135'>Geophires documentation</a></div>.<span>");
         //<button id='runGETEM' disabled class='btn btn-success btn-sm' type='button'>Run GETEM</button>
         $(geoId).append( "<span id='geophiresError' class='center' hidden='true' style='color:red;margin-bottom:1em'>An error occured running Geophires! Please contact Support.</span>");
         $('#runGeophires').on('click', function() {
