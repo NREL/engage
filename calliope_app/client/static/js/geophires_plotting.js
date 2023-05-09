@@ -2,6 +2,10 @@
 var params = {'id': job_meta_id};
 
 $.getJSON('/geophires/outputs/', params, function(data) {
+  var plant = data["plant"];
+  var wells = data["wells"];
+  var pwells = data["pwells"];
+
   // Plot 1
   var data1 = [
     {
@@ -9,10 +13,12 @@ $.getJSON('/geophires/outputs/', params, function(data) {
       y: data["plot1"]['y1'],
       mode: 'markers',
       type: 'scatter',
-      name: 'Raw Data',
+      name: 'Individual Geophires Solutions',
       marker: {
-        color: 'green'
-      }
+        color: pwells, //'green'
+      },
+      text: wells,
+      hovertemplate: '%{text}<br>Avg. Thermal Capacity: %{x:.2f}(MWth)<br>Subsurface Total Cost: %{y:.2f}($M)',
     },
     {
       x: data["plot1"]['x1_line'],
@@ -27,9 +33,9 @@ $.getJSON('/geophires/outputs/', params, function(data) {
     }
   ];
   var layout1 = {
-    'title': plant + ' subsurface cost-to-thermal capacity relation',
+    'title': plant + ' Subsurface Cost-to-Thermal Capacity Relation',
     'xaxis': {
-      'title': 'Avg. Thermal capacity (MWth)'
+      'title': 'Avg. Thermal Capacity (MWth)'
     },
     'yaxis': {
       'title': 'Subsurface Total Cost ($M)'
@@ -44,10 +50,12 @@ $.getJSON('/geophires/outputs/', params, function(data) {
       y: data["plot2"]['y2'],
       mode: 'markers',
       type: 'scatter',
-      name: 'Raw Data',
+      name: 'Individual Geophires Solutions',
       marker: {
-        color: 'blue'
-      }
+        color: pwells, // 'blue'
+      },
+      text: wells,
+      hovertemplate: '%{text}<br>Avg. Electric Capacity:%{x:.2f}(MWe)<br>Surface Total Cost: %{y:.2f}($M)',
     },
     {
       x: data["plot2"]['x2_line'],
@@ -62,9 +70,9 @@ $.getJSON('/geophires/outputs/', params, function(data) {
     }
   ];
   var layout2 = {
-    'title': plant + ' surface cost-to-electric capacity relation',
+    'title': plant + ' Surface Cost-to-Electric Capacity Relation',
     'xaxis': {
-      'title': 'Avg. Electric capacity (MWe)'
+      'title': 'Avg. Electric Capacity (MWe)'
     },
     'yaxis': {
       'title': 'Surface Total Cost ($M)'
@@ -79,10 +87,12 @@ $.getJSON('/geophires/outputs/', params, function(data) {
       y: data["plot3"]['y3'],
       mode: 'markers',
       type: 'scatter',
-      name: 'Raw Data',
+      name: 'Individual Geophires Solutions',
       marker: {
-        color: 'purple'
-      }
+        color: pwells, //'purple'
+      },
+      text: wells,
+      hovertemplate: '%{text}<br>Avg. Thermal Capacity:%{x:.2f}(MWth)<br>Subsurface Total O&M Cost: %{y:.2f}($M)',
     },
     {
       x: data["plot3"]['x3_line'],
@@ -97,9 +107,9 @@ $.getJSON('/geophires/outputs/', params, function(data) {
     },
   ];
   var layout3 = {
-    'title': plant + ' subsurface O&M cost-to-thermal capacity relation',
+    'title': plant + ' Subsurface O&M Cost-to-Thermal Capacity Relation',
     'xaxis': {
-      'title': 'Avg. Thermal capacity (MWth)'
+      'title': 'Avg. Thermal Capacity (MWth)'
     },
     'yaxis': {
       'title': 'Subsurface Total O&M Cost ($M)'
@@ -114,10 +124,12 @@ $.getJSON('/geophires/outputs/', params, function(data) {
       y: data["plot4"]['y4'],
       mode: 'markers',
       type: 'scatter',
-      name: 'Raw Data',
+      name: 'Individual Geophires Solutions',
       marker: {
-        color: 'orange'
-      }
+        color: pwells, //'orange'
+      },
+      text: wells,
+      hovertemplate: '%{text}<br>Avg. Electric Capacity: %{x:.2f}(MWe)<br>Surface O&M Total Cost: %{y:.2f}($M)',
     },
     {
       x: data["plot4"]['x4_line'],
@@ -132,9 +144,9 @@ $.getJSON('/geophires/outputs/', params, function(data) {
     }
   ];
   var layout4 = {
-    'title': plant + ' surface O&M cost-to-electric capacity relation',
+    'title': plant + ' Surface O&M Cost-to-Electric Capacity Relation',
     'xaxis': {
-      'title': 'Avg. Electric capacity (MWe)'
+      'title': 'Avg. Electric Capacity (MWe)'
     },
     'yaxis': {
       'title': 'Surface O&M Total Cost ($M)'

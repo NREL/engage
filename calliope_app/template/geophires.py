@@ -193,6 +193,15 @@ def geophires_outputs(request):
     surface_cost = np.array(df['Surface Plant Cost ($M)'])
     subsurface_o_m_cost = np.add(np.array(df['Wellfield O&M Cost ($M/year)']), np.array(df['Make-Up Water O&M Cost ($M/year)']))
     surface_o_m_cost = np.array(df['Surface Plant O&M Cost ($M/year)'])
+    production_wells = np.array(df["Number of Prod Wells"])
+    injection_wells = np.array(df["Number of Inj Wells"])
+    wells = [
+        f"<span>#ProductionWells: <b>{int(p)}</b></span><br><span>#InjectionWells: <b>{int(i)}</b></span>"
+        for p, i in zip(production_wells, injection_wells)
+    ]
+
+    # Label notes
+    note = "Best fit to least cost<br>The slope indicates the $/MW for <cost to thermal>"
 
     # Plot1
     x1 = thermal_capacity
@@ -203,6 +212,7 @@ def geophires_outputs(request):
     b1_values       = y1 - np.multiply(a1, x1)
     lower_b1_line   = objective(x1_line, a1, np.min(b1_values))
     label_b1        = f"y={a1:.4f}x+{np.min(b1_values):.4f}" if np.min(b1_values) > 0 else f"y={a1:.4f}x{np.min(b1_values):.4f}"
+    label_b1        = f"<br><span>{label_b1}</span><br><span style='font-size: 9px'>{note}</span>"
 
     # Plot2
     x2              = electric_capacity
@@ -213,6 +223,7 @@ def geophires_outputs(request):
     b2_values       = y2 - np.multiply(a2, x2)
     lower_b2_line   = objective(x2_line, a2, np.min(b2_values))
     label_b2        = f"y={a2:.4f}x+{np.min(b2_values):.4f}" if np.min(b2_values) > 0 else f"y={a2:.4f}x{np.min(b2_values):.4f}"
+    label_b2        = f"<br><span>{label_b2}</span><br><span style='font-size: 9px'>{note}</span>"
 
     # Plot3
     x3              = thermal_capacity
@@ -223,6 +234,7 @@ def geophires_outputs(request):
     b3_values       = y3 - np.multiply(a3, x3)
     lower_b3_line   = objective(x3_line, a3, np.min(b3_values))
     label_b3        = f"y={a3:.4f}x+{np.min(b3_values):.4f}" if np.min(b3_values) > 0 else f"y={a3:.4f}x{np.min(b3_values):.4f}"
+    label_b3        = f"<br><span>{label_b3}</span><br><span style='font-size: 9px'>{note}</span>"
 
     # Plot4
     x4              = electric_capacity
@@ -233,10 +245,14 @@ def geophires_outputs(request):
     b4_values       = y4 - np.multiply(a4, x4)
     lower_b4_line   = objective(x4_line, a4, np.min(b4_values))
     label_b4        = f"y={a4:.4f}x+{np.min(b4_values):.4f}" if np.min(b4_values) > 0 else f"y={a4:.4f}x{np.min(b4_values):.4f}"
+    label_b4        = f"<br><span>{label_b4}</span><br><span style='font-size: 9px'>{note}</span>"
 
+    pretty_plant = plant.replace("_", " ").title()
     outputs = {
-        "plant": plant,
+        "plant": pretty_plant,
         "params": output_params,
+        "wells": wells,
+        "pwells": production_wells.tolist(),
         "plot1": {
             "x1": x1.tolist(),
             "y1": y1.tolist(),
@@ -291,12 +307,10 @@ def geophires_plotting(request):
     try:
         job_meta = Job_Meta.objects.get(id=job_meta_id)
         context = {
-            "plant": job_meta.outputs.get("plant", "Plant"),
             "job_meta_id": job_meta.id
         }
     except Job_Meta.DoesNotExist:
         context = {
-            "plant": {"plant": None},
             "job_meta_id": None
         }
 
