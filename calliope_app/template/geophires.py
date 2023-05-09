@@ -194,11 +194,7 @@ def geophires_outputs(request):
     subsurface_o_m_cost = np.add(np.array(df['Wellfield O&M Cost ($M/year)']), np.array(df['Make-Up Water O&M Cost ($M/year)']))
     surface_o_m_cost = np.array(df['Surface Plant O&M Cost ($M/year)'])
     production_wells = np.array(df["Number of Prod Wells"])
-    injection_wells = np.array(df["Number of Inj Wells"])
-    wells = [
-        f"<span>#ProductionWells: <b>{int(p)}</b></span><br><span>#InjectionWells: <b>{int(i)}</b></span>"
-        for p, i in zip(production_wells, injection_wells)
-    ]
+    depths = np.array(df["Depth (m)"])
 
     # Label notes
     note = "Best fit to least cost<br>The slope indicates the $/MW for <cost to thermal>"
@@ -251,8 +247,9 @@ def geophires_outputs(request):
     outputs = {
         "plant": pretty_plant,
         "params": output_params,
-        "wells": wells,
-        "pwells": production_wells.tolist(),
+        "pwells": [int(i) for i in  production_wells],
+        "depths": depths.tolist(),
+
         "plot1": {
             "x1": x1.tolist(),
             "y1": y1.tolist(),

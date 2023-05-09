@@ -3,8 +3,14 @@ var params = {'id': job_meta_id};
 
 $.getJSON('/geophires/outputs/', params, function(data) {
   var plant = data["plant"];
-  var wells = data["wells"];
   var pwells = data["pwells"];
+  var depths = data["depths"];
+  var plottext = [];
+  pwells.forEach((well, index) => {
+    const depth = depths[index];
+    var tooltip = "Depths: " + depth.toFixed(2) + "(m)" + "<br>Number ofProduction Wells: " + well;
+    plottext.push(tooltip);
+  });
 
   // Plot 1
   var data1 = [
@@ -15,9 +21,9 @@ $.getJSON('/geophires/outputs/', params, function(data) {
       type: 'scatter',
       name: 'Individual Geophires Solutions',
       marker: {
-        color: pwells, //'green'
+        color: 'green'
       },
-      text: wells,
+      text: plottext,
       hovertemplate: '%{text}<br>Avg. Thermal Capacity: %{x:.2f}(MWth)<br>Subsurface Total Cost: %{y:.2f}($M)',
     },
     {
@@ -52,9 +58,9 @@ $.getJSON('/geophires/outputs/', params, function(data) {
       type: 'scatter',
       name: 'Individual Geophires Solutions',
       marker: {
-        color: pwells, // 'blue'
+        color: 'blue'
       },
-      text: wells,
+      text: plottext,
       hovertemplate: '%{text}<br>Avg. Electric Capacity:%{x:.2f}(MWe)<br>Surface Total Cost: %{y:.2f}($M)',
     },
     {
@@ -89,9 +95,9 @@ $.getJSON('/geophires/outputs/', params, function(data) {
       type: 'scatter',
       name: 'Individual Geophires Solutions',
       marker: {
-        color: pwells, //'purple'
+        color: 'purple'
       },
-      text: wells,
+      text: plottext,
       hovertemplate: '%{text}<br>Avg. Thermal Capacity:%{x:.2f}(MWth)<br>Subsurface Total O&M Cost: %{y:.2f}($M)',
     },
     {
@@ -126,9 +132,9 @@ $.getJSON('/geophires/outputs/', params, function(data) {
       type: 'scatter',
       name: 'Individual Geophires Solutions',
       marker: {
-        color: pwells, //'orange'
+        color: 'orange'
       },
-      text: wells,
+      text: plottext,
       hovertemplate: '%{text}<br>Avg. Electric Capacity: %{x:.2f}(MWe)<br>Surface O&M Total Cost: %{y:.2f}($M)',
     },
     {
