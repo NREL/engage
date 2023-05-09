@@ -8,7 +8,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
   var plottext = [];
   pwells.forEach((well, index) => {
     const depth = depths[index];
-    var tooltip = "Depths: " + depth.toFixed(2) + "(m)" + "<br>Number ofProduction Wells: " + well;
+    var tooltip = "Depth: " + depth.toFixed(2) + "(m)" + "<br>Number of Production Wells: " + well;
     plottext.push(tooltip);
   });
 
@@ -21,7 +21,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
       type: 'scatter',
       name: 'Individual Geophires Solutions',
       marker: {
-        color: 'green'
+        color: pwells, //'green'
       },
       text: plottext,
       hovertemplate: '%{text}<br>Avg. Thermal Capacity: %{x:.2f}(MWth)<br>Subsurface Total Cost: %{y:.2f}($M)',
@@ -30,7 +30,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
       x: data["plot1"]['x1_line'],
       y: data["plot1"]['lower_b1_line'],
       mode: 'lines',
-      name: data["plot1"]['label_b1'],
+      name: data["plot1"]['label_b1'] + '<span style="font-size: 9px">for subsurface cost-to-thermal capacity relation</span>',
       line: {
         dash: 'dashdot',
         width: 4,
@@ -58,7 +58,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
       type: 'scatter',
       name: 'Individual Geophires Solutions',
       marker: {
-        color: 'blue'
+        color: pwells, //'blue'
       },
       text: plottext,
       hovertemplate: '%{text}<br>Avg. Electric Capacity:%{x:.2f}(MWe)<br>Surface Total Cost: %{y:.2f}($M)',
@@ -67,7 +67,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
       x: data["plot2"]['x2_line'],
       y: data["plot2"]['lower_b2_line'],
       mode: 'lines',
-      name: data["plot2"]['label_b2'],
+      name: data["plot2"]['label_b2'] + '<span style="font-size: 9px">for surface cost-to-electric capacity relation</span>',
       line: {
         dash: 'dashdot',
         width: 4,
@@ -95,7 +95,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
       type: 'scatter',
       name: 'Individual Geophires Solutions',
       marker: {
-        color: 'purple'
+        color: pwells, //'purple'
       },
       text: plottext,
       hovertemplate: '%{text}<br>Avg. Thermal Capacity:%{x:.2f}(MWth)<br>Subsurface Total O&M Cost: %{y:.2f}($M)',
@@ -104,7 +104,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
       x: data["plot3"]['x3_line'],
       y: data["plot3"]['lower_b3_line'],
       mode: 'lines',
-      name: data["plot3"]['label_b3'],
+      name: data["plot3"]['label_b3'] + '<span style="font-size: 9px">for subsurface O&M cost-to-thermal capacity relation</span>',
       line: {
         dash: 'dashdot',
         width: 4,
@@ -132,7 +132,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
       type: 'scatter',
       name: 'Individual Geophires Solutions',
       marker: {
-        color: 'orange'
+        color: pwells, //'orange'
       },
       text: plottext,
       hovertemplate: '%{text}<br>Avg. Electric Capacity: %{x:.2f}(MWe)<br>Surface O&M Total Cost: %{y:.2f}($M)',
@@ -141,7 +141,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
       x: data["plot4"]['x4_line'],
       y: data["plot4"]['lower_b4_line'],
       mode: 'lines',
-      name: data["plot4"]['label_b4'],
+      name: data["plot4"]['label_b4'] + '<span style="font-size: 9px">for surface O&M cost-to-electric capacity relation</span>',
       line: {
         dash: 'dashdot',
         width: 4,
