@@ -240,6 +240,8 @@ class Geophires(object):
         for depth in reservoir_depths:
             for pnum in production_wells:
                 for inum in injection_wells:
+                    if  inum < pnum:  ######ADDED
+                        continue      ######ADDED
                     for temp in temperatures:
                         lines = []
                         for line in self.template_data:
