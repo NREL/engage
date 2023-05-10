@@ -24,8 +24,12 @@ $( document ).ready(function() {
 		addTemplateModal();
 	});
 
+    $('#editTemplate').on('click', function() {
+		saveTemplate('#editTemplate');
+	});
+
     $('#createTemplate').on('click', function() {
-		saveTemplate();
+		saveTemplate('#createTemplate');
 	});
 
     $('#modelEditBack').on('click', function() {
@@ -231,6 +235,7 @@ function closeTemplateModal() {
     $("#templatesModal").modal('hide');
     $("#templateVars").empty();
     $("#editTemplate, #createTemplate").prop("disabled",true);
+    template_edit = {};
 }
 
 function modelEditBack() {
@@ -336,7 +341,9 @@ function validateGeophiresParameters() {
 }
 
 function validateTemplateParameters() {
-    if (!$('#templateName').val() || !$('#templateType').val() || !$('#primaryLocation').val()) {
+    if (!$('#templateName').val() || $('#templateName').val().length == 0 ||
+     !$('#templateType').val() || $('#templateType').val().length == 0 ||
+      !$('#primaryLocation').val() || $('#primaryLocation').val().length == 0) {
         return false;
     }
     var templateVarElements = $("#templateVars :input:not(:button)");
@@ -348,8 +355,8 @@ function validateTemplateParameters() {
     return true;
 }
 
-function saveTemplate() {
-    if ($('#editTemplate').is(':disabled') || $('#createTemplate').is(':disabled')) {
+function saveTemplate(buttonId) {
+    if ($(buttonId).is(':disabled')) {
         return;
     }
     $("#editTemplate, #createTemplate").prop("disabled",true);
@@ -367,17 +374,23 @@ function saveTemplate() {
         templateVars.push({"id": id, "value": value});
     }
 
+    var data = {
+        'model_uuid': $('#header').data('model_uuid'),
+        'name': $('#templateName').val(),
+        'template_type': $('#templateType').val(),
+        'location': $('#primaryLocation').val(),
+        'csrfmiddlewaretoken': getCookie('csrftoken'),
+        'form_data': JSON.stringify({"templateVars": templateVars}),
+    };
+
+    if (template_edit) {
+        data.template_id = template_edit.id;
+    }
+
     $.ajax({
         url: '/' + LANGUAGE_CODE + '/model/templates/create/',
         type: 'POST',
-        data: {
-            'model_uuid': $('#header').data('model_uuid'),
-            'name': $('#templateName').val(),
-            'template_type': $('#templateType').val(),
-            'location': $('#primaryLocation').val(),
-            'csrfmiddlewaretoken': getCookie('csrftoken'),
-            'form_data': JSON.stringify({"templateVars": templateVars})
-        },
+        data: data,
         dataType: 'json',
         success: function (data) {
             closeTemplateModal();
@@ -452,6 +465,10 @@ function appendCategoryVariables(template_type_vars, category) {
             $('#template_type_var_' + categoryVariables[i].id).val("");
         }
 
+        if (categoryVariables[i].category == geoOutputs) {
+            $('#template_type_var_' + categoryVariables[i].id).prop("disabled",true);
+        }
+
         $('#template_type_var_' + categoryVariables[i].id).attr({
             "max" : categoryVariables[i].max,
             "min" : categoryVariables[i].min
@@ -485,9 +502,11 @@ function displayAPIButtons() {
         $('#runGeophires').on('click', function() {
             requestGeophires();
         });
-        $(geoId).append($("#loadingGeophires"));
+        $(geoId).append("<div id='loadingGeophires' class='center'><div class='spinner-border text-secondary' style='margin-left:50%' role='status'><span class='sr-only'>Loading...</span>"
+            + "</div><br>Loading Geophires results, this may take a few minutes. Please stay on this modal.</div>");
         $("#loadingGeophires").hide()
-        $(geoId).append($("#geophiresGraphs"));
+        $(geoId).append("<div id='geophiresGraphs' class='center'><a id='geoGraphButton' target='_blank' class='btn btn-success btn-sm' type='button' style='width:190px;height:38px;margin-bottom:1em;padding-top:6px;'>"
+            + "GEOPHIRES Graphs<i class='fa-solid fa-up-right-from-square' style='margin-left: 1em;'></i></a></div>");
         $("#geophiresGraphs").hide()
     }
     return showAPIButtons;
@@ -539,8 +558,8 @@ function resetGeophiresButton(showError, job_meta_id) {
         $('#geophiresError').attr("hidden", false);
         $("#geophiresGraphs").hide();
     } else {
-        var rows = $("#GeophiresOutputs").nextUntil('.template-category');
-        if ($("#GeophiresOutputs").hasClass('hiding_rows')) {
+        var rows = $("#" + geoOutputs.replace(/\s/g, '')).nextUntil('.template-category');
+        if ($("#" + geoOutputs.replace(/\s/g, '')).hasClass('hiding_rows')) {
             rows.removeClass('hide');
             $(this).removeClass('hiding_rows');
             $(this).find('.fa-caret-up').removeClass('hide');
@@ -548,7 +567,13 @@ function resetGeophiresButton(showError, job_meta_id) {
         }
         $("#geophiresGraphs").show();
         $("#geoGraphButton").attr("href", "/en/geophires/plotting/?id=" + job_meta_id);
-        $("#editTemplate, #createTemplate").prop("disabled",false);
+
+        var formFilledOut = validateTemplateParameters();
+        if (formFilledOut) {
+            $("#editTemplate, #createTemplate").prop("disabled",false);
+        } else {
+            $("#editTemplate, #createTemplate").prop("disabled",true);
+        }
     }
     $("#loadingGeophires").hide();  
 }
