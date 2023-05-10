@@ -90,12 +90,30 @@ def add_template(request):
     template_type_loc_techs = list(Template_Type_Loc_Tech.objects.filter(template_type_id=template_type_id).values('id', 'template_type', 'template_loc_1', 'template_loc_2', 'template_tech'))
 
     if template_id:
-        print ("Editing a template")
+        print ("Editing a template: " + template_id)
         template = Template.objects.filter(id=template_id).first()
-        #if template is not None:
-        #    template.name = name
-        #    Templates.objects.update(template)
-        # Log Activity
+        if template is not None:
+            Template.objects.filter(id=template_id).update(
+                name=name,
+            )
+
+        new_template_variables = update_template_variables(templateVars, template)
+
+        # template_loc_techs = Loc_Tech.objects.filter(template_id=template_id)
+        # if template_loc_techs is not None:
+        #     ureg = initialize_units()
+        #     for template_loc_tech_id, loc_tech in template_loc_techs.items():
+        #         template_type_parameters = Template_Type_Parameter.objects.filter(template_loc_tech_id=template_loc_tech_id)
+        #         for template_type_parameter in template_type_parameters: 
+        #             equation = template_type_parameter.equation
+        #             for name, template_variable in new_template_variables.items(): 
+        #                 equation = equation.replace('||'+name+'||', template_variable.value)
+        #             value, rawValue  = convert_units_no_pipe(ureg, equation, template_type_parameter.parameter.units)
+        #             Loc_Tech_Param.objects.filter(model=model, loc_tech=loc_tech, parameter=template_type_parameter.parameter).update(
+        #                 value=value,
+        #                 raw_value=rawValue,
+        #             )
+
         comment = "{} updated a template: {} of template type: {}.".format(
             request.user.get_full_name(),
             name,
@@ -164,6 +182,16 @@ def add_template_variables(templateVars, template):
         )
         new_template_variables[new_template_var.template_type_variable.name] = new_template_var
     return new_template_variables
+
+def update_template_variables(templateVars, template):
+    updated_template_variables = {}
+    for templateVar in templateVars:
+        new_template_var = Template_Variable.objects.filter(template_id=template.id, template_type_variable_id=templateVar["id"]).update(
+            value=templateVar["value"],
+            raw_value=templateVar["value"],
+        )
+        updated_template_variables[templateVar["id"]] = new_template_var
+    return updated_template_variables
 
 def add_template_locations(template_type_locs, model, name, location, template):
     new_locations = {}
