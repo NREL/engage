@@ -534,10 +534,11 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                                     if not calendar.isleap(new_year):
                                         feb_29_mask = (ts_df['Unnamed: 0'].dt.month == 2) & (ts_df['Unnamed: 0'].dt.day == 29)
                                         ts_df = ts_df[~feb_29_mask]
-                                        ts_df['Unnamed: 0'] = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                                        ts_df.index = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                                        ts_df.drop(columns=['Unnamed: 0'], inplace=True)
                                     elif not calendar.isleap(old_year):
-                                        ts_df['Unnamed: 0'] = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
-                                        ts_df.index = ts_df['Unnamed: 0']
+                                        ts_df.index = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                                        ts_df.drop(columns=['Unnamed: 0'], inplace=True)
                                         idx = pd.date_range(ts_df.index.min(),ts_df.index.max(),freq=freq)
                                         ts_df = ts_df.reindex(idx, fill_value=0)
 
@@ -548,10 +549,11 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                                         feb_29 = ts_df.loc[feb_29_mask, 'value'].values
                                         if ((len(feb_29) > 0) & (len(feb_28) > 0)):
                                             ts_df.loc[feb_29_mask, 'value'] = feb_28
-                                        ts_df['Unnamed: 0'] = ts_df.index
                                     else:
-                                        ts_df['Unnamed: 0'] = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
-                                    ts_df.to_csv(os.path.join(new_inputs,filename+'-'+str(old_year)+'.csv'),index=False)
+                                        ts_df.index = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                                        ts_df.drop(columns=['Unnamed: 0'], inplace=True)
+                                    ts_df.index.name = None
+                                    ts_df.to_csv(os.path.join(new_inputs,filename+'-'+str(old_year)+'.csv'),index=True)
                                     loc_tech_b[x][y] = 'file='+filename+'-'+str(old_year)+'.csv:value'
 
                         if l not in built_loc_techs:
@@ -584,10 +586,11 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                     if not calendar.isleap(new_year):
                         feb_29_mask = (ts_df['Unnamed: 0'].dt.month == 2) & (ts_df['Unnamed: 0'].dt.day == 29)
                         ts_df = ts_df[~feb_29_mask]
-                        ts_df['Unnamed: 0'] = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                        ts_df.index = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                        ts_df.drop(columns=['Unnamed: 0'], inplace=True)
                     elif not calendar.isleap(old_year):
-                        ts_df['Unnamed: 0'] = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
-                        ts_df.index = ts_df['Unnamed: 0']
+                        ts_df.index = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                        ts_df.drop(columns=['Unnamed: 0'], inplace=True)
                         idx = pd.date_range(ts_df.index.min(),ts_df.index.max(),freq=freq)
                         ts_df = ts_df.reindex(idx, fill_value=0)
 
@@ -598,10 +601,11 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                         feb_29 = ts_df.loc[feb_29_mask, 'value'].values
                         if ((len(feb_29) > 0) & (len(feb_28) > 0)):
                             ts_df.loc[feb_29_mask, 'value'] = feb_28
-                        ts_df['Unnamed: 0'] = ts_df.index
                     else:
-                        ts_df['Unnamed: 0'] = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
-                    ts_df.to_csv(os.path.join(new_inputs,filename+'-'+str(old_year)+'.csv'),index=False)
+                        ts_df.index = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                        ts_df.drop(columns=['Unnamed: 0'], inplace=True)
+                    ts_df.index.name = None
+                    ts_df.to_csv(os.path.join(new_inputs,filename+'-'+str(old_year)+'.csv'),index=True)
                     tech_b[x][y] = 'file='+filename+'-'+str(old_year)+'.csv:value'
         built_techs[t+'_'+str(old_year)] = tech_b
         new_techs['techs'][t+'_'+str(old_year)] = tech_b
