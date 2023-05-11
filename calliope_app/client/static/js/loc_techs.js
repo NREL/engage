@@ -289,7 +289,6 @@ function requestGeophires() {
 }
 
 function renderGeophiresResponse(id, outputs) {
-    resetGeophiresButton(false, id);
     var templateType = $('#templateType').val();
     var template_type_vars = template_data.template_type_variables.filter(obj => {
         return obj.template_type == parseInt(templateType) && obj.category == geoOutputs;
@@ -301,7 +300,7 @@ function renderGeophiresResponse(id, outputs) {
             console.log("Output variable not found: " + template_type_vars[i].name);
         }
     }
-    //display button to graphs
+    resetGeophiresButton(false, id);
 }
 
 function checkGeophiresRunStatus(job_meta_id) {
