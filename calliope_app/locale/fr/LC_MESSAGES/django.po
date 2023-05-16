@@ -1119,6 +1119,10 @@ msgstr ""
 "Veuillez la trouver et la vérifier sur la page série temporelle, lien ci-"
 "dessous."
 
+#: client/templates/templates_modal.html:148
+msgid "Back to Node Groups"
+msgstr "Retour aux groupes de nœuds"
+
 #, fuzzy
 #~| msgid "Hide"
 #~ msgid "Hide List"
