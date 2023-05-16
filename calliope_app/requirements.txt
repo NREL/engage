@@ -1,6 +1,6 @@
 boto3==1.24.37
 celery[redis]==5.2.7
-django==3.2.18
+django==3.2.19
 django-crispy-forms==1.14.0
 django-environ>=0.4.5
 django-modeltranslation==0.18.4
