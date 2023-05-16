@@ -131,7 +131,7 @@ function renderTemplateModal() {
     $("#modalEdit").hide();
     $('#modalBody').empty();
     if (template_data.templates.length > 0) {
-        $('#modalBody').append( "<h6>" + 'Existing Node Groups:' + "</h6>");
+        $('#modalBody').append( "<h6>Existing Node Groups:</h6>");
         for (var i = 0; i < template_data.templates.length; i++) {
             let id = "edit-" + template_data.templates[i].id;
             $('#modalBody').append( "<label><b>" + template_data.templates[i].name + "</b></label>");
@@ -474,17 +474,16 @@ function appendCategoryVariables(template_type_vars, category) {
         });
 
         $('#template_type_var_' + categoryVariables[i].id).on('input', function() {
-            var min = parseInt($(this).attr('min'));
+            /*var min = parseInt($(this).attr('min'));
             var max = parseInt($(this).attr('max'));
-            if ($(this).val() && (min || max)) {
-                console.log("has value");
+            if (min || max) {
                 var value = parseInt($(this).val());
                 if (value < min) {
                     $(this).val(min);
                 } else if (value > max) {
                     $(this).val(max);
                 }
-            }
+            }*/
         });
     }
 }
@@ -494,9 +493,9 @@ function displayAPIButtons() {
     if (showAPIButtons) {
         var geoId = "#" + geoInputs.replace(/\s/g, '')+"-row";
         $(geoId).append( "<div id='geophiresActions' class='col-12'></div>");
-        $("#geophiresActions").append("<button id='runGeophires' class='btn btn-success btn-sm' type='button' style='width:130px;height:38px;'>" + translateRun + " GEOPHIRES</button>");
+        $("#geophiresActions").append("<button id='runGeophires' class='btn btn-success btn-sm' type='button' style='width:130px;height:38px;'>Run GEOPHIRES</button>");
         var geophiresDesc = "GEOPHIRES v2.0 is a geothermal techno-economic simulation tool used in Engage to calculate Geothermal related parameters. GEOPHIRES combines reservoir, wellbore, and surface plant technical models with cost correlations and levelized cost models to estimate the capital and operation and maintenance costs, instantaneous and lifetime energy production, and overall levelized cost of energy of a geothermal plant."
-        $(geoId).append( "<div class='col-12'><span style='font-size: .8em;margin-bottom:1em;float: right;'><i>" + "For more information about GEOPHIRES please see the " + "<div data-toggle='tooltip' data-placement='bottom' title='" + geophiresDesc + "' data-original-title='" + geophiresDesc + "' style='display: inline-block;'><a target='_blank' href='https://www.osti.gov/biblio/1600135'>GEOPHIRES documentation</a></div>.</i><span>");
+        $(geoId).append( "<div class='col-12'><span style='font-size: .8em;margin-bottom:1em;float: right;'><i>For more information about GEOPHIRES please see the <div data-toggle='tooltip' data-placement='bottom' title='" + geophiresDesc + "' data-original-title='" + geophiresDesc + "' style='display: inline-block;'><a target='_blank' href='https://www.osti.gov/biblio/1600135'>GEOPHIRES documentation</a></div>.</i><span>");
         //<button id='runGETEM' disabled class='btn btn-success btn-sm' type='button'>Run GETEM</button>
         $(geoId).append( "<span id='geophiresError' class='center' hidden='true' style='color:red;margin-bottom:1em'>An error occured running Geophires! Please contact Support.</span>");
         $('#runGeophires').on('click', function() {
