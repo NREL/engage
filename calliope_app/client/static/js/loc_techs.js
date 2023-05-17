@@ -131,7 +131,7 @@ function renderTemplateModal() {
     $("#modalEdit").hide();
     $('#modalBody').empty();
     if (template_data.templates.length > 0) {
-        $('#modalBody').append( "<h6>Existing Node Groups:</h6>");
+        $('#modalBody').append( "<h6>" + djangoTranslateExistingNodeGroups + "</h6>");
         for (var i = 0; i < template_data.templates.length; i++) {
             let id = "edit-" + template_data.templates[i].id;
             $('#modalBody').append( "<label><b>" + template_data.templates[i].name + "</b></label>");
@@ -141,7 +141,7 @@ function renderTemplateModal() {
             });
         }
     } else {
-        $('#modalBody').append( "<h6>This model doesn't have any existing node groups yet.</h6>");
+        $('#modalBody').append( "<h6>" + djangoTranslateExistingNodeGroupsMessage + "</h6>");
     }
 
     if ($("#primaryLocation").children('option').length === 0) {
@@ -201,7 +201,7 @@ function editTemplateModal(el) {
     $("#editTemplate").show();
     $('#editTemplate').attr("disabled", false);
     $("#templateName").val(template_edit.name);
-    $("#editModalTitle").html("Update Node Group: " + template_edit.name);
+    $("#editModalTitle").html(djangoTranslateUpdateNodeGroup + template_edit.name);
     appendTemplateCategories();
     var template_variables = template_data.template_variables.filter(temp => temp.template === id);
     template_variables.forEach(function (template_var) {
@@ -222,7 +222,7 @@ function addTemplateModal() {
     $("#modalEdit").show();
     $("#createTemplate").show();
     $("#editTemplate").hide();
-    $("#editModalTitle").html("Add Node Group to Model");
+    $("#editModalTitle").html(djangoTranslateAddNodeGroup);
 
     // Reset category inputs 
     $('#templateVars').empty();
@@ -493,16 +493,15 @@ function displayAPIButtons() {
     if (showAPIButtons) {
         var geoId = "#" + geoInputs.replace(/\s/g, '')+"-row";
         $(geoId).append( "<div id='geophiresActions' class='col-12'></div>");
-        $("#geophiresActions").append("<button id='runGeophires' class='btn btn-success btn-sm' type='button' style='width:130px;height:38px;'>Run GEOPHIRES</button>");
-        var geophiresDesc = "GEOPHIRES v2.0 is a geothermal techno-economic simulation tool used in Engage to calculate Geothermal related parameters. GEOPHIRES combines reservoir, wellbore, and surface plant technical models with cost correlations and levelized cost models to estimate the capital and operation and maintenance costs, instantaneous and lifetime energy production, and overall levelized cost of energy of a geothermal plant."
-        $(geoId).append( "<div class='col-12'><span style='font-size: .8em;margin-bottom:1em;float: right;'><i>For more information about GEOPHIRES please see the <div data-toggle='tooltip' data-placement='bottom' title='" + geophiresDesc + "' data-original-title='" + geophiresDesc + "' style='display: inline-block;'><a target='_blank' href='https://www.osti.gov/biblio/1600135'>GEOPHIRES documentation</a></div>.</i><span>");
+        $("#geophiresActions").append("<button id='runGeophires' class='btn btn-success btn-sm' type='button' style='height:38px;'>" + djangoTranslateRun + " GEOPHIRES</button>");
+        $(geoId).append( "<div class='col-12'><span style='font-size: .8em;margin-bottom:1em;float: right;'><i>" + djangoTranslateGEOPHIRESInfo + "<div data-toggle='tooltip' data-placement='bottom' title='" + djangoTranslateGEOPHIRESDesc + "' data-original-title='" + djangoTranslateGEOPHIRESDesc + "' style='display: inline-block;'><a target='_blank' href='https://www.osti.gov/biblio/1600135'>GEOPHIRES documentation</a></div>.</i><span>");
         //<button id='runGETEM' disabled class='btn btn-success btn-sm' type='button'>Run GETEM</button>
         $(geoId).append( "<span id='geophiresError' class='center' hidden='true' style='color:red;margin-bottom:1em'>An error occured running Geophires! Please contact Support.</span>");
         $('#runGeophires').on('click', function() {
             requestGeophires();
         });
         $(geoId).append("<div id='loadingGeophires' class='center'><div class='spinner-border text-secondary' style='margin-left:50%' role='status'><span class='sr-only'>Loading...</span>"
-            + "</div><br>Loading Geophires results, this may take a few minutes. Please stay on this modal.</div>");
+            + "</div><br>" + djangoTranslateGEOPHIRESLoading + "</div>");
         $("#loadingGeophires").hide()
         $(geoId).append("<div id='geophiresGraphs' class='center'><a id='geoGraphButton' target='_blank' class='btn btn-success btn-sm' type='button' style='width:190px;height:38px;margin-bottom:1em;padding-top:6px;'>"
             + "GEOPHIRES Graphs<i class='fa-solid fa-up-right-from-square' style='margin-left: 1em;'></i></a></div>");

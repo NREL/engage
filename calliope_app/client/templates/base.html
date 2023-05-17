@@ -40,7 +40,15 @@
 	<script type="application/javascript">
 		var LANGUAGE_CODE = '{{ LANGUAGE_CODE }}';
 	</script>
-	<script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+    <script>var djangoTranslateRun = "{% trans 'Close' %}" </script>
+    <script>var djangoTranslateExistingNodeGroups = "{% trans 'Existing Node Groups:' %}" </script>
+    <script>var djangoTranslateExistingNodeGroupsMessage = "{% trans 'This model does not have any existing node groups yet.' %}" </script>
+	<script>var djangoTranslateAddNodeGroup = "{% trans 'Add Node Group to Model' %}" </script>
+    <script>var djangoTranslateUpdateNodeGroup = "{% trans 'Update Node Group: ' %}" </script>
+    <script>var djangoTranslateGEOPHIRESDesc = "{% trans 'GEOPHIRES v2.0 is a geothermal techno-economic simulation tool used in Engage to calculate Geothermal related parameters. GEOPHIRES combines reservoir, wellbore, and surface plant technical models with cost correlations and levelized cost models to estimate the capital and operation and maintenance costs, instantaneous and lifetime energy production, and overall levelized cost of energy of a geothermal plant.' %}" </script>
+    <script>var djangoTranslateGEOPHIRESInfo = "{% trans 'For more information about GEOPHIRES please see the ' %}" </script>
+    <script>var djangoTranslateGEOPHIRESLoading = "{% trans 'Loading Geophires results, this may take a few minutes. Please stay on this modal.' %}" </script>
+    <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/units.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/data_imports.js' %}"></script>
 	<link rel="shortcut icon" type="image/png" href="{% static 'images/engage-logo-16.ico' %}"/>
