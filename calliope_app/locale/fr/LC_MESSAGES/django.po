@@ -1153,8 +1153,8 @@ msgid "Update"
 msgstr "Mise à jour"
 
 #: client/templates/base.html:44
-msgid "Existing Node Groups"
-msgstr "Groupes de nœuds existants"
+msgid "Existing Node Groups:"
+msgstr "Groupes de nœuds existants:"
 
 #: client/templates/base.html:45
 msgid "This model does not have any existing node groups yet."
@@ -1170,7 +1170,7 @@ msgstr "Mettre à jour le groupe de nœuds: "
 
 #: client/templates/base.html:48
 msgid "GEOPHIRES v2.0 is a geothermal techno-economic simulation tool used in Engage to calculate Geothermal related parameters. GEOPHIRES combines reservoir, wellbore, and surface plant technical models with cost correlations and levelized cost models to estimate the capital and operation and maintenance costs, instantaneous and lifetime energy production, and overall levelized cost of energy of a geothermal plant."
-msgstr "GEOPHIRES v2.0 est un outil de simulation technico-économique géothermique utilisé dans Engage pour calculer les paramètres liés à la géothermie. GEOPHIRES combine des modèles techniques de réservoir, de puits de forage et d'usine de surface avec des corrélations de coûts et des modèles de coûts actualisés pour estimer les coûts d'investissement, d'exploitation et de maintenance, la production d'énergie instantanée et à vie, et le coût global actualisé de l'énergie d'une centrale géothermique."
+msgstr "GEOPHIRES v2.0 est un outil de simulation technico-économique géothermique utilisé dans Engage pour calculer les paramètres liés à la géothermie."
 
 #: client/templates/base.html:49
 msgid "For more information about GEOPHIRES please see the "
