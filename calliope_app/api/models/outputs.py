@@ -221,6 +221,10 @@ class Run(models.Model):
             ctx = self.read_output('inputs_storage_cap_max.csv')
             if ctx is not None:
                 ctx['values'] = ctx['storage_cap_max']
+                etx = self.read_output('inputs_storage_cap_equals.csv')
+                if etx is not None:
+                    etx['values'] = etx['storage_cap_equals']
+                    
         elif cost_class:
             LABELS[cost_class[0]] = cost_class[1]
             # Investment Costs
@@ -235,6 +239,10 @@ class Run(models.Model):
             ctx = self.read_output('inputs_energy_cap_max.csv')
             if ctx is not None:
                 ctx['values'] = ctx['energy_cap_max']
+                etx = self.read_output('inputs_energy_cap_equals.csv')
+                if etx is not None:
+                    etx['values'] = etx['energy_cap_equals']
+
         # Process Values
         df = df[~df['techs'].isin(meta['remotes'])]
         df = df[~df['techs'].isin(meta['demands'])]
@@ -251,6 +259,9 @@ class Run(models.Model):
             ctx = ctx.replace(np.inf, np.nan).dropna()
             if location:
                 ctx = ctx[ctx['locs'] == location]
+            if etx is not None:
+                etx = etx[etx['techs'].isin(ctx['techs'])]
+                ctx['values'] = ctx['values'].add(etx['values'],fill_value=0)
             ctx = ctx.groupby('techs').sum()
             ctx = ctx['values'].to_dict()
         else:
