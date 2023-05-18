@@ -452,9 +452,16 @@ function appendCategoryVariables(template_type_vars, category) {
         } else {
             units = "<span style='width:80px;margin-left:.4em' class='text-sm parameter-units'></span>"
         }
-
-        $('#'+ categoryId).append( "<div class='col-6 tech-params' data-toggle='tooltip' data-placement='bottom' title='" + categoryVariables[i].description +
-            "' data-original-title='" + categoryVariables[i].description + "'><label class='template-label'><b>" + categoryVariables[i].pretty_name + "</b></label></div>"
+        var desc = categoryVariables[i].description;
+        if (categoryVariables[i].min && categoryVariables[i].max) {
+            desc += " " + categoryVariables[i].pretty_name + " has a minimum value of " + categoryVariables[i].min + " and a maximum value of " + categoryVariables[i].max + ".";  
+        } else if (categoryVariables[i].max) { 
+            desc += " " + categoryVariables[i].pretty_name + " has a maximum value of " + categoryVariables[i].max + ".";  
+        } else if (categoryVariables[i].min) {
+            desc += " " + categoryVariables[i].pretty_name + " has a minimum value of " + categoryVariables[i].min + ".";  
+        }
+        $('#'+ categoryId).append( "<div class='col-6 tech-params' data-toggle='tooltip' data-placement='bottom' title='" + desc +
+            "' data-original-title='" + desc + "'><label class='template-label'><b>" + categoryVariables[i].pretty_name + "</b></label></div>"
         + "<div class='col-6 tech-params'><input id='template_type_var_" + categoryVariables[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value=''></input>"
         + units + "</div>");
 
@@ -473,18 +480,6 @@ function appendCategoryVariables(template_type_vars, category) {
             "min" : categoryVariables[i].min
         });
 
-        $('#template_type_var_' + categoryVariables[i].id).on('input', function() {
-            /*var min = parseInt($(this).attr('min'));
-            var max = parseInt($(this).attr('max'));
-            if (min || max) {
-                var value = parseInt($(this).val());
-                if (value < min) {
-                    $(this).val(min);
-                } else if (value > max) {
-                    $(this).val(max);
-                }
-            }*/
-        });
     }
 }
 
@@ -528,9 +523,8 @@ function setTemplateVarsClassLogic(showAPIButtons) {
         }
     });
 
-    //$('#template_type_var_' + categoryVariables[i].id).on('input', function() {
-
     $('.form-control').on('input', function() {
+
         var formFilledOut = validateTemplateParameters();
         if (formFilledOut) {
             $("#editTemplate, #createTemplate").prop("disabled",false);
@@ -544,6 +538,24 @@ function setTemplateVarsClassLogic(showAPIButtons) {
                 $("#runGeophires").prop("disabled",false);
             } else {
                 $("#runGeophires").prop("disabled",true);
+            }
+        }
+
+        var min = parseInt($(this).attr('min'));
+        var max = parseInt($(this).attr('max'));
+        var isGeophiresInput = $("#" + geoInputs.replace(/\s/g, '') + "-row").parent(this).length;
+        if ($(this).val() && (min || max) && $(this).not("select")) {
+            var value = parseInt($(this).val());
+            if ((min && value < min) || (max && value > max))  {
+                $(this).addClass("input-error"); 
+                $("#editTemplate, #createTemplate").prop("disabled",true);
+                $("#inputError").show();
+                if (isGeophiresInput) {
+                    $("#runGeophires").prop("disabled",true);
+                }
+            } else {
+                $(this).removeClass("input-error");
+                $("#inputError").hide();
             }
         }
     });

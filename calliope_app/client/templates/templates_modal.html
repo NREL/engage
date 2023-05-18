@@ -85,7 +85,12 @@
     }
     .center {
         margin-left: auto;
-        margin-right: auto;
+        margin-right: auto; 
+    }
+    .input-error,
+    .input-error input:focus {
+        border: 3px solid red;
+        border-color: red !important;
     }
 </style>
 <div class="modal fade" id="templatesModal" tabindex="-1" role="dialog" aria-labelledby="templateModalTitle" aria-hidden="true">
@@ -144,6 +149,7 @@
             <div id="templateVars" style="margin-bottom:1em">
             </div>
             <div class="modal-footer">
+                <div id='inputError' style="display: none;"><span style='font-size: .8em;margin-bottom:1em;float: right;color:red;'>{% trans 'One or more of your inputs are outside of the excepted range. Please adjust according to the variable descriptions before submitting.' %}</span></div>
                 <button id="modelEditBack" class="btn btn-secondary" type="button" style="height:38px;float:left;">
                     {% trans "Back" %}
                 </button>
