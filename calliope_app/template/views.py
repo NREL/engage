@@ -137,12 +137,16 @@ def add_template(request):
 
         if new_loc_techs is not None:
             ureg = initialize_units()
+            #ureg.Quantity("6 kW")
             for template_loc_tech_id, loc_tech in new_loc_techs.items():
                 template_type_parameters = Template_Type_Parameter.objects.filter(template_loc_tech_id=template_loc_tech_id)
+                # get input and output carriers 
                 for template_type_parameter in template_type_parameters: 
                     equation = template_type_parameter.equation
-                    for name, template_variable in new_template_variables.items(): 
-                        equation = equation.replace('||'+name+'||', template_variable.value)
+                    for name, template_variable in new_template_variables.items():
+                        # pint quantity() method likes spaces in equations with units 
+                        equation = equation.replace('||'+name+'||', " " + str(template_variable.value) + " " + template_variable.units + " ")
+                    # override template_type_parameter.parameter.units based on carrier units
                     value, rawValue  = convert_units_no_pipe(ureg, equation, template_type_parameter.parameter.units)
                     Loc_Tech_Param.objects.create(
                         parameter=template_type_parameter.parameter,
