@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse, HttpResponse
 from api.utils import initialize_units, convert_units_no_pipe
-from api.models.configuration import Model, Model_User, Location, Model_Comment, Technology, Abstract_Tech, Loc_Tech, Tech_Param, Loc_Tech_Param
+from api.models.configuration import Model, Model_User, Location, Model_Comment, Technology, Abstract_Tech, Loc_Tech, Tech_Param, Loc_Tech_Param, ParamsManager
 from template.models import Template, Template_Variable, Template_Type, Template_Type_Variable, Template_Type_Loc, Template_Type_Tech, Template_Type_Loc_Tech, Template_Type_Parameter
 
 @login_required
@@ -28,7 +28,7 @@ def model_templates(request):
     template_types = list(Template_Type.objects.all().values('id', 'name', 'pretty_name', 'description'))
     template_type_variables = list(Template_Type_Variable.objects.all().values('id', 'name', 'pretty_name', 'template_type', 'units', 'default_value', 'min', 'max', 'category', 'choices', 'description', 'timeseries_enabled'))
     template_type_locs = list(Template_Type_Loc.objects.all().values('id', 'name', 'template_type', 'latitude_offset', 'longitude_offset'))
-    template_type_techs = list(Template_Type_Tech.objects.all().values('id', 'name', 'template_type', 'abstract_tech', 'energy_carrier', 'carrier_in', 'carrier_out', 'carrier_in_2', 'carrier_out_2', 'carrier_in_3', 'carrier_out_3', 'carrier_ratios'))
+    template_type_techs = list(Template_Type_Tech.objects.all().values('id', 'name', 'description', 'template_type', 'version_tag', 'abstract_tech', 'energy_carrier', 'carrier_in', 'carrier_out', 'carrier_in_2', 'carrier_out_2', 'carrier_in_3', 'carrier_out_3', 'carrier_ratios'))
     template_type_loc_techs = list(Template_Type_Loc_Tech.objects.all().values('id', 'template_type', 'template_loc_1', 'template_loc_2', 'template_tech'))
     template_type_parameters = list(Template_Type_Parameter.objects.all().values('id', 'template_loc_tech', 'parameter', 'equation'))
     locations = list(Location.objects.filter(model_id=model.id).values('id', 'pretty_name', 'name', 'latitude', 'longitude', 'available_area', 'model', 'created', 'updated', 'template_id', 'template_type_loc_id'))
@@ -86,7 +86,7 @@ def add_template(request):
     template_type = Template_Type.objects.filter(id=template_type_id).first()
     location = Location.objects.filter(id=location_id).first()
     template_type_locs = list(Template_Type_Loc.objects.filter(template_type_id=template_type_id).values('id', 'name', 'template_type', 'latitude_offset', 'longitude_offset'))
-    template_type_techs = list(Template_Type_Tech.objects.filter(template_type_id=template_type_id).values('id', 'name', 'template_type', 'abstract_tech', 'energy_carrier', 'carrier_in', 'carrier_out', 'carrier_in_2', 'carrier_out_2', 'carrier_in_3', 'carrier_out_3', 'carrier_ratios'))
+    template_type_techs = list(Template_Type_Tech.objects.filter(template_type_id=template_type_id).values('id', 'name', 'description', 'template_type', 'version_tag', 'abstract_tech', 'energy_carrier', 'carrier_in', 'carrier_out', 'carrier_in_2', 'carrier_out_2', 'carrier_in_3', 'carrier_out_3', 'carrier_ratios'))
     template_type_loc_techs = list(Template_Type_Loc_Tech.objects.filter(template_type_id=template_type_id).values('id', 'template_type', 'template_loc_1', 'template_loc_2', 'template_tech'))
 
     if template_id:
@@ -145,7 +145,9 @@ def add_template(request):
                     equation = template_type_parameter.equation
                     for name, template_variable in new_template_variables.items():
                         # pint quantity() method likes spaces in equations with units 
-                        equation = equation.replace('||'+name+'||', " " + str(template_variable.value) + " " + template_variable.units + " ")
+                        template_type_variable = Template_Type_Variable.objects.filter(id=template_variable.template_type_variable_id)
+                        #template_type_variable_idequation = equation.replace('||'+name+'||', " " + template_variable.value + " " + template_type_variable["units"] + " ")
+                        equation = equation.replace('||'+name+'||', template_variable.value)
                     # override template_type_parameter.parameter.units based on carrier units
                     value, rawValue  = convert_units_no_pipe(ureg, equation, template_type_parameter.parameter.units)
                     Loc_Tech_Param.objects.create(
@@ -221,14 +223,29 @@ def add_template_technologies(template_type_techs, model, template_type_id):
         if existingTech is None:
             abstract_tech = Abstract_Tech.objects.filter(
                     id=template_type_tech['id']).first()
-            new_tech = Technology.objects.create(
-                abstract_tech=abstract_tech,
-                pretty_name=template_type_tech['name'],
-                name=template_type_tech['name'].replace(' ', '-'),
-                model=model,
-                template_type_id=template_type_id,
-                template_type_tech_id=template_type_tech['id'],
-            )
+            if template_type_tech['version_tag'] is not None:
+                new_tech = Technology.objects.create(
+                    abstract_tech=abstract_tech,
+                    pretty_name=template_type_tech['name'],
+                    name=template_type_tech['name'].replace(' ', '-'),
+                    model=model,
+                    description=template_type_tech['description'],
+                    template_type_id=template_type_id,
+                    template_type_tech_id=template_type_tech['id'],
+                    tag=ParamsManager.simplify_name(template_type_tech['version_tag']),
+                    pretty_tag=template_type_tech['version_tag']
+                )
+            else:
+                new_tech = Technology.objects.create(
+                    abstract_tech=abstract_tech,
+                    pretty_name=template_type_tech['name'],
+                    name=template_type_tech['name'].replace(' ', '-'),
+                    model=model,
+                    description=template_type_tech['description'],
+                    template_type_id=template_type_id,
+                    template_type_tech_id=template_type_tech['id'],
+                )
+
             new_technologies[template_type_tech['id']] = new_tech
 
             #set 'name' and 'parent' paramters
@@ -238,14 +255,23 @@ def add_template_technologies(template_type_techs, model, template_type_id):
                 parameter_id=1,
                 value=abstract_tech.name,
             )
-            Tech_Param.objects.create(
-                model=model,
-                technology=new_tech,
-                parameter_id=2,
-                value=new_tech.pretty_name,
-            )
 
             #set technology params from template parameters
+            if template_type_tech['version_tag'] is not None:
+                Tech_Param.objects.create(
+                    model=model, 
+                    technology=new_tech, 
+                    parameter_id=2, 
+                    value=new_tech.pretty_name + " [" + template_type_tech['version_tag'] + "]"
+                )
+            else:
+                Tech_Param.objects.create(
+                    model=model,
+                    technology=new_tech,
+                    parameter_id=2,
+                    value=new_tech.pretty_name
+                )
+
             if template_type_tech['energy_carrier'] is not None:
                 Tech_Param.objects.create(
                     model=model, 

@@ -29,7 +29,7 @@ class Template_Type_Variable(models.Model):
     name = models.CharField(max_length=200)
     pretty_name = models.CharField(max_length=200)
     template_type = models.ForeignKey(Template_Type, on_delete=models.CASCADE)
-    units = models.CharField(max_length=200)
+    units = models.CharField(max_length=200, blank=True, null=True)
     default_value = models.CharField(max_length=200, blank=True, null=True)
     min = models.CharField(max_length=200, blank=True, null=True)
     max = models.CharField(max_length=200, blank=True, null=True)
@@ -60,8 +60,10 @@ class Template_Type_Tech(models.Model):
         verbose_name_plural = "[Admin] Template Type Techs"
 
     name = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, blank=True, null=True)
     template_type = models.ForeignKey(Template_Type, on_delete=models.CASCADE)
     abstract_tech = models.ForeignKey(Abstract_Tech, on_delete=models.CASCADE)
+    version_tag = models.CharField(max_length=200, blank=True, null=True)
     energy_carrier = models.CharField(max_length=200, blank=True, null=True)
     carrier_in = models.CharField(max_length=200, blank=True, null=True)
     carrier_out = models.CharField(max_length=200, blank=True, null=True)

@@ -369,8 +369,7 @@ function saveTemplate(buttonId) {
             return;
         }
         var id = templateVarElements[i].id.replace("template_type_var_", "");
-        var value = templateVarElements[i].value;
-        templateVars.push({"id": id, "value": value});
+        templateVars.push({"id": id, "value": templateVarElements[i].value, "units": templateVarElements[i].units});
     }
 
     var data = {
