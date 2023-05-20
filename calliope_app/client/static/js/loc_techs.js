@@ -42,7 +42,7 @@ $( document ).ready(function() {
 
     //On modal close
     $('#templatesModal').on('hidden.bs.modal', function () {
-        closeTemplateModal();
+        closeTemplateModal(false);
     });
     //------------End Templates------------//
 
@@ -228,7 +228,7 @@ function addTemplateModal() {
     $('#templateVars').empty();
 }
 
-function closeTemplateModal() {
+function closeTemplateModal(reloadDialog) {
     $("#templateType").val([]);
     $("#primaryLocation").val([]);
     $("#templateName").val('');
@@ -236,6 +236,9 @@ function closeTemplateModal() {
     $("#templateVars").empty();
     $("#editTemplate, #createTemplate").prop("disabled",true);
     template_edit = {};
+    if (reloadDialog) {
+        window.location.reload();
+    }
 }
 
 function modelEditBack() {
@@ -391,7 +394,7 @@ function saveTemplate(buttonId) {
         data: data,
         dataType: 'json',
         success: function (data) {
-            closeTemplateModal();
+            closeTemplateModal(true);
             var response = data;
             $("#editTemplate, #createTemplate").prop("disabled",false);
         },
