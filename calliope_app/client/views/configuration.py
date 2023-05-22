@@ -134,7 +134,7 @@ def technologies_view(request, model_uuid):
         return HttpResponseRedirect(reverse('home'))
 
     technologies = model.technologies.values(
-        "id", "pretty_name", "pretty_tag", "abstract_tech__icon")
+        "id", "pretty_name", "pretty_tag", "abstract_tech__icon", "template_type_id")
     session_technology_id = request.GET.get('tech_id', None)
     if not session_technology_id:
         session_technology_id = request.session.get('technology_id', None)
@@ -211,7 +211,7 @@ def loc_techs_view(request, model_uuid):
         return HttpResponseRedirect(reverse('home'))
 
     technologies = model.technologies.values(
-        "id", "pretty_name", "pretty_tag", "abstract_tech__icon")
+        "id", "pretty_name", "pretty_tag", "abstract_tech__icon", "template_type_id")
     session_technology_id = request.GET.get('tech_id', None)
     session_loc_tech_id = request.GET.get('loc_tech_id', None)
     if not session_technology_id:

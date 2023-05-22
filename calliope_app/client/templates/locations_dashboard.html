@@ -1,5 +1,10 @@
 {% load i18n %}
 {% load return_item %}
+<script>
+    $(document).ready(function() {
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
 <div id="locations_dashboard" class="splitter_lower row" style="overflow-y: scroll; height: 50%;">
 	<table id="location_table" class="table table-hover table-sm">
 		<tbody>
@@ -34,6 +39,11 @@
 						<span class="location-description">{% if location.description %}{{ location.description }}{% endif %}</span>
 						<textarea {% if not can_edit %}disabled{% endif %} class="location-edit-description hide" placeholder="{% trans 'Location description' %}...">{% if location.description %}{{ location.description }}{% endif %}</textarea>
 					</td>
+                    <td class="text-sm">
+                        {% if location.template_id %}
+                        <div data-toggle="tooltip" data-placement="bottom" data-original-title="This location was created from a Node Group." title="This location was created from a Node Group." style="max-width: 20px;"><img src="../../../static/images/node_group_icon.svg" alt="Node group icon" style="width: 14px;"></div>
+                        {% endif %}
+                    </td>
 					<!-- Edit Buttons -->
 					<td class="centered">
 						<button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default btn-sm transparent location-edit" title="{% trans 'Edit location' %}"><i class="fas fa-edit"></i>&nbsp;&nbsp;{% trans "Edit" %}</button>
@@ -47,7 +57,7 @@
 				{% if lts %}
 				<tr class="location-technologies-row" data-location_id="{{ location.id }}">
 					<!-- Location Technologies -->
-					<td colspan=7 class="text-sm">
+					<td colspan=8 class="text-sm">
 						<i class="fas fa-cog"></i> {% trans "Technologies" %}: 
 						<span class="location-technologies">
 							{% for loc_tech in lts %}
@@ -63,7 +73,7 @@
 				{% endwith %}
 				<tr class="location-data_sources-row" data-location_id="{{ location.id }}">
 					<!-- Data Sources -->
-					<td colspan=7 class="text-sm">
+					<td colspan=8 class="text-sm">
 						<i class="fas fa-database"></i> {% trans "Datasets" %}:
 						<span class="pvwatts btn-sm btn-outline-secondary" style="cursor: pointer">
 							<b>Solar</b> [NSRDB]
@@ -111,6 +121,9 @@
 					<span class="location-description hide"></span>
 					<textarea {% if not can_edit %}disabled{% endif %} class="location-edit-description"  placeholder="{% trans 'New location description' %}..."></textarea>
 				</td>
+                <td class="text-sm">
+                   
+                </td>
 				<!-- Edit Buttons -->
 				<td class="centered">
 					<button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-danger bg-danger btn-sm location-edit" title="{% trans 'Cancel new location' %}"><i class="fas fa-times"></i>&nbsp;&nbsp;{% trans "Cancel" %}</button>
@@ -122,7 +135,7 @@
 			</tr>
 			<tr class="location-data_sources-row location-add-data_sources-row hide">
 				<!-- Data Sources -->
-				<td colspan=7 class="text-sm">
+				<td colspan=8 class="text-sm">
 					<i class="fas fa-database"></i> {% trans "Datasets" %}:
 					<button class="pvwatts btn btn-sm btn-light" disabled>
 						<b>Solar</b> [NSRDB]
