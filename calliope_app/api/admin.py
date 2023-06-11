@@ -6,7 +6,7 @@ from api.models.calliope import Abstract_Tech, Abstract_Tech_Param, \
 from api.models.configuration import Model, Model_User, Model_Comment, \
     Location, Technology, Tech_Param, Model_Favorite, User_File, \
     Loc_Tech, Loc_Tech_Param, Timeseries_Meta, Scenario, \
-    Scenario_Loc_Tech, Scenario_Param
+    Scenario_Loc_Tech, Scenario_Param, Carrier
 from api.models.outputs import Run
 from api.models.engage import User_Profile, ComputeEnvironment
 
@@ -35,6 +35,7 @@ class Parameter_Admin(admin.ModelAdmin):
     list_display = ['id', 'root', 'category', 'name', 'pretty_name',
                     'description', 'timeseries_enabled', 'units', 'choices',
                     'is_systemwide', 'is_essential', 'is_carrier']
+    list_editable = ['units']
 
 
 class Abstract_Tech_Admin(admin.ModelAdmin):
@@ -143,6 +144,10 @@ class Run_Admin(admin.ModelAdmin):
                     'plots_path', 'model', 'build_task', 'run_task',
                     'deprecated', 'published','cluster','manual',
                     'calliope_066_upgraded', 'calliope_066_errors']
+    
+class Carrier_Admin(admin.ModelAdmin):
+    list_filter = ['model']
+    list_display = ['id', 'model', 'name', 'rate_unit', 'quantity_unit', 'created', 'updated']
 
 
 admin.site.register(Help_Guide, Help_Guide_Admin)
@@ -167,3 +172,4 @@ admin.site.register(Scenario_Loc_Tech, Scenario_Loc_Tech_Admin)
 admin.site.register(Scenario_Param, Scenario_Param_Admin)
 admin.site.register(Run, Run_Admin)
 admin.site.register(ComputeEnvironment, ComputeEnvironmentAdmin)
+admin.site.register(Carrier,Carrier_Admin)

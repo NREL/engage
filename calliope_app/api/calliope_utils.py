@@ -13,7 +13,7 @@ import copy
 import calendar
 
 from api.models.configuration import Scenario_Param, Scenario_Loc_Tech, \
-    Location, Tech_Param, Loc_Tech_Param, Loc_Tech
+    Location, Tech_Param, Loc_Tech_Param, Loc_Tech, Scenario, Carrier
 
 
 def get_model_yaml_set(scenario_id, year):
@@ -158,6 +158,16 @@ def get_loc_techs_yaml_set(scenario_id, year):
                               unique_param.split('.')
                 dictify(loc_techs_yaml_set,param_list,value)
     return loc_techs_yaml_set
+
+def get_carriers_yaml_set(scenario_id):
+    model = Scenario.objects.get(id=scenario_id).model
+    carriers = Carrier.objects.filter(model=model)
+
+    carriers_yaml_set = {}
+    for carrier in carriers:
+        carriers_yaml_set[carrier.name] = {'rate':carrier.rate_unit,'quantity':carrier.quantity_unit}
+
+    return carriers_yaml_set
 
 # This function takes a target dict and adds a new entry from an array of nested dict keys
 # The final value in the array is the entry value and the rest of the list is the nested keys

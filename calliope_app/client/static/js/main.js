@@ -48,7 +48,7 @@ function activate_table() {
 		var update_val = (value != '') & (value != old_value),
 			update_year = (year != '') & (year != old_year);
 		if (update_val & ($(this).hasClass('float-value') == true)) {
-			var units = row.find('.parameter-units').data('value'),
+			var units = row.find('.parameter-units').attr('data-value'),
 				val = convert_units(value, units);
 			if (typeof(val) == 'number') {
 				$(this).attr('data-target_value', formatNumber(val, false));
@@ -214,6 +214,23 @@ function activate_table() {
 	$(function () {
 	  $('[data-toggle="tooltip"]').tooltip()
 	});
+
+	if ($('.units_in_selector').length){
+		in_sel = $('.units_in_selector').first();
+		carrier_in = {'name':in_sel.val(),'rate_unit':in_sel.find('option:selected').attr('rate_unit'),'quantity_unit':in_sel.find('option:selected').attr('quantity_unit')};
+	}else{
+		in_field = $('.units_in_field').first();
+		carrier_in = {'name':in_field.val(),'rate_unit':in_field.attr('rate_unit'),'quantity_unit':in_field.attr('quantity_unit')};
+	}
+	if ($('.units_out_selector').length){
+		out_sel = $('.units_out_selector').first();
+		carrier_out = {'name':out_sel.val(),'rate_unit':out_sel.find('option:selected').attr('rate_unit'),'quantity_unit':out_sel.find('option:selected').attr('quantity_unit')};
+	}else{
+		console.log('here');
+		out_field = $('.units_out_field').first();
+		carrier_out = {'name':out_field.val(),'rate_unit':out_field.attr('rate_unit'),'quantity_unit':out_field.attr('quantity_unit')};
+	}
+	update_carriers(carrier_in,carrier_out,false);
 
 };
 
@@ -1052,13 +1069,66 @@ function activate_carrier_dropdowns() {
 		$(this).addClass('table-warning');
 		$(this).siblings('.sp-replacer').addClass('btn-warning');
 		check_unsaved();
+		if ($(this).hasClass('units_in_selector') | $(this).hasClass('units_out_selector')){
+			in_sel = $('.units_in_selector').first();
+			carrier_in = {'name':in_sel.val(),'rate_unit':in_sel.find('option:selected').attr('rate_unit'),'quantity_unit':in_sel.find('option:selected').attr('quantity_unit')};	
+			out_sel = $('.units_out_selector').first();
+			carrier_out = {'name':out_sel.val(),'rate_unit':out_sel.find('option:selected').attr('rate_unit'),'quantity_unit':out_sel.find('option:selected').attr('quantity_unit')};
+			update_carriers(carrier_in,carrier_out,true);
+		}
+
 		if ($(this).val() == '-- New Carrier --') {
-			var carrier = prompt('New Carrier Name:'),
-				o = new Option(carrier, carrier);
+			$("#carriersModal").dialog();
 			$(o).html(carrier);
 			$(this).append(o);
 			$(this).val(carrier);
 		};
+	});
+}
+
+function update_carriers(carrier_in, carrier_out,reconvert){
+	$('.parameter-units').each(function(){
+		units = $(this).attr('raw-value').replace('[[in_rate]]',carrier_in['rate_unit']).replace('[[in_quantity]]',carrier_in['quantity_unit']).replace('[[out_quantity]]',carrier_out['quantity_unit']).replace('[[out_rate]]',carrier_out['rate_unit']);
+		$(this).html(units);
+		$(this).attr('data-value', units);
+	});
+	if (reconvert){
+		reconvert_all();
+	}
+}
+
+function reconvert_all(){
+	$('.parameter-value-new, .parameter-value-existing, .parameter-year-existing').each(function(){
+		var row = $(this).parents('tr'),
+			value = row.find('.parameter-value').val(),
+			ts_id = row.find('.parameter-value.timeseries').val();
+			// Convert to number if possible
+		
+		if (value && $(this).hasClass('float-value') == true){
+			if (+value) { value = +value };
+			// If it is a timeseries: render the charts
+			// Reset the formatting of row
+			row.find('.parameter-reset').addClass('hide')
+			row.find('.parameter-delete, .parameter-value-delete').removeClass('hide')
+			row.removeClass('table-warning');
+			$(this).removeClass('invalid-value');
+			console.log(value);
+			var units = row.find('.parameter-units').attr('data-value');
+			console.log(units);
+			val = convert_units(value, units);
+			if (typeof(val) == 'number') {
+				console.log(val);
+				$(this).attr('data-target_value', formatNumber(val, false));
+				row.find('.parameter-target-value').html(formatNumber(val, true));
+				row.find('.parameter-reset').removeClass('hide')
+				row.find('.parameter-delete, .parameter-value-delete').addClass('hide')
+				row.addClass('table-warning');
+			} else {
+				console.log('failed');
+				$(this).addClass('invalid-value');
+				row.find('.parameter-target-value').html(row.find('.parameter-target-value').data('value'));
+			}
+		}
 	});
 }
 

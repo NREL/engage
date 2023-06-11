@@ -150,6 +150,8 @@
 							<li>&nbsp;&nbsp;{{ model }}<br><br></li>
 							<li><a href="{% url 'model' model.uuid %}"><h5>&nbsp;&nbsp;<i class="far fa-comments"></i>&nbsp;&nbsp;{% trans "Activity" %}</a>&nbsp;&nbsp;</h5></a></li>
 							<li><a href="{% url 'timeseries' model.uuid %}"><h5>&nbsp;&nbsp;<i class="fas fa-chart-line"></i>&nbsp;&nbsp;{% trans "Timeseries" %}</a>&nbsp;&nbsp;</h5></a></li>
+							<!--<li><button type="button" data-toggle="modal" data-target="#carriersModal"><h5 >&nbsp;&nbsp;<i class="fas fa-chart-line"></i>&nbsp;&nbsp;{% trans "Carriers" %}</a>&nbsp;&nbsp;</h5></button></li>-->
+							<li><a href="{% url 'carriers' model.uuid %}"><h5>&nbsp;&nbsp;<i class="fas fa-chart-line"></i>&nbsp;&nbsp;{% trans "Carriers" %}</a>&nbsp;&nbsp;</h5></a></li>
 						</ul>
 					</div>
 				{% endif %}
@@ -187,6 +189,7 @@
 	  	<div id="data-source-modal-content">
 	  		{% include "pvwatts_form.html" %}
 	  		{% include "wtk_form.html" %}
+			{% include "new_carrier.html" %}
 	  	</div>
 	</div>
 	{% endif %}
