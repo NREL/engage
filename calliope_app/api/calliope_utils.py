@@ -166,6 +166,9 @@ def get_carriers_yaml_set(scenario_id):
     carriers_yaml_set = {}
     for carrier in carriers:
         carriers_yaml_set[carrier.name] = {'rate':carrier.rate_unit,'quantity':carrier.quantity_unit}
+    for carrier in model.carriers_old:
+        if carrier not in carriers_yaml_set:
+            carriers_yaml_set[carrier] = {'rate':'kW','quantity':'kWh'}
 
     return carriers_yaml_set
 

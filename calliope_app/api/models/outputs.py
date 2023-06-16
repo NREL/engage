@@ -161,7 +161,6 @@ class Run(models.Model):
         carriers = [(key, len(values)) for key, values in carriers.items()]
         carriers = sorted(carriers, key=lambda k: k[1], reverse=True)
         carriers_d = self.read_input('carriers.yaml')
-        logger.info(carriers_d)
         for k in carriers:
             if k[0] not in carriers_d.keys():
                 carriers_d[k[0]] = {'rate':'kW','quantity':'kWh'}

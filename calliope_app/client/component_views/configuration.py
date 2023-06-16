@@ -123,7 +123,7 @@ def all_tech_params(request):
     for carrier in model_carriers:
         carriers[carrier.name] = {'rate':carrier.rate_unit,'quantity':carrier.quantity_unit}
 
-    for carrier in model.carriers:
+    for carrier in model.carriers_old:
         if carrier not in carriers.keys():
             carriers[carrier] = {'rate':'kW','quantity':'kWh'}
     
@@ -155,7 +155,7 @@ def all_tech_params(request):
         "technology": technology,
         "model": model,
         "parameters": parameters,
-        "carriers": model.carriers,
+        "carriers": carriers,
         "level": "1_tech",
         "timeseries": timeseries,
         "can_edit": can_edit,
@@ -258,7 +258,7 @@ def all_loc_tech_params(request):
     for carrier in model_carriers:
         carriers[carrier.name] = {'rate':carrier.rate_unit,'quantity':carrier.quantity_unit}
 
-    for carrier in model.carriers:
+    for carrier in model.carriers_old:
         if carrier not in carriers.keys():
             carriers[carrier] = {'rate':'kW','quantity':'kWh'}
     
@@ -276,7 +276,7 @@ def all_loc_tech_params(request):
         "loc_tech": loc_tech,
         "model": model,
         "parameters": parameters,
-        "carriers": model.carriers,
+        "carriers": carriers,
         "carrier_in": carrier_in,
         "carrier_out":carrier_out,
         "level": "2_loc_tech",

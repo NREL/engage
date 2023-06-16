@@ -1393,7 +1393,7 @@
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "",
-      "is_essential": false,
+      "is_essential": true,
       "is_carrier": true,
       "choices": "[]"
     },
@@ -1413,7 +1413,7 @@
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "",
-      "is_essential": false,
+      "is_essential": true,
       "is_carrier": true,
       "choices": "[]"
     },

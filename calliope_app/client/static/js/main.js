@@ -226,7 +226,6 @@ function activate_table() {
 		out_sel = $('.units_out_selector').first();
 		carrier_out = {'name':out_sel.val(),'rate_unit':out_sel.find('option:selected').attr('rate_unit'),'quantity_unit':out_sel.find('option:selected').attr('quantity_unit')};
 	}else{
-		console.log('here');
 		out_field = $('.units_out_field').first();
 		carrier_out = {'name':out_field.val(),'rate_unit':out_field.attr('rate_unit'),'quantity_unit':out_field.attr('quantity_unit')};
 	}
@@ -422,7 +421,6 @@ function get_loc_tech_parameters() {
 			}
 		});
 	} else {
-		console.log(LANGUAGE_CODE)
 		if (LANGUAGE_CODE === 'fr') {
 			var msg = '<div class="col-12 centered"><br><br><h4>Veuillez sélectionner ou créer un nœud.</h4></div>'
 		} else {
@@ -1112,19 +1110,15 @@ function reconvert_all(){
 			row.find('.parameter-delete, .parameter-value-delete').removeClass('hide')
 			row.removeClass('table-warning');
 			$(this).removeClass('invalid-value');
-			console.log(value);
 			var units = row.find('.parameter-units').attr('data-value');
-			console.log(units);
 			val = convert_units(value, units);
 			if (typeof(val) == 'number') {
-				console.log(val);
 				$(this).attr('data-target_value', formatNumber(val, false));
 				row.find('.parameter-target-value').html(formatNumber(val, true));
 				row.find('.parameter-reset').removeClass('hide')
 				row.find('.parameter-delete, .parameter-value-delete').addClass('hide')
 				row.addClass('table-warning');
 			} else {
-				console.log('failed');
 				$(this).addClass('invalid-value');
 				row.find('.parameter-target-value').html(row.find('.parameter-target-value').data('value'));
 			}

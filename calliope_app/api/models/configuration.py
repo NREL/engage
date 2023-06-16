@@ -186,7 +186,7 @@ class Model(models.Model):
         return carrier_ins
 
     @property
-    def carriers(self):
+    def carriers_old(self):
         """ Get all configured carrier strings """
         carriers = Tech_Param.objects.filter(
             model=self,

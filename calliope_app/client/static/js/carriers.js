@@ -14,7 +14,6 @@ $( document ).ready(function(){
         quantity = row.find('#carrier-quantity').val(),
         carrier_id = $(this).parents('tr').data('carrier_id');
 
-        console.log(row);
         row.addClass('table-warning');
         $('.master-btn').addClass('hide');
         if ($('.table-warning, .table-danger').length != 0) {
@@ -38,7 +37,6 @@ $( document ).ready(function(){
             },
             dataType: 'json',
             success: function (data) {
-                console.log(data['message']);
                 if (data['message'] != "Success."){
                     alert(data['message']);
                 }
