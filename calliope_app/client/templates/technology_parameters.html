@@ -5,6 +5,14 @@
 {% load return_item %}
 {% load add_commas %}
 
+<style>
+	.tooltip-inner {
+		text-align: left;
+	}
+</style>
+
+{% if carrier_in %} <input class="hide units_in_field" value="{{ carrier_in.name }}" rate_unit="{{ carrier_in.rate }}" quantity_unit="{{ carrier_in.quantity }}"> {% endif %}
+{% if carrier_out %} <input class="hide units_out_field" value="{{ carrier_out.name }}" rate_unit="{{ carrier_out.rate }}" quantity_unit="{{ carrier_out.quantity }}"> {% endif %}
 <table id="param_table" class="table table-hover table-sm" style="white-space:nowrap">
 	<tbody>
 		{% for param in parameters %}
@@ -47,7 +55,7 @@
 					<td style="width:250px;" class="table-primary"><i class="fas fa-link"></i>&nbsp;&nbsp;{{ param.parameter_category }}</td>
 					{% endif %}
 					<!-- Parameter Names -->
-					<td style="cursor:help;width:450px;" data-toggle="tooltip" data-placement="bottom" title="{{ param.parameter_root }}.{{ param.parameter_name }}: {{ param.parameter_description }}">
+					<td style="cursor:help;width:450px;" data-toggle="tooltip" data-html="true" data-placement="bottom" title="{{ param.parameter_root }}.{{ param.parameter_name }}: {{ param.parameter_description }}">
 						&nbsp;&nbsp;
 						<span class="text-sm"></span><b>{{ param.parameter_pretty_name }}</b>
 					</td>
@@ -108,7 +116,7 @@
 					<td></td>
 					{% endif %}
 					<!-- Parameter Units -->
-					<td style="width:80px;" class="text-sm parameter-units" data-value="{{ param.units }}">{{ param.units|safe }}</td>
+					<td style="width:80px;" class="text-sm parameter-units" data-value="{{ param.units }}" raw-value="{{ param.raw_units }}">{{ param.units|safe }}</td>
 					<!-- Parameter Edit Buttons -->
 					<td style="width:100px;" class="centered">
 						<button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default btn-sm transparent parameter-reset hide"><i class="fas fa-undo"></i></button>
@@ -181,7 +189,7 @@
 					<td></td>
 					{% endif %}
 					<!-- Parameter Units -->
-					<td class="text-sm parameter-units" data-value="{{ param.units }}">{{ param.units|safe }}</td>
+					<td class="text-sm parameter-units" data-value="{{ param.units }}" raw-value="{{ param.raw_units }}">{{ param.units|safe }}</td>
 					<!-- Edit Buttons -->
 					<td class="centered">
 						<button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default btn-sm transparent parameter-reset hide"><i class="fas fa-undo"></i></button>
@@ -224,7 +232,7 @@
 					{% else %}
 					<td></td>
 					{% endif %}
-					<td class="text-sm parameter-units" data-value="{{ param.units }}">{{ param.units|safe }}</td>
+					<td class="text-sm parameter-units" data-value="{{ param.units }}" raw-value="{{ param.raw_units }}">{{ param.units|safe }}</td>
 					<td class="centered">
 						<button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default transparent parameter-value-remove" title="{% trans 'Remove a row' %}"><i class="fas fa-minus"></i></button>
 					</td>

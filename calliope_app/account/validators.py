@@ -5,8 +5,8 @@ from django.utils.translation import gettext_lazy as _
 
 
 unicode_chars_validator = RegexValidator(
-    slug_unicode_re,
-    _("Enter a valid string consisting of unicode letters, numbers, underscores or hyphens."),
+    r"^[\w\-]+( [\w\-]+)*$",
+    _("Enter a valid string consisting of unicode letters, numbers, underscores or hyphens. Single spaces are allowed to separate words."),
     "invalid"
 )
 
