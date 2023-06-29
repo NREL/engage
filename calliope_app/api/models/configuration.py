@@ -186,7 +186,7 @@ class Model(models.Model):
         return carrier_ins
 
     @property
-    def carriers(self):
+    def carriers_old(self):
         """ Get all configured carrier strings """
         carriers = Tech_Param.objects.filter(
             model=self,
@@ -1444,3 +1444,22 @@ class ParamsManager():
         categories = {param.category: param.root for param in queryset}
         categories['Costs'] = 'costs.monetary'
         return categories
+
+class Carrier(models.Model):
+    class Meta:
+        db_table = "carrier"
+        verbose_name_plural = "[2] Carriers"
+        ordering = ['name']
+        unique_together = ('model','name')
+    objects = EngageManager()
+    objects_all = models.Manager()
+
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
+    model = models.ForeignKey(Model, related_name='carriers', on_delete=models.CASCADE)
+    rate_unit = models.CharField(max_length=20)
+    quantity_unit = models.CharField(max_length=20)
+    created = models.DateTimeField(auto_now_add=True, null=True)
+    updated = models.DateTimeField(auto_now=True, null=True)
+    deleted = models.DateTimeField(default=None, editable=False, null=True)
+    

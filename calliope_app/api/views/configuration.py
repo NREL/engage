@@ -18,7 +18,7 @@ from api.models.calliope import Abstract_Tech, Run_Parameter
 from api.models.configuration import Location, Technology, Tech_Param, \
     Loc_Tech, Loc_Tech_Param, ParamsManager, Scenario, Scenario_Param, \
     Scenario_Loc_Tech, Timeseries_Meta, Model, Model_Comment, \
-    Model_Favorite, User_File, Model_User
+    Model_Favorite, User_File, Model_User, Carrier
 from api.tasks import task_status, upload_ts, copy_model
 from taskmeta.models import CeleryTask
 
@@ -268,6 +268,49 @@ def add_model_comment(request):
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
 
+@csrf_protect
+def update_carriers(request):
+    """
+    Update a models carriers with changes/additions/deletions
+
+    Parameters:
+    model_uuid (uuid): required
+    form_data (json): required
+
+    Returns (json): Action Confirmation
+
+    Example:
+    POST: /api/update_carriers/
+    """
+
+    model_uuid = request.POST["model_uuid"]
+    form_data = json.loads(request.POST["form_data"])
+    model = Model.by_uuid(model_uuid)
+    err_msg = ''
+    if 'edit' in form_data:
+        for i,c in form_data['edit'].items():
+            if i != 'new':
+                carrier = Carrier.objects.filter(model=model,name=c['carrier-name']).first()
+                carrier.rate_unit = c['carrier-rate']
+                carrier.quantity_unit = c['carrier-quantity']
+                carrier.description = c['carrier-desc']
+                carrier.save()
+            else:
+                try:
+                    carrier = Carrier.objects.create(model=model,name=c['carrier-name'],rate_unit=c['carrier-rate'],quantity_unit=c['carrier-quantity'],description=c.get('carrier-desc',''))
+                except Exception as e:
+                    err_msg += str(e)
+
+    if 'delete' in form_data:
+        for i,c in form_data['delete']['carrier'].items():
+            Carrier.objects.filter(id=i).delete()
+
+    if err_msg != '':
+        payload = {"message": err_msg}
+    else:
+        payload = {"message": "Success."}
+
+    return HttpResponse(json.dumps(payload), content_type="application/json")
 
 # ------ Locations
 

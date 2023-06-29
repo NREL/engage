@@ -1,6 +1,6 @@
 var metrics = ['Production', 'Consumption', 'Storage', 'Costs','Emissions: CO2','Emissions: CH4', 'Emissions: N2O','Emissions: CO2e'],
 		labels = ['Production Capacity', 'Consumption Capacity', 'Storage Capacity', 'Fixed Cost','Emissions: CO2','Emissions: CH4', 'Emissions: N2O','Emissions: CO2e'],
-		units = ['kW', 'kW', 'kWh', '$', 'kg', 'kg', 'kg', 'kg'],
+		units = ['[[rate]]', '[[rate]]', '[[quantity]]', '$', 'kg', 'kg', 'kg', 'kg'],
 		hold_refresh = false,
 		pause_start = null,
 		pause_interval = null,

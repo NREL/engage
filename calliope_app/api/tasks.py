@@ -24,9 +24,9 @@ from api.models.configuration import Model, Scenario, Scenario_Loc_Tech, \
     Tech_Param, Loc_Tech_Param, Timeseries_Meta, User_File
 from api.models.outputs import Run
 from api.utils import load_timeseries_from_csv, get_model_logger, zip_folder
-from api.calliope_utils import get_model_yaml_set, get_location_meta_yaml_set
-from api.calliope_utils import get_techs_yaml_set, get_loc_techs_yaml_set
-from api.calliope_utils import run_basic, run_clustered, apply_gradient
+from api.calliope_utils import get_model_yaml_set, get_location_meta_yaml_set,\
+                        get_techs_yaml_set, get_loc_techs_yaml_set,get_carriers_yaml_set,\
+                        run_basic, run_clustered, apply_gradient
 from batch.managers import AWSBatchJobManager 
 from taskmeta.models import CeleryTask, BatchTask, batch_task_status
 
@@ -236,6 +236,11 @@ def build_model_yaml(scenario_id, start_date, inputs_path):
     location_yaml_set = get_location_meta_yaml_set(scenario_id, loc_techs_yaml_set)
     with open(os.path.join(inputs_path, "locations.yaml"), 'w') as outfile:
         yaml.dump(location_yaml_set, outfile, default_flow_style=False)
+
+    # carriers.yaml
+    carriers_yaml_set = get_carriers_yaml_set(scenario_id)
+    with open(os.path.join(inputs_path, "carriers.yaml"), 'w') as outfile:
+        yaml.dump(carriers_yaml_set, outfile, default_flow_style=False)
 
 
 def build_model_csv(model, scenario, start_date, end_date, inputs_path, timesteps):
