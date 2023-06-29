@@ -161,10 +161,9 @@ def get_loc_techs_yaml_set(scenario_id, year):
 
 def get_carriers_yaml_set(scenario_id):
     model = Scenario.objects.get(id=scenario_id).model
-    carriers = Carrier.objects.filter(model=model)
-
+    
     carriers_yaml_set = {}
-    for carrier in carriers:
+    for carrier in model.carriers.all():
         carriers_yaml_set[carrier.name] = {'rate':carrier.rate_unit,'quantity':carrier.quantity_unit}
     for carrier in model.carriers_old:
         if carrier not in carriers_yaml_set:

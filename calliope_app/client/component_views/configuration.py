@@ -114,13 +114,11 @@ def all_tech_params(request):
     model = Model.by_uuid(model_uuid)
     can_edit = model.handle_view_access(request.user)
 
-    model_carriers = Carrier.objects.filter(model=model)
-
     technology = model.technologies.get(id=technology_id)
     essentials, parameters = ParamsManager.all_tech_params(technology)
 
     carriers = {}
-    for carrier in model_carriers:
+    for carrier in model.carriers.all():
         carriers[carrier.name] = {'rate':carrier.rate_unit,'quantity':carrier.quantity_unit}
 
     for carrier in model.carriers_old:
@@ -254,8 +252,7 @@ def all_loc_tech_params(request):
     carrier_out = Tech_Param.objects.filter(technology=loc_tech.technology, parameter__id__in=units_out_ids).first().value
 
     carriers = {}
-    model_carriers = Carrier.objects.filter(model=model)
-    for carrier in model_carriers:
+    for carrier in model.carriers.all():
         carriers[carrier.name] = {'rate':carrier.rate_unit,'quantity':carrier.quantity_unit}
 
     for carrier in model.carriers_old:

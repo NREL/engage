@@ -1456,7 +1456,7 @@ class Carrier(models.Model):
 
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
-    model = models.ForeignKey(Model, on_delete=models.CASCADE)
+    model = models.ForeignKey(Model, related_name='carriers', on_delete=models.CASCADE)
     rate_unit = models.CharField(max_length=20)
     quantity_unit = models.CharField(max_length=20)
     created = models.DateTimeField(auto_now_add=True, null=True)

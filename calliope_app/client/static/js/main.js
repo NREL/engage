@@ -229,7 +229,7 @@ function activate_table() {
 		out_field = $('.units_out_field').first();
 		carrier_out = {'name':out_field.val(),'rate_unit':out_field.attr('rate_unit'),'quantity_unit':out_field.attr('quantity_unit')};
 	}
-	update_carriers(carrier_in,carrier_out,false);
+	update_carriers(carrier_in,carrier_out,true);
 
 };
 
@@ -1072,7 +1072,7 @@ function activate_carrier_dropdowns() {
 			carrier_in = {'name':in_sel.val(),'rate_unit':in_sel.find('option:selected').attr('rate_unit'),'quantity_unit':in_sel.find('option:selected').attr('quantity_unit')};	
 			out_sel = $('.units_out_selector').first();
 			carrier_out = {'name':out_sel.val(),'rate_unit':out_sel.find('option:selected').attr('rate_unit'),'quantity_unit':out_sel.find('option:selected').attr('quantity_unit')};
-			update_carriers(carrier_in,carrier_out,true);
+			update_carriers(carrier_in,carrier_out,false);
 		}
 
 		if ($(this).val() == '-- New Carrier --') {
@@ -1084,18 +1084,20 @@ function activate_carrier_dropdowns() {
 	});
 }
 
-function update_carriers(carrier_in, carrier_out,reconvert){
+function update_carriers(carrier_in, carrier_out,load_flg){
 	$('.parameter-units').each(function(){
 		units = $(this).attr('raw-value').replace('[[in_rate]]',carrier_in['rate_unit']).replace('[[in_quantity]]',carrier_in['quantity_unit']).replace('[[out_quantity]]',carrier_out['quantity_unit']).replace('[[out_rate]]',carrier_out['rate_unit']);
 		$(this).html(units);
 		$(this).attr('data-value', units);
 	});
-	if (reconvert){
-		reconvert_all();
-	}
+	reconvert_all(load_flg);
 }
 
-function reconvert_all(){
+function reconvert_all(load_flg){
+	// Reconvert all parameters in the tech/loc tech. If load_flg says it is the page load, only highlight errors
+	if (!load_flg){
+		$('#master-save').removeClass('hide');
+	}
 	$('.parameter-value-new, .parameter-value-existing, .parameter-year-existing').each(function(){
 		var row = $(this).parents('tr'),
 			value = row.find('.parameter-value').val(),
@@ -1113,14 +1115,17 @@ function reconvert_all(){
 			var units = row.find('.parameter-units').attr('data-value');
 			val = convert_units(value, units);
 			if (typeof(val) == 'number') {
-				$(this).attr('data-target_value', formatNumber(val, false));
-				row.find('.parameter-target-value').html(formatNumber(val, true));
-				row.find('.parameter-reset').removeClass('hide')
-				row.find('.parameter-delete, .parameter-value-delete').addClass('hide')
-				row.addClass('table-warning');
+				if (!load_flg){
+					$(this).attr('data-target_value', formatNumber(val, false));
+					row.find('.parameter-target-value').html(formatNumber(val, true));
+					row.find('.parameter-reset').removeClass('hide')
+					row.find('.parameter-delete, .parameter-value-delete').addClass('hide')
+					row.addClass('table-warning');
+				}
 			} else {
 				$(this).addClass('invalid-value');
 				row.find('.parameter-target-value').html(row.find('.parameter-target-value').data('value'));
+				$('#master-save').addClass('hide');
 			}
 		}
 	});

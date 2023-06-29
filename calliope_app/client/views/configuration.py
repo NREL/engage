@@ -44,8 +44,7 @@ def model_view(request, model_uuid):
             mu.notifications = 0
             mu.save()
 
-    model_carriers = Carrier.objects.filter(model=model)
-    carriers = [{'name':carrier.name,'rate':carrier.rate_unit,'quantity':carrier.quantity_unit,'description':carrier.description} for carrier in model_carriers]
+    carriers = [{'name':carrier.name,'rate':carrier.rate_unit,'quantity':carrier.quantity_unit,'description':carrier.description} for carrier in model.carriers.all()]
 
     comments = Model_Comment.objects.filter(model=model)
 
@@ -417,11 +416,9 @@ def carriers_view(request, model_uuid):
     model = Model.by_uuid(model_uuid)
     can_edit = model.handle_view_access(request.user)
 
-    carriers = Carrier.objects.filter(model=model)
-
     context = {
         "model": model,
-        "carriers": carriers,
+        "carriers": model.carriers.all(),
         "can_edit": can_edit,
         "help_content": Help_Guide.get_safe_html('carriers'),
     }
