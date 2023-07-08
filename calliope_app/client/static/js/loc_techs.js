@@ -32,8 +32,20 @@ $( document ).ready(function() {
 		saveTemplate('#createTemplate');
 	});
 
+    $('#deleteTemplate').on('click', function() {
+		deleteTemplateModal();
+	});
+
+    $('#confirmDeleteTemplate').on('click', function() {
+		deleteTemplate();
+	});
+
     $('#modelEditBack').on('click', function() {
 		modelEditBack();
+	});
+
+    $('#modelDeleteBack').on('click', function() {
+		modelDeleteBack();
 	});
 
     $('#templateType').on('change', function() {
@@ -185,6 +197,11 @@ function getTemplates() {
     });
 }
 
+function deleteTemplateModal() {
+    $("#modalEdit").hide();
+    $("#modalDelete").show();
+}
+
 function editTemplateModal(el) {
     let id = parseInt(el.id.substr(5));
     template_edit = template_data.templates.find(temp => temp.id === id);
@@ -200,9 +217,11 @@ function editTemplateModal(el) {
     $("#createTemplate").hide();
     $("#editTemplate").show();
     $('#editTemplate').attr("disabled", false);
+    $("#deleteTemplate").show();
     $("#templateName").val(template_edit.name);
     $("#editModalTitle").html(djangoTranslateUpdateNodeGroup + template_edit.name);
     appendTemplateCategories();
+    $("#templateVars input").prop("disabled", true);
     var template_variables = template_data.template_variables.filter(temp => temp.template === id);
     template_variables.forEach(function (template_var) {
         $("#template_type_var_" + template_var.template_type_variable).val(template_var.value);
@@ -223,6 +242,7 @@ function addTemplateModal() {
     $("#createTemplate").show();
     $("#editTemplate").hide();
     $("#editModalTitle").html(djangoTranslateAddNodeGroup);
+    $("#deleteTemplate").hide();
 
     // Reset category inputs 
     $('#templateVars').empty();
@@ -234,6 +254,7 @@ function closeTemplateModal(reloadDialog) {
     $("#templateName").val('');
     $("#templatesModal").modal('hide');
     $("#templateVars").empty();
+    $("#modalDelete").hide();
     $("#editTemplate, #createTemplate").prop("disabled",true);
     template_edit = {};
     if (reloadDialog) {
@@ -244,6 +265,11 @@ function closeTemplateModal(reloadDialog) {
 function modelEditBack() {
     $("#modalContent").show();
     $("#modalEdit").hide();
+}
+
+function modelDeleteBack() {
+    $("#modalContent").show();
+    $("#modalDelete").hide();
 }
 
 function requestGeophires() {
@@ -404,6 +430,33 @@ function saveTemplate(buttonId) {
     });
 }
 
+function deleteTemplate() {
+    if ($('#confirmDeleteTemplate').is(':disabled')) {
+        return;
+    }
+    //#modelDeleteBack
+
+    var data = {
+        'template_id': template_edit.id,
+        'csrfmiddlewaretoken': getCookie('csrftoken'),
+    };
+
+    $.ajax({
+        url: '/' + LANGUAGE_CODE + '/model/templates/delete/',
+        type: 'POST',
+        data: data,
+        dataType: 'json',
+        success: function (data) {
+            closeTemplateModal(true);
+            var response = data;
+            //hide dialog
+        },
+        error: function (data) {
+            //display error
+        }
+    });
+}
+
 function appendTemplateCategories() {
     $('#templateVars').empty();
     var templateType = $('#templateType').val();
@@ -490,9 +543,9 @@ function displayAPIButtons() {
     if (showAPIButtons) {
         var geoId = "#" + geoInputs.replace(/\s/g, '')+"-row";
         $(geoId).append( "<div id='geophiresActions' class='col-12'></div>");
-        $("#geophiresActions").append("<button id='runGeophires' class='btn btn-success btn-sm' type='button' style='height:38px;'>" + djangoTranslateRun + " GEOPHIRES</button>");
+        $("#geophiresActions").append("<button id='runGeophires' class='btn btn-success' type='button' style='height:38px;'>" + djangoTranslateRun + " GEOPHIRES</button>");
         $(geoId).append( "<div class='col-12'><span style='font-size: .8em;margin-bottom:1em;float: right;'><i>" + djangoTranslateGEOPHIRESInfo + "<div data-toggle='tooltip' data-placement='bottom' title='" + djangoTranslateGEOPHIRESDesc + "' data-original-title='" + djangoTranslateGEOPHIRESDesc + "' style='display: inline-block;'><a target='_blank' href='https://www.osti.gov/biblio/1600135'>GEOPHIRES documentation</a></div>.</i><span>");
-        //<button id='runGETEM' disabled class='btn btn-success btn-sm' type='button'>Run GETEM</button>
+        //<button id='runGETEM' disabled class='btn btn-success' type='button'>Run GETEM</button>
         $(geoId).append( "<span id='geophiresError' class='center' hidden='true' style='color:red;margin-bottom:1em'>An error occured running Geophires! Please contact Support.</span>");
         $('#runGeophires').on('click', function() {
             requestGeophires();

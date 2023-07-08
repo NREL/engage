@@ -50,6 +50,54 @@ def model_templates(request):
 
 @login_required
 @csrf_protect
+def delete_template(request):
+    """
+    Delete a template.
+
+    Parameters:
+    template_id (int)
+
+    Returns (json): Action Confirmation
+
+    Example:
+    POST: /model/templates/delete/
+    """
+    template_id = request.POST.get("template_id", False)
+    template = Template.objects.filter(id=template_id).first()
+    if template_id is False:
+        raise ValidationError(f"Error: Template ID has not been provided.")
+
+    # Loop through techs 
+    technologies = Technology.objects.filter(template_type_id=template.template_type_id, model_id=template.model)
+
+    #NOTE: any updates to this section of code should also be made for tempaltes post_delete
+    for tech in technologies:
+        # Delete if there are no other nodes outside of the template are using this tech
+        loc_techs = Loc_Tech.objects.filter(technology=tech)
+        uniqueToTemplate = True
+        for loc_tech in loc_techs:
+            if loc_tech.template_id != int(template_id):
+                print("tech not unique to template loc_tech.template_id: " + str(loc_tech.template_id) + " template_id: " + str(template_id))
+                uniqueToTemplate = False
+                break
+        
+        if uniqueToTemplate:
+            Technology.objects.filter(id=tech.id).delete()
+
+    # Delete any remaining nodes, locations and the template itself
+    Loc_Tech.objects.filter(template_id=template_id).delete()
+    Location.objects.filter(template_id=template_id).delete()
+    template.delete()
+    
+    payload = {"message": "deleted template",
+                "template_id": template.id,
+                }
+
+    return HttpResponse(json.dumps(payload), content_type="application/json")
+
+
+@login_required
+@csrf_protect
 def add_template(request):
     """
     Add a new template.
@@ -99,6 +147,7 @@ def add_template(request):
 
         new_template_variables = update_template_variables(templateVars, template)
 
+        # TODO: return to to edit nodes with a template
         # template_loc_techs = Loc_Tech.objects.filter(template_id=template_id)
         # if template_loc_techs is not None:
         #     ureg = initialize_units()

@@ -111,7 +111,27 @@
             <!-- Header -->
             </div>
             <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
+            </div>
+        </div>
+        <div id="modalDelete" class="modal-content" style="display:none">
+            <div class="modal-header">
+            <h2 class="modal-title" id="templateModalTitle">{% trans "Delete Node Group" %}</h2>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <span style="color:red"> {% trans "Are you sure that you want to delete this node group?" %}</span>
+            <!-- Header -->
+            </div>
+            <div class="modal-footer">
+                <button id="modelDeleteBack" class="btn btn-secondary" type="button" style="height:38px;">
+                    {% trans "Back" %}
+                </button>
+                <button id="confirmDeleteTemplate" title="Confirm delete node group" class="btn btn-danger" type="button" style="height:38px;">
+                    {% trans "Confirm" %}
+                </button>
             </div>
         </div>
         <div id="modalEdit" class="modal-content" aria-hidden="true">
@@ -150,13 +170,16 @@
             </div>
             <div class="modal-footer">
                 <div id='inputError' style="display: none;"><span style='font-size: .8em;margin-bottom:1em;float: right;color:red;'>{% trans 'One or more of your inputs are outside of the excepted range. Please adjust according to the variable descriptions before submitting.' %}</span></div>
+                <button id="deleteTemplate" title="Delete node group" class="btn btn-sm btn-outline-danger" type="button" style="margin-right: auto;">
+                    <i class="fas fa-trash"></i>
+                </button>
                 <button id="modelEditBack" class="btn btn-secondary" type="button" style="height:38px;float:left;">
                     {% trans "Back" %}
                 </button>
-                <button id="editTemplate" class="btn btn-success btn-sm" disabled type="button" style="height:38px;">
+                <button id="editTemplate" class="btn btn-success" disabled type="button" style="height:38px;">
                     {% trans "Update" %}
                 </button>
-                <button id="createTemplate" class="btn btn-success btn-sm" disabled type="button" style="height:38px;">
+                <button id="createTemplate" class="btn btn-success" disabled type="button" style="height:38px;">
                     {% trans "Save" %}
                 </button>
             </div>
