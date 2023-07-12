@@ -220,8 +220,6 @@ def add_template(request):
     request.session["template_id"] = template.id
     payload = {"message": "added template",
                 "template_id": template.id,
-                #"new_technologies": list(new_technologies),
-                #"new_locations": list(new_locations),
                 }
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
@@ -251,11 +249,21 @@ def update_template_variables(templateVars, template):
 def add_template_locations(template_type_locs, model, name, location, template):
     new_locations = {}
     for template_type_loc in template_type_locs:
+        lat = location.latitude+template_type_loc['latitude_offset']
+        if (lat > 90):
+            lat = 90
+        elif (lat < -90):
+            lat = -90
+        long = location.longitude+template_type_loc['longitude_offset']
+        if (long > 180): 
+            long = 180 
+        elif (long < -180):
+            long = -180 
         new_location = Location.objects.create(
             pretty_name=name + ' - ' + template_type_loc['name'],
             name=template_type_loc['name'].replace(' ', '-'),
-            latitude=location.latitude+template_type_loc['latitude_offset'], #40.1
-            longitude=location.longitude+template_type_loc['longitude_offset'], #-108.2
+            latitude=lat, 
+            longitude=long, 
             model=model,
             template_id=template.id,
             template_type_loc_id=template_type_loc['id'],
