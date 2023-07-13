@@ -181,6 +181,7 @@ def add_template(request):
 
         new_locations = add_template_locations(template_type_locs, model, name, location, template)
         new_technologies = add_template_technologies(template_type_techs, model, template_type_id)
+        # creare carriers if not already created
         new_loc_techs = add_template_loc_techs(template_type_loc_techs, model, name, template_type_id, template)
         new_template_variables = add_template_variables(templateVars, template)
 
