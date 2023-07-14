@@ -11,6 +11,7 @@
 			<th class="sticky text-sm">{% trans "Version Tag" %}</th>
 			<th class="sticky text-sm">{% trans "Locations" %}</th>
 			<th class="sticky text-sm centered"></th>
+            <th class="sticky text-sm centered"></th>
 		</tr>
 		<tr id="filter-row" class="tbl-header" style="border-left: solid 20px grey">
 			<th class="text-sm"></th>
@@ -39,6 +40,7 @@
 			    {% endfor %}
 			  </select>
 			</th>
+            <th class="text-sm"></th>
 			<th class="text-sm centered">
 				<label class="switch">
 				  <input {% if not can_edit %}disabled{% endif %} id="add_loc_techs" type="checkbox">
@@ -97,6 +99,11 @@
 						{% endif %}
 					</a>
 				</td>
+                <td>
+                    {% if loc_tech.template_id %}
+                    <div data-toggle="tooltip" data-placement="bottom" data-original-title="This location was created from a Node Group." title="This technology was created from a Node Group." style="max-width: 20px;"><img src="../../../static/images/node_group_icon.svg" alt="Node group icon" style="width: 14px;"></div>
+                    {% endif %}
+                </td>
 				<!-- Scenario Loc Tech Edit Buttons -->
 				<td class="centered">
 					<label class="switch">
