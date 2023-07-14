@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.http import JsonResponse, HttpResponse
 from api.utils import initialize_units, convert_units_no_pipe
 from api.models.configuration import Model, Model_User, Location, Model_Comment, Technology, Abstract_Tech, Loc_Tech, Tech_Param, Loc_Tech_Param, ParamsManager
-from template.models import Template, Template_Variable, Template_Type, Template_Type_Variable, Template_Type_Loc, Template_Type_Tech, Template_Type_Loc_Tech, Template_Type_Parameter
+from template.models import Template, Template_Variable, Template_Type, Template_Type_Variable, Template_Type_Loc, Template_Type_Tech, Template_Type_Loc_Tech, Template_Type_Parameter, Template_Type_Carrier
 
 @login_required
 @csrf_protect
@@ -136,7 +136,8 @@ def add_template(request):
     template_type_locs = list(Template_Type_Loc.objects.filter(template_type_id=template_type_id).values('id', 'name', 'template_type', 'latitude_offset', 'longitude_offset'))
     template_type_techs = list(Template_Type_Tech.objects.filter(template_type_id=template_type_id).values('id', 'name', 'description', 'template_type', 'version_tag', 'abstract_tech', 'energy_carrier', 'carrier_in', 'carrier_out', 'carrier_in_2', 'carrier_out_2', 'carrier_in_3', 'carrier_out_3', 'carrier_ratios'))
     template_type_loc_techs = list(Template_Type_Loc_Tech.objects.filter(template_type_id=template_type_id).values('id', 'template_type', 'template_loc_1', 'template_loc_2', 'template_tech'))
-
+    template_type_carriers = list(Template_Type_Carrier.objects.filter(template_type_id=template_type_id).values('id', 'template_type', 'name', 'description', 'rate_unit', 'quantity_unit'))
+    
     if template_id:
         print ("Editing a template: " + template_id)
         template = Template.objects.filter(id=template_id).first()
@@ -182,6 +183,7 @@ def add_template(request):
         new_locations = add_template_locations(template_type_locs, model, name, location, template)
         new_technologies = add_template_technologies(template_type_techs, model, template_type_id)
         # creare carriers if not already created
+        new_carriers = add_template_carriers(template_type_carriers, model, template_type_id)
         new_loc_techs = add_template_loc_techs(template_type_loc_techs, model, name, template_type_id, template)
         new_template_variables = add_template_variables(templateVars, template)
 
@@ -387,6 +389,12 @@ def add_template_technologies(template_type_techs, model, template_type_id):
                     value=template_type_tech['carrier_ratios']
                 )
     return new_technologies
+
+def add_template_carriers(template_type_carriers, model, template_type_id):
+    new_carriers = {}
+    for carrier in template_type_carriers:
+        print(str(carrier.name)) 
+    return new_carriers
 
 def add_template_loc_techs(template_type_loc_techs, model, name, template_type_id, template):
     new_loc_techs = {}

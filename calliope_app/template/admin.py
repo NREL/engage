@@ -1,5 +1,5 @@
 from django.contrib import admin
-from template.models import Template, Template_Variable, Template_Type, Template_Type_Variable, Template_Type_Loc, Template_Type_Tech, Template_Type_Loc_Tech, Template_Type_Parameter
+from template.models import Template, Template_Variable, Template_Type, Template_Type_Variable, Template_Type_Loc, Template_Type_Tech, Template_Type_Loc_Tech, Template_Type_Parameter, Template_Type_Carrier
 
 # Register your models here.
 class Templates_View(admin.ModelAdmin):
@@ -26,6 +26,9 @@ class Template_Type_Loc_Tech_Admin(admin.ModelAdmin):
 class Template_Type_Parameter_Admin(admin.ModelAdmin):
     list_filter = ['id']
     list_display = ['id', 'template_loc_tech', 'parameter', 'equation']
+class Template_Type_Carrier_Admin(admin.ModelAdmin):
+    list_filter = ['id']
+    list_display = ['id', 'template_type', 'name', 'description', 'rate_unit', 'quantity_unit']
 
 admin.site.register(Template, Templates_View)
 admin.site.register(Template_Variable, Template_Variable_View)
@@ -35,3 +38,4 @@ admin.site.register(Template_Type_Loc, Template_Type_Loc_Admin)
 admin.site.register(Template_Type_Tech, Template_Type_Tech_Admin)
 admin.site.register(Template_Type_Loc_Tech, Template_Type_Loc_Tech_Admin)
 admin.site.register(Template_Type_Parameter, Template_Type_Parameter_Admin)
+admin.site.register(Template_Type_Carrier, Template_Type_Carrier_Admin)

@@ -117,6 +117,21 @@ class Template_Type_Parameter(models.Model):
 
     def __str__(self):
         return '%s' % (self.equation)
+    
+class Template_Type_Carrier(models.Model):
+    class Meta:
+        db_table = "template_type_carrier"
+        verbose_name_plural = "[Admin] Template Type Carriers"
+        ordering = ['name']
+
+    template_type = models.ForeignKey(Template_Type, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
+    rate_unit = models.CharField(max_length=20)
+    quantity_unit = models.CharField(max_length=20)
+
+    def __str__(self):
+        return '%s' % (self.name)
 
 class Template(models.Model):
     class Meta:
