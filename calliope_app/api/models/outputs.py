@@ -1,4 +1,4 @@
-import json
+import json, yaml
 import logging
 from urllib.parse import urljoin
 
@@ -160,7 +160,11 @@ class Run(models.Model):
         carriers = {**meta['carriers_in'], **meta['carriers_out']}
         carriers = [(key, len(values)) for key, values in carriers.items()]
         carriers = sorted(carriers, key=lambda k: k[1], reverse=True)
-        meta['carriers'] = [k[0] for k in carriers]
+        carriers_d = self.read_input('carriers.yaml')
+        for k in carriers:
+            if k[0] not in carriers_d.keys():
+                carriers_d[k[0]] = {'rate':'kW','quantity':'kWh'}
+        meta['carriers'] = [(k[0],carriers_d[k[0]]['rate'],carriers_d[k[0]]['quantity']) for k in carriers]
         return meta
 
     def get_viz_data(self, carrier, location, month):
@@ -169,8 +173,15 @@ class Run(models.Model):
         locations = []
         cost_classes = ParamsManager.cost_classes()
         METRICS = ['Production', 'Consumption', 'Storage']+list(cost_classes.keys())
-        if carrier not in meta['carriers']:
-            carrier = meta['carriers'][0]
+        carrier_flg = False
+        for c in meta['carriers']:
+            if c[0] == carrier:
+                carrier_flg = True
+                units = {'rate':c[1],'quantity':c[2]}
+                break
+        if not carrier_flg:
+            carrier = meta['carriers'][0][0]
+            units = {'rate':meta['carriers'][0][1],'quantity':meta['carriers'][0][2]}
         if location not in meta['locations']:
             location = None
         if month not in meta['months']:
@@ -196,11 +207,12 @@ class Run(models.Model):
             # Variable Values (Timeseries)
             data['timeseries'], locs2 = self.get_variable_values(
                 meta, carrier, metric, location, month, soft_filter,cost_class)
+            data['units'] = units
             response[metric] = data
             locations += locs1 + locs2
         # Options
         response['options'] = {}
-        response['options']['carrier'] = meta['carriers']
+        response['options']['carrier'] = [c[0] for c in meta['carriers']]
         response['options']['location'] = sorted(set(locations))
         response['options']['month'] = meta['months']
         return response
@@ -221,6 +233,10 @@ class Run(models.Model):
             ctx = self.read_output('inputs_storage_cap_max.csv')
             if ctx is not None:
                 ctx['values'] = ctx['storage_cap_max']
+                etx = self.read_output('inputs_storage_cap_equals.csv')
+                if etx is not None:
+                    etx['values'] = etx['storage_cap_equals']
+                    
         elif cost_class:
             LABELS[cost_class[0]] = cost_class[1]
             # Investment Costs
@@ -235,6 +251,10 @@ class Run(models.Model):
             ctx = self.read_output('inputs_energy_cap_max.csv')
             if ctx is not None:
                 ctx['values'] = ctx['energy_cap_max']
+                etx = self.read_output('inputs_energy_cap_equals.csv')
+                if etx is not None:
+                    etx['values'] = etx['energy_cap_equals']
+
         # Process Values
         df = df[~df['techs'].isin(meta['remotes'])]
         df = df[~df['techs'].isin(meta['demands'])]
@@ -251,6 +271,9 @@ class Run(models.Model):
             ctx = ctx.replace(np.inf, np.nan).dropna()
             if location:
                 ctx = ctx[ctx['locs'] == location]
+            if etx is not None:
+                etx = etx[etx['techs'].isin(ctx['techs'])]
+                ctx['values'] = ctx['values'].add(etx['values'],fill_value=0)
             ctx = ctx.groupby('techs').sum()
             ctx = ctx['values'].to_dict()
         else:
@@ -369,6 +392,13 @@ class Run(models.Model):
         fpath = os.path.join(self.outputs_path, file)
         try:
             return pd.read_csv(fpath, header=0)
+        except FileNotFoundError:
+            return None
+        
+    def read_input(self, file):
+        fpath = os.path.join(self.inputs_path, file)
+        try:
+            return yaml.load(open(fpath), Loader=yaml.FullLoader)
         except FileNotFoundError:
             return None
 

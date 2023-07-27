@@ -56,9 +56,9 @@
 			  templateSelection: formatState
 			});
 		</script>
-		<input id="remove_collaborator_btn" style="width:33%;float:left;border-color:black" class="btn btn-outline-danger" type="button" value="Remove">
-		<input id="add_collaborator_btn_view_only" style="width:33%;float:left;background-color:yellow;border-color:black" class="btn btn-warning" type="button" data-collaborator_can_edit=0 value="View Only">
-		<input id="add_collaborator_btn" style="width:33%" class="btn btn-success" type="button" data-collaborator_can_edit=1 value="Can Edit">
+		<input id="remove_collaborator_btn" style="width:33%;float:left;border-color:black" class="btn btn-outline-danger" type="button" value="{% trans 'Remove' %}">
+		<input id="add_collaborator_btn_view_only" style="width:33%;float:left;background-color:yellow;border-color:black" class="btn btn-warning" type="button" data-collaborator_can_edit=0 value="{% trans 'View Only' %}">
+		<input id="add_collaborator_btn" style="width:33%" class="btn btn-success" type="button" data-collaborator_can_edit=1 value="{% trans 'Can Edit' %}">
 		<br><br><br>
 	</div>
 	<div class="col-4"></div>
@@ -74,10 +74,10 @@
 			</tr>
 			{% for collaborator in user_model.model.collaborators %}
 			<tr class="colab-row" data-uuid="{{ user_model.model.uuid }}">
-				<td>{% if collaborator.user.is_staff %}<span style="color:green;">Administrator</span>{% endif %}</td>
+				<td>{% if collaborator.user.is_staff %}<span style="color:green;">{% trans "Administrator" %}</span>{% endif %}</td>
 				<td>{{ collaborator.user.first_name }} {{ collaborator.user.last_name }}</td>
 				<td>{{ collaborator.user.user_profile.organization }}</td>
-				<td>{% if collaborator.can_edit %}<span style="padding:4px;background-color:green;color:white">&nbsp;&nbsp;<i class="fas fa-tools"></i>&nbsp;&nbsp;Can Edit&nbsp;&nbsp;</span>{% else %}<span style="padding:4px;background-color:yellow;border:solid 1px;">&nbsp;<i class="fas fa-eye"></i>&nbsp;View Only&nbsp;</span>{% endif %}</td>
+				<td>{% if collaborator.can_edit %}<span style="padding:4px;background-color:green;color:white">&nbsp;&nbsp;<i class="fas fa-tools"></i>&nbsp;&nbsp;{% trans 'Can Edit' %}&nbsp;&nbsp;</span>{% else %}<span style="padding:4px;background-color:yellow;border:solid 1px;">&nbsp;<i class="fas fa-eye"></i>&nbsp;View Only&nbsp;</span>{% endif %}</td>
 			</tr>
 			{% endfor %}
 		{% endfor %}

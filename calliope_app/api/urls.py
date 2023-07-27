@@ -26,6 +26,9 @@ urlpatterns = [
     path('add_model_comment/',
          configuration_views.add_model_comment,
          name='add_model_comment'),
+    path('update_carriers/',
+         configuration_views.update_carriers,
+         name='update_carriers'),
 
     # Locations
     path('update_location/',

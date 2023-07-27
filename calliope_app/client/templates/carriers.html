@@ -1,0 +1,74 @@
+{% extends "configure.html" %}
+
+{% load static %}
+{% load i18n %}
+{% load tz %}
+
+
+{% block head %}
+<title>Engage | {{ model.name }} | Carriers</title>
+<script type="text/javascript" src="{% static 'js/model.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/carriers.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<form id="carrier_form" method="post" action="" accept-charset="utf-8" autocomplete="off">
+    <table id="carrier_table" class="table table-hover table-sm" style="white-space:nowrap">
+        <tbody>
+            <tr class="tbl-header">
+                <th class="centered">
+                    <b>{% trans "Carrier Name" %}</b>
+                </th>
+                <th class="centered">
+                    <b>{% trans "Rate Unit" %}</b>
+                </th>
+                <th class="centered">
+                    <b>{% trans "Quantity Unit" %}</b>
+                </th>
+                <th class="centered">
+                    <b>{% trans "Description" %}</b>
+                </th>
+                <th class="centered">{% trans "Delete" %}</th>
+            </tr>
+            <tr carrier_id="0">
+                <th class="centered">
+                    <input {% if not can_edit %}disabled{% endif %} class="carrier-new" id="carrier-name" style="width:100%" type="text" name='edit[new][carrier-name]' placeholder="New Carrier Name">
+                </th>
+                <th class="centered">
+                    <input {% if not can_edit %}disabled{% endif %} class="carrier-new" id="carrier-rate" style="width:100%" type="text" name='edit[new][carrier-rate]' placeholder="kW">
+                </th>
+                <th class="centered">
+                    <input {% if not can_edit %}disabled{% endif %} class="carrier-new" id="carrier-quantity" style="width:100%" type="text" name='edit[new][carrier-quantity]' placeholder="kWh">
+                </th>
+                <th class="centered">
+                    <input {% if not can_edit %}disabled{% endif %} class="carrier-new" id="carrier-desc" style="width:100%" type="text" name='edit[new][carrier-desc]' placeholder="New Carrier Description">
+                </th>
+                <th class="centered"></th>
+                <th></th>
+            </tr>
+            {% for choice in carriers %}
+                <tr carrier_id="choice.id">
+                    <th class="centered">
+                        <input readonly class="carrier-readonly" id="carrier-name" style="width:100%" type="text" name='edit[{{choice.id}}][carrier-name]' value="{{choice.name}}">
+                    </th>
+                    <th class="centered">
+                        <input {% if not can_edit %}disabled{% endif %} class="carrier-field" id="carrier-rate" style="width:100%" type="text" name='edit[{{choice.id}}][carrier-rate]' value="{{choice.rate_unit}}">
+                    </th>
+                    <th class="centered">
+                        <input {% if not can_edit %}disabled{% endif %} class="carrier-field" id="carrier-quantity" style="width:100%" type="text" name='edit[{{choice.id}}][carrier-quantity]' value="{{choice.quantity_unit}}">
+                    </th>
+                    <th class="centered">
+                        <input {% if not can_edit %}disabled{% endif %} class="carrier-field" id="carrier-desc" style="width:100%" type="text" name='edit[{{choice.id}}][carrier-desc]' value="{{choice.description}}">
+                    </th>
+                    <th class="centered">
+                        <button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-sm btn-outline-danger carrier-delete" title="{% trans 'Delete carrier' %}"><i class="fas fa-trash"></i></button>
+                    </th>
+                    <th>
+                    <input {% if not can_edit %}disabled{% endif %} style="display: none" class="check_delete" type="checkbox" name="delete[carrier][{{ choice.id }}]">
+                    </th>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</form>
+{% endblock %}
