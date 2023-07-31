@@ -7,8 +7,8 @@ import shutil
 import boto3
 import pandas as pd
 import numpy as np
-import datetime
 import yaml
+from datetime import datetime
 from dateutil.parser import parse as date_parse
 
 from celery import Task
@@ -219,7 +219,10 @@ def build_model(inputs_path, run_id, model_uuid, scenario_id,
 def build_model_yaml(scenario_id, start_date, inputs_path):
 
     scenario_id = int(scenario_id)
-    year = date_parse(start_date).year
+    if isinstance(start_date, datetime):
+        year = start_date.year
+    else:
+        year = date_parse(start_date).year
 
     # model.yaml
     model_yaml_set = get_model_yaml_set(scenario_id, year)
@@ -709,7 +712,7 @@ def upgrade_066(*args, **kwargs):
                             columns[i] = 'techlists'
                         else:
                             try:
-                                datetime.datetime.strptime(values[0],
+                                datetime.strptime(values[0],
                                                            '%Y-%m-%d %H:%M:%S')
                                 if metric == 'max_demand_timesteps':
                                     columns[i] = metric
@@ -717,7 +720,7 @@ def upgrade_066(*args, **kwargs):
                                     columns[i] = 'timesteps'
                             except Exception:
                                 try:
-                                    datetime.datetime.strptime(values[0],
+                                    datetime.strptime(values[0],
                                                                '%Y-%m-%d')
                                     columns[i] = 'datesteps'
                                 except Exception:
