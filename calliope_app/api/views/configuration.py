@@ -592,7 +592,7 @@ def update_tech_params(request):
     """
     model_uuid = escape(request.POST["model_uuid"])
     technology_id = escape(request.POST["technology_id"])
-    form_data = json.loads(escape(request.POST["form_data"]))
+    form_data = json.loads(request.POST["form_data"])
     escaped_form_data = recursive_escape(form_data)
 
     model = Model.by_uuid(model_uuid)
