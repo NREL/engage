@@ -8,7 +8,8 @@ from django.db.models import Q
 from api.models.engage import Help_Guide
 from api.models.calliope import Parameter, Abstract_Tech
 from api.models.configuration import Model, User_File, \
-    Technology, Loc_Tech, Timeseries_Meta, Model_User, Model_Comment
+    Technology, Loc_Tech, Timeseries_Meta, Model_User, \
+    Model_Comment, Carrier
 
 from pytz import common_timezones
 
@@ -43,12 +44,15 @@ def model_view(request, model_uuid):
             mu.notifications = 0
             mu.save()
 
+    carriers = [{'name':carrier.name,'rate':carrier.rate_unit,'quantity':carrier.quantity_unit,'description':carrier.description} for carrier in model.carriers.all()]
+
     comments = Model_Comment.objects.filter(model=model)
 
     context = {
         "timezones": common_timezones,
         "user": request.user,
         "model": model,
+        "carriers": carriers,
         "comments": comments,
         "can_edit": can_edit,
         "help_content": Help_Guide.get_safe_html('model'),
@@ -391,3 +395,32 @@ def parameters_view(request, model_uuid, parameter_name):
     }
 
     return render(request, "parameters.html", context)
+
+# ------ Carriers
+
+
+@login_required
+def carriers_view(request, model_uuid):
+    """
+    View the "Carriers" page
+
+    Parameters:
+    model_uuid (uuid): required
+
+    Returns: HttpResponse
+
+    Example:
+    http://0.0.0.0:8000/<model_uuid>/carriers/
+    """
+
+    model = Model.by_uuid(model_uuid)
+    can_edit = model.handle_view_access(request.user)
+
+    context = {
+        "model": model,
+        "carriers": model.carriers.all(),
+        "can_edit": can_edit,
+        "help_content": Help_Guide.get_safe_html('carriers'),
+    }
+
+    return render(request, "carriers.html", context)

@@ -7,13 +7,15 @@ function render_barcharts(input_data) {
       if (input_data[metric] == undefined) { return };
       if (input_data[metric]['barchart'] == undefined) { return };
       var data = input_data[metric]['barchart'];
+      var c_units = input_data[metric]['units'];
       data.layers_ctx.forEach(function(layer) {
           var trace = {
               x: [layer.name], y: layer.y, xaxis: 'x' + (i + 1), yaxis: 'y' + (i + 1),
               name: layer.name,
               type: 'bar',
               marker: { opacity: 0.5, color: layer.color + '33', line: { color: layer.color, width: 2 } },
-              hovertemplate: '<b>%{y}</b> ' + units[units.length - 1 - i] + ' (Maximum Constraint) <br>' + layer.name + '<extra></extra>',
+              hovertemplate: '<b>%{y}</b> ' + units[units.length - 1 - i].replace('[[rate]]',c_units['rate']).replace('[[quantity]]',c_units['quantity'])
+                                 + ' (Maximum Constraint) <br>' + layer.name + '<extra></extra>',
           };
           layers.push(trace);
       })
@@ -23,7 +25,8 @@ function render_barcharts(input_data) {
               name: layer.name,
               type: 'bar',
               marker: { color: layer.color, line: { color: 'silver', width: 1 } },
-              hovertemplate: '<b>%{y}</b> ' + units[units.length - 1 - i] + '<br>' + layer.name + '<extra></extra>',
+              hovertemplate: '<b>%{y}</b> ' + units[units.length - 1 - i].replace('[[rate]]',c_units['rate']).replace('[[quantity]]',c_units['quantity'])
+                                 + '<br>' + layer.name + '<extra></extra>',
           };
           layers.push(trace);
       })

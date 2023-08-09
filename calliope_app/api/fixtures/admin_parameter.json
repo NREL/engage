@@ -172,7 +172,7 @@
       "name": "energy_cap_equals",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kW",
+      "units": "[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -192,7 +192,7 @@
       "name": "energy_cap_equals_systemwide",
       "timeseries_enabled": "False",
       "is_systemwide": true,
-      "units": "kW",
+      "units": "[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -212,7 +212,7 @@
       "name": "energy_cap_max",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kW",
+      "units": "[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -232,7 +232,7 @@
       "name": "energy_cap_max_systemwide",
       "timeseries_enabled": "False",
       "is_systemwide": true,
-      "units": "kW",
+      "units": "[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -252,7 +252,7 @@
       "name": "energy_cap_min",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kW",
+      "units": "[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -292,7 +292,7 @@
       "name": "energy_cap_per_unit",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kW/unit",
+      "units": "[[out_rate]]/unit",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -352,7 +352,7 @@
       "name": "energy_eff",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "%",
+      "units": "[[out_rate]]/[[in_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -432,7 +432,7 @@
       "name": "export_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kW",
+      "units": "[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -552,7 +552,7 @@
       "name": "resource",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "kWh",
+      "units": "[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -632,7 +632,7 @@
       "name": "resource_area_per_energy_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "m<sup>2</sup>/kW",
+      "units": "m<sup>2</sup>/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -652,7 +652,7 @@
       "name": "resource_cap_equals",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kW",
+      "units": "[[in_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -692,7 +692,7 @@
       "name": "resource_cap_max",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kW",
+      "units": "[[in_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -712,7 +712,7 @@
       "name": "resource_cap_min",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kW",
+      "units": "[[in_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -812,7 +812,7 @@
       "name": "storage_cap_equals",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kWh",
+      "units": "[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -832,7 +832,7 @@
       "name": "storage_cap_max",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kWh",
+      "units": "[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -852,7 +852,7 @@
       "name": "storage_cap_min",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kWh",
+      "units": "[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -872,7 +872,7 @@
       "name": "storage_cap_per_unit",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kWh/unit",
+      "units": "[[out_quantity]]/unit",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1052,7 +1052,7 @@
       "name": "energy_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "$/kW",
+      "units": "$/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1072,7 +1072,7 @@
       "name": "energy_cap_per_distance",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "$/kW/km",
+      "units": "$/[[out_rate]]/km",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1092,7 +1092,7 @@
       "name": "export",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "$/kWh",
+      "units": "$/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1152,7 +1152,7 @@
       "name": "om_annual",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "$/kW",
+      "units": "$/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1192,7 +1192,7 @@
       "name": "om_con",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "$/kWh",
+      "units": "$/[[in_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1212,7 +1212,7 @@
       "name": "om_prod",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "$/kWh",
+      "units": "$/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1272,7 +1272,7 @@
       "name": "resource_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "$/kW",
+      "units": "$/[[in_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1292,7 +1292,7 @@
       "name": "storage_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "$/kWh",
+      "units": "$/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1393,7 +1393,7 @@
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "",
-      "is_essential": false,
+      "is_essential": true,
       "is_carrier": true,
       "choices": "[]"
     },
@@ -1413,7 +1413,7 @@
       "timeseries_enabled": "False",
       "is_systemwide": false,
       "units": "",
-      "is_essential": false,
+      "is_essential": true,
       "is_carrier": true,
       "choices": "[]"
     },
@@ -1532,7 +1532,7 @@
       "name": "energy_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW",
+      "units": "kg/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1552,7 +1552,7 @@
       "name": "energy_cap_per_distance",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW/km",
+      "units": "kg/[[out_rate]]/km",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1572,7 +1572,7 @@
       "name": "export",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "kg/kWh",
+      "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1632,7 +1632,7 @@
       "name": "om_annual",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW/year",
+      "units": "kg/[[out_rate]]/year",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1672,7 +1672,7 @@
       "name": "om_con",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "kg/kWh",
+      "units": "kg/[[in_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1692,7 +1692,7 @@
       "name": "om_prod",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "kg/kWh",
+      "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1752,7 +1752,7 @@
       "name": "resource_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW",
+      "units": "kg/[[in_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1772,7 +1772,7 @@
       "name": "storage_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kWh",
+      "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1792,7 +1792,7 @@
       "name": "energy_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW",
+      "units": "kg/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1812,7 +1812,7 @@
       "name": "energy_cap_per_distance",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW/km",
+      "units": "kg/[[out_rate]]/km",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1832,7 +1832,7 @@
       "name": "export",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "kg/kWh",
+      "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1892,7 +1892,7 @@
       "name": "om_annual",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW/year",
+      "units": "kg/[[out_rate]]/year",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1932,7 +1932,7 @@
       "name": "om_con",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "kg/kWh",
+      "units": "kg/[[in_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -1952,7 +1952,7 @@
       "name": "om_prod",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "kg/kWh",
+      "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2012,7 +2012,7 @@
       "name": "resource_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW",
+      "units": "kg/[[in_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2032,7 +2032,7 @@
       "name": "storage_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kWh",
+      "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2052,7 +2052,7 @@
       "name": "energy_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW",
+      "units": "kg/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2072,7 +2072,7 @@
       "name": "energy_cap_per_distance",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW/km",
+      "units": "kg/[[out_rate]]/km",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2092,7 +2092,7 @@
       "name": "export",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "kg/kWh",
+      "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2152,7 +2152,7 @@
       "name": "om_annual",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW/year",
+      "units": "kg/[[out_rate]]/year",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2192,7 +2192,7 @@
       "name": "om_con",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "kg/kWh",
+      "units": "kg/[[in_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2212,7 +2212,7 @@
       "name": "om_prod",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "kg/kWh",
+      "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2272,7 +2272,7 @@
       "name": "resource_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW",
+      "units": "kg/[[in_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2292,7 +2292,7 @@
       "name": "storage_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kWh",
+      "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2312,7 +2312,7 @@
       "name": "energy_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW",
+      "units": "kg/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2332,7 +2332,7 @@
       "name": "energy_cap_per_distance",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW/km",
+      "units": "kg/[[out_rate]]/km",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2352,7 +2352,7 @@
       "name": "export",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "kg/kWh",
+      "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2412,7 +2412,7 @@
       "name": "om_annual",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW/year",
+      "units": "kg/[[out_rate]]/year",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2452,7 +2452,7 @@
       "name": "om_con",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "kg/kWh",
+      "units": "kg/[[in_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2472,7 +2472,7 @@
       "name": "om_prod",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "kg/kWh",
+      "units": "kg/[[in_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2532,7 +2532,7 @@
       "name": "resource_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW",
+      "units": "kg/[[in_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2552,7 +2552,7 @@
       "name": "storage_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kWh",
+      "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2572,7 +2572,7 @@
       "name": "energy_cap_max",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kW",
+      "units": "[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2592,7 +2592,7 @@
       "name": "energy_cap_equals",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kW",
+      "units": "[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2612,7 +2612,7 @@
       "name": "energy_cap_equals_systemwide",
       "timeseries_enabled": "False",
       "is_systemwide": true,
-      "units": "kW",
+      "units": "[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2632,7 +2632,7 @@
       "name": "energy_cap_max_systemwide",
       "timeseries_enabled": "False",
       "is_systemwide": true,
-      "units": "kW",
+      "units": "[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2792,7 +2792,7 @@
       "name": "om_annual",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW/year",
+      "units": "kg/[[out_rate]]/year",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2812,7 +2812,7 @@
       "name": "energy_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW",
+      "units": "kg/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2832,7 +2832,7 @@
       "name": "om_con",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "$/kWh",
+      "units": "$/[[in_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2852,7 +2852,7 @@
       "name": "om_prod",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "kg/kWh",
+      "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2872,7 +2872,7 @@
       "name": "energy_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW",
+      "units": "kg/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2892,7 +2892,7 @@
       "name": "energy_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "$/kW",
+      "units": "$/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2912,7 +2912,7 @@
       "name": "om_prod",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "kg/kWh",
+      "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2932,7 +2932,7 @@
       "name": "energy_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW",
+      "units": "kg/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2952,7 +2952,7 @@
       "name": "om_prod",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "$/kWh",
+      "units": "$/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2972,7 +2972,7 @@
       "name": "om_annual",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW/year",
+      "units": "kg/[[out_rate]]/year",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -2992,7 +2992,7 @@
       "name": "om_annual",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW/year",
+      "units": "kg/[[out_rate]]/year",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -3012,7 +3012,7 @@
       "name": "om_prod",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "kg/kWh",
+      "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -3032,7 +3032,7 @@
       "name": "om_prod",
       "timeseries_enabled": "True",
       "is_systemwide": false,
-      "units": "kg/kWh",
+      "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -3052,7 +3052,7 @@
       "name": "energy_cap",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW",
+      "units": "kg/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"
@@ -3072,7 +3072,7 @@
       "name": "om_annual",
       "timeseries_enabled": "False",
       "is_systemwide": false,
-      "units": "kg/kW/year",
+      "units": "kg/[[out_rate]]/year",
       "is_essential": false,
       "is_carrier": false,
       "choices": "[]"

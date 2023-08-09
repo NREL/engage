@@ -272,7 +272,7 @@ def optimize(request):
             compute_environment__name=environment.name,
             status__in=[task_status.QUEUED, task_status.RUNNING]
         )
-        result, all_complete = manager.describe_jobs(jobs=[r.batch_job.task_id for r in _runs])
+        result, all_complete = manager.describe_jobs(jobs=list({r.batch_job.task_id for r in _runs}))
         logger.info("Current uncomplete Batch job status: %s", result)
         for r in _runs:
             if r.batch_job.task_id not in result:

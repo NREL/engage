@@ -1,0 +1,138 @@
+{% load static %}
+{% load i18n %}
+{% load tz %}
+
+<!-- Modal -->
+<style>
+    .help-text {
+        font-size: .8em;
+    }
+    #carrierModal input {
+        max-width: 250px;
+        padding: 0;
+        padding-right: 6px;
+        width: 70%;
+    }
+    #templatesModal select {
+        max-width: 250px;
+        padding: 0;
+        padding-right: 6px;
+        width: 70%;
+    }
+    #carriersDialog {
+        min-width: 80% !important;
+    }
+    #templateVars label {
+        float: left;
+        margin-right: 4em;
+    }
+    .modal-footer {
+        border-top: 2px solid black !important;
+        margin: 0 0 10px 0;
+    }
+    .modal-header {
+        border-bottom: 2px solid black !important;
+    }
+    #basicTemplateVars {
+        margin: 0 -16px 10px -16px;
+    }
+    .template-category {
+        font-size: 24px;
+        background-color: #ccd0d6;
+        cursor: pointer;
+    }
+    .template-category h5 {
+        margin-left: .6em;
+        padding: 0.2em 1em 0.2em 0;
+    }
+    .template-category {
+        border-radius: .3px
+    }
+    #geophiresActions {
+        display: flex;
+        justify-content: flex-end;
+        padding: 1rem;
+        border-top: 1px solid white;
+    }
+    #runGETEM {
+        width: 100px;
+        height: 38px;
+        margin-left: 1em;
+        margin-right: 0 !important;
+    }
+    .tech-params {
+        border-bottom: 0.5px solid #ccd0d6 !important;
+        height: 31px;
+        margin-bottom: 5px;
+    }
+    #null-category-row .tech-params {
+        border-top: 0.5px solid #ccd0d6 !important;
+        border-bottom: None !important;
+        padding-top: 5px;
+    }
+    #editModalBody {
+        padding: 16px 0;
+    }
+    #basicTemplateVars {
+        padding: 0 16px;
+    }
+    #templateVars .row {
+        padding: 0 16px;
+    }
+    #loadingGeophires {
+        margin-bottom: 1em;
+    }
+    .center {
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+<div class="modal fade" id="carriersModal" tabindex="-1" role="dialog" aria-labelledby="carrierModalTitle" aria-hidden="true">
+    <div id="carriersDialog" class="modal-dialog" role="document">
+        <div id="modalContent" class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="carrierModalTitle">{% trans "Model Carriers" %}</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="modalBody" class="modal-body">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <b>{% trans "Carrier Name" %}</b>
+                    </div>
+                    <div class="col-lg-2">
+                        <b>{% trans "Rate Unit" %}</b>
+                    </div>
+                    <div class="col-lg-2">
+                        <b>{% trans "Quantity Unit" %}</b>
+                    </div>
+                    <div class="col-lg-5">
+                        <b>{% trans "Description" %}</b>
+                    </div>
+                    <div class="col-lg-1">   
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <input {% if not can_edit %}disabled{% endif %} id="carrier_name" style="width:100%" type="text" name='carrier-name[new]' value="New Carrier Name">
+                    </div>
+                    <div class="col-lg-2">
+                        <input {% if not can_edit %}disabled{% endif %} id="carrier_rate" style="width:100%" type="text" name='carrier-rate[new]' value="kW">
+                    </div>
+                    <div class="col-lg-2">
+                        <input {% if not can_edit %}disabled{% endif %} id="carrier_quantity" style="width:100%" type="text" name='carrier-quantity[new]' value="kWh">
+                    </div>
+                    <div class="col-lg-5">
+                        <input {% if not can_edit %}disabled{% endif %} id="carrier_desc" style="width:100%" type="text" name='carrier-desc[new]' value="">
+                    </div>
+                    <div class="col-lg-1"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" id="carrierSave" class="btn btn-primary">{% trans "Save" %}</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
+            </div>
+        </div>
+    </div>
+</div>

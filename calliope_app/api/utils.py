@@ -13,6 +13,7 @@ import yaml
 import pandas as pd
 import numpy as np
 from django.db.models import Func, Value
+from django.utils.html import escape
 from django.utils.timezone import make_aware
 import pint
 
@@ -714,3 +715,12 @@ def convert_units_no_pipe(ureg,val,target):
         return str(conv_v), str(val)
     
 noconv_units = ['<sub>ABC</sub>','<sup>T</sup>/<sub>F</sub>','&#8593;','']
+
+
+def recursive_escape(data: dict):
+    for key, value in data.items():
+        if isinstance(value, dict):
+            data[key] = recursive_escape(value)
+        if isinstance(value, str):
+            data[key] = escape(value)
+    return data
