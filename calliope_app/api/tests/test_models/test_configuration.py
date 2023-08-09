@@ -148,7 +148,7 @@ class ModelTestCase(TestCase):
         tech_param = Tech_Param.objects.create(
             technology=tech, parameter=param4, model=self.model
         )
-        self.assertEqual(len(self.model.carriers), 0)
+        self.assertEqual(len(self.model.carriers_old), 0)
 
     def test_favorites(self):
         param = Parameter.objects.create(

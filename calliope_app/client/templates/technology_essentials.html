@@ -38,19 +38,20 @@
 		</div>
 
 		<!-- Carriers -->
-		{% if technology.abstract_tech.name != 'conversion_plus' %}
-			<!-- Required Carriers (Simple) -->
-			{% for carrier_id in required_carrier_ids %}
+		<!-- Required Carriers (Simple) -->
+		{% for carrier_id in required_carrier_ids %}
+			{% if carrier_id not in cplus_carrier_ids %}
 				{% with essentials|return_item:carrier_id as carrier %}
 				{% if carrier %}
 					{% include 'carrier_form_simple.html' %}
 				{% endif %}
 				{% endwith %}
-			{% endfor %}
-		{% else %}
-			<!-- Required Carriers (Conversion Plus) -->
-			<div class="col-12">
-			{% for carrier_id in required_carrier_ids %}
+			{% endif %}
+		{% endfor %}
+		<!-- Required Carriers (Conversion Plus) -->
+		<div class="col-12">
+		{% for carrier_id in required_carrier_ids %}
+			{% if carrier_id in cplus_carrier_ids %}
 				{% with essentials|return_item:carrier_id as carrier %}
 				{% with True as required %}
 				{% if carrier %}
@@ -58,22 +59,24 @@
 				{% endif %}
 				{% endwith %}
 				{% endwith %}
-			{% endfor %}
-			</div>
-			<!-- Optional Carriers (Conversion Plus) -->
-			<div class="col-12">
-			{% for carrier_id in cplus_carrier_ids %}
+			{% endif %}
+		{% endfor %}
+		</div>
+		<!-- Optional Carriers (Conversion Plus) -->
+		<div class="col-12">
+		{% for carrier_id in cplus_carrier_ids %}
+			{% if carrier_id not in required_carrier_ids %}
 				{% with essentials|return_item:carrier_id as carrier %}
 				{% with False as required %}
 				{% if carrier %}
 					{% include 'carrier_form_complex.html' %}
 				{% endif %}
 				{% endwith %}
-				{% endwith %}
-			{% endfor %}
-			</div>
+				{% endwith %}	
+			{% endif %}
+		{% endfor %}
+		</div>
 
-		{% endif %}
 	</div>
 	<div class="row">
 		<div class="col-12">

@@ -7,8 +7,8 @@ import shutil
 import boto3
 import pandas as pd
 import numpy as np
-import datetime
 import yaml
+from datetime import datetime
 from dateutil.parser import parse as date_parse
 
 from celery import Task
@@ -24,9 +24,9 @@ from api.models.configuration import Model, Scenario, Scenario_Loc_Tech, \
     Tech_Param, Loc_Tech_Param, Timeseries_Meta, User_File
 from api.models.outputs import Run
 from api.utils import load_timeseries_from_csv, get_model_logger, zip_folder
-from api.calliope_utils import get_model_yaml_set, get_location_meta_yaml_set
-from api.calliope_utils import get_techs_yaml_set, get_loc_techs_yaml_set
-from api.calliope_utils import run_basic, run_clustered, apply_gradient
+from api.calliope_utils import get_model_yaml_set, get_location_meta_yaml_set,\
+                        get_techs_yaml_set, get_loc_techs_yaml_set,get_carriers_yaml_set,\
+                        run_basic, run_clustered, apply_gradient
 from batch.managers import AWSBatchJobManager 
 from taskmeta.models import CeleryTask, BatchTask, batch_task_status
 
@@ -219,7 +219,10 @@ def build_model(inputs_path, run_id, model_uuid, scenario_id,
 def build_model_yaml(scenario_id, start_date, inputs_path):
 
     scenario_id = int(scenario_id)
-    year = date_parse(start_date).year
+    if isinstance(start_date, datetime):
+        year = start_date.year
+    else:
+        year = date_parse(start_date).year
 
     # model.yaml
     model_yaml_set = get_model_yaml_set(scenario_id, year)
@@ -236,6 +239,11 @@ def build_model_yaml(scenario_id, start_date, inputs_path):
     location_yaml_set = get_location_meta_yaml_set(scenario_id, loc_techs_yaml_set)
     with open(os.path.join(inputs_path, "locations.yaml"), 'w') as outfile:
         yaml.dump(location_yaml_set, outfile, default_flow_style=False)
+
+    # carriers.yaml
+    carriers_yaml_set = get_carriers_yaml_set(scenario_id)
+    with open(os.path.join(inputs_path, "carriers.yaml"), 'w') as outfile:
+        yaml.dump(carriers_yaml_set, outfile, default_flow_style=False)
 
 
 def build_model_csv(model, scenario, start_date, end_date, inputs_path, timesteps):
@@ -704,7 +712,7 @@ def upgrade_066(*args, **kwargs):
                             columns[i] = 'techlists'
                         else:
                             try:
-                                datetime.datetime.strptime(values[0],
+                                datetime.strptime(values[0],
                                                            '%Y-%m-%d %H:%M:%S')
                                 if metric == 'max_demand_timesteps':
                                     columns[i] = metric
@@ -712,7 +720,7 @@ def upgrade_066(*args, **kwargs):
                                     columns[i] = 'timesteps'
                             except Exception:
                                 try:
-                                    datetime.datetime.strptime(values[0],
+                                    datetime.strptime(values[0],
                                                                '%Y-%m-%d')
                                     columns[i] = 'datesteps'
                                 except Exception:

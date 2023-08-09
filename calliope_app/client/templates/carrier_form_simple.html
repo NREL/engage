@@ -5,11 +5,11 @@
 	<b>{{ carrier.name }}:</b>
 </div>
 <div class="col-7">
-    <select {% if not can_edit %}disabled{% endif %} style="width:100%" type="text" class="tech_carrier {% if not carrier.value.0 %}table-danger{% endif %}" name="essentials[{{ carrier_id }}]" data-value="{{ carrier.value.0 }}">
+    <select {% if not can_edit %}disabled{% endif %} style="width:100%" type="text" class="tech_carrier {% if carrier_id in units_in_ids %}units_in_selector{% endif %} {% if carrier_id in units_out_ids %}units_out_selector{% endif %} {% if not carrier.value.0 %}table-danger{% endif %}" name="essentials[{{ carrier_id }}]" data-value="{{ carrier.value.0 }}">
         <option></option>
-        <option value="-- New Carrier --">-- New Carrier --</option>
+        <!-- <option value="-- New Carrier --">-- New Carrier --</option>-->
         {% for choice in carriers %}
-        <option value="{{ choice }}" {% if choice == carrier.value.0 %}selected{% endif %}>{{ choice }}</option>
+        <option value="{{ choice.name }}" rate_unit="{{ choice.rate }}" quantity_unit="{{ choice.quantity }}" {% if choice.name == carrier.value.0 %}selected{% endif %}>{{ choice.name }} [{{choice.rate}},{{choice.quantity}}]</option>
         {% endfor %}
     </select>
 </div>

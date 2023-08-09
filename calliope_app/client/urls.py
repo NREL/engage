@@ -79,6 +79,9 @@ urlpatterns = [
     path('<model_uuid>/add_scenarios/',
          configuration_views.add_scenarios_view,
          name='add_scenarios'),
+    path('<model_uuid>/carriers/',
+         configuration_views.carriers_view,
+         name='carriers'),
     # Outputs Views
     path('<model_uuid>/runs/',
          outputs_views.runs_view,

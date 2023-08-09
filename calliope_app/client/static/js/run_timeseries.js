@@ -9,6 +9,7 @@ function render_timeseries(input_data) {
       if (input_data[metric]['timeseries'] == undefined) { return };
       var data = input_data[metric]['timeseries'],
           ts = data.base.x.slice(0, 8760);
+      var c_units = input_data[metric]['units'];
       data.layers.forEach(function(layer) {
           var trace = {
               x: ts, y: layer.y, yaxis: 'y' + (i + 1),
@@ -18,7 +19,8 @@ function render_timeseries(input_data) {
               legendgroup: layer.name,
               fillcolor: layer.color,
               line: { width: 1, color: 'black' },
-              hovertemplate: '<b>%{y}</b> ' + units[units.length - 1 - i] + '&nbsp;&nbsp;&nbsp;&nbsp;%{x}<br>' + layer.name + '<extra></extra>',
+              hovertemplate: '<b>%{y}</b> ' + units[units.length - 1 - i].replace('[[rate]]',c_units['rate']).replace('[[quantity]]',c_units['quantity'])
+                                 + '&nbsp;&nbsp;&nbsp;&nbsp;%{x}<br>' + layer.name + '<extra></extra>',
           };
           layers.push(trace);
           legend_items.push(layer.name);
@@ -29,7 +31,8 @@ function render_timeseries(input_data) {
               name: data.overlay.name,
               stackgroup: "Secondary", legendgroup: "Secondary", showlegend: true,
               fillcolor: "transparent", line: { width: 4, color: "white", dash: "dashdot" },
-              hovertemplate: '<b>%{y}</b> ' + units[units.length - 1 - i] + '&nbsp;&nbsp;&nbsp;&nbsp;%{x}<br>' + data.overlay.name + '<extra></extra>',
+              hovertemplate: '<b>%{y}</b> ' + units[units.length - 1 - i].replace('[[rate]]',c_units['rate']).replace('[[quantity]]',c_units['quantity'])
+                                 + '&nbsp;&nbsp;&nbsp;&nbsp;%{x}<br>' + data.overlay.name + '<extra></extra>',
           };
           layers.push(trace);
       };

@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.utils.timezone import make_aware
 
 from api.models.configuration import Scenario_Param, Scenario_Loc_Tech, \
-    Timeseries_Meta, ParamsManager, Model, User_File
+    Timeseries_Meta, ParamsManager, Model, User_File, Carrier, Tech_Param
 from api.utils import get_cols_from_csv
 
 import os
@@ -116,15 +116,31 @@ def all_tech_params(request):
 
     technology = model.technologies.get(id=technology_id)
     essentials, parameters = ParamsManager.all_tech_params(technology)
+
+    carriers = {}
+    for carrier in model.carriers.all():
+        carriers[carrier.name] = {'rate':carrier.rate_unit,'quantity':carrier.quantity_unit}
+
+    for carrier in model.carriers_old:
+        if carrier not in carriers.keys():
+            carriers[carrier] = {'rate':'kW','quantity':'kWh'}
+    
+    carriers = [{'name':c,'rate':v['rate'],'quantity':v['quantity']} for c,v in carriers.items()]
+
+    for param in parameters:
+        param['raw_units'] = param['units']
+
     timeseries = Timeseries_Meta.objects.filter(model=model, failure=False,
                                                 is_uploading=False)
 
     # Technology Definition
     context = {"technology": technology,
                "essentials": essentials,
-               "carriers": model.carriers,
-               "required_carrier_ids": [4, 5, 6, 138, 139],
-               "cplus_carrier_ids": [66, 67, 68, 69],
+               "carriers": carriers,
+               "required_carrier_ids": [4, 5, 6, 138, 139, 70, 71],
+               "cplus_carrier_ids": [138, 139, 66, 67, 68, 69],
+               "units_in_ids": [4,5,70],
+               "units_out_ids": [4,6,71],
                "can_edit": can_edit}
     html_essentials = list(render(request,
                                   'technology_essentials.html',
@@ -137,7 +153,7 @@ def all_tech_params(request):
         "technology": technology,
         "model": model,
         "parameters": parameters,
-        "carriers": model.carriers,
+        "carriers": carriers,
         "level": "1_tech",
         "timeseries": timeseries,
         "can_edit": can_edit,
@@ -229,6 +245,27 @@ def all_loc_tech_params(request):
     timeseries = Timeseries_Meta.objects.filter(model=model, failure=False,
                                                 is_uploading=False)
 
+    units_in_ids = [4,5,70]
+    units_out_ids = [4,6,71]
+
+    carrier_in = Tech_Param.objects.filter(technology=loc_tech.technology, parameter__id__in=units_in_ids).first().value
+    carrier_out = Tech_Param.objects.filter(technology=loc_tech.technology, parameter__id__in=units_out_ids).first().value
+
+    carriers = {}
+    for carrier in model.carriers.all():
+        carriers[carrier.name] = {'rate':carrier.rate_unit,'quantity':carrier.quantity_unit}
+
+    for carrier in model.carriers_old:
+        if carrier not in carriers.keys():
+            carriers[carrier] = {'rate':'kW','quantity':'kWh'}
+    
+    carrier_in = carriers[carrier_in]
+    carrier_out = carriers[carrier_out]
+    carriers = [{'name':c,'rate':v['rate'],'quantity':v['quantity']} for c,v in carriers.items()]
+
+    for param in parameters:
+        param['raw_units'] = param['units']
+
     emissions = ParamsManager.emission_categories()
     # Parameters Table
     context = {
@@ -236,10 +273,12 @@ def all_loc_tech_params(request):
         "loc_tech": loc_tech,
         "model": model,
         "parameters": parameters,
-        "carriers": model.carriers,
+        "carriers": carriers,
+        "carrier_in": carrier_in,
+        "carrier_out":carrier_out,
         "level": "2_loc_tech",
         "timeseries": timeseries,
-        "can_edit": can_edit}
+        "can_edit": can_edit,}
     html_parameters = list(render(request, 'technology_parameters.html', context))[0]
 
     payload = {

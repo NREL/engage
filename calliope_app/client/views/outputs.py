@@ -66,7 +66,19 @@ def add_runs_view(request, model_uuid, scenario_id):
     model = Model.by_uuid(model_uuid)
     can_edit = model.handle_view_access(request.user)
 
-    compute_environments = [ComputeEnvironment.objects.get(name__iexact="default")]
+    try:
+        default_environment = ComputeEnvironment.objects.get(name__iexact="default")
+    except ComputeEnvironment.DoesNotExist:
+        default_environment = ComputeEnvironment.objects.create(
+            name="default",
+            full_name="default",
+            is_default=True,
+            type="Celery Worker",
+            ncpu=4,
+            memory=32
+        )
+
+    compute_environments = [default_environment]
     user_assigned_environments = request.user.compute_environments.all().exclude(name__iexact="default")
     for compute_environment in user_assigned_environments:
         compute_environments.append(compute_environment)

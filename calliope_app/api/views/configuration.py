@@ -10,6 +10,7 @@ from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.utils.html import escape
 from PySAM import Windpower
 from PySAM.ResourceTools import FetchResourceFiles
 
@@ -17,8 +18,9 @@ from api.models.calliope import Abstract_Tech, Run_Parameter
 from api.models.configuration import Location, Technology, Tech_Param, \
     Loc_Tech, Loc_Tech_Param, ParamsManager, Scenario, Scenario_Param, \
     Scenario_Loc_Tech, Timeseries_Meta, Model, Model_Comment, \
-    Model_Favorite, User_File, Model_User
+    Model_Favorite, User_File, Model_User, Carrier
 from api.tasks import task_status, upload_ts, copy_model
+from api.utils import recursive_escape
 from taskmeta.models import CeleryTask
 
 
@@ -251,6 +253,7 @@ def add_model_comment(request):
 
     try:
         validate_model_comment(comment)
+        comment = escape(comment)  # Reference: https://docs.djangoproject.com/en/3.2/ref/utils/#module-django.utils.html
     except ValidationError as e:
         payload = {"message": str(e)}
         return HttpResponse(json.dumps(payload), content_type="application/json")
@@ -266,6 +269,49 @@ def add_model_comment(request):
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
 
+@csrf_protect
+def update_carriers(request):
+    """
+    Update a models carriers with changes/additions/deletions
+
+    Parameters:
+    model_uuid (uuid): required
+    form_data (json): required
+
+    Returns (json): Action Confirmation
+
+    Example:
+    POST: /api/update_carriers/
+    """
+
+    model_uuid = request.POST["model_uuid"]
+    form_data = json.loads(request.POST["form_data"])
+    model = Model.by_uuid(model_uuid)
+    err_msg = ''
+    if 'edit' in form_data:
+        for i,c in form_data['edit'].items():
+            if i != 'new':
+                carrier = Carrier.objects.filter(model=model,name=c['carrier-name']).first()
+                carrier.rate_unit = c['carrier-rate']
+                carrier.quantity_unit = c['carrier-quantity']
+                carrier.description = c['carrier-desc']
+                carrier.save()
+            else:
+                try:
+                    carrier = Carrier.objects.create(model=model,name=c['carrier-name'],rate_unit=c['carrier-rate'],quantity_unit=c['carrier-quantity'],description=c.get('carrier-desc',''))
+                except Exception as e:
+                    err_msg += str(e)
+
+    if 'delete' in form_data:
+        for i,c in form_data['delete']['carrier'].items():
+            Carrier.objects.filter(id=i).delete()
+
+    if err_msg != '':
+        payload = {"message": err_msg}
+    else:
+        payload = {"message": "Success."}
+
+    return HttpResponse(json.dumps(payload), content_type="application/json")
 
 # ------ Locations
 
@@ -293,11 +339,11 @@ def update_location(request):
 
     model_uuid = request.POST["model_uuid"]
     location_id = int(request.POST.get("location_id", 0))
-    location_name = request.POST["location_name"].strip()
+    location_name = escape(request.POST["location_name"].strip())
     location_lat = float(request.POST["location_lat"])
     location_long = float(request.POST["location_long"])
-    location_area = request.POST["location_area"]
-    location_description = request.POST["location_description"]
+    location_area = escape(request.POST["location_area"])
+    location_description = escape(request.POST["location_description"])
 
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
@@ -441,10 +487,10 @@ def add_technology(request):
     POST: /api/add_technolgy/
     """
 
-    model_uuid = request.POST["model_uuid"]
-    technology_pretty_name = request.POST["technology_name"]
-    technology_id = request.POST.get("technology_id", None)
-    technology_type = request.POST["technology_type"]
+    model_uuid = escape(request.POST["model_uuid"])
+    technology_pretty_name = escape(request.POST["technology_name"])
+    technology_id = escape(request.POST.get("technology_id", "")) or None
+    technology_type = escape(request.POST["technology_type"])
 
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
@@ -544,10 +590,10 @@ def update_tech_params(request):
     Example:
     POST: /api/update_tech_params/
     """
-
-    model_uuid = request.POST["model_uuid"]
-    technology_id = request.POST["technology_id"]
+    model_uuid = escape(request.POST["model_uuid"])
+    technology_id = escape(request.POST["technology_id"])
     form_data = json.loads(request.POST["form_data"])
+    escaped_form_data = recursive_escape(form_data)
 
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
@@ -555,7 +601,7 @@ def update_tech_params(request):
     technology = model.technologies.filter(id=technology_id)
 
     if len(technology) > 0:
-        technology.first().update(form_data)
+        technology.first().update(escaped_form_data)
         # Log Activity
         comment = "{} updated the technology: {}.".format(
             request.user.get_full_name(),
@@ -839,8 +885,8 @@ def add_scenario(request):
     """
 
     model_uuid = request.POST["model_uuid"]
-    scenario_id = request.POST.get("scenario_id", None)
-    scenario_name = request.POST["scenario_name"]
+    scenario_id = escape(request.POST.get("scenario_id", "")) or None
+    scenario_name = escape(request.POST["scenario_name"])
 
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
