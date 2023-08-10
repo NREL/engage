@@ -1,9 +1,10 @@
 from django.db import models
 from api.models.calliope import Abstract_Tech, Parameter
-from api.models.configuration import Location, Model, Timeseries_Meta
+from api.models.configuration import Location, Model, Timeseries_Meta, Technology, Technology, Abstract_Tech, Loc_Tech
 from django.contrib.postgres.fields import ArrayField
 from django.db.models.signals import pre_delete 
 from django.dispatch import receiver
+from django.db.models.signals import post_delete
 
 from api.models.utils import EngageManager
 
@@ -29,7 +30,7 @@ class Template_Type_Variable(models.Model):
     name = models.CharField(max_length=200)
     pretty_name = models.CharField(max_length=200)
     template_type = models.ForeignKey(Template_Type, on_delete=models.CASCADE)
-    units = models.CharField(max_length=200)
+    units = models.CharField(max_length=200, blank=True, null=True)
     default_value = models.CharField(max_length=200, blank=True, null=True)
     min = models.CharField(max_length=200, blank=True, null=True)
     max = models.CharField(max_length=200, blank=True, null=True)
@@ -60,8 +61,10 @@ class Template_Type_Tech(models.Model):
         verbose_name_plural = "[Admin] Template Type Techs"
 
     name = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, blank=True, null=True)
     template_type = models.ForeignKey(Template_Type, on_delete=models.CASCADE)
     abstract_tech = models.ForeignKey(Abstract_Tech, on_delete=models.CASCADE)
+    version_tag = models.CharField(max_length=200, blank=True, null=True)
     energy_carrier = models.CharField(max_length=200, blank=True, null=True)
     carrier_in = models.CharField(max_length=200, blank=True, null=True)
     carrier_out = models.CharField(max_length=200, blank=True, null=True)
@@ -114,6 +117,21 @@ class Template_Type_Parameter(models.Model):
 
     def __str__(self):
         return '%s' % (self.equation)
+    
+class Template_Type_Carrier(models.Model):
+    class Meta:
+        db_table = "template_type_carrier"
+        verbose_name_plural = "[Admin] Template Type Carriers"
+        ordering = ['name']
+
+    template_type = models.ForeignKey(Template_Type, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
+    rate_unit = models.CharField(max_length=20)
+    quantity_unit = models.CharField(max_length=20)
+
+    def __str__(self):
+        return '%s' % (self.name)
 
 class Template(models.Model):
     class Meta:
@@ -137,16 +155,10 @@ class Template(models.Model):
     def __str__(self):
         return '%s' % (self.name)
 
-    @receiver(pre_delete)
-    def delete_repo(sender, instance, **kwargs):
-        print ("delete_repo " + str(instance))
-        if sender == Template:
-            #shutil.rmtree(instance.repo) import shutil
-            print ("sender delete_repo " + str(instance))
-    
     # @classmethod
     # def _delete(cls, template, data):
     #     print ("_delete " + data + template)
+    
 
 
 class Template_Variable(models.Model):
@@ -171,3 +183,28 @@ class Template_Variable(models.Model):
     def __str__(self):
         return '%s' % (self.template_type_variable)
 
+@receiver(post_delete, sender=Template)
+def signal_function_name(sender, instance, using, **kwargs):
+    if sender == Template:
+        template_id = instance.id
+        print ("Cleaning up assoicatted records for " + str(template_id))
+
+        # Loop through techs 
+        technologies = Technology.objects.filter(template_type_id=instance.template_type_id, model_id=instance.model)
+
+        for tech in technologies:
+            # Delete if there are no other nodes outside of the template are using this tech
+            loc_techs = Loc_Tech.objects.filter(technology=tech)
+            uniqueToTemplate = True
+            for loc_tech in loc_techs:
+                if loc_tech.template_id != int(template_id):
+                    print("tech not unique to template loc_tech.template_id: " + str(loc_tech.template_id) + " template_id: " + str(template_id))
+                    uniqueToTemplate = False
+                    break
+            
+            if uniqueToTemplate:
+                Technology.objects.filter(id=tech.id).delete()
+
+        # Delete any remaining nodes, locations and the template itself
+        Loc_Tech.objects.filter(template_id=template_id).delete()
+        Location.objects.filter(template_id=template_id).delete()

@@ -70,8 +70,6 @@ def geophires_request(request):
     reservoir_density: required
     reservoir_thermal_conductivity: required
     gradient: required
-    min_temperature: required
-    max_temperature: required
     min_reservoir_depth: required
     max_reservoir_depth: required
     min_production_wells: required
@@ -96,8 +94,8 @@ def geophires_request(request):
         "gradient": float(formData["gradient"]),
 
         # TODO: Step sizes are hardcoded, need to refactor later
-        "min_temperature": float(formData["min_temperature"]),
-        "max_temperature": float(formData["max_temperature"]),
+        "min_temperature": 400,
+        "max_temperature": 400,
         "temperature_step": 25.0,
 
         "min_reservoir_depth": float(formData["min_reservoir_depth"]),
@@ -114,7 +112,7 @@ def geophires_request(request):
     }
 
     if None in (formData["reservoir_heat_capacity"], formData["reservoir_density"], formData["reservoir_thermal_conductivity"], formData["gradient"],
-        formData["min_temperature"], formData["max_temperature"], formData["min_reservoir_depth"], formData["max_reservoir_depth"], formData["min_production_wells"],
+        formData["min_reservoir_depth"], formData["max_reservoir_depth"], formData["min_production_wells"],
         formData["max_production_wells"], formData["min_injection_wells"], formData["max_injection_wells"]):
         raise ValidationError(f"Error: Required field not provided for GEOPHIRES.")
 

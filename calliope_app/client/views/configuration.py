@@ -88,7 +88,7 @@ def locations_view(request, model_uuid):
     lts = Loc_Tech.objects.filter(
         Q(location_1_id__in=location_ids) | Q(location_2_id__in=location_ids))
     lts = lts.values("id", "technology_id", "location_1_id", "location_2_id",
-                     "technology__pretty_name", "technology__pretty_tag")
+                     "technology__pretty_name", "technology__pretty_tag", "template_id")
     loc_techs = {}
     for lt in lts:
         l1, l2 = lt["location_1_id"], lt["location_2_id"]
@@ -138,7 +138,7 @@ def technologies_view(request, model_uuid):
         return HttpResponseRedirect(reverse('home'))
 
     technologies = model.technologies.values(
-        "id", "pretty_name", "pretty_tag", "abstract_tech__icon")
+        "id", "pretty_name", "pretty_tag", "abstract_tech__icon", "template_type_id")
     session_technology_id = request.GET.get('tech_id', None)
     if not session_technology_id:
         session_technology_id = request.session.get('technology_id', None)
@@ -215,7 +215,7 @@ def loc_techs_view(request, model_uuid):
         return HttpResponseRedirect(reverse('home'))
 
     technologies = model.technologies.values(
-        "id", "pretty_name", "pretty_tag", "abstract_tech__icon")
+        "id", "pretty_name", "pretty_tag", "abstract_tech__icon", "template_type_id")
     session_technology_id = request.GET.get('tech_id', None)
     session_loc_tech_id = request.GET.get('loc_tech_id', None)
     if not session_technology_id:

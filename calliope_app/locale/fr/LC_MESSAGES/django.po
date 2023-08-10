@@ -387,6 +387,7 @@ msgstr "Nœuds"
 #: client/templates/locations_dashboard.html:43
 #: client/templates/locations_dashboard.html:120
 #: client/templates/parameters.html:40 client/templates/timeseries.html:59
+#: client/templates/templates_modal.html:154
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -1118,6 +1119,70 @@ msgstr ""
 "Produit une série temporelle de données du facteur de la capacité éolienne. "
 "Veuillez la trouver et la vérifier sur la page série temporelle, lien ci-"
 "dessous."
+
+#: client/templates/templates_modal.html:95
+msgid "Node Groups"
+msgstr "Groupes de nœuds"
+
+#: client/templates/templates_modal.html:102
+msgid "New Node Group"
+msgstr "Nouveau groupe de nœuds"
+
+#: client/templates/templates_modal.html:114
+msgid "Edit Node Group"
+msgstr "Modifier le groupe de nœuds"
+
+#: client/templates/templates_modal.html:124
+msgid "Node Group Name"
+msgstr "Nom du groupe de nœuds"
+
+#: client/templates/templates_modal.html:131
+msgid "Primary Location"
+msgstr "Emplacement principal"
+
+#: client/templates/templates_modal.html:138
+msgid "Node Group Type"
+msgstr "Type de groupe de nœuds"
+
+#: client/templates/templates_modal.html:148
+msgid "Back"
+msgstr "Retour"
+
+#: client/templates/templates_modal.html:151
+msgid "Update"
+msgstr "Mise à jour"
+
+#: client/templates/base.html:44
+msgid "Existing Node Groups:"
+msgstr "Groupes de nœuds existants:"
+
+#: client/templates/base.html:45
+msgid "This model does not have any existing node groups yet."
+msgstr "Ce modèle n'a pas encore de groupes de nœuds existants."
+
+#: client/templates/base.html:46
+msgid "Add Node Group to Model"
+msgstr "Ajouter un groupe de nœuds au modèle"
+
+#: client/templates/base.html:47
+msgid "Update Node Group: "
+msgstr "Mettre à jour le groupe de nœuds: "
+
+#: client/templates/base.html:48
+msgid "GEOPHIRES v2.0 is a geothermal techno-economic simulation tool used in Engage to calculate Geothermal related parameters. GEOPHIRES combines reservoir, wellbore, and surface plant technical models with cost correlations and levelized cost models to estimate the capital and operation and maintenance costs, instantaneous and lifetime energy production, and overall levelized cost of energy of a geothermal plant."
+msgstr "GEOPHIRES v2.0 est un outil de simulation technico-économique géothermique utilisé dans Engage pour calculer les paramètres liés à la géothermie."
+
+#: client/templates/base.html:49
+msgid "For more information about GEOPHIRES please see the "
+msgstr "Pour plus d'informations sur GEOPHIRES, veuillez consulter le "
+
+#: client/templates/base.html:50
+msgid "Loading Geophires results, this may take a few minutes. Please stay on this modal."
+msgstr "Chargement des résultats Geophires, cela peut prendre quelques minutes. Veuillez rester sur ce mode."
+
+#: client/templates/base.html:51
+msgid "One or more of your inputs are outside of the excepted range. Please adjust according to the variable descriptions before submitting."
+msgstr "Une ou plusieurs de vos entrées sont en dehors de la plage exceptée. Veuillez ajuster en fonction des descriptions des variables avant de soumettre."
 
 #, fuzzy
 #~| msgid "Hide"

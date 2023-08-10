@@ -1,5 +1,9 @@
 <!-- Modal -->
 {% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
 <style>
     .help-text {
         font-size: .8em;
@@ -81,7 +85,12 @@
     }
     .center {
         margin-left: auto;
-        margin-right: auto;
+        margin-right: auto; 
+    }
+    .input-error,
+    .input-error input:focus {
+        border: 3px solid red;
+        border-color: red !important;
     }
 </style>
 <div class="modal fade" id="templatesModal" tabindex="-1" role="dialog" aria-labelledby="templateModalTitle" aria-hidden="true">
@@ -93,7 +102,7 @@
                 <span aria-hidden="true">&times;</span>
             </button>
             </div>
-            <div class="col-3" style="margin-top:15px;margin-left:80%;">
+            <div class="col-3" style="margin-top:15px;margin-left:auto;">
                 <button id="addTemplate" class="btn btn-success btn-sm" type="button">
                     + {% trans "New Node Group" %}
                 </button>
@@ -102,7 +111,27 @@
             <!-- Header -->
             </div>
             <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
+            </div>
+        </div>
+        <div id="modalDelete" class="modal-content" style="display:none">
+            <div class="modal-header">
+            <h2 class="modal-title" id="templateModalTitle">{% trans "Delete Node Group" %}</h2>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <span style="color:red"> {% trans "Are you sure that you want to delete this node group?" %}</span>
+            <!-- Header -->
+            </div>
+            <div class="modal-footer">
+                <button id="modelDeleteBack" class="btn btn-secondary" type="button" style="height:38px;">
+                    {% trans "Back" %}
+                </button>
+                <button id="confirmDeleteTemplate" title="Confirm delete node group" class="btn btn-danger" type="button" style="height:38px;">
+                    {% trans "Confirm" %}
+                </button>
             </div>
         </div>
         <div id="modalEdit" class="modal-content" aria-hidden="true">
@@ -120,7 +149,7 @@
                     <label><b>{% trans "Node Group Name" %}</b></label>
                 </div>
                 <div class="col-6">
-                    <input id='templateName' name='templateName' style="margin-bottom:1em" class='form-control' placeholder='Node Group Name' aria-label="Node Group Name" value=''></input>
+                    <input id='templateName' name='templateName' style="margin-bottom:1em" class='form-control' aria-label="Node Group Name" value=''></input>
                 </div>
                 <hr>
                 <div class="col-6" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Select a primary location from which all other node group locations will be offsetted from.">
@@ -140,36 +169,22 @@
             <div id="templateVars" style="margin-bottom:1em">
             </div>
             <div class="modal-footer">
-                <button id="modelEditBack" class="btn btn-secondary" type="button" style="width:200px;height:38px;float:left;">
-                    {% trans "Back to Node Groups" %}
+                <span id='inputError' hidden="true" style='color:red;'></span>
+                <button id="deleteTemplate" title="Delete node group" class="btn btn-sm btn-outline-danger" type="button" style="margin-right: auto;">
+                    <i class="fas fa-trash"></i>
                 </button>
-                <button id="editTemplate" class="btn btn-success btn-sm" disabled type="button" style="width:180px;height:38px;">
-                    {% trans "Update Node Group" %}
+                <button id="modelEditBack" class="btn btn-secondary" type="button" style="height:38px;float:left;">
+                    {% trans "Back" %}
                 </button>
-                <button id="createTemplate" class="btn btn-success btn-sm" disabled type="button" style="width:160px;height:38px;">
-                    {% trans "Add Node Group" %}
+                <button id="editTemplate" class="btn btn-success" disabled type="button" style="height:38px;">
+                    {% trans "Update" %}
+                </button>
+                <button id="createTemplate" class="btn btn-success" disabled type="button" style="height:38px;">
+                    {% trans "Save" %}
                 </button>
             </div>
             </div>
 
         </div>
     </div>
-</div>
-
-
-
-
-<!-- Helper elements (inserted in javascript)-->
-<div id="loadingGeophires" class="center">
-    <div class="spinner-border text-secondary" style="margin-left:50%" role="status">
-        <span class="sr-only">Loading...</span>
-    </div>
-    <br>
-    {% trans "Loading Geophires results, this may take a few minutes. Please stay on this modal." %}
-</div>
-
-<div id="geophiresGraphs" class="center">
-    <a id="geoGraphButton" target="_blank" class="btn btn-success btn-sm" type="button" style="width:190px;height:38px;margin-bottom:1em;padding-top:6px;">
-        {% trans "Geophires Graphs" %}<i class="fa-solid fa-up-right-from-square" style="margin-left: 1em;"></i>
-    </a>
 </div>
