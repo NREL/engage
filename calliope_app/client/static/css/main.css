@@ -632,3 +632,65 @@ input:checked + .slider:before {
     padding: 5px !important;
     height: 40px !important;
 }
+
+.dropdown-check-list {
+  display: inline-block;
+}
+
+.dropdown-check-list .anchor {
+  position: relative;
+  width: 300px;
+  height: 25px;
+  top: -6px;
+}
+
+.dropdown-check-list .anchor:after {
+  position: absolute;
+  content: "";
+  border-left: 2px solid black;
+  border-top: 2px solid black;
+  padding: 5px;
+  right: 10px;
+  -moz-transform: rotate(-135deg);
+  -ms-transform: rotate(-135deg);
+  -o-transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+  transform: rotate(-135deg);
+}
+
+/* custom dropdown css */
+.dropdown-check-list .anchor:active:after {
+  right: 8px;
+  top: 21%;
+}
+
+.dropdown-check-list ul.items {
+  padding: 2px;
+  display: none;
+  margin: 0;
+  border: 1px solid black;
+  border-radius: 4px;
+  border-top: none;
+  position: absolute;
+  background-color: white;
+  min-width: 85px;
+}
+
+.dropdown-check-list ul.items li {
+  margin: 2px 5px 2px 0px;
+  list-style: none;
+}
+
+.dropdown-check-list .checkbox {
+    margin-left: 1px;
+}
+
+.dropdown-check-list.visible .anchor {
+  margin-bottom: 1px;
+}
+
+.dropdown-check-list.visible .items {
+  display: block;
+  
+}
+/* end custom dropdown css */

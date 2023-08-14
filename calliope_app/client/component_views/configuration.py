@@ -15,7 +15,7 @@ import string
 import pandas as pd
 
 @csrf_protect
-def model_carriers(request):
+def group_constraint_options(request):
     """
     Retrieve all carriers for a model
 
@@ -25,14 +25,19 @@ def model_carriers(request):
     Returns: HttpResponse
 
     Example:
-    GET: /component/model_carriers/
+    GET: /component/group_constraint_options/
     """
 
     model_uuid = request.GET['model_uuid']
     model = Model.by_uuid(model_uuid)
+    model.handle_view_access(request.user)
+
+    print (str(model) + "")
 
     response = {
-        "carriers": model.carriers
+        "carriers": list(model.carriers.values()),
+        "locations": list(model.locations.values()),
+        "technologies": list(model.technologies.values()),
     }
 
     return JsonResponse(response, safe=False)

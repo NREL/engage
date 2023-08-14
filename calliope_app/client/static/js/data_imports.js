@@ -55,7 +55,7 @@ function activate_import_btns() {
 	$('.pvwatts').on('click', function() {
 		$('#pvwatts_form').show();
 		$('#wtk_form').hide();
-        $('#scenario_settings_json_form').hide();
+        $('#scenario_constraints_json_form').hide();
 		$("#data-source-modal").css('display', "block");
 		var location_id = +$(this).parents('tr').attr('data-location_id'),
 			meta = get_loc_meta(location_id);
@@ -67,7 +67,7 @@ function activate_import_btns() {
 	$('.wtk').on('click', function() {
         $('#wtk_form').show();
 		$('#pvwatts_form').hide();
-        $('#scenario_settings_json_form').hide();
+        $('#scenario_constraints_json_form').hide();
 		$("#data-source-modal").css('display', "block");
 		var location_id = +$(this).parents('tr').attr('data-location_id'),
 			meta = get_loc_meta(location_id);
