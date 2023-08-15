@@ -1,0 +1,20 @@
+[
+  {
+    "model": "template.template_type_carriers",
+    "pk": 1,
+    "fields": {
+      "name": "Power",
+      "rate_unit": "kW",
+      "quantity_unit": "kWh"
+    }
+  },
+  {
+    "model": "template.template_type_carriers",
+    "pk": 2,
+    "fields": {
+      "name": "Thermal",
+      "rate_unit": "kW",
+      "quantity_unit": "kWh"
+    }
+  }
+]
