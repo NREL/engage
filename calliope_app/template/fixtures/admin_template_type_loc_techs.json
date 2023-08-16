@@ -18,5 +18,55 @@
       "template_loc_2": null,
       "template_tech": 6
     }
+  },
+  {
+    "model": "template.template_type_loc_tech",
+    "pk": 3,
+    "fields": {
+      "template_type": 4,
+      "template_loc_1": 5,
+      "template_loc_2": null,
+      "template_tech": 7
+    }
+  },
+  {
+    "model": "template.template_type_loc_tech",
+    "pk": 4,
+    "fields": {
+      "template_type": 4,
+      "template_loc_1": 5,
+      "template_loc_2": null,
+      "template_tech": 8
+    }
+  },
+  {
+    "model": "template.template_type_loc_tech",
+    "pk": 5,
+    "fields": {
+      "template_type": 4,
+      "template_loc_1": 5,
+      "template_loc_2": null,
+      "template_tech": 9
+    }
+  },
+  {
+    "model": "template.template_type_loc_tech",
+    "pk": 6,
+    "fields": {
+      "template_type": 4,
+      "template_loc_1": 5,
+      "template_loc_2": null,
+      "template_tech": 10
+    }
+  },
+  {
+    "model": "template.template_type_loc_tech",
+    "pk": 7,
+    "fields": {
+      "template_type": 4,
+      "template_loc_1": 5,
+      "template_loc_2": null,
+      "template_tech": 11
+    }
   }
 ]

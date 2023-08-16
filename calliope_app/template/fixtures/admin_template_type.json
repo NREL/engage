@@ -25,5 +25,14 @@
             "pretty_name": "DC-Coupled Solar+BESS",
             "description": ""
         }
+    },
+    {
+        "model": "template.template_type",
+        "pk": 4,
+        "fields": {
+            "name": "simple_single_reservoir_hydro",
+            "pretty_name": "Simple Single-reservoir Hydro",
+            "description": "This node group consists of * a water source for water flowing in from a catchment area * another supply for discharge water coming in from sewage discharge * a storage element representing a reservoir above the hydroelectric dam * a conversion technology that consumes water from the reservoir to generate electricity. * and a demand element to represent water drawn from the reservoir. The modeler should provide time-series data for the water sources (water supplies) And water draw (water demand). The template will translate the head height and other inputs into configurations for the efficiency of the conversion technology. The modeler should remember that if multiple dams and reservoirs are consolidated into this single simple representation. Capacity expansion cannot be performed, because each storage and generation resource is different. The modeler should create electric transmission as appropriate to interconnect the dam turbine generator location to the electric grid in the model appropriately."
+        }
     }
 ]

@@ -304,5 +304,22 @@
       "category": "GEOPHIRES Outputs",
       "choices": "[]"
     }
+  },
+  {
+    "model": "template.template_type_variable",
+    "pk": 31,
+    "fields": {
+      "name": "min_reservoir_water_content",
+      "pretty_name": "Min Reservoir Water Content",
+      "template_type": 4,
+      "units": "m^3",
+      "default_value": null,
+      "min": null,
+      "max": null,
+      "description": "",
+      "timeseries_enabled": null,
+      "category": "Reservoir",
+      "choices": "[]"
+    }
   }
 ]
