@@ -19,13 +19,16 @@
     font-size: 20px;
 }
 .constraint-name {
-    color: grey;
     font-family: Arial, sans-serif;
-    font-size: 30px;
+    font-size: 25px;
     display: inline-block;
 }
 .constraint-delete {
-    float: right;
+    float: right
+}
+.group-constraint-delete {
+    margin-top: 10px;
+    float: right
 }
 .constraint-key-value {
     padding-left: 5em;
@@ -100,6 +103,27 @@ a {
  width: 650px;
  padding-top: 10px;
 }
+
+.cateogry-expander {
+    font-size: 24px;
+    background-color: #ccd0d6;
+    cursor: pointer;
+    height: 40px;
+}
+
+.cateogry-expander .fas {
+    margin-right: 25px;
+}
+
+.cateogry-expander h5 {
+    margin-left: .6em;
+    padding: 0.2em 1em 0.2em 0;
+}
+
+.cateogry-expander {
+    border-radius: .3px;
+    margin: 0px -15px;
+}
 </style>
 
 <form id="scenario_constraints_json_form" method="post" tabindex="-1" role="dialog"  onsubmit="return false;">
@@ -128,7 +152,7 @@ a {
         <br>
         <div class="form-row">
             <!-- Timeseries Name -->
-            <div id="dialog-inputs" class="form-group" style="padding: 0 20px;width: 100%;">
+            <div id="dialog-inputs" class="form-group" style="width: 100%;">
             </div>
             <hr>
             <div class="form-group col-md-6"></div>
