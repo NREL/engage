@@ -194,22 +194,22 @@ function get_scenario_configuration() {
 
 function updateDialogObject() {
     Object.keys(dialogObj).forEach(constraint => {
-
-        var techsInput = $("#" + constraint + "_techs").val();
+        let constraintId = safeHTMLId(constraint);
+        var techsInput = $("#" + constraintId + "_techs").val();
         if (techsInput && techsInput.length > 0) {
             dialogObj[constraint].techs = techsInput;
         } else {
             delete dialogObj[constraint].techs;
         }
 
-        techsInput = $("#" + constraint + "_techs_lhs").val();
+        techsInput = $("#" + constraintId + "_techs_lhs").val();
         if (techsInput && techsInput.length > 0) {
             dialogObj[constraint].techs_lhs = techsInput;
         } else {
             delete dialogObj[constraint].techs_lhs;
         }
 
-        techsInput = $("#" + constraint + "_techs_rhs").val();
+        techsInput = $("#" + constraintId + "_techs_rhs").val();
         if (techsInput && techsInput.length > 0) {
             dialogObj[constraint].techs_rhs = techsInput;
         } else {
@@ -217,21 +217,21 @@ function updateDialogObject() {
         }
         
         // Locations
-        var locsInput = $("#" + constraint + "_locs").val();
+        var locsInput = $("#" + constraintId + "_locs").val();
         if (locsInput && locsInput.length > 0) {
             dialogObj[constraint].locs = locsInput;
         } else {
             delete dialogObj[constraint].locs;
         }
 
-        locsInput = $("#" + constraint + "_locs_lhs").val();
+        locsInput = $("#" + constraintId + "_locs_lhs").val();
         if (locsInput && locsInput.length > 0) {
             dialogObj[constraint].locs_lhs = locsInput;
         } else {
             delete dialogObj[constraint].locs_lhs;
         }
 
-        locsInput = $("#" + constraint + "_locs_rhs").val();
+        locsInput = $("#" + constraintId + "_locs_rhs").val();
         if (locsInput && locsInput.length > 0) {
             dialogObj[constraint].locs_rhs = locsInput;
         } else {
@@ -241,9 +241,9 @@ function updateDialogObject() {
         //add constraints
         Object.keys(dialogObj[constraint]).forEach(fieldKey => {
             if (fieldKey !== "locs" && fieldKey !== "techs" && fieldKey !== "techs_lhs" && fieldKey !== "techs_rhs" && fieldKey !== "locs_lhs" && fieldKey !== "locs_rhs") {
-                let value = $("#" + constraint + fieldKey + "-val").val() ? $("#" + constraint + fieldKey + "-val").val() : "";
+                let value = $("#" + constraintId + fieldKey + "-val").val() ? $("#" + constraintId + fieldKey + "-val").val() : "";
                 if (constraints.indexOf(fieldKey) <= 30) {
-                    let key = $("#" + constraint + fieldKey + "-key").val() ? $("#" + constraint + fieldKey + "-key").val() : "";
+                    let key = $("#" + constraintId + fieldKey + "-key").val() ? $("#" + constraintId + fieldKey + "-key").val() : "";
                     dialogObj[constraint][fieldKey] = {};
                     if (key) {
                         dialogObj[constraint][fieldKey][key] = value;
@@ -356,7 +356,7 @@ function updateDialogGroupConstraints(initialLoad) {
             type : 'amsify',
         });
 
-        $("#delete_group_constraint_btn_" + constraint).on('click', function() {
+        $("#delete_group_constraint_btn_" + constraintId).on('click', function() {
             let con = this.id.replace("delete_group_constraint_btn_", "");
             delete dialogObj[con];
             updateDialogGroupConstraints();
@@ -386,10 +386,10 @@ function updateConstraintTypes(constraint, constraintId, constraintContent) {
     Object.keys(dialogObj[constraint]).forEach(fieldKey => {
         if (fieldKey !== "locs" && fieldKey !== "techs" && fieldKey !== "techs_lhs" && fieldKey !== "techs_rhs" && fieldKey !== "locs_lhs" && fieldKey !== "locs_rhs") {
 
-            $(constraintContent).append( "<label style='padding-left:20px'><b>Constraint Type </b></label><div style='float:right;'><span style='margin-right: 10px'>" + fieldKey + "</span><button id='delete_constraint_btn_" + constraint + "-" + fieldKey + "' type='button' class='btn btn-sm btn-outline-danger constraint-delete' title='Delete constraint'><i class='fas fa-trash'></i></button></div><br>");
-            $("#delete_constraint_btn_" + constraint + "-" + fieldKey).on('click', function() {
+            $(constraintContent).append( "<label style='padding-left:20px'><b>Constraint Type </b></label><div style='float:right;'><span style='margin-right: 10px'>" + fieldKey + "</span><button id='delete_constraint_btn_" + constraintId + "-" + fieldKey + "' type='button' class='btn btn-sm btn-outline-danger constraint-delete' title='Delete constraint'><i class='fas fa-trash'></i></button></div><br>");
+            $("#delete_constraint_btn_" + constraintId + "-" + fieldKey).on('click', function() {
                 let con = this.id.replace("delete_constraint_btn_", '').split("-");
-                delete dialogObj[con[0]][con[1]];
+                delete dialogObj[constraint][con[1]];
                 updateDialogGroupConstraints();
             });
             let constraintFields = "#fields-" + constraintId + fieldKey;
@@ -437,12 +437,12 @@ function updateConstraintTypes(constraint, constraintId, constraintContent) {
         $('#new-constraint-dropdown-' + constraintId ).append( "<option value=" + constraints[i] + ">" + constraints[i] + "</option>" );
     }
 
-    $(constraintContent).append("<div class='form-group col-md-8'><input disabled id='new_constraint_btn_" + constraintId + "' type='submit' class='btn btn-sm btn-success' name='' value='+ Constraint'></div>");
+    $(constraintContent).append("<div class='form-group col-md-8'><input disabled id='new_constraint_btn_" + constraintId + "' type='submit' class='btn btn-sm btn-success' name='" + constraint + "' value='+ Constraint'></div>");
     $("#new_constraint_btn_" + constraintId).on('click', function() {
         let con = this.id.replace("new_constraint_btn_", "");
         let newConstraint = $("#new-constraint-dropdown-" + con).val();
         if (newConstraint && newConstraint.length > 0) {
-            dialogObj[con][newConstraint] = "";
+            dialogObj[this.name][newConstraint] = "";
         }
         updateDialogGroupConstraints();
     });
@@ -458,7 +458,7 @@ function updateConstraintTypes(constraint, constraintId, constraintContent) {
 }
 
 function safeHTMLId(id) {
-    return id.replace(/^\s+|\s+$/g, '');
+    return id.replace(/([^A-Za-z0-9[\]{}_:-])\s?/g, '');
 }
 
 function setGroupConstraintClassLogic() {
