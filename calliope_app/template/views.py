@@ -415,12 +415,12 @@ def get_or_create_template_technologies(template_type_techs, model, template_typ
 
 def get_or_create_template_carriers(template_type_carriers, model, template_type_id):
     new_carriers = {}
-    modelCarriers = Carrier.objects.filter(model_id=model.id).all()
+    model_carriers = Carrier.objects.filter(model_id=model.id).all()
 
     for carrier in template_type_carriers:
-        existingCarrier = modelCarriers.filter(name=carrier['name']).first()
-        if existingCarrier: 
-            new_carriers[existingCarrier.name] = existingCarrier
+        existing_carrier = model_carriers.filter(name=carrier['name']).first()
+        if existing_carrier: 
+            new_carriers[existing_carrier.name] = existing_carrier
             continue
         
         new_carrier = Carrier.objects.create(
