@@ -496,22 +496,41 @@ function activate_scenario_settings() {
 		row.find('.check_delete').prop("checked", true)
 	});
 
-    // Group Constraints Modal
-	//$('.scenario-settings:visible').attr('disabled', false);
-	//$('.scenario-settings').unbind();
-	$('.scenario-constraints-dialog-btn').on('click', function() {
+    // Wieght of cost classes Modal
+    $('.scenario-weight-dialog-btn').on('click', function() {
+        // display dialog
+		$('#pvwatts_form').hide();
+        $('#wtk_form').hide();
+		$('#scenario_constraints_json_form').hide();
+        $('#scenario_weights_json_form').show();
+		$("#data-source-modal").css('display', "block");
 
-        // Get dialog data
         dialogInputId = this.name.slice(6);
         dialogInputValue = dialogInputId ? $('textarea[name="edit' + dialogInputId + '"]').text() : console.log("Dialog input id not found!");
+        dialogInputValue = dialogInputValue.replace(/'/g, '"');
+        dialogObj = dialogInputValue && JSON.parse(dialogInputValue) ? JSON.parse(dialogInputValue) : {};
+
+        $('#monetary').val(dialogObj["monetary"]);
+        $('#co2').val(dialogObj["co2"]);
+        $('#ch4').val(dialogObj["ch4"]);
+        $('#n2o').val(dialogObj["n2o"]);
+        $('#co2e').val(dialogObj["co2e"]);
+    });
+
+    // Group Constraints Modal
+	$('.scenario-constraints-dialog-btn').on('click', function() {
 
         // display dialog
 		$('#pvwatts_form').hide();
         $('#wtk_form').hide();
-		$('#scenario_constraints_form').show();
+        $('#scenario_weights_json_form').hide();
+		$('#scenario_constraints_json_form').show();
 		$("#data-source-modal").css('display', "block");
 
-        // Set dialog data
+        // Get dialog data
+        dialogInputId = this.name.slice(6);
+        dialogInputValue = dialogInputId ? $('textarea[name="edit' + dialogInputId + '"]').text() : console.log("Dialog input id not found!");
+        dialogInputValue = dialogInputValue.replace(/'/g, '"');
         dialogObj = dialogInputValue && JSON.parse(dialogInputValue) ? JSON.parse(dialogInputValue) : {};
 
         Object.keys(dialogObj).forEach(constraint => {
@@ -622,6 +641,17 @@ function activate_scenario_settings() {
 
     $('#settings_import_data').on('click', function() {
         updateDialogObject();
+        $('textarea[name="edit' + dialogInputId + '"]').text(JSON.stringify(dialogObj, undefined, 2));
+        $('#data-source-modal').hide();
+	});
+
+    $('#settings_weights_import_data').on('click', function() {
+        dialogObj["monetary"] = $("#monetary").val();
+        dialogObj["co2"] = $("#co2").val();
+        dialogObj["ch4"] = $("#ch4").val();
+        dialogObj["n2o"] = $("#n2o").val();
+        dialogObj["co2e"] = $("#co2e").val();
+
         $('textarea[name="edit' + dialogInputId + '"]').text(JSON.stringify(dialogObj, undefined, 2));
         $('#data-source-modal').hide();
 	});
