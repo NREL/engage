@@ -6,6 +6,7 @@ from django.http import JsonResponse, HttpResponse
 from api.utils import initialize_units, convert_units_no_pipe
 from api.models.configuration import Model, Model_User, Location, Model_Comment, Technology, Abstract_Tech, Loc_Tech, Tech_Param, Loc_Tech_Param, ParamsManager, Carrier
 from template.models import Template, Template_Variable, Template_Type, Template_Type_Variable, Template_Type_Loc, Template_Type_Tech, Template_Type_Loc_Tech, Template_Type_Parameter, Template_Type_Carrier
+from django.db.models import Q
 
 @login_required
 @csrf_protect
@@ -66,27 +67,39 @@ def delete_template(request):
     template = Template.objects.filter(id=template_id).first()
     if template_id is False:
         raise ValidationError(f"Error: Template ID has not been provided.")
-
-    # Loop through techs 
+    
+    #NOTE: any updates to this section of code should also be made for templates post_delete (that code is also triggered by a UI deletion)
     technologies = Technology.objects.filter(template_type_id=template.template_type_id, model_id=template.model)
-
-    #NOTE: any updates to this section of code should also be made for tempaltes post_delete
     for tech in technologies:
         # Delete if there are no other nodes outside of the template are using this tech
         loc_techs = Loc_Tech.objects.filter(technology=tech)
         uniqueToTemplate = True
         for loc_tech in loc_techs:
             if loc_tech.template_id != int(template_id):
-                print("tech not unique to template loc_tech.template_id: " + str(loc_tech.template_id) + " template_id: " + str(template_id))
+                print("Technology usage not unique to template loc_tech: " + str(loc_tech) + " template_id: " + str(template_id))
                 uniqueToTemplate = False
                 break
         
         if uniqueToTemplate:
             Technology.objects.filter(id=tech.id).delete()
 
-    # Delete any remaining nodes, locations and the template itself
+    locations = Location.objects.filter(template_id=template_id)
+    for loc in locations:
+        # Delete if there are no other nodes outside of the template that are using this location 
+        loc_techs = Loc_Tech.objects.filter(Q(location_1=loc) | Q(location_2=loc))
+        uniqueToTemplate = True
+        for loc_tech in loc_techs:
+            print ("loc_tech " + str(loc_tech))
+            if loc_tech.template_id != int(template_id):
+                print("Location usage not unique to template loc_tech: " + str(loc_tech) + " template_id: " + str(template_id))
+                uniqueToTemplate = False
+                break
+    
+        if uniqueToTemplate:
+            Location.objects.filter(id=loc.id).delete()
+
     Loc_Tech.objects.filter(template_id=template_id).delete()
-    Location.objects.filter(template_id=template_id).delete()
+    #Leave carriers as is
     template.delete()
     
     payload = {"message": "deleted template",

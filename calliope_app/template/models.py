@@ -5,6 +5,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db.models.signals import pre_delete 
 from django.dispatch import receiver
 from django.db.models.signals import post_delete
+from django.db.models import Q
 
 from api.models.utils import EngageManager
 
@@ -191,20 +192,33 @@ def signal_function_name(sender, instance, using, **kwargs):
 
         # Loop through techs 
         technologies = Technology.objects.filter(template_type_id=instance.template_type_id, model_id=instance.model)
-
         for tech in technologies:
             # Delete if there are no other nodes outside of the template are using this tech
             loc_techs = Loc_Tech.objects.filter(technology=tech)
             uniqueToTemplate = True
             for loc_tech in loc_techs:
                 if loc_tech.template_id != int(template_id):
-                    print("tech not unique to template loc_tech.template_id: " + str(loc_tech.template_id) + " template_id: " + str(template_id))
+                    print("Technology usage not unique to template loc_tech: " + str(loc_tech) + " template_id: " + str(template_id))
                     uniqueToTemplate = False
                     break
             
             if uniqueToTemplate:
                 Technology.objects.filter(id=tech.id).delete()
 
+        locations = Location.objects.filter(template_id=template_id)
+        for loc in locations:
+            # Delete if there are no other nodes outside of the template that are using this location 
+            loc_techs = Loc_Tech.objects.filter(Q(location_1=loc) | Q(location_2=loc))
+            uniqueToTemplate = True
+            for loc_tech in loc_techs:
+                print ("loc_tech " + str(loc_tech))
+                if loc_tech.template_id != int(template_id):
+                    print("Location usage not unique to template loc_tech: " + str(loc_tech) + " template_id: " + str(template_id))
+                    uniqueToTemplate = False
+                    break
+        
+            if uniqueToTemplate:
+                Location.objects.filter(id=loc.id).delete()
+
         # Delete any remaining nodes, locations and the template itself
         Loc_Tech.objects.filter(template_id=template_id).delete()
-        Location.objects.filter(template_id=template_id).delete()
