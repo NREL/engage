@@ -38,5 +38,15 @@
       "latitude_offset": -0.1,
       "longitude_offset": -0.1
     }
+  },
+  {
+    "model": "template.template_type_loc",
+    "pk": 5,
+    "fields": {
+      "name": "Simple Single-reservoir Hydro Location",
+      "template_type": 4,
+      "latitude_offset": 0.1,
+      "longitude_offset": 0.1
+    }
   }
 ]
