@@ -228,7 +228,8 @@ function editTemplateModal(el) {
     $("#templateVars input").prop("disabled", true);
     var template_variables = template_data.template_variables.filter(temp => temp.template === id);
     template_variables.forEach(function (template_var) {
-        $("#template_type_var_" + template_var.template_type_variable).val(template_var.value);
+        $("#template_type_var_converted_" + template_var.template_type_variable).val(template_var.value);
+        $("#template_type_var_" + template_var.template_type_variable).val(template_var.raw_value);
         $("#template_type_var_" + template_var.template_type_variable).attr('name', template_var.name);
     });
 }
@@ -291,14 +292,14 @@ function requestGeophires() {
     var templateVars = {};
 
     for (var i = 0; i < templateVarElements.length; i++) {
-        if (!templateVarElements[i].value) {
-            resetGeophiresButton(true);
-        }
         var id = Number(templateVarElements[i].id.replace("template_type_var_", ""));
-        var name = template_data.template_type_variables.filter(obj => {
+        let name = template_data.template_type_variables.filter(obj => {
             return obj.id === id
           })[0].name;
-        var value = templateVarElements[i].value;
+        let value = $("#template_type_var_converted_" + id).text() && toNumber($("#template_type_var_converted_" + id).text()) ? toNumber($("#template_type_var_converted_" + id).text()) : templateVarElements[i].value;
+        if (!value) {
+            resetGeophiresButton(true);
+        }
         templateVars[name] = value;
     }
 
@@ -407,7 +408,9 @@ function saveTemplate(buttonId) {
             return;
         }
         var id = templateVarElements[i].id.replace("template_type_var_", "");
-        templateVars.push({"id": id, "value": templateVarElements[i].value, "units": templateVarElements[i].units});
+
+        let value = $("#template_type_var_converted_" + id).text() && toNumber($("#template_type_var_converted_" + id).text()) ? toNumber($("#template_type_var_converted_" + id).text()) : templateVarElements[i].value;
+        templateVars.push({"id": id, "value": value, "raw_value": templateVarElements[i].value, "units": templateVarElements[i].units});
     }
 
     var data = {
@@ -498,11 +501,55 @@ function appendTemplateCategories() {
         );
 
         appendCategoryVariables(template_type_vars, uniqueCategories[i]);
+        activateTemplateVariables();
     }
 
     var showAPIButtons = displayAPIButtons();
     setTemplateVarsClassLogic(showAPIButtons);
 }
+
+function activateTemplateVariables() {
+    //set float-value class
+    $('.tech-param-input.float-value').each(function() {
+        autocomplete_units(this);
+    });
+
+    // Detection of unsaved changes
+    $('.tech-param-input').unbind();
+    $('.tech-param-input').on('focusout', function() {
+        if ($(this).val() == '') { $(this).val( $(this).data('value') ) };
+    });
+    $('.tech-param-input').on('change keyup paste', function() {
+        var row = $(this).parent('div'),
+            value = row.find('.tech-param-input').val(),
+            old_value = row.find('.tech-param-input').attr('value');
+
+        // Convert to number if possible
+        if (+value) { value = (+value).toFixed(8) };
+        if (+old_value) { old_value = (+old_value).toFixed(8) };
+
+        // Reset the formatting of row
+        row.removeClass('table-warning');
+        $(this).removeClass('invalid-value');
+
+        // Update Row based on Input
+        var update_val = (value != '') & (value != old_value);
+        if (update_val & ($(this).hasClass('float-value') == true)) {
+            var units = row.find('.parameter-units').text(),
+                val = convert_units(value, units);
+            if (typeof(val) == 'number') {
+                $(this).attr('data-target_value', formatNumber(val, false));
+                row.find('.tech-param-converted').html(formatNumber(val, true));
+            } else {
+                $(this).addClass('invalid-value');
+                row.find('.tech-param-converted').html(row.find('.tech-param-converted').data('value'));
+            }
+            row.find('.tech-param-converted').show();
+        } else {
+            row.find('.tech-param-converted').html(row.find('.tech-param-converted').data('value'));
+        }
+    });
+};
 
 function appendCategoryVariables(template_type_vars, category) {
     var categoryVariables = template_type_vars.filter(obj => obj.category == category);
@@ -510,12 +557,6 @@ function appendCategoryVariables(template_type_vars, category) {
     var categoryId = category ? category.replace(/\s/g, '') + "-row" : 'null-category-row';
 
     for (var i = 0; i < categoryVariables.length; i++) {
-        var units = "";
-        if (categoryVariables[i].units && categoryVariables[i].units != "NA") {
-            units = "<span style='width:80px;margin-left:.4em' class='text-sm parameter-units'>" + categoryVariables[i].units + "</span>"
-        } else {
-            units = "<span style='width:80px;margin-left:.4em' class='text-sm parameter-units'></span>"
-        }
         var desc = categoryVariables[i].description;
         if (categoryVariables[i].min && categoryVariables[i].max) {
             desc += " " + categoryVariables[i].pretty_name + " has a minimum value of " + categoryVariables[i].min + " and a maximum value of " + categoryVariables[i].max + ".";  
@@ -524,13 +565,23 @@ function appendCategoryVariables(template_type_vars, category) {
         } else if (categoryVariables[i].min) {
             desc += " " + categoryVariables[i].pretty_name + " has a minimum value of " + categoryVariables[i].min + ".";  
         }
+        var units = "";
+        var techParamsClass = ""; 
+        if (categoryVariables[i].units && categoryVariables[i].units != "NA") {
+            units = "<span style='width:80px;margin-left:.4em' class='text-sm parameter-units'>" + categoryVariables[i].units + "</span>";
+            techParamsClass = "float-value";
+        } else {
+            units = "<span style='width:80px;margin-left:.4em' class='text-sm parameter-units'></span>";
+        }
+        let convertedValue = "<span id='template_type_var_converted_" + categoryVariables[i].id + "' class='tech-param-converted' style='display:none;' name='" + categoryVariables[i].pretty_name + "'>" + categoryVariables[i].default_value + "</span>";
         $('#'+ categoryId).append( "<div class='col-6 tech-params' data-toggle='tooltip' data-placement='bottom' title='" + desc +
             "' data-original-title='" + desc + "'><label class='template-label'><b>" + categoryVariables[i].pretty_name + "</b></label></div>"
-        + "<div class='col-6 tech-params'><input id='template_type_var_" + categoryVariables[i].id + "' style='margin-bottom:1em;float:left;' class='form-control' value='' name='" + categoryVariables[i].pretty_name +"'></input>"
-        + units + "</div>");
+        + "<div class='col-6 tech-params'><input id='template_type_var_" + categoryVariables[i].id + "' class='form-control tech-param-input " + techParamsClass + "' name='" + categoryVariables[i].pretty_name +"'></input>"
+        + convertedValue + units + "</div>");
 
         if (categoryVariables[i].default_value) {
             $('#template_type_var_' + categoryVariables[i].id).val(categoryVariables[i].default_value);
+            $('#template_type_var_' + categoryVariables[i].id).attr("value", categoryVariables[i].default_value);
         } else {
             $('#template_type_var_' + categoryVariables[i].id).val("");
         }
@@ -607,6 +658,14 @@ function setTemplateVarsClassLogic(showAPIButtons) {
     
 }
 
+function toNumber(string) {
+    if (string && !isNaN(string.replace(/\,/g,""))) {
+        return string.replace(/\,/g,"");
+    } else {
+        return false;
+    }
+}
+
 function checkFormInputs(checkAll) {
     var errorMessageId = checkAll ? "#inputError" : "#geophiresInputsError";
     $("#geophiresGraphs").hide();
@@ -617,31 +676,34 @@ function checkFormInputs(checkAll) {
 
     var templateVarElements = $("#templateVars :input:not(:button)");
     templateVarElements.map((i, templateVar) => {
-        // Skip if we're only validating Geophires inputs and this on is not relvent 
-        var isGeophiresInput = $("#" + geoInputs.replace(/\s/g, '') + "-row").parent($("#" + templateVar.id)).length;
+        var id = Number(templateVar.id.replace("template_type_var_", ""));
+
+        // Skip if we're only validating Geophires inputs and this one is not relvent 
+        var isGeophiresInput = $("#" + geoInputs.replace(/\s/g, '') + "-row").parent($("#" + templateVar.id)).length > 1;
         if ((!checkAll && !isGeophiresInput) || !isValid) {
             return;
         }
 
         if ($("#" + templateVar.id).not("select")) {
-            if (isNaN(templateVar.value)) {
+            let value = $("#template_type_var_converted_" + id).text() && toNumber($("#template_type_var_converted_" + id).text()) ? toNumber($("#template_type_var_converted_" + id).text()) : templateVar.value;
+
+            if (isNaN(value)) {
                 $("#" + templateVar.id).addClass("input-error"); 
                 $(errorMessageId).text(templateVar.name + " is expected to be a number, please update before submitting again.");
                 $(errorMessageId).attr("hidden", false);
                 isValid = false;
                 return;
             } 
-            
-            var value = parseFloat(templateVar.value);
+            value = parseFloat(value);
             if (templateVar.min && parseFloat(templateVar.min) > value) {
                 $("#" + templateVar.id).addClass("input-error"); 
-                $(errorMessageId).text(templateVar.name + " is below the accepted value, please update before submitting again.");
+                $(errorMessageId).text(templateVar.name + " is below the accepted value of " + templateVar.min + ", please update before submitting again.");
                 $(errorMessageId).attr("hidden", false);
                 isValid = false;
                 return;
             } else if (templateVar.max && parseFloat(templateVar.max) < value) {
                 $("#" + templateVar.id).addClass("input-error"); 
-                $(errorMessageId).text(templateVar.name + " is above the accepted value, please update before submitting again.");
+                $(errorMessageId).text(templateVar.name + " is above the accepted value of " + templateVar.max + ", please update before submitting again.");
                 $(errorMessageId).attr("hidden", false);
                 isValid = false;
                 return;
