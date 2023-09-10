@@ -318,7 +318,7 @@ def get_or_create_template_technologies(template_type_techs, model, template_typ
 
         if existingTech is None:
             abstract_tech = Abstract_Tech.objects.filter(
-                    id=template_type_tech['id']).first()
+                    id=template_type_tech['abstract_tech']).first()
             if template_type_tech['version_tag'] is not None:
                 new_tech = Technology.objects.create(
                     abstract_tech=abstract_tech,
