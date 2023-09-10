@@ -296,7 +296,7 @@ function requestGeophires() {
         let name = template_data.template_type_variables.filter(obj => {
             return obj.id === id
           })[0].name;
-        let value = $("#template_type_var_converted_" + id).text() && toNumber($("#template_type_var_converted_" + id).text()) ? toNumber($("#template_type_var_converted_" + id).text()) : templateVarElements[i].value;
+        let value = $("#template_type_var_converted_" + id).text() && toNumber($("#template_type_var_converted_" + id).text()) && $("#template_type_var_" + id).data('units') != 'NA' ? toNumber($("#template_type_var_converted_" + id).text()) : templateVarElements[i].value;
         if (!value) {
             resetGeophiresButton(true);
         }
@@ -409,7 +409,7 @@ function saveTemplate(buttonId) {
         }
         var id = templateVarElements[i].id.replace("template_type_var_", "");
 
-        let value = $("#template_type_var_converted_" + id).text() && toNumber($("#template_type_var_converted_" + id).text()) ? toNumber($("#template_type_var_converted_" + id).text()) : templateVarElements[i].value;
+        let value = $("#template_type_var_converted_" + id).text() && toNumber($("#template_type_var_converted_" + id).text()) && $("#template_type_var_" + id).data('units') != 'NA' ? toNumber($("#template_type_var_converted_" + id).text()) : templateVarElements[i].value;
         templateVars.push({"id": id, "value": value, "raw_value": templateVarElements[i].value, "units": templateVarElements[i].units});
     }
 
@@ -592,8 +592,10 @@ function appendCategoryVariables(template_type_vars, category) {
 
         $('#template_type_var_' + categoryVariables[i].id).attr({
             "max" : categoryVariables[i].max,
-            "min" : categoryVariables[i].min
+            "min" : categoryVariables[i].min,
         });
+
+        $('#template_type_var_' + categoryVariables[i].id).data('units', categoryVariables[i].units);
 
     }
 }
@@ -679,14 +681,26 @@ function checkFormInputs(checkAll) {
         var id = Number(templateVar.id.replace("template_type_var_", ""));
 
         // Skip if we're only validating Geophires inputs and this one is not relvent 
-        var isGeophiresInput = $("#" + geoInputs.replace(/\s/g, '') + "-row").parent($("#" + templateVar.id)).length > 1;
+        console.log($("#" + geoInputs.replace(/\s/g, '') + "-row").parent($("#" + templateVar.id)).length);
+        var isGeophiresInput = $("#" + geoInputs.replace(/\s/g, '') + "-row").parent($("#" + templateVar.id)).length > 0;
+        console.log($("#" + templateVar.id));
         if ((!checkAll && !isGeophiresInput) || !isValid) {
             return;
         }
 
-        if ($("#" + templateVar.id).not("select")) {
-            let value = $("#template_type_var_converted_" + id).text() && toNumber($("#template_type_var_converted_" + id).text()) ? toNumber($("#template_type_var_converted_" + id).text()) : templateVar.value;
+        if (templateVar.value == "1500m") {
+            console.log("hi");
+        } 
 
+        if ($("#" + templateVar.id).not("select")) {
+            let value = $("#template_type_var_converted_" + id).text() && toNumber($("#template_type_var_converted_" + id).text()) && $("#" + templateVar.id).data('units') != 'NA' ? toNumber($("#template_type_var_converted_" + id).text()) : templateVar.value;
+            if ($("#" + templateVar.id).hasClass('invalid-value')) {
+                $("#" + templateVar.id).addClass("input-error"); 
+                $(errorMessageId).text(templateVar.name + " is expected to have valid input, please update before submitting again.");
+                $(errorMessageId).attr("hidden", false);
+                isValid = false;
+                return;
+            }
             if (isNaN(value)) {
                 $("#" + templateVar.id).addClass("input-error"); 
                 $(errorMessageId).text(templateVar.name + " is expected to be a number, please update before submitting again.");
