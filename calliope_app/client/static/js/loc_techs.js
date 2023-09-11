@@ -681,16 +681,10 @@ function checkFormInputs(checkAll) {
         var id = Number(templateVar.id.replace("template_type_var_", ""));
 
         // Skip if we're only validating Geophires inputs and this one is not relvent 
-        console.log($("#" + geoInputs.replace(/\s/g, '') + "-row").parent($("#" + templateVar.id)).length);
         var isGeophiresInput = $("#" + geoInputs.replace(/\s/g, '') + "-row").parent($("#" + templateVar.id)).length > 0;
-        console.log($("#" + templateVar.id));
         if ((!checkAll && !isGeophiresInput) || !isValid) {
             return;
         }
-
-        if (templateVar.value == "1500m") {
-            console.log("hi");
-        } 
 
         if ($("#" + templateVar.id).not("select")) {
             let value = $("#template_type_var_converted_" + id).text() && toNumber($("#template_type_var_converted_" + id).text()) && $("#" + templateVar.id).data('units') != 'NA' ? toNumber($("#template_type_var_converted_" + id).text()) : templateVar.value;
