@@ -1,15 +1,23 @@
 <select id="technology" class="tech-dropdown-search nav-dropdown" data-placeholder="Select a Technology">
 	{% for technology in technologies %}
-  	<option value='{{ technology.pretty_name }}' data-id='{{ technology.id }}' data-tag='{% if technology.pretty_tag %}{{ technology.pretty_tag }}{% endif %}' data-icon='{{ technology.abstract_tech__icon }}' {% if session_technology_id == technology.id %}selected="selected"{% endif %}>{{ technology.pretty_name }}</option>
+  	<option value='{{ technology.pretty_name }}' data-id='{{ technology.id }}' data-template='{{ technology.template_type_id }}' data-tag='{% if technology.pretty_tag %}{{ technology.pretty_tag }}{% endif %}' data-icon='{{ technology.abstract_tech__icon }}' {% if session_technology_id == technology.id %}selected="selected"{% endif %}>{{ technology.pretty_name }}</option>
   	{% endfor %}
 </select>
 <script type="text/javascript">
+    $("#technology:first-child").css("width", "100%");
 	function formatState (state) {
 	  if (!state.id) {
 	    return state.text;
 	  }
+      console.log("state.element.dataset.template: " + state.element.dataset.template);
+      var templateDesc = 'This technology was created from a Node Group';
 	  var $state = $(
-	    '<div class="row"><div class="col-5 text-overflow_ellipsis" style="text-align:right;"><b>' + state.text + '</b></div><div class="col-2 centered">' + state.element.dataset.icon + '</div><div class="col-5 text-overflow_ellipsis">' + state.element.dataset.tag + '</div></div>'
+	    '<div class="row">' + 
+        '<div class="col-5 text-overflow_ellipsis" style="text-align:right;"><b>' + state.text + '</b></div>' + 
+        '<div class="col-2 centered">' + state.element.dataset.icon + '</div>' +
+        '<div class="col-3 text-overflow_ellipsis">' + state.element.dataset.tag + '</div>' +
+        (state.element.dataset.template != "None" ? '<div class="col-2" data-toggle="tooltip" data-placement="bottom" data-original-title="' + templateDesc + '" style="max-width: 20px;"><img src="../../../static/images/node_group_icon.svg" alt="Node group icon" style="width: 14px;"></div>' : '') +
+        '</div>'
 	  );
 	  return $state;
 	};

@@ -700,6 +700,19 @@ def convert_units(ureg,val,target):
     else:
         conv_v = ur_v.to(target.replace('%',' percent ').replace('$',' dollar ')).magnitude
         return str(conv_v)+'||'+str(val)
+
+def convert_units_no_pipe(ureg,val,target):
+    ur_v = str(val).replace('%',' percent ').replace('$',' dollar ').replace('<sup>','^').replace('</sup>','')
+    for u in user_defined_units:
+        ur_v = ur_v.replace(u['name'],u['value'])
+    ur_v = ureg.Quantity(ur_v)
+    if str(ur_v.units) == 'dimensionless':
+        if val != str(ur_v.magnitude):
+            return str(ur_v.magnitude), str(val)
+        return str(ur_v.magnitude), str(ur_v.magnitude)
+    else:
+        conv_v = ur_v.to(target.replace('%',' percent ').replace('$',' dollar ')).magnitude
+        return str(conv_v), str(val)
     
 noconv_units = ['<sub>ABC</sub>','<sup>T</sup>/<sub>F</sub>','&#8593;','']
 
