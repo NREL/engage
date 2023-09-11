@@ -35,7 +35,7 @@ def model_templates(request):
     locations = list(Location.objects.filter(model_id=model.id).values('id', 'pretty_name', 'name', 'latitude', 'longitude', 'available_area', 'model', 'created', 'updated', 'template_id', 'template_type_loc_id'))
 
     response = {
-        'model_uuid ': model_uuid, 
+        'model_uuid': model_uuid, 
         "templates": templates,
         "template_variables": template_variables,
         "template_types": template_types,
@@ -269,7 +269,7 @@ def create_template_variables(templateVars, template):
         new_template_var = Template_Variable.objects.create(
             template_type_variable_id=templateVar["id"],
             value=templateVar["value"],
-            raw_value=templateVar["value"],
+            raw_value=templateVar["raw_value"],
             template_id=template.id,
         )
         new_template_variables[new_template_var.template_type_variable.name] = new_template_var
@@ -280,7 +280,7 @@ def update_template_variables(templateVars, template):
     for templateVar in templateVars:
         new_template_var = Template_Variable.objects.filter(template_id=template.id, template_type_variable_id=templateVar["id"]).update(
             value=templateVar["value"],
-            raw_value=templateVar["value"],
+            raw_value=templateVar["raw_value"],
         )
         updated_template_variables[templateVar["id"]] = new_template_var
     return updated_template_variables
@@ -318,7 +318,7 @@ def get_or_create_template_technologies(template_type_techs, model, template_typ
 
         if existingTech is None:
             abstract_tech = Abstract_Tech.objects.filter(
-                    id=template_type_tech['id']).first()
+                    id=template_type_tech['abstract_tech']).first()
             if template_type_tech['version_tag'] is not None:
                 new_tech = Technology.objects.create(
                     abstract_tech=abstract_tech,
