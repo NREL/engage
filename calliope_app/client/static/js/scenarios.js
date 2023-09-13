@@ -688,10 +688,9 @@ function activate_scenario_settings() {
         $('#data-source-modal').hide();
 	});
 
-    $('.group-constraints-close').on('click', function() {
+    $('.group-constraints-close, .weights-close').on('click', function() {
         $('#data-source-modal').hide();
     });
-
 
     $('#new_group_constraint_btn').on('click', function() {
         var newGroupConstraint = $('#new_group_constraint_name').val().trim();
