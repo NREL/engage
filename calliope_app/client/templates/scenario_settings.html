@@ -82,18 +82,7 @@
 								<textarea rows=1 {% if not can_edit %}disabled{% endif %} style="text-align:left;" class="form-control add-run-parameter-value" name="add[{{ param.run_parameter_id }}][values][]"></textarea>
 								{% endif %}
 							</td>
-
-                            {% if param.run_parameter.id == 25 %}
-                                <td> 
-                                    <button data-param_id="{{ param.run_parameter.id }}" {% if not can_edit %}disabled{% endif %} type="button" class="scenario-constraints-dialog-btn btn btn-sm" name="dialog[value][{{ param.id }}]" style="margin-top:7px;"><i class="fas fa-edit"></i></button>
-                                </td>
-                            {% elif param.run_parameter.id == 26 %}
-                                <td> 
-                                    <button {% if not can_edit %}disabled{% endif %} type="button" class="scenario-weight-dialog-btn btn btn-sm" style="margin-top:7px;" name="dialog[value][{{ param.id }}]"><i class="fas fa-edit"></i></button>
-                                </td>
-                            {% else %}
-                                <td></td>
-                            {% endif %}
+                            <td></td>
 						</tr>
 					{% endifchanged %}
 
@@ -122,18 +111,7 @@
 							<textarea rows=1 {% if not can_edit %}disabled{% endif %} style="text-align:left;" class="form-control run-parameter-value" value="{{ param.value }}" name="edit[value][{{ param.id }}]" data-toggle="tooltip" data-placement="left" title="{{ param.value }}">{{ param.value }}</textarea>
 							{% endif %}
 						</td>
-
-                        {% if param.run_parameter.id == 25 %}
-                            <td> 
-                                <button data-param_id="{{ param.run_parameter.id }}" {% if not can_edit %}disabled{% endif %} type="button" class="scenario-constraints-dialog-btn btn btn-sm" name="dialog[value][{{ param.id }}]" style="margin-top:7px;"><i class="fas fa-edit"></i></button>
-                            </td>
-                        {% elif param.run_parameter.id == 26 %}
-                            <td> 
-                                <button {% if not can_edit %}disabled{% endif %} type="button" class="scenario-weight-dialog-btn btn btn-sm" style="margin-top:7px;" name="dialog[value][{{ param.id }}]"><i class="fas fa-edit"></i></button>
-                            </td>
-                        {% else %}
-                            <td></td>
-                        {% endif %}
+                        <td></td>
 					</tr>
 				{% endif %}
 			{% endfor %}
