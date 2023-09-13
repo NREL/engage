@@ -64,7 +64,7 @@ class Run_Parameter(models.Model):
     user_visibility = models.BooleanField()
     can_evolve = models.BooleanField(default=False)
     default_value = models.CharField(max_length=200)
-    choices = ArrayField(models.CharField(max_length=10, blank=True))
+    choices = ArrayField(models.CharField(max_length=20), blank=True, null=True)
 
     def __str__(self):
         return '%s (%s)' % (self.pretty_name, self.name)

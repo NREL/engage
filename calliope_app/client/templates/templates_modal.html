@@ -1,0 +1,197 @@
+<!-- Modal -->
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<style>
+    .help-text {
+        font-size: .8em;
+    }
+    #templatesModal input {
+        max-width: 250px;
+        padding: 0;
+        padding-right: 6px;
+        width: 70%;
+    }
+    #templatesModal select {
+        max-width: 250px;
+        padding: 0;
+        padding-right: 6px;
+        width: 70%;
+    }
+    #templatesDialog {
+        min-width: 80% !important;
+    }
+    #templateVars label {
+        float: left;
+        margin-right: 4em;
+    }
+    .modal-footer {
+        border-top: 2px solid black !important;
+        margin: 0 0 10px 0;
+    }
+    .modal-header {
+        border-bottom: 2px solid black !important;
+    }
+    #basicTemplateVars {
+        margin: 0 -16px 10px -16px;
+    }
+    .template-category {
+        font-size: 24px;
+        background-color: #ccd0d6;
+        cursor: pointer;
+    }
+    .template-category h5 {
+        margin-left: .6em;
+        padding: 0.2em 1em 0.2em 0;
+    }
+    .template-category {
+        border-radius: .3px
+    }
+    #geophiresActions {
+        display: flex;
+        justify-content: flex-end;
+        padding: 1rem;
+        border-top: 1px solid white;
+    }
+    #runGETEM {
+        width: 100px;
+        height: 38px;
+        margin-left: 1em;
+        margin-right: 0 !important;
+    }
+    .tech-params {
+        border-bottom: 0.5px solid #ccd0d6 !important;
+        height: 31px;
+        margin-bottom: 5px;
+    }
+    #null-category-row .tech-params {
+        border-top: 0.5px solid #ccd0d6 !important;
+        border-bottom: None !important;
+        padding-top: 5px;
+    }
+    #editModalBody {
+        padding: 16px 0;
+    }
+    #basicTemplateVars {
+        padding: 0 16px;
+    }
+    #templateVars .row {
+        padding: 0 16px;
+    }
+    #loadingGeophires {
+        margin-bottom: 1em;
+    }
+    .center {
+        margin-left: auto;
+        margin-right: auto; 
+    }
+    .input-error,
+    .input-error input:focus {
+        border: 3px solid red;
+        border-color: red !important;
+    }
+    .tech-param-converted {
+        padding-left: 5px;
+    }
+    .tech-param-input {
+        margin-bottom: 1em;
+        float: left;
+    }
+</style>
+<div class="modal fade" id="templatesModal" tabindex="-1" role="dialog" aria-labelledby="templateModalTitle" aria-hidden="true">
+    <div id="templatesDialog" class="modal-dialog" role="document">
+        <div id="modalContent" class="modal-content">
+            <div class="modal-header">
+            <h2 class="modal-title" id="templateModalTitle">{% trans "Node Groups" %}</h2>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="col-3" style="margin-top:15px;margin-left:auto;">
+                <button id="addTemplate" class="btn btn-success btn-sm" type="button">
+                    + {% trans "New Node Group" %}
+                </button>
+            </div>
+            <div id="modalBody" class="modal-body">
+            <!-- Header -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
+            </div>
+        </div>
+        <div id="modalDelete" class="modal-content" style="display:none">
+            <div class="modal-header">
+            <h2 class="modal-title" id="templateModalTitle">{% trans "Delete Node Group" %}</h2>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <span style="color:red"> {% trans "Are you sure that you want to delete this node group?" %}</span>
+            <!-- Header -->
+            </div>
+            <div class="modal-footer">
+                <button id="modelDeleteBack" class="btn btn-secondary" type="button" style="height:38px;">
+                    {% trans "Back" %}
+                </button>
+                <button id="confirmDeleteTemplate" title="Confirm delete node group" class="btn btn-danger" type="button" style="height:38px;">
+                    {% trans "Confirm" %}
+                </button>
+            </div>
+        </div>
+        <div id="modalEdit" class="modal-content" aria-hidden="true">
+            <div class="modal-header" aria-hidden="true">
+            <h2 id="editModalTitle" class="modal-title">{% trans "Edit Node Group" %}:</h2>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div id="editModalBody" class="modal-body">
+            <!-- Header -->
+            <br><br>
+            <div id="basicTemplateVars" class="row">
+                <div class="col-6" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Enter the custom node group name.">
+                    <label><b>{% trans "Node Group Name" %}</b></label>
+                </div>
+                <div class="col-6">
+                    <input id='templateName' name='templateName' style="margin-bottom:1em" class='form-control' aria-label="Node Group Name" value=''></input>
+                </div>
+                <hr>
+                <div class="col-6" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Select a primary location from which all other node group locations will be offsetted from.">
+                    <label><b>{% trans "Primary Location" %}</b></label>
+                </div>
+                <div class="col-6">
+                    <select style="margin-bottom:1em" class="form-control" id='primaryLocation' name='primaryLocation' data-toggle='tooltip' data-placement='left'></select>
+                </div>
+                <hr>
+                <div class="col-6" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Select a node group type from the dropdown. There will be additional form variables to fill out depending on your selection.">
+                    <label><b>{% trans "Node Group Type" %}</b></label>
+                </div>
+                <div class="col-6">
+                    <select style="margin-bottom:1em" class="form-control" id='templateType' name='templateType' data-toggle='tooltip' data-placement='left'></select>
+                </div>
+            </div>
+            <div id="templateVars" style="margin-bottom:1em">
+            </div>
+            <div class="modal-footer">
+                <span id='inputError' hidden="true" style='color:red;'></span>
+                <button id="deleteTemplate" title="Delete node group" class="btn btn-sm btn-outline-danger" type="button" style="margin-right: auto;">
+                    <i class="fas fa-trash"></i>
+                </button>
+                <button id="modelEditBack" class="btn btn-secondary" type="button" style="height:38px;float:left;">
+                    {% trans "Back" %}
+                </button>
+                <button id="editTemplate" class="btn btn-success" disabled type="button" style="height:38px;">
+                    {% trans "Update" %}
+                </button>
+                <button id="createTemplate" class="btn btn-success" disabled type="button" style="height:38px;">
+                    {% trans "Save" %}
+                </button>
+            </div>
+            </div>
+
+        </div>
+    </div>
+</div>

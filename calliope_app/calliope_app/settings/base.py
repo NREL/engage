@@ -45,7 +45,9 @@ LOCAL_APPS = [
     'account.apps.AccountConfig',
     'api.apps.ApiConfig',
     'client.apps.ClientConfig',
+    'geophires.apps.GeophiresConfig',
     'taskmeta.apps.TaskmetaConfig',
+    'template.apps.TemplateConfig'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS

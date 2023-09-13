@@ -20,6 +20,7 @@ from api.models.configuration import Location, Technology, Tech_Param, \
     Scenario_Loc_Tech, Timeseries_Meta, Model, Model_Comment, \
     Model_Favorite, User_File, Model_User, Carrier
 from api.tasks import task_status, upload_ts, copy_model
+from api.utils import recursive_escape
 from taskmeta.models import CeleryTask
 
 
@@ -486,7 +487,7 @@ def add_technology(request):
     POST: /api/add_technolgy/
     """
 
-    model_uuid = request.POST["model_uuid"]
+    model_uuid = escape(request.POST["model_uuid"])
     technology_pretty_name = escape(request.POST["technology_name"])
     technology_id = escape(request.POST.get("technology_id", "")) or None
     technology_type = escape(request.POST["technology_type"])
@@ -589,16 +590,10 @@ def update_tech_params(request):
     Example:
     POST: /api/update_tech_params/
     """
-
-    model_uuid = request.POST["model_uuid"]
+    model_uuid = escape(request.POST["model_uuid"])
     technology_id = escape(request.POST["technology_id"])
     form_data = json.loads(request.POST["form_data"])
-    
-    escaped_form_data = {}
-    for key, value in form_data.items():
-        if isinstance(value, str):
-            value = escape(value)
-        escaped_form_data[key] = value
+    escaped_form_data = recursive_escape(form_data)
 
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)

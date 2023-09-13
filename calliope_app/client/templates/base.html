@@ -23,7 +23,7 @@
 
 	<!-- <link rel="stylesheet" type="text/css" href="{% static 'leaflet/leaflet.css' %}">
 	<script type="text/javascript" src="{% static 'leaflet/leaflet.js' %}"></script> -->
-	
+
 	{% if mapbox_token %}
 	<!-- Load MapBox -->
 	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
@@ -32,17 +32,25 @@
 		mapboxgl.accessToken = "{{ mapbox_token }}";
 	</script>
 	{% endif %}
-	
+
 	<script type="text/javascript" src="{% static 'js/select2-4.0.6.min.js' %}"></script>
 	<link rel="stylesheet" type="text/css" href="{% static 'css/select2-4.0.6.min.css' %}">
-	
+
 	<!-- Internal -->
 	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
 	{% get_current_language as LANGUAGE_CODE %}
 	<script type="application/javascript">
 		var LANGUAGE_CODE = '{{ LANGUAGE_CODE }}';
 	</script>
-	<script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+    <script>var djangoTranslateRun = "{% trans 'Run' %}" </script>
+    <script>var djangoTranslateExistingNodeGroups = "{% trans 'Existing Node Groups:' %}" </script>
+    <script>var djangoTranslateExistingNodeGroupsMessage = "{% trans 'This model does not have any existing node groups yet.' %}" </script>
+	<script>var djangoTranslateAddNodeGroup = "{% trans 'Add Node Group to Model' %}" </script>
+    <script>var djangoTranslateUpdateNodeGroup = "{% trans 'Update Node Group: ' %}" </script>
+    <script>var djangoTranslateGEOPHIRESDesc = "{% trans 'GEOPHIRES v2.0 is a geothermal techno-economic simulation tool used in Engage to calculate Geothermal related parameters. GEOPHIRES combines reservoir, wellbore, and surface plant technical models with cost correlations and levelized cost models to estimate the capital and operation and maintenance costs, instantaneous and lifetime energy production, and overall levelized cost of energy of a geothermal plant.' %}" </script>
+    <script>var djangoTranslateGEOPHIRESInfo = "{% trans 'For more information about GEOPHIRES please see the ' %}" </script>
+    <script>var djangoTranslateGEOPHIRESLoading = "{% trans 'Loading Geophires results, this may take a few minutes. Please stay on this modal.' %}" </script>
+    <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/units.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/data_imports.js' %}"></script>
 	<link rel="shortcut icon" type="image/png" href="{% static 'images/engage-logo-16.ico' %}"/>
@@ -75,7 +83,7 @@
 	{% if messages %}
 		{% include '_messages.html' %}
 	{% endif %}
-  
+
 	<div id="header" class="container-fluid" data-model_uuid="{{ model.uuid }}{{ last_model.uuid }}" data-cambium_url="{{ cambium_url }}">
 		<div class="row">
 			<div class="col-12" style="font-size:20px;height:36px;padding:0">
@@ -121,7 +129,7 @@
 					</form>
 				</div>
 				{% endif %}
-				
+
 				<!-- Languages -->
 				<div class="btn-group" style="height:30px;margin-top:3px;float:right">
 					<form style="font-size:13px;" action="{% url 'set_language' %}" method="post" >{% csrf_token %}
@@ -139,7 +147,7 @@
 						</select>
 					</form>
 				</div>
-				
+
 				{% if model %}
 				{% if can_edit == False %}<div class="text-sm" style="background-color: yellow; color: black; float: right; height: 30px; padding: 4px; margin-top: 3px;">&nbsp;<b>{% trans "VIEW ONLY" %}</b>&nbsp;</div>{% endif %}
 					<!-- Model -->
@@ -184,7 +192,7 @@
 		{% block body %}
 		{% endblock %}
 	</div>
-	
+
 	<!-- Data Source Modal -->
 	{% if model %}
 	<div id="data-source-modal">

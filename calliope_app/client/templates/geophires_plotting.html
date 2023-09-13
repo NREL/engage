@@ -1,0 +1,31 @@
+{% extends 'configure.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+<title>Engage | {{ model.name }} | Nodes | Geophires - Plotting</title>
+<style>
+    html, body {
+      height: 100%;
+      overflow: scroll;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+  <h2>Geophires Plotting</h2>
+  <div class="row" style="overflow-y: scroll">
+    <div class="col-12">
+      <div id="plot1"></div>
+      <div id="plot2"></div>
+      <div id="plot3"></div>
+      <div id="plot4"></div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  var job_meta_id = {{job_meta_id}};
+</script>
+<script type="text/javascript" src="{% static 'js/geophires_plotting.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,52 @@
+[
+  {
+    "model": "template.template_type_loc",
+    "pk": 1,
+    "fields": {
+      "name": "Binary ORC Location",
+      "template_type": 1,
+      "latitude_offset": 0.0,
+      "longitude_offset": 0.0
+    }
+  },
+  {
+    "model": "template.template_type_loc",
+    "pk": 2,
+    "fields": {
+      "name": "Upper Reservoir",
+      "template_type": 2,
+      "latitude_offset": 0.1,
+      "longitude_offset": 0.1
+    }
+  },
+  {
+    "model": "template.template_type_loc",
+    "pk": 3,
+    "fields": {
+      "name": "Dam",
+      "template_type": 2,
+      "latitude_offset": 0.0,
+      "longitude_offset": 0.0
+    }
+  },
+  {
+    "model": "template.template_type_loc",
+    "pk": 4,
+    "fields": {
+      "name": "Lower Reservoir",
+      "template_type": 2,
+      "latitude_offset": -0.1,
+      "longitude_offset": -0.1
+    }
+  },
+  {
+    "model": "template.template_type_loc",
+    "pk": 5,
+    "fields": {
+      "name": "Simple Single-reservoir Hydro Location",
+      "template_type": 4,
+      "latitude_offset": 0.1,
+      "longitude_offset": 0.1
+    }
+  }
+]

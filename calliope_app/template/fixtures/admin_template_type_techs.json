@@ -1,0 +1,172 @@
+[
+  {
+    "model": "template.template_type_tech",
+    "pk": 1,
+    "fields": {
+      "name": "Subsurface - Binary Cycle ORC Plant",
+      "template_type": 1,
+      "abstract_tech": 1,
+      "energy_carrier": "Thermal",
+      "carrier_in": null,
+      "carrier_out": null,
+      "carrier_in_2": null,
+      "carrier_out_2": null,
+      "carrier_in_3": null,
+      "carrier_out_3": null,
+      "carrier_ratios": null
+    }
+  },
+  {
+    "model": "template.template_type_tech",
+    "pk": 2,
+    "fields": {
+      "name": "Upper Reservoir Storage",
+      "template_type": 2,
+      "abstract_tech": 4,
+      "energy_carrier": null,
+      "carrier_in": "Water",
+      "carrier_out": null,
+      "carrier_in_2": null,
+      "carrier_out_2": null,
+      "carrier_in_3": null,
+      "carrier_out_3": null,
+      "carrier_ratios": null
+    }
+  },
+  {
+    "model": "template.template_type_tech",
+    "pk": 3,
+    "fields": {
+      "name": "Lower Reservoir Storage",
+      "template_type": 2,
+      "abstract_tech": 4,
+      "energy_carrier": null,
+      "carrier_in": "Water Out",
+      "carrier_out": null,
+      "carrier_in_2": null,
+      "carrier_out_2": null,
+      "carrier_in_3": null,
+      "carrier_out_3": null,
+      "carrier_ratios": null
+    }
+  },
+  {
+    "model": "template.template_type_tech",
+    "pk": 4,
+    "fields": {
+      "name": "Dam Turbine Generator",
+      "template_type": 2,
+      "abstract_tech": 7,
+      "energy_carrier": null,
+      "carrier_in": "Water",
+      "carrier_out": null,
+      "carrier_in_2": null,
+      "carrier_out_2": null,
+      "carrier_in_3": null,
+      "carrier_out_3": null,
+      "carrier_ratios": null
+    }
+  },
+  {
+    "model": "template.template_type_tech",
+    "pk": 6,
+    "fields": {
+      "name": "Surface - Binary Cycle ORC Plant",
+      "template_type": 1,
+      "abstract_tech": 6,
+      "energy_carrier": null,
+      "carrier_in": "Thermal",
+      "carrier_out": "Power",
+      "carrier_in_2": null,
+      "carrier_out_2": null,
+      "carrier_in_3": null,
+      "carrier_out_3": null,
+      "carrier_ratios": null
+    }
+  },
+  {
+    "model": "template.template_type_tech",
+    "pk": 7,
+    "fields": {
+      "name": "Water-draws",
+      "template_type": 4,
+      "abstract_tech": 3,
+      "energy_carrier": "Water",
+      "carrier_in": null,
+      "carrier_out": null,
+      "carrier_in_2": null,
+      "carrier_out_2": null,
+      "carrier_in_3": null,
+      "carrier_out_3": null,
+      "carrier_ratios": null
+     }
+    },
+    {
+        "model": "template.template_type_tech",
+        "pk": 8,
+        "fields": {
+          "name": "Dam-Trubine-Generator",
+          "template_type": 4,
+          "abstract_tech": 6,
+          "energy_carrier": null,
+          "carrier_in": "Water",
+          "carrier_out": "Electricity",
+          "carrier_in_2": null,
+          "carrier_out_2": null,
+          "carrier_in_3": null,
+          "carrier_out_3": null,
+          "carrier_ratios": null
+        }
+    },
+    {
+        "model": "template.template_type_tech",
+        "pk": 9,
+        "fields": {
+          "name": "Reservoir storage",
+          "template_type": 4,
+          "abstract_tech": 4,
+          "energy_carrier": "Water",
+          "carrier_in": null,
+          "carrier_out": null,
+          "carrier_in_2": null,
+          "carrier_out_2": null,
+          "carrier_in_3": null,
+          "carrier_out_3": null,
+          "carrier_ratios": null
+        }
+    },
+    {
+        "model": "template.template_type_tech",
+        "pk": 10,
+        "fields": {
+          "name": "Sewage discharge",
+          "template_type": 4,
+          "abstract_tech": 1,
+          "energy_carrier": "Water",
+          "carrier_in": null,
+          "carrier_out": null,
+          "carrier_in_2": null,
+          "carrier_out_2": null,
+          "carrier_in_3": null,
+          "carrier_out_3": null,
+          "carrier_ratios": null
+        }
+    },
+    {
+        "model": "template.template_type_tech",
+        "pk": 11,
+        "fields": {
+          "name": "Catchment Area Inflow",
+          "template_type": 4,
+          "abstract_tech": 1,
+          "energy_carrier": "Water",
+          "carrier_in": null,
+          "carrier_out": null,
+          "carrier_in_2": null,
+          "carrier_out_2": null,
+          "carrier_in_3": null,
+          "carrier_out_3": null,
+          "carrier_ratios": null
+        }
+    }
+]

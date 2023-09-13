@@ -431,7 +431,7 @@ def scenario(request):
     lts = lts.values('id', 'technology_id', 'technology__pretty_name',
                      'technology__pretty_tag',
                      'technology__abstract_tech__icon',
-                     'location_1__pretty_name', 'location_2__pretty_name')
+                     'location_1__pretty_name', 'location_2__pretty_name', 'template_id')
     for lt in lts:
         tech_id = lt["technology_id"]
         color = colors[tech_id] if tech_id in colors.keys() else "#000"
@@ -442,6 +442,7 @@ def scenario(request):
             "technology": lt["technology__pretty_name"],
             "location_1": lt["location_1__pretty_name"],
             "location_2": lt["location_2__pretty_name"],
+            "template_id": lt["template_id"],
             "color": color,
             "icon": lt["technology__abstract_tech__icon"]})
 

@@ -499,6 +499,34 @@ class DuplicateModelManager():
             Model_Comment.objects.create(
                 model=self.model, comment=comment, type="version")
 
+class Job_Meta(models.Model):
+    class Meta:
+        db_table = "job_meta"
+        verbose_name_plural = "[0] Job Meta"
+        ordering = ['-created']
+    objects = EngageManager()
+    objects_all = models.Manager()
+
+    type = models.CharField(max_length=200, blank=True, null=True)
+    inputs = models.JSONField(blank=True, null=True) #{min:2, max:3, depth: 5}
+    outputs = models.JSONField(blank=True, null=True)
+    status = models.CharField(max_length=200)
+    message = models.TextField(blank=True, null=True)
+
+    created = models.DateTimeField(auto_now_add=True, null=True)
+    deleted = models.DateTimeField(default=None, editable=False, null=True)
+    job_task = models.ForeignKey(
+        to=CeleryTask,
+        to_field="id",
+        related_name="api_meta",
+        null=True,
+        on_delete=models.PROTECT,
+        default=None
+    )
+
+    def __str__(self):
+        s = "%s - %s" % (self.type, self.created)
+        return s
 
 class Timeseries_Meta(models.Model):
     class Meta:
@@ -602,6 +630,8 @@ class Technology(models.Model):
     pretty_tag = models.CharField(max_length=200, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     model = models.ForeignKey(Model, on_delete=models.CASCADE)
+    template_type_id = models.BigIntegerField(blank=True, null=True)
+    template_type_tech_id = models.BigIntegerField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
@@ -912,7 +942,9 @@ class Location(models.Model):
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
-
+    template_id = models.BigIntegerField(blank=True, null=True)
+    template_type_loc_id = models.BigIntegerField(blank=True, null=True)
+    
     def __str__(self):
         return '%s' % (self.pretty_name)
 
@@ -926,7 +958,6 @@ class Loc_Tech(models.Model):
                     'location_1', 'location_2']
     objects = EngageManager()
     objects_all = models.Manager()
-
     location_1 = models.ForeignKey(Location,
                                    on_delete=models.CASCADE,
                                    related_name="location_1")
@@ -937,6 +968,8 @@ class Loc_Tech(models.Model):
     technology = models.ForeignKey(Technology, on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)
     model = models.ForeignKey(Model, on_delete=models.CASCADE)
+    template_id = models.BigIntegerField(blank=True, null=True)
+    template_type_loc_tech_id = models.BigIntegerField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
