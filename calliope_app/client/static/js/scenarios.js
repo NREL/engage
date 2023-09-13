@@ -286,12 +286,11 @@ function updateDialogGroupConstraints(initialLoad) {
         + "</div></h5></a></div>");
         $("#" + constraintId).append( "<div id='" + constraintId + "-content" + "' class=''>");
         let constraintContent = "#" + constraintId + "-content";
-        //$(constraintId).append( "<div><h5 class='constraint-name'><b>" + constraint +  "</b></h5></div>");
         $(constraintContent).append( "<button id='delete_group_constraint_btn_" + constraintId + "' type='button' class='btn btn-sm btn-outline-danger group-constraint-delete' title='Delete constraint'><i class='fas fa-trash'></i></button>");
 
         //Display techs and locs first
         dialogObj[constraint].techs = dialogObj[constraint].techs ? dialogObj[constraint].techs : "";
-        $(constraintContent).append("<div><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter technologies.' style='padding-top: 40px;'><b>Technologies</b></label><br>" + 
+        $(constraintContent).append("<div id='" + constraintId + "_techs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter technologies.'><b>Technologies</b></label><br>" + 
         "<select id='" + constraintId + "_techs' name='Technologies' multiple searchable></select></div>");
         for (var t in technologies) {
             $('#' + constraintId + '_techs').append('<option value="'+ technologies[t].name + '" '+ (dialogObj[constraint].techs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
@@ -301,7 +300,7 @@ function updateDialogGroupConstraints(initialLoad) {
         });
 
         dialogObj[constraint].techs_lhs = dialogObj[constraint].techs_lhs ? dialogObj[constraint].techs_lhs : "";
-        $(constraintContent).append("<div><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter left hand-side technologies.'><b>Technologies Left Hand-side</b></label><br>" + 
+        $(constraintContent).append("<div id='" + constraintId + "_techs_lhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter left hand-side technologies.'><b>Technologies Left Hand-side</b></label><br>" + 
         "<select id='" + constraintId + "_techs_lhs' name='Technologies Left Hand-side' multiple searchable></select></div>");
         for (var t in technologies) {
             $('#' + constraintId + '_techs_lhs').append('<option value="'+ technologies[t].name + '" '+ (dialogObj[constraint].techs_lhs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
@@ -311,7 +310,7 @@ function updateDialogGroupConstraints(initialLoad) {
         });
 
         dialogObj[constraint].techs_rhs = dialogObj[constraint].techs_rhs ? dialogObj[constraint].techs_rhs : "";
-        $(constraintContent).append("<div><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter right hand-side technologies.'><b>Technologies Right Hand-side</b></label><br>" + 
+        $(constraintContent).append("<div id='" + constraintId + "_techs_rhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter right hand-side technologies.'><b>Technologies Right Hand-side</b></label><br>" + 
         "<select id='" + constraintId + "_techs_rhs' name='Technologies Right Hand-side' multiple searchable></select></div>");
         for (var t in technologies) {
             $('#' + constraintId + '_techs_rhs').append('<option value="'+ technologies[t].name + '" '+ (dialogObj[constraint].techs_rhs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
@@ -320,8 +319,12 @@ function updateDialogGroupConstraints(initialLoad) {
             updateDialogObject();
         });
 
+        if (!(dialogObj[constraint].techs_rhs && dialogObj[constraint].techs_lhs && dialogObj[constraint].techs)) {
+            $(constraintContent).append('<br><span>Show left and right hand side technologies </span><label class="switch"><input id="' + constraintId + "_toggle_techs" + '" type="checkbox"><span class="slider round"></span></label><br>');
+        }
+
         dialogObj[constraint].locs = dialogObj[constraint].locs ? dialogObj[constraint].locs : "";
-        $(constraintContent).append("<div><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter locations.'><b>Locations</b></label><br>" + 
+        $(constraintContent).append("<div id='" + constraintId + "_locs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter locations.'><b>Locations</b></label><br>" + 
         "<select id='" + constraintId + "_locs' name='Locations' multiple searchable></select></div>");
         for (var l in locations) {
             $('#' + constraintId + '_locs').append('<option value="'+ locations[l].name + '" '+ (dialogObj[constraint].locs.includes(locations[l].name) ? ' selected' : '') +'>' + locations[l].pretty_name + '</option>');
@@ -331,7 +334,7 @@ function updateDialogGroupConstraints(initialLoad) {
         });
 
         dialogObj[constraint].locs_lhs = dialogObj[constraint].locs_lhs ? dialogObj[constraint].locs_lhs : "";
-        $(constraintContent).append("<div><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter left hand-side locations.'><b>Locations Left Hand-side</b></label><br>" + 
+        $(constraintContent).append("<div id='" + constraintId + "_locs_lhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter left hand-side locations.'><b>Locations Left Hand-side</b></label><br>" + 
         "<select id='" + constraintId + "_locs_lhs' name='Locations Left Hand-side' multiple searchable></select></div>");
         for (var l in locations) {
             $('#' + constraintId + '_locs_lhs').append('<option value="'+ locations[l].name + '" '+ (dialogObj[constraint].locs_lhs.includes(locations[l].name) ? ' selected' : '') +'>' + locations[l].pretty_name + '</option>');
@@ -341,7 +344,7 @@ function updateDialogGroupConstraints(initialLoad) {
         });
 
         dialogObj[constraint].locs_rhs = dialogObj[constraint].locs_rhs ? dialogObj[constraint].locs_rhs : "";
-        $(constraintContent).append("<div><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter right hand-side locations.'><b>Locations Right Hand-side</b></label><br>" + 
+        $(constraintContent).append("<div id='" + constraintId + "_locs_rhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter right hand-side locations.'><b>Locations Right Hand-side</b></label><br>" + 
         "<select id='" + constraintId + "_locs_rhs' name='Locations Right Hand-side' multiple searchable></select></div>");
         for (var l in locations) {
             $('#' + constraintId + '_locs_rhs').append('<option value="'+ locations[l].name + '" '+ (dialogObj[constraint].locs_rhs.includes(locations[l].name) ? ' selected' : '') +'>' + locations[l].pretty_name + '</option>');
@@ -350,11 +353,40 @@ function updateDialogGroupConstraints(initialLoad) {
             updateDialogObject();
         });
 
+        if (!(dialogObj[constraint].locs_rhs && dialogObj[constraint].locs_lhs && dialogObj[constraint].locs)) {
+            $(constraintContent).append('<br><span>Show left and right hand side locations </span><label class="switch"><input id="' + constraintId + "_toggle_locs" + '" type="checkbox"><span class="slider round"></span></label><br>');
+        }
         updateConstraintTypes(constraint, constraintId, constraintContent);
 
         $('#' + constraintId + '_locs, #' + constraintId + '_locs_lhs, #' + constraintId + '_locs_rhs, #' + constraintId + '_techs, #' + constraintId + '_techs_lhs, #' + constraintId + '_techs_rhs').amsifySelect({
             type : 'amsify',
         });
+
+        if (!dialogObj[constraint].techs_rhs && !dialogObj[constraint].techs_lhs) {
+            $("#" + constraintId + "_techs_lhs_container").hide();
+            $("#" + constraintId + "_techs_rhs_container").hide();
+        }
+
+        if (!(dialogObj[constraint].techs_rhs && dialogObj[constraint].techs_lhs && dialogObj[constraint].techs)) {
+            $("#" + constraintId + "_toggle_techs").click(function(){
+                $("#" + constraintId + "_techs_container").toggle();                    
+                $("#" + constraintId + "_techs_lhs_container").toggle();
+                $("#" + constraintId + "_techs_rhs_container").toggle();
+            });
+        }
+
+        if (!dialogObj[constraint].locs_rhs && !dialogObj[constraint].locs_lhs) {
+            $("#" + constraintId + "_locs_lhs_container").hide();
+            $("#" + constraintId + "_locs_rhs_container").hide();
+        } 
+
+        if (!(dialogObj[constraint].locs_rhs && dialogObj[constraint].locs_lhs && dialogObj[constraint].locs)) {
+            $("#" + constraintId + "_toggle_locs").click(function(){
+                $("#" + constraintId + "_locs_container").toggle();                    
+                $("#" + constraintId + "_locs_lhs_container").toggle();
+                $("#" + constraintId + "_locs_rhs_container").toggle();
+            });
+        }
 
         $("#delete_group_constraint_btn_" + constraintId).on('click', function() {
             let con = this.id.replace("delete_group_constraint_btn_", "");

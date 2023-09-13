@@ -124,6 +124,16 @@ a {
     border-radius: .3px;
     margin: 0px -15px;
 }
+
+#dialog-inputs .switch {
+    margin-top: 10px;
+}
+#dialog-inputs .slider {
+    background-color: grey;
+}
+#dialog-inputs input:checked + .slider {
+    background-color: #0a9e02;
+}
 </style>
 
 <form id="scenario_constraints_json_form" method="post" tabindex="-1" role="dialog"  onsubmit="return false;" aria-hidden="true">
