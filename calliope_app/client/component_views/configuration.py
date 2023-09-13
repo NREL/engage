@@ -30,9 +30,7 @@ def group_constraint_options(request):
 
     model_uuid = request.GET['model_uuid']
     model = Model.by_uuid(model_uuid)
-    model.handle_view_access(request.user)
-
-    print (str(model) + "")
+    model.handle_view_access(request.user)   
 
     response = {
         "carriers": list(model.carriers.values()),
