@@ -528,6 +528,16 @@ function activate_scenario_settings() {
 		row.find('.check_delete').prop("checked", true)
 	});
 
+    const parseJSON = (inputString, fallback) => {
+        if (inputString) {
+          try {
+            return JSON.parse(inputString);
+          } catch (e) {
+            return fallback;
+          }
+        }
+    };
+
     // Wieght of cost classes Modal
     $('.scenario-weight-dialog-btn').on('click', function() {
         // display dialog
@@ -540,7 +550,7 @@ function activate_scenario_settings() {
         dialogInputId = this.name.slice(6);
         dialogInputValue = dialogInputId ? $('textarea[name="edit' + dialogInputId + '"]').text() : console.log("Dialog input id not found!");
         dialogInputValue = dialogInputValue.replace(/'/g, '"');
-        dialogObj = dialogInputValue && JSON.parse(dialogInputValue) ? JSON.parse(dialogInputValue) : {};
+        dialogObj = parseJSON(dialogInputValue, {});
 
         $('#monetary').val(dialogObj["monetary"]);
         $('#co2').val(dialogObj["co2"]);
@@ -563,7 +573,7 @@ function activate_scenario_settings() {
         dialogInputId = this.name.slice(6);
         dialogInputValue = dialogInputId ? $('textarea[name="edit' + dialogInputId + '"]').text() : console.log("Dialog input id not found!");
         dialogInputValue = dialogInputValue.replace(/'/g, '"');
-        dialogObj = dialogInputValue && JSON.parse(dialogInputValue) ? JSON.parse(dialogInputValue) : {};
+        dialogObj = parseJSON(dialogInputValue, {});
 
         Object.keys(dialogObj).forEach(constraint => {
             Object.keys(dialogObj[constraint]).forEach(fieldKey => {
