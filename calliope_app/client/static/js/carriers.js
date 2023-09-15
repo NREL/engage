@@ -40,8 +40,15 @@ $( document ).ready(function(){
                 if (data['message'] != "Success."){
                     alert(data['message']);
                 }
-                window.onbeforeunload = null;
-                location.reload();
+                else if (data['flags']){
+                    window.onbeforeunload = null;
+                    var model_uuid = $('#header').data('model_uuid');
+                    window.location = '/' + model_uuid + '/model_flags/';
+                }
+                else{
+                    window.onbeforeunload = null;
+                    location.reload();
+                }
             }
         });
     });

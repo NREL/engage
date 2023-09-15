@@ -1,0 +1,102 @@
+{% extends "configure.html" %}
+
+{% load static %}
+{% load i18n %}
+{% load tz %}
+
+
+{% block head %}
+<title>Engage | {{ model.name }} | Model Flags</title>
+<script type="text/javascript" src="{% static 'js/model.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/model_flags.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<form id="carrier_form" method="post" action="" accept-charset="utf-8" autocomplete="off">
+    <table id="carrier_table" class="table table-hover table-sm" style="white-space:nowrap">
+        <tbody>
+            <tr class="tbl-header">
+                <th class="centered">
+                    <b>{% trans "Type" %}</b>
+                </th>
+                <th class="centered">
+                    <b>{% trans "Element" %}</b>
+                </th>
+                <th class="centered">
+                    <b>{% trans "Paramter" %}</b>
+                </th>
+                <th class="centered">
+                    <b>{% trans "Value" %}</b>
+                </th>
+                <th class="centered">
+                    <b>{% trans "Raw Value" %}</b>
+                </th>
+                <th class="centered">
+                    {% trans "Flags" %}
+                </th>
+                <th class="centered">
+                    {% trans "Remove Flag" %}
+                </th>
+            </tr>
+            {% for param in tech_params %}
+                <tr>
+                    <th class="centered">
+                        <b>{% trans "Technology" %}</b>
+                    </th>
+                    <th class="centered">
+                        <a href="{% url 'technologies' model.uuid %}?tech_id={{ param.technology_id }}"><b>{{ param.technology }}</b></a>
+                    </th>
+                    <th class="centered">
+                        <b>{{ param.parameter }}</b>
+                    </th>
+                    <th class="centered">
+                        <b>{{ param.value }}</b>
+                    </th>
+                    <th class="centered">
+                        <b>{{ param.raw_value }}</b>
+                    </th>
+                    <th class="centered">
+                        <b>{{ param.flags }}</b>
+                    </th>
+                    <th>
+                        <button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-sm btn-outline-danger flag-delete" title="{% trans 'Remove flag' %}" name="tech||{{ param.id }}"><i class="fas fa-trash"></i></button>
+                    </th>
+                </tr>
+            {% endfor %}
+            {% for param in loc_tech_params %}
+            <tr>
+                <th class="centered">
+                    <b>{% trans "Node" %}</b>
+                </th>
+                <th class="centered">
+                    <a href="{% url 'loc_techs' model.uuid %}?tech_id={{ param.loc_tech.technology_id }}&loc_tech_id={{ param.loc_tech.id }}" style="color:#0021da">
+						<i class="fas fa-map-marker-alt"></i>&nbsp;
+						{{ param.loc_tech.location_1 }}
+						{% if param.loc_tech.location_2 %}
+						&nbsp;&nbsp;<i class="fas fa-exchange-alt"></i>&nbsp;&nbsp;
+						<i class="fas fa-map-marker-alt"></i>&nbsp;
+						{{ param.loc_tech.location_2 }}
+						{% endif %}
+					</a>
+                </th>
+                <th class="centered">
+                    <b>{{ param.parameter }}</b>
+                </th>
+                <th class="centered">
+                    <b>{{ param.value }}</b>
+                </th>
+                <th class="centered">
+                    <b>{{ param.raw_value }}</b>
+                </th>
+                <th class="centered">
+                    <b>{{ param.flags }}</b>
+                </th>
+                <th>
+                    <button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-sm btn-outline-danger flag-delete" title="{% trans 'Remove flag' %}" name="loc_tech||{{ param.id }}"><i class="fas fa-trash"></i></button>
+                </th>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</form>
+{% endblock %}

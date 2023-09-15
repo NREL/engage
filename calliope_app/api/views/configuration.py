@@ -288,6 +288,7 @@ def update_carriers(request):
     form_data = json.loads(request.POST["form_data"])
     model = Model.by_uuid(model_uuid)
     err_msg = ''
+    flags = False
     if 'edit' in form_data:
         for i,c in form_data['edit'].items():
             if i != 'new':
@@ -296,9 +297,14 @@ def update_carriers(request):
                 carrier.quantity_unit = c['carrier-quantity']
                 carrier.description = c['carrier-desc']
                 carrier.save()
+                model.check_model_carrier_units(carrier)
+                flags = True
             else:
                 try:
                     carrier = Carrier.objects.create(model=model,name=c['carrier-name'],rate_unit=c['carrier-rate'],quantity_unit=c['carrier-quantity'],description=c.get('carrier-desc',''))
+                    if carrier.name in model.carriers_old:
+                        model.check_model_carrier_units(carrier)
+                        flags = True
                 except Exception as e:
                     err_msg += str(e)
 
@@ -309,7 +315,7 @@ def update_carriers(request):
     if err_msg != '':
         payload = {"message": err_msg}
     else:
-        payload = {"message": "Success."}
+        payload = {"message": "Success.", "flags":flags}
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
 
@@ -1322,3 +1328,42 @@ def wtk_fetch_resource_files(coordinate):
     wtk_fp = wtk_path_dict[coordinate]
 
     return wtk_fp
+
+@csrf_protect
+def remove_flags(request):
+    """
+    Remove flags on specific parameters
+
+    Parameters:
+    model_uuid (uuid): required
+    form_data (json): required
+
+    Returns (json): Action Confirmation
+
+    Example:
+    POST: /api/remove_flags/
+    """
+
+    model_uuid = request.POST["model_uuid"]
+    form_data = json.loads(request.POST["form_data"])
+    model = Model.by_uuid(model_uuid)
+    err_msg = ''
+
+    for p in form_data:
+        if p.get('type',None) == 'tech' and 'id' in p:
+            param = Tech_Param.objects.get(id=p['id'])
+            param.flags = []
+            param.save()
+        elif p.get('type',None) == 'loc_tech':
+            param = Loc_Tech_Param.objects.get(id=p['id'])
+            param.flags = []
+            param.save()
+        else:
+            err_msg = 'Not a valid type.'
+
+    if err_msg != '':
+        payload = {"message": err_msg}
+    else:
+        payload = {"message": "Success."}
+
+    return HttpResponse(json.dumps(payload), content_type="application/json")
