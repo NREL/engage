@@ -1344,12 +1344,14 @@ def remove_flags(request):
     POST: /api/remove_flags/
     """
 
-    model_uuid = request.POST["model_uuid"]
+    model_uuid = escape(request.POST["model_uuid"])
     form_data = json.loads(request.POST["form_data"])
+    escaped_form_data = recursive_escape(form_data)
     model = Model.by_uuid(model_uuid)
+    model.handle_edit_access(request.user)
     err_msg = ''
 
-    for p in form_data:
+    for p in escaped_form_data:
         if p.get('type',None) == 'tech' and 'id' in p:
             param = Tech_Param.objects.get(id=p['id'])
             param.flags = []
