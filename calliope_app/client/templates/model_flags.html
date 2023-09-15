@@ -56,7 +56,7 @@
                         <b>{{ param.raw_value }}</b>
                     </th>
                     <th class="centered">
-                        <b>{{ param.flags }}</b>
+                        <b>{% for flag in param.flags %}{{ flag }}&nbsp;{% endfor %}</b>
                     </th>
                     <th>
                         <button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-sm btn-outline-danger flag-delete" title="{% trans 'Remove flag' %}" name="tech||{{ param.id }}"><i class="fas fa-trash"></i></button>
