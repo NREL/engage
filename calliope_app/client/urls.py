@@ -82,6 +82,9 @@ urlpatterns = [
     path('<model_uuid>/carriers/',
          configuration_views.carriers_view,
          name='carriers'),
+    path('<model_uuid>/model_flags/',
+         configuration_views.model_flags_view,
+         name='model_flags'),
     # Outputs Views
     path('<model_uuid>/runs/',
          outputs_views.runs_view,

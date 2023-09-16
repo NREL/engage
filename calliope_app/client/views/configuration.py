@@ -9,7 +9,7 @@ from api.models.engage import Help_Guide
 from api.models.calliope import Parameter, Abstract_Tech
 from api.models.configuration import Model, User_File, \
     Technology, Loc_Tech, Timeseries_Meta, Model_User, \
-    Model_Comment, Carrier
+    Model_Comment, Carrier, Tech_Param, Loc_Tech_Param
 
 from pytz import common_timezones
 
@@ -424,3 +424,30 @@ def carriers_view(request, model_uuid):
     }
 
     return render(request, "carriers.html", context)
+
+@login_required
+def model_flags_view(request, model_uuid):
+    """
+    View the "Model Flags" page
+
+    Parameters:
+    model_uuid (uuid): required
+
+    Returns: HttpResponse
+
+    Example:
+    http://0.0.0.0:8000/<model_uuid>/model_flags/
+    """
+
+    model = Model.by_uuid(model_uuid)
+    can_edit = model.handle_view_access(request.user)
+
+    context = {
+        "model": model,
+        "tech_params": Tech_Param.objects.filter(model=model,flags__len__gt=0),
+        "loc_tech_params": Loc_Tech_Param.objects.filter(model=model,flags__len__gt=0),
+        "can_edit": can_edit,
+        "help_content": Help_Guide.get_safe_html('carriers'),
+    }
+
+    return render(request, "model_flags.html", context)
