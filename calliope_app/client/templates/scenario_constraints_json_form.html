@@ -1,0 +1,182 @@
+{% load static %}
+{% load i18n %}
+<style>
+.help-text {
+    font-size: .8em;
+}
+.input-field {
+    display: inline-block;
+}
+.smol {
+    max-width: 300px;
+    float: right;
+}
+.multi-line {
+    max-width: 300px;
+}
+#constraints-label {
+    padding-top: 25px;
+    font-size: 20px;
+}
+.constraint-name {
+    font-family: Arial, sans-serif;
+    font-size: 25px;
+    display: inline-block;
+}
+.constraint-delete {
+    float: right
+}
+.group-constraint-delete {
+    margin-top: 10px;
+    float: right
+}
+.constraint-key-value {
+    padding-left: 5em;
+    margin-top: 10px;
+}
+
+#tabs {
+ width: 100%;
+ height: 35px; 
+ border-bottom: solid 1px #CCC;
+ padding-right: 2px;
+ margin-top: 30px;
+ padding-left: 10px;
+}
+
+a {
+    cursor: pointer;
+}
+
+#tabs li {
+  float: left; 
+  list-style: none; 
+  border-top: 1px solid #ccc; 
+  border-left: 1px solid #ccc; 
+  border-right: 1px solid #ccc; 
+  margin-right: 5px; 
+  border-top-left-radius: 3px;  
+  border-top-right-radius: 3px;
+  outline: none;
+}
+
+#tabs li a { 
+ font-family: Arial, Helvetica, sans-serif; 
+ font-size: small;
+ font-weight: bold; 
+ color: #666666;
+ padding-top: 5px;
+ padding-left: 7px;
+ padding-right: 7px;
+ padding-bottom: 8px; 
+ display: block; 
+ background: #c4d7ea;
+ border-top-left-radius: 3px; 
+ border-top-right-radius: 3px; 
+ text-decoration: none;
+ outline: none;
+}
+
+#tabs li a.inactive{
+ padding-top: 5px;
+ padding-bottom: 8px;
+ padding-left: 8px;
+ padding-right: 8px;
+ background: #FFF;
+ outline: none;
+ border-bottom: solid 1px #CCC;
+
+}
+
+#tabs li a:hover, #tabs li a.inactive:hover {
+   outline: none;
+}
+
+.tab-container {
+ clear: both;           
+ width: 100%; 
+ text-align: left;
+ padding-top: 20px;
+}
+
+.amsify-label {
+ width: 650px;
+ padding-top: 10px;
+}
+
+.cateogry-expander {
+    font-size: 24px;
+    background-color: #ccd0d6;
+    cursor: pointer;
+    height: 40px;
+}
+
+.cateogry-expander .fas {
+    margin-right: 25px;
+}
+
+.cateogry-expander h5 {
+    margin-left: .6em;
+    padding: 0.2em 1em 0.2em 0;
+}
+
+.cateogry-expander {
+    border-radius: .3px;
+    margin: 0px -15px;
+}
+
+#dialog-inputs .switch {
+    margin-top: 10px;
+}
+#dialog-inputs .slider {
+    background-color: grey;
+}
+#dialog-inputs input:checked + .slider {
+    background-color: #0a9e02;
+}
+</style>
+
+<form id="scenario_constraints_json_form" method="post" tabindex="-1" role="dialog"  onsubmit="return false;" aria-hidden="true">
+    <div class="modal-header">
+        <h5 class="modal-title" id="scenarioSettingsModalTitle">{% trans "Group Constraints" %}</h5>
+        <button type="button" class="close group-constraints-close" data-dismiss="modal" aria-label="Close" id="group-constraints-close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>  
+	<div class="centered" style="margin-top: 1em">
+		<h6 class="modal-title">Complete form to convert fields to JSON</h6>
+        <p><a href="https://calliope.readthedocs.io/en/stable/user/advanced_constraints.html#group-constraints" target="_blank">View Calliope Group Constraint documentation</a></p>
+	</div>
+    <ul id="tabs">
+        <li><a id="tab1">Group Constraints</a></li>
+        <li><a id="tab2">JSON Preview</a></li>
+    </ul>
+    <div class="tab-container" id="tab1C">
+        <div class="form-group">
+            <p style="font-size:.8em">{% trans "Enter a custom name." %}</p>
+            <label><b>Name</b></label>
+            <input type="text" class="form-control smol" id="new_group_constraint_name" name="" placeholder="{% trans 'New Group Constraint Name' %}">
+            <br>
+            <input disabled id="new_group_constraint_btn" type="submit" class="btn btn-sm btn-success" name="" value="{% trans '+ Group Constraint' %}">
+        </div>
+        <br>
+        <div class="form-row">
+            <!-- Timeseries Name -->
+            <div id="dialog-inputs" class="form-group" style="width: 100%;">
+            </div>
+            <hr>
+            <div class="form-group col-md-6"></div>
+            <hr>
+        </div>
+    </div>
+    <div class="tab-container" id="tab2C">
+        <pre id="JSONPreview"></pre>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <input id="settings_import_cancel" type="submit" style="border: 1px solid black;margin-right:1em;" class="btn btn-sm group-constraints-close" name="" value="{% trans 'Cancel' %}">
+            <input id="settings_import_data" type="submit" class="btn btn-sm btn-warning" name="" value="{% trans 'Convert Fields to JSON' %}">
+        </div>
+    </div>
+    <br>
+</form>
