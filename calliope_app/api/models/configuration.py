@@ -6,11 +6,13 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.utils.html import mark_safe
 from django.utils.translation import get_language
+from django.contrib.postgres.fields import ArrayField
 
 from api.exceptions import ModelAccessException, ModelNotExistException
 from api.models.utils import EngageManager
 from api.models.calliope import Parameter, Run_Parameter, \
     Abstract_Tech, Abstract_Tech_Param
+from api.utils import convert_units, initialize_units
 from taskmeta.models import CeleryTask
 
 import uuid
@@ -172,6 +174,82 @@ class Model(models.Model):
                                            parameter__name='color')
         return {c.technology_id: c.value for c in params}
 
+    def check_model_carrier_units(self,carrier):
+        units_in_ids= [4,5,70]
+        units_out_ids= [4,6,71]
+        ureg = initialize_units()
+        warning_techs = []
+        error_techs = []
+        warning_loc_techs = []
+        error_loc_techs = []
+        for tech in self.technologies:
+            in_flg = False
+            out_flg = False
+            if Tech_Param.objects.filter(technology=tech,parameter__id__in=units_in_ids,value=carrier.name):
+                in_flg = True
+            if Tech_Param.objects.filter(technology=tech,parameter__id__in=units_out_ids,value=carrier.name):
+                out_flg = True
+
+            if in_flg or out_flg:
+                tech_params = Tech_Param.objects.filter(technology=tech)
+                for param in tech_params:
+                    if any(x in param.parameter.units for x in ['[[in_rate]]','[[out_rate]]','[[in_quantity]]','[[out_quantity]]']):
+                        if param.value != param.raw_value:
+                            if in_flg:
+                                target_unit = param.parameter.units.replace('[[in_rate]]',carrier.rate_unit).replace('[[in_quantity]]',carrier.quantity_unit)
+                            if out_flg:
+                                target_unit = param.parameter.units.replace('[[out_rate]]',carrier.rate_unit).replace('[[out_quantity]]',carrier.quantity_unit)
+                            try:
+                                value = convert_units(ureg,param.raw_value,target_unit).split('||')[0]
+                                param.value = value
+                                if 'Warning' not in param.flags:
+                                    param.flags.append('Warning')
+                                param.save()
+                                warning_techs.append((tech,param.parameter.name))
+                            except:
+                                if 'Error' not in param.flags:
+                                    param.flags.append('Error')
+                                param.save()
+                                error_techs.append((tech,param.parameter.name))
+                        else:
+                            if 'Warning' not in param.flags:
+                                param.flags.append('Warning')
+                            param.save()
+                            warning_techs.append((tech,param.parameter.name))
+
+                loc_techs = Loc_Tech.objects.filter(technology=tech)
+                for loc_tech in loc_techs:
+                    loc_tech_params = Loc_Tech_Param.objects.filter(loc_tech=loc_tech)
+                    for param in loc_tech_params:
+                        if any(x in param.parameter.units for x in ['[[in_rate]]','[[out_rate]]','[[in_quantity]]','[[out_quantity]]']):
+                            if param.value != param.raw_value:
+                                if in_flg:
+                                    target_unit = param.parameter.units.replace('[[in_rate]]',carrier.rate_unit).replace('[[in_quantity]]',carrier.quantity_unit)
+                                if out_flg:
+                                    target_unit = param.parameter.units.replace('[[out_rate]]',carrier.rate_unit).replace('[[out_quantity]]',carrier.quantity_unit)
+                                try:
+                                    value = convert_units(ureg,param.raw_value,target_unit).split('||')[0]
+                                    param.value = value
+                                    if 'Warning' not in param.flags:
+                                        param.flags.append('Warning')
+                                    param.save()
+                                    warning_loc_techs.append((loc_tech,param.parameter.name))
+                                except:
+                                    if 'Error' not in param.flags:
+                                        param.flags.append('Error')
+                                    param.save()
+                                    error_loc_techs.append((loc_tech,param.parameter.name))
+                            else:
+                                if 'Warning' not in param.flags:
+                                    param.flags.append('Warning')
+                                param.save()
+                                warning_loc_techs.append((loc_tech,param.parameter.name))
+
+        return
+    
+    def check_flags(self):
+        tech_params = Tech_Param.objects.filter(technology__in=self.technologies,)
+    
     def carrier_lookup(self, carrier_in=True):
         names = Parameter.C_INS if carrier_in else Parameter.C_OUTS
         params = Tech_Param.objects.filter(
@@ -770,6 +848,7 @@ class Tech_Param(models.Model):
                                         on_delete=models.CASCADE,
                                         blank=True, null=True)
     model = models.ForeignKey(Model, on_delete=models.CASCADE)
+    flags = ArrayField(models.CharField(max_length=20,blank=True),default=list)
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
@@ -1013,6 +1092,7 @@ class Loc_Tech_Param(models.Model):
                                         on_delete=models.CASCADE,
                                         blank=True, null=True)
     model = models.ForeignKey(Model, on_delete=models.CASCADE)
+    flags = ArrayField(models.CharField(max_length=20,blank=True),default=list)
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)

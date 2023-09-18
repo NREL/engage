@@ -29,6 +29,9 @@ urlpatterns = [
     path('update_carriers/',
          configuration_views.update_carriers,
          name='update_carriers'),
+    path('remove_flags/',
+         configuration_views.remove_flags,
+         name='remove_flags'),
 
     # Locations
     path('update_location/',

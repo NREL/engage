@@ -14,6 +14,32 @@ from datetime import datetime, timedelta
 import string
 import pandas as pd
 
+@csrf_protect
+def group_constraint_options(request):
+    """
+    Retrieve all carriers for a model
+
+    Parameters:
+    model_uuid (uuid): required
+
+    Returns: HttpResponse
+
+    Example:
+    GET: /component/group_constraint_options/
+    """
+
+    model_uuid = request.GET['model_uuid']
+    model = Model.by_uuid(model_uuid)
+    model.handle_view_access(request.user)   
+
+    response = {
+        "carriers": list(model.carriers.values()),
+        "locations": list(model.locations.values()),
+        "technologies": list(model.technologies.values()),
+    }
+
+    return JsonResponse(response, safe=False)
+
 
 @csrf_protect
 def location_coordinates(request):
