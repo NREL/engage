@@ -455,11 +455,17 @@ def _yaml_outputs(model_path, outputs_dir):
                         if 'results' not in model[tl][l]['techs'][t]:
                             model[tl][l]['techs'][t]['results'] = {}
                         if tl == 'links':
-                            model[tl][l]['techs'][t]['results'][v+'_equals'] = float(r_df.loc[(r_df['locs'] == l1) &
+                            if r_df.loc[(r_df['locs'] == l1) & (r_df['techs'] == t+':'+l2)].empty:
+                                model[tl][l]['techs'][t]['results'][v+'_equals'] = 0
+                            else:
+                                model[tl][l]['techs'][t]['results'][v+'_equals'] = float(r_df.loc[(r_df['locs'] == l1) &
                                                                                 (r_df['techs'] == t+':'+l2)][v].values[0])
                         else:
-                            model[tl][l]['techs'][t]['results'][v+'_equals'] = float(r_df.loc[(r_df['locs'] == l) &
-                                                                                (r_df['techs'] == t)][v].values[0])
+                            if r_df.loc[(r_df['locs'] == l) & (r_df['techs'] == t)].empty:
+                                model[tl][l]['techs'][t]['results'][v+'_equals'] = 0
+                            else:
+                                model[tl][l]['techs'][t]['results'][v+'_equals'] = float(r_df.loc[(r_df['locs'] == l) &
+                                                                                    (r_df['techs'] == t)][v].values[0])
     if has_outputs:
         yaml.dump(model, open(os.path.join(outputs_dir,'model_results.yaml'),'w+'), default_flow_style=False)
 
