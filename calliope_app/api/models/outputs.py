@@ -162,7 +162,7 @@ class Run(models.Model):
         carriers = sorted(carriers, key=lambda k: k[1], reverse=True)
         carriers_d = self.read_input('carriers.yaml')
         for k in carriers:
-            if k[0] not in carriers_d.keys():
+            if not carriers_d or k[0] not in carriers_d.keys():
                 carriers_d[k[0]] = {'rate':'kW','quantity':'kWh'}
         meta['carriers'] = [(k[0],carriers_d[k[0]]['rate'],carriers_d[k[0]]['quantity']) for k in carriers]
         return meta
