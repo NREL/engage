@@ -105,5 +105,6 @@
 	</table>
 </div>
 <div class="col-12 centered">
+	<button id="edit-scenario-name" {% if not can_edit %}disabled{% endif %} type = "button" class = "btn btn-outline-primary btn-sm"> <i class="fas fa-edit"></i>&nbsp;&nbsp;{% trans "Edit Scenario Name" %}</button>
 	<button id="scenario-delete" {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i>&nbsp;&nbsp;{% trans "Delete Scenario" %}</button>
 </div>
