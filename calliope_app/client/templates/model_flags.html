@@ -23,19 +23,19 @@
                     <b>{% trans "Element" %}</b>
                 </th>
                 <th class="centered">
-                    <b>{% trans "Paramter" %}</b>
+                    <b>{% trans "Parameter" %}</b>
                 </th>
                 <th class="centered">
-                    <b>{% trans "Value" %}</b>
+                    <b>{% trans "Input Text" %}</b>
                 </th>
                 <th class="centered">
-                    <b>{% trans "Raw Value" %}</b>
+                    <b>{% trans "Converted Value" %}</b>
                 </th>
                 <th class="centered">
-                    {% trans "Flags" %}
+                    <b>{% trans "Flag" %}</b>
                 </th>
                 <th class="centered">
-                    {% trans "Remove Flag" %}
+                    <b>{% trans "Remove Flag" %}</b>
                 </th>
             </tr>
             {% for param in tech_params %}
@@ -50,10 +50,10 @@
                         <b>{{ param.parameter }}</b>
                     </th>
                     <th class="centered">
-                        <b>{{ param.value }}</b>
+                        <b>{{ param.raw_value }}</b>
                     </th>
                     <th class="centered">
-                        <b>{{ param.raw_value }}</b>
+                        <b>{{ param.value }}</b>
                     </th>
                     <th class="centered">
                         <b>{% for flag in param.flags %}{{ flag }}&nbsp;{% endfor %}</b>
@@ -83,13 +83,13 @@
                     <b>{{ param.parameter }}</b>
                 </th>
                 <th class="centered">
-                    <b>{{ param.value }}</b>
-                </th>
-                <th class="centered">
                     <b>{{ param.raw_value }}</b>
                 </th>
                 <th class="centered">
-                    <b>{{ param.flags }}</b>
+                    <b>{{ param.value }}</b>
+                </th>
+                <th class="centered">
+                    <b>{% for flag in param.flags %}{{ flag }}&nbsp;{% endfor %}</b>
                 </th>
                 <th>
                     <button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-sm btn-outline-danger flag-delete" title="{% trans 'Remove flag' %}" name="loc_tech||{{ param.id }}"><i class="fas fa-trash"></i></button>
