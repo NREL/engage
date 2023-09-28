@@ -28,3 +28,4 @@ pyomo == 6.2
 ruamel.yaml >= 0.16
 scikit-learn >= 1.1.1
 xarray >= 2022.6.0
+xpress >= 8.12.3
