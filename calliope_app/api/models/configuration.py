@@ -173,6 +173,10 @@ class Model(models.Model):
         params = Tech_Param.objects.filter(technology__in=self.technologies,
                                            parameter__name='color')
         return {c.technology_id: c.value for c in params}
+    
+    @property
+    def carriers_set(self):
+        return self.carriers.all()
 
     def check_model_carrier_units(self,carrier):
         units_in_ids= [4,5,70]
