@@ -458,8 +458,8 @@ function activate_charts(param_id, ts_id) {
 				success: function (data) {
 					draw_charts(div_id, data['timestamps'], data['values']);
 					$('#timeseries-placeholder').hide();
-          if (data['values_contain_nan']) {
-            alert('Warning: your timeseries data contains nan values.');
+          if (data['timeseries_contains_nan']) {
+            alert('Warning: Your timeseries data contains nan values.');
           }
 				},
         error: function(XMLHttpRequest, textStatus, errorThrown) {

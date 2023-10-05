@@ -389,13 +389,18 @@ def timeseries_view(request):
 
     timestamps = timeseries.datetime.dt.strftime(
         '%Y-%m-%d %H:%M:%S').values.tolist()
-    values = timeseries.replace(np.nan, None).value.values.tolist()
-    values_contains_nan = bool(timeseries.isna().any().any())
+
+    timeseries_contains_nan = bool(timeseries.isna().any().any())
+    if timeseries_contains_nan:
+        timeseries = timeseries.replace(np.nan, None)
+
+    values = timeseries.value.values.tolist()
+
 
     payload = {
         'timestamps': timestamps,
         'values': values,
-        'values_contain_nan': values_contains_nan
+        'timeseries_contains_nan': timeseries_contains_nan
     }
     return JsonResponse(payload)
 
