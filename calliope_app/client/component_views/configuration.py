@@ -1,3 +1,11 @@
+import json
+import os
+import string
+from datetime import datetime, timedelta
+
+import numpy as np
+import pandas as pd
+
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
@@ -8,11 +16,6 @@ from api.models.configuration import Scenario_Param, Scenario_Loc_Tech, \
     Timeseries_Meta, ParamsManager, Model, User_File, Carrier, Tech_Param
 from api.utils import get_cols_from_csv
 
-import os
-import json
-from datetime import datetime, timedelta
-import string
-import pandas as pd
 
 @csrf_protect
 def group_constraint_options(request):
@@ -30,7 +33,7 @@ def group_constraint_options(request):
 
     model_uuid = request.GET['model_uuid']
     model = Model.by_uuid(model_uuid)
-    model.handle_view_access(request.user)   
+    model.handle_view_access(request.user)
 
     response = {
         "carriers": list(model.carriers.values()),
@@ -150,7 +153,7 @@ def all_tech_params(request):
     for carrier in model.carriers_old:
         if carrier not in carriers.keys():
             carriers[carrier] = {'rate':'kW','quantity':'kWh'}
-    
+
     carriers = [{'name':c,'rate':v['rate'],'quantity':v['quantity']} for c,v in carriers.items()]
 
     for param in parameters:
@@ -284,7 +287,7 @@ def all_loc_tech_params(request):
     for carrier in model.carriers_old:
         if carrier not in carriers.keys():
             carriers[carrier] = {'rate':'kW','quantity':'kWh'}
-    
+
     carrier_in = carriers[carrier_in]
     carrier_out = carriers[carrier_out]
     carriers = [{'name':c,'rate':v['rate'],'quantity':v['quantity']} for c,v in carriers.items()]
@@ -386,11 +389,18 @@ def timeseries_view(request):
 
     timestamps = timeseries.datetime.dt.strftime(
         '%Y-%m-%d %H:%M:%S').values.tolist()
+
+    timeseries_contains_nan = bool(timeseries.isna().any().any())
+    if timeseries_contains_nan:
+        timeseries = timeseries.replace(np.nan, None)
+
     values = timeseries.value.values.tolist()
+
 
     payload = {
         'timestamps': timestamps,
         'values': values,
+        'timeseries_contains_nan': timeseries_contains_nan
     }
     return JsonResponse(payload)
 

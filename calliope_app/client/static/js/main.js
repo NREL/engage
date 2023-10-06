@@ -169,7 +169,7 @@ function activate_table() {
 	activate_return('.static_inputs');
 	activate_return('.dynamic_year_input');
 	activate_return('.dynamic_value_input');
-	
+
 	// Show and Hide the parameter rows
 	$('.param_row_toggle').unbind();
 	$('.param_row_toggle').on('click', function() {
@@ -191,8 +191,8 @@ function activate_table() {
 	});
 
 	// Select all on text input focus
-	$("input:text").focus(function() { 
-		$(this).select(); 
+	$("input:text").focus(function() {
+		$(this).select();
 	});
 
 	$('.tbl-header').unbind();
@@ -325,7 +325,7 @@ function get_loc_techs() {
 				if (map) map = null;
 
 				loc_techs = data['loc_techs'];
-				
+
 				$('#tech_essentials').html(data['html_essentials']);
 				$('#tech_essentials').data('technology_id', data['technology_id']);
 				$('.loc_tech_row').on('click', function() {
@@ -333,12 +333,12 @@ function get_loc_techs() {
 					$(this).addClass('table-primary')
 					get_loc_tech_parameters();
 				});
-				
+
 				$('#loc_tech-add-1, #loc_tech-add-2').on('change', function() {
 					var id = $(this).val();
 					blink_location(id, 'marker', true);
 				});
-				
+
 				$('.loc_tech-add').on('click', function() {
 					var loc_1_id = $('#loc_tech-add-1').val(),
 						loc_2_id = $('#loc_tech-add-2').val();
@@ -439,15 +439,15 @@ function activate_charts(param_id, ts_id) {
 
 	if (ts_id > 0) {
 		if ($('#'+div_id).length > 0) {
-			
+
 			draw_charts(div_id, ['2019-07-24'], [0]);
-			
+
 			$('#' + div_id).attr('model_uuid', model_uuid);
 			$('#' + div_id).attr('ts_id', ts_id);
 			$('#' + div_id).attr('param_id', param_id);
-			
+
 			$('#' + div_id + ' .loader-container').show();
-			
+
 			$.ajax({
 				url: '/' + LANGUAGE_CODE + '/component/timeseries_view/',
 				data: {
@@ -458,7 +458,13 @@ function activate_charts(param_id, ts_id) {
 				success: function (data) {
 					draw_charts(div_id, data['timestamps'], data['values']);
 					$('#timeseries-placeholder').hide();
-				}
+          if (data['timeseries_contains_nan']) {
+            alert('Warning: Your timeseries data contains nan values.');
+          }
+				},
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+          console.log("Timeseries: " + textStatus + ";" +errorThrown);
+        }
 			});
 		};
 	};
@@ -473,7 +479,7 @@ function draw_charts(div_id, x, y) {
 		y: y,
 		fill: 'tozeroy',
 	}]
-	
+
 	var layout = {
 		xaxis: {
 			autorange: true,
@@ -492,15 +498,15 @@ function draw_charts(div_id, x, y) {
 	var config = {};
 
 	Plotly.newPlot( div_id, data, layout, config);
-	
-	
+
+
 	if ($('#' + div_id).find('.loader').length < 1) {
 		$('#' + div_id).append('<div class="loader-container"><div class="loader"></div></div>');
 	}
-	
-	
+
+
 	$('#' + div_id + ' .loader-container').hide();
-	
+
 	var start_date = x[0].substring(0, 10);
 	var end_date = x[x.length - 1].substring(0, 10);
 	if (end_date < start_date) {
@@ -510,16 +516,16 @@ function draw_charts(div_id, x, y) {
 	}
 	$('#' + div_id).attr('start_date', start_date);
 	$('#' + div_id).attr('end_date', end_date);
-	
+
 	$('#' + div_id + ' a.modebar-btn[data-attr=zoom][data-val=auto]').on('click', function(data) {
 		// var model_uuid = $('#' + div_id).attr('model_uuid');
 		var ts_id = $('#' + div_id).attr('ts_id');
 		var param_id = $('#' + div_id).attr('param_id');
 		activate_charts(param_id, ts_id);
 	});
-	
+
 	$('#' + div_id).on('plotly_relayout', function(data) {
-		
+
 		var range = data.target.layout.xaxis.range;
 		var dragmode = data.target.layout.dragmode;
 		var start_date = range[0].substring(0, 10);
@@ -530,15 +536,15 @@ function draw_charts(div_id, x, y) {
 			end_date = tmp_date;
 		}
 		if (start_date != $(this).attr('start_date') || end_date != $(this).attr('end_date')) {
-			
+
 			$('#' + div_id + ' .loader-container').show();
-			
+
 			$(this).attr('start_date', start_date);
 			$(this).attr('end_date', end_date);
 			$(this).attr('dragmode', dragmode);
 			var model_uuid = $(this).attr('model_uuid');
 			var ts_id = $(this).attr('ts_id');
-			
+
 			$.ajax({
 				url: '/' + LANGUAGE_CODE + '/component/timeseries_view/',
 				data: {
@@ -580,7 +586,7 @@ function change_timeseries_color(param_id, mark_delete) {
 function retrieve_map(draggable, scenario_id, technology_id, loc_tech_id) {
 	if ($('#map').length) {
 		var model_uuid = $('#header').data('model_uuid');
-		
+
 		$.ajax({
 			url: '/' + LANGUAGE_CODE + '/component/location_coordinates/',
 			data: {
@@ -625,7 +631,7 @@ function blink_location(id, what_to_blink, pan_to_marker) {
 			return m.id == id;
 		});
 		var ele = marker.getElement();
-		
+
 		if (what_to_blink == 'marker' || what_to_blink == 'both') {
 			blink_element($(ele));
 			if (pan_to_marker) {
@@ -639,7 +645,7 @@ function blink_location(id, what_to_blink, pan_to_marker) {
 				});
 			}
 		}
-		
+
 		if (what_to_blink == 'row' || what_to_blink == 'both') {
 			var row = $('#location_table tr[data-location_id="' + id + '"]');
 			if ($('#locations_dashboard').length > 0) {
@@ -738,14 +744,14 @@ function add_marker(name, id, type, draggable, coordinates) {
 		marker.on('dragend', function(e) {
 			$('#map canvas').css('cursor', '');
 			marker_clicked = true;
-			
+
 			var that = this;
 			var marker = e.target;
 			var new_lnglat = marker.getLngLat();
 			var new_pos = marker._pos;
 			var old_pos = marker.old_pos;
 			var dist = Math.sqrt((new_pos.x - old_pos.x)**2 + (new_pos.y - old_pos.y)**2);
-			
+
 			if (dist < 4) {
 				setTimeout(function() {
 					blink_location(marker.id, 'row');
@@ -760,7 +766,7 @@ function add_marker(name, id, type, draggable, coordinates) {
 				marker.lat = new_lnglat.lat;
 				marker.lon = new_lnglat.lng;
 			}
-			
+
 			setTimeout(function() {
 				// $('#map canvas').css('cursor', 'crosshair');
 				marker_clicked = false;
@@ -825,17 +831,17 @@ function load_map(locations, transmissions, draggable, loc_tech_id) {
 	if (typeof markers !== 'undefined') {
 		markers.forEach(function(m) { m.remove() });
 	}
-	
+
 	markers = [];
-	
+
 	for (var i = 0; i < locations.length; i++) {
 		var coordinates = [locations[i]['longitude'], locations[i]['latitude']];
 		var type = locations[i]['type'];
 		if (typeof map_mode !== 'undefined' && map_mode == 'locations') type = '';
-		
+
 		add_marker(locations[i].pretty_name, locations[i]['id'], type, draggable, coordinates);
 	};
-	
+
 	var active_trans = [], inactive_trans = [];
 	if (transmissions.length == 0) {
 		loc_techs.filter(function(lt) {
@@ -847,12 +853,12 @@ function load_map(locations, transmissions, draggable, loc_tech_id) {
 				var loc_2 = locations.find(function(l) {
 					return l.id == lt.location_2_id;
 				});
-				
+
 				var coords = [
 					[loc_1.longitude, loc_1.latitude],
 					[loc_2.longitude, loc_2.latitude]
 				];
-				
+
 				if (lt.id == loc_tech_id) {
 					active_trans.push(coords);
 				} else {
@@ -864,7 +870,7 @@ function load_map(locations, transmissions, draggable, loc_tech_id) {
 			return [[t.lon1, t.lat1], [t.lon2, t.lat2]];
 		});
 	}
-	
+
 	var trans_data = {
 		"type": "FeatureCollection",
 		"features": [
@@ -881,7 +887,7 @@ function load_map(locations, transmissions, draggable, loc_tech_id) {
 			}
 		]
 	};
-	
+
 	if (inactive_trans.length > 0) {
 		trans_data["features"].push({
 			"type": "Feature",
@@ -895,7 +901,7 @@ function load_map(locations, transmissions, draggable, loc_tech_id) {
 			}
 		});
 	}
-	
+
 	if (typeof map.getSource('transmission') === 'undefined') {
 		map.addLayer({
 			id: "transmission",
@@ -912,7 +918,7 @@ function load_map(locations, transmissions, draggable, loc_tech_id) {
 	} else {
 		map.getSource('transmission').setData(trans_data);
 	}
-	
+
 }
 
 
@@ -941,7 +947,7 @@ function render_map(locations, transmissions, draggable, loc_tech_id) {
 			ne = new mapboxgl.LngLat(bounds['_ne']['lng'], bounds['_ne']['lat']);
 		bounds = new mapboxgl.LngLatBounds(sw, ne);
 	}
-	
+
 	// Map
 	if (map === null) {
 		// Create Map
@@ -1069,7 +1075,7 @@ function activate_carrier_dropdowns() {
 		check_unsaved();
 		if ($(this).hasClass('units_in_selector') | $(this).hasClass('units_out_selector')){
 			in_sel = $('.units_in_selector').first();
-			carrier_in = {'name':in_sel.val(),'rate_unit':in_sel.find('option:selected').attr('rate_unit'),'quantity_unit':in_sel.find('option:selected').attr('quantity_unit')};	
+			carrier_in = {'name':in_sel.val(),'rate_unit':in_sel.find('option:selected').attr('rate_unit'),'quantity_unit':in_sel.find('option:selected').attr('quantity_unit')};
 			out_sel = $('.units_out_selector').first();
 			carrier_out = {'name':out_sel.val(),'rate_unit':out_sel.find('option:selected').attr('rate_unit'),'quantity_unit':out_sel.find('option:selected').attr('quantity_unit')};
 			update_carriers(carrier_in,carrier_out,false);
@@ -1103,7 +1109,7 @@ function reconvert_all(load_flg){
 			value = row.find('.parameter-value').val(),
 			ts_id = row.find('.parameter-value.timeseries').val();
 			// Convert to number if possible
-		
+
 		if (value && $(this).hasClass('float-value') == true){
 			if (+value) { value = +value };
 			// If it is a timeseries: render the charts
