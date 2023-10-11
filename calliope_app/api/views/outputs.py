@@ -28,7 +28,7 @@ from django.utils.text import slugify
 from api.models.outputs import Run, Cambium
 from api.tasks import run_model, task_status, build_model,upload_ts
 from api.models.calliope import Abstract_Tech, Abstract_Tech_Param, Parameter
-from api.models.configuration import Model, ParamsManager, User_File, Location, Technology, Tech_Param, Loc_Tech, Loc_Tech_Param, Timeseries_Meta
+from api.models.configuration import Model, ParamsManager, User_File, Location, Technology, Tech_Param, Loc_Tech, Loc_Tech_Param, Timeseries_Meta, Carrier
 from api.models.engage import ComputeEnvironment
 from api.utils import zip_folder, initialize_units, convert_units, noconv_units
 from batch.managers import AWSBatchJobManager 
@@ -785,6 +785,33 @@ def upload_techs(request):
                         value=row['pretty_name'],
                     )
                 update_dict = {'edit':{'parameter':{},'timeseries':{}},'add':{},'essentials':{}}
+                # Grab in/out carriers and their units
+                units_in_ids= [4,5,70]
+                units_out_ids= [4,6,71]
+                units_in_names = Parameter.objects.filter(id__in=units_in_ids).values_list('name', flat=True)
+                carrier_in_name = [row[c] for c in units_in_names if c in row][0]
+                units_out_names = Parameter.objects.filter(id__in=units_out_ids).values_list('name', flat=True)
+                carrier_out_name = [row[c] for c in units_out_names if (c in row and not pd.isnull(row[c]))][0]
+
+                print(units_out_names)
+                print([row[c] for c in units_out_names if c in row])
+
+                carrier_in = Carrier.objects.filter(model=model,name=carrier_in_name)
+                if carrier_in:
+                    carrier_in = carrier_in.first()
+                    in_rate = carrier_in.rate_unit
+                    in_quantity = carrier_in.quantity_unit
+                else:
+                    in_rate = 'kW'
+                    in_quantity = 'kWh'
+                carrier_out = Carrier.objects.filter(model=model,name=carrier_out_name)
+                if carrier_out:
+                    carrier_out = carrier_out.first()
+                    out_rate = carrier_out.rate_unit
+                    out_quantity = carrier_out.quantity_unit
+                else:
+                    out_rate = 'kW'
+                    out_quantity = 'kW'
                 for f,v in row.iteritems():
                     if pd.isnull(v):
                         continue
@@ -874,6 +901,7 @@ def upload_techs(request):
                                 update_dict['edit']['parameter'][p.pk] = v
                         else:
                             try:
+                                p_units = p.units.replace('[[in_rate]]',in_rate).replace('[[in_quantity]]',in_quantity).replace('[[out_rate]]',out_rate).replace('[[out_quantity]]',out_quantity)
                                 if pyear:
                                     if p.pk not in update_dict['add']:
                                         update_dict['add'][p.pk] = {'year':[],'value':[]}
@@ -882,12 +910,12 @@ def upload_techs(request):
                                         update_dict['add'][p.pk]['value'].append(update_dict['edit']['parameter'][p.pk])
                                         update_dict['edit']['parameter'].pop(p.pk)
                                     update_dict['add'][p.pk]['year'].append(pyear)
-                                    update_dict['add'][p.pk]['value'].append(convert_units(ureg,v,p.units))
+                                    update_dict['add'][p.pk]['value'].append(convert_units(ureg,v,p_units))
                                 elif p.pk in update_dict['add']:
                                     update_dict['add'][p.pk]['year'].append('0')
                                     update_dict['add'][p.pk]['value'].append(v)
                                 else:
-                                    update_dict['edit']['parameter'][p.pk] = convert_units(ureg,v,p.units)
+                                    update_dict['edit']['parameter'][p.pk] = convert_units(ureg,v,p_units)
                             except Exception as e:
                                 context['logs'].append(str(i)+'- Tech '+str(row['pretty_name'])+': Column '+f+' '+str(e)+'. Error converting units. Parameter skipped.')
                                 continue
@@ -966,6 +994,30 @@ def upload_loctechs(request):
                         else:
                             context['logs'].append(str(i)+'- Tech '+str(row['technology'])+'-'+str(row['tag'])+' missing. Skipped.')
                         continue
+                
+                # Grab in/out carriers and their units
+                units_in_ids= [4,5,70]
+                units_out_ids= [4,6,71]
+                carrier_in_param = Tech_Param.objects.filter(technology=technology, parameter_id__in=units_in_ids).first()
+                carrier_out_param = Tech_Param.objects.filter(technology=technology, parameter_id__in=units_out_ids).first()
+
+                carrier_in = Carrier.objects.filter(model=model,name=carrier_in_param.value)
+                if carrier_in:
+                    carrier_in = carrier_in.first()
+                    in_rate = carrier_in.rate_unit
+                    in_quantity = carrier_in.quantity_unit
+                else:
+                    in_rate = 'kW'
+                    in_quantity = 'kWh'
+                carrier_out = Carrier.objects.filter(model=model,name=carrier_out_param.value)
+                if carrier_out:
+                    carrier_out = carrier_out.first()
+                    out_rate = carrier_out.rate_unit
+                    out_quantity = carrier_out.quantity_unit
+                else:
+                    out_rate = 'kW'
+                    out_quantity = 'kW'
+
                 location = Location.objects.filter(model_id=model.id,pretty_name=row['location_1']).first()
                 if location==None:
                     location = Location.objects.filter(model_id=model.id,name=row['location_1']).first()
@@ -1112,6 +1164,7 @@ def upload_loctechs(request):
                                 update_dict['edit']['parameter'][p.pk] = v
                         else:
                             try:
+                                p_units = p.units.replace('[[in_rate]]',in_rate).replace('[[in_quantity]]',in_quantity).replace('[[out_rate]]',out_rate).replace('[[out_quantity]]',out_quantity)
                                 if pyear:
                                     if p.pk not in update_dict['add']:
                                         update_dict['add'][p.pk] = {'year':[],'value':[]}
@@ -1120,12 +1173,12 @@ def upload_loctechs(request):
                                         update_dict['add'][p.pk]['value'].append(update_dict['edit']['parameter'][p.pk])
                                         update_dict['edit']['parameter'].pop(p.pk)
                                     update_dict['add'][p.pk]['year'].append(pyear)
-                                    update_dict['add'][p.pk]['value'].append(convert_units(ureg,v,p.units))
+                                    update_dict['add'][p.pk]['value'].append(convert_units(ureg,v,p_units))
                                 elif p.pk in update_dict['add']:
                                     update_dict['add'][p.pk]['year'].append('0')
                                     update_dict['add'][p.pk]['value'].append(v)
                                 else:
-                                    update_dict['edit']['parameter'][p.pk] = convert_units(ureg,v,p.units)
+                                    update_dict['edit']['parameter'][p.pk] = convert_units(ureg,v,p_units)
                             except Exception as e:
                                 context['logs'].append(str(i)+'- Tech '+str(row['technology'])+': Column '+f+' '+str(e)+'. Error converting units. Parameter skipped.')
                                 continue                    
