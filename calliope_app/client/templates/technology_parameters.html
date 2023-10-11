@@ -84,7 +84,7 @@
 						<select {% if not can_edit %}disabled{% endif %} class="static_inputs form-control parameter-value parameter-value-existing" name="edit[parameter][{{ param.parameter_id }}]" data-value="{{ param.value }}">
 							{% if param.choices %}
 								{% for choice in param.choices %}
-								<option value="{{ choice.name }}" {% if choice.name == param.value %}selected{% endif %}>{{ choice.name }}</option>
+								<option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
 								{% endfor %}
 							{% else %}
 								{% if not param.value %}
@@ -174,7 +174,7 @@
 								<option selected></option>
 								{% endif %}
 								{% for choice in carriers %}
-								<option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
+								<option value="{{ choice.name }}" {% if choice.name == param.value %}selected{% endif %}>{{ choice.name }}</option>
 								{% endfor %}
 							{% endif %}
 						</select>
@@ -219,7 +219,7 @@
 							{% else %}
 								<option selected></option>
 								{% for choice in carriers %}
-								<option value="{{ choice }}">{{ choice }}</option>
+								<option value="{{ choice.name }}">{{ choice.name }}</option>
 								{% endfor %}
 							{% endif %}
 						</select>
