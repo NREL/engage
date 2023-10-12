@@ -808,7 +808,7 @@ def upload_techs(request):
                     out_quantity = carrier_out.quantity_unit
                 else:
                     out_rate = 'kW'
-                    out_quantity = 'kW'
+                    out_quantity = 'kWh'
                 for f,v in row.iteritems():
                     if pd.isnull(v):
                         continue
@@ -1013,7 +1013,7 @@ def upload_loctechs(request):
                     out_quantity = carrier_out.quantity_unit
                 else:
                     out_rate = 'kW'
-                    out_quantity = 'kW'
+                    out_quantity = 'kWh'
 
                 location = Location.objects.filter(model_id=model.id,pretty_name=row['location_1']).first()
                 if location==None:
