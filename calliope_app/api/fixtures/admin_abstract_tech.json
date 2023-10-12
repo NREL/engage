@@ -8,7 +8,7 @@
       "pretty_name_es": "Supply",
       "description": "Supplies energy to a carrier, has a positive resource.",
       "description_fr": "Fournir de l'\u00e9nergie \u00e0 un transporteur, a une ressource positive.",
-      "description_es": "Suministra energía a un transportista, tiene un recurso positivo.",
+      "description_es": "Suministra energía a un portador, tiene un recurso positivo.",
       "name": "supply",
       "image": "data/images/supply.png",
       "icon": "<i class=\"fas fa-bolt\"></i>"
@@ -23,7 +23,7 @@
       "pretty_name_es": "Suppy + Storage",
       "description": "Supplies energy to a carrier, has a positive resource. Additional possible constraints, including efficiencies and storage, distinguish this from\u00ac\u2020supply.",
       "description_fr": "Fournir de l'\u00e9nergie \u00e0 un transporteur, a une ressource positive. D'autres contraintes possibles, y compris l'efficacit\u00e9 et le stockage, distinguent cela de l'approvisionnement.",
-      "description_es": "Suministra energía a un transportista, tiene un recurso positivo. Otras posibles limitaciones, incluidas la eficiencia y el almacenamiento, distinguen esto de la oferta.",
+      "description_es": "Suministra energía a un portador, tiene un recurso positivo. Posibles restricciones adicionales, incluyendo eficiencias y almacenamiento, distinguen esto del suministro.",
       "name": "supply_plus",
       "image": "data/images/supply_plus.png",
       "icon": "<i class=\"fas fa-battery-three-quarters\"></i> <i class=\"fas fa-bolt\"></i>"
@@ -38,7 +38,7 @@
       "pretty_name_es": "Demand",
       "description": "Demands energy from a carrier, has a negative resource.",
       "description_fr": "Demande de l'\u00e9nergie \u00e0 un transporteur, a une ressource n\u00e9gative.",
-      "description_es": "Exige energía del transportista, tiene un recurso negativo.",
+      "description_es": "Demanda energía del portador, tiene un recurso negativo.",
       "name": "demand",
       "image": "data/images/demand.png",
       "icon": "<i class=\"far fa-building\"></i>"
