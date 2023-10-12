@@ -793,9 +793,6 @@ def upload_techs(request):
                 units_out_names = Parameter.objects.filter(id__in=units_out_ids).values_list('name', flat=True)
                 carrier_out_name = [row[c] for c in units_out_names if (c in row and not pd.isnull(row[c]))][0]
 
-                print(units_out_names)
-                print([row[c] for c in units_out_names if c in row])
-
                 carrier_in = Carrier.objects.filter(model=model,name=carrier_in_name)
                 if carrier_in:
                     carrier_in = carrier_in.first()
