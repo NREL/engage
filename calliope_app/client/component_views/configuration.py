@@ -387,15 +387,13 @@ def timeseries_view(request):
         # get max value for each day
         timeseries = timeseries.resample('D').max()
 
-    timestamps = timeseries.datetime.dt.strftime(
-        '%Y-%m-%d %H:%M:%S').values.tolist()
-
-    timeseries_contains_nan = bool(timeseries.isna().any().any())
+    timeseries_contains_nan = bool(timeseries.isna().any().any()) or bool(timeseries.datetime.isna().any().any())
     if timeseries_contains_nan:
         timeseries = timeseries.replace(np.nan, None)
+        timeseries.datetime = timeseries.datetime.replace(np.nan, None)
 
+    timestamps = timeseries.datetime.dt.strftime('%Y-%m-%d %H:%M:%S').values.tolist()
     values = timeseries.value.values.tolist()
-
 
     payload = {
         'timestamps': timestamps,
