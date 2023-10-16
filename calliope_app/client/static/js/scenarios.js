@@ -40,9 +40,48 @@ $( document ).ready(function() {
 		window.location = '/' + model_uuid + '/scenarios/';
 	});
 
+	//initVerticalBar();
+
 	get_scenario_configuration();
 
 });
+
+// function initVerticalBar() {
+//     // Get references to elements
+//     const leftPanel = $('.left-panel');
+//     const verticalBar = $('#vertical-bar');
+//     const rightPanel = $('.right-panel');
+
+//     let isResizing = false;
+//     let startX = 0;
+
+//     // Event listeners to start and stop resizing
+//     verticalBar.mousedown(function(e) {
+//         e.preventDefault();
+//         isResizing = true;
+//         startX = e.clientX;
+//         $(document).mousemove(function(e) {
+//             if (isResizing) {
+//                 const deltaX = e.clientX - startX;
+//                 const containerWidth = leftPanel.width() + rightPanel.width();
+//                 const newLeftPanelWidth = ((leftPanel.width() + deltaX) / containerWidth) * 100;
+//                 const newRightPanelWidth = ((rightPanel.width() - deltaX) / containerWidth) * 100;
+
+//                 // Set limits for panel width (adjust as needed)
+//                 if (newLeftPanelWidth > 20 && newRightPanelWidth > 20) {
+//                     leftPanel.css('flex', newLeftPanelWidth + '%');
+//                     rightPanel.css('flex', newRightPanelWidth + '%');
+//                 }
+//                 startX = e.clientX;
+//             }
+//         });
+//     });
+
+//     $(document).mouseup(function() {
+//         isResizing = false;
+//         $(document).off('mousemove');
+//     });
+// }
 
 function save_scenario_settings() {
 

@@ -6,9 +6,30 @@
 <title>Engage | {{ model.name }} | Scenarios</title>
 <script type="text/javascript" src="{% static 'js/scenarios.js' %}"></script>
 <style>
-    html, body {
-      height: 100%;
-      overflow: hidden;
+    html,
+    body {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .splitter-container {
+        display: flex;
+    }
+
+    .left-panel {
+        flex: 1;
+        overflow: auto;
+    }
+
+    .vertical-bar {
+        width: 10px;
+        cursor: col-resize;
+        background-color: #ccc;
+    }
+
+    .right-panel {
+        flex: 1;
+        overflow: auto;
     }
 </style>
 {% endblock %}
@@ -19,16 +40,68 @@
 
 {% block content %}
 <div id="subheader2" class="row content_navigation">
-	{% include "scenario_selector.html" %}
+    {% include "scenario_selector.html" %}
 </div>
-<div style="height: calc(100% - 160px);">
-    <!-- Map -->
-    {% include "map_container.html" %}
+<div style="height: calc(100% - 160px); display: flexbox;">
+
+    <div class="splitter-container">
+
+        <div class="left-panel">
+
+            <!-- Left panel content -->
+            <div class="col-md-6">
+                <div class="col-2 centered">
+                    <br>
+                    <button id="scenario-delete" {% if not can_edit %}disabled{% endif %} type="button"
+                        class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i></button>
+                </div>
+                <div class="col-8 centered">
+                    <br>
+                    <h3>{% trans "Scenario Details" %}:</h3>
+                    <br>
+                </div>
+
+                <!-- Scenario Name -->
+                <div class="col-5">
+                    <b>{% trans "Scenario Name" %}:</b>
+                </div>
+                <div class="col-7">
+                    <input {% if not can_edit %}disabled{% endif %} id="scenario_name" style="width: 100%" type="text"
+                        name="essentials[scenario_name]" value={{scenario.name}}>
+                </div>
+
+                <!-- Scenario Description -->
+                <div class="col-12">
+                    <b>{% trans "Scenario Description" %}:</b><br>
+                    <textarea {% if not can_edit %}disabled{% endif %} name="essentials[scenario_description]"
+                        id="scenario_description">{{ scenario.description }}</textarea>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="vertical-bar" id="vertical-bar"></div>
+
+        <div class="right-panel">
+            <!-- Right panel content -->
+            <div class="col-md-6"> {% include "map_container.html" %} </div>
+        </div>
+
+    </div>
+
+
+    <!-- <div class="row" style="height: 50%; display: flex;">
+        
+    </div> -->
+
+    <!-- Map
+    {% include "map_container.html" %}  -->
     <!-- Splitter -->
     {% include "splitter.html" %}
     <!-- Dashboard -->
     <div id="scenarios_dashboard" class="splitter_lower row" style="overflow-y: scroll; height: 50%;">
-        <form style="width: 100%;" id="form_scenario_settings" class="hide" method="post" action="" accept-charset="utf-8">
+        <form style="width: 100%;" id="form_scenario_settings" class="hide" method="post" action=""
+            accept-charset="utf-8">
             <div style="width: 100%;" id="scenario_settings">
                 <div style="color:red" class="col-12 centered"><br>{% trans "Oops, an error occurred" %}.<br><br></div>
             </div>
