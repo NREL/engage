@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-25 21:10+0000\n"
+"POT-Creation-Date: 2023-10-18 16:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -60,8 +60,8 @@ msgid ""
 "This account is inactive, please activate it with link sent via email, or "
 "contact Engage team."
 msgstr ""
-"Esta cuenta está inactiva, por favor actívela con el enlace enviado por correo "
-"electrónico o comuníquese con el equipo de Engage."
+"Esta cuenta está inactiva, por favor actívela con el enlace enviado por "
+"correo electrónico o comuníquese con el equipo de Engage."
 
 #: account/validators.py:9
 msgid ""
@@ -73,8 +73,7 @@ msgstr ""
 
 #: account/validators.py:19
 msgid ""
-"Enter a valid email consisting of letters, numbers, and @/./+/-/_ "
-"characters."
+"Enter a valid email consisting of letters, numbers, and @/./+/-/_ characters."
 msgstr ""
 "Ingrese un correo electrónico válido que conste de letras, números y "
 "caracteres @/./+/-/_."
@@ -82,6 +81,10 @@ msgstr ""
 #: calliope_app/settings/base.py:131
 msgid "English"
 msgstr "Inglés"
+
+#: calliope_app/settings/base.py:132
+msgid "Spanish"
+msgstr "Español"
 
 #: calliope_app/settings/base.py:133
 msgid "French"
@@ -311,8 +314,8 @@ msgid ""
 "GEOPHIRES v2.0 is a geothermal techno-economic simulation tool used in "
 "Engage to calculate Geothermal related parameters. GEOPHIRES combines "
 "reservoir, wellbore, and surface plant technical models with cost "
-"correlations and levelized cost models to estimate the capital and operation"
-" and maintenance costs, instantaneous and lifetime energy production, and "
+"correlations and levelized cost models to estimate the capital and operation "
+"and maintenance costs, instantaneous and lifetime energy production, and "
 "overall levelized cost of energy of a geothermal plant."
 msgstr ""
 "GEOPHIRES v2.0 es una herramienta de simulación tecnoeconómica geotérmica "
@@ -320,8 +323,8 @@ msgstr ""
 "GEOPHIRES combina modelos técnicos de yacimientos, pozos y plantas de "
 "superficie con correlaciones de costos y modelos de costos nivelados para "
 "estimar los costos de capital y de operación y mantenimiento, la producción "
-"de energía instantánea y de por vida, y el costo nivelado general de energía"
-" de una planta geotérmica."
+"de energía instantánea y de por vida, y el costo nivelado general de energía "
+"de una planta geotérmica."
 
 #: client/templates/base.html:51
 msgid "For more information about GEOPHIRES please see the "
@@ -659,20 +662,25 @@ msgid "Element"
 msgstr "Elemento"
 
 #: client/templates/model_flags.html:26
-msgid "Paramter"
+#, fuzzy
+#| msgid "Paramter"
+msgid "Parameter"
 msgstr "Parámetro"
 
 #: client/templates/model_flags.html:29
-#: client/templates/technology_parameters.html:143
-msgid "Value"
-msgstr "Valor"
+#, fuzzy
+#| msgid "Inputs"
+msgid "Input Text"
+msgstr "Entradas"
 
 #: client/templates/model_flags.html:32
-msgid "Raw Value"
-msgstr "Valor bruto"
+msgid "Converted Value"
+msgstr ""
 
 #: client/templates/model_flags.html:35
-msgid "Flags"
+#, fuzzy
+#| msgid "Flags"
+msgid "Flag"
 msgstr "Banderas"
 
 #: client/templates/model_flags.html:38
@@ -748,11 +756,12 @@ msgstr "Importar Datos"
 
 #: client/templates/pvwatts_form.html:51
 msgid ""
-"Generates a timeseries of solar capacity factor data. Find and inspect it on"
-" the Timeseries page, linked below."
+"Generates a timeseries of solar capacity factor data. Find and inspect it on "
+"the Timeseries page, linked below."
 msgstr ""
 "Genera una serie temporales de datos del factor de capacidad solar. "
-"Encuéntrelo e inspeccione en la página de series temporales, vinculada a continuación."
+"Encuéntrelo e inspeccione en la página de series temporales, vinculada a "
+"continuación."
 
 #: client/templates/pvwatts_form.html:53 client/templates/wtk_form.html:43
 msgid "Timeseries Page"
@@ -764,9 +773,8 @@ msgid ""
 "Engage is a highly accessible and flexible web-based energy planning model "
 "for rapid multi-sectoral scenario exploration. Its cloud-based shared data "
 "model, intuitive interface and visualization capabilities facilitate "
-"collaboration and communication among diverse stakeholder groups, teams, and"
-" experts modeling systems from district energy / microgrid to national "
-"scales."
+"collaboration and communication among diverse stakeholder groups, teams, and "
+"experts modeling systems from district energy / microgrid to national scales."
 msgstr ""
 "Engage es un modelo de planificación energética basado en la web, altamente "
 "accesible y flexible para una rápida exploración de escenarios "
@@ -775,7 +783,6 @@ msgstr ""
 "colaboración y la comunicación entre diversos grupos de partes interesadas, "
 "equipos y expertos que modelan sistemas desde energía distrital/microred "
 "hasta escalas nacionales."
-
 
 #: client/templates/registration/login.html:29
 #: client/templates/registration/registration.html:29
@@ -1144,8 +1151,8 @@ msgid ""
 "Version tags are used to differentiate multiple versions of the same "
 "technology"
 msgstr ""
-"Las etiquetas de versión se utilizan para diferenciar varias versiones de la"
-" misma tecnología."
+"Las etiquetas de versión se utilizan para diferenciar varias versiones de la "
+"misma tecnología."
 
 #: client/templates/technology_parameters.html:48
 #: client/templates/technology_parameters.html:51
@@ -1174,6 +1181,10 @@ msgstr ""
 #: client/templates/technology_parameters.html:142
 msgid "Year"
 msgstr "Año"
+
+#: client/templates/technology_parameters.html:143
+msgid "Value"
+msgstr "Valor"
 
 #: client/templates/technology_parameters.html:237
 msgid "Remove a row"
@@ -1308,7 +1319,8 @@ msgid ""
 "the Timeseries page, linked below."
 msgstr ""
 "Genera una serie temporal de datos del factor de capacidad eólica. "
-"Encuéntrelo e inspeccione en la página de series temporales, vinculada a continuación."
+"Encuéntrelo e inspeccione en la página de series temporales, vinculada a "
+"continuación."
 
-#~ msgid "Spanish"
-#~ msgstr "Español"
+#~ msgid "Raw Value"
+#~ msgstr "Valor bruto"
