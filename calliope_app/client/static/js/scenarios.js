@@ -40,48 +40,59 @@ $( document ).ready(function() {
 		window.location = '/' + model_uuid + '/scenarios/';
 	});
 
-	//initVerticalBar();
+	initVerticalBar();
 
 	get_scenario_configuration();
 
 });
 
-// function initVerticalBar() {
-//     // Get references to elements
-//     const leftPanel = $('.left-panel');
-//     const verticalBar = $('#vertical-bar');
-//     const rightPanel = $('.right-panel');
+function initVerticalBar() {
+    // Get references to elements
+    const leftPanel = $('.left-panel');
+    const verticalBar = $('#vertical-bar');
+    const rightPanel = $('.right-panel');
+	const map = $('#map');
 
-//     let isResizing = false;
-//     let startX = 0;
+    let isResizing = false;
+    let startX = 0;
+	let startY = 0;
 
-//     // Event listeners to start and stop resizing
-//     verticalBar.mousedown(function(e) {
-//         e.preventDefault();
-//         isResizing = true;
-//         startX = e.clientX;
-//         $(document).mousemove(function(e) {
-//             if (isResizing) {
-//                 const deltaX = e.clientX - startX;
-//                 const containerWidth = leftPanel.width() + rightPanel.width();
-//                 const newLeftPanelWidth = ((leftPanel.width() + deltaX) / containerWidth) * 100;
-//                 const newRightPanelWidth = ((rightPanel.width() - deltaX) / containerWidth) * 100;
+    // Event listeners to start and stop resizing
+    verticalBar.mousedown(function(e) {
+        e.preventDefault();
+        isResizing = true;
+        startX = e.clientX;
+		startY = e.clientY;
+        $(document).mousemove(function(e) {
+            if (isResizing) {
+				const deltaX = e.clientX - startX;
+                const deltaY = e.clientY - startY;
+                const containerWidth = leftPanel.width() + rightPanel.width();
+                const newLeftPanelWidth = ((leftPanel.width() + deltaX) / containerWidth) * 100;
+                const newRightPanelWidth = ((rightPanel.width() - deltaX) / containerWidth) * 100;
 
-//                 // Set limits for panel width (adjust as needed)
-//                 if (newLeftPanelWidth > 20 && newRightPanelWidth > 20) {
-//                     leftPanel.css('flex', newLeftPanelWidth + '%');
-//                     rightPanel.css('flex', newRightPanelWidth + '%');
-//                 }
-//                 startX = e.clientX;
-//             }
-//         });
-//     });
+                // Set limits for panel width (adjust as needed)
+                if (newLeftPanelWidth > 20 && newRightPanelWidth > 20) {
+                    leftPanel.css('flex', newLeftPanelWidth + '%');
+                    rightPanel.css('flex', newRightPanelWidth + '%');
+                }
 
-//     $(document).mouseup(function() {
-//         isResizing = false;
-//         $(document).off('mousemove');
-//     });
-// }
+				const sliderPosition = e.clientY - $('#map_container').offset().top;
+                const mapContainerHeight = $('#map_container').height();
+                const mapHeight = (sliderPosition / mapContainerHeight) * 100;
+                map.css('height', mapHeight + '%');
+
+                startX = e.clientX;
+				startY = e.clientY;
+            }
+        });
+    });
+
+    $(document).mouseup(function() {
+        isResizing = false;
+        $(document).off('mousemove');
+    });
+}
 
 function save_scenario_settings() {
 
