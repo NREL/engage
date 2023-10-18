@@ -410,7 +410,7 @@
       "can_evolve": "False",
       "name": "solver",
       "default_value": "amplxpress",
-      "choices": "[\"glpk\",\"amplxpress\"]"
+      "choices": "[\"glpk\",\"amplxpress\",\"xpress_direct\"]"
     }
   },
   {

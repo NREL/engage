@@ -91,7 +91,7 @@
 								<option selected></option>
 								{% endif %}
 								{% for choice in carriers %}
-								<option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
+								<option value="{{ choice.name }}" {% if choice.name == param.value %}selected{% endif %}>{{ choice.name }}</option>
 								{% endfor %}
 							{% endif %}
 						</select>
@@ -174,7 +174,7 @@
 								<option selected></option>
 								{% endif %}
 								{% for choice in carriers %}
-								<option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
+								<option value="{{ choice.name }}" {% if choice.name == param.value %}selected{% endif %}>{{ choice.name }}</option>
 								{% endfor %}
 							{% endif %}
 						</select>
@@ -219,7 +219,7 @@
 							{% else %}
 								<option selected></option>
 								{% for choice in carriers %}
-								<option value="{{ choice }}">{{ choice }}</option>
+								<option value="{{ choice.name }}">{{ choice.name }}</option>
 								{% endfor %}
 							{% endif %}
 						</select>

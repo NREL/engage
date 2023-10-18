@@ -173,6 +173,10 @@ class Model(models.Model):
         params = Tech_Param.objects.filter(technology__in=self.technologies,
                                            parameter__name='color')
         return {c.technology_id: c.value for c in params}
+    
+    @property
+    def carriers(self):
+        return self.carrier_set.all()
 
     def check_model_carrier_units(self,carrier):
         units_in_ids= [4,5,70]
@@ -1569,7 +1573,7 @@ class Carrier(models.Model):
 
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
-    model = models.ForeignKey(Model, related_name='carriers', on_delete=models.CASCADE)
+    model = models.ForeignKey(Model, on_delete=models.CASCADE)
     rate_unit = models.CharField(max_length=20)
     quantity_unit = models.CharField(max_length=20)
     created = models.DateTimeField(auto_now_add=True, null=True)
