@@ -24,7 +24,7 @@
     .vertical-bar {
         width: 10px;
         cursor: col-resize;
-        background-color: #ccc;
+        background-color: #005592;
     }
 
     .right-panel {
@@ -86,11 +86,20 @@
             <!-- Right panel content 
             <div class="col-md-6"> {% include "map_container.html" %} </div> -->
 
-            <div id="map_container" class="splitter_upper row" style="height: 100%; ">
+           <!-- <div id="map_container" class="splitter_upper row" style="height: 100%; ">
                 <div class="col-12" id="map" style="height: 100%; border:solid;"></div>
                 <div class="col-12" id="map-legend-container"><div id="map-legend"></div></div>
                 {% include "spinner.html" %}
+            </div> -->
+
+            <div id="map_container" class="splitter_upper row" style="height: 100%;">
+                <div class="col-12 map-panel" id="map" style="height: 100%; border: solid;">
+                    <div id="map-legend-container"><div id="map-legend"></div></div>
+                    {% include "spinner.html" %}
+                </div>
             </div>
+            
+            
 
         </div>
 

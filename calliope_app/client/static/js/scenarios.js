@@ -46,44 +46,44 @@ $( document ).ready(function() {
 
 });
 
+
 function initVerticalBar() {
-    // Get references to elements
     const leftPanel = $('.left-panel');
     const verticalBar = $('#vertical-bar');
     const rightPanel = $('.right-panel');
-	const map = $('#map');
+    const map = $('#map');
 
     let isResizing = false;
     let startX = 0;
-	let startY = 0;
+    let startY = 0;
 
-    // Event listeners to start and stop resizing
     verticalBar.mousedown(function(e) {
         e.preventDefault();
         isResizing = true;
         startX = e.clientX;
-		startY = e.clientY;
+        startY = e.clientY;
+        const container = $('#splitter');
+        const leftPanel = $('.left-panel');
+        const rightPanel = $('.right-panel');
+
         $(document).mousemove(function(e) {
             if (isResizing) {
-				const deltaX = e.clientX - startX;
-                const deltaY = e.clientY - startY;
-                const containerWidth = leftPanel.width() + rightPanel.width();
+                const deltaX = e.clientX - startX;
+                const containerWidth = container.width();
                 const newLeftPanelWidth = ((leftPanel.width() + deltaX) / containerWidth) * 100;
                 const newRightPanelWidth = ((rightPanel.width() - deltaX) / containerWidth) * 100;
 
-                // Set limits for panel width (adjust as needed)
                 if (newLeftPanelWidth > 20 && newRightPanelWidth > 20) {
                     leftPanel.css('flex', newLeftPanelWidth + '%');
                     rightPanel.css('flex', newRightPanelWidth + '%');
                 }
 
-				const sliderPosition = e.clientY - $('#map_container').offset().top;
-                const mapContainerHeight = $('#map_container').height();
-                const mapHeight = (sliderPosition / mapContainerHeight) * 100;
-                map.css('height', mapHeight + '%');
+                //const rightPanelHeight = container.height() - $('#subheader2').outerHeight();
+               // $('#map').css('height', rightPanelHeight + 'px');
+			   adjustMapContainerHeight();
 
                 startX = e.clientX;
-				startY = e.clientY;
+                startY = e.clientY;
             }
         });
     });
@@ -93,6 +93,69 @@ function initVerticalBar() {
         $(document).off('mousemove');
     });
 }
+
+function adjustMapContainerHeight() {
+    const rightPanelHeight = $('.right-panel').height();
+    $('#map').css('height', rightPanelHeight + 'px');
+}
+
+// function initVerticalBar() {
+//     // Get references to elements
+//     const leftPanel = $('.left-panel');
+//     const verticalBar = $('#vertical-bar');
+//     const rightPanel = $('.right-panel');
+// 	const map = $('#map');
+
+//     let isResizing = false;
+//     let startX = 0;
+// 	//let startY = 0;
+
+//     // Event listeners to start and stop resizing
+//     verticalBar.mousedown(function(e) {
+//         e.preventDefault();
+//         isResizing = true;
+//         startX = e.clientX;
+// 		startY = e.clientY;
+//         $(document).mousemove(function(e) {
+//             if (isResizing) {
+// 				const deltaX = e.clientX - startX;
+//                 //const deltaY = e.clientY - startY;
+//                 const containerWidth = leftPanel.width() + rightPanel.width();
+//                 const newLeftPanelWidth = ((leftPanel.width() + deltaX) / containerWidth) * 100;
+//                 const newRightPanelWidth = ((rightPanel.width() - deltaX) / containerWidth) * 100;
+
+//                 // Set limits for panel width (adjust as needed)
+//                 if (newLeftPanelWidth > 20 && newRightPanelWidth > 20) {
+//                     leftPanel.css('flex', newLeftPanelWidth + '%');
+//                     rightPanel.css('flex', newRightPanelWidth + '%');
+//                 }
+
+// 				const sliderPosition = e.clientY - $('#map_container').offset().top;
+//                 const mapContainerHeight = $('#map_container').height();
+//                 const mapHeight = (sliderPosition / mapContainerHeight) * 100;
+//                 map.css('height', mapHeight + '%');
+
+//                 startX = e.clientX;
+// 				//startY = e.clientY;
+//             }
+//         });
+//     });
+
+//     $(document).mouseup(function() {
+//         isResizing = false;
+//         $(document).off('mousemove');
+//     });
+
+// 	// Update the map's height dynamically based on the vertical bar's position
+//     $(document).on('mousemove', function(e) {
+//         if (isResizing) {
+//             const sliderPosition = e.clientY - $('#map_container').offset().top;
+//             const mapContainerHeight = $('#map_container').height();
+//             const mapHeight = (sliderPosition / mapContainerHeight) * 100;
+//             $('#map').css('height', mapHeight + '%');
+//         }
+//     });
+// }
 
 function save_scenario_settings() {
 
