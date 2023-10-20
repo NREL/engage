@@ -19,8 +19,8 @@
     "model": "api.abstract_tech",
     "fields": {
       "pretty_name": "Supply + Storage",
-      "pretty_name_fr": "Suppy + Storage",
-      "pretty_name_es": "Suppy + Storage",
+      "pretty_name_fr": "Supply + Storage",
+      "pretty_name_es": "Supply + Storage",
       "description": "Supplies energy to a carrier, has a positive resource. Additional possible constraints, including efficiencies and storage, distinguish this from\u00ac\u2020supply.",
       "description_fr": "Fournir de l'\u00e9nergie \u00e0 un transporteur, a une ressource positive. D'autres contraintes possibles, y compris l'efficacit\u00e9 et le stockage, distinguent cela de l'approvisionnement.",
       "description_es": "Suministra energía a un portador, tiene un recurso positivo. Posibles restricciones adicionales, incluyendo eficiencias y almacenamiento, distinguen esto del suministro.",
