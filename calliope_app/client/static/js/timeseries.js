@@ -1,7 +1,7 @@
 var ts_id = 0, file_id = 0;
 
 $( document ).ready(function() {
-	
+
 	// file functions...
 	$('.file-delete').on('click', function(){
 		var row = $(this).parents('tr'),
@@ -35,8 +35,6 @@ $( document ).ready(function() {
 		select_file(true);
 	});
 
-	// end of file functions
-	
 	active_timeseries_table_click();
 	refresh_timeseries_table(true);
 	setInterval(function () {
@@ -44,6 +42,7 @@ $( document ).ready(function() {
 	}, 2000);
 
 });
+
 
 function refresh_timeseries_table(open_viz) {
 	var model_uuid = $('#header').data('model_uuid');
@@ -102,7 +101,7 @@ function active_timeseries_table_click() {
 	$('.timeseries-delete').unbind();
 	$('.timeseries-delete').on('click', function(e) {
 		e.stopPropagation();
-		
+
 		var row = $(this).parents('tr'),
 			timeseries_id = row.data('timeseries_id');
 
@@ -160,7 +159,7 @@ function timeseries_new(file_id) {
 			dataType: 'json',
 			success: function (data) {
 				$('#timeseries-container-new').html(data['html']);
-				
+
 				function updateHeader() {
 					var hasHeader = $('#has_header').is(':checked');
 					if (hasHeader) {
@@ -183,10 +182,10 @@ function timeseries_new(file_id) {
 						});
 					}
 				}
-				
+
 				$('#has_header').on('click', updateHeader);
 				updateHeader();
-				
+
 				$('#upload_timeseries').on('click', function() {
 					var model_uuid = $('#header').data('model_uuid'),
 						file_id = $('.file-row.table-primary').data('file_id'),
@@ -195,7 +194,7 @@ function timeseries_new(file_id) {
 						timestamp_col = $('#timestamp_col').prop('selectedIndex'),
 						value_col = $('#value_col').prop('selectedIndex'),
 						has_header = $('#has_header').is(':checked');
-					
+
 					if (timeseries_name) {
 						$.ajax({
 							url: '/' + LANGUAGE_CODE + '/api/upload_timeseries/',
@@ -215,7 +214,7 @@ function timeseries_new(file_id) {
 								} else {
 									$('#error-message').html(data['message']);
 									$('select, input').attr('disabled', false);
-								};								
+								};
 							}
 						});
 					} else {

@@ -39,8 +39,8 @@
 		<div id="file_container">
 				<table id="file_list" class="table table-hover table-sm">
 					<tbody>
-						
-						
+
+
 						<form method="post" enctype="multipart/form-data" action="/{{ LANGUAGE_CODE }}/api/upload_file/">
 						{% csrf_token %}
 						<!-- Add File -->
@@ -60,7 +60,7 @@
 							</td>
 						</tr>
 						</form>
-					
+
 				{% if files %}
 					{% for file in files %}
 						<!-- File Row -->
@@ -74,16 +74,21 @@
 							</td>
 							<!-- Edit Buttons -->
 							<td class="centered">
-								<button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-sm btn-outline-danger file-delete" title="{% trans 'Delete file' %}"><i class="fas fa-trash"></i></button>
+                <button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-sm btn-outline-success file-download" title="{% trans 'Download file' %}">
+                  <a href="{% url 'download_file' model_uuid=model.uuid file_id=file.id %}"><i class="fas fa-download"></i></a>
+                </button>
+								<button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-sm btn-outline-danger file-delete" title="{% trans 'Delete file' %}">
+                  <i class="fas fa-trash"></i>
+                </button>
 							</td>
 						</tr>
 					{% endfor %}
-					
-					
+
+
 				{% else %}
 					<tr><td>{% trans "No files have been uploaded yet" %}.<td></tr>
 				{% endif %}
-				
+
 					</tbody>
 				</table>
 		</div>
@@ -99,9 +104,9 @@
 				<button id="timeseries_new_btn" {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-success btn-sm" title="{% trans 'Create a new timeseries' %}"><i class="fas fa-plus"></i> {% trans "Create Timeseries" %}</button>
 			</div>
 		</div>
-		
+
 		<div id="timeseries-container-new" class="hide"><br><b>{% trans "Choose a file from the left!" %}</b></div>
-		
+
 		<div id="timeseries-container">
 			{% include 'timeseries_table.html' %}
 		</div>
