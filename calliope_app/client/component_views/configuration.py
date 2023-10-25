@@ -166,10 +166,10 @@ def all_tech_params(request):
     context = {"technology": technology,
                "essentials": essentials,
                "carriers": carriers,
-               "required_carrier_ids": [4, 5, 6, 138, 139, 70, 71],
-               "cplus_carrier_ids": [138, 139, 66, 67, 68, 69],
-               "units_in_ids": [4,5,70],
-               "units_out_ids": [4,6,71],
+               "required_carrier_ids": ParamsManager.get_tagged_params('required_carrier'),
+               "cplus_carrier_ids": ParamsManager.get_tagged_params('cplus_carrier'),
+               "units_in_ids": ParamsManager.get_tagged_params('units_in'),
+               "units_out_ids": ParamsManager.get_tagged_params('units_out'),
                "can_edit": can_edit}
     html_essentials = list(render(request,
                                   'technology_essentials.html',
@@ -274,8 +274,8 @@ def all_loc_tech_params(request):
     timeseries = Timeseries_Meta.objects.filter(model=model, failure=False,
                                                 is_uploading=False)
 
-    units_in_ids = [4,5,70]
-    units_out_ids = [4,6,71]
+    units_in_ids= ParamsManager.get_tagged_params('units_in')
+    units_out_ids= ParamsManager.get_tagged_params('units_out')
 
     carrier_in = Tech_Param.objects.filter(technology=loc_tech.technology, parameter__id__in=units_in_ids).first().value
     carrier_out = Tech_Param.objects.filter(technology=loc_tech.technology, parameter__id__in=units_out_ids).first().value
