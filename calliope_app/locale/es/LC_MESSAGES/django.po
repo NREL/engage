@@ -1191,6 +1191,7 @@ msgid "Remove a row"
 msgstr "Quitar una fila"
 
 #: client/templates/templates_modal.html:107
+#: client/templates/base.html:46
 msgid "Node Groups"
 msgstr "Grupos Nodo"
 
