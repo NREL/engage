@@ -12,7 +12,11 @@ $( document ).ready(function() {
 
     //------------Start Templates------------//
     $("#master-new").show();
-    $("#master-new").html("Node Groups");
+    $("#master-new").html(djangoTranslateNodeGroups);
+    if (djangoTranslateNodeGroups.length > 11) {
+        $("#master-new").css('white-space', "normal");
+        $("#master-new").css('padding-top', 1);
+    }
     $('#master-new').css({ "font-size:": '13px'});
     $('#master-new').attr('data-target','#templatesModal');
     $('#master-new').attr('data-toggle','modal');
@@ -606,7 +610,7 @@ function displayAPIButtons() {
         var geoId = "#" + geoInputs.replace(/\s/g, '')+"-row";
         $(geoId).append( "<div id='geophiresActions' class='col-12'></div>");
         $("#geophiresActions").append("<button id='runGeophires' class='btn btn-success' type='button' style='height:38px;'>" + djangoTranslateRun + " GEOPHIRES</button>");
-        $(geoId).append( "<div class='col-12'><span style='font-size: .8em;margin-bottom:1em;float: right;'><i>" + djangoTranslateGEOPHIRESInfo + "<div data-toggle='tooltip' data-placement='bottom' title='" + djangoTranslateGEOPHIRESDesc + "' data-original-title='" + djangoTranslateGEOPHIRESDesc + "' style='display: inline-block;'><a target='_blank' href='https://www.osti.gov/biblio/1600135'>GEOPHIRES documentation</a></div>.</i><span>");
+        $(geoId).append( "<div class='col-12'><span style='font-size: .8em;margin-bottom:1em;float: right;'><i>" + djangoTranslateGEOPHIRESInfo + "<div data-toggle='tooltip' data-placement='bottom' title='" + djangoTranslateGEOPHIRESDesc + "' data-original-title='" + djangoTranslateGEOPHIRESDesc + "' style='display: inline-block;'><a target='_blank' href='https://www.osti.gov/biblio/1600135'>&#160;GEOPHIRES documentation</a></div>.</i><span>");
         //<button id='runGETEM' disabled class='btn btn-success' type='button'>Run GETEM</button>
         $(geoId).append( "<span id='geophiresError' class='center' hidden='true' style='color:red;margin-bottom:1em'>An error occured running Geophires! Please contact Support.</span>");
         $(geoId).append( "<span id='geophiresInputsError' class='center' hidden='true' style='color:red;margin-bottom:1em'></span>");
