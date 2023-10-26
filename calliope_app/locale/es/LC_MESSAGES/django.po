@@ -326,9 +326,9 @@ msgstr ""
 "de energía instantánea y de por vida, y el costo nivelado general de energía "
 "de una planta geotérmica."
 
-#: client/templates/base.html:51
+#: client/templates/base.html:49
 msgid "For more information about GEOPHIRES please see the "
-msgstr "Para obtener más información sobre GEOPHIRES, consulte la"
+msgstr "Para obtener más información sobre GEOPHIRES, consulte la "
 
 #: client/templates/base.html:52
 msgid ""
@@ -1191,6 +1191,7 @@ msgid "Remove a row"
 msgstr "Quitar una fila"
 
 #: client/templates/templates_modal.html:107
+#: client/templates/base.html:46
 msgid "Node Groups"
 msgstr "Grupos Nodo"
 

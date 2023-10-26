@@ -1121,6 +1121,7 @@ msgstr ""
 "dessous."
 
 #: client/templates/templates_modal.html:95
+#: client/templates/base.html:46
 msgid "Node Groups"
 msgstr "Groupes de nœuds"
 
