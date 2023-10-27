@@ -277,7 +277,7 @@ function getModelCarriers() {
 function updateDialogGroupConstraints(initialLoad) {
     $('#dialog-inputs').empty();
     if (dialogObj.length > 0) {
-        $('#dialog-inputs').append( "<h5><b>Constraint Groups</b></h5>");
+        $('#dialog-inputs').append( "<h3><b>Constraint Groups</b></h3>");
     }
     Object.keys(dialogObj).forEach(constraint => {
         let constraintId = safeHTMLId(constraint);
