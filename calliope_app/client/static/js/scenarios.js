@@ -529,13 +529,14 @@ function activate_scenario_settings() {
 	});
 
     const parseJSON = (inputString, fallback) => {
-        if (inputString) {
+        if (inputString && inputString.length > 0) {
           try {
             return JSON.parse(inputString);
           } catch (e) {
             return fallback;
           }
         }
+        return fallback;
     };
 
     // Wieght of cost classes Modal
