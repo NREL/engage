@@ -434,7 +434,7 @@ function updateConstraintTypes(constraint, constraintId, constraintContent) {
                 const val = key ? dialogObj[constraint][fieldKey][Object.keys(dialogObj[constraint][fieldKey])[0]] : "";
                 $(constraintFields).append( "<label><b>Key </b></label>");
                 let dropdownArray = constraints.indexOf(fieldKey) <= 21 ? carriers : ["co2", "ch4", "co2e", "n2o", "monetary"];
-                if (dropdownArray.indexOf(key) === -1) {
+                if (key.length > 0 && dropdownArray.indexOf(key) === -1) {
                     dropdownArray.push(key);
                 }
                 $(constraintFields).append( "<select style='margin-bottom:1em' class='form-control smol' id='" + constraintId + fieldKey + "-key' name='dialogObj[constraint][fieldKey].name' data-toggle='tooltip' data-placement='left'></select><br><br>" );
