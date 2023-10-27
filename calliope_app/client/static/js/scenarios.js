@@ -277,7 +277,7 @@ function getModelCarriers() {
 function updateDialogGroupConstraints(initialLoad) {
     $('#dialog-inputs').empty();
     if (dialogObj.length > 0) {
-        $('#dialog-inputs').append( "<h5><b>Group Constraints</b></h5>");
+        $('#dialog-inputs').append( "<h5><b>Constraint Groups</b></h5>");
     }
     Object.keys(dialogObj).forEach(constraint => {
         let constraintId = safeHTMLId(constraint);
@@ -413,12 +413,12 @@ function updateDialogGroupConstraints(initialLoad) {
 }
 
 function updateConstraintTypes(constraint, constraintId, constraintContent) {
-    $(constraintContent).append( "<label id='constraints-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Multiple constraints can be added to a single group constraint. Cost and carriers are a key and value pair whereas all other types are a value. See Constraint column in Calliope documentation for value options.'><b>Constraints</b></label><br>");
+    $(constraintContent).append( "<label id='constraints-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Multiple constraints can be added to a single constraint group. Cost and carriers are a key and value pair whereas all other types are a value. See Constraint column in Calliope documentation for value options.'><b>Constraints</b></label><br>");
 
     Object.keys(dialogObj[constraint]).forEach(fieldKey => {
         if (fieldKey !== "locs" && fieldKey !== "techs" && fieldKey !== "techs_lhs" && fieldKey !== "techs_rhs" && fieldKey !== "locs_lhs" && fieldKey !== "locs_rhs") {
 
-            $(constraintContent).append( "<label style='padding-left:20px'><b>Constraint Type </b></label><div style='float:right;'><span style='margin-right: 10px'>" + fieldKey + "</span><button id='delete_constraint_btn_" + constraintId + "-" + fieldKey + "' type='button' class='btn btn-sm btn-outline-danger constraint-delete' title='Delete constraint'><i class='fas fa-trash'></i></button></div><br>");
+            $(constraintContent).append( "<label style='padding-left:20px'><b>Constraint</b></label><div style='float:right;'><span style='margin-right: 10px'>" + fieldKey + "</span><button id='delete_constraint_btn_" + constraintId + "-" + fieldKey + "' type='button' class='btn btn-sm btn-outline-danger constraint-delete' title='Delete constraint'><i class='fas fa-trash'></i></button></div><br>");
             $("#delete_constraint_btn_" + constraintId + "-" + fieldKey).on('click', function() {
                 let con = this.id.replace("delete_constraint_btn_", '').split("-");
                 delete dialogObj[constraint][con[1]];
@@ -462,7 +462,7 @@ function updateConstraintTypes(constraint, constraintId, constraintContent) {
         }
     });
 
-    $(constraintContent).append( "<br><label><b>New Constraint Type </b></label>");
+    $(constraintContent).append( "<br><label><b>New Constraint</b></label>");
     $(constraintContent).append( "<select style='margin-bottom:1em' class='form-control smol' id='new-constraint-dropdown-" + constraintId + "' data-toggle='tooltip' data-placement='left'></select>" );
     $('#new-constraint-dropdown-' + constraintId ).append( "<option></option>" );
     for (let i = 0; i < constraints.length; i++) {
@@ -559,7 +559,7 @@ function activate_scenario_settings() {
         $('#co2e').val(dialogObj["co2e"]);
     });
 
-    // Group Constraints Modal
+    // Constraint Group Modal
 	$('.scenario-constraints-dialog-btn').on('click', function() {
 
         // display dialog
