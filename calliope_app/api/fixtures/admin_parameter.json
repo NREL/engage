@@ -15,7 +15,8 @@
       "units": "",
       "is_essential": true,
       "is_carrier": false,
-      "choices": "[\"supply\",\"supply_plus\",\"demand\",\"storage\",\"transmission\",\"conversion\",\"conversion_plus\"]"
+      "choices": "[\"supply\",\"supply_plus\",\"demand\",\"storage\",\"transmission\",\"conversion\",\"conversion_plus\"]",
+      "tags": "[\"essential\"]"
     },
     "model": "api.parameter"
   },
@@ -35,7 +36,8 @@
       "units": "",
       "is_essential": true,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"essential\"]"
     },
     "model": "api.parameter"
   },
@@ -55,7 +57,8 @@
       "units": "hex color code",
       "is_essential": true,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"essential\"]"
     },
     "model": "api.parameter"
   },
@@ -75,7 +78,8 @@
       "units": "",
       "is_essential": true,
       "is_carrier": true,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\", \"carrier_in\", \"carrier_out\", \"required_carrier\", \"units_in\", \"units_out\"]"
     },
     "model": "api.parameter"
   },
@@ -95,7 +99,8 @@
       "units": "",
       "is_essential": true,
       "is_carrier": true,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\", \"carrier_in\", \"required_carrier\", \"units_in\"]"
     },
     "model": "api.parameter"
   },
@@ -115,7 +120,8 @@
       "units": "",
       "is_essential": true,
       "is_carrier": true,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\", \"carrier_out\", \"required_carrier\", \"units_out\"]"
     },
     "model": "api.parameter"
   },
@@ -135,7 +141,8 @@
       "units": "<sub>ABC</sub>",
       "is_essential": true,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"essential\"]"
     },
     "model": "api.parameter"
   },
@@ -155,7 +162,8 @@
       "units": "%/hour",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -175,7 +183,8 @@
       "units": "[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -195,7 +204,8 @@
       "units": "[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"systemwide\"]"
     },
     "model": "api.parameter"
   },
@@ -215,7 +225,8 @@
       "units": "[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -235,7 +246,8 @@
       "units": "[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"systemwide\"]"
     },
     "model": "api.parameter"
   },
@@ -255,7 +267,8 @@
       "units": "[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -275,7 +288,8 @@
       "units": "%",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -295,7 +309,8 @@
       "units": "[[out_rate]]/unit",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -315,7 +330,8 @@
       "units": "&#8593;",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -335,7 +351,8 @@
       "units": "<sup>T</sup>/<sub>F</sub>",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[\"True\",\"False\"]"
+      "choices": "[\"True\",\"False\"]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -355,7 +372,8 @@
       "units": "[[out_rate]]/[[in_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -375,7 +393,8 @@
       "units": "%/km",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -395,7 +414,8 @@
       "units": "<sup>T</sup>/<sub>F</sub>",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[\"True\",\"False\"]"
+      "choices": "[\"True\",\"False\"]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -415,7 +435,8 @@
       "units": "%/hour",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -435,7 +456,8 @@
       "units": "[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -455,7 +477,8 @@
       "units": "<sub>ABC</sub>",
       "is_essential": false,
       "is_carrier": true,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"carrier\"]"
     },
     "model": "api.parameter"
   },
@@ -475,7 +498,8 @@
       "units": "<sup>T</sup>/<sub>F</sub>",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[\"True\",\"False\"]"
+      "choices": "[\"True\",\"False\"]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -495,7 +519,8 @@
       "units": "years",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -515,7 +540,8 @@
       "units": "<sup>T</sup>/<sub>F</sub>",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[\"True\",\"False\"]"
+      "choices": "[\"True\",\"False\"]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -535,7 +561,8 @@
       "units": "%",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -555,7 +582,8 @@
       "units": "[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -575,7 +603,8 @@
       "units": "m<sup>2</sup>",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -595,7 +624,8 @@
       "units": "m<sup>2</sup>",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -615,7 +645,8 @@
       "units": "m<sup>2</sup>",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -635,7 +666,8 @@
       "units": "m<sup>2</sup>/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -655,7 +687,8 @@
       "units": "[[in_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -675,7 +708,8 @@
       "units": "<sup>T</sup>/<sub>F</sub>",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[\"True\",\"False\"]"
+      "choices": "[\"True\",\"False\"]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -695,7 +729,8 @@
       "units": "[[in_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -715,7 +750,8 @@
       "units": "[[in_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -735,7 +771,8 @@
       "units": "%",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -755,7 +792,8 @@
       "units": "%",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -775,7 +813,8 @@
       "units": "&#8593;",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -795,7 +834,8 @@
       "units": "<sub>ABC</sub>",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[\"energy\",\"energy_per_area\",\"energy_per_cap\"]"
+      "choices": "[\"energy\",\"energy_per_area\",\"energy_per_cap\"]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -815,7 +855,8 @@
       "units": "[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -835,7 +876,8 @@
       "units": "[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -855,7 +897,8 @@
       "units": "[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -875,7 +918,8 @@
       "units": "[[out_quantity]]/unit",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -895,7 +939,8 @@
       "units": "%",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -915,7 +960,8 @@
       "units": "%/hour",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -935,7 +981,8 @@
       "units": "hour",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -955,7 +1002,8 @@
       "units": "units",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -975,7 +1023,8 @@
       "units": "units",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"systemwide\"]"
     },
     "model": "api.parameter"
   },
@@ -995,7 +1044,8 @@
       "units": "units",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1015,7 +1065,8 @@
       "units": "units",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"systemwide\"]"
     },
     "model": "api.parameter"
   },
@@ -1035,7 +1086,8 @@
       "units": "units",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1055,7 +1107,8 @@
       "units": "$/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1075,7 +1128,8 @@
       "units": "$/[[out_rate]]/km",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1095,7 +1149,8 @@
       "units": "$/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1115,7 +1170,8 @@
       "units": "$/year",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1135,7 +1191,8 @@
       "units": "%",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1155,7 +1212,8 @@
       "units": "$/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1175,7 +1233,8 @@
       "units": "%",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1195,7 +1254,8 @@
       "units": "$/[[in_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1215,7 +1275,8 @@
       "units": "$/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1235,7 +1296,8 @@
       "units": "$/unit",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1255,7 +1317,8 @@
       "units": "$/m<sup>2</sup>",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1275,7 +1338,8 @@
       "units": "$/[[in_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1295,7 +1359,8 @@
       "units": "$/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1315,7 +1380,8 @@
       "units": "",
       "is_essential": true,
       "is_carrier": true,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\", \"carrier_in\", \"cplus_carrier\"]"
     },
     "model": "api.parameter"
   },
@@ -1335,7 +1401,8 @@
       "units": "",
       "is_essential": true,
       "is_carrier": true,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\", \"carrier_out\", \"cplus_carrier\"]"
     },
     "model": "api.parameter"
   },
@@ -1355,7 +1422,8 @@
       "units": "",
       "is_essential": true,
       "is_carrier": true,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\", \"carrier_in\", \"cplus_carrier\"]"
     },
     "model": "api.parameter"
   },
@@ -1375,7 +1443,8 @@
       "units": "",
       "is_essential": true,
       "is_carrier": true,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\", \"carrier_out\", \"cplus_carrier\"]"
     },
     "model": "api.parameter"
   },
@@ -1395,7 +1464,8 @@
       "units": "",
       "is_essential": true,
       "is_carrier": true,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\", \"required_carrier\", \"units_in\"]"
     },
     "model": "api.parameter"
   },
@@ -1415,7 +1485,8 @@
       "units": "",
       "is_essential": true,
       "is_carrier": true,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\", \"required_carrier\", \"units_out\"]"
     },
     "model": "api.parameter"
   },
@@ -1435,7 +1506,8 @@
       "units": "km",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1455,7 +1527,8 @@
       "units": "%",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1475,7 +1548,8 @@
       "units": "<sup>T</sup>/<sub>F</sub>",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[\"True\",\"False\"]"
+      "choices": "[\"True\",\"False\"]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1495,7 +1569,8 @@
       "units": "%/hour",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1515,7 +1590,8 @@
       "units": "%/hour",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1535,7 +1611,8 @@
       "units": "kg/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1555,7 +1632,8 @@
       "units": "kg/[[out_rate]]/km",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1575,7 +1653,8 @@
       "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1595,7 +1674,8 @@
       "units": "kg/year",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1615,7 +1695,8 @@
       "units": "%",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1635,7 +1716,8 @@
       "units": "kg/[[out_rate]]/year",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1655,7 +1737,8 @@
       "units": "%/year",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1675,7 +1758,8 @@
       "units": "kg/[[in_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1695,7 +1779,8 @@
       "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1715,7 +1800,8 @@
       "units": "kg",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1735,7 +1821,8 @@
       "units": "kg/m2",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1755,7 +1842,8 @@
       "units": "kg/[[in_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1775,7 +1863,8 @@
       "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1795,7 +1884,8 @@
       "units": "kg/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1815,7 +1905,8 @@
       "units": "kg/[[out_rate]]/km",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1835,7 +1926,8 @@
       "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1855,7 +1947,8 @@
       "units": "kg/year",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1875,7 +1968,8 @@
       "units": "%",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1895,7 +1989,8 @@
       "units": "kg/[[out_rate]]/year",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1915,7 +2010,8 @@
       "units": "%/year",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1935,7 +2031,8 @@
       "units": "kg/[[in_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1955,7 +2052,8 @@
       "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1975,7 +2073,8 @@
       "units": "kg",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -1995,7 +2094,8 @@
       "units": "kg/m2",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2015,7 +2115,8 @@
       "units": "kg/[[in_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2035,7 +2136,8 @@
       "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2055,7 +2157,8 @@
       "units": "kg/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2075,7 +2178,8 @@
       "units": "kg/[[out_rate]]/km",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2095,7 +2199,8 @@
       "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2115,7 +2220,8 @@
       "units": "kg/year",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2135,7 +2241,8 @@
       "units": "%",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2155,7 +2262,8 @@
       "units": "kg/[[out_rate]]/year",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2175,7 +2283,8 @@
       "units": "%/year",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2195,7 +2304,8 @@
       "units": "kg/[[in_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2215,7 +2325,8 @@
       "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2235,7 +2346,8 @@
       "units": "kg",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2255,7 +2367,8 @@
       "units": "kg/m2",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2275,7 +2388,8 @@
       "units": "kg/[[in_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2295,7 +2409,8 @@
       "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2315,7 +2430,8 @@
       "units": "kg/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2335,7 +2451,8 @@
       "units": "kg/[[out_rate]]/km",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2355,7 +2472,8 @@
       "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2375,7 +2493,8 @@
       "units": "kg/year",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2395,7 +2514,8 @@
       "units": "%",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2415,7 +2535,8 @@
       "units": "kg/[[out_rate]]/year",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2435,7 +2556,8 @@
       "units": "%/year",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2455,7 +2577,8 @@
       "units": "kg/[[in_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2475,7 +2598,8 @@
       "units": "kg/[[in_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2495,7 +2619,8 @@
       "units": "kg",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2515,7 +2640,8 @@
       "units": "kg/m2",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2535,7 +2661,8 @@
       "units": "kg/[[in_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2555,7 +2682,8 @@
       "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2575,7 +2703,8 @@
       "units": "[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2595,7 +2724,8 @@
       "units": "[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2615,7 +2745,8 @@
       "units": "[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"systemwide\"]"
     },
     "model": "api.parameter"
   },
@@ -2635,7 +2766,8 @@
       "units": "[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"systemwide\"]"
     },
     "model": "api.parameter"
   },
@@ -2655,7 +2787,8 @@
       "units": "%",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2675,7 +2808,8 @@
       "units": "%",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2695,7 +2829,8 @@
       "units": "<sup>T</sup>/<sub>F</sub>",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[\"True\",\"False\"]"
+      "choices": "[\"True\",\"False\"]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2715,7 +2850,8 @@
       "units": "<sub>ABC</sub>",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[\"energy\",\"energy_per_area\",\"energy_per_cap\"]"
+      "choices": "[\"energy\",\"energy_per_area\",\"energy_per_cap\"]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2735,7 +2871,8 @@
       "units": "&#8593;",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2755,7 +2892,8 @@
       "units": "",
       "is_essential": true,
       "is_carrier": true,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\", \"carrier_in\", \"required_carrier\", \"cplus_carrier\"]"
     },
     "model": "api.parameter"
   },
@@ -2775,7 +2913,8 @@
       "units": "",
       "is_essential": true,
       "is_carrier": true,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\", \"carrier_out\", \"required_carrier\", \"cplus_carrier\"]"
     },
     "model": "api.parameter"
   },
@@ -2795,7 +2934,8 @@
       "units": "kg/[[out_rate]]/year",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2815,7 +2955,8 @@
       "units": "kg/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2835,7 +2976,8 @@
       "units": "$/[[in_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2855,7 +2997,8 @@
       "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2875,7 +3018,8 @@
       "units": "kg/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2895,7 +3039,8 @@
       "units": "$/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2915,7 +3060,8 @@
       "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2935,7 +3081,8 @@
       "units": "kg/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2955,7 +3102,8 @@
       "units": "$/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2975,7 +3123,8 @@
       "units": "kg/[[out_rate]]/year",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -2995,7 +3144,8 @@
       "units": "kg/[[out_rate]]/year",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -3015,7 +3165,8 @@
       "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -3035,7 +3186,8 @@
       "units": "kg/[[out_quantity]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -3055,7 +3207,8 @@
       "units": "kg/[[out_rate]]",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   },
@@ -3075,7 +3228,8 @@
       "units": "kg/[[out_rate]]/year",
       "is_essential": false,
       "is_carrier": false,
-      "choices": "[]"
+      "choices": "[]",
+      "tags": "[]"
     },
     "model": "api.parameter"
   }

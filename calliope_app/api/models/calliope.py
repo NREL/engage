@@ -21,6 +21,7 @@ class Parameter(models.Model):
     is_systemwide = models.BooleanField(default=False)
     is_essential = models.BooleanField(default=False)
     is_carrier = models.BooleanField(default=False)
+    tags = ArrayField(models.CharField(max_length=20, blank=True),blank=True,null=True)
 
     def __str__(self):
         return '%s' % (self.pretty_name)
