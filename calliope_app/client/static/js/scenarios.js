@@ -290,8 +290,8 @@ function updateDialogGroupConstraints(initialLoad) {
 
         //Display techs and locs first
         dialogObj[constraint].techs = dialogObj[constraint].techs ? dialogObj[constraint].techs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_techs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter technologies.'><b>Technologies</b></label><br>" + 
-        "<select id='" + constraintId + "_techs' name='Technologies' multiple searchable></select></div>");
+        $(constraintContent).append("<div id='" + constraintId + "_techs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter technologies.'><b>" + djangoTranslateTechnologies + "</b></label><br>" + 
+        "<select id='" + constraintId + "_techs' name='" + djangoTranslateTechnologies + "' multiple searchable></select></div>");
         for (var t in technologies) {
             $('#' + constraintId + '_techs').append('<option value="'+ technologies[t].name + '" '+ (dialogObj[constraint].techs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
         }
@@ -300,8 +300,8 @@ function updateDialogGroupConstraints(initialLoad) {
         });
 
         dialogObj[constraint].techs_lhs = dialogObj[constraint].techs_lhs ? dialogObj[constraint].techs_lhs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_techs_lhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter left hand-side technologies.'><b>Technologies Left Hand-side</b></label><br>" + 
-        "<select id='" + constraintId + "_techs_lhs' name='Technologies Left Hand-side' multiple searchable></select></div>");
+        $(constraintContent).append("<div id='" + constraintId + "_techs_lhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter left hand-side technologies.'><b>" + djangoTranslateTechnologies + djangoTranslateLeftHand + "</b></label><br>" + 
+        "<select id='" + constraintId + "_techs_lhs' name='" + djangoTranslateTechnologies + ' ' + djangoTranslateLeftHand + "' multiple searchable></select></div>");
         for (var t in technologies) {
             $('#' + constraintId + '_techs_lhs').append('<option value="'+ technologies[t].name + '" '+ (dialogObj[constraint].techs_lhs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
         }
@@ -310,8 +310,8 @@ function updateDialogGroupConstraints(initialLoad) {
         });
 
         dialogObj[constraint].techs_rhs = dialogObj[constraint].techs_rhs ? dialogObj[constraint].techs_rhs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_techs_rhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter right hand-side technologies.'><b>Technologies Right Hand-side</b></label><br>" + 
-        "<select id='" + constraintId + "_techs_rhs' name='Technologies Right Hand-side' multiple searchable></select></div>");
+        $(constraintContent).append("<div id='" + constraintId + "_techs_rhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter right hand-side technologies.'><b>" + djangoTranslateTechnologies + djangoTranslateRightHand + "</b></label><br>" + 
+        "<select id='" + constraintId + "_techs_rhs' name='" + djangoTranslateTechnologies + ' ' + djangoTranslateRightHand + "' multiple searchable></select></div>");
         for (var t in technologies) {
             $('#' + constraintId + '_techs_rhs').append('<option value="'+ technologies[t].name + '" '+ (dialogObj[constraint].techs_rhs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
         }
@@ -320,12 +320,12 @@ function updateDialogGroupConstraints(initialLoad) {
         });
 
         if (!(dialogObj[constraint].techs_rhs && dialogObj[constraint].techs_lhs && dialogObj[constraint].techs)) {
-            $(constraintContent).append('<br><span>Show left and right hand side technologies </span><label class="switch"><input id="' + constraintId + "_toggle_techs" + '" type="checkbox"><span class="slider round"></span></label><br>');
+            $(constraintContent).append('<br><span>' + djangoTranslateShowLeftRight + ' ' + djangoTranslateTechnologies + ' </span><label class="switch"><input id="' + constraintId + "_toggle_techs" + '" type="checkbox"><span class="slider round"></span></label><br>');
         }
 
         dialogObj[constraint].locs = dialogObj[constraint].locs ? dialogObj[constraint].locs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_locs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter locations.'><b>Locations</b></label><br>" + 
-        "<select id='" + constraintId + "_locs' name='Locations' multiple searchable></select></div>");
+        $(constraintContent).append("<div id='" + constraintId + "_locs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter locations.'><b>" + djangoTranslateLocations + "</b></label><br>" + 
+        "<select id='" + constraintId + "_locs' name='" + djangoTranslateLocations + "' multiple searchable></select></div>");
         for (var l in locations) {
             $('#' + constraintId + '_locs').append('<option value="'+ locations[l].name + '" '+ (dialogObj[constraint].locs.includes(locations[l].name) ? ' selected' : '') +'>' + locations[l].pretty_name + '</option>');
         }
@@ -334,8 +334,8 @@ function updateDialogGroupConstraints(initialLoad) {
         });
 
         dialogObj[constraint].locs_lhs = dialogObj[constraint].locs_lhs ? dialogObj[constraint].locs_lhs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_locs_lhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter left hand-side locations.'><b>Locations Left Hand-side</b></label><br>" + 
-        "<select id='" + constraintId + "_locs_lhs' name='Locations Left Hand-side' multiple searchable></select></div>");
+        $(constraintContent).append("<div id='" + constraintId + "_locs_lhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter left hand-side locations.'><b>" + djangoTranslateLocations + ' ' + djangoTranslateLeftHand + "</b></label><br>" + 
+        "<select id='" + constraintId + "_locs_lhs' name='" + djangoTranslateLocations + ' ' + djangoTranslateLeftHand + "' multiple searchable></select></div>");
         for (var l in locations) {
             $('#' + constraintId + '_locs_lhs').append('<option value="'+ locations[l].name + '" '+ (dialogObj[constraint].locs_lhs.includes(locations[l].name) ? ' selected' : '') +'>' + locations[l].pretty_name + '</option>');
         }
@@ -344,8 +344,8 @@ function updateDialogGroupConstraints(initialLoad) {
         });
 
         dialogObj[constraint].locs_rhs = dialogObj[constraint].locs_rhs ? dialogObj[constraint].locs_rhs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_locs_rhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter right hand-side locations.'><b>Locations Right Hand-side</b></label><br>" + 
-        "<select id='" + constraintId + "_locs_rhs' name='Locations Right Hand-side' multiple searchable></select></div>");
+        $(constraintContent).append("<div id='" + constraintId + "_locs_rhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter right hand-side locations.'><b>" + djangoTranslateLocations + ' ' + djangoTranslateRightHand + "</b></label><br>" + 
+        "<select id='" + constraintId + "_locs_rhs' name='" + djangoTranslateLocations + ' ' + djangoTranslateRightHand + "' multiple searchable></select></div>");
         for (var l in locations) {
             $('#' + constraintId + '_locs_rhs').append('<option value="'+ locations[l].name + '" '+ (dialogObj[constraint].locs_rhs.includes(locations[l].name) ? ' selected' : '') +'>' + locations[l].pretty_name + '</option>');
         }
@@ -354,7 +354,7 @@ function updateDialogGroupConstraints(initialLoad) {
         });
 
         if (!(dialogObj[constraint].locs_rhs && dialogObj[constraint].locs_lhs && dialogObj[constraint].locs)) {
-            $(constraintContent).append('<br><span>Show left and right hand side locations </span><label class="switch"><input id="' + constraintId + "_toggle_locs" + '" type="checkbox"><span class="slider round"></span></label><br>');
+            $(constraintContent).append('<br><span>' + djangoTranslateShowLeftRight + ' ' + djangoTranslateLocations + ' </span><label class="switch"><input id="' + constraintId + "_toggle_locs" + '" type="checkbox"><span class="slider round"></span></label><br>');
         }
         updateConstraintTypes(constraint, constraintId, constraintContent);
 
@@ -413,12 +413,12 @@ function updateDialogGroupConstraints(initialLoad) {
 }
 
 function updateConstraintTypes(constraint, constraintId, constraintContent) {
-    $(constraintContent).append( "<label id='constraints-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Multiple constraints can be added to a single constraint group. Cost and carriers are a key and value pair whereas all other types are a value. See Constraint column in Calliope documentation for value options.'><b>Constraints</b></label><br>");
+    $(constraintContent).append( "<label id='constraints-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Multiple constraints can be added to a single constraint group. Cost and carriers are a key and value pair whereas all other types are a value. See Constraint column in Calliope documentation for value options.'><b>" + djangoTranslateConstraints + "</b></label><br>");
 
     Object.keys(dialogObj[constraint]).forEach(fieldKey => {
         if (fieldKey !== "locs" && fieldKey !== "techs" && fieldKey !== "techs_lhs" && fieldKey !== "techs_rhs" && fieldKey !== "locs_lhs" && fieldKey !== "locs_rhs") {
 
-            $(constraintContent).append( "<label style='padding-left:20px'><b>Constraint</b></label><div style='float:right;'><span style='margin-right: 10px'>" + fieldKey + "</span><button id='delete_constraint_btn_" + constraintId + "-" + fieldKey + "' type='button' class='btn btn-sm btn-outline-danger constraint-delete' title='Delete constraint'><i class='fas fa-trash'></i></button></div><br>");
+            $(constraintContent).append( "<label style='padding-left:20px'><b>" + djangoTranslateConstraint + "</b></label><div style='float:right;'><span style='margin-right: 10px'>" + fieldKey + "</span><button id='delete_constraint_btn_" + constraintId + "-" + fieldKey + "' type='button' class='btn btn-sm btn-outline-danger constraint-delete' title='Delete constraint'><i class='fas fa-trash'></i></button></div><br>");
             $("#delete_constraint_btn_" + constraintId + "-" + fieldKey).on('click', function() {
                 let con = this.id.replace("delete_constraint_btn_", '').split("-");
                 delete dialogObj[constraint][con[1]];
@@ -432,7 +432,7 @@ function updateConstraintTypes(constraint, constraintId, constraintContent) {
                 }
                 const key = Object.keys(dialogObj[constraint][fieldKey]).length !== 0 ? Object.keys(dialogObj[constraint][fieldKey])[0] : "";
                 const val = key ? dialogObj[constraint][fieldKey][Object.keys(dialogObj[constraint][fieldKey])[0]] : "";
-                $(constraintFields).append( "<label><b>Key </b></label>");
+                $(constraintFields).append( "<label><b>" + djangoTranslateKey + "</b></label>");
                 let dropdownArray = constraints.indexOf(fieldKey) <= 21 ? carriers : ["co2", "ch4", "co2e", "n2o", "monetary"];
                 if (key.length > 0 && dropdownArray.indexOf(key) === -1) {
                     dropdownArray.push(key);
@@ -450,10 +450,10 @@ function updateConstraintTypes(constraint, constraintId, constraintContent) {
                     updateDialogObject();
                 });
 
-                $(constraintFields).append( "<label><b>Value </b></label>");
+                $(constraintFields).append( "<label><b>" + djangoTranslateValue + " </b></label>");
                 $(constraintFields).append( "<input id='" + constraintId + fieldKey + "-val' name='dialogObj[constraint][fieldKey].value' class='form-control smol' placeholder='' value='" + val + "'></input><br><br>" );
             } else {
-                $(constraintFields).append( "<label><b>Value </b></label>");
+                $(constraintFields).append( "<label><b>" + djangoTranslateValue + "</b></label>");
                 $(constraintFields).append( "<input id='" + constraintId + fieldKey + "-val' name='dialogObj[constraint][fieldKey]' class='form-control smol' placeholder='' value='" + dialogObj[constraint][fieldKey] + "'></input><br><br>" );
             }
             $("#" + constraintId + fieldKey + "-val").change(function () {
@@ -462,14 +462,14 @@ function updateConstraintTypes(constraint, constraintId, constraintContent) {
         }
     });
 
-    $(constraintContent).append( "<br><label><b>New Constraint</b></label>");
+    $(constraintContent).append( "<br><label><b>" + djangoTranslateNew + ' ' + djangoTranslateConstraint + "</b></label>");
     $(constraintContent).append( "<select style='margin-bottom:1em' class='form-control smol' id='new-constraint-dropdown-" + constraintId + "' data-toggle='tooltip' data-placement='left'></select>" );
     $('#new-constraint-dropdown-' + constraintId ).append( "<option></option>" );
     for (let i = 0; i < constraints.length; i++) {
         $('#new-constraint-dropdown-' + constraintId ).append( "<option value=" + constraints[i] + ">" + constraints[i] + "</option>" );
     }
 
-    $(constraintContent).append("<div class='form-group col-md-8'><input disabled id='new_constraint_btn_" + constraintId + "' type='submit' class='btn btn-sm btn-success' name='" + constraint + "' value='+ Constraint'></div>");
+    $(constraintContent).append("<div class='form-group col-md-8'><input disabled id='new_constraint_btn_" + constraintId + "' type='submit' class='btn btn-sm btn-success' name='" + constraint + "' value='+ " + djangoTranslateConstraint + "'></div>");
     $("#new_constraint_btn_" + constraintId).on('click', function() {
         let con = this.id.replace("new_constraint_btn_", "");
         let newConstraint = $("#new-constraint-dropdown-" + con).val();

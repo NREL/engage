@@ -144,17 +144,17 @@ a {
         </button>
     </div>  
 	<div class="centered" style="margin-top: 1em">
-		<h6 class="modal-title">Complete form to convert fields to JSON</h6>
-        <p><a href="https://calliope.readthedocs.io/en/stable/user/advanced_constraints.html#group-constraints" target="_blank">View Calliope Constraint Group documentation</a></p>
+		<h6 class="modal-title">{% trans "Complete form to convert fields to JSON" %}</h6>
+        <p><a href="https://calliope.readthedocs.io/en/stable/user/advanced_constraints.html#group-constraints" target="_blank">{% trans "View Calliope Constraint Group documentation" %}</a></p>
 	</div>
     <ul id="tabs">
-        <li><a id="tab1">Constraint Group</a></li>
-        <li><a id="tab2">JSON Preview</a></li>
+        <li><a id="tab1">{% trans "Constraint Group" %}</a></li>
+        <li><a id="tab2">{% trans "JSON Preview" %}</a></li>
     </ul>
     <div class="tab-container" id="tab1C">
         <div class="form-group">
             <p style="font-size:.8em">{% trans "Enter a custom name." %}</p>
-            <label><b>Name</b></label>
+            <label><b>{% trans "Name" %}</b></label>
             <input type="text" class="form-control smol" id="new_group_constraint_name" name="" placeholder="{% trans 'New Constraint Group Name' %}">
             <br>
             <input disabled id="new_group_constraint_btn" type="submit" class="btn btn-sm btn-success" name="" value="{% trans '+ Constraint Group' %}">
