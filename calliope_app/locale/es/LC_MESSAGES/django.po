@@ -1069,21 +1069,53 @@ msgstr "Portador de salida no definida"
 msgid "Toggle node activation."
 msgstr "Cambiar para activación de nodo"
 
+#: client/templates/base.html
+msgid "Constraint"
+msgstr "Restricción"
+
+#: client/templates/base.html
+msgid "Constraints"
+msgstr "Restricciones"
+
+#: client/templates/base.html
+msgid "Show left and right hand side"
+msgstr "Mostrar lado izquierdo y derecho"
+
+#: client/templates/base.html
+msgid "Left Hand-side"
+msgstr "Lado izquierdo"
+
+#: client/templates/base.html
+msgid "Right Hand-side"
+msgstr "Lado derecho"
+
+#: client/templates/scenario_constraints_json_form.html:147
+msgid "Complete form to convert fields to JSON"
+msgstr "Formulario completo para convertir campos a JSON"
+
+#: client/templates/scenario_constraints_json_form.html:148
+msgid "View Calliope Constraint Group documentation"
+msgstr "Ver la documentación del grupo de restricciones Calliope"
+
 #: client/templates/scenario_constraints_json_form.html:141
-msgid "Group Constraints"
-msgstr "Restricciones de grupo"
+msgid "Constraint Group"
+msgstr "Grupo de Restricciones"
+
+#: client/templates/scenario_constraints_json_form.html:152
+msgid "JSON Preview"
+msgstr "Vista previa JSON"
 
 #: client/templates/scenario_constraints_json_form.html:156
 msgid "Enter a custom name."
 msgstr "Introduzca un nombre personalizado."
 
 #: client/templates/scenario_constraints_json_form.html:158
-msgid "New Group Constraint Name"
-msgstr "Nombre de nueva restricción de grupo"
+msgid "New Constraint Group Name"
+msgstr "Nombre del nuevo grupo de restricciones"
 
 #: client/templates/scenario_constraints_json_form.html:160
-msgid "+ Group Constraint"
-msgstr "+ Restricción de grupo"
+msgid "+ Constraint Group"
+msgstr "+ Grupo de Restricciones"
 
 #: client/templates/scenario_constraints_json_form.html:178
 #: client/templates/scenario_weights_json_form.html:195
@@ -1107,6 +1139,10 @@ msgstr "Eliminar escenario"
 #: client/templates/scenario_weights_json_form.html:143
 msgid "Weights of cost classes"
 msgstr "Pesos de clases de costos"
+
+#: client/templates/scenario_weights_json_form.html:156
+msgid "Weighted Cost per"
+msgstr "Costo ponderado por"
 
 #: client/templates/scenarios.html:33
 msgid "Oops, an error occurred"
@@ -1181,6 +1217,10 @@ msgstr ""
 #: client/templates/technology_parameters.html:142
 msgid "Year"
 msgstr "Año"
+
+#: client/templates/base.html
+msgid "Key"
+msgstr "Llave"
 
 #: client/templates/technology_parameters.html:143
 msgid "Value"

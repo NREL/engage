@@ -932,6 +932,59 @@ msgstr "vecteur de sortie non défini"
 msgid "Toggle node activation."
 msgstr "Basculez l'activation des nœuds."
 
+#: client/templates/base.html
+msgid "Constraint"
+msgstr "Contrainte"
+
+#: client/templates/base.html
+msgid "Constraints"
+msgstr "Contraintes"
+
+#: client/templates/base.html
+msgid "Show left and right hand side"
+msgstr "Afficher les côtés gauche et droit"
+
+#: client/templates/base.html
+msgid "Left Hand-side"
+msgstr "Côté gauche"
+
+#: client/templates/base.html
+msgid "Right Hand-side"
+msgstr "Côté droite"
+
+#: client/templates/scenario_constraints_json_form.html:147
+msgid "Complete form to convert fields to JSON"
+msgstr "Remplissez le formulaire pour convertir les champs en JSON"
+
+#: client/templates/scenario_constraints_json_form.html:148
+msgid "View Calliope Constraint Group documentation"
+msgstr "Afficher la documentation du groupe de contraintes Calliope"
+
+#: client/templates/scenario_constraints_json_form.html:141
+msgid "Constraint Group"
+msgstr "Groupe de Contraintes"
+
+#: client/templates/scenario_constraints_json_form.html:152
+msgid "JSON Preview"
+msgstr "Aperçu JSON"
+
+#: client/templates/scenario_constraints_json_form.html:156
+msgid "Enter a custom name."
+msgstr "Entrez un nom personnalisé."
+
+#: client/templates/scenario_constraints_json_form.html:158
+msgid "New Constraint Group Name"
+msgstr "Nouveau nom du groupe de contraintes"
+
+#: client/templates/scenario_constraints_json_form.html:160
+msgid "+ Constraint Group"
+msgstr "+ Groupe de Contraintes"
+
+#: client/templates/scenario_constraints_json_form.html:178
+#: client/templates/scenario_weights_json_form.html:195
+msgid "Convert Fields to JSON"
+msgstr "Convertir les champs en JSON"
+
 #: client/templates/scenario_selector.html:3
 msgid "Select a Scenario"
 msgstr "Sélectionnez un scénario"
@@ -945,6 +998,14 @@ msgstr "Ligne"
 #: client/templates/scenario_settings.html:108
 msgid "Delete Scenario"
 msgstr "Supprimer le scénario"
+
+#: client/templates/scenario_weights_json_form.html:143
+msgid "Weights of cost classes"
+msgstr "Pesos de clases de costos"
+
+#: client/templates/scenario_weights_json_form.html:156
+msgid "Weighted Cost per"
+msgstr "Coût pondéré par"
 
 #: client/templates/scenarios.html:33
 msgid "Oops, an error occurred"
@@ -1024,6 +1085,10 @@ msgstr "Ce paramètre est configuré pour évoluer sur plusieurs années"
 #: client/templates/technology_parameters.html:140
 msgid "Year"
 msgstr "Année"
+
+#: client/templates/base.html
+msgid "Key"
+msgstr "Clé"
 
 #: client/templates/technology_parameters.html:141
 msgid "Value"
