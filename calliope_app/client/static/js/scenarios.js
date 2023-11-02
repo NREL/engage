@@ -162,6 +162,15 @@ function get_scenario_configuration() {
 				if ($('#master-cancel').hasClass('hide')) {
 					$('#master-settings').removeClass('hide');
 				}
+
+				$('#edit-scenario-name').on('click', function() {
+					var currentScenarioName = prompt('Enter the new scenario name:','');
+					if(currentScenarioName !==null) {
+						$('#scenario-name').text(currentScenarioName);
+						update_scenario_name(currentScenarioName);
+					}
+				});
+
 				$('#scenario-delete').on('click', function() {
 					var model_uuid = $('#header').data('model_uuid'),
 						scenario_id = $("#scenario option:selected").data('id');
@@ -183,6 +192,30 @@ function get_scenario_configuration() {
 						});
 					};
 				});
+
+				function update_scenario_name(newScenarioName){
+					var model_uuid = $('#header').data('model_uuid'),
+					scenario_id = $("#scenario option:selected").data('id');
+					$.ajax({
+						url: '/' + LANGUAGE_CODE + '/api/update_scenario_name/',
+						type: 'POST',
+						data: {
+							'model_uuid': model_uuid,
+							'scenario_id': scenario_id,
+							'new_scenario_name': newScenarioName,
+							'csrfmiddlewaretoken': getCookie('csrftoken'),
+						},
+						dataType: 'json',
+						success: function (data) {
+							window.onbeforeunload = null;
+							location.reload();
+							alert('Scenario Name Updated Successfully.');
+						},
+						error: function() {
+							alert('Failed to update scenario name. Please try again.');
+						}
+					});
+				};
 			}
 		});
 	} else {

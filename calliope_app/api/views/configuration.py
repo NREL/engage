@@ -1025,6 +1025,40 @@ def update_scenario_params(request):
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
 
+@csrf_protect
+def update_scenario_name(request):
+    """
+    Update the name of a scenario. 
+    Parameters:
+    model_uuid (uuid): required
+    scenario_id (int): required
+    new_scenario_name (str): required
+    Returns (json): Action confirmation
+    Example: 
+    POST: /api/update_scenario_name/
+    """
+    model_uuid = request.POST["model_uuid"]
+    scenario_id = request.POST["scenario_id"]
+    new_scenario_name = request.POST["new_scenario_name"]
+    model = Model.by_uuid(model_uuid)
+    model.handle_edit_access(request.user)
+    scenario = model.scenarios.filter(id=scenario_id).first()
+    #Scenario_Param.update(scenario, new_scenario_name)
+    if scenario: 
+        scenario.name = new_scenario_name
+        scenario.save()
+        #Log Activity
+        comment = "{} updated the scenario name to: {}".format(
+        request.user.get_full_name(), new_scenario_name
+        )
+        Model_Comment.objects.create(model=model, comment=comment, type="edit")
+        model.notify_collaborators(request.user)
+        model.deprecate_runs(scenario_id=scenario_id)
+
+        payload = {"message:" : "Scenario name updated successfully."}
+        return HttpResponse(json.dumps(payload), content_type="application/json")
+    return HttpResponse(json.dumps({"message": "Failed to update the scenario name, Invalid request"}), content_type="application/json")
+
 
 @csrf_protect
 def delete_scenario(request):
