@@ -34,7 +34,7 @@ class Parameter_Admin(admin.ModelAdmin):
     # fields = []
     list_display = ['id', 'root', 'category', 'name', 'pretty_name',
                     'description', 'timeseries_enabled', 'units', 'choices',
-                    'is_systemwide', 'is_essential', 'is_carrier']
+                    'is_systemwide', 'is_essential', 'is_carrier','tags']
     list_editable = ['units']
 
 

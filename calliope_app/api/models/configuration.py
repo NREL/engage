@@ -179,8 +179,8 @@ class Model(models.Model):
         return self.carrier_set.all()
 
     def check_model_carrier_units(self,carrier):
-        units_in_ids= [4,5,70]
-        units_out_ids= [4,6,71]
+        units_in_ids= ParamsManager.get_tagged_params('units_in')
+        units_out_ids= ParamsManager.get_tagged_params('units_out')
         ureg = initialize_units()
         warning_techs = []
         error_techs = []
@@ -1561,7 +1561,12 @@ class ParamsManager():
         categories = {param.category: param.root for param in queryset}
         categories['Costs'] = 'costs.monetary'
         return categories
-
+    
+    @classmethod
+    def get_tagged_params(cls,tag):
+        queryset = Parameter.objects.filter(tags__contains=[tag])
+        categories = [param.id for param in queryset]
+        return categories
 class Carrier(models.Model):
     class Meta:
         db_table = "carrier"
