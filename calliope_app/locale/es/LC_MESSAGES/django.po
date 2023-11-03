@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-18 18:42+0000\n"
+"POT-Creation-Date: 2023-11-03 23:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,9 +47,12 @@ msgid "Enter the same password as above, for verification."
 msgstr "Ingrese la misma contraseña que arriba, para verificación."
 
 #: account/forms.py:95
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "Please enter a correct (username)s and password. Note that both fields "
+#| "may be case-sensitive."
 msgid ""
-"Please enter a correct (username)s and password. Note that both fields may "
+"Please enter a correct %(username)s and password. Note that both fields may "
 "be case-sensitive."
 msgstr ""
 "Ingrese un (nombre de usuario) y una contraseña correctos. Considere que "
@@ -90,7 +93,7 @@ msgstr "Español"
 msgid "French"
 msgstr "Francés"
 
-#: client/templates/activity.html:16 client/templates/base.html:161
+#: client/templates/activity.html:16 client/templates/base.html:172
 #: client/templates/home_my_models.html:6
 msgid "Activity"
 msgstr "Actividad"
@@ -212,6 +215,7 @@ msgstr "Nombre del nuevo escenario"
 
 #: client/templates/add_scenario.html:26
 #: client/templates/add_technology.html:26
+#: client/templates/scenario_constraints_json_form.html:157
 #: client/templates/technology_essentials.html:26
 msgid "Name"
 msgstr "Nombre"
@@ -246,7 +250,8 @@ msgstr "Existente"
 msgid "No other scenarios exist yet"
 msgstr "Aún no existen otros escenarios"
 
-#: client/templates/add_technology.html:11 client/templates/configure.html:26
+#: client/templates/add_technology.html:11 client/templates/base.html:53
+#: client/templates/configure.html:26
 #: client/templates/locations_dashboard.html:61
 #: client/templates/scenario_configuration.html:10
 #: client/templates/technologies.html:16
@@ -287,29 +292,72 @@ msgstr "existente"
 msgid "publicly available"
 msgstr "disponible públicamente"
 
-#: client/templates/base.html:45 client/templates/run_dashboard.html:45
+#: client/templates/base.html:45
+#: client/templates/technology_parameters.html:143
+msgid "Value"
+msgstr "Valor"
+
+#: client/templates/base.html:46
+msgid "Key"
+msgstr "Llave"
+
+#: client/templates/base.html:47
+msgid "Constraint"
+msgstr "Restricción"
+
+#: client/templates/base.html:48
+msgid "Constraints"
+msgstr "Restricciones"
+
+#: client/templates/base.html:49
+msgid "Show left and right hand side"
+msgstr "Mostrar lado izquierdo y derecho"
+
+#: client/templates/base.html:50
+msgid "Left Hand-side"
+msgstr "Lado izquierdo"
+
+#: client/templates/base.html:51
+msgid "Right Hand-side"
+msgstr "Lado derecho"
+
+#: client/templates/base.html:52 client/templates/configure.html:20
+#: client/templates/locations.html:18
+#: client/templates/scenario_configuration.html:12
+msgid "Locations"
+msgstr "Ubicaciones"
+
+#: client/templates/base.html:54 client/templates/configure.html:50
+msgid "New"
+msgstr "Nuevo"
+
+#: client/templates/base.html:55 client/templates/run_dashboard.html:45
 #, fuzzy
 #| msgid "Runs"
 msgid "Run"
 msgstr "Ejecutar"
 
-#: client/templates/base.html:46
+#: client/templates/base.html:56 client/templates/templates_modal.html:107
+msgid "Node Groups"
+msgstr "Grupos Nodo"
+
+#: client/templates/base.html:57
 msgid "Existing Node Groups:"
 msgstr "Grupos nodo existentes:"
 
-#: client/templates/base.html:47
+#: client/templates/base.html:58
 msgid "This model does not have any existing node groups yet."
 msgstr "Este modelo aún no tiene ningún grupo de nodos existente."
 
-#: client/templates/base.html:48
+#: client/templates/base.html:59
 msgid "Add Node Group to Model"
 msgstr "Agregar grupo nodo al modelo"
 
-#: client/templates/base.html:49
+#: client/templates/base.html:60
 msgid "Update Node Group: "
 msgstr "Actualizar grupo nodo:"
 
-#: client/templates/base.html:50
+#: client/templates/base.html:61
 msgid ""
 "GEOPHIRES v2.0 is a geothermal techno-economic simulation tool used in "
 "Engage to calculate Geothermal related parameters. GEOPHIRES combines "
@@ -326,11 +374,11 @@ msgstr ""
 "de energía instantánea y de por vida, y el costo nivelado general de energía "
 "de una planta geotérmica."
 
-#: client/templates/base.html:49
+#: client/templates/base.html:62
 msgid "For more information about GEOPHIRES please see the "
 msgstr "Para obtener más información sobre GEOPHIRES, consulte la "
 
-#: client/templates/base.html:52
+#: client/templates/base.html:63
 msgid ""
 "Loading Geophires results, this may take a few minutes. Please stay on this "
 "modal."
@@ -338,83 +386,83 @@ msgstr ""
 "Cargando los resultados de Geophires, esto puede tardar unos minutos. Por "
 "favor permanezca en este modal."
 
-#: client/templates/base.html:101
+#: client/templates/base.html:112
 msgid "Help"
 msgstr "Ayuda"
 
-#: client/templates/base.html:106 client/templates/base.html:108
+#: client/templates/base.html:117 client/templates/base.html:119
 #: client/templates/share.html:14
 msgid "Model Sharing"
 msgstr "Compartir modelo"
 
-#: client/templates/base.html:152 client/templates/home_my_models.html:51
+#: client/templates/base.html:163 client/templates/home_my_models.html:51
 #: client/templates/home_public_models.html:20
 msgid "VIEW ONLY"
 msgstr "SÓLO VISTA"
 
-#: client/templates/base.html:162
+#: client/templates/base.html:173
 msgid "Flagged Parameters"
 msgstr "Parámetros marcados"
 
-#: client/templates/base.html:163
+#: client/templates/base.html:174
 #: client/templates/technology_parameters.html:67
-#: client/templates/timeseries.html:95
+#: client/templates/timeseries.html:100
 msgid "Timeseries"
 msgstr "Series temporales"
 
-#: client/templates/base.html:164 client/templates/base.html:165
+#: client/templates/base.html:175 client/templates/base.html:176
 msgid "Carriers"
 msgstr "Portadores"
 
-#: client/templates/base.html:178 client/templates/password.html:11
+#: client/templates/base.html:189 client/templates/password.html:11
 msgid "Change Password"
 msgstr "Cambiar la contraseña"
 
-#: client/templates/base.html:179
+#: client/templates/base.html:190
 msgid "Log out"
 msgstr "Cerrar sesión"
 
-#: client/templates/base.html:184
+#: client/templates/base.html:195
 msgid "LOGIN"
 msgstr "ACCESO"
 
-#: client/templates/base.html:215
+#: client/templates/base.html:226
 msgid "Help Guide"
 msgstr "Guía de ayuda"
 
-#: client/templates/base.html:225 client/templates/registration/login.html:20
+#: client/templates/base.html:236 client/templates/registration/login.html:20
 #: client/templates/registration/registration.html:20
 msgid "OPEN ACCESS ENERGY SYSTEM PLANNING"
 msgstr "PLANIFICACIÓN DEL SISTEMA DE ENERGÍA DE ACCESO ABIERTO"
 
-#: client/templates/base.html:226 client/templates/registration/login.html:21
+#: client/templates/base.html:237 client/templates/registration/login.html:21
 #: client/templates/registration/registration.html:21
 msgid "Supported on Modern"
 msgstr "Compatible con modernos"
 
-#: client/templates/base.html:226 client/templates/registration/login.html:22
+#: client/templates/base.html:237 client/templates/registration/login.html:22
 #: client/templates/registration/registration.html:22
 msgid "and"
 msgstr "y"
 
-#: client/templates/base.html:226 client/templates/registration/login.html:24
+#: client/templates/base.html:237 client/templates/registration/login.html:24
 #: client/templates/registration/registration.html:24
 msgid "Browsers"
 msgstr "Navegadores"
 
-#: client/templates/base.html:230 client/templates/registration/login.html:31
+#: client/templates/base.html:241 client/templates/registration/login.html:31
 #: client/templates/registration/registration.html:31
 msgid "Project Assistance"
 msgstr "Asistencia al proyecto"
 
-#: client/templates/base.html:239 client/templates/registration/login.html:59
+#: client/templates/base.html:250 client/templates/registration/login.html:59
 #: client/templates/registration/login.html:66
 #: client/templates/registration/registration.html:59
 #: client/templates/registration/registration.html:66
 msgid "Documentation"
 msgstr "Documentación"
 
-#: client/templates/base.html:247 client/templates/new_carrier.html:134
+#: client/templates/base.html:258 client/templates/new_carrier.html:134
 #: client/templates/templates_modal.html:121
 msgid "Close"
 msgstr "Cerrar"
@@ -447,7 +495,7 @@ msgstr "Eliminar portador"
 #: client/templates/configure.html:10
 #: client/templates/locations_dashboard.html:129
 #: client/templates/scenario_constraints_json_form.html:177
-#: client/templates/scenario_weights_json_form.html:194
+#: client/templates/scenario_weights_json_form.html:197
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -463,11 +511,6 @@ msgstr "Carga masiva"
 msgid "Bulk Download"
 msgstr "Descarga masiva"
 
-#: client/templates/configure.html:20 client/templates/locations.html:18
-#: client/templates/scenario_configuration.html:12
-msgid "Locations"
-msgstr "Ubicaciones"
-
 #: client/templates/configure.html:32 client/templates/loc_techs.html:17
 msgid "Nodes"
 msgstr "Nodos"
@@ -480,10 +523,6 @@ msgstr "Nodos"
 #: client/templates/timeseries.html:59
 msgid "Save"
 msgstr "Guardar"
-
-#: client/templates/configure.html:50
-msgid "New"
-msgstr "Nuevo"
 
 #: client/templates/home.html:37
 msgid "Videos"
@@ -1069,25 +1108,10 @@ msgstr "Portador de salida no definida"
 msgid "Toggle node activation."
 msgstr "Cambiar para activación de nodo"
 
-#: client/templates/base.html
-msgid "Constraint"
-msgstr "Restricción"
-
-#: client/templates/base.html
-msgid "Constraints"
-msgstr "Restricciones"
-
-#: client/templates/base.html
-msgid "Show left and right hand side"
-msgstr "Mostrar lado izquierdo y derecho"
-
-#: client/templates/base.html
-msgid "Left Hand-side"
-msgstr "Lado izquierdo"
-
-#: client/templates/base.html
-msgid "Right Hand-side"
-msgstr "Lado derecho"
+#: client/templates/scenario_constraints_json_form.html:141
+#: client/templates/scenario_constraints_json_form.html:151
+msgid "Constraint Group"
+msgstr "Grupo de Restricciones"
 
 #: client/templates/scenario_constraints_json_form.html:147
 msgid "Complete form to convert fields to JSON"
@@ -1096,10 +1120,6 @@ msgstr "Formulario completo para convertir campos a JSON"
 #: client/templates/scenario_constraints_json_form.html:148
 msgid "View Calliope Constraint Group documentation"
 msgstr "Ver la documentación del grupo de restricciones Calliope"
-
-#: client/templates/scenario_constraints_json_form.html:141
-msgid "Constraint Group"
-msgstr "Grupo de Restricciones"
 
 #: client/templates/scenario_constraints_json_form.html:152
 msgid "JSON Preview"
@@ -1118,7 +1138,7 @@ msgid "+ Constraint Group"
 msgstr "+ Grupo de Restricciones"
 
 #: client/templates/scenario_constraints_json_form.html:178
-#: client/templates/scenario_weights_json_form.html:195
+#: client/templates/scenario_weights_json_form.html:198
 msgid "Convert Fields to JSON"
 msgstr "Convertir Campos a JSON"
 
@@ -1132,15 +1152,19 @@ msgstr "Seleccione un escenario"
 msgid "Row"
 msgstr "Fila"
 
-#: client/templates/scenario_settings.html:126
+#: client/templates/scenario_settings.html:127
 msgid "Delete Scenario"
 msgstr "Eliminar escenario"
 
-#: client/templates/scenario_weights_json_form.html:143
+#: client/templates/scenario_weights_json_form.html:146
 msgid "Weights of cost classes"
 msgstr "Pesos de clases de costos"
 
-#: client/templates/scenario_weights_json_form.html:156
+#: client/templates/scenario_weights_json_form.html:159
+#: client/templates/scenario_weights_json_form.html:166
+#: client/templates/scenario_weights_json_form.html:173
+#: client/templates/scenario_weights_json_form.html:180
+#: client/templates/scenario_weights_json_form.html:187
 msgid "Weighted Cost per"
 msgstr "Costo ponderado por"
 
@@ -1218,22 +1242,9 @@ msgstr ""
 msgid "Year"
 msgstr "Año"
 
-#: client/templates/base.html
-msgid "Key"
-msgstr "Llave"
-
-#: client/templates/technology_parameters.html:143
-msgid "Value"
-msgstr "Valor"
-
 #: client/templates/technology_parameters.html:237
 msgid "Remove a row"
 msgstr "Quitar una fila"
-
-#: client/templates/templates_modal.html:107
-#: client/templates/base.html:46
-msgid "Node Groups"
-msgstr "Grupos Nodo"
 
 #: client/templates/templates_modal.html:114
 msgid "New Node Group"
@@ -1297,22 +1308,28 @@ msgid "New file description"
 msgstr "Descripción de nuevo archivo"
 
 #: client/templates/timeseries.html:77
+#, fuzzy
+#| msgid "Bulk Download"
+msgid "Download file"
+msgstr "Descarga masiva"
+
+#: client/templates/timeseries.html:80
 msgid "Delete file"
 msgstr "Borrar archivo"
 
-#: client/templates/timeseries.html:84
+#: client/templates/timeseries.html:89
 msgid "No files have been uploaded yet"
 msgstr "Aún no se han subido archivos"
 
-#: client/templates/timeseries.html:99
+#: client/templates/timeseries.html:104
 msgid "Create a new timeseries"
 msgstr "Crear una nueva serie temporal"
 
-#: client/templates/timeseries.html:99 client/templates/timeseries_new.html:54
+#: client/templates/timeseries.html:104 client/templates/timeseries_new.html:54
 msgid "Create Timeseries"
 msgstr "Crear serie temporal"
 
-#: client/templates/timeseries.html:103
+#: client/templates/timeseries.html:108
 msgid "Choose a file from the left!"
 msgstr "¡Elija un archivo de la izquierda!"
 
