@@ -1005,6 +1005,7 @@ def update_scenario_params(request):
 
     model_uuid = request.POST["model_uuid"]
     scenario_id = request.POST["scenario_id"]
+    scenario_description = request.POST["scenario_description"]
     form_data = json.loads(request.POST["form_data"])
 
     model = Model.by_uuid(model_uuid)
@@ -1012,6 +1013,11 @@ def update_scenario_params(request):
 
     scenario = model.scenarios.filter(id=scenario_id).first()
     Scenario_Param.update(scenario, form_data)
+    #Scenario_Param.update(scenario_description, form_data)
+
+    if scenario:
+        scenario.scenario_description = scenario_description
+        scenario.save()
 
     # Log Activity
     comment = "{} updated the scenario: {}.".format(
@@ -1097,6 +1103,48 @@ def delete_scenario(request):
     payload = {"message": "deleted scenario"}
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
+
+# @csrf_protect
+# def update_scenario_description(request):
+#     """
+#     Update the scenario description and save it to the database.
+
+#     Parameters:
+#     model_uuid (uuid): required
+#     scenario_id (int): required
+#     description (str): required
+
+#     Returns (json): Action Confirmation
+
+#     Example:
+#     POST: /api/update_scenario_description/
+#     """
+#     model_uuid = request.POST["model_uuid"]
+#     scenario_id = request.POST["scenario_id"]
+#     description = request.POST["description"]
+
+#     model = Model.by_uuid(model_uuid)
+#     model.handle_edit_access(request.user)
+
+#     scenario = model.scenarios.filter(id=scenario_id).first()
+
+#     if scenario:
+#         scenario.description = description
+#         scenario.save()
+#         print(f"Scenario description updated: {description}")
+
+#         # Log Activity
+#         comment = "{} updated the scenario description.".format(
+#             request.user.get_full_name()
+#         )
+#         Model_Comment.objects.create(model=model, comment=comment, type="edit")
+#         model.notify_collaborators(request.user)
+
+#         payload = {"message": "Scenario description updated successfully."}
+
+#         return HttpResponse(json.dumps(payload), content_type="application/json")
+
+#     return HttpResponse(json.dumps({"message": "Failed to update the scenario description, Invalid request"}), content_type="application/json")
 
 
 # ------ Timeseries

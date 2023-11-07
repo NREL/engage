@@ -125,13 +125,15 @@
 					<span class="text-sm"><b>Scenario Description</b></span>
 				</td>
 				<td colspan="4">
-					<textarea {% if not can_edit %}disabled{% endif %} class="form-control scenario-description" name="edit[scenario_description]" rows="4">{{ scenario_description }}</textarea>
+					<textarea {% if not can_edit %}disabled{% endif %} class="form-control scenario_description" id = "scenario_description" name="edit[scenario_description]" rows="4">{{ scenario_description }}</textarea>
 				</td>
-			</tr> -->
+			</tr>  -->
 			
 		</tbody>
 	</table>
 </div>
+<label>Scenario Description: </label>
+<textarea id="scenario_description" rows="4" style="cursor:help" data-toggle="tooltip" data-placement="left" title="Scenario Description"></textarea>
 <div class="col-12 centered">
 	<button id="edit-scenario-name" {% if not can_edit %}disabled{% endif %} type = "button" class = "btn btn-outline-primary btn-sm"> <i class="fas fa-edit"></i>&nbsp;&nbsp;{% trans "Edit Scenario Name" %}</button>
 	<button id="scenario-delete" {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i>&nbsp;&nbsp;{% trans "Delete Scenario" %}</button>

@@ -40,10 +40,12 @@ $( document ).ready(function() {
 	$('#master-save').on('click', function() {
 		$('.master-btn').addClass('hide')
 		$('#master-settings').removeClass('hide');
+		var scenarioDescription = $('.scenario-description').val();
 
 		$('#form_scenario_settings').addClass('hide');
 		$('#scenario_configuration').removeClass('hide')
 		save_scenario_settings();
+		//saveScenarioDescription(scenarioDescription);
 	});
 
 	$('#master-new').on('click', function() {
@@ -74,12 +76,16 @@ function save_scenario_settings() {
 		scenario_id = $("#scenario option:selected").data('id')
 		form_data = $("#form_scenario_settings :input").serializeJSON();
 
+	var scenarioDescription = $('.scenario_description').val();
+	//saveScenarioDescription(scenarioDescription);
+
 	$.ajax({
 		url: '/' + LANGUAGE_CODE + '/api/update_scenario_params/',
 		type: 'POST',
 		data: {
 			'model_uuid': model_uuid,
 			'scenario_id': scenario_id,
+			'scenario_description' : scenarioDescription,
 			'form_data': JSON.stringify(form_data),
 			'csrfmiddlewaretoken': getCookie('csrftoken'),
 		},
@@ -97,12 +103,14 @@ function get_scenario_configuration() {
 	var model_uuid = $('#header').data('model_uuid'),
 		scenario_id = $("#scenario option:selected").data('id');
 	
+	var scenarioDescription = $('.scenario_description').val();
 	if (scenario_id != undefined) {
 		$.ajax({
 			url: '/' + LANGUAGE_CODE + '/component/scenario/',
 			data: {
 			  'model_uuid': model_uuid,
 			  'scenario_id': scenario_id,
+			  'scenario_description': scenarioDescription,
 			},
 			dataType: 'json',
 			success: function (data) {
@@ -114,6 +122,7 @@ function get_scenario_configuration() {
 				activate_table();
 				$('#scenario_configuration').html(data['scenario_configuration']);
 				$('#scenario_configuration').data('scenario_id', data['scenario_id']);
+				$('#scenario_configuration').data('scenario_description', data['scenario_id']);
 				retrieve_map(false, scenario_id, undefined);
 
 				$('.add_loc_tech').on('change', function(e) {
@@ -213,6 +222,32 @@ function get_scenario_configuration() {
 						},
 						error: function() {
 							alert('Failed to update scenario name. Please try again.');
+						}
+					});
+				};
+
+				function saveScenarioDescription(description) {
+					console.log(`Description: ${description}`); // Debug
+					var model_uuid = $('#header').data('model_uuid');
+					var scenario_id = $("#scenario option:selected").data('id');
+					console.log(`Model UUID: ${model_uuid}, Scenario ID: ${scenario_id}`); // Debug
+				
+				
+					$.ajax({
+						url: '/' + LANGUAGE_CODE + '/api/update_scenario_description/',
+						type: 'POST',
+						data: {
+							'model_uuid': model_uuid,
+							'scenario_id': scenario_id,
+							'description': description,
+							'csrfmiddlewaretoken': getCookie('csrftoken'),
+						},
+						dataType: 'json',
+						success: function(data) {
+							// Handle success
+							window.onbeforeunload = null;
+							location.reload();
+						//alert('Scenario Description Updated Successfully.');
 						}
 					});
 				};

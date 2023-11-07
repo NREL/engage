@@ -422,7 +422,9 @@ def scenario(request):
 
     model_uuid = request.GET['model_uuid']
     scenario_id = request.GET['scenario_id']
+    #scenario_description = request.GET['scenario_description']
     request.session['scenario_id'] = scenario_id
+    #request.session['scenario_description'] = scenario_description
 
     model = Model.by_uuid(model_uuid)
     can_edit = model.handle_view_access(request.user)
@@ -430,7 +432,8 @@ def scenario(request):
     # Scenario Parameters
     colors = model.color_lookup
     parameters = Scenario_Param.objects.filter(
-        model_id=model.id, scenario_id=scenario_id,
+        model_id=model.id, scenario_id=scenario_id, 
+        #scenario_description=scenario_description,
         run_parameter__user_visibility=True)
 
     # All Loc Techs
@@ -468,7 +471,9 @@ def scenario(request):
     context = {
         "model": model,
         "parameters": parameters,
-        "can_edit": can_edit}
+        "can_edit": can_edit, 
+        #"scenario_description": scenario_description
+        }
     scenario_settings = list(render(request,
                                     'scenario_settings.html',
                                     context))[0]
@@ -480,6 +485,7 @@ def scenario(request):
         "active_lt_ids": active_lt_ids,
         "loc_techs": loc_techs,
         "scenario_id": scenario_id,
+        #"scenario_description": scenario_description,
         "unique_techs": sorted(filter(None, set(unique_techs))),
         "unique_tags": sorted(filter(None, set(unique_tags))),
         "unique_locations": sorted(filter(None, set(unique_locations))),
@@ -491,6 +497,7 @@ def scenario(request):
     payload = {
         'model_id': model.id,
         'scenario_id': scenario_id,
+        #'scenario_description': scenario_description,
         'loc_techs': loc_techs,
         'active_lt_ids': active_lt_ids,
         'scenario_settings': scenario_settings.decode('utf-8'),
