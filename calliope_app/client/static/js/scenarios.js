@@ -76,7 +76,7 @@ function save_scenario_settings() {
 		scenario_id = $("#scenario option:selected").data('id')
 		form_data = $("#form_scenario_settings :input").serializeJSON();
 
-	var scenarioDescription = $('.scenario_description').val();
+	var scenarioDescription = $('#scenario_description').val();
 	//saveScenarioDescription(scenarioDescription);
 
 	$.ajax({
