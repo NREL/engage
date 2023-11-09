@@ -40,7 +40,7 @@ $( document ).ready(function() {
 	$('#master-save').on('click', function() {
 		$('.master-btn').addClass('hide')
 		$('#master-settings').removeClass('hide');
-		var scenario_description = $('#scenario_description').val();
+		//var scenario_description = $('#scenario_description').val();
 
 		$('#form_scenario_settings').addClass('hide');
 		$('#scenario_configuration').removeClass('hide')
@@ -103,14 +103,14 @@ function get_scenario_configuration() {
 	var model_uuid = $('#header').data('model_uuid'),
 		scenario_id = $("#scenario option:selected").data('id');
 	
-	var scenario_description = $('#scenario_description').val();
+	//var scenario_description = $('#scenario_description').val();
 	if (scenario_id != undefined) {
 		$.ajax({
 			url: '/' + LANGUAGE_CODE + '/component/scenario/',
 			data: {
 			  'model_uuid': model_uuid,
 			  'scenario_id': scenario_id,
-			  'scenario_description': scenario_description,
+			  //'scenario_description': scenario_description,
 			},
 			dataType: 'json',
 			success: function (data) {
@@ -122,7 +122,7 @@ function get_scenario_configuration() {
 				activate_table();
 				$('#scenario_configuration').html(data['scenario_configuration']);
 				$('#scenario_configuration').data('scenario_id', data['scenario_id']);
-				$('#scenario_configuration').data('scenario_description', data['scenario_id']);
+				//$('#scenario_configuration').data('scenario_description', data['scenario_id']);
 				retrieve_map(false, scenario_id, undefined);
 
 				$('.add_loc_tech').on('change', function(e) {
