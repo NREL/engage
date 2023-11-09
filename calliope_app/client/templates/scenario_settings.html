@@ -4,16 +4,6 @@
 <html lang="en">
 <div class="col-12">
 
-	<!-- <label><b> Scenario Name: </b></label>
-<label id="scenario_name" class="scenario_name" rows="4" style="cursor:help" data-toggle="tooltip" data-placement="left" title="Scenario Name"> {{scenario.name}} </label>
-<button id="edit-scenario-name" {% if not can_edit %}disabled{% endif %} type = "button" class = "btn btn-outline-primary btn-sm"> <i class="fas fa-edit"></i> {% trans "Edit Scenario Name" %} </button>
-		
-<br/> 
-<hr/>
-
-<label><b> Scenario Description: </b></label>
-<textarea id="scenario_description" class="scenario_description" rows="4" style="cursor:help" data-toggle="tooltip" data-placement="left" title="Scenario Description"> {{scenario.description}} </textarea> -->
-
 	<table id="settings_table" class="table table-hover table-sm">
 		<tbody>
 
@@ -152,21 +142,11 @@
 					</tr>
 				{% endif %}
 			{% endfor %}
-
-			<!-- <tr class="param_header table-default" data-param_id="scenario_description">
-				<td style="cursor:help" data-toggle="tooltip" data-placement="right" title="Scenario Description">
-					<span class="text-sm"><b>Scenario Description</b></span>
-				</td>
-				<td colspan="4">
-					<textarea {% if not can_edit %}disabled{% endif %} class="form-control scenario_description" id = "scenario_description" name="edit[scenario_description]" rows="4">{{ scenario_description }}</textarea>
-				</td>
-			</tr>  -->
 			
 		</tbody>
 	</table>
 </div>
 
 <div class="col-12 centered">
-	<button id="edit-scenario-name" {% if not can_edit %}disabled{% endif %} type = "button" class = "btn btn-outline-primary btn-sm"> <i class="fas fa-edit"></i>&nbsp;&nbsp;{% trans "Edit Scenario Name" %}</button>
 	<button id="scenario-delete" {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i>&nbsp;&nbsp;{% trans "Delete Scenario" %}</button>
 </div>
