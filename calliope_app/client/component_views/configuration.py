@@ -12,7 +12,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 from django.utils.timezone import make_aware
 
-from api.models.configuration import Scenario_Param, Scenario_Loc_Tech, \
+from api.models.configuration import Scenario_Param, Scenario, Scenario_Loc_Tech, \
     Timeseries_Meta, ParamsManager, Model, User_File, Carrier, Tech_Param
 from api.utils import get_cols_from_csv
 
@@ -436,6 +436,8 @@ def scenario(request):
         #scenario_description=scenario_description,
         run_parameter__user_visibility=True)
 
+    scenario = Scenario.objects.filter(id=scenario_id).first()
+
     # All Loc Techs
     loc_techs = []
     lts = model.loc_techs
@@ -472,7 +474,7 @@ def scenario(request):
         "model": model,
         "parameters": parameters,
         "can_edit": can_edit, 
-        #"scenario_description": scenario_description
+        "scenario": scenario,
         }
     scenario_settings = list(render(request,
                                     'scenario_settings.html',

@@ -116,12 +116,14 @@ function get_scenario_configuration() {
 			success: function (data) {
 				active_lt_ids = data['active_lt_ids'];
 				loc_techs = data['loc_techs'];
+				//scenario_description = data['scenario_description']
 				$('#scenario_settings').html(data['scenario_settings']);
 				activate_scenario_settings();
 
 				activate_table();
 				$('#scenario_configuration').html(data['scenario_configuration']);
 				$('#scenario_configuration').data('scenario_id', data['scenario_id']);
+				$('#scenario_description').html(data['scenario_decsription']);
 				//$('#scenario_configuration').data('scenario_description', data['scenario_id']);
 				retrieve_map(false, scenario_id, undefined);
 
