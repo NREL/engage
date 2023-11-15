@@ -786,8 +786,8 @@ def upload_techs(request):
                     )
                 update_dict = {'edit':{'parameter':{},'timeseries':{}},'add':{},'essentials':{}}
                 # Grab in/out carriers and their units
-                units_in_ids= [4,5,70]
-                units_out_ids= [4,6,71]
+                units_in_ids= ParamsManager.get_tagged_params('units_in')
+                units_out_ids= ParamsManager.get_tagged_params('units_out')
                 units_in_names = Parameter.objects.filter(id__in=units_in_ids).values_list('name', flat=True)
                 carrier_in_name = [row[c] for c in units_in_names if c in row][0]
                 units_out_names = Parameter.objects.filter(id__in=units_out_ids).values_list('name', flat=True)
@@ -993,8 +993,8 @@ def upload_loctechs(request):
                         continue
                 
                 # Grab in/out carriers and their units
-                units_in_ids= [4,5,70]
-                units_out_ids= [4,6,71]
+                units_in_ids= ParamsManager.get_tagged_params('units_in')
+                units_out_ids= ParamsManager.get_tagged_params('units_out')
                 carrier_in_param = Tech_Param.objects.filter(technology=technology, parameter_id__in=units_in_ids).first()
                 carrier_out_param = Tech_Param.objects.filter(technology=technology, parameter_id__in=units_out_ids).first()
 

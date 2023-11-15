@@ -7,7 +7,7 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_protect
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils.html import escape
@@ -32,7 +32,7 @@ def validate_model_name(value):
     matched = regex.search(value)
     if matched is None:
         return
-    
+
     diff = set(value).difference(set(["(", ")", " ", "-", "_"]))
     if len(diff) == 0:
         raise ValidationError("Error: Invalid model name, should not contain only symbols")
@@ -223,12 +223,12 @@ def validate_model_comment(value):
     value = value.strip()
     if len(value) == 0:
         raise ValidationError("Please write your comment.")
-    
+
     regex = re.compile(r"(<(.*)>.*?|<(.*) />)")
     matched = regex.search(value)
     if matched is None:
         return
-    
+
     result = matched.group(0)
     raise ValidationError(f"Invalid comment string, please remove '{result}'")
 
@@ -1201,6 +1201,28 @@ def delete_file(request):
     payload = {"message": "Success."}
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
+
+
+def download_file(request, model_uuid, file_id):
+    """
+    Download a user's timeseries file
+
+    Parameters:
+    model_uuid (uuid): required
+    file_id (int): required
+
+    Returns (FileResponse):
+
+    Example:
+    GET: /api/download_file/model_uuid/file_id/
+    """
+    model = Model.by_uuid(model_uuid)
+    model.handle_edit_access(request.user)
+
+    file_record = User_File.objects.get(model=model, id=file_id)
+    response = FileResponse(file_record.filename.open())
+    response['Content-Disposition'] = f'attachment; filename="{file_record.filename.name}"'
+    return response
 
 
 @csrf_protect

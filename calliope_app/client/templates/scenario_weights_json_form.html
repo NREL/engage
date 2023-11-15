@@ -126,7 +126,7 @@ a {
 }
 
 .unit-inputs {
-    width: 60%;
+    width: 62%;
     display: inline-block;
     float: right;
 }
@@ -135,6 +135,9 @@ a {
 }
 .form-inputs {
     float: left;
+}
+.modal-header {
+    padding-left: 0;
 }
 </style>
 
@@ -153,35 +156,35 @@ a {
                 <label><b>Monetary</b></label>
                 <div class="unit-inputs">
                     <input class="form-control smol form-inputs" id="monetary" name="" aria-label="Input a number">
-                    <span class="form-units">Weighted Cost per $</span>
+                    <span class="form-units">{% trans "Weighted Cost per" %} $</span>
                 </div>
             </div>
             <div id="dialog-inputs" class="form-group" style="width: 100%;">
                 <label><b>CO2</b></label>
                 <div class="unit-inputs">
                     <input class="form-control smol form-inputs" id="co2" name="" aria-label="Input a number">
-                    <span class="form-units">Weighted Cost per kg</span>
+                    <span class="form-units">{% trans "Weighted Cost per" %} kg</span>
                 </div>
             </div>
             <div id="dialog-inputs" class="form-group" style="width: 100%;">
                 <label><b>CH4</b></label>
                 <div class="unit-inputs">
                     <input class="form-control smol form-inputs" id="ch4" name="" aria-label="Input a number">
-                    <span class="form-units">Weighted Cost per kg</span>
+                    <span class="form-units">{% trans "Weighted Cost per" %} kg</span>
                 </div>
             </div>
             <div id="dialog-inputs" class="form-group" style="width: 100%;">
                 <label><b>N2O</b></label>
                 <div class="unit-inputs">
                     <input class="form-control smol form-inputs" id="n2o" name="" aria-label="Input a number">
-                    <span class="form-units">Weighted Cost per kg</span>
+                    <span class="form-units">{% trans "Weighted Cost per" %} kg</span>
                 </div>
             </div>
             <div id="dialog-inputs" class="form-group" style="width: 100%;">
                 <label><b>CO2e</b></label>
                 <div class="unit-inputs">
                     <input class="form-control smol form-inputs" id="co2e" name="" aria-label="Input a number">
-                    <span class="form-units">Weighted Cost per kg</span>
+                    <span class="form-units">{% trans "Weighted Cost per" %} kg</span>
                 </div>
             </div>
             <hr>
