@@ -1005,7 +1005,7 @@ def update_scenario_params(request):
 
     model_uuid = request.POST["model_uuid"]
     scenario_id = request.POST["scenario_id"]
-    scenario_description = request.POST["scenario_description"]
+    scenario_description = escape(request.POST["scenario_description"].strip())
     form_data = json.loads(request.POST["form_data"])
  
     model = Model.by_uuid(model_uuid)
@@ -1044,7 +1044,8 @@ def update_scenario_name(request):
     """
     model_uuid = request.POST["model_uuid"]
     scenario_id = request.POST["scenario_id"]
-    new_scenario_name = request.POST["new_scenario_name"]
+    new_scenario_name = escape(request.POST["new_scenario_name"].strip())
+
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
     scenario = model.scenarios.filter(id=scenario_id).first()
