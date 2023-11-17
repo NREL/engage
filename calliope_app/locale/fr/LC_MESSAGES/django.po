@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-28 04:58+0000\n"
+"POT-Creation-Date: 2023-11-16 23:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -67,9 +67,13 @@ msgstr ""
 "e-mail, ou contacter l'équipe Engage"
 
 #: account/validators.py:9
+#, fuzzy
+#| msgid ""
+#| "Enter a valid string consisting of unicode letters, numbers, underscores "
+#| "or hyphens."
 msgid ""
 "Enter a valid string consisting of unicode letters, numbers, underscores or "
-"hyphens."
+"hyphens. Single spaces are allowed to separate words."
 msgstr ""
 "Veuillez insérer une chaîne unicode de lettres, chiffres, tiret bas, ou "
 "tiret."
@@ -81,15 +85,19 @@ msgstr ""
 "Veuillez insérer un email contenant des lettres, chiffres, et des caractères "
 "spéciaux @/./+/-/_"
 
-#: calliope_app/settings/base.py:129
+#: calliope_app/settings/base.py:131
 msgid "English"
 msgstr "Anglais"
 
-#: calliope_app/settings/base.py:131
+#: calliope_app/settings/base.py:132
+msgid "Spanish"
+msgstr "Espagnol"
+
+#: calliope_app/settings/base.py:133
 msgid "French"
 msgstr "Français"
 
-#: client/templates/activity.html:16 client/templates/base.html:147
+#: client/templates/activity.html:16 client/templates/base.html:172
 #: client/templates/home_my_models.html:6
 msgid "Activity"
 msgstr "Activité"
@@ -211,6 +219,7 @@ msgstr "Nom du nouveau scénario"
 
 #: client/templates/add_scenario.html:26
 #: client/templates/add_technology.html:26
+#: client/templates/scenario_constraints_json_form.html:157
 #: client/templates/technology_essentials.html:26
 msgid "Name"
 msgstr "Nom"
@@ -245,8 +254,9 @@ msgstr "existant"
 msgid "No other scenarios exist yet"
 msgstr "Aucun autre scénario existant encore"
 
-#: client/templates/add_technology.html:11 client/templates/configure.html:26
-#: client/templates/locations_dashboard.html:51
+#: client/templates/add_technology.html:11 client/templates/base.html:53
+#: client/templates/configure.html:26
+#: client/templates/locations_dashboard.html:61
 #: client/templates/scenario_configuration.html:10
 #: client/templates/technologies.html:16
 msgid "Technologies"
@@ -286,79 +296,211 @@ msgstr "existant"
 msgid "publicly available"
 msgstr "publiquement disponible"
 
-#: client/templates/base.html:91
+#: client/templates/base.html:45
+#: client/templates/technology_parameters.html:143
+msgid "Value"
+msgstr "Valeur"
+
+#: client/templates/base.html:46
+msgid "Key"
+msgstr "Clé"
+
+#: client/templates/base.html:47
+msgid "Constraint"
+msgstr "Contrainte"
+
+#: client/templates/base.html:48
+msgid "Constraints"
+msgstr "Contraintes"
+
+#: client/templates/base.html:49
+msgid "Show left and right hand side"
+msgstr "Afficher les côtés gauche et droit"
+
+#: client/templates/base.html:50
+msgid "Left Hand-side"
+msgstr "Côté gauche"
+
+#: client/templates/base.html:51
+msgid "Right Hand-side"
+msgstr "Côté droite"
+
+#: client/templates/base.html:52 client/templates/configure.html:20
+#: client/templates/locations.html:18
+#: client/templates/scenario_configuration.html:12
+msgid "Locations"
+msgstr "Emplacements"
+
+#: client/templates/base.html:54 client/templates/configure.html:50
+msgid "New"
+msgstr "Nouveau"
+
+#: client/templates/base.html:55 client/templates/run_dashboard.html:45
+msgid "Run"
+msgstr "Exécuter"
+
+#: client/templates/base.html:56 client/templates/templates_modal.html:107
+msgid "Node Groups"
+msgstr "Groupes de nœuds"
+
+#: client/templates/base.html:57
+msgid "Existing Node Groups:"
+msgstr "Groupes de nœuds existants:"
+
+#: client/templates/base.html:58
+msgid "This model does not have any existing node groups yet."
+msgstr "Ce modèle n'a pas encore de groupes de nœuds existants."
+
+#: client/templates/base.html:59
+msgid "Add Node Group to Model"
+msgstr "Ajouter un groupe de nœuds au modèle"
+
+#: client/templates/base.html:60
+msgid "Update Node Group: "
+msgstr "Mettre à jour le groupe de nœuds: "
+
+#: client/templates/base.html:61
+msgid ""
+"GEOPHIRES v2.0 is a geothermal techno-economic simulation tool used in "
+"Engage to calculate Geothermal related parameters. GEOPHIRES combines "
+"reservoir, wellbore, and surface plant technical models with cost "
+"correlations and levelized cost models to estimate the capital and operation "
+"and maintenance costs, instantaneous and lifetime energy production, and "
+"overall levelized cost of energy of a geothermal plant."
+msgstr ""
+"GEOPHIRES v2.0 est un outil de simulation technico-économique géothermique "
+"utilisé dans Engage pour calculer les paramètres liés à la géothermie."
+
+#: client/templates/base.html:62
+msgid "For more information about GEOPHIRES please see the "
+msgstr "Pour plus d'informations sur GEOPHIRES, veuillez consulter le "
+
+#: client/templates/base.html:63
+msgid ""
+"Loading Geophires results, this may take a few minutes. Please stay on this "
+"modal."
+msgstr ""
+"Chargement des résultats Geophires, cela peut prendre quelques minutes. "
+"Veuillez rester sur ce mode."
+
+#: client/templates/base.html:112
 msgid "Help"
 msgstr "Aide"
 
-#: client/templates/base.html:95 client/templates/share.html:14
+#: client/templates/base.html:117 client/templates/base.html:119
+#: client/templates/share.html:14
 msgid "Model Sharing"
 msgstr "Partage du modèle"
 
-#: client/templates/base.html:138 client/templates/home_my_models.html:51
+#: client/templates/base.html:163 client/templates/home_my_models.html:51
 #: client/templates/home_public_models.html:20
 msgid "VIEW ONLY"
 msgstr "Lecture seulement"
 
-#: client/templates/base.html:148
-#: client/templates/technology_parameters.html:65
-#: client/templates/timeseries.html:95
+#: client/templates/base.html:173
+msgid "Flagged Parameters"
+msgstr "Paramètre marqué"
+
+#: client/templates/base.html:174
+#: client/templates/technology_parameters.html:67
+#: client/templates/timeseries.html:100
 msgid "Timeseries"
 msgstr "séries temporelles"
 
-#: client/templates/base.html:161 client/templates/password.html:11
+#: client/templates/base.html:175 client/templates/base.html:176
+#, fuzzy
+#| msgid "Carrier"
+msgid "Carriers"
+msgstr "Vecteur"
+
+#: client/templates/base.html:189 client/templates/password.html:11
 msgid "Change Password"
 msgstr "Changer le mot de passe"
 
-#: client/templates/base.html:162
+#: client/templates/base.html:190
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: client/templates/base.html:167
+#: client/templates/base.html:195
 msgid "LOGIN"
 msgstr "Se connecter"
 
-#: client/templates/base.html:195
+#: client/templates/base.html:226
 msgid "Help Guide"
 msgstr "Guide d'assistance"
 
-#: client/templates/base.html:205 client/templates/registration/login.html:20
+#: client/templates/base.html:236 client/templates/registration/login.html:20
 #: client/templates/registration/registration.html:20
 msgid "OPEN ACCESS ENERGY SYSTEM PLANNING"
 msgstr "OUVRIR L'ACCES AU PLANIFICATEUR DU SYSTÈME D'ENERGIE"
 
-#: client/templates/base.html:206 client/templates/registration/login.html:21
+#: client/templates/base.html:237 client/templates/registration/login.html:21
 #: client/templates/registration/registration.html:21
 msgid "Supported on Modern"
 msgstr "support sur moderne"
 
-#: client/templates/base.html:206 client/templates/registration/login.html:22
+#: client/templates/base.html:237 client/templates/registration/login.html:22
 #: client/templates/registration/registration.html:22
 msgid "and"
 msgstr "et"
 
-#: client/templates/base.html:206 client/templates/registration/login.html:24
+#: client/templates/base.html:237 client/templates/registration/login.html:24
 #: client/templates/registration/registration.html:24
 msgid "Browsers"
 msgstr "navigateurs"
 
-#: client/templates/base.html:210 client/templates/registration/login.html:31
+#: client/templates/base.html:241 client/templates/registration/login.html:31
 #: client/templates/registration/registration.html:31
 msgid "Project Assistance"
 msgstr "Assitance au projet"
 
-#: client/templates/base.html:219 client/templates/registration/login.html:59
+#: client/templates/base.html:250 client/templates/registration/login.html:59
 #: client/templates/registration/login.html:66
 #: client/templates/registration/registration.html:59
 #: client/templates/registration/registration.html:66
 msgid "Documentation"
 msgstr "Documentation"
 
-#: client/templates/base.html:227
+#: client/templates/base.html:258 client/templates/new_carrier.html:134
+#: client/templates/templates_modal.html:121
 msgid "Close"
 msgstr "Fermer"
 
+#: client/templates/carriers.html:20 client/templates/new_carrier.html:102
+#, fuzzy
+#| msgid "Carrier"
+msgid "Carrier Name"
+msgstr "Vecteur"
+
+#: client/templates/carriers.html:23 client/templates/new_carrier.html:105
+msgid "Rate Unit"
+msgstr "Unité de taux"
+
+#: client/templates/carriers.html:26 client/templates/new_carrier.html:108
+msgid "Quantity Unit"
+msgstr "Unité de quantité"
+
+#: client/templates/carriers.html:29 client/templates/new_carrier.html:111
+#: client/templates/technology_essentials.html:83
+msgid "Description"
+msgstr "Description"
+
+#: client/templates/carriers.html:31
+#, fuzzy
+#| msgid "Delete run"
+msgid "Delete"
+msgstr "Supprimer"
+
+#: client/templates/carriers.html:64
+#, fuzzy
+#| msgid "Delete Scenario"
+msgid "Delete carrier"
+msgstr "Supprimer le transporteur"
+
 #: client/templates/configure.html:10
-#: client/templates/locations_dashboard.html:116
+#: client/templates/locations_dashboard.html:129
+#: client/templates/scenario_constraints_json_form.html:177
+#: client/templates/scenario_weights_json_form.html:197
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -374,26 +516,18 @@ msgstr "Transfert massif"
 msgid "Bulk Download"
 msgstr "Téléchargement massif"
 
-#: client/templates/configure.html:20 client/templates/locations.html:18
-#: client/templates/scenario_configuration.html:12
-msgid "Locations"
-msgstr "Emplacements"
-
 #: client/templates/configure.html:32 client/templates/loc_techs.html:17
 msgid "Nodes"
 msgstr "Nœuds"
 
 #: client/templates/configure.html:49
-#: client/templates/locations_dashboard.html:43
-#: client/templates/locations_dashboard.html:120
-#: client/templates/parameters.html:40 client/templates/timeseries.html:59
-#: client/templates/templates_modal.html:154
+#: client/templates/locations_dashboard.html:53
+#: client/templates/locations_dashboard.html:133
+#: client/templates/new_carrier.html:133 client/templates/parameters.html:40
+#: client/templates/templates_modal.html:190
+#: client/templates/timeseries.html:59
 msgid "Save"
 msgstr "Enregistrer"
-
-#: client/templates/configure.html:50
-msgid "New"
-msgstr "Nouveau"
 
 #: client/templates/home.html:37
 msgid "Videos"
@@ -495,17 +629,17 @@ msgstr "Emplacements des technologies"
 msgid "Delete node"
 msgstr "Supprimer le nœud"
 
-#: client/templates/loc_tech_essentials.html:35
+#: client/templates/loc_tech_essentials.html:40
 msgid "New Locations"
 msgstr "Nouvel emplacement"
 
-#: client/templates/loc_tech_essentials.html:41
-#: client/templates/loc_tech_essentials.html:51
-#: client/templates/loc_tech_essentials.html:62 client/templates/run.html:51
+#: client/templates/loc_tech_essentials.html:46
+#: client/templates/loc_tech_essentials.html:56
+#: client/templates/loc_tech_essentials.html:67 client/templates/run.html:51
 msgid "Location"
 msgstr "Emplacement"
 
-#: client/templates/loc_tech_essentials.html:72
+#: client/templates/loc_tech_essentials.html:77
 msgid "Add Node"
 msgstr "Ajouter un nœud"
 
@@ -513,55 +647,113 @@ msgstr "Ajouter un nœud"
 msgid "All Locations"
 msgstr "Tous les emplacements"
 
-#: client/templates/locations_dashboard.html:35
+#: client/templates/locations_dashboard.html:40
 msgid "Location description"
 msgstr "Descriptif de l'emplacement"
 
-#: client/templates/locations_dashboard.html:39
+#: client/templates/locations_dashboard.html:49
 msgid "Edit location"
 msgstr "Modifier l'emplacement"
 
-#: client/templates/locations_dashboard.html:39
+#: client/templates/locations_dashboard.html:49
 msgid "Edit"
 msgstr "Modifier"
 
-#: client/templates/locations_dashboard.html:42
-#: client/templates/locations_dashboard.html:119
+#: client/templates/locations_dashboard.html:52
+#: client/templates/locations_dashboard.html:132
 msgid "Delete location"
 msgstr "Supprimer l'emplacement"
 
-#: client/templates/locations_dashboard.html:67
-#: client/templates/locations_dashboard.html:126
+#: client/templates/locations_dashboard.html:77
+#: client/templates/locations_dashboard.html:139
 msgid "Datasets"
 msgstr "Ensemble de données"
 
-#: client/templates/locations_dashboard.html:89
+#: client/templates/locations_dashboard.html:99
 msgid "New location name"
 msgstr "Nom du nouvel emplacement"
 
-#: client/templates/locations_dashboard.html:94
+#: client/templates/locations_dashboard.html:104
 #: client/templates/pvwatts_form.html:12 client/templates/pvwatts_form.html:13
 #: client/templates/wtk_form.html:11 client/templates/wtk_form.html:12
 msgid "Latitude"
 msgstr "Latitude"
 
-#: client/templates/locations_dashboard.html:100
+#: client/templates/locations_dashboard.html:110
 #: client/templates/pvwatts_form.html:17 client/templates/pvwatts_form.html:18
 #: client/templates/wtk_form.html:16 client/templates/wtk_form.html:17
 msgid "Longitude"
 msgstr "Longitude"
 
-#: client/templates/locations_dashboard.html:106
+#: client/templates/locations_dashboard.html:116
 msgid "Available area"
 msgstr "Zone disponible"
 
-#: client/templates/locations_dashboard.html:112
+#: client/templates/locations_dashboard.html:122
 msgid "New location description"
 msgstr "Descriptif du nouvel emplacement"
 
-#: client/templates/locations_dashboard.html:116
+#: client/templates/locations_dashboard.html:129
 msgid "Cancel new location"
 msgstr "Annuler le nouvel emplacement"
+
+#: client/templates/model_flags.html:20
+msgid "Type"
+msgstr "Taper"
+
+#: client/templates/model_flags.html:23
+msgid "Element"
+msgstr "Élément"
+
+#: client/templates/model_flags.html:26
+#, fuzzy
+#| msgid "for parameter"
+msgid "Parameter"
+msgstr "paramètre"
+
+#: client/templates/model_flags.html:29
+#, fuzzy
+#| msgid "Inputs"
+msgid "Input Text"
+msgstr "Texte de Entrées"
+
+#: client/templates/model_flags.html:32
+msgid "Converted Value"
+msgstr "Valeur convertie"
+
+#: client/templates/model_flags.html:35
+msgid "Flag"
+msgstr "Drapeau"
+
+#: client/templates/model_flags.html:38
+#, fuzzys
+#| msgid "Remove model"
+msgid "Remove Flag"
+msgstr "Supprimer le drapeau"
+
+#: client/templates/model_flags.html:44
+#, fuzzy
+#| msgid "Technologies"
+msgid "Technology"
+msgstr "Technologie"
+
+#: client/templates/model_flags.html:62 client/templates/model_flags.html:95
+#, fuzzy
+#| msgid "Remove model"
+msgid "Remove flag"
+msgstr "Supprimer le drapeau"
+
+#: client/templates/model_flags.html:69
+#, fuzzy
+#| msgid "Nodes"
+msgid "Node"
+msgstr "Nœud"
+
+#: client/templates/new_carrier.html:94
+#, fuzzy
+#| msgid "Select a Carrier"
+msgid "Model Carriers"
+msgstr "Modèles de transporteurs"
 
 #: client/templates/parameters.html:16
 msgid "Back to Technologies"
@@ -859,10 +1051,6 @@ msgstr "Visulalisation du scénario"
 msgid "Version"
 msgstr "Etiquette de version"
 
-#: client/templates/run_dashboard.html:45
-msgid "Run"
-msgstr "Exécuter"
-
 #: client/templates/run_dashboard.html:104
 msgid "Open Map Viz in a new window"
 msgstr "Ouvrir Visu. Carte dans une nouvelle fenêtre"
@@ -904,53 +1092,38 @@ msgstr "Supprimer le lancement"
 msgid "Version Tag"
 msgstr "Version "
 
-#: client/templates/scenario_configuration.html:19
+#: client/templates/scenario_configuration.html:20
 msgid "Filter nodes by technology."
 msgstr "Filtrer les nœuds par technologie"
 
-#: client/templates/scenario_configuration.html:27
+#: client/templates/scenario_configuration.html:28
 msgid "Filter nodes by version tag."
 msgstr "Filtrer les nœuds par version"
 
-#: client/templates/scenario_configuration.html:35
+#: client/templates/scenario_configuration.html:36
 msgid "Filter nodes by location."
 msgstr "Filtrer les nœuds par emplacement"
 
-#: client/templates/scenario_configuration.html:45
+#: client/templates/scenario_configuration.html:47
 msgid "Bulk toggle nodes activation for the current scenario."
 msgstr "Basculer l'activation des nœuds en bloc pour le scénario actuel."
 
-#: client/templates/scenario_configuration.html:65
+#: client/templates/scenario_configuration.html:67
 msgid "Input carrier not defined"
 msgstr "Vecteur d'entrée non défini"
 
-#: client/templates/scenario_configuration.html:72
+#: client/templates/scenario_configuration.html:74
 msgid "Output carrier not defined"
 msgstr "vecteur de sortie non défini"
 
-#: client/templates/scenario_configuration.html:104
+#: client/templates/scenario_configuration.html:111
 msgid "Toggle node activation."
 msgstr "Basculez l'activation des nœuds."
 
-#: client/templates/base.html
-msgid "Constraint"
-msgstr "Contrainte"
-
-#: client/templates/base.html
-msgid "Constraints"
-msgstr "Contraintes"
-
-#: client/templates/base.html
-msgid "Show left and right hand side"
-msgstr "Afficher les côtés gauche et droit"
-
-#: client/templates/base.html
-msgid "Left Hand-side"
-msgstr "Côté gauche"
-
-#: client/templates/base.html
-msgid "Right Hand-side"
-msgstr "Côté droite"
+#: client/templates/scenario_constraints_json_form.html:141
+#: client/templates/scenario_constraints_json_form.html:151
+msgid "Constraint Group"
+msgstr "Groupe de Contraintes"
 
 #: client/templates/scenario_constraints_json_form.html:147
 msgid "Complete form to convert fields to JSON"
@@ -959,10 +1132,6 @@ msgstr "Remplissez le formulaire pour convertir les champs en JSON"
 #: client/templates/scenario_constraints_json_form.html:148
 msgid "View Calliope Constraint Group documentation"
 msgstr "Afficher la documentation du groupe de contraintes Calliope"
-
-#: client/templates/scenario_constraints_json_form.html:141
-msgid "Constraint Group"
-msgstr "Groupe de Contraintes"
 
 #: client/templates/scenario_constraints_json_form.html:152
 msgid "JSON Preview"
@@ -981,7 +1150,7 @@ msgid "+ Constraint Group"
 msgstr "+ Groupe de Contraintes"
 
 #: client/templates/scenario_constraints_json_form.html:178
-#: client/templates/scenario_weights_json_form.html:195
+#: client/templates/scenario_weights_json_form.html:198
 msgid "Convert Fields to JSON"
 msgstr "Convertir les champs en JSON"
 
@@ -989,21 +1158,31 @@ msgstr "Convertir les champs en JSON"
 msgid "Select a Scenario"
 msgstr "Sélectionnez un scénario"
 
-#: client/templates/scenario_settings.html:23
-#: client/templates/scenario_settings.html:28
-#: client/templates/technology_parameters.html:130
+#: client/templates/scenario_settings.html:18
+#, fuzzy
+#| msgid "Delete Scenario"
+msgid "Edit Scenario Name"
+msgstr "Modifier le nom du scénario"
+
+#: client/templates/scenario_settings.html:46
+#: client/templates/scenario_settings.html:51
+#: client/templates/technology_parameters.html:132
 msgid "Row"
 msgstr "Ligne"
 
-#: client/templates/scenario_settings.html:108
+#: client/templates/scenario_settings.html:152
 msgid "Delete Scenario"
 msgstr "Supprimer le scénario"
 
-#: client/templates/scenario_weights_json_form.html:143
+#: client/templates/scenario_weights_json_form.html:146
 msgid "Weights of cost classes"
 msgstr "Pesos de clases de costos"
 
-#: client/templates/scenario_weights_json_form.html:156
+#: client/templates/scenario_weights_json_form.html:159
+#: client/templates/scenario_weights_json_form.html:166
+#: client/templates/scenario_weights_json_form.html:173
+#: client/templates/scenario_weights_json_form.html:180
+#: client/templates/scenario_weights_json_form.html:187
 msgid "Weighted Cost per"
 msgstr "Coût pondéré par"
 
@@ -1038,8 +1217,8 @@ msgid "Administrator"
 msgstr "Administrateur"
 
 #: client/templates/splitter.html:5
-#: client/templates/technology_parameters.html:100
-#: client/templates/technology_parameters.html:105
+#: client/templates/technology_parameters.html:102
+#: client/templates/technology_parameters.html:107
 msgid "Hide"
 msgstr "Masquer"
 
@@ -1055,48 +1234,79 @@ msgstr ""
 "Les étiquettes des versions sont utilisées pour distinguer les versions "
 "multiples d'une même technologie. "
 
-#: client/templates/technology_essentials.html:80
-msgid "Description"
-msgstr "Description"
-
-#: client/templates/technology_parameters.html:46
-#: client/templates/technology_parameters.html:49
-#: client/templates/technology_parameters.html:52
+#: client/templates/technology_parameters.html:48
+#: client/templates/technology_parameters.html:51
+#: client/templates/technology_parameters.html:54
 msgid "Mark parameter as favorite"
 msgstr "Marquer paramètre comme favoris"
 
-#: client/templates/technology_parameters.html:99
-#: client/templates/technology_parameters.html:104
+#: client/templates/technology_parameters.html:101
+#: client/templates/technology_parameters.html:106
 msgid "Show"
 msgstr "Montrer"
 
-#: client/templates/technology_parameters.html:125
+#: client/templates/technology_parameters.html:127
 msgid "Default"
 msgstr "Défault"
 
-#: client/templates/technology_parameters.html:129
+#: client/templates/technology_parameters.html:131
 msgid "Evolve this parameter by year"
 msgstr "Evoluer ce paramètre par année"
 
-#: client/templates/technology_parameters.html:139
+#: client/templates/technology_parameters.html:141
 msgid "This parameter is configured to evolve over multiple years"
 msgstr "Ce paramètre est configuré pour évoluer sur plusieurs années"
 
-#: client/templates/technology_parameters.html:140
+#: client/templates/technology_parameters.html:142
 msgid "Year"
 msgstr "Année"
 
-#: client/templates/base.html
-msgid "Key"
-msgstr "Clé"
-
-#: client/templates/technology_parameters.html:141
-msgid "Value"
-msgstr "Valeur"
-
-#: client/templates/technology_parameters.html:235
+#: client/templates/technology_parameters.html:237
 msgid "Remove a row"
 msgstr "Supprimer une ligne"
+
+#: client/templates/templates_modal.html:114
+msgid "New Node Group"
+msgstr "Nouveau groupe de nœuds"
+
+#: client/templates/templates_modal.html:126
+#, fuzzy
+#| msgid "New Node Group"
+msgid "Delete Node Group"
+msgstr "Nouveau groupe de nœuds"
+
+#: client/templates/templates_modal.html:132
+msgid "Are you sure that you want to delete this node group?"
+msgstr "Êtes-vous sûr de vouloir supprimer ce groupe de nœuds?"
+
+#: client/templates/templates_modal.html:137
+#: client/templates/templates_modal.html:184
+msgid "Back"
+msgstr "Retour"
+
+#: client/templates/templates_modal.html:140
+msgid "Confirm"
+msgstr "Confirmer"
+
+#: client/templates/templates_modal.html:146
+msgid "Edit Node Group"
+msgstr "Modifier le groupe de nœuds"
+
+#: client/templates/templates_modal.html:156
+msgid "Node Group Name"
+msgstr "Nom du groupe de nœuds"
+
+#: client/templates/templates_modal.html:163
+msgid "Primary Location"
+msgstr "Emplacement principal"
+
+#: client/templates/templates_modal.html:170
+msgid "Node Group Type"
+msgstr "Type de groupe de nœuds"
+
+#: client/templates/templates_modal.html:187
+msgid "Update"
+msgstr "Mise à jour"
 
 #: client/templates/timeseries.html:32
 msgid "CSV Files"
@@ -1119,22 +1329,28 @@ msgid "New file description"
 msgstr "Description du nouveau dossier"
 
 #: client/templates/timeseries.html:77
+#, fuzzy
+#| msgid "Bulk Download"
+msgid "Download file"
+msgstr "Télécharger un fichier"
+
+#: client/templates/timeseries.html:80
 msgid "Delete file"
 msgstr "Supprimer dossier"
 
-#: client/templates/timeseries.html:84
+#: client/templates/timeseries.html:89
 msgid "No files have been uploaded yet"
 msgstr "Aucun dossier n'a été transféré"
 
-#: client/templates/timeseries.html:99
+#: client/templates/timeseries.html:104
 msgid "Create a new timeseries"
 msgstr "Créer une nouvelle série temporelle"
 
-#: client/templates/timeseries.html:99 client/templates/timeseries_new.html:54
+#: client/templates/timeseries.html:104 client/templates/timeseries_new.html:54
 msgid "Create Timeseries"
 msgstr "Créer série temporelle"
 
-#: client/templates/timeseries.html:103
+#: client/templates/timeseries.html:108
 msgid "Choose a file from the left!"
 msgstr "Choisir un dossier du côté gauche"
 
@@ -1185,75 +1401,15 @@ msgstr ""
 "Veuillez la trouver et la vérifier sur la page série temporelle, lien ci-"
 "dessous."
 
-#: client/templates/templates_modal.html:95
-#: client/templates/base.html:46
-msgid "Node Groups"
-msgstr "Groupes de nœuds"
-
-#: client/templates/templates_modal.html:102
-msgid "New Node Group"
-msgstr "Nouveau groupe de nœuds"
-
-#: client/templates/templates_modal.html:114
-msgid "Edit Node Group"
-msgstr "Modifier le groupe de nœuds"
-
-#: client/templates/templates_modal.html:124
-msgid "Node Group Name"
-msgstr "Nom du groupe de nœuds"
-
-#: client/templates/templates_modal.html:131
-msgid "Primary Location"
-msgstr "Emplacement principal"
-
-#: client/templates/templates_modal.html:138
-msgid "Node Group Type"
-msgstr "Type de groupe de nœuds"
-
-#: client/templates/templates_modal.html:148
-msgid "Back"
-msgstr "Retour"
-
-#: client/templates/templates_modal.html:151
-msgid "Update"
-msgstr "Mise à jour"
-
-#: client/templates/base.html:44
-msgid "Existing Node Groups:"
-msgstr "Groupes de nœuds existants:"
-
-#: client/templates/base.html:45
-msgid "This model does not have any existing node groups yet."
-msgstr "Ce modèle n'a pas encore de groupes de nœuds existants."
-
-#: client/templates/base.html:46
-msgid "Add Node Group to Model"
-msgstr "Ajouter un groupe de nœuds au modèle"
-
-#: client/templates/base.html:47
-msgid "Update Node Group: "
-msgstr "Mettre à jour le groupe de nœuds: "
-
-#: client/templates/base.html:48
-msgid "GEOPHIRES v2.0 is a geothermal techno-economic simulation tool used in Engage to calculate Geothermal related parameters. GEOPHIRES combines reservoir, wellbore, and surface plant technical models with cost correlations and levelized cost models to estimate the capital and operation and maintenance costs, instantaneous and lifetime energy production, and overall levelized cost of energy of a geothermal plant."
-msgstr "GEOPHIRES v2.0 est un outil de simulation technico-économique géothermique utilisé dans Engage pour calculer les paramètres liés à la géothermie."
-
-#: client/templates/base.html:49
-msgid "For more information about GEOPHIRES please see the "
-msgstr "Pour plus d'informations sur GEOPHIRES, veuillez consulter le "
-
-#: client/templates/base.html:50
-msgid "Loading Geophires results, this may take a few minutes. Please stay on this modal."
-msgstr "Chargement des résultats Geophires, cela peut prendre quelques minutes. Veuillez rester sur ce mode."
-
-#: client/templates/base.html:51
-msgid "One or more of your inputs are outside of the excepted range. Please adjust according to the variable descriptions before submitting."
-msgstr "Une ou plusieurs de vos entrées sont en dehors de la plage exceptée. Veuillez ajuster en fonction des descriptions des variables avant de soumettre."
+#~ msgid ""
+#~ "One or more of your inputs are outside of the excepted range. Please "
+#~ "adjust according to the variable descriptions before submitting."
+#~ msgstr ""
+#~ "Une ou plusieurs de vos entrées sont en dehors de la plage exceptée. "
+#~ "Veuillez ajuster en fonction des descriptions des variables avant de "
+#~ "soumettre."
 
 #, fuzzy
 #~| msgid "Hide"
 #~ msgid "Hide List"
 #~ msgstr "Masquer la liste"
-
-#~ msgid "Spanish"
-#~ msgstr "Espagnol"
