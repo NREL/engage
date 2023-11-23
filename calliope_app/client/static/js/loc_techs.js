@@ -564,7 +564,7 @@ function activateTemplateVariables() {
                 val = convert_units(value, units);
             if (typeof(val) == 'number') {
                 $(this).attr('data-target_value', formatNumber(val, false));
-                row.find('.tech-param-converted').html(formatNumber(val, true));
+                row.find('.tech-param-converted').html(formatNumber(val.toFixed(8), true));
             } else {
                 $(this).addClass('invalid-value');
                 row.find('.tech-param-converted').html(row.find('.tech-param-converted').data('value'));
