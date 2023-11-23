@@ -111,9 +111,9 @@ def delete_template(request):
 
 @login_required
 @csrf_protect
-def add_template(request):
+def update_template(request):
     """
-    Add a new template.
+    Add or update a new template.
 
     Parameters:
     model_uuid (uuid): required
@@ -125,9 +125,9 @@ def add_template(request):
     Returns (json): Action Confirmation
 
     Example:
-    POST: /model/templates/create/
+    POST: /model/templates/update/
     """
-
+    comment = ""
     template = {}
     model_uuid = request.POST.get("model_uuid", False)
     if model_uuid is False:
@@ -151,41 +151,19 @@ def add_template(request):
     template_type_loc_techs = list(Template_Type_Loc_Tech.objects.filter(template_type_id=template_type_id).values('id', 'template_type', 'template_loc_1', 'template_loc_2', 'template_tech'))
     template_type_carriers = list(Template_Type_Carrier.objects.filter(template_type_id=template_type_id).values('id', 'template_type', 'name', 'description', 'rate_unit', 'quantity_unit'))
     
+    new_carriers = get_or_create_template_carriers(template_type_carriers, model)
+
     if template_id:
-        print ("Editing a template: " + template_id)
+        # Delete old nodes 
+        Loc_Tech.objects.filter(template_id=template_id).delete()
+
+        # Update name if needed
         template = Template.objects.filter(id=template_id).first()
         if template is not None:
             Template.objects.filter(id=template_id).update(
                 name=name,
             )
-
-        new_template_variables = update_template_variables(templateVars, template)
-
-        # TODO: return to to edit nodes with a template
-        # template_loc_techs = Loc_Tech.objects.filter(template_id=template_id)
-        # if template_loc_techs is not None:
-        #     ureg = initialize_units()
-        #     for template_loc_tech_id, loc_tech in template_loc_techs.items():
-        #         template_type_parameters = Template_Type_Parameter.objects.filter(template_loc_tech_id=template_loc_tech_id)
-        #         for template_type_parameter in template_type_parameters: 
-        #             equation = template_type_parameter.equation
-        #             for name, template_variable in new_template_variables.items(): 
-        #                 equation = equation.replace('||'+name+'||', template_variable.value)
-        #             value, rawValue  = convert_units_no_pipe(ureg, equation, template_type_parameter.parameter.units)
-        #             Loc_Tech_Param.objects.filter(model=model, loc_tech=loc_tech, parameter=template_type_parameter.parameter).update(
-        #                 value=value,
-        #                 raw_value=rawValue,
-        #             )
-
-        comment = "{} updated a template: {} of template type: {}.".format(
-            request.user.get_full_name(),
-            name,
-            template_type.pretty_name
-        )
-        Model_Comment.objects.create(model=model, comment=comment, type="add")
-        model.notify_collaborators(request.user)
     else:
-        print ("Creating a new template")
         template = Template.objects.create(
             name=name,
             template_type=template_type,
@@ -193,67 +171,75 @@ def add_template(request):
             location=location,
         )
 
-        new_locations = get_or_create_template_locations(template_type_locs, model, name, location, template)
-        new_technologies = get_or_create_template_technologies(template_type_techs, model, template_type_id)
-        new_carriers = get_or_create_template_carriers(template_type_carriers, model, template_type_id)
-        new_loc_techs = create_template_loc_techs(template_type_loc_techs, model, name, template_type_id, template)
-        new_template_variables = create_template_variables(templateVars, template)
+    new_locations = get_or_create_template_locations(template_type_locs, model, name, location, template)
+    new_technologies = get_or_create_template_technologies(template_type_techs, model, template_type_id)
+    new_loc_techs = create_template_loc_techs(template_type_loc_techs, model, name, template_type_id, template)
+    new_template_variables = create_template_variables(templateVars, template)
 
-        if new_loc_techs is not None:
-            ureg = initialize_units()
-            #ureg.Quantity("6 kW")
-            for template_loc_tech_id, loc_tech in new_loc_techs.items():
-                template_type_parameters = Template_Type_Parameter.objects.filter(template_loc_tech_id=template_loc_tech_id)
-  
-                # get input and output carriers
-                units_in_ids = [4,5,70]
-                units_out_ids = [4,6,71]
-                tech_param_in = Tech_Param.objects.filter(model=model, technology=loc_tech.technology, parameter_id__in=units_in_ids).first()
-                tech_param_out = Tech_Param.objects.filter(model=model, technology=loc_tech.technology, parameter_id__in=units_out_ids).first()
-                rate_unit_in = "kW"
-                quantity_unit_in = "kWh"
-                rate_unit_out = "kW"
-                quantity_unit_out = "kWh"
-                if tech_param_in:
-                    carrier_in = new_carriers.get(tech_param_in.value)
-                    if hasattr(carrier_in, "rate_unit"):
-                        rate_unit_in = carrier_in.rate_unit
-                    if hasattr(carrier_in, "quantity_unit"):
-                        quantity_unit_in = carrier_in.quantity_unit
-                if tech_param_out:
-                    carrier_out = new_carriers.get(tech_param_out.value)
-                    if hasattr(carrier_out, "rate_unit"):
-                        rate_unit_out = carrier_out.rate_unit
-                    if hasattr(carrier_out, "quantity_unit"):
-                        quantity_unit_out = carrier_out.quantity_unit
-                
-                # set all custom parameters for the new node
-                for template_type_parameter in template_type_parameters: 
-                    equation = template_type_parameter.equation
+    if new_loc_techs is not None:
+        ureg = initialize_units()
+        #ureg.Quantity("6 kW")
+        for template_loc_tech_id, loc_tech in new_loc_techs.items():
+            template_type_parameters = Template_Type_Parameter.objects.filter(template_loc_tech_id=template_loc_tech_id)
 
-                    # check for variables in equation to replac
-                    for name, template_variable in new_template_variables.items():
-                        equation = equation.replace('||'+name+'||', template_variable.value)
+            # get input and output carriers
+            units_in_ids = [4,5,70]
+            units_out_ids = [4,6,71]
+            tech_param_in = Tech_Param.objects.filter(model=model, technology=loc_tech.technology, parameter_id__in=units_in_ids).first()
+            tech_param_out = Tech_Param.objects.filter(model=model, technology=loc_tech.technology, parameter_id__in=units_out_ids).first()
+            rate_unit_in = "kW"
+            quantity_unit_in = "kWh"
+            rate_unit_out = "kW"
+            quantity_unit_out = "kWh"
+            if tech_param_in:
+                carrier_in = new_carriers.get(tech_param_in.value)
+                if hasattr(carrier_in, "rate_unit"):
+                    rate_unit_in = carrier_in.rate_unit
+                if hasattr(carrier_in, "quantity_unit"):
+                    quantity_unit_in = carrier_in.quantity_unit
+            if tech_param_out:
+                carrier_out = new_carriers.get(tech_param_out.value)
+                if hasattr(carrier_out, "rate_unit"):
+                    rate_unit_out = carrier_out.rate_unit
+                if hasattr(carrier_out, "quantity_unit"):
+                    quantity_unit_out = carrier_out.quantity_unit
+            
+            # set all custom parameters for the new node
+            for template_type_parameter in template_type_parameters: 
+                equation = template_type_parameter.equation
 
-                    # override carrier placeholder strings with units from carrier where applicable
-                    units = template_type_parameter.parameter.units.replace('[[in_rate]]', rate_unit_in).replace('[[in_quantity]]', quantity_unit_in).replace('[[out_quantity]]', rate_unit_out).replace('[[out_rate]]', quantity_unit_out)
-                    value, rawValue  = convert_units_no_pipe(ureg, equation, units)
-                    Loc_Tech_Param.objects.create(
-                        parameter=template_type_parameter.parameter,
-                        loc_tech=loc_tech,
-                        value=value,
-                        raw_value=rawValue,
-                        model=model,
-                    )
+                # check for variables in equation to replac
+                for name, template_variable in new_template_variables.items():
+                    equation = equation.replace('||'+name+'||', template_variable.value)
 
-        # Log Activity
+                # override carrier placeholder strings with units from carrier where applicable
+                units = template_type_parameter.parameter.units.replace('[[in_rate]]', rate_unit_in).replace('[[in_quantity]]', quantity_unit_in).replace('[[out_quantity]]', rate_unit_out).replace('[[out_rate]]', quantity_unit_out)
+                value, rawValue  = convert_units_no_pipe(ureg, equation, units)
+                Loc_Tech_Param.objects.create(
+                    parameter=template_type_parameter.parameter,
+                    loc_tech=loc_tech,
+                    value=value,
+                    raw_value=rawValue,
+                    model=model,
+                )
+
+    if template_id:
+        print ("Editing a template: " + template_id)
+        comment = "{} updated a template: {} of template type: {}.".format(
+            request.user.get_full_name(),
+            name,
+            template_type.pretty_name
+        )
+    else:
+        print ("Creating a new template")
         comment = "{} added a template: {} of template type: {}.".format(
             request.user.get_full_name(),
             name,
             template_type.pretty_name
         )
-        Model_Comment.objects.create(model=model, comment=comment, type="add")
-        model.notify_collaborators(request.user)
+
+    Model_Comment.objects.create(model=model, comment=comment, type="add")
+    model.notify_collaborators(request.user)
 
     # Return new list of active loc tech IDs
     request.session["template_id"] = template.id
@@ -288,26 +274,28 @@ def update_template_variables(templateVars, template):
 def get_or_create_template_locations(template_type_locs, model, name, location, template):
     new_locations = {}
     for template_type_loc in template_type_locs:
-        lat = location.latitude+template_type_loc['latitude_offset']
-        if (lat > 90):
-            lat = 90
-        elif (lat < -90):
-            lat = -90
-        long = location.longitude+template_type_loc['longitude_offset']
-        if (long > 180): 
-            long = 180 
-        elif (long < -180):
-            long = -180 
-        new_location = Location.objects.create(
-            pretty_name=name + ' - ' + template_type_loc['name'],
-            name=template_type_loc['name'].replace(' ', '-'),
-            latitude=lat, 
-            longitude=long, 
-            model=model,
-            template_id=template.id,
-            template_type_loc_id=template_type_loc['id'],
-        )
-        new_locations[template_type_loc['id']] = new_location
+        existingLoc = Location.objects.filter(model_id=model.id, template_id=template.id, template_type_loc_id=template_type_loc['id']).first()
+        if existingLoc is None:
+            lat = location.latitude+template_type_loc['latitude_offset']
+            if (lat > 90):
+                lat = 90
+            elif (lat < -90):
+                lat = -90
+            long = location.longitude+template_type_loc['longitude_offset']
+            if (long > 180): 
+                long = 180 
+            elif (long < -180):
+                long = -180 
+            new_location = Location.objects.create(
+                pretty_name=name + ' - ' + template_type_loc['name'],
+                name=template_type_loc['name'].replace(' ', '-'),
+                latitude=lat, 
+                longitude=long, 
+                model=model,
+                template_id=template.id,
+                template_type_loc_id=template_type_loc['id'],
+            )
+            new_locations[template_type_loc['id']] = new_location
     return new_locations
 
 # Create template technologies
@@ -315,7 +303,6 @@ def get_or_create_template_technologies(template_type_techs, model, template_typ
     new_technologies = {}
     for template_type_tech in template_type_techs:
         existingTech = Technology.objects.filter(model_id=model.id, template_type_id=template_type_id, template_type_tech_id=template_type_tech['id']).first()
-
         if existingTech is None:
             abstract_tech = Abstract_Tech.objects.filter(
                     id=template_type_tech['abstract_tech']).first()
@@ -426,14 +413,16 @@ def get_or_create_template_technologies(template_type_techs, model, template_typ
                 )
     return new_technologies
 
-def get_or_create_template_carriers(template_type_carriers, model, template_type_id):
+def get_or_create_template_carriers(template_type_carriers, model):
     new_carriers = {}
     model_carriers = Carrier.objects.filter(model_id=model.id).all()
 
     for carrier in template_type_carriers:
         existing_carrier = model_carriers.filter(name=carrier['name']).first()
         if existing_carrier: 
-            new_carriers[existing_carrier.name] = existing_carrier
+            if existing_carrier.rate_unit != carrier['rate_unit'] or existing_carrier.quantity_unit != carrier['quantity_unit']:
+                message = "Error: Carrier already exists with this name but the units are different. Please remove the existing carrier named '" + carrier['name'] + "' before attempting to add this Node Group to the model again."
+                raise ValidationError(message, code="invalid_carriers", detail=message)
             continue
         
         new_carrier = Carrier.objects.create(
