@@ -17,6 +17,8 @@ var bulk_confirmation = false,
 "energy_cap_share_equals", "energy_cap_min", "energy_cap_max", "energy_cap_equals", "resource_area_min",
 "resource_area_max", "resource_area_equals", "storage_cap_min", "storage_cap_max", "storage_cap_equals"];
 
+const MAX_SCENARIO_NAME_LENGTH = 200;
+
 $( document ).ready(function() {
 
 	// Resize Dashboard
@@ -168,10 +170,19 @@ function get_scenario_configuration() {
 
 				$('#edit-scenario-name').on('click', function() {
 					var currentScenarioName = prompt('Enter the new scenario name:','');
-					if(currentScenarioName !==null) {
-						$('#scenario-name').text(currentScenarioName);
-						update_scenario_name(currentScenarioName);
+
+					if(currentScenarioName ==null || currentScenarioName == '') {
+						alert('Scenario Name cannot be empty. Please enter a scenario name.');
 					}
+                    else {
+                        if(currentScenarioName.length > MAX_SCENARIO_NAME_LENGTH) {
+                            alert('Scenario Name is too long. Please enter a name with a maximum length of '+ MAX_SCENARIO_NAME_LENGTH + ' characters (including spaces).');
+                        }
+                        else {
+                            $('#scenario-name').text(currentScenarioName);
+						    update_scenario_name(currentScenarioName);
+                        }
+                    }
 				});
 
 				$('#scenario-delete').on('click', function() {
