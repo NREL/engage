@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-27 22:39+0000\n"
+"POT-Creation-Date: 2023-11-28 20:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1160,7 +1160,7 @@ msgstr "Sélectionnez un scénario"
 #, fuzzy
 #| msgid "Delete Scenario"
 msgid "Edit Scenario Name"
-msgstr "Modifier le nom du scénario"
+msgstr "Modifier le nom du Scénario"
 
 #: client/templates/scenario_settings.html:46
 #: client/templates/scenario_settings.html:51
