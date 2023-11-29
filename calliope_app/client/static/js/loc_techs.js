@@ -221,6 +221,10 @@ function deleteTemplateModal() {
 function editTemplateModalWarning() {
     $("#modalEdit").hide();
     $("#modalEditWarning").show();
+    $("#modalEditWarning .modal-body .warning").show();
+    $("#modalEditWarning .modal-body .error").hide();
+    $("#editTemplate").show();
+    $("#editTemplate").prop("disabled",false);
 }
 
 function editTemplateModal(el) {
@@ -237,6 +241,7 @@ function editTemplateModal(el) {
     $("#modalEdit").show();
     $("#createTemplate").hide();
     $("#editTemplate").show();
+    $("#editTemplateModalWarning").show();
     $('#editTemplateModalWarning').attr("disabled", false);
     $("#deleteTemplate").show();
     $("#templateName").val(template_edit.name);
@@ -280,6 +285,7 @@ function closeTemplateModal(reloadDialog) {
     $("#templateVars").empty();
     $("#modalDelete").hide();
     $("#modalEditWarning").hide();
+    $("#inputError").attr("hidden", true);
     $("#editTemplateModalWarning, #createTemplate").prop("disabled",true);
     template_edit = {};
     if (reloadDialog) {
@@ -290,6 +296,7 @@ function closeTemplateModal(reloadDialog) {
 function modelEditBack() {
     $("#modalContent").show();
     $("#modalEdit").hide();
+    $("#inputError").attr("hidden", true);
     template_edit = {};
 }
 
@@ -412,6 +419,10 @@ function validateTemplateParameters() {
         return false;
     }
     var templateVarElements = $("#templateVars :input:not(:button)");
+    // Catch edge case when variables haven't been loaded yet
+    if (templateVarElements.length == 0 || template_data.template_type_variables > 0 ) {
+        return false;
+    }
     for (var i = 0; i < templateVarElements.length; i++) {
         if (!templateVarElements[i].value) {
             return false;
@@ -459,8 +470,19 @@ function saveTemplate(buttonId) {
         data: data,
         dataType: 'json',
         success: function (response) {
-            closeTemplateModal(true);
-            $("#editTemplate, #createTemplate").prop("disabled",false);
+            if (response.code) {
+                if ($("#modalEditWarning").is(":visible")) {
+                    $("#modalEditWarning .modal-body").append('<span class="error">' + response.message + '</span>');
+                    $("#modalEditWarning .modal-body .warning").hide();
+                    $("#editTemplate").hide();
+                } else {
+                    $("#inputError").attr("hidden", false);
+                    $("#inputError").text(response.message);
+                }
+            } else {
+                closeTemplateModal(true);
+                $("#editTemplate, #createTemplate").prop("disabled",false);
+            }
         },
         error: function (xhr, ajaxOptions, thrownError) {
             $("#editTemplate, #createTemplate").prop("disabled",false);
