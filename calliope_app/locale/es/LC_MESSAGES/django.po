@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-03 23:03+0000\n"
+"POT-Creation-Date: 2023-11-30 16:18+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1146,13 +1146,19 @@ msgstr "Convertir Campos a JSON"
 msgid "Select a Scenario"
 msgstr "Seleccione un escenario"
 
-#: client/templates/scenario_settings.html:23
-#: client/templates/scenario_settings.html:28
+#: client/templates/scenario_settings.html:18
+#, fuzzy
+#| msgid "Delete Scenario"
+msgid "Edit Scenario Name"
+msgstr "Editar Nombre del Escenario"
+
+#: client/templates/scenario_settings.html:46
+#: client/templates/scenario_settings.html:51
 #: client/templates/technology_parameters.html:132
 msgid "Row"
 msgstr "Fila"
 
-#: client/templates/scenario_settings.html:127
+#: client/templates/scenario_settings.html:152
 msgid "Delete Scenario"
 msgstr "Eliminar escenario"
 
