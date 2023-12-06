@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-23 00:42+0000\n"
+"POT-Creation-Date: 2023-11-30 16:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -339,7 +339,7 @@ msgstr "Nouveau"
 msgid "Run"
 msgstr "Exécuter"
 
-#: client/templates/base.html:56 client/templates/templates_modal.html:116
+#: client/templates/base.html:56 client/templates/templates_modal.html:107
 msgid "Node Groups"
 msgstr "Groupes de nœuds"
 
@@ -399,7 +399,7 @@ msgstr "Lecture seulement"
 
 #: client/templates/base.html:173
 msgid "Flagged Parameters"
-msgstr ""
+msgstr "Paramètre marqué"
 
 #: client/templates/base.html:174
 #: client/templates/technology_parameters.html:67
@@ -462,7 +462,7 @@ msgid "Documentation"
 msgstr "Documentation"
 
 #: client/templates/base.html:258 client/templates/new_carrier.html:134
-#: client/templates/templates_modal.html:130
+#: client/templates/templates_modal.html:121
 msgid "Close"
 msgstr "Fermer"
 
@@ -474,11 +474,11 @@ msgstr "Vecteur"
 
 #: client/templates/carriers.html:23 client/templates/new_carrier.html:105
 msgid "Rate Unit"
-msgstr ""
+msgstr "Unité de taux"
 
 #: client/templates/carriers.html:26 client/templates/new_carrier.html:108
 msgid "Quantity Unit"
-msgstr ""
+msgstr "Unité de quantité"
 
 #: client/templates/carriers.html:29 client/templates/new_carrier.html:111
 #: client/templates/technology_essentials.html:83
@@ -489,13 +489,13 @@ msgstr "Description"
 #, fuzzy
 #| msgid "Delete run"
 msgid "Delete"
-msgstr "Supprimer le lancement"
+msgstr "Supprimer"
 
 #: client/templates/carriers.html:64
 #, fuzzy
 #| msgid "Delete Scenario"
 msgid "Delete carrier"
-msgstr "Supprimer le scénario"
+msgstr "Supprimer le transporteur"
 
 #: client/templates/configure.html:10
 #: client/templates/locations_dashboard.html:129
@@ -524,7 +524,7 @@ msgstr "Nœuds"
 #: client/templates/locations_dashboard.html:53
 #: client/templates/locations_dashboard.html:133
 #: client/templates/new_carrier.html:133 client/templates/parameters.html:40
-#: client/templates/templates_modal.html:218
+#: client/templates/templates_modal.html:190
 #: client/templates/timeseries.html:59
 msgid "Save"
 msgstr "Enregistrer"
@@ -699,61 +699,59 @@ msgstr "Annuler le nouvel emplacement"
 
 #: client/templates/model_flags.html:20
 msgid "Type"
-msgstr ""
+msgstr "Taper"
 
 #: client/templates/model_flags.html:23
 msgid "Element"
-msgstr ""
+msgstr "Élément"
 
 #: client/templates/model_flags.html:26
 #, fuzzy
 #| msgid "for parameter"
 msgid "Parameter"
-msgstr "pour paramètre"
+msgstr "paramètre"
 
 #: client/templates/model_flags.html:29
 #, fuzzy
 #| msgid "Inputs"
 msgid "Input Text"
-msgstr "Entrées"
+msgstr "Texte de Entrées"
 
 #: client/templates/model_flags.html:32
 msgid "Converted Value"
-msgstr ""
+msgstr "Valeur convertie"
 
 #: client/templates/model_flags.html:35
 msgid "Flag"
-msgstr ""
+msgstr "Drapeau"
 
 #: client/templates/model_flags.html:38
-#, fuzzy
-#| msgid "Remove model"
 msgid "Remove Flag"
-msgstr "Supprimer le modèle"
+msgstr "Supprimer le drapeau"
 
 #: client/templates/model_flags.html:44
 #, fuzzy
 #| msgid "Technologies"
 msgid "Technology"
-msgstr "Les technologies"
+msgstr "Technologie"
 
 #: client/templates/model_flags.html:62 client/templates/model_flags.html:95
 #, fuzzy
 #| msgid "Remove model"
 msgid "Remove flag"
-msgstr "Supprimer le modèle"
+msgstr "Supprimer le drapeau"
 
 #: client/templates/model_flags.html:69
 #, fuzzy
 #| msgid "Nodes"
 msgid "Node"
-msgstr "Nœuds"
+msgstr "Nœud"
 
 #: client/templates/new_carrier.html:94
 #, fuzzy
 #| msgid "Select a Carrier"
 msgid "Model Carriers"
-msgstr "Sélectionner un vecteur"
+msgstr "Modèles de transporteurs"
 
 #: client/templates/parameters.html:16
 msgid "Back to Technologies"
@@ -1158,13 +1156,19 @@ msgstr "Convertir les champs en JSON"
 msgid "Select a Scenario"
 msgstr "Sélectionnez un scénario"
 
-#: client/templates/scenario_settings.html:23
-#: client/templates/scenario_settings.html:28
+#: client/templates/scenario_settings.html:18
+#, fuzzy
+#| msgid "Delete Scenario"
+msgid "Edit Scenario Name"
+msgstr "Modifier le nom du Scénario"
+
+#: client/templates/scenario_settings.html:46
+#: client/templates/scenario_settings.html:51
 #: client/templates/technology_parameters.html:132
 msgid "Row"
 msgstr "Ligne"
 
-#: client/templates/scenario_settings.html:127
+#: client/templates/scenario_settings.html:152
 msgid "Delete Scenario"
 msgstr "Supprimer le scénario"
 
@@ -1259,31 +1263,30 @@ msgstr "Année"
 msgid "Remove a row"
 msgstr "Supprimer une ligne"
 
-#: client/templates/templates_modal.html:123
+#: client/templates/templates_modal.html:114
 msgid "New Node Group"
 msgstr "Nouveau groupe de nœuds"
 
-#: client/templates/templates_modal.html:135
+#: client/templates/templates_modal.html:126
+#, fuzzy
+#| msgid "New Node Group"
 msgid "Delete Node Group"
-msgstr "Supprimer le groupe de nœuds"
+msgstr "Nouveau groupe de nœuds"
 
-#: client/templates/templates_modal.html:141
+#: client/templates/templates_modal.html:132
 msgid "Are you sure that you want to delete this node group?"
 msgstr "Êtes-vous sûr de vouloir supprimer ce groupe de nœuds?"
 
-#: client/templates/templates_modal.html:146
-#: client/templates/templates_modal.html:165
-#: client/templates/templates_modal.html:212
+#: client/templates/templates_modal.html:137
+#: client/templates/templates_modal.html:184
 msgid "Back"
 msgstr "Retour"
 
-#: client/templates/templates_modal.html:149
-#: client/templates/templates_modal.html:168
+#: client/templates/templates_modal.html:140
 msgid "Confirm"
-msgstr ""
+msgstr "Confirmer"
 
-#: client/templates/templates_modal.html:155
-#: client/templates/templates_modal.html:174
+#: client/templates/templates_modal.html:146
 msgid "Edit Node Group"
 msgstr "Modifier le groupe de nœuds"
 
@@ -1296,19 +1299,19 @@ msgstr ""
 "suppression et la recréation des nœuds associés à ce groupe de nœuds en "
 "fonction des entrées sélectionnées."
 
-#: client/templates/templates_modal.html:184
+#: client/templates/templates_modal.html:156
 msgid "Node Group Name"
 msgstr "Nom du groupe de nœuds"
 
-#: client/templates/templates_modal.html:191
+#: client/templates/templates_modal.html:163
 msgid "Primary Location"
 msgstr "Emplacement principal"
 
-#: client/templates/templates_modal.html:198
+#: client/templates/templates_modal.html:170
 msgid "Node Group Type"
 msgstr "Type de groupe de nœuds"
 
-#: client/templates/templates_modal.html:215
+#: client/templates/templates_modal.html:187
 msgid "Update"
 msgstr "Mise à jour"
 
@@ -1336,7 +1339,7 @@ msgstr "Description du nouveau dossier"
 #, fuzzy
 #| msgid "Bulk Download"
 msgid "Download file"
-msgstr "Téléchargement massif"
+msgstr "Télécharger un fichier"
 
 #: client/templates/timeseries.html:80
 msgid "Delete file"
