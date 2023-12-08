@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse, HttpResponse
-from api.utils import initialize_units, convert_units_no_pipe
+from api.utils import initialize_units, convert_units_no_pipe, recursive_escape
+from django.utils.html import escape
 from api.models.configuration import Model, Model_User, Location, Model_Comment, Technology, Abstract_Tech, Loc_Tech, Tech_Param, Loc_Tech_Param, ParamsManager, Carrier
 from template.models import Template, Template_Variable, Template_Type, Template_Type_Variable, Template_Type_Loc, Template_Type_Tech, Template_Type_Loc_Tech, Template_Type_Parameter, Template_Type_Carrier
 from django.db.models import Q
@@ -130,12 +131,13 @@ def update_template(request):
     try: 
         comment = ""
         template = {}
-        model_uuid = request.POST.get("model_uuid", False)
-        template_id = request.POST.get("template_id", False)
-        name = request.POST["name"]
-        template_type_id = request.POST["template_type"]
-        location_id = request.POST["location"]
+        model_uuid = escape(request.POST.get("model_uuid")) if request.POST.get("model_uuid") else False
+        template_id = escape(request.POST.get("template_id")) if request.POST.get("template_id") else False
+        name = escape(request.POST["name"])
+        template_type_id = escape(request.POST["template_type"])
+        location_id = escape(request.POST["location"])
         varData = json.loads(request.POST["form_data"])
+
         templateVars = []
         if varData:
             templateVars = varData['templateVars']
@@ -226,7 +228,6 @@ def update_template(request):
                     )
 
         if template_id:
-            print ("Editing a template: " + template_id)
             comment = "{} updated a template: {} of template type: {}.".format(
                 request.user.get_full_name(),
                 name,
@@ -251,12 +252,13 @@ def update_template(request):
 
         return HttpResponse(json.dumps(payload), content_type="application/json")
     except Exception as e:
-        payload = {"message": "An error ocurred please report this issue to the Engage team by clicking the help box.", "code": "500"}
+        payload = {"message": "An error ocurred please report this issue to the Engage team by clicking the help box.", "code": "500", "error": e}
         return HttpResponse(json.dumps(payload), content_type="application/json")
 
 def create_template_variables(templateVars, template):
     new_template_variables = {}
     for templateVar in templateVars:
+        templateVar = recursive_escape(templateVar)
         new_template_var = Template_Variable.objects.create(
             template_type_variable_id=templateVar["id"],
             value=templateVar["value"],
@@ -265,16 +267,6 @@ def create_template_variables(templateVars, template):
         )
         new_template_variables[new_template_var.template_type_variable.name] = new_template_var
     return new_template_variables
-
-def update_template_variables(templateVars, template):
-    updated_template_variables = {}
-    for templateVar in templateVars:
-        new_template_var = Template_Variable.objects.filter(template_id=template.id, template_type_variable_id=templateVar["id"]).update(
-            value=templateVar["value"],
-            raw_value=templateVar["raw_value"],
-        )
-        updated_template_variables[templateVar["id"]] = new_template_var
-    return updated_template_variables
 
 def get_or_create_template_locations(template_type_locs, model, name, location, template):
     new_locations = {}

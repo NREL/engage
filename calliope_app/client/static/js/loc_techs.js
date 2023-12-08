@@ -420,7 +420,7 @@ function validateTemplateParameters() {
     }
     var templateVarElements = $("#templateVars :input:not(:button)");
     // Catch edge case when variables haven't been loaded yet
-    if (templateVarElements.length == 0 || template_data.template_type_variables > 0 ) {
+    if (templateVarElements.length === 0 || template_data.template_type_variables > 0 ) {
         return false;
     }
     for (var i = 0; i < templateVarElements.length; i++) {
