@@ -88,9 +88,14 @@ function initVerticalBar() {
         });
     });
 
-    $(document).mouseup(function() {
+    $('#vertical-bar').mouseup(function() {
         isResizing = false;
-        $(document).off('mousemove');
+        console.log('Before map resize()');
+        map.resize();
+        console.log('After map resize()');
+        map.resize();
+        console.log('After map resize() 2nd');
+        $('#vertical-bar').off('mousemove');
     });
 }
 
