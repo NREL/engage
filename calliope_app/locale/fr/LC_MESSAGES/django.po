@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-30 16:20+0000\n"
+"POT-Creation-Date: 2023-12-06 17:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -339,7 +339,7 @@ msgstr "Nouveau"
 msgid "Run"
 msgstr "Exécuter"
 
-#: client/templates/base.html:56 client/templates/templates_modal.html:107
+#: client/templates/base.html:56 client/templates/templates_modal.html:116
 msgid "Node Groups"
 msgstr "Groupes de nœuds"
 
@@ -462,7 +462,7 @@ msgid "Documentation"
 msgstr "Documentation"
 
 #: client/templates/base.html:258 client/templates/new_carrier.html:134
-#: client/templates/templates_modal.html:121
+#: client/templates/templates_modal.html:130
 msgid "Close"
 msgstr "Fermer"
 
@@ -524,7 +524,7 @@ msgstr "Nœuds"
 #: client/templates/locations_dashboard.html:53
 #: client/templates/locations_dashboard.html:133
 #: client/templates/new_carrier.html:133 client/templates/parameters.html:40
-#: client/templates/templates_modal.html:190
+#: client/templates/templates_modal.html:218
 #: client/templates/timeseries.html:59
 msgid "Save"
 msgstr "Enregistrer"
@@ -1263,46 +1263,58 @@ msgstr "Année"
 msgid "Remove a row"
 msgstr "Supprimer une ligne"
 
-#: client/templates/templates_modal.html:114
+#: client/templates/templates_modal.html:123
 msgid "New Node Group"
 msgstr "Nouveau groupe de nœuds"
 
-#: client/templates/templates_modal.html:126
+#: client/templates/templates_modal.html:135
 #, fuzzy
 #| msgid "New Node Group"
 msgid "Delete Node Group"
 msgstr "Nouveau groupe de nœuds"
 
-#: client/templates/templates_modal.html:132
+#: client/templates/templates_modal.html:141
 msgid "Are you sure that you want to delete this node group?"
 msgstr "Êtes-vous sûr de vouloir supprimer ce groupe de nœuds?"
 
-#: client/templates/templates_modal.html:137
-#: client/templates/templates_modal.html:184
+#: client/templates/templates_modal.html:146
+#: client/templates/templates_modal.html:165
+#: client/templates/templates_modal.html:212
 msgid "Back"
 msgstr "Retour"
 
-#: client/templates/templates_modal.html:140
+#: client/templates/templates_modal.html:149
+#: client/templates/templates_modal.html:168
 msgid "Confirm"
 msgstr "Confirmer"
 
-#: client/templates/templates_modal.html:146
+#: client/templates/templates_modal.html:155
+#: client/templates/templates_modal.html:174
 msgid "Edit Node Group"
 msgstr "Modifier le groupe de nœuds"
 
-#: client/templates/templates_modal.html:156
+#: client/templates/templates_modal.html:161
+msgid ""
+"Warning! Editing a Node Group will result in the Nodes associated with this "
+"Node Group being deleted and recreated based on the inputs selected."
+msgstr ""
+"Avertissement! La modification d'un groupe de nœuds entraînera la "
+"suppression et la recréation des nœuds associés à ce groupe de nœuds en "
+"fonction des entrées sélectionnées."
+
+#: client/templates/templates_modal.html:184
 msgid "Node Group Name"
 msgstr "Nom du groupe de nœuds"
 
-#: client/templates/templates_modal.html:163
+#: client/templates/templates_modal.html:191
 msgid "Primary Location"
 msgstr "Emplacement principal"
 
-#: client/templates/templates_modal.html:170
+#: client/templates/templates_modal.html:198
 msgid "Node Group Type"
 msgstr "Type de groupe de nœuds"
 
-#: client/templates/templates_modal.html:187
+#: client/templates/templates_modal.html:215
 msgid "Update"
 msgstr "Mise à jour"
 

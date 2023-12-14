@@ -99,6 +99,15 @@
         margin-bottom: 1em;
         float: left;
     }
+    .modal-title {
+        margin-left: 10px;
+    }
+    .warning {
+        color: orange;
+    }
+    .existing-nodes {
+        padding-top: 1em;
+    }
 </style>
 <div class="modal fade" id="templatesModal" tabindex="-1" role="dialog" aria-labelledby="templateModalTitle" aria-hidden="true">
     <div id="templatesDialog" class="modal-dialog" role="document">
@@ -137,6 +146,25 @@
                     {% trans "Back" %}
                 </button>
                 <button id="confirmDeleteTemplate" title="Confirm delete node group" class="btn btn-danger" type="button" style="height:38px;">
+                    {% trans "Confirm" %}
+                </button>
+            </div>
+        </div>
+        <div id="modalEditWarning" class="modal-content" style="display:none">
+            <div class="modal-header">
+            <h2 class="modal-title" id="templateModalTitle">{% trans "Edit Node Group" %}</h2>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <span class="warning">{% trans "Warning! Editing a Node Group will result in the Nodes associated with this Node Group being deleted and recreated based on the inputs selected." %}</span>
+            </div>
+            <div class="modal-footer">
+                <button id="modelEditWarningBack" class="btn btn-secondary" type="button" style="height:38px;">
+                    {% trans "Back" %}
+                </button>
+                <button id="editTemplate" title="Confirm edit node group" class="btn btn-success" type="button" style="height:38px;">
                     {% trans "Confirm" %}
                 </button>
             </div>
@@ -183,7 +211,7 @@
                 <button id="modelEditBack" class="btn btn-secondary" type="button" style="height:38px;float:left;">
                     {% trans "Back" %}
                 </button>
-                <button id="editTemplate" class="btn btn-success" disabled type="button" style="height:38px;">
+                <button id="editTemplateModalWarning" class="btn btn-success" disabled type="button" style="height:38px;">
                     {% trans "Update" %}
                 </button>
                 <button id="createTemplate" class="btn btn-success" disabled type="button" style="height:38px;">

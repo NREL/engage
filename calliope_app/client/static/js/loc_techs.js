@@ -44,6 +44,10 @@ $( document ).ready(function() {
 		deleteTemplateModal();
 	});
 
+    $('#editTemplateModalWarning').on('click', function() {
+		editTemplateModalWarning();
+	});
+
     $('#confirmDeleteTemplate').on('click', function() {
 		deleteTemplate();
 	});
@@ -54,6 +58,10 @@ $( document ).ready(function() {
 
     $('#modelDeleteBack').on('click', function() {
 		modelDeleteBack();
+	});
+
+    $('#modelEditWarningBack').on('click', function() {
+		modelEditWarningBack();
 	});
 
     $('#templateType').on('change', function() {
@@ -151,7 +159,7 @@ function renderTemplateModal() {
     $("#modalEdit").hide();
     $('#modalBody').empty();
     if (template_data.templates.length > 0) {
-        $('#modalBody').append( "<h6>" + djangoTranslateExistingNodeGroups + "</h6>");
+        $('#modalBody').append( "<h4 class='existing-nodes'>" + djangoTranslateExistingNodeGroups + "</h4>");
         for (var i = 0; i < template_data.templates.length; i++) {
             let id = "edit-" + template_data.templates[i].id;
             $('#modalBody').append( "<label><b>" + template_data.templates[i].name + "</b></label>");
@@ -161,7 +169,7 @@ function renderTemplateModal() {
             });
         }
     } else {
-        $('#modalBody').append( "<h6>" + djangoTranslateExistingNodeGroupsMessage + "</h6>");
+        $('#modalBody').append( "<h4 class='existing-nodes'>" + djangoTranslateExistingNodeGroupsMessage + "</h4>");
     }
 
     if ($("#primaryLocation").children('option').length === 0) {
@@ -210,6 +218,15 @@ function deleteTemplateModal() {
     $("#modalDelete").show();
 }
 
+function editTemplateModalWarning() {
+    $("#modalEdit").hide();
+    $("#modalEditWarning").show();
+    $("#modalEditWarning .modal-body .warning").show();
+    $("#modalEditWarning .modal-body .error").hide();
+    $("#editTemplate").show();
+    $("#editTemplate").prop("disabled",false);
+}
+
 function editTemplateModal(el) {
     let id = parseInt(el.id.substr(5));
     template_edit = template_data.templates.find(temp => temp.id === id);
@@ -224,12 +241,13 @@ function editTemplateModal(el) {
     $("#modalEdit").show();
     $("#createTemplate").hide();
     $("#editTemplate").show();
-    $('#editTemplate').attr("disabled", false);
+    $("#editTemplateModalWarning").show();
+    $('#editTemplateModalWarning').attr("disabled", false);
     $("#deleteTemplate").show();
     $("#templateName").val(template_edit.name);
     $("#editModalTitle").html(djangoTranslateUpdateNodeGroup + template_edit.name);
     appendTemplateCategories();
-    $("#templateVars input").prop("disabled", true);
+    $("#GEOPHIRESOutputs-row input").prop("disabled", true);
     var template_variables = template_data.template_variables.filter(temp => temp.template === id);
     template_variables.forEach(function (template_var) {
         $("#template_type_var_converted_" + template_var.template_type_variable).val(template_var.value);
@@ -249,8 +267,9 @@ function addTemplateModal() {
     // Change modal view
     $("#modalContent").hide();
     $("#modalEdit").show();
+    $("#modalEditWarning").hide();
     $("#createTemplate").show();
-    $("#editTemplate").hide();
+    $("#editTemplateModalWarning").hide();
     $("#editModalTitle").html(djangoTranslateAddNodeGroup);
     $("#deleteTemplate").hide();
 
@@ -265,7 +284,9 @@ function closeTemplateModal(reloadDialog) {
     $("#templatesModal").modal('hide');
     $("#templateVars").empty();
     $("#modalDelete").hide();
-    $("#editTemplate, #createTemplate").prop("disabled",true);
+    $("#modalEditWarning").hide();
+    $("#inputError").attr("hidden", true);
+    $("#editTemplateModalWarning, #createTemplate").prop("disabled",true);
     template_edit = {};
     if (reloadDialog) {
         window.location.reload();
@@ -275,11 +296,20 @@ function closeTemplateModal(reloadDialog) {
 function modelEditBack() {
     $("#modalContent").show();
     $("#modalEdit").hide();
+    $("#inputError").attr("hidden", true);
+    template_edit = {};
 }
 
 function modelDeleteBack() {
     $("#modalContent").show();
     $("#modalDelete").hide();
+    template_edit = {};
+}
+
+function modelEditWarningBack() {
+    $("#modalContent").show();
+    $("#modalEditWarning").hide();
+    template_edit = {};
 }
 
 function requestGeophires() {
@@ -389,6 +419,10 @@ function validateTemplateParameters() {
         return false;
     }
     var templateVarElements = $("#templateVars :input:not(:button)");
+    // Catch edge case when variables haven't been loaded yet
+    if (templateVarElements.length === 0 || template_data.template_type_variables > 0 ) {
+        return false;
+    }
     for (var i = 0; i < templateVarElements.length; i++) {
         if (!templateVarElements[i].value) {
             return false;
@@ -431,16 +465,26 @@ function saveTemplate(buttonId) {
     }
 
     $.ajax({
-        url: '/' + LANGUAGE_CODE + '/model/templates/create/',
+        url: '/' + LANGUAGE_CODE + '/model/templates/update/',
         type: 'POST',
         data: data,
         dataType: 'json',
-        success: function (data) {
-            closeTemplateModal(true);
-            var response = data;
-            $("#editTemplate, #createTemplate").prop("disabled",false);
+        success: function (response) {
+            if (response.code) {
+                if ($("#modalEditWarning").is(":visible")) {
+                    $("#modalEditWarning .modal-body").append('<span class="error">' + response.message + '</span>');
+                    $("#modalEditWarning .modal-body .warning").hide();
+                    $("#editTemplate").hide();
+                } else {
+                    $("#inputError").attr("hidden", false);
+                    $("#inputError").text(response.message);
+                }
+            } else {
+                closeTemplateModal(true);
+                $("#editTemplate, #createTemplate").prop("disabled",false);
+            }
         },
-        error: function (data) {
+        error: function (xhr, ajaxOptions, thrownError) {
             $("#editTemplate, #createTemplate").prop("disabled",false);
         }
     });
@@ -450,7 +494,6 @@ function deleteTemplate() {
     if ($('#confirmDeleteTemplate').is(':disabled')) {
         return;
     }
-    //#modelDeleteBack
 
     var data = {
         'template_id': template_edit.id,
@@ -543,7 +586,7 @@ function activateTemplateVariables() {
                 val = convert_units(value, units);
             if (typeof(val) == 'number') {
                 $(this).attr('data-target_value', formatNumber(val, false));
-                row.find('.tech-param-converted').html(formatNumber(val, true));
+                row.find('.tech-param-converted').html(formatNumber(val.toFixed(8), true));
             } else {
                 $(this).addClass('invalid-value');
                 row.find('.tech-param-converted').html(row.find('.tech-param-converted').data('value'));
@@ -627,9 +670,9 @@ function displayAPIButtons() {
     $('.form-control').on('input', function() {
         var formFilledOut = validateTemplateParameters();
         if (formFilledOut) {
-            $("#editTemplate, #createTemplate").prop("disabled",false);
+            $("#editTemplateModalWarning, #createTemplate").prop("disabled",false);
         } else {
-            $("#editTemplate, #createTemplate").prop("disabled",true);
+            $("#editTemplateModalWarning, #createTemplate").prop("disabled",true);
         }
     
         if (showAPIButtons) {
@@ -745,9 +788,9 @@ function resetGeophiresButton(showError, job_meta_id) {
 
         var formFilledOut = validateTemplateParameters();
         if (formFilledOut) {
-            $("#editTemplate, #createTemplate").prop("disabled",false);
+            $("#editTemplateModalWarning, #createTemplate").prop("disabled",false);
         } else {
-            $("#editTemplate, #createTemplate").prop("disabled",true);
+            $("#editTemplateModalWarning, #createTemplate").prop("disabled",true);
         }
     }
     $("#loadingGeophires").hide();  

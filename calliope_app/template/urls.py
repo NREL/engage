@@ -8,7 +8,7 @@ from template import geophires
 
 urlpatterns = [
     path('model/templates/', views.model_templates, name='templates'),
-    path('model/templates/create/', views.add_template, name='add_template'),
+    path('model/templates/update/', views.update_template, name='update_template'),
     path('model/templates/delete/', views.delete_template, name='delete_template'),
     path('geophires/', geophires.geophires_request, name='geophires_request'),
     path('geophires/status/', geophires.geophires_request_status, name='geophires_request_status'),
