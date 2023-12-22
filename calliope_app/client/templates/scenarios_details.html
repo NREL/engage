@@ -1,0 +1,43 @@
+{% load i18n %}
+<div class="row">
+    <div class="col-2 centered">
+        <br>
+        <button id="scenario-delete" {% if not can_edit %}disabled{% endif %} type="button"
+            class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i></button>
+    </div>
+    <div class="col-8 centered">
+        <br>
+        <h3>{% trans "Scenario Details" %}:</h3>
+        <br>
+    </div>
+
+    <div class="col-11">
+        <div class="form-group row">
+            <label for="scenario-name" class="col-sm-3 col-form-label">{% trans "Scenario Name" %}:</label>
+            <div class="col-sm-9">
+               {% for scenario in scenarios %}
+                {% if session_scenario.id == scenario.id %}
+               <!-- <label id="scenario_name" class="scenario_name" rows="4"> {{model.name}} : {{scenario.name}} </label> -->
+                <input type="text" class="form-control" id="scenario_name" data-placement="right" value="{{scenario.name}}">
+                {% endif %}
+                {% endfor %} 
+               <!-- <button id="edit-scenario-name" {% if not can_edit %}disabled{% endif %} type = "button" class = "btn btn-outline-primary btn-sm"> <i class="fas fa-edit"></i> </button> -->
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-11">
+        <div class="form-group row">
+            <label for="scenario-description" class="col-sm-3 col-form-label">{% trans "Scenario Description" %}:</label>
+            <div class="col-sm-9">
+               <!-- <textarea class="form-control" id="scenario_description" rows="4" {% if not can_edit %}disabled{% endif %}>{{ scenario.description }}</textarea> -->
+               {% for scenario in scenarios %}
+                {% if session_scenario.id == scenario.id %}
+               <textarea id="scenario_description" class="scenario_description" data-placement="right" rows="4"> {{scenario.description}} </textarea>
+               {% endif %}
+               {% endfor %} 
+            </div>
+        </div>
+    </div>
+
+</div>
