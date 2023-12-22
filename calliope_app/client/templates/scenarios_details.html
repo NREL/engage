@@ -17,11 +17,9 @@
             <div class="col-sm-9">
                {% for scenario in scenarios %}
                 {% if session_scenario.id == scenario.id %}
-               <!-- <label id="scenario_name" class="scenario_name" rows="4"> {{model.name}} : {{scenario.name}} </label> -->
                 <input type="text" class="form-control" id="scenario_name" data-placement="right" value="{{scenario.name}}">
                 {% endif %}
                 {% endfor %} 
-               <!-- <button id="edit-scenario-name" {% if not can_edit %}disabled{% endif %} type = "button" class = "btn btn-outline-primary btn-sm"> <i class="fas fa-edit"></i> </button> -->
             </div>
         </div>
     </div>
@@ -30,7 +28,6 @@
         <div class="form-group row">
             <label for="scenario-description" class="col-sm-3 col-form-label">{% trans "Scenario Description" %}:</label>
             <div class="col-sm-9">
-               <!-- <textarea class="form-control" id="scenario_description" rows="4" {% if not can_edit %}disabled{% endif %}>{{ scenario.description }}</textarea> -->
                {% for scenario in scenarios %}
                 {% if session_scenario.id == scenario.id %}
                <textarea id="scenario_description" class="scenario_description" data-placement="right" rows="4"> {{scenario.description}} </textarea>

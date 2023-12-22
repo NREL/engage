@@ -59,18 +59,7 @@ $( document ).ready(function() {
 	});
 
     $('#scenario_description').on('change keyup paste', function () {
-        // $(this).addClass('table-warning');
-		// $(this).siblings('.sp-replacer').addClass('btn-warning');
-      // $('.master-btn').addClass('hide');
-    //    $('#master-new').addClass('hide');
-    //    $('#master-settings').addClass('hide');
-
-    //    $('#master-save').removeClass('hide');
-    //    $('#master-cancel').removeClass('hide');
-    // var scenario_name = $('#scenario_description').val();
-    // update_scenario_name(scenario_name);
        save_scenario_settings();
-       //get_scenario_configuration();
     });
 
     $('#scenario_name').on('change keyup paste', function () {
@@ -118,37 +107,32 @@ function save_scenario_settings() {
 
 function save_scenario_name() {
     var model_uuid = $('#header').data('model_uuid'),
-		scenario_id = $("#scenario option:selected").data('id')
-		form_data = $("#form_scenario_settings :input").serializeJSON();
+        scenario_id = $("#scenario option:selected").data('id')
+    form_data = $("#form_scenario_settings :input").serializeJSON();
 
-        //var currentScenarioName = prompt('Enter the new scenario name:','');
-        var currentScenarioName = $('#scenario_name').val();
+    var currentScenarioName = $('#scenario_name').val();
 
-        
-                $('#scenario-name').text(currentScenarioName);
-                //update_scenario_name(currentScenarioName);
-					$.ajax({
-						url: '/' + LANGUAGE_CODE + '/api/update_scenario_name/',
-						type: 'POST',
-						data: {
-							'model_uuid': model_uuid,
-							'scenario_id': scenario_id,
-							'new_scenario_name': currentScenarioName,
-							'csrfmiddlewaretoken': getCookie('csrftoken'),
-						},
-						dataType: 'json',
-						success: function (data) {
-							window.onbeforeunload = null;
-							location.reload();
-							//alert('Scenario Name Updated Successfully.');
-						},
-						// error: function() {
-						// 	alert('Failed to update scenario name. Please try again.');
-						// }
-					});
 
-            
-        }
+    $('#scenario-name').text(currentScenarioName);
+
+    $.ajax({
+        url: '/' + LANGUAGE_CODE + '/api/update_scenario_name/',
+        type: 'POST',
+        data: {
+            'model_uuid': model_uuid,
+            'scenario_id': scenario_id,
+            'new_scenario_name': currentScenarioName,
+            'csrfmiddlewaretoken': getCookie('csrftoken'),
+        },
+        dataType: 'json',
+        success: function (data) {
+            window.onbeforeunload = null;
+            location.reload();
+        },
+    });
+
+
+}
 
 
 function get_scenario_configuration() {
