@@ -17,7 +17,7 @@
             <div class="col-sm-9">
                {% for scenario in scenarios %}
                 {% if session_scenario.id == scenario.id %}
-                <input type="text" class="form-control" id="scenario_name" data-placement="right" value="{{scenario.name}}">
+                <input type="text" class="form-control" id="scenario_name" data-placement="left" value="{{scenario.name}}">
                 {% endif %}
                 {% endfor %} 
             </div>
