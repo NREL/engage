@@ -7,27 +7,6 @@
 	<table id="settings_table" class="table table-hover table-sm">
 		<tbody>
 
-			<!-- <tr class="param_header table-default" data-param_id="scenario_name">
-				<td style="cursor:help" data-toggle="tooltip" data-placement="left" title="Scenario Name">
-					<span class="text-sm"><b>Scenario Name</b></span>
-				</td>
-				<td colspan="3">
-					<label id="scenario_name" class="scenario_name" rows="4"> {{scenario.name}} </label>
-				</td>
-				<td colspan="3">
-				<button id="edit-scenario-name" {% if not can_edit %}disabled{% endif %} type = "button" class = "btn btn-outline-primary btn-sm"> <i class="fas fa-edit"></i> {% trans "Edit Scenario Name" %} </button>
-				</td>
-			</tr> 
-
-			<tr class="param_header table-default" data-param_id="scenario_description">
-				<td style="cursor:help" data-toggle="tooltip" data-placement="left" title="Scenario Description">
-					<span class="text-sm"><b>Scenario Description</b></span>
-				</td>
-				<td colspan="4">
-					<textarea id="scenario_description" class="scenario_description" rows="2"> {{scenario.description}} </textarea>
-				</td>
-			</tr>  -->
-
 			{% for param in parameters %}
 
 				{% if param.run_parameter.can_evolve %}
