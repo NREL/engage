@@ -63,13 +63,6 @@ $( document ).ready(function() {
         save_scenario_settings();
         save_scenario_name();
     });
-    // $('#scenario_description').on('change', function () {
-    //    save_scenario_settings();
-    // });
-
-    // $('#scenario_name').on('change', function () {
-    //    save_scenario_name();
-    // });
 
     $("#new_group_constraint_name").on("input", function(){
         if ($('#new_group_constraint_name').val() && $('#new_group_constraint_name').val().trim().length > 0 ) {
@@ -90,7 +83,6 @@ function save_scenario_settings() {
 		form_data = $("#form_scenario_settings :input").serializeJSON();
 
 	var scenario_description = $('#scenario_description').val();
-    //$('#scenario_description').text(scenario_description);
 
 	$.ajax({
 		url: '/' + LANGUAGE_CODE + '/api/update_scenario_params/',
@@ -117,9 +109,6 @@ function save_scenario_name() {
     form_data = $("#form_scenario_settings :input").serializeJSON();
 
     var currentScenarioName = $('#scenario_name').val();
-
-
-    //$('#scenario-name').text(currentScenarioName);
 
     $.ajax({
         url: '/' + LANGUAGE_CODE + '/api/update_scenario_name/',
