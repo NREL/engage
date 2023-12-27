@@ -201,22 +201,22 @@ function get_scenario_configuration() {
 					$('#master-settings').removeClass('hide');
 				}
 
-				$('#edit-scenario-name').on('click', function() {
-					var currentScenarioName = prompt('Enter the new scenario name:','');
+				// $('#edit-scenario-name').on('click', function() {
+				// 	var currentScenarioName = prompt('Enter the new scenario name:','');
 
-					if(currentScenarioName ==null || currentScenarioName == '') {
-						alert('Scenario Name cannot be empty. Please enter a scenario name.');
-					}
-                    else {
-                        if(currentScenarioName.length > MAX_SCENARIO_NAME_LENGTH) {
-                            alert('Scenario Name is too long. Please enter a name with a maximum length of '+ MAX_SCENARIO_NAME_LENGTH + ' characters (including spaces).');
-                        }
-                        else {
-                            $('#scenario-name').text(currentScenarioName);
-						    update_scenario_name(currentScenarioName);
-                        }
-                    }
-				});
+				// 	if(currentScenarioName ==null || currentScenarioName == '') {
+				// 		alert('Scenario Name cannot be empty. Please enter a scenario name.');
+				// 	}
+                //     else {
+                //         if(currentScenarioName.length > MAX_SCENARIO_NAME_LENGTH) {
+                //             alert('Scenario Name is too long. Please enter a name with a maximum length of '+ MAX_SCENARIO_NAME_LENGTH + ' characters (including spaces).');
+                //         }
+                //         else {
+                //             $('#scenario-name').text(currentScenarioName);
+				// 		    update_scenario_name(currentScenarioName);
+                //         }
+                //     }
+				// });
 
 				$('#scenario-delete').on('click', function() {
 					var model_uuid = $('#header').data('model_uuid'),
@@ -240,29 +240,29 @@ function get_scenario_configuration() {
 					};
 				});
 
-				function update_scenario_name(newScenarioName){
-					var model_uuid = $('#header').data('model_uuid'),
-					scenario_id = $("#scenario option:selected").data('id');
-					$.ajax({
-						url: '/' + LANGUAGE_CODE + '/api/update_scenario_name/',
-						type: 'POST',
-						data: {
-							'model_uuid': model_uuid,
-							'scenario_id': scenario_id,
-							'new_scenario_name': newScenarioName,
-							'csrfmiddlewaretoken': getCookie('csrftoken'),
-						},
-						dataType: 'json',
-						success: function (data) {
-							window.onbeforeunload = null;
-							location.reload();
-							alert('Scenario Name Updated Successfully.');
-						},
-						error: function() {
-							alert('Failed to update scenario name. Please try again.');
-						}
-					});
-				};
+				// function update_scenario_name(newScenarioName){
+				// 	var model_uuid = $('#header').data('model_uuid'),
+				// 	scenario_id = $("#scenario option:selected").data('id');
+				// 	$.ajax({
+				// 		url: '/' + LANGUAGE_CODE + '/api/update_scenario_name/',
+				// 		type: 'POST',
+				// 		data: {
+				// 			'model_uuid': model_uuid,
+				// 			'scenario_id': scenario_id,
+				// 			'new_scenario_name': newScenarioName,
+				// 			'csrfmiddlewaretoken': getCookie('csrftoken'),
+				// 		},
+				// 		dataType: 'json',
+				// 		success: function (data) {
+				// 			window.onbeforeunload = null;
+				// 			location.reload();
+				// 			alert('Scenario Name Updated Successfully.');
+				// 		},
+				// 		error: function() {
+				// 			alert('Failed to update scenario name. Please try again.');
+				// 		}
+				// 	});
+				// };
 			}
 		});
 	} else {
