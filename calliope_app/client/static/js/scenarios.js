@@ -59,6 +59,10 @@ $( document ).ready(function() {
 		window.location = '/' + model_uuid + '/scenarios/';
 	});
 
+    $('#scenario-save').on('click', function() {
+        save_scenario_settings();
+        save_scenario_name();
+    });
     // $('#scenario_description').on('change', function () {
     //    save_scenario_settings();
     // });

@@ -3,12 +3,17 @@
     <div class="col-2 centered">
         <br>
         <button id="scenario-delete" {% if not can_edit %}disabled{% endif %} type="button"
-            class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i></button>
+            class="btn btn-outline-danger btn"><i class="fas fa-trash"></i></button>
     </div>
     <div class="col-8 centered">
         <br>
         <h3>{% trans "Scenario Details" %}:</h3>
         <br>
+    </div>
+
+    <div class="col-2 centered">
+        <br>
+        <button id="scenario-save" {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-warning btn"><b>{% trans "Save" %}</b></button>
     </div>
 
     <div class="col-11">
