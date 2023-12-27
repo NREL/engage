@@ -46,6 +46,7 @@ $( document ).ready(function() {
 		$('#form_scenario_settings').addClass('hide');
 		$('#scenario_configuration').removeClass('hide')
 		save_scenario_settings();
+        save_scenario_name();
 	});
 
 	$('#master-new').on('click', function() {
@@ -58,13 +59,13 @@ $( document ).ready(function() {
 		window.location = '/' + model_uuid + '/scenarios/';
 	});
 
-    $('#scenario_description').on('change keyup paste', function () {
-       save_scenario_settings();
-    });
+    // $('#scenario_description').on('change', function () {
+    //    save_scenario_settings();
+    // });
 
-    $('#scenario_name').on('change keyup paste', function () {
-       save_scenario_name();
-    });
+    // $('#scenario_name').on('change', function () {
+    //    save_scenario_name();
+    // });
 
     $("#new_group_constraint_name").on("input", function(){
         if ($('#new_group_constraint_name').val() && $('#new_group_constraint_name').val().trim().length > 0 ) {
@@ -85,6 +86,7 @@ function save_scenario_settings() {
 		form_data = $("#form_scenario_settings :input").serializeJSON();
 
 	var scenario_description = $('#scenario_description').val();
+    //$('#scenario_description').text(scenario_description);
 
 	$.ajax({
 		url: '/' + LANGUAGE_CODE + '/api/update_scenario_params/',
@@ -113,7 +115,7 @@ function save_scenario_name() {
     var currentScenarioName = $('#scenario_name').val();
 
 
-    $('#scenario-name').text(currentScenarioName);
+    //$('#scenario-name').text(currentScenarioName);
 
     $.ajax({
         url: '/' + LANGUAGE_CODE + '/api/update_scenario_name/',

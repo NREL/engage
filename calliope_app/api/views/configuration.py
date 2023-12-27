@@ -1007,7 +1007,7 @@ def update_scenario_params(request):
     scenario_id = request.POST["scenario_id"]
     scenario_description = escape(request.POST["scenario_description"].strip())
     form_data = json.loads(request.POST["form_data"])
- 
+
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
  
@@ -1017,6 +1017,10 @@ def update_scenario_params(request):
     Scenario.objects.filter(id=scenario_id).update(
             description=scenario_description,
         )
+
+    # if scenario:
+    #     scenario.name = new_scenario_name
+    #     scenario.save()
 
     # Log Activity
     comment = "{} updated the scenario: {}.".format(
