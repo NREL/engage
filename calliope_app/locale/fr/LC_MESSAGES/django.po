@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-28 18:00+0000\n"
+"POT-Creation-Date: 2023-12-28 18:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1185,8 +1185,6 @@ msgid "Oops, an error occurred"
 msgstr "Oops, une erreur s'est produite"
 
 #: client/templates/scenarios_details.html:10
-#, fuzzy
-#| msgid "Scenarios"
 msgid "Scenario Details"
 msgstr "Détails du scénario"
 
