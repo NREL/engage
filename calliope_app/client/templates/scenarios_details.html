@@ -11,18 +11,13 @@
         <br>
     </div>
 
-    <div class="col-2 centered">
-        <br>
-        <button id="scenario-save" {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-warning btn"><b>{% trans "Save" %}</b></button>
-    </div>
-
     <div class="col-11">
-        <div class="form-group row">
-            <label for="scenario-name" class="col-sm-3 col-form-label">{% trans "Scenario Name" %}:</label>
+        <div class="form-group row" style="padding-left:15px">
+            <label for="scenario-name" class="col-sm-3 col-form-label"><b>{% trans "Name" %}:</b></label>
             <div class="col-sm-9">
                {% for scenario in scenarios %}
                 {% if session_scenario.id == scenario.id %}
-                <input type="text" class="form-control" id="scenario_name" data-placement="left" value="{{scenario.name}}">
+                <input type="text" style="width:100%" id="scenario_name" data-placement="left" value="{{scenario.name}}">
                 {% endif %}
                 {% endfor %} 
             </div>
@@ -30,8 +25,8 @@
     </div>
     
     <div class="col-11">
-        <div class="form-group row">
-            <label for="scenario-description" class="col-sm-3 col-form-label">{% trans "Scenario Description" %}:</label>
+        <div class="form-group row" style="padding-left:15px">
+            <label for="scenario-description" class="col-sm-3 col-form-label"><b>{% trans "Description" %}:</b></label>
             <div class="col-sm-9">
                {% for scenario in scenarios %}
                 {% if session_scenario.id == scenario.id %}

@@ -22,6 +22,7 @@ $( document ).ready(function() {
 	// Resize Dashboard
 	splitter_resize();
 
+	$('#map-legend').css("display", "none");
 	$('#master-new').removeClass('hide');
 
 	$('#scenario').on('change', function() {
@@ -38,14 +39,17 @@ $( document ).ready(function() {
 	});
 
 	$('#master-save').on('click', function() {
-		$('.master-btn').addClass('hide')
-		$('#master-settings').removeClass('hide');
+        $('.master-btn').addClass('hide')
+        $('#master-settings').removeClass('hide');
 
-		$('#form_scenario_settings').addClass('hide');
-		$('#scenario_configuration').removeClass('hide')
-		save_scenario_settings();
-        save_scenario_name();
+        $('#form_scenario_settings').addClass('hide');
+        $('#scenario_configuration').removeClass('hide')
+        save_scenario_settings();
 	});
+
+    $('#scenario_description, #scenario_name').on('change keyup paste', function () {
+        $('#master-save').removeClass('hide');
+     });
 
 	$('#master-new').on('click', function() {
 		var model_uuid = $('#header').data('model_uuid');
@@ -56,11 +60,6 @@ $( document ).ready(function() {
 		var model_uuid = $('#header').data('model_uuid');
 		window.location = '/' + model_uuid + '/scenarios/';
 	});
-
-    $('#scenario-save').on('click', function() {
-        save_scenario_settings();
-        save_scenario_name();
-    });
 
     $("#new_group_constraint_name").on("input", function(){
         if ($('#new_group_constraint_name').val() && $('#new_group_constraint_name').val().trim().length > 0 ) {
@@ -80,15 +79,14 @@ function save_scenario_settings() {
 		scenario_id = $("#scenario option:selected").data('id')
 		form_data = $("#form_scenario_settings :input").serializeJSON();
 
-	var scenario_description = $('#scenario_description').val();
-
 	$.ajax({
-		url: '/' + LANGUAGE_CODE + '/api/update_scenario_params/',
+		url: '/' + LANGUAGE_CODE + '/api/update_scenario/',
 		type: 'POST',
 		data: {
 			'model_uuid': model_uuid,
 			'scenario_id': scenario_id,
-			'scenario_description' : scenario_description,
+			'description' : $('#scenario_description').val(),
+            'name' :$('#scenario_name').val(),
 			'form_data': JSON.stringify(form_data),
 			'csrfmiddlewaretoken': getCookie('csrftoken'),
 		},
@@ -100,33 +98,6 @@ function save_scenario_settings() {
 	});
 
 }
-
-function save_scenario_name() {
-    var model_uuid = $('#header').data('model_uuid'),
-        scenario_id = $("#scenario option:selected").data('id')
-    form_data = $("#form_scenario_settings :input").serializeJSON();
-
-    var currentScenarioName = $('#scenario_name').val();
-
-    $.ajax({
-        url: '/' + LANGUAGE_CODE + '/api/update_scenario_name/',
-        type: 'POST',
-        data: {
-            'model_uuid': model_uuid,
-            'scenario_id': scenario_id,
-            'new_scenario_name': currentScenarioName,
-            'csrfmiddlewaretoken': getCookie('csrftoken'),
-        },
-        dataType: 'json',
-        success: function (data) {
-            window.onbeforeunload = null;
-            location.reload();
-        },
-    });
-
-
-}
-
 
 function get_scenario_configuration() {
 	$('.viz-spinner').show();
