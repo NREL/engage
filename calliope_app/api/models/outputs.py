@@ -132,21 +132,24 @@ class Run(models.Model):
             c2 = pd.DataFrame(columns=['carrier_tiers',
                                        'lookup_loc_techs_conversion_plus'])
         c1.columns = c2.columns = ['carrier_tiers', 'ltc']
-        c = c1.append(c2)
+        c = pd.concat([c1, c2])
         c['production'] = c['carrier_tiers'].str.contains('out')
         del c['carrier_tiers']
         c3 = self.read_output('inputs_lookup_loc_techs.csv')
         c3 = c3[['lookup_loc_techs']]
         c3.columns = ['ltc']
         c3['production'] = True
-        c = c.append(c3)
+        c = pd.concat([c, c3])
         # Uncompress rows that have multiple Carriers (comma delimited)
         compress_mask = c['ltc'].str.contains(',')
         compressed_rows = c[compress_mask]
         c = c[~compress_mask]
+        uncompressed = []
         for i, row in compressed_rows.iterrows():
             for item in row['ltc'].split(','):
-                c.append([row['production'], item])
+                uncompressed.append({'production': row['production'], 'ltc': item})
+        if uncompressed:
+            c = pd.contact([c, pd.DataFrame(uncompressed)], ignore_index=True)
         # Split into Location, Technology, Carrier
         c[['locs', 'techs', 'carrier']] = c['ltc'].str.split('::', expand=True)
         # Filter
@@ -238,7 +241,7 @@ class Run(models.Model):
                 etx = self.read_output('inputs_storage_cap_equals.csv')
                 if etx is not None:
                     etx['values'] = etx['storage_cap_equals']
-                    
+
         elif cost_class:
             LABELS[cost_class[0]] = cost_class[1]
             # Investment Costs
@@ -396,7 +399,7 @@ class Run(models.Model):
             return pd.read_csv(fpath, header=0)
         except FileNotFoundError:
             return None
-        
+
     def read_input(self, file):
         fpath = os.path.join(self.inputs_path, file)
         try:
