@@ -149,7 +149,7 @@ class Run(models.Model):
             for item in row['ltc'].split(','):
                 uncompressed.append({'production': row['production'], 'ltc': item})
         if uncompressed:
-            c = pd.contact([c, pd.DataFrame(uncompressed)], ignore_index=True)
+            c = pd.concat([c, pd.DataFrame(uncompressed)], ignore_index=True)
         # Split into Location, Technology, Carrier
         c[['locs', 'techs', 'carrier']] = c['ltc'].str.split('::', expand=True)
         # Filter
