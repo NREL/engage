@@ -99,4 +99,3 @@ services:
       - long_worker
       - celery_flower
     command: ["./wait-for-postgres.sh", "compose/run-calliope-app.sh"]
-
