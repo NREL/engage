@@ -18,6 +18,7 @@ RUN apt-get update -y --fix-missing \
     libncurses5-dev \
     gettext \
     postgresql-client \
+    git \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
@@ -44,7 +45,8 @@ RUN pip install -r requirements.txt
 RUN pip install -r requirements-dev.txt
 
 # Install calliope without dependencies, as already installed in requirements
-RUN pip install calliope==0.6.8 --no-deps
+# RUN pip install calliope==0.6.8 --no-deps
+RUN pip install git+https://github.com/calliope-project/calliope.git@refs/pull/517/head
 RUN pip install flower>=1.1.0
 
 COPY . .
