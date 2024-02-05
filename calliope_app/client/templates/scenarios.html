@@ -13,6 +13,13 @@
     //Resize after drag complete
     $('.gutter').on('mouseup', function () {
 			if (map != undefined) { map.resize() };
+      // var maxWidth = ($(window).width() * 0.7) - 12;
+
+      // // Check if the left panel width is greater or equal to the max width
+      // if ($('#right-panel').width() >= maxWidth) {
+      //   // Reload the page if it reaches or exceeds the max width
+      //   map.resize();
+      // }
 		});
   });
 </script>
@@ -36,6 +43,13 @@
       background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
       cursor: col-resize;
     }
+    .left-panel {
+      min-width: 30vw;
+    }
+    .right-panel {
+      max-width: calc(70vw - 10px);
+    }
+
 </style>
 {% endblock %}
 
@@ -50,12 +64,13 @@
 <div style="height: calc(100% - 160px);">
     <div class="splitter_upper row splittable" style="height: 50%;">
       <!-- Scenario -->
-      <div id="left-panel">
+      <div id="left-panel" class="left-panel">
         {% include "scenarios_details.html" %}
+        <button id="settingsButton">Settings</button>
       </div>
 
       <!-- Map -->
-      <div id="right-panel">
+      <div id="right-panel" class="right-panel">
         {% include "map_container_resizable.html" %}
       </div>
     </div>
