@@ -5,6 +5,7 @@ var bulk_confirmation = false,
     disable_new_constraint = true,
 	map_mode = 'scenarios',
     carriers = null,
+    // Re-factor to dictionary
     constraints = ["demand_share_min", "demand_share_max", "demand_share_equals",
      "demand_share_per_timestep_min", "demand_share_per_timestep_max", "demand_share_per_timestep_equals",
       "demand_share_per_timestep_decision", "carrier_prod_share_min", "carrier_prod_share_max",
