@@ -82,7 +82,7 @@
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="master-cancel" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-primary btn-warning">Save changes</button>
               </div>
             </div>
@@ -99,12 +99,13 @@
     {% include "splitter.html" %}
     <!-- Dashboard -->
     <div id="scenarios_dashboard" class="splitter_lower row" style="overflow-y: scroll; height: 50%;">
-        <form style="width: 100%;" id="form_scenario_settings" class="hide" method="post" action="" accept-charset="utf-8">
-            <div style="width: 100%;" id="scenario_settings">
-                <div style="color:red" class="col-12 centered"><br>{% trans "Oops, an error occurred" %}.<br><br></div>
-            </div>
-        </form>
-        <div style="width: 100%" id="scenario_configuration"></div>
-    </div>
+      <form style="width: 100%;" id="form_scenario_settings" class="hide" method="post" action="" accept-charset="utf-8">
+          <div style="width: 100%;" id="scenario_settings">
+              <div style="color:red" class="col-12 centered"><br>{% trans "Oops, an error occurred" %}.<br><br></div>
+          </div>
+      </form>
+      <div style="width: 100%" id="scenario_configuration"></div>
+  </div>
+</div>
 </div>
 {% endblock %}
