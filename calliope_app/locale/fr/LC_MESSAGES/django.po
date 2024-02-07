@@ -1184,6 +1184,10 @@ msgstr "Coût pondéré par"
 msgid "Oops, an error occurred"
 msgstr "Oops, une erreur s'est produite"
 
+#: client/templates/scenarios.html:67
+msgid "Model Settings"
+msgstr "Paramètres du modèle"
+
 #: client/templates/scenarios_details.html:10
 msgid "Scenario Details"
 msgstr "Détails du scénario"

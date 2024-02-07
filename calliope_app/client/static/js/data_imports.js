@@ -3,6 +3,7 @@ $( document ).ready(function() {
 
 	activate_import_btns();
 
+	// Take out comment for code review: This is important
 	// When the user clicks anywhere outside of the modal, close it
 	window.onclick = function(event) {
 	  if (event.target == $("#data-source-modal")[0]) {

@@ -6,22 +6,17 @@
 <title>Engage | {{ model.name }} | Scenarios</title>
 <script type="text/javascript" src="{% static 'js/scenarios.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.0/split.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script type="text/javascript">
-  $( document ).ready(function() {
-    Split(['#left-panel', '#right-panel'], {});
-
-    //Resize after drag complete
-    $('.gutter').on('mouseup', function () {
-			if (map != undefined) { map.resize() };
-      // var maxWidth = ($(window).width() * 0.7) - 12;
-
-      // // Check if the left panel width is greater or equal to the max width
-      // if ($('#right-panel').width() >= maxWidth) {
-      //   // Reload the page if it reaches or exceeds the max width
-      //   map.resize();
-      // }
-		});
-  });
+    // Maybe move somewhere else to another file. To examine during code review
+    $(document).ready(function() {
+      Split(['#left-panel', '#right-panel'], {});
+      $(document).on('mouseup', function() {
+        if (typeof map !== 'undefined') {
+          map.resize();
+        }
+      });
+    });
 </script>
 <style>
     html, body {
@@ -66,10 +61,36 @@
       <!-- Scenario -->
       <div id="left-panel" class="left-panel">
         {% include "scenarios_details.html" %}
-        <button id="settingsButton">Settings</button>
+        <!-- https://getbootstrap.com/docs/4.0/components/modal/ take out in PR -->
+        <button id="master-settings" type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#exampleModal">
+          {% trans "Model Settings" %}
+        </button>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Model Settings</h5>
+                <button type="button" id="master-cancel" class="close btn-warning" style="color: #dc3545;" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <!-- This is where the form should be -->
+                <div style="width: 100%;" id="scenario_settings">
+                  <div style="color:red" class="col-12 centered"><br>{% trans "Oops, an error occurred" %}.<br><br></div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary btn-warning">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+				{% if model %}  
+				{% endif %}
       </div>
-
-      <!-- Map -->
       <div id="right-panel" class="right-panel">
         {% include "map_container_resizable.html" %}
       </div>
