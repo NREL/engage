@@ -986,36 +986,41 @@ def toggle_scenario_loc_tech(request):
 
 
 @csrf_protect
-def update_scenario_params(request):
+def update_scenario(request):
     """
-    Update the parameters on a scenario. Parameter data is provided in a
-    form_data object which stores updates under the following keys:
+    Update the parameters on a scenario and scenario detail information. 
+    Parameter data is provided in a form_data object which stores updates under the following keys:
         'add', 'edit', 'delete'
 
     Parameters:
     model_uuid (uuid): required
     scenario_id (int): required
-    form_data (json): required
+    description (json): required
+    name (json): optional
 
     Returns (json): Action Confirmation
 
     Example:
-    POST: /api/update_scenario_params/
+    POST: /api/update_scenario/
     """
 
     model_uuid = request.POST["model_uuid"]
     scenario_id = request.POST["scenario_id"]
-    scenario_description = escape(request.POST["scenario_description"].strip())
+    scenario_description = escape(request.POST["description"].strip())
+    scenario_name = escape(request.POST["name"].strip())
     form_data = json.loads(request.POST["form_data"])
- 
+
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
  
     scenario = model.scenarios.filter(id=scenario_id).first()
+    if len(scenario_name) == 0:
+        scenario_name = scenario.name
     Scenario_Param.update(scenario, form_data)
  
     Scenario.objects.filter(id=scenario_id).update(
             description=scenario_description,
+            name=scenario_name
         )
 
     # Log Activity
@@ -1029,41 +1034,6 @@ def update_scenario_params(request):
     payload = {"message": "Success."}
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
-
-@csrf_protect
-def update_scenario_name(request):
-    """
-    Update the name of a scenario. 
-    Parameters:
-    model_uuid (uuid): required
-    scenario_id (int): required
-    new_scenario_name (str): required
-    Returns (json): Action confirmation
-    Example: 
-    POST: /api/update_scenario_name/
-    """
-    model_uuid = request.POST["model_uuid"]
-    scenario_id = request.POST["scenario_id"]
-    new_scenario_name = escape(request.POST["new_scenario_name"].strip())
-
-    model = Model.by_uuid(model_uuid)
-    model.handle_edit_access(request.user)
-    scenario = model.scenarios.filter(id=scenario_id).first()
-    #Scenario_Param.update(scenario, new_scenario_name)
-    if scenario: 
-        scenario.name = new_scenario_name
-        scenario.save()
-        #Log Activity
-        comment = "{} updated the scenario name to: {}".format(
-        request.user.get_full_name(), new_scenario_name
-        )
-        Model_Comment.objects.create(model=model, comment=comment, type="edit")
-        model.notify_collaborators(request.user)
-        model.deprecate_runs(scenario_id=scenario_id)
-
-        payload = {"message:" : "Scenario name updated successfully."}
-        return HttpResponse(json.dumps(payload), content_type="application/json")
-    return HttpResponse(json.dumps({"message": "Failed to update the scenario name, Invalid request"}), content_type="application/json")
 
 
 @csrf_protect
