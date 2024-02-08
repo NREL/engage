@@ -44,7 +44,6 @@
     .right-panel {
       max-width: calc(70vw - 10px);
     }
-
 </style>
 {% endblock %}
 
@@ -63,25 +62,29 @@
         {% include "scenarios_details.html" %}
         <!-- https://getbootstrap.com/docs/4.0/components/modal/ take out in PR -->
         <div style="padding-left:15px;">
-          <button id="master-settings" type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#exampleModal">
+          <button id="master-settings" type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#settingsModal">
             {% trans "Settings" %}
           </button>
         </div>
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="settingsModal" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Model Settings</h5>
+                <h5 class="modal-title" id="settingsModal">Model Settings</h5>
                 <button type="button" id="master-cancel" class="close btn-warning" style="color: #dc3545;" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body">
                 <!-- This is where the form should be -->
-                <div style="width: 100%;" id="scenario_settings">
+                <!-- <div style="width: 100%;" id="scenario_settings">
                   <div style="color:red" class="col-12 centered"><br>{% trans "Oops, an error occurred" %}.<br><br></div>
-                </div>
+                </div> -->
+                <form id="form_scenario_settings" class="hide" method="post" action="" accept-charset="utf-8">
+                  <div style="width: 100%;" id="scenario_settings" style="table-layout:fixed;">
+                      <div style="color:red" class="col-12 centered"><br>{% trans "Oops, an error occurred" %}.<br><br></div>
+                  </div>
+              </form>
               </div>
               <div class="modal-footer">
                 <button id="master-cancel" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -101,13 +104,8 @@
     {% include "splitter.html" %}
     <!-- Dashboard -->
     <div id="scenarios_dashboard" class="splitter_lower row" style="overflow-y: scroll; height: 50%;">
-      <form style="width: 100%;" id="form_scenario_settings" class="hide" method="post" action="" accept-charset="utf-8">
-          <div style="width: 100%;" id="scenario_settings">
-              <div style="color:red" class="col-12 centered"><br>{% trans "Oops, an error occurred" %}.<br><br></div>
-          </div>
-      </form>
       <div style="width: 100%" id="scenario_configuration"></div>
-  </div>
+    </div>
 </div>
 </div>
 {% endblock %}
