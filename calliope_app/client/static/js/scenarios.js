@@ -17,13 +17,12 @@ var bulk_confirmation = false,
 "energy_cap_share_equals", "energy_cap_min", "energy_cap_max", "energy_cap_equals", "resource_area_min",
 "resource_area_max", "resource_area_equals", "storage_cap_min", "storage_cap_max", "storage_cap_equals"];
 
-const MAX_SCENARIO_NAME_LENGTH = 200;
-
 $( document ).ready(function() {
 
 	// Resize Dashboard
 	splitter_resize();
 
+	$('#map-legend').css("display", "none");
 	$('#master-new').removeClass('hide');
 
 	$('#scenario').on('change', function() {
@@ -40,13 +39,17 @@ $( document ).ready(function() {
 	});
 
 	$('#master-save').on('click', function() {
-		$('.master-btn').addClass('hide')
-		$('#master-settings').removeClass('hide');
+        $('.master-btn').addClass('hide')
+        $('#master-settings').removeClass('hide');
 
-		$('#form_scenario_settings').addClass('hide');
-		$('#scenario_configuration').removeClass('hide')
-		save_scenario_settings();
+        $('#form_scenario_settings').addClass('hide');
+        $('#scenario_configuration').removeClass('hide')
+        save_scenario_settings();
 	});
+
+    $('#scenario_description, #scenario_name').on('change keyup paste', function () {
+        $('#master-save').removeClass('hide');
+     });
 
 	$('#master-new').on('click', function() {
 		var model_uuid = $('#header').data('model_uuid');
@@ -76,15 +79,14 @@ function save_scenario_settings() {
 		scenario_id = $("#scenario option:selected").data('id')
 		form_data = $("#form_scenario_settings :input").serializeJSON();
 
-	var scenario_description = $('#scenario_description').val();
-
 	$.ajax({
-		url: '/' + LANGUAGE_CODE + '/api/update_scenario_params/',
+		url: '/' + LANGUAGE_CODE + '/api/update_scenario/',
 		type: 'POST',
 		data: {
 			'model_uuid': model_uuid,
 			'scenario_id': scenario_id,
-			'scenario_description' : scenario_description,
+			'description' : $('#scenario_description').val(),
+            'name' :$('#scenario_name').val(),
 			'form_data': JSON.stringify(form_data),
 			'csrfmiddlewaretoken': getCookie('csrftoken'),
 		},
@@ -168,23 +170,6 @@ function get_scenario_configuration() {
 					$('#master-settings').removeClass('hide');
 				}
 
-				$('#edit-scenario-name').on('click', function() {
-					var currentScenarioName = prompt('Enter the new scenario name:','');
-
-					if(currentScenarioName ==null || currentScenarioName == '') {
-						alert('Scenario Name cannot be empty. Please enter a scenario name.');
-					}
-                    else {
-                        if(currentScenarioName.length > MAX_SCENARIO_NAME_LENGTH) {
-                            alert('Scenario Name is too long. Please enter a name with a maximum length of '+ MAX_SCENARIO_NAME_LENGTH + ' characters (including spaces).');
-                        }
-                        else {
-                            $('#scenario-name').text(currentScenarioName);
-						    update_scenario_name(currentScenarioName);
-                        }
-                    }
-				});
-
 				$('#scenario-delete').on('click', function() {
 					var model_uuid = $('#header').data('model_uuid'),
 						scenario_id = $("#scenario option:selected").data('id');
@@ -206,30 +191,7 @@ function get_scenario_configuration() {
 						});
 					};
 				});
-
-				function update_scenario_name(newScenarioName){
-					var model_uuid = $('#header').data('model_uuid'),
-					scenario_id = $("#scenario option:selected").data('id');
-					$.ajax({
-						url: '/' + LANGUAGE_CODE + '/api/update_scenario_name/',
-						type: 'POST',
-						data: {
-							'model_uuid': model_uuid,
-							'scenario_id': scenario_id,
-							'new_scenario_name': newScenarioName,
-							'csrfmiddlewaretoken': getCookie('csrftoken'),
-						},
-						dataType: 'json',
-						success: function (data) {
-							window.onbeforeunload = null;
-							location.reload();
-							alert('Scenario Name Updated Successfully.');
-						},
-						error: function() {
-							alert('Failed to update scenario name. Please try again.');
-						}
-					});
-				};
+                
 			}
 		});
 	} else {
