@@ -5,10 +5,36 @@
 {% block head %}
 <title>Engage | {{ model.name }} | Scenarios</title>
 <script type="text/javascript" src="{% static 'js/scenarios.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.0/split.min.js"></script>
+<script type="text/javascript">
+  $( document ).ready(function() {
+    Split(['#left-panel', '#right-panel'], {});
+
+    //Resize after drag complete
+    $('.gutter').on('mouseup', function () {
+			if (map != undefined) { map.resize() };
+		});
+  });
+</script>
 <style>
     html, body {
       height: 100%;
       overflow: hidden;
+    }
+    .splittable {
+      display: flex;
+      flex-direction: row;
+    }
+    .gutter {
+      width: 10px;
+      height: 100%;
+      background-color: #137ac2;
+      background-repeat: no-repeat;
+      background-position: 50%;
+    }
+    .gutter.gutter-horizontal {
+      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+      cursor: col-resize;
     }
 </style>
 {% endblock %}
@@ -22,8 +48,17 @@
 	{% include "scenario_selector.html" %}
 </div>
 <div style="height: calc(100% - 160px);">
-    <!-- Map -->
-    {% include "map_container.html" %}
+    <div class="splitter_upper row splittable" style="height: 50%;">
+      <!-- Scenario -->
+      <div id="left-panel">
+        {% include "scenarios_details.html" %}
+      </div>
+
+      <!-- Map -->
+      <div id="right-panel">
+        {% include "map_container_resizable.html" %}
+      </div>
+    </div>
     <!-- Splitter -->
     {% include "splitter.html" %}
     <!-- Dashboard -->
