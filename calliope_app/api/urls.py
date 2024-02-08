@@ -84,10 +84,6 @@ urlpatterns = [
     path('delete_scenario/',
          configuration_views.delete_scenario,
          name='delete_scenario'),
-     path('update_scenario_name/', 
-          configuration_views.update_scenario_name, 
-          name = 'update_scenario_name'),
-
     # Files
     path('upload_file/',
          configuration_views.upload_file,
