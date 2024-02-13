@@ -962,13 +962,13 @@ class UpdateScenarioParamsViewTestCase(TestCase):
     def tearDown(self):
         self.client.logout()
 
-    def test_update_scenario_params(self):
+    def test_update_scenario(self):
         data = {
             "model_uuid": str(self.model.uuid),
             "scenario_id": self.scenario.id,
             "form_data": json.dumps({}),
         }
-        response = self.client.post(reverse("update_scenario_params"), data=data)
+        response = self.client.post(reverse("update_scenario"), data=data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), {"message": "Success."})
 

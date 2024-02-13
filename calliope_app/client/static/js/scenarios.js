@@ -5,48 +5,60 @@ var bulk_confirmation = false,
     disable_new_constraint = true,
 	map_mode = 'scenarios',
     carriers = null,
+    // Re-factor to dictionary
     constraints = ["demand_share_min", "demand_share_max", "demand_share_equals",
      "demand_share_per_timestep_min", "demand_share_per_timestep_max", "demand_share_per_timestep_equals",
       "demand_share_per_timestep_decision", "carrier_prod_share_min", "carrier_prod_share_max",
        "carrier_prod_share_equals", "carrier_prod_share_per_timestep_min", "carrier_prod_share_per_timestep_max",
         "carrier_prod_share_per_timestep_equals", "net_import_share_min", "net_import_share_max",
-         "net_import_share_equals", "carrier_prod_min", "carrier_prod_max", "carrier_prod_equals", 
+         "net_import_share_equals", "carrier_prod_min", "carrier_prod_max", "carrier_prod_equals",
          "carrier_con_min", "carrier_con_max", "carrier_con_equals", "cost_max", "cost_min",
        "cost_equals", "cost_var_max", "cost_var_min", "cost_var_equals", "cost_investment_max",
     "cost_investment_min", "cost_investment_equals", "energy_cap_share_min", "energy_cap_share_max",
 "energy_cap_share_equals", "energy_cap_min", "energy_cap_max", "energy_cap_equals", "resource_area_min",
 "resource_area_max", "resource_area_equals", "storage_cap_min", "storage_cap_max", "storage_cap_equals"];
 
-const MAX_SCENARIO_NAME_LENGTH = 200;
-
 $( document ).ready(function() {
 
 	// Resize Dashboard
 	splitter_resize();
 
+	$('#map-legend').css("display", "none");
 	$('#master-new').removeClass('hide');
 
 	$('#scenario').on('change', function() {
 		get_scenario_configuration();
 	});
 
-	$('#master-settings').on('click', function() {
-		$('.master-btn').addClass('hide')
-		$('#master-save').removeClass('hide')
-		$('#master-cancel').removeClass('hide')
-
-		$('#form_scenario_settings').removeClass('hide')
-		$('#scenario_configuration').addClass('hide')
+    $('#modal-scenario-settings').on('click', function() {
+		$('#pvwatts_form').hide();
+        $('#wtk_form').hide();
+		$('#scenario_constraints_json_form').hide();
+        $('#scenario_weights_json_form').hide();
+        $('#modal_scenario_settings').show();
+		$("#data-source-modal").css('display', "block");
 	});
 
 	$('#master-save').on('click', function() {
-		$('.master-btn').addClass('hide')
-		$('#master-settings').removeClass('hide');
-
-		$('#form_scenario_settings').addClass('hide');
-		$('#scenario_configuration').removeClass('hide')
-		save_scenario_settings();
+        $('.master-btn').addClass('hide')
+        $('#master-settings').removeClass('hide');
+        $('#form_scenario_settings').addClass('hide');
+        $('#scenario_configuration').removeClass('hide')
+        save_scenario_settings();
 	});
+
+	$('#modal-save').on('click', function() {
+        $('.master-btn').addClass('hide')
+        $('#master-settings').removeClass('hide');
+        $('#form_scenario_settings').addClass('hide');
+        $('#scenario_configuration').removeClass('hide')
+        save_modal_scenario_settings();
+	});
+
+
+    $('#scenario_description, #scenario_name').on('change keyup paste', function () {
+        $('#master-save').removeClass('hide');
+     });
 
 	$('#master-new').on('click', function() {
 		var model_uuid = $('#header').data('model_uuid');
@@ -54,6 +66,11 @@ $( document ).ready(function() {
 	});
 
 	$('#master-cancel').on('click', function() {
+		var model_uuid = $('#header').data('model_uuid');
+		window.location = '/' + model_uuid + '/scenarios/';
+	});
+
+	$('#modal-cancel').on('click', function() {
 		var model_uuid = $('#header').data('model_uuid');
 		window.location = '/' + model_uuid + '/scenarios/';
 	});
@@ -75,16 +92,14 @@ function save_scenario_settings() {
 	var model_uuid = $('#header').data('model_uuid'),
 		scenario_id = $("#scenario option:selected").data('id')
 		form_data = $("#form_scenario_settings :input").serializeJSON();
-
-	var scenario_description = $('#scenario_description').val();
-
 	$.ajax({
-		url: '/' + LANGUAGE_CODE + '/api/update_scenario_params/',
+		url: '/' + LANGUAGE_CODE + '/api/update_scenario/',
 		type: 'POST',
 		data: {
 			'model_uuid': model_uuid,
 			'scenario_id': scenario_id,
-			'scenario_description' : scenario_description,
+			'description' : $('#scenario_description').val(),
+            'name' :$('#scenario_name').val(),
 			'form_data': JSON.stringify(form_data),
 			'csrfmiddlewaretoken': getCookie('csrftoken'),
 		},
@@ -94,8 +109,32 @@ function save_scenario_settings() {
 			location.reload();
 		}
 	});
-
 }
+
+function save_modal_scenario_settings() {
+
+	var model_uuid = $('#header').data('model_uuid'),
+		scenario_id = $("#scenario option:selected").data('id')
+		form_data = $("#scenario_settings :input").serializeJSON();
+	$.ajax({
+		url: '/' + LANGUAGE_CODE + '/api/update_scenario/',
+		type: 'POST',
+		data: {
+			'model_uuid': model_uuid,
+			'scenario_id': scenario_id,
+			'description' : $('#scenario_description').val(),
+            'name' :$('#scenario_name').val(),
+			'form_data': JSON.stringify(form_data),
+			'csrfmiddlewaretoken': getCookie('csrftoken'),
+		},
+		dataType: 'json',
+		success: function (data) {
+			window.onbeforeunload = null;
+			location.reload();
+		}
+	});
+}
+
 
 function get_scenario_configuration() {
 	$('.viz-spinner').show();
@@ -168,25 +207,10 @@ function get_scenario_configuration() {
 					$('#master-settings').removeClass('hide');
 				}
 
-				$('#edit-scenario-name').on('click', function() {
-					var currentScenarioName = prompt('Enter the new scenario name:','');
-
-					if(currentScenarioName ==null || currentScenarioName == '') {
-						alert('Scenario Name cannot be empty. Please enter a scenario name.');
-					}
-                    else {
-                        if(currentScenarioName.length > MAX_SCENARIO_NAME_LENGTH) {
-                            alert('Scenario Name is too long. Please enter a name with a maximum length of '+ MAX_SCENARIO_NAME_LENGTH + ' characters (including spaces).');
-                        }
-                        else {
-                            $('#scenario-name').text(currentScenarioName);
-						    update_scenario_name(currentScenarioName);
-                        }
-                    }
-				});
-
 				$('#scenario-delete').on('click', function() {
 					var model_uuid = $('#header').data('model_uuid'),
+                    // Here is tto change
+                    
 						scenario_id = $("#scenario option:selected").data('id');
 					var confirmation = confirm('This will remove all configurations and runs for this scenario.\nAre you sure you want to delete?');
 					if (confirmation) {
@@ -206,36 +230,13 @@ function get_scenario_configuration() {
 						});
 					};
 				});
-
-				function update_scenario_name(newScenarioName){
-					var model_uuid = $('#header').data('model_uuid'),
-					scenario_id = $("#scenario option:selected").data('id');
-					$.ajax({
-						url: '/' + LANGUAGE_CODE + '/api/update_scenario_name/',
-						type: 'POST',
-						data: {
-							'model_uuid': model_uuid,
-							'scenario_id': scenario_id,
-							'new_scenario_name': newScenarioName,
-							'csrfmiddlewaretoken': getCookie('csrftoken'),
-						},
-						dataType: 'json',
-						success: function (data) {
-							window.onbeforeunload = null;
-							location.reload();
-							alert('Scenario Name Updated Successfully.');
-						},
-						error: function() {
-							alert('Failed to update scenario name. Please try again.');
-						}
-					});
-				};
+                
 			}
 		});
 	} else {
 		$('.viz-spinner').hide();
 		$('#map').remove();
-		$('#scenario_configuration').html('<div class="col-12 text-center"><br/><br/><h4>Select or create a scenario above!</h4></div>');
+		// $('#scenario_configuration').html('<div class="col-12 text-center"><br/><br/><h4>Select or create a scenario above!</h4></div>');
 	};
 };
 
@@ -297,7 +298,7 @@ function updateDialogObject() {
                     }
                 } else {
                     dialogObj[constraint][fieldKey] = value;
-                } 
+                }
             }
         });
     });
@@ -592,6 +593,7 @@ function activate_scenario_settings() {
 		$('#pvwatts_form').hide();
         $('#wtk_form').hide();
 		$('#scenario_constraints_json_form').hide();
+        $('#modal_scenario_settings').hide();
         $('#scenario_weights_json_form').show();
 		$("#data-source-modal").css('display', "block");
 
@@ -614,6 +616,7 @@ function activate_scenario_settings() {
 		$('#pvwatts_form').hide();
         $('#wtk_form').hide();
         $('#scenario_weights_json_form').hide();
+        $('#modal_scenario_settings').hide();
 		$('#scenario_constraints_json_form').show();
 		$("#data-source-modal").css('display', "block");
 
@@ -732,7 +735,13 @@ function activate_scenario_settings() {
     $('#settings_import_data').on('click', function() {
         updateDialogObject();
         $('textarea[name="edit' + dialogInputId + '"]').text(JSON.stringify(dialogObj, undefined, 2));
-        $('#data-source-modal').hide();
+        $('#scenario_constraints_json_form').hide();
+        $('#modal_scenario_settings').show();
+	});
+
+    $('#settings_import_cancel').on('click', function() {
+        $('#scenario_constraints_json_form').hide();
+        $('#modal_scenario_settings').show();
 	});
 
     $('#settings_weights_import_data').on('click', function() {
@@ -743,7 +752,10 @@ function activate_scenario_settings() {
         dialogObj["co2e"] = $("#co2e").val();
 
         $('textarea[name="edit' + dialogInputId + '"]').text(JSON.stringify(dialogObj, undefined, 2));
-        $('#data-source-modal').hide();
+        $('#scenario_weights_json_form').hide();
+        $('#modal_scenario_settings').show();
+
+        // $('#data-source-modal').hide();
 	});
 
     $('.group-constraints-close, .weights-close').on('click', function() {
@@ -759,7 +771,6 @@ function activate_scenario_settings() {
             $('#new_group_constraint_btn').attr("disabled", true);
         }
     });
-
 }
 
 function filter_nodes() {

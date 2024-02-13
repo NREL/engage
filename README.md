@@ -20,4 +20,4 @@ and the developer guide to contribute to Enage project.
 
 ## License
 BSD 3-Clause License
-https://github.com/NREL/engage/blob/master/LICENSE
+https://github.com/NREL/engage/blob/master/LICENSE# e

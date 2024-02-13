@@ -1,0 +1,44 @@
+{% load i18n %}
+<div class="row">
+    <div class="col-8 centered">
+        <br>
+        <h3>{% trans "Scenario Details" %}:</h3>
+        <br>
+    </div>
+
+    <div class="col-11">
+        <div id="name-form" class="form-group row" style="padding-left:15px">
+            <label for="scenario-name" class="col-sm-3 col-form-label"><b>{% trans "Name" %}:</b></label>
+            <div class="col-sm-9">
+               {% if not session_scenario.id %}               
+                <input type="text" style="width:100%" id="scenario_name" data-placement="left" value="{{scenarios.0.name}}">
+               {% else %}
+                {% for scenario in scenarios %}
+                    {% if session_scenario.id == scenario.id %}
+                    <input type="text" style="width:100%" id="scenario_name" data-placement="left" value="{{scenario.name}}">
+                    {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-11">
+        <div class="form-group row" style="padding-left:15px">
+            
+            <label for="scenario-description" class="col-sm-3 col-form-label"><b>{% trans "Description" %}:</b></label>
+            <div class="col-sm-9">
+                {% if not session_scenario.id %}               
+                <textarea id="scenario_description" class="scenario_description" data-placement="right" rows="4"> {{scenarios.0.description}} </textarea>
+                {% else %}
+                 {% for scenario in scenarios %}
+                     {% if session_scenario.id == scenario.id %}
+                     <textarea id="scenario_description" class="scenario_description" data-placement="right" rows="4"> {{scenario.description}} </textarea>
+                     {% endif %}
+                     {% endfor %}
+                 {% endif %} 
+             </div>
+         </div>
+    </div>
+
+</div>

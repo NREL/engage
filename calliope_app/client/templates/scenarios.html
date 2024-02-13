@@ -1,3 +1,4 @@
+<!-- Reminder to translate all the changes -->
 {% extends 'configure.html' %}
 {% load static %}
 {% load i18n %}
@@ -5,10 +6,47 @@
 {% block head %}
 <title>Engage | {{ model.name }} | Scenarios</title>
 <script type="text/javascript" src="{% static 'js/scenarios.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.0/split.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    // Maybe move somewhere else to another file. To examine during code review
+    $(document).ready(function() {
+      Split(['#left-panel', '#right-panel'], {});
+      $(document).on('mouseup', function() {
+        if (typeof map !== 'undefined') {
+          map.resize();
+        }
+      });
+    });
+</script>
 <style>
     html, body {
       height: 100%;
       overflow: hidden;
+    }
+    .splittable {
+      display: flex;
+      flex-direction: row;
+    }
+    .gutter {
+      width: 10px;
+      height: 100%;
+      background-color: #137ac2;
+      background-repeat: no-repeat;
+      background-position: 50%;
+    }
+    .gutter.gutter-horizontal {
+      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+      cursor: col-resize;
+    }
+    .left-panel {
+      min-width: 30vw;
+    }
+    .right-panel {
+      max-width: calc(70vw - 10px);
+    }
+    .my-specific-div {
+      box-sizing: content-box;
     }
 </style>
 {% endblock %}
@@ -22,18 +60,29 @@
 	{% include "scenario_selector.html" %}
 </div>
 <div style="height: calc(100% - 160px);">
-    <!-- Map -->
-    {% include "map_container.html" %}
+    <div class="splitter_upper row splittable" style="height: 50%;">
+      <!-- Scenario -->
+      <div id="left-panel" class="left-panel">
+        {% include "scenarios_details.html" %}
+        <div style="padding-left:15px; overflow-y:">
+          <button id="modal-scenario-settings" type="button" class="btn btn-sm btn-warning"  data-target="#modal_scenario_settings">
+            {% trans "Settings" %}
+          </button>
+        </div>
+        <!-- {% include } -->
+				{% if model %}
+				{% endif %}
+      </div>
+      <div id="right-panel" class="right-panel">
+        {% include "map_container_resizable.html" %}
+      </div>
+    </div>
     <!-- Splitter -->
     {% include "splitter.html" %}
     <!-- Dashboard -->
     <div id="scenarios_dashboard" class="splitter_lower row" style="overflow-y: scroll; height: 50%;">
-        <form style="width: 100%;" id="form_scenario_settings" class="hide" method="post" action="" accept-charset="utf-8">
-            <div style="width: 100%;" id="scenario_settings">
-                <div style="color:red" class="col-12 centered"><br>{% trans "Oops, an error occurred" %}.<br><br></div>
-            </div>
-        </form>
-        <div style="width: 100%" id="scenario_configuration"></div>
+      <div style="width: 100%" id="scenario_configuration"></div>
     </div>
+</div>
 </div>
 {% endblock %}
