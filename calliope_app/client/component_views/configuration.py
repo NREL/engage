@@ -468,7 +468,7 @@ def scenario(request):
     context = {
         "model": model,
         "parameters": parameters,
-        "can_edit": can_edit, 
+        "can_edit": can_edit,
         "scenario": scenario,
         }
     scenario_settings = list(render(request,

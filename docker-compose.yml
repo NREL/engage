@@ -23,6 +23,7 @@ services:
       - ./postgres/data:/var/lib/postgresql/data
 
   short_worker:
+    platform: linux/x86_64
     build:
       context: calliope_app
       dockerfile: compose/Dockerfile
@@ -39,6 +40,7 @@ services:
     command: ["compose/run-short-worker.sh"]
 
   long_worker:
+    platform: linux/x86_64
     build:
       context: calliope_app
       dockerfile: compose/Dockerfile
@@ -55,6 +57,7 @@ services:
     command: ["compose/run-long-worker.sh"]
 
   celery_flower:
+    platform: linux/x86_64
     build:
       context: calliope_app
       dockerfile: compose/Dockerfile
@@ -75,7 +78,8 @@ services:
     command: ["compose/run-celery-flower.sh"]
 
   app:
-    build: 
+    platform: linux/x86_64
+    build:
       context: calliope_app
       dockerfile: compose/Dockerfile
     image: calliope-app
@@ -95,3 +99,4 @@ services:
       - long_worker
       - celery_flower
     command: ["./wait-for-postgres.sh", "compose/run-calliope-app.sh"]
+
