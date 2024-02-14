@@ -1009,7 +1009,6 @@ def update_scenario(request):
     scenario_description = escape(request.POST["description"].strip())
     scenario_name = escape(request.POST["name"].strip())
     form_data = json.loads(request.POST["form_data"])
-    print(form_data)
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
  
