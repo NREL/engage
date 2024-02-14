@@ -8,18 +8,114 @@
 <script type="text/javascript" src="{% static 'js/scenarios.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.0/split.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-<script type="text/javascript">
-    // Maybe move somewhere else to another file. To examine during code review
-    $(document).ready(function() {
-      Split(['#left-panel', '#right-panel'], {});
-      $(document).on('mouseup', function() {
-        if (typeof map !== 'undefined') {
-          map.resize();
-        }
-      });
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    const splitter = document.getElementById('splitter-vertical');
+    let isDragging = false;
+
+    const leftPanel = document.getElementById('left-panel');
+    const rightPanel = document.getElementById('right-panel');
+    const container = leftPanel.parentNode; // Assuming both panels and the splitter are in the same container
+
+    splitter.addEventListener('mousedown', function(e) {
+        e.preventDefault(); // Prevent default text selection behavior
+        isDragging = true;
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
     });
-</script>
-<style>
+
+    function onMouseMove(e) {
+    if (!isDragging) return;
+    const containerRect = container.getBoundingClientRect();
+    const containerWidth = containerRect.width;
+    const splitterWidth = splitter.offsetWidth;
+    let leftWidth = e.clientX - containerRect.left;
+    let rightWidth = containerWidth - leftWidth - splitterWidth;
+
+    // Convert pixel widths to percentages of the container width
+    let leftWidthPercent = (leftWidth / containerWidth) * 100;
+    let rightWidthPercent = (rightWidth / containerWidth) * 100;
+
+    // Apply constraints based on percentages
+    if (leftWidthPercent < 30) { // Minimum left panel width constraint
+        leftWidthPercent = 30;
+        leftWidth = (containerWidth * leftWidthPercent) / 100;
+        rightWidth = containerWidth - leftWidth - splitterWidth;
+    } else if (rightWidthPercent > 70) { // Maximum right panel width constraint
+        rightWidthPercent = 70;
+        rightWidth = (containerWidth * rightWidthPercent) / 100;
+        leftWidth = containerWidth - rightWidth - splitterWidth;
+    }
+
+    leftPanel.style.width = `${leftWidth}px`;
+    rightPanel.style.width = `${rightWidth}px`;
+
+    triggerMapResize();
+}
+
+// Include the triggerMapResize and onMouseUp functions as defined previously
+
+
+    function onMouseUp(e) {
+        if (isDragging) {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            isDragging = false;
+
+            // It might be beneficial to also trigger the map resize here,
+            // to ensure it adjusts to the final panel sizes
+            if (typeof map !== 'undefined' && map.resize) {
+                map.resize();
+            } else if (typeof map !== 'undefined' && map.invalidateSize) {
+                map.invalidateSize();
+            }
+        }
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleBtn = document.getElementById('vertical-toggle');
+    let isLeftPanelCollapsed = false; // Track the state of the left panel
+
+    toggleBtn.addEventListener('click', function() {
+        const leftPanel = document.getElementById('left-panel');
+        const rightPanel = document.getElementById('right-panel');
+
+        if (!isLeftPanelCollapsed) {
+            // Collapse the left panel
+            leftPanel.style.width = '0px';
+            leftPanel.style.minWidth = '0px'; // Ensure min-width does not prevent collapsing
+            // Expand the right panel, accounting for the splitter's width
+            rightPanel.style.width = 'calc(100% - 10px)'; // Adjust based on the actual splitter width
+            
+            // Update the toggle button icon
+            toggleBtn.classList.remove('fa-chevron-left');
+            toggleBtn.classList.add('fa-chevron-right');
+            isLeftPanelCollapsed = true;
+        } else {
+            // Restore the left panel and right panel to their initial sizes
+            leftPanel.style.width = '50%'; // Or your desired default width
+            leftPanel.style.minWidth = ''; // Reset to default or specify your desired min-width
+            rightPanel.style.width = 'calc(50% - 10px)'; // Adjust based on your layout and the splitter width
+            
+            // Update the toggle button icon
+            toggleBtn.classList.remove('fa-chevron-right');
+            toggleBtn.classList.add('fa-chevron-left');
+            isLeftPanelCollapsed = false;
+        }
+
+        // Trigger the map resize to adjust to the new layout
+        if (typeof map !== 'undefined' && map.resize) {
+            map.resize();
+        } else if (typeof map !== 'undefined' && map.invalidateSize) {
+            map.invalidateSize();
+        }
+    });
+});
+
+  </script>
+  <style>
     html, body {
       height: 100%;
       overflow: hidden;
@@ -36,18 +132,35 @@
       background-position: 50%;
     }
     .gutter.gutter-horizontal {
-      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+      width: 10px;
+      height: 100%; 
+      position: relative;
       cursor: col-resize;
     }
+
+    .gutter.gutter-horizontal::before {
+      content: "Hide"; 
+      content: "\f053"; 
+      font-family: 'FontAwesome'; 
+      display: block;
+      position: absolute;
+      color: white;
+      left: 50%; 
+      top: 50%; 
+      transform: translate(-50%, -50%); 
+      font-weight: 900; 
+    }
+
     .left-panel {
-      min-width: 30vw;
+      min-width: 30%;
+      width: 50%;
     }
     .right-panel {
-      max-width: calc(70vw - 10px);
+      width: calc(50% - 10px);
+      max-width: calc(70%-11px);
     }
-    .my-specific-div {
-      box-sizing: content-box;
-    }
+
+
 </style>
 {% endblock %}
 
@@ -64,7 +177,7 @@
       <!-- Scenario -->
       <div id="left-panel" class="left-panel">
         {% include "scenarios_details.html" %}
-        <div style="padding-left:15px; overflow-y:">
+        <div style="padding-left:15px;">
           <button id="modal-scenario-settings" type="button" class="btn btn-sm btn-warning"  data-target="#modal_scenario_settings">
             {% trans "Model Settings" %}
           </button>
@@ -73,6 +186,7 @@
 				{% if model %}
 				{% endif %}
       </div>
+      {% include "splitter_vertical.html" %}
       <div id="right-panel" class="right-panel">
         {% include "map_container_resizable.html" %}
       </div>

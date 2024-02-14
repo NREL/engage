@@ -1,16 +1,23 @@
 {% load static %}
 {% load i18n %}
 
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
 <style>
-    .black-div {
-      width: 10px; /* Set the width of the div to 10 pixels */
-      height: 100%; /* Set the height of the div; adjust as needed */
-      background-color: black; /* Set the background color of the div to black */
-    }
+.splitter-vertical {
+    width: 10px; /* Set the width of the div to 10 pixels */
+    height: 100%; /* Set the height of the div; adjust as needed */
+    background-color: #137AC2; /* Set the background color of the div */
+    display: flex; /* Use flexbox for alignment */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    color: white;
+    z-index: 100000;
+}
+.splitter-vertical:hover {
+    cursor: col-resize; 
+}
 
 </style>
-<div class="black-div"></div>
-
-<!-- <div id="splitter" class="row noselect">
-    <div class="centered" style="margin-left: auto; margin-right: auto;"><div id="splitter_btn"><span class="content"><i class="fas fa-chevron-left"></i>&nbsp;&nbsp;&nbsp; {% trans "Hide" %} </span></div></div>
-</div> -->
+<div id="splitter-vertical" class="splitter-vertical">
+    <i id="vertical-toggle" class="fas fa-chevron-left" style="cursor: pointer;"></i>
+</div>

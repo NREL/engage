@@ -28,11 +28,16 @@
             
             <label for="scenario-description" class="col-sm-3 col-form-label"><b>{% trans "Description" %}:</b></label>
             <div class="col-sm-9">
-                {% if not session_scenario.id %}               
-                <textarea id="scenario_description" class="scenario_description" data-placement="right" rows="4"> {{scenarios.0.description}} </textarea>
+                {% if not session_scenario.id %}
+                    {% if scenarios.0.description %}
+                        <textarea id="scenario_description" class="scenario_description" data-placement="right" rows="4"> {{scenarios.0.description}} </textarea>
+                    {% else %}
+                    <textarea id="scenario_description" class="scenario_description" data-placement="right" rows="4">PlaceHolder</textarea>
+                    {% endif %}
                 {% else %}
                  {% for scenario in scenarios %}
                      {% if session_scenario.id == scenario.id %}
+                     
                      <textarea id="scenario_description" class="scenario_description" data-placement="right" rows="4"> {{scenario.description}} </textarea>
                      {% endif %}
                      {% endfor %}
