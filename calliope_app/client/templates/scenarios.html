@@ -11,15 +11,15 @@
 <script>
 
 document.addEventListener('DOMContentLoaded', function() {
-    const splitter = document.getElementById('splitter-vertical');
+    const splitter_vertical = document.getElementById('splitter-vertical');
     let isDragging = false;
 
     const leftPanel = document.getElementById('left-panel');
     const rightPanel = document.getElementById('right-panel');
-    const container = leftPanel.parentNode; // Assuming both panels and the splitter are in the same container
+    const container = leftPanel.parentNode; 
 
-    splitter.addEventListener('mousedown', function(e) {
-        e.preventDefault(); // Prevent default text selection behavior
+    splitter_vertical.addEventListener('mousedown', function(e) {
+        e.preventDefault(); 
         isDragging = true;
         document.addEventListener('mousemove', onMouseMove);
         document.addEventListener('mouseup', onMouseUp);
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!isDragging) return;
     const containerRect = container.getBoundingClientRect();
     const containerWidth = containerRect.width;
-    const splitterWidth = splitter.offsetWidth;
+    const splitterWidth = splitter_vertical.offsetWidth;
     let leftWidth = e.clientX - containerRect.left;
     let rightWidth = containerWidth - leftWidth - splitterWidth;
 
@@ -50,12 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     leftPanel.style.width = `${leftWidth}px`;
     rightPanel.style.width = `${rightWidth}px`;
-
-    triggerMapResize();
 }
-
-// Include the triggerMapResize and onMouseUp functions as defined previously
-
 
     function onMouseUp(e) {
         if (isDragging) {
@@ -83,10 +78,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const rightPanel = document.getElementById('right-panel');
 
         if (!isLeftPanelCollapsed) {
-            // Collapse the left panel
             leftPanel.style.width = '0px';
-            leftPanel.style.minWidth = '0px'; // Ensure min-width does not prevent collapsing
-            // Expand the right panel, accounting for the splitter's width
+            leftPanel.style.minWidth = '0px'; 
             rightPanel.style.width = 'calc(100% - 10px)'; // Adjust based on the actual splitter width
             
             // Update the toggle button icon
@@ -94,7 +87,6 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleBtn.classList.add('fa-chevron-right');
             isLeftPanelCollapsed = true;
         } else {
-            // Restore the left panel and right panel to their initial sizes
             leftPanel.style.width = '50%'; // Or your desired default width
             leftPanel.style.minWidth = ''; // Reset to default or specify your desired min-width
             rightPanel.style.width = 'calc(50% - 10px)'; // Adjust based on your layout and the splitter width
@@ -137,7 +129,6 @@ document.addEventListener('DOMContentLoaded', function() {
       position: relative;
       cursor: col-resize;
     }
-
     .gutter.gutter-horizontal::before {
       content: "Hide"; 
       content: "\f053"; 
@@ -150,8 +141,8 @@ document.addEventListener('DOMContentLoaded', function() {
       transform: translate(-50%, -50%); 
       font-weight: 900; 
     }
-
     .left-panel {
+      z-index: 1;
       min-width: 30%;
       width: 50%;
     }
@@ -159,8 +150,17 @@ document.addEventListener('DOMContentLoaded', function() {
       width: calc(50% - 10px);
       max-width: calc(70%-11px);
     }
-
-
+    .splitter_upper {
+      position: relative; 
+      z-index: 1; 
+    }
+    .splitter_lower {
+        position: relative;
+        z-index: 10;
+    }
+    #modal-scenario-settings {
+      z-index: 2;
+    }
 </style>
 {% endblock %}
 
@@ -187,15 +187,19 @@ document.addEventListener('DOMContentLoaded', function() {
 				{% endif %}
       </div>
       {% include "splitter_vertical.html" %}
-      <div id="right-panel" class="right-panel">
+      <div id="right-panel" class="right-panel" style="z-index: 2;">
         {% include "map_container_resizable.html" %}
       </div>
     </div>
     <!-- Splitter -->
-    {% include "splitter.html" %}
+    <div style="z-index: 2; position: relative;">
+      {% include "splitter.html" %}
+    </div>
     <!-- Dashboard -->
-    <div id="scenarios_dashboard" class="splitter_lower row" style="overflow-y: scroll; height: 50%;">
-      <div style="width: 100%" id="scenario_configuration"></div>
+      <div id="scenarios_dashboard" class="splitter_lower row" style="overflow-y: scroll; height: 50%;">
+        <div style="width: 100%;" id="scenario_configuration"></div>
+
+  
     </div>
 </div>
 </div>
