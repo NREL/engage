@@ -30,7 +30,7 @@ $( document ).ready(function() {
 		get_scenario_configuration();
 	});
 
-    $('#modal-scenario-settings').on('click', function() {
+    $('#scenario-settings').on('click', function() {
 		$('#pvwatts_form').hide();
         $('#wtk_form').hide();
 		$('#scenario_constraints_json_form').hide();
