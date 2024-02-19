@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
         position: relative;
         z-index: 10;
     }
-    #modal-scenario-settings {
+    #scenario-settings {
       z-index: 2;
     }
 </style>
@@ -178,8 +178,8 @@ document.addEventListener('DOMContentLoaded', function() {
       <div id="left-panel" class="left-panel">
         {% include "scenarios_details.html" %}
         <div style="padding-left:15px;">
-          <button id="modal-scenario-settings" type="button" class="btn btn-sm btn-warning"  data-target="#modal_scenario_settings">
-            {% trans "Model Settings" %}
+          <button id="scenario-settings" type="button" class="btn btn-sm btn-warning"  data-target="#modal_scenario_settings">
+            {% trans "Scenario Settings" %}
           </button>
         </div>
         <!-- {% include } -->
