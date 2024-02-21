@@ -46,6 +46,7 @@ RUN pip install -r requirements-dev.txt
 # Install calliope without dependencies, as already installed in requirements
 RUN pip install calliope==0.6.8 --no-deps
 RUN pip install flower>=1.1.0
+RUN pip install -e git+https://github.com/NREL/GEOPHIRES-X.git#egg=geophires-x
 
 COPY . .
 
