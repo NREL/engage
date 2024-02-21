@@ -4,8 +4,7 @@ import datetime
 from django.conf import settings
 from django.test import TestCase
 
-from geophires.v2 import Geophires, GeophiresParams
-
+from geophires.geophiresx import Geophires, GeophiresParams
 
 class GeophiresTestCase(TestCase):
     

@@ -12,7 +12,7 @@ from django.shortcuts import render
 
 from api.models.configuration import Job_Meta
 from geophires.tasks import run_geophires, task_status
-from geophires.v2 import objective, curve_fit
+from geophires.geophiresx import objective, curve_fit
 from taskmeta.models import CeleryTask
 
 logger = logging.getLogger(__name__)

@@ -7,8 +7,7 @@ from django.conf import settings
 from api.models.configuration import Job_Meta
 from api.tasks import task_status
 from calliope_app.celery import app
-from geophires.v2 import GeophiresParams, Geophires
-
+from geophires.geophiresx import GeophiresParams, Geophires
 
 class GeophiresTask(Task):
     """
@@ -74,3 +73,5 @@ def run_geophires(job_meta_id, plant, params, *args, **kwargs):
         "output_params": output_params,
         "output_file": output_file
     }
+
+
