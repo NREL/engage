@@ -39,6 +39,7 @@ RUN ./configure \
 # install python packages
 WORKDIR /www
 COPY requirements.txt requirements-dev.txt /www/
+RUN apt-get update && apt-get install -y git
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN pip install -r requirements-dev.txt
