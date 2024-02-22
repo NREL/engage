@@ -1,6 +1,6 @@
 [
     {
-        "model": " template.template_type",
+        "model": "template.template_type",
         "pk": 1,
         "fields": {
             "name": "EGS_chp",
@@ -9,7 +9,7 @@
         }
     },
     {
-        "model": " template.template_type",
+        "model": "template.template_type",
         "pk": 2,
         "fields": {
             "name": "EGS_double_flash",
@@ -18,7 +18,7 @@
         }
     },
     {
-        "model": " template.template_type",
+        "model": "template.template_type",
         "pk": 3,
         "fields": {
             "name": "EGS_binary_orc",
@@ -27,7 +27,7 @@
         }
     },
     {
-        "model": " template.template_type",
+        "model": "template.template_type",
         "pk": 4,
         "fields": {
             "name": "EGS_direct_use",
@@ -36,7 +36,7 @@
         }
     },
     {
-        "model": " template.template_type",
+        "model": "template.template_type",
         "pk": 5,
         "fields": {
             "name": "EGS_cchp",
@@ -45,7 +45,7 @@
         }
     },
     {
-        "model": " template.template_type",
+        "model": "template.template_type",
         "pk": 6,
         "fields": {
             "name": "HYDRO_chp",
@@ -54,7 +54,7 @@
         }
     },
     {
-        "model": " template.template_type",
+        "model": "template.template_type",
         "pk": 7,
         "fields": {
             "name": "HYDRO_double_flash",
@@ -63,7 +63,7 @@
         }
     },
     {
-        "model": " template.template_type",
+        "model": "template.template_type",
         "pk": 8,
         "fields": {
             "name": "HYDRO_binary_orc",
@@ -72,7 +72,7 @@
         }
     },
     {
-        "model": " template.template_type",
+        "model": "template.template_type",
         "pk": 9,
         "fields": {
             "name": "HYDRO_direct_use",
@@ -81,7 +81,7 @@
         }
     },
     {
-        "model": " template.template_type",
+        "model": "template.template_type",
         "pk": 10,
         "fields": {
             "name": "HYDRO_cchp",
