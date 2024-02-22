@@ -7,6 +7,51 @@
 	#scenario-delete {
 		margin-bottom: 10px;
 	}
+	.tooltip-text {
+  visibility: hidden;
+  position: absolute;
+  z-index: 1;
+  width: 400px;
+  color: white;
+  font-size: 12px;
+  background-color: #192733;
+  border-radius: 10px;
+  padding: 15px 10px 15px;
+  margin-left: 15px;
+}
+
+.text-sm:hover .tooltip-text {
+  visibility: visible;
+}
+
+#top {
+  top: -40px;
+  left: -50%;
+}
+
+#bottom {
+  top: 25px;
+  left: -50%;
+}
+
+#left {
+  top: -8px;
+  right: 120%;
+}
+
+#right {
+  top: -8px;
+  left: 120%;
+}
+
+.hover-text {
+  position: relative;
+  display: inline-block;
+  margin: 40px;
+  font-family: Arial;
+  text-align: center;
+}
+
 </style>
 	<table id="settings_table" class="table table-hover table-sm">
 		<tbody>
@@ -17,12 +62,12 @@
 					<tr class="param_header table-default" data-param_id="{{ param.run_parameter.id }}">
 
 						<!-- Parameter Names -->
-						{% ifchanged param.run_parameter.pretty_name %}
-							<td style="cursor:help" data-toggle="tooltip" data-placement="right">
-								<span class="text-sm"><b>{{ param.run_parameter.pretty_name }}</b></span>
+						{% ifchanged param.run_parameter.pretty_name %}						  
+						  	<td style="cursor:help;" class="text-sm"><b>{{ param.run_parameter.pretty_name }}</b>
+								<span class="tooltip-text">{{ param.run_parameter.description }}</span>
 							</td>
-							<td style="cursor:help" data-toggle="tooltip" data-placement="right">
-								<span class="text-sm">{{ param.run_parameter.root }}.{{ param.run_parameter.name }}</span>
+							<td style="cursor:help;" class="text-sm">{{ param.run_parameter.root }}.{{ param.run_parameter.name }}
+								<span class="tooltip-text">{{ param.run_parameter.description }}</span>
 							</td>
 							<td>
 								<button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-default btn-sm transparent run-parameter-value-add"><i class="fas fa-plus"></i> {% trans "Row" %}</button>
@@ -90,13 +135,15 @@
 					<tr class="param_header table-default" data-param_id="{{ param.run_parameter.id }}">
 
 						<!-- Parameter Names -->
-						<td style="cursor:help" data-toggle="tooltip" data-placement="right">
-							<span class="text-sm"><b>{{ param.run_parameter.pretty_name }}</b></span>
+						<td style="cursor:help;" class="text-sm">
+							<b>{{ param.run_parameter.pretty_name }}</b>
+							<span class="tooltip-text">{{ param.run_parameter.description }}</span>
 						</td>
-						<td style="cursor:help" data-toggle="tooltip" data-placement="right">
-							<span class="text-sm">{{ param.run_parameter.root }}.{{ param.run_parameter.name }}</span>
+						<td style="cursor:help;" class="text-sm">
+							{{ param.run_parameter.root }}.{{ param.run_parameter.name }}
+							<span class="tooltip-text">{{ param.run_parameter.description }}</span>
 						</td>
-						<td colspan=2></td>
+												<td colspan=2></td>
 
 						<!-- Parameter Values -->
 						<td colspan=2 class="head_value centered" data-param_id="{{ param.run_parameter.id }}">
