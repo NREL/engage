@@ -1,0 +1,11 @@
+[
+  {
+    "model": "template.template_type_loc_tech_params",
+    "pk": 2,
+    "fields": {
+      "template_loc_tech": 2,
+      "parameter": 11,
+      "equation": "||max_electricity_cap||"
+    }
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "model": "template.template_type_tech_params",
+    "pk": 1,
+    "fields": {
+      "template_tech": 2,
+      "parameter": 22,
+      "equation": "{'carrier_in_2':{'Power': ||var_param|| },'carrier_in':{'Power':1},'carrier_out':{'Thermal':1}}"
+    }
+  }
+]
