@@ -12,10 +12,45 @@ from django.shortcuts import render
 
 from api.models.configuration import Job_Meta
 from geophires.tasks import run_geophires, task_status
-from geophires.geophiresx import objective, curve_fit
+# from geophires.geophiresx import Geophires
+from geophires.geophiresx import objective
+from scipy.optimize import curve_fit
 from taskmeta.models import CeleryTask
+from geophires_x_client import GeophiresXClient
+
 
 logger = logging.getLogger(__name__)
+
+
+def map_params(formData, geo_technology):
+    if geo_technology.lower() == "egs_chp":
+        return {
+            "reservoir_heat_capacity": 1,
+            "reservoir_density": 1,
+            "reservoir_thermal_conductivity": 1,
+            "min_reservoir_depth": 1,
+            "max_reservoir_depth": 1,
+            "min_production_wells": 1,
+            "max_production_wells": 1,
+            "min_injection_wells": 1,
+            "max_injection_wells": 1,
+            "Number_of_segments": 1,
+            "Gradient_1": 1,
+            "Gradient_2": 1,
+            "Gradient_3": 1,
+            "Gradient_4": 1,
+            "Fracture_Shape": 1,
+            "Fracture_Height": 1,  
+            "Number_of_Fractures": 1,
+            "Well_Drilling_Cost_Correlation": 1,
+            "target_prod_temp_min": 1,
+            "target_prod_temp_max": 1,
+            "lifetime": 1,
+            "thickness_grad1": 1,
+            "thickness_grad2": 1,
+            "thickness_grad3": format(formData["thickness 3"]),
+    }
+
 
 
 @login_required
@@ -85,8 +120,8 @@ def geophires_request(request):
     formData = json.loads(request.POST["form_data"])
 
     payload = {"message": "starting runnning geophires"}
-
     #seralize data
+    # We need to change how these valus are stored based on the new forms data. 
     input_params = {
         "reservoir_heat_capacity": float(formData["reservoir_heat_capacity"]),
         "reservoir_density": float(formData["reservoir_density"]),
@@ -122,9 +157,16 @@ def geophires_request(request):
             "input_params": input_params
         }
         job_meta = Job_Meta.objects.filter(inputs=inputs).first()
+        logger.info(f"\n\n\n\n\n\n\n\n\n\n\n")
+        logger.info(job_meta is None)
+        logger.info(f"\n\n\n\n\n\n\n\n\n\n\n")
+
         if job_meta is None:
             payload["jobPreexisting"] = False
+            logger.info(f"Entered!!!!!!!!!")
+
             job_meta = Job_Meta.objects.create(inputs=inputs, status=task_status.RUNNING, type="geophires")
+            # Run geophiresx version instead
             async_result = run_geophires.apply_async(
                 kwargs={
                     "job_meta_id": job_meta.id,

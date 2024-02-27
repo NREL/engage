@@ -9,6 +9,10 @@ from api.tasks import task_status
 from calliope_app.celery import app
 from geophires.geophiresx import GeophiresParams, Geophires
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 class GeophiresTask(Task):
     """
     A celery task class for executing a geophires job.
@@ -54,12 +58,17 @@ def run_geophires(job_meta_id, plant, params, *args, **kwargs):
     params : dict
         The geophires parameters
     """
+    # Log the geophires with logger
+    logger.log(f"Args skipped.......................................")
+    # model = args[0]
     ## Update job meta
     job_meta = Job_Meta.objects.get(id=job_meta_id)
     job_meta.status = task_status.RUNNING
     job_meta.save()
 
+    logger.info(f"Running geophires for plant!!!!!")
     ## Geophires job run
+
     input_params = GeophiresParams(**params)
 
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")

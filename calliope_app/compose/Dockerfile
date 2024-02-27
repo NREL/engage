@@ -41,13 +41,14 @@ WORKDIR /www
 COPY requirements.txt requirements-dev.txt /www/
 RUN apt-get update && apt-get install -y git 
 RUN pip install --upgrade pip
+RUN pip install https://github.com/NREL/GEOPHIRES-X/archive/main.zip
 RUN pip install -r requirements.txt
 RUN pip install -r requirements-dev.txt
-
+RUN pip list
 # Install calliope without dependencies, as already installed in requirements
 RUN pip install calliope==0.6.8 --no-deps
 RUN pip install flower>=1.1.0
-RUN pip install -e git+https://github.com/NREL/GEOPHIRES-X.git#egg=geophires-x
+
 
 COPY . .
 
