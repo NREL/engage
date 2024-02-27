@@ -1,6 +1,6 @@
 [
   {
-    "model": "template.template_type_loc_tech_params",
+    "model": "template.template_type_loc_tech_param",
     "pk": 2,
     "fields": {
       "template_loc_tech": 2,
