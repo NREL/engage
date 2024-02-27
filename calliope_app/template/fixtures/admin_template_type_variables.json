@@ -166,7 +166,7 @@
             "description": "Defines number of subsurface temperature gradient segments.",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[]"
+            "choices": null
         }
     },
     {
@@ -302,7 +302,7 @@
             "description": "Determines the cost relationship for drilling wells in the geothermal project, offering a range of correlation options to best match the project's specific conditions and financial modeling. Select the built-in horizontal well drilling and completion cost correlation: 1: Vertical Small Diameter, Baseline; 2: Vertical Small Diameter, Intermediate1; 3: Vertical Small Diameter, Intermediate2; 4: Vertical Small Diameter, Ideal; 5: Deviated Small Diameter, Baseline; 6: Deviated Small Diameter, Intermediate1; 7: Deviated Small Diameter, Intermediate2; 8: Deviated Small Diameter, Ideal; 9: Vertical Large Diameter, Baseline; 10: Vertical Large Diameter, Intermediate1; 11: Vertical Large Diameter, Intermediate2; 12: Vertical Large Diameter, Ideal; 13: Deviated Large Diameter, Baseline; 14: Deviated Large Diameter, Intermediate1; 15: Deviated Large Diameter, Intermediate2; 16: Deviated Large Diameter, Ideal 17: Simple - user specified cost per meter",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16]"
+            "choices": null
         }
     },
     {
@@ -642,7 +642,7 @@
             "description": "Defines number of subsurface temperature gradient segments.",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[]"
+            "choices": null
         }
     },
     {
@@ -778,7 +778,7 @@
             "description": "Determines the cost relationship for drilling wells in the geothermal project, offering a range of correlation options to best match the project's specific conditions and financial modeling. Select the built-in horizontal well drilling and completion cost correlation: 1: Vertical Small Diameter, Baseline; 2: Vertical Small Diameter, Intermediate1; 3: Vertical Small Diameter, Intermediate2; 4: Vertical Small Diameter, Ideal; 5: Deviated Small Diameter, Baseline; 6: Deviated Small Diameter, Intermediate1; 7: Deviated Small Diameter, Intermediate2; 8: Deviated Small Diameter, Ideal; 9: Vertical Large Diameter, Baseline; 10: Vertical Large Diameter, Intermediate1; 11: Vertical Large Diameter, Intermediate2; 12: Vertical Large Diameter, Ideal; 13: Deviated Large Diameter, Baseline; 14: Deviated Large Diameter, Intermediate1; 15: Deviated Large Diameter, Intermediate2; 16: Deviated Large Diameter, Ideal 17: Simple - user specified cost per meter",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16]"
+            "choices": null
         }
     },
     {
@@ -1118,7 +1118,7 @@
             "description": "Defines number of subsurface temperature gradient segments.",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[]"
+            "choices": null
         }
     },
     {
@@ -1254,7 +1254,7 @@
             "description": "Determines the cost relationship for drilling wells in the geothermal project, offering a range of correlation options to best match the project's specific conditions and financial modeling. Select the built-in horizontal well drilling and completion cost correlation: 1: Vertical Small Diameter, Baseline; 2: Vertical Small Diameter, Intermediate1; 3: Vertical Small Diameter, Intermediate2; 4: Vertical Small Diameter, Ideal; 5: Deviated Small Diameter, Baseline; 6: Deviated Small Diameter, Intermediate1; 7: Deviated Small Diameter, Intermediate2; 8: Deviated Small Diameter, Ideal; 9: Vertical Large Diameter, Baseline; 10: Vertical Large Diameter, Intermediate1; 11: Vertical Large Diameter, Intermediate2; 12: Vertical Large Diameter, Ideal; 13: Deviated Large Diameter, Baseline; 14: Deviated Large Diameter, Intermediate1; 15: Deviated Large Diameter, Intermediate2; 16: Deviated Large Diameter, Ideal 17: Simple - user specified cost per meter",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16]"
+            "choices": null
         }
     },
     {
@@ -1594,7 +1594,7 @@
             "description": "Defines number of subsurface temperature gradient segments.",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[]"
+            "choices": null
         }
     },
     {
@@ -1730,7 +1730,7 @@
             "description": "Determines the cost relationship for drilling wells in the geothermal project, offering a range of correlation options to best match the project's specific conditions and financial modeling. Select the built-in horizontal well drilling and completion cost correlation: 1: Vertical Small Diameter, Baseline; 2: Vertical Small Diameter, Intermediate1; 3: Vertical Small Diameter, Intermediate2; 4: Vertical Small Diameter, Ideal; 5: Deviated Small Diameter, Baseline; 6: Deviated Small Diameter, Intermediate1; 7: Deviated Small Diameter, Intermediate2; 8: Deviated Small Diameter, Ideal; 9: Vertical Large Diameter, Baseline; 10: Vertical Large Diameter, Intermediate1; 11: Vertical Large Diameter, Intermediate2; 12: Vertical Large Diameter, Ideal; 13: Deviated Large Diameter, Baseline; 14: Deviated Large Diameter, Intermediate1; 15: Deviated Large Diameter, Intermediate2; 16: Deviated Large Diameter, Ideal 17: Simple - user specified cost per meter",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16]"
+            "choices": null
         }
     },
     {
@@ -1917,7 +1917,7 @@
             "description": "Constant and uniform reservoir rock heat capacity. The heat capacity of the geothermal fluid. This parameter determines how much energy can be stored in the fluid as its temperature changes.",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[]"
+            "choices": null
         }
     },
     {
@@ -2070,7 +2070,7 @@
             "description": "Defines number of subsurface temperature gradient segments.",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[]"
+            "choices": null
         }
     },
     {
@@ -2206,7 +2206,7 @@
             "description": "Determines the cost relationship for drilling wells in the geothermal project, offering a range of correlation options to best match the project's specific conditions and financial modeling. Select the built-in horizontal well drilling and completion cost correlation: 1: Vertical Small Diameter, Baseline; 2: Vertical Small Diameter, Intermediate1; 3: Vertical Small Diameter, Intermediate2; 4: Vertical Small Diameter, Ideal; 5: Deviated Small Diameter, Baseline; 6: Deviated Small Diameter, Intermediate1; 7: Deviated Small Diameter, Intermediate2; 8: Deviated Small Diameter, Ideal; 9: Vertical Large Diameter, Baseline; 10: Vertical Large Diameter, Intermediate1; 11: Vertical Large Diameter, Intermediate2; 12: Vertical Large Diameter, Ideal; 13: Deviated Large Diameter, Baseline; 14: Deviated Large Diameter, Intermediate1; 15: Deviated Large Diameter, Intermediate2; 16: Deviated Large Diameter, Ideal 17: Simple - user specified cost per meter",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16]"
+            "choices": null
         }
     },
     {
@@ -2597,7 +2597,7 @@
             "description": "Defines number of subsurface temperature gradient segments.",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[]"
+            "choices": null
         }
     },
     {
@@ -2682,7 +2682,7 @@
             "description": "Determines the cost relationship for drilling wells in the geothermal project, offering a range of correlation options to best match the project's specific conditions and financial modeling. Select the built-in horizontal well drilling and completion cost correlation: 1: Vertical Small Diameter, Baseline; 2: Vertical Small Diameter, Intermediate1; 3: Vertical Small Diameter, Intermediate2; 4: Vertical Small Diameter, Ideal; 5: Deviated Small Diameter, Baseline; 6: Deviated Small Diameter, Intermediate1; 7: Deviated Small Diameter, Intermediate2; 8: Deviated Small Diameter, Ideal; 9: Vertical Large Diameter, Baseline; 10: Vertical Large Diameter, Intermediate1; 11: Vertical Large Diameter, Intermediate2; 12: Vertical Large Diameter, Ideal; 13: Deviated Large Diameter, Baseline; 14: Deviated Large Diameter, Intermediate1; 15: Deviated Large Diameter, Intermediate2; 16: Deviated Large Diameter, Ideal 17: Simple - user specified cost per meter",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16]"
+            "choices": null
         }
     },
     {
@@ -3022,7 +3022,7 @@
             "description": "Defines number of subsurface temperature gradient segments.",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[]"
+            "choices": null
         }
     },
     {
@@ -3107,7 +3107,7 @@
             "description": "Determines the cost relationship for drilling wells in the geothermal project, offering a range of correlation options to best match the project's specific conditions and financial modeling. Select the built-in horizontal well drilling and completion cost correlation: 1: Vertical Small Diameter, Baseline; 2: Vertical Small Diameter, Intermediate1; 3: Vertical Small Diameter, Intermediate2; 4: Vertical Small Diameter, Ideal; 5: Deviated Small Diameter, Baseline; 6: Deviated Small Diameter, Intermediate1; 7: Deviated Small Diameter, Intermediate2; 8: Deviated Small Diameter, Ideal; 9: Vertical Large Diameter, Baseline; 10: Vertical Large Diameter, Intermediate1; 11: Vertical Large Diameter, Intermediate2; 12: Vertical Large Diameter, Ideal; 13: Deviated Large Diameter, Baseline; 14: Deviated Large Diameter, Intermediate1; 15: Deviated Large Diameter, Intermediate2; 16: Deviated Large Diameter, Ideal 17: Simple - user specified cost per meter",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16]"
+            "choices": null
         }
     },
     {
@@ -3447,7 +3447,7 @@
             "description": "Defines number of subsurface temperature gradient segments.",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[]"
+            "choices": null
         }
     },
     {
@@ -3532,7 +3532,7 @@
             "description": "Determines the cost relationship for drilling wells in the geothermal project, offering a range of correlation options to best match the project's specific conditions and financial modeling. Select the built-in horizontal well drilling and completion cost correlation: 1: Vertical Small Diameter, Baseline; 2: Vertical Small Diameter, Intermediate1; 3: Vertical Small Diameter, Intermediate2; 4: Vertical Small Diameter, Ideal; 5: Deviated Small Diameter, Baseline; 6: Deviated Small Diameter, Intermediate1; 7: Deviated Small Diameter, Intermediate2; 8: Deviated Small Diameter, Ideal; 9: Vertical Large Diameter, Baseline; 10: Vertical Large Diameter, Intermediate1; 11: Vertical Large Diameter, Intermediate2; 12: Vertical Large Diameter, Ideal; 13: Deviated Large Diameter, Baseline; 14: Deviated Large Diameter, Intermediate1; 15: Deviated Large Diameter, Intermediate2; 16: Deviated Large Diameter, Ideal 17: Simple - user specified cost per meter",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16]"
+            "choices": null
         }
     },
     {
@@ -3872,7 +3872,7 @@
             "description": "Defines number of subsurface temperature gradient segments.",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[]"
+            "choices": null
         }
     },
     {
@@ -3957,7 +3957,7 @@
             "description": "Determines the cost relationship for drilling wells in the geothermal project, offering a range of correlation options to best match the project's specific conditions and financial modeling. Select the built-in horizontal well drilling and completion cost correlation: 1: Vertical Small Diameter, Baseline; 2: Vertical Small Diameter, Intermediate1; 3: Vertical Small Diameter, Intermediate2; 4: Vertical Small Diameter, Ideal; 5: Deviated Small Diameter, Baseline; 6: Deviated Small Diameter, Intermediate1; 7: Deviated Small Diameter, Intermediate2; 8: Deviated Small Diameter, Ideal; 9: Vertical Large Diameter, Baseline; 10: Vertical Large Diameter, Intermediate1; 11: Vertical Large Diameter, Intermediate2; 12: Vertical Large Diameter, Ideal; 13: Deviated Large Diameter, Baseline; 14: Deviated Large Diameter, Intermediate1; 15: Deviated Large Diameter, Intermediate2; 16: Deviated Large Diameter, Ideal 17: Simple - user specified cost per meter",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16]"
+            "choices": null
         }
     },
     {
@@ -4144,7 +4144,7 @@
             "description": "Constant and uniform reservoir rock heat capacity. The heat capacity of the geothermal fluid. This parameter determines how much energy can be stored in the fluid as its temperature changes.",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[]"
+            "choices": null
         }
     },
     {
@@ -4297,7 +4297,7 @@
             "description": "Defines number of subsurface temperature gradient segments.",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[]"
+            "choices": null
         }
     },
     {
@@ -4433,7 +4433,7 @@
             "description": "Determines the cost relationship for drilling wells in the geothermal project, offering a range of correlation options to best match the project's specific conditions and financial modeling. Select the built-in horizontal well drilling and completion cost correlation: 1: Vertical Small Diameter, Baseline; 2: Vertical Small Diameter, Intermediate1; 3: Vertical Small Diameter, Intermediate2; 4: Vertical Small Diameter, Ideal; 5: Deviated Small Diameter, Baseline; 6: Deviated Small Diameter, Intermediate1; 7: Deviated Small Diameter, Intermediate2; 8: Deviated Small Diameter, Ideal; 9: Vertical Large Diameter, Baseline; 10: Vertical Large Diameter, Intermediate1; 11: Vertical Large Diameter, Intermediate2; 12: Vertical Large Diameter, Ideal; 13: Deviated Large Diameter, Baseline; 14: Deviated Large Diameter, Intermediate1; 15: Deviated Large Diameter, Intermediate2; 16: Deviated Large Diameter, Ideal 17: Simple - user specified cost per meter",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Inputs",
-            "choices": "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16]"
+            "choices": null
         }
     },
     {

@@ -38,7 +38,7 @@ class Template_Type_Variable(models.Model):
     description = models.TextField(blank=True, null=True)
     timeseries_enabled = models.BooleanField(blank=True, null=True)
     category = models.CharField(max_length=200, blank=True, null=True)
-    choices = ArrayField(models.CharField(max_length=10), blank=True, null=True)
+    choices = models.JSONField(blank=True, null=True)
 
     def __str__(self):
         return '%s' % (self.name)
@@ -107,12 +107,24 @@ class Template_Type_Loc_Tech(models.Model):
         else:
             return '%s[%s] at %s' % (self.template_tech, self.template_tech.abstract_tech, self.template_loc_1)
 
-class Template_Type_Parameter(models.Model):
+class Template_Type_Loc_Tech_Param(models.Model):
     class Meta:
-        db_table = "template_type_parameters"
-        verbose_name_plural = "[Admin] Template Type Parameters"
+        db_table = "template_type_loc_tech_parameters"
+        verbose_name_plural = "[Admin] Template Type Loc Tech Parameters"
 
     template_loc_tech = models.ForeignKey(Template_Type_Loc_Tech, on_delete=models.CASCADE)
+    parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE)
+    equation = models.CharField(max_length=200)
+
+    def __str__(self):
+        return '%s' % (self.equation)
+    
+class Template_Type_Tech_Param(models.Model):
+    class Meta:
+        db_table = "template_type_tech_params"
+        verbose_name_plural = "[Admin] Template Type Tech Parameters"
+
+    template_tech = models.ForeignKey(Template_Type_Tech, on_delete=models.CASCADE)
     parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE)
     equation = models.CharField(max_length=200)
 
