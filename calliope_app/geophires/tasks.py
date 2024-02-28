@@ -59,28 +59,24 @@ def run_geophires(job_meta_id, plant, params, *args, **kwargs):
         The geophires parameters
     """
     # Log the geophires with logger
-    logger.log(f"Args skipped.......................................")
+    # logger.info(f"Args skipped.......................................")
     # model = args[0]
     ## Update job meta
     job_meta = Job_Meta.objects.get(id=job_meta_id)
     job_meta.status = task_status.RUNNING
     job_meta.save()
-
-    logger.info(f"Running geophires for plant!!!!!")
-    ## Geophires job run
-
+    logger.info(f"\n\n ------ Params ------\n\n")
     input_params = GeophiresParams(**params)
 
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     result_file = os.path.join(settings.DATA_STORAGE, "geophires", f"{job_meta_id}__{plant}__{timestamp}.csv")
-
     geophiers = Geophires(plant)
     output_params, output_file = geophiers.run(input_params=input_params, output_file=result_file)
+    # logger.info(f"Output file: {output_file}")
+    # logger.info(f"result file: {result_file}")
 
     return {
         "plant": plant,
         "output_params": output_params,
         "output_file": output_file
     }
-
-
