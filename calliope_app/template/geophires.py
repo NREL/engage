@@ -17,7 +17,7 @@ from geophires.geophiresx import objective
 from scipy.optimize import curve_fit
 from taskmeta.models import CeleryTask
 from geophires_x_client import GeophiresXClient
-
+import matplotlib.pyplot as plt
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +51,17 @@ def map_params(formData, geo_technology):
             "thickness_grad3": format(formData["thickness 3"]),
     }
 
+# Function to safely extract a column as an array, or fill with zeros if not present
+def safe_extract(df, column_name):
+    if column_name in df.columns:
+        return np.array(df[column_name])
+    else:
+        print(f"'{column_name}' not found in DataFrame. Filling with zeros.")
+        return np.zeros(len(df))
+
+# Function to check if data is all zeros or empty
+def has_data(*args):
+    return all(not np.all(arg == 0) and len(arg) > 0 for arg in args)
 
 
 @login_required
@@ -227,21 +238,36 @@ def geophires_outputs(request):
     output_file = job_meta.outputs["output_file"]
 
     df = pd.read_csv(output_file)
-    thermal_capacity = np.array(df["Average Reservoir Heat Extraction (MWth)"])
-    electric_capacity = np.array(df["Average Total Electricity Generation (MWe)"])
-    subsurface_cost = np.array((df["Wellfield Cost ($M)"] + df["Field Gathering System Cost ($M)"]))
-    surface_cost = np.array(df['Surface Plant Cost ($M)'])
-    subsurface_o_m_cost = np.add(np.array(df['Wellfield O&M Cost ($M/year)']), np.array(df['Make-Up Water O&M Cost ($M/year)']))
-    surface_o_m_cost = np.array(df['Surface Plant O&M Cost ($M/year)'])
-    production_wells = np.array(df["Number of Prod Wells"])
-    depths = np.array(df["Depth (m)"])
+    logger.info(f"\n\n\n ------- Read DF ------ \n\n\n")
+    
+
+    # Prepare data for plots
+    cmap = plt.get_cmap('plasma')
+    unique_prod_wells = df['Number of Prod Wells'].unique()
+    unique_inj_wells = df['Number of Inj Wells'].unique()
+    unique_depth = df['Depth (km)'].unique()
+    unique_temp = df['Average Production Temperature (degC)'].unique()
+
+    # Safe extraction of columns
+    heating_capacity = safe_extract(df, 'Average Heat Production (MWth)')
+    electric_capacity = safe_extract(df, 'Average Electricity Production (MWe)')
+    surface_cost = safe_extract(df, 'Surface Plant Cost ($M)')
+    surface_o_m_cost = safe_extract(df, 'Surface maintenance costs ($MUSD/yr)')
+    # eff = safe_extract(df_final, 'Eff ($MUSD/yr)')
+
+    # Reservoir related data
+    thermal_capacity = safe_extract(df, 'Average Reservoir Heat Extraction (MWth)')
+    reservoir_cost = safe_extract(df, 'Drilling and completion cost ($MUSD)')
+    reservoir_o_m_cost = safe_extract(df, 'Wellfield maintenance costs ($MUSD/yr)') + safe_extract(
+        df, 'Make-Up Water O&M Cost ($MUSD/year)'
+    )
 
     # Label notes
     note = "Best fit to least cost, the slope indicates the $/MW<br>"
 
     # Plot1
-    x1 = thermal_capacity
-    y1 = subsurface_cost
+    x1 = electric_capacity
+    y1 = surface_cost
     popt, _         = curve_fit(objective, x1, y1)
     a1, b1          = popt
     x1_line         = np.asarray([np.min(x1), np.max(x1)])
@@ -252,7 +278,7 @@ def geophires_outputs(request):
 
     # Plot2
     x2              = electric_capacity
-    y2              = surface_cost
+    y2              = surface_o_m_cost
     popt, _         = curve_fit(objective, x2, y2)
     a2, b2          = popt
     x2_line         = np.asarray([np.min(x2), np.max(x2)])
@@ -263,7 +289,7 @@ def geophires_outputs(request):
 
     # Plot3
     x3              = thermal_capacity
-    y3              = subsurface_o_m_cost
+    y3              = reservoir_cost
     popt, _         = curve_fit(objective, x3, y3)
     a3, b3         = popt
     x3_line         = np.asarray([np.min(x3), np.max(x3)])
@@ -273,8 +299,8 @@ def geophires_outputs(request):
     label_b3        = f"<br><br><span>{label_b3}</span><br><span style='font-size: 9px'>{note}</span>"
 
     # Plot4
-    x4              = electric_capacity
-    y4              = surface_o_m_cost
+    x4              = thermal_capacity
+    y4              = reservoir_o_m_cost
     popt, _         = curve_fit(objective, x4, y4)
     a4, b4         = popt
     x4_line         = np.asarray([np.min(x4), np.max(x4)])
@@ -287,8 +313,8 @@ def geophires_outputs(request):
     outputs = {
         "plant": pretty_plant,
         "params": output_params,
-        "pwells": [int(i) for i in  production_wells],
-        "depths": depths.tolist(),
+        "pwells": [int(i) for i in  electric_capacity],
+        "depths": surface_cost.tolist(),
 
         "plot1": {
             "x1": x1.tolist(),

@@ -881,7 +881,7 @@ class Geophires(object):
 
         # ########################################
         # ########################################
-        logger.info(f"\n\n-------Finished: {output_params}, {output_file}----------\n\n")
+        logger.info(f"\n\n------- Outputs received ----------\n\n")
         return output_params, output_file
 
     def generate_config_files(self, input_params):
@@ -1625,7 +1625,7 @@ class Geophires(object):
                 else:
                     usebuiltinoutletplantcorrelation = 1
                     print("Warning: No valid plant outlet pressure provided. GEOPHIRES will calculate plant outlet pressure based on production wellhead pressure and surface equipment pressure drop of 10 psi")
-                    raise ValueError("No valid plant outlet pressure provided. GEOPHIRES will calculate plant outlet")
+                    print("No valid plant outlet pressure provided. GEOPHIRES will calculate plant outlet")
 
         #impedance: impedance per wellpair (input as GPa*s/m^3 and converted to KPa/kg/s (assuming 1000 for density))
         #try:
@@ -2669,10 +2669,10 @@ class Geophires(object):
                 pumpdepthfinal = np.max(pumpdepth)
                 if pumpdepthfinal < 0:
                     pumpdepthfinal = 0
-                    raise ValueError("Warning: GEOPHIRES calculates negative production well pumping depth. No production well pumps will be assumed")
+                    print("Warning: GEOPHIRES calculates negative production well pumping depth. No production well pumps will be assumed")
                 elif pumpdepthfinal > 600:
                     print("Warning: GEOPHIRES calculates pump depth to be deeper than 600 m. Verify reservoir pressure, production well flow rate and production well dimensions")
-                    raise ValueError("GEOPHIRES calculates pump depth to be deeper than 600 m.")
+                    print("GEOPHIRES calculates pump depth to be deeper than 600 m.")
                 #calculate production well pumping pressure [kPa]
                 DP3 = Pprodwellhead - (Phydrostatic - prodwellflowrate/PIkPa - rhowaterprod*9.81*depth/1E3 - f3*(rhowaterprod*vprod**2/2.)*(depth/prodwelldiam)/1E3)
                 #DP3 = [0 if x<0 else x for x in DP3] #set negative values to 0

@@ -39,12 +39,12 @@ $.getJSON('/geophires/outputs/', params, function(data) {
     }
   ];
   var layout1 = {
-    'title': plant + ' Subsurface Cost-to-Thermal Capacity Relation',
+    'title': plant + ' Surface Cost-to-Electric Capacity',
     'xaxis': {
-      'title': 'Avg. Thermal Capacity (MWth)'
+      'title': 'Avg. Electric capacity (MWe)'
     },
     'yaxis': {
-      'title': 'Subsurface Total Cost ($M)'
+      'title': 'Surface Total Cost ($M)'
     }
   }
   Plotly.plot('plot1', data1, layout1);
@@ -76,12 +76,12 @@ $.getJSON('/geophires/outputs/', params, function(data) {
     }
   ];
   var layout2 = {
-    'title': plant + ' Surface Cost-to-Electric Capacity Relation',
+    'title': plant + ' Surface O&M Cost-to-Electric Capacity',
     'xaxis': {
-      'title': 'Avg. Electric Capacity (MWe)'
+      'title': 'Avg. Electric capacity (MWe)'
     },
     'yaxis': {
-      'title': 'Surface Total Cost ($M)'
+      'title': 'Surface O&M Total Cost ($M)'
     }
   }
   Plotly.plot('plot2', data2, layout2);
@@ -113,12 +113,12 @@ $.getJSON('/geophires/outputs/', params, function(data) {
     },
   ];
   var layout3 = {
-    'title': plant + ' Subsurface O&M Cost-to-Thermal Capacity Relation',
+    'title': plant + ' Reservoir Cost-to-Thermal Capacity',
     'xaxis': {
-      'title': 'Avg. Thermal Capacity (MWth)'
+      'title': 'Avg. Thermal capacity (MWth)'
     },
     'yaxis': {
-      'title': 'Subsurface Total O&M Cost ($M)'
+      'title': 'Reservoir Total Cost ($M)'
     }
   }
   Plotly.plot('plot3', data3, layout3);
@@ -150,12 +150,12 @@ $.getJSON('/geophires/outputs/', params, function(data) {
     }
   ];
   var layout4 = {
-    'title': plant + ' Surface O&M Cost-to-Electric Capacity Relation',
+    'title': plant + ' Rservoir O&M Cost-to-Thermal Capacity',
     'xaxis': {
-      'title': 'Avg. Electric Capacity (MWe)'
+      'title': 'Avg. Thermal capacity (MWth)'
     },
     'yaxis': {
-      'title': 'Surface O&M Total Cost ($M)'
+      'title': 'Reservoir O&M Total Cost ($M)'
     }
   }
   Plotly.plot('plot4', data4, layout4);
