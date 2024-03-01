@@ -1,92 +1,11 @@
 [
     {
-        "model": "template.template_type",
         "pk": 1,
+        "model": "template.template_type",
         "fields": {
             "name": "EGS_chp",
             "pretty_name": "EGS Combined Heat and Power (CHP)",
-            "description": ""
-        }
-    },
-    {
-        "model": "template.template_type",
-        "pk": 2,
-        "fields": {
-            "name": "EGS_double_flash",
-            "pretty_name": "EGS Double Flash Cycle Power Plant",
-            "description": ""
-        }
-    },
-    {
-        "model": "template.template_type",
-        "pk": 3,
-        "fields": {
-            "name": "EGS_binary_orc",
-            "pretty_name": "EGS Binary Organic Rankine Cycle (ORC)",
-            "description": ""
-        }
-    },
-    {
-        "model": "template.template_type",
-        "pk": 4,
-        "fields": {
-            "name": "EGS_direct_use",
-            "pretty_name": "EGS Direct Use",
-            "description": ""
-        }
-    },
-    {
-        "model": "template.template_type",
-        "pk": 5,
-        "fields": {
-            "name": "EGS_cchp",
-            "pretty_name": "EGS Combined Cooling, Heat and Power (CCHP)",
-            "description": ""
-        }
-    },
-    {
-        "model": "template.template_type",
-        "pk": 6,
-        "fields": {
-            "name": "HYDRO_chp",
-            "pretty_name": "Hydrothermal Combined Heat and Power (CHP)",
-            "description": ""
-        }
-    },
-    {
-        "model": "template.template_type",
-        "pk": 7,
-        "fields": {
-            "name": "HYDRO_double_flash",
-            "pretty_name": "Hydrothermal Double Flash Cycle Power Plant",
-            "description": ""
-        }
-    },
-    {
-        "model": "template.template_type",
-        "pk": 8,
-        "fields": {
-            "name": "HYDRO_binary_orc",
-            "pretty_name": "Hydrothermal Binary Organic Rankine Cycle (ORC)",
-            "description": ""
-        }
-    },
-    {
-        "model": "template.template_type",
-        "pk": 9,
-        "fields": {
-            "name": "HYDRO_direct_use",
-            "pretty_name": "Hydrothermal Direct Use",
-            "description": ""
-        }
-    },
-    {
-        "model": "template.template_type",
-        "pk": 10,
-        "fields": {
-            "name": "HYDRO_cchp",
-            "pretty_name": "Hydrothermal Combined Cooling, Heat and Power (CCHP)",
-            "description": ""
+            "description": "Add later"
         }
     }
 ]

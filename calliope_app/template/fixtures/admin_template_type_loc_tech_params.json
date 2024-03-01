@@ -1,11 +1,92 @@
 [
-  {
-    "model": "template.template_type_loc_tech_param",
-    "pk": 2,
-    "fields": {
-      "template_loc_tech": 2,
-      "parameter": 11,
-      "equation": "||max_electricity_cap||"
+    {
+        "pk": 1,
+        "model": "template.template_type_loc_tech_param",
+        "fields": {
+            "template_loc_tech": 2,
+            "parameter": 24,
+            "equation": true
+        }
+    },
+    {
+        "pk": 2,
+        "model": "template.template_type_loc_tech_param",
+        "fields": {
+            "template_loc_tech": 2,
+            "parameter": 28,
+            "equation": 1
+        }
+    },
+    {
+        "pk": 3,
+        "model": "template.template_type_loc_tech_param",
+        "fields": {
+            "template_loc_tech": 2,
+            "parameter": 40,
+            "equation": "energy_per_cap"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "template.template_type_loc_tech_param",
+        "fields": {
+            "template_loc_tech": 2,
+            "parameter": 53,
+            "equation": "||therm_cap_vs_reservoir_cost||"
+        }
+    },
+    {
+        "pk": 6,
+        "model": "template.template_type_loc_tech_param",
+        "fields": {
+            "template_loc_tech": 2,
+            "parameter": 58,
+            "equation": "||therm_cap_vs_reservoir_om_cost||"
+        }
+    },
+    {
+        "pk": 7,
+        "model": "template.template_type_loc_tech_param",
+        "fields": {
+            "template_loc_tech": 2,
+            "parameter": 11,
+            "equation": "||max_avg_therm_ext||"
+        }
+    },
+    {
+        "pk": 9,
+        "model": "template.template_type_loc_tech_param",
+        "fields": {
+            "template_loc_tech": 1,
+            "parameter": 14,
+            "equation": 16.6
+        }
+    },
+    {
+        "pk": 10,
+        "model": "template.template_type_loc_tech_param",
+        "fields": {
+            "template_loc_tech": 1,
+            "parameter": 11,
+            "equation": "||max_elec_gen||"
+        }
+    },
+    {
+        "pk": 11,
+        "model": "template.template_type_loc_tech_param",
+        "fields": {
+            "template_loc_tech": 1,
+            "parameter": 53,
+            "equation": "||elec_cap_vs_surface_cost||"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "template.template_type_loc_tech_param",
+        "fields": {
+            "template_loc_tech": 1,
+            "parameter": 58,
+            "equation": "||elec_cap_vs_surface_o&m_cost||"
+        }
     }
-  }
 ]

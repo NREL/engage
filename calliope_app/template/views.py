@@ -30,7 +30,7 @@ def model_templates(request):
     template_types = list(Template_Type.objects.all().values('id', 'name', 'pretty_name', 'description'))
     template_type_variables = list(Template_Type_Variable.objects.all().values('id', 'name', 'pretty_name', 'template_type', 'units', 'default_value', 'min', 'max', 'category', 'choices', 'description', 'timeseries_enabled'))
     template_type_locs = list(Template_Type_Loc.objects.all().values('id', 'name', 'template_type', 'latitude_offset', 'longitude_offset'))
-    template_type_techs = list(Template_Type_Tech.objects.all().values('id', 'name', 'description', 'template_type', 'version_tag', 'abstract_tech', 'energy_carrier', 'carrier_in', 'carrier_out', 'carrier_in_2', 'carrier_out_2', 'carrier_in_3', 'carrier_out_3', 'carrier_ratios'))
+    template_type_techs = list(Template_Type_Tech.objects.all().values('id', 'name', 'description', 'template_type', 'version_tag', 'abstract_tech'))
     template_type_tech_params = list(Template_Type_Tech_Param.objects.all().values('id', 'template_tech', 'parameter', 'equation'))
     template_type_loc_techs = list(Template_Type_Loc_Tech.objects.all().values('id', 'template_type', 'template_loc_1', 'template_loc_2', 'template_tech'))
     template_type_loc_tech_params = list(Template_Type_Loc_Tech_Param.objects.all().values('id', 'template_loc_tech', 'parameter', 'equation'))
@@ -149,7 +149,7 @@ def update_template(request):
         template_type = Template_Type.objects.filter(id=template_type_id).first()
         location = Location.objects.filter(id=location_id).first()
         template_type_locs = list(Template_Type_Loc.objects.filter(template_type_id=template_type_id).values('id', 'name', 'template_type', 'latitude_offset', 'longitude_offset'))
-        template_type_techs = list(Template_Type_Tech.objects.filter(template_type_id=template_type_id).values('id', 'name', 'description', 'template_type', 'version_tag', 'abstract_tech', 'energy_carrier', 'carrier_in', 'carrier_out', 'carrier_in_2', 'carrier_out_2', 'carrier_in_3', 'carrier_out_3', 'carrier_ratios'))
+        template_type_techs = list(Template_Type_Tech.objects.filter(template_type_id=template_type_id).values('id', 'name', 'description', 'template_type', 'version_tag', 'abstract_tech'))
         template_type_loc_techs = list(Template_Type_Loc_Tech.objects.filter(template_type_id=template_type_id).values('id', 'template_type', 'template_loc_1', 'template_loc_2', 'template_tech'))
         template_type_carriers = list(Template_Type_Carrier.objects.filter(template_type_id=template_type_id).values('id', 'template_type', 'name', 'description', 'rate_unit', 'quantity_unit'))
         
@@ -188,42 +188,26 @@ def update_template(request):
             for template_tech_id, tech in new_technologies.items():
                 template_type_tech_params = Template_Type_Tech_Param.objects.filter(template_tech_id=template_tech_id)
 
-                # get input and output carriers
-                units_in_ids = [4,5,70]
-                units_out_ids = [4,6,71]
-                tech_param_in = Tech_Param.objects.filter(model=model, technology=loc_tech.technology, parameter_id__in=units_in_ids).first()
-                tech_param_out = Tech_Param.objects.filter(model=model, technology=loc_tech.technology, parameter_id__in=units_out_ids).first()
+                # TODO: get input and output carriers (will update later need to create carrier params first)
                 rate_unit_in = "kW"
                 quantity_unit_in = "kWh"
                 rate_unit_out = "kW"
                 quantity_unit_out = "kWh"
-                if tech_param_in:
-                    carrier_in = new_carriers.get(tech_param_in.value)
-                    if hasattr(carrier_in, "rate_unit"):
-                        rate_unit_in = carrier_in.rate_unit
-                    if hasattr(carrier_in, "quantity_unit"):
-                        quantity_unit_in = carrier_in.quantity_unit
-                if tech_param_out:
-                    carrier_out = new_carriers.get(tech_param_out.value)
-                    if hasattr(carrier_out, "rate_unit"):
-                        rate_unit_out = carrier_out.rate_unit
-                    if hasattr(carrier_out, "quantity_unit"):
-                        quantity_unit_out = carrier_out.quantity_unit
                 
                 # set all custom parameters for the new node
                 for template_type_tech_param in template_type_tech_params: 
                     equation = template_type_tech_param.equation
 
-                    # check for variables in equation to replac
+                    # check for variables in equation to replace
                     for name, template_variable in new_template_variables.items():
                         equation = equation.replace('||'+name+'||', template_variable.value)
 
                     # override carrier placeholder strings with units from carrier where applicable
                     units = template_type_tech_param.parameter.units.replace('[[in_rate]]', rate_unit_in).replace('[[in_quantity]]', quantity_unit_in).replace('[[out_quantity]]', rate_unit_out).replace('[[out_rate]]', quantity_unit_out)
-                    value, rawValue  = convert_units_no_pipe(ureg, equation, units)
-                    Loc_Tech_Param.objects.create(
+                    value, rawValue = convert_units_no_pipe(ureg, equation, units)
+                    Tech_Param.objects.create(
                         parameter=template_type_tech_param.parameter,
-                        loc_tech=loc_tech,
+                        tech=tech,
                         value=value,
                         raw_value=rawValue,
                         model=model,
@@ -261,13 +245,13 @@ def update_template(request):
                 for template_type_loc_tech_param in template_type_loc_tech_params: 
                     equation = template_type_loc_tech_param.equation
 
-                    # check for variables in equation to replac
+                    # check for variables in equation to replace
                     for name, template_variable in new_template_variables.items():
                         equation = equation.replace('||'+name+'||', template_variable.value)
 
                     # override carrier placeholder strings with units from carrier where applicable
                     units = template_type_loc_tech_param.parameter.units.replace('[[in_rate]]', rate_unit_in).replace('[[in_quantity]]', quantity_unit_in).replace('[[out_quantity]]', rate_unit_out).replace('[[out_rate]]', quantity_unit_out)
-                    value, rawValue  = convert_units_no_pipe(ureg, equation, units)
+                    value, rawValue = convert_units_no_pipe(ureg, equation, units)
                     Loc_Tech_Param.objects.create(
                         parameter=template_type_loc_tech_param.parameter,
                         loc_tech=loc_tech,
