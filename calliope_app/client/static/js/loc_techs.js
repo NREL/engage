@@ -634,7 +634,7 @@ function appendCategoryVariables(template_type_vars, category) {
         }
 
         if (categoryVariables[i].category == geoOutputs) {
-            $('#template_type_var_' + categoryVariables[i].id).prop("disabled",true);
+            //$('#template_type_var_' + categoryVariables[i].id).prop("disabled",true);
         }
 
         $('#template_type_var_' + categoryVariables[i].id).attr({
