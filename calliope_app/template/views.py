@@ -135,7 +135,7 @@ def update_template(request):
         template = {}
         model_uuid = escape(request.POST.get("model_uuid")) if request.POST.get("model_uuid") else False
         template_id = escape(request.POST.get("template_id")) if request.POST.get("template_id") else False
-        name = escape(request.POST["name"])
+        name = escape(request.POST.get("name"))
         template_type_id = escape(request.POST["template_type"])
         location_id = escape(request.POST["location"])
         varData = json.loads(request.POST["form_data"])
