@@ -9,7 +9,6 @@ from api.tasks import task_status
 from calliope_app.celery import app
 from geophires.v2 import GeophiresParams, Geophires
 
-
 class GeophiresTask(Task):
     """
     A celery task class for executing a geophires job.

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-06 17:20+0000\n"
+"POT-Creation-Date: 2023-12-28 18:34+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -216,6 +216,7 @@ msgstr "Nombre del nuevo escenario"
 #: client/templates/add_scenario.html:26
 #: client/templates/add_technology.html:26
 #: client/templates/scenario_constraints_json_form.html:157
+#: client/templates/scenarios_details.html:16
 #: client/templates/technology_essentials.html:26
 msgid "Name"
 msgstr "Nombre"
@@ -480,6 +481,7 @@ msgid "Quantity Unit"
 msgstr "Unidad de cantidad"
 
 #: client/templates/carriers.html:29 client/templates/new_carrier.html:111
+#: client/templates/scenarios_details.html:29
 #: client/templates/technology_essentials.html:83
 msgid "Description"
 msgstr "Descripción"
@@ -1146,17 +1148,13 @@ msgstr "Convertir Campos a JSON"
 msgid "Select a Scenario"
 msgstr "Seleccione un escenario"
 
-#: client/templates/scenario_settings.html:18
-msgid "Edit Scenario Name"
-msgstr "Editar Nombre del Escenario"
-
-#: client/templates/scenario_settings.html:46
-#: client/templates/scenario_settings.html:51
+#: client/templates/scenario_settings.html:25
+#: client/templates/scenario_settings.html:30
 #: client/templates/technology_parameters.html:132
 msgid "Row"
 msgstr "Fila"
 
-#: client/templates/scenario_settings.html:152
+#: client/templates/scenario_settings.html:131
 msgid "Delete Scenario"
 msgstr "Eliminar escenario"
 
@@ -1172,9 +1170,17 @@ msgstr "Pesos de clases de costos"
 msgid "Weighted Cost per"
 msgstr "Costo ponderado por"
 
-#: client/templates/scenarios.html:33
+#: client/templates/scenarios.html:68
 msgid "Oops, an error occurred"
 msgstr "Oops! Ha ocurrido un error"
+
+#: client/templates/scenarios.html:66
+msgid "Model Settings"
+msgstr "Configuraciones del modelo"
+
+#: client/templates/scenarios_details.html:10
+msgid "Scenario Details"
+msgstr "Detalles del escenario"
 
 #: client/templates/share.html:24 client/templates/share.html:25
 msgid "Select a model"
@@ -1395,6 +1401,9 @@ msgstr ""
 "Genera una serie temporal de datos del factor de capacidad eólica. "
 "Encuéntrelo e inspeccione en la página de series temporales, vinculada a "
 "continuación."
+
+#~ msgid "Edit Scenario Name"
+#~ msgstr "Editar Nombre del Escenario"
 
 #~ msgid "Raw Value"
 #~ msgstr "Valor bruto"

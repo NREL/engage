@@ -3,6 +3,7 @@ $( document ).ready(function() {
 
 	activate_import_btns();
 
+	// Take out comment for code review: This is important
 	// When the user clicks anywhere outside of the modal, close it
 	window.onclick = function(event) {
 	  if (event.target == $("#data-source-modal")[0]) {
@@ -55,6 +56,7 @@ function activate_import_btns() {
 	$('.pvwatts').on('click', function() {
 		$('#pvwatts_form').show();
 		$('#wtk_form').hide();
+		$('#modal_scenario_settings').hide();
         $('#scenario_constraints_json_form').hide();
         $('#scenario_weights_json_form').hide();
 		$("#data-source-modal").css('display', "block");
@@ -68,6 +70,7 @@ function activate_import_btns() {
 	$('.wtk').on('click', function() {
         $('#wtk_form').show();
 		$('#pvwatts_form').hide();
+        $('#modal_scenario_settings').hide();
         $('#scenario_constraints_json_form').hide();
         $('#scenario_weights_json_form').hide();
 		$("#data-source-modal").css('display', "block");

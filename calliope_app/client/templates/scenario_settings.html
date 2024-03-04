@@ -3,31 +3,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <div class="col-12">
+<style>
+	#scenario-delete {
+		margin-bottom: 10px;
+	}
+	.tooltip-text {
+		visibility: hidden;
+		position: absolute;
+		z-index: 1;
+		width: 400px;
+		color: white;
+		font-size: 12px;
+		background-color: #192733;
+		border-radius: 10px;
+		padding: 15px 10px 15px;
+		margin-left: 15px;
+	}
 
+	.text-sm:hover .tooltip-text {
+		visibility: visible;
+	}
+
+	.hover-text {
+		position: relative;
+		display: inline-block;
+		margin: 40px;
+		font-family: Arial;
+		text-align: center;
+	}
+
+</style>
 	<table id="settings_table" class="table table-hover table-sm">
 		<tbody>
-
-			<tr class="param_header table-default" data-param_id="scenario_name">
-				<td style="cursor:help" data-toggle="tooltip" data-placement="left" title="Scenario Name">
-					<span class="text-sm"><b>Scenario Name</b></span>
-				</td>
-				<td colspan="3">
-					<label id="scenario_name" class="scenario_name" rows="4"> {{scenario.name}} </label>
-				</td>
-				<td colspan="3">
-				<button id="edit-scenario-name" {% if not can_edit %}disabled{% endif %} type = "button" class = "btn btn-outline-primary btn-sm"> <i class="fas fa-edit"></i> {% trans "Edit Scenario Name" %} </button>
-				</td>
-			</tr> 
-
-			<tr class="param_header table-default" data-param_id="scenario_description">
-				<td style="cursor:help" data-toggle="tooltip" data-placement="left" title="Scenario Description">
-					<span class="text-sm"><b>Scenario Description</b></span>
-				</td>
-				<td colspan="4">
-					<textarea id="scenario_description" class="scenario_description" rows="2"> {{scenario.description}} </textarea>
-				</td>
-			</tr> 
-
 			{% for param in parameters %}
 
 				{% if param.run_parameter.can_evolve %}
@@ -35,12 +42,12 @@
 					<tr class="param_header table-default" data-param_id="{{ param.run_parameter.id }}">
 
 						<!-- Parameter Names -->
-						{% ifchanged param.run_parameter.pretty_name %}
-							<td style="cursor:help" data-toggle="tooltip" data-placement="right" title="{{ param.run_parameter.description }}">
-								<span class="text-sm"><b>{{ param.run_parameter.pretty_name }}</b></span>
+						{% ifchanged param.run_parameter.pretty_name %}						  
+						  	<td style="cursor:help;" class="text-sm"><b>{{ param.run_parameter.pretty_name }}</b>
+								<span class="tooltip-text">{{ param.run_parameter.description }}</span>
 							</td>
-							<td style="cursor:help" data-toggle="tooltip" data-placement="right" title="{{ param.run_parameter.description }}">
-								<span class="text-sm">{{ param.run_parameter.root }}.{{ param.run_parameter.name }}</span>
+							<td style="cursor:help;" class="text-sm">{{ param.run_parameter.root }}.{{ param.run_parameter.name }}
+								<span class="tooltip-text">{{ param.run_parameter.description }}</span>
 							</td>
 							<td>
 								<button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-default btn-sm transparent run-parameter-value-add"><i class="fas fa-plus"></i> {% trans "Row" %}</button>
@@ -66,11 +73,10 @@
 								{% endfor %}
 							</select>
 							{% else %}
-							<textarea rows=1 {% if not can_edit %}disabled{% endif %} style="text-align:left;" class="form-control run-parameter-value" value="{{ param.value }}" name="edit[value][{{ param.id }}]" data-toggle="tooltip" data-placement="left" title="{{ param.value }}">{{ param.value }}</textarea>
+							<textarea rows=1 {% if not can_edit %}disabled{% endif %} style="text-align:left;" class="form-control run-parameter-value" value="{{ param.value }}" name="edit[value][{{ param.id }}]" data-toggle="tooltip" data-placement="left">{{ param.value }}</textarea>
 							{% endif %}
 							<input {% if not can_edit %}disabled{% endif %} style="display: none" class="check_delete" type="checkbox" name="delete[{{ param.id }}]">
 						</td>
-
                         <!-- Scenarios settings run parameter ids hardcoded for modals id = 25 is the group constraints modal --> 
                         {% if param.run_parameter.id == 25 %}
                             <td> 
@@ -80,7 +86,6 @@
                             <td></td>
                         {% endif %}
 					</tr>
-
 					{% ifchanged param.run_parameter.pretty_name %}
 						<!-- Parameter ADD Row For Evolving Parameters -->
 						<tr class="param_header_add table-warning" data-param_id="{{ param.run_parameter.id }}" style="display: none" >
@@ -89,7 +94,6 @@
 							<td>
 								<input {% if not can_edit %}disabled{% endif %} type="number" class="form-control add-run-parameter-year" placeholder="YYYY" name="add[{{ param.run_parameter_id }}][years][]">
 							</td>
-
 							<!-- Parameter Values -->
 							<td colspan=2 class="head_value centered" data-param_id="{{ param.run_parameter.id }}">
 								{% if param.run_parameter.choices %}
@@ -111,13 +115,15 @@
 					<tr class="param_header table-default" data-param_id="{{ param.run_parameter.id }}">
 
 						<!-- Parameter Names -->
-						<td style="cursor:help" data-toggle="tooltip" data-placement="right" title="{{ param.run_parameter.description }}">
-							<span class="text-sm"><b>{{ param.run_parameter.pretty_name }}</b></span>
+						<td style="cursor:help;" class="text-sm">
+							<b>{{ param.run_parameter.pretty_name }}</b>
+							<span class="tooltip-text">{{ param.run_parameter.description }}</span>
 						</td>
-						<td style="cursor:help" data-toggle="tooltip" data-placement="right" title="{{ param.run_parameter.description }}">
-							<span class="text-sm">{{ param.run_parameter.root }}.{{ param.run_parameter.name }}</span>
+						<td style="cursor:help;" class="text-sm">
+							{{ param.run_parameter.root }}.{{ param.run_parameter.name }}
+							<span class="tooltip-text">{{ param.run_parameter.description }}</span>
 						</td>
-						<td colspan=2></td>
+												<td colspan=2></td>
 
 						<!-- Parameter Values -->
 						<td colspan=2 class="head_value centered" data-param_id="{{ param.run_parameter.id }}">
@@ -128,7 +134,7 @@
 								{% endfor %}
 							</select>
 							{% else %}
-							<textarea rows=1 {% if not can_edit %}disabled{% endif %} style="text-align:left;" class="form-control run-parameter-value" value="{{ param.value }}" name="edit[value][{{ param.id }}]" data-toggle="tooltip" data-placement="left" title="{{ param.value }}">{{ param.value }}</textarea>
+							<textarea rows=1 {% if not can_edit %}disabled{% endif %} style="text-align:left;" class="form-control run-parameter-value" value="{{ param.value }}" name="edit[value][{{ param.id }}]" data-toggle="tooltip" data-placement="left">{{ param.value }}</textarea>
 							{% endif %}
 						</td>
 
@@ -143,7 +149,6 @@
 					</tr>
 				{% endif %}
 			{% endfor %}
-			
 		</tbody>
 	</table>
 </div>
