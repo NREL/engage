@@ -2,7 +2,7 @@
 var params = {'id': job_meta_id};
 
 $.getJSON('/geophires/outputs/', params, function(data) {
-  var plant = data["plant"];
+  var template_type = data["template_type"];
   var pwells = data["pwells"];
   var depths = data["depths"];
   var plottext = [];
@@ -39,7 +39,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
     }
   ];
   var layout1 = {
-    'title': plant + ' Subsurface Cost-to-Thermal Capacity Relation',
+    'title': ' Subsurface Cost-to-Thermal Capacity Relation',
     'xaxis': {
       'title': 'Avg. Thermal Capacity (MWth)'
     },
@@ -76,7 +76,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
     }
   ];
   var layout2 = {
-    'title': plant + ' Surface Cost-to-Electric Capacity Relation',
+    'title': ' Surface Cost-to-Electric Capacity Relation',
     'xaxis': {
       'title': 'Avg. Electric Capacity (MWe)'
     },
@@ -113,7 +113,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
     },
   ];
   var layout3 = {
-    'title': plant + ' Subsurface O&M Cost-to-Thermal Capacity Relation',
+    'title': ' Subsurface O&M Cost-to-Thermal Capacity Relation',
     'xaxis': {
       'title': 'Avg. Thermal Capacity (MWth)'
     },
@@ -150,7 +150,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
     }
   ];
   var layout4 = {
-    'title': plant + ' Surface O&M Cost-to-Electric Capacity Relation',
+    'title': ' Surface O&M Cost-to-Electric Capacity Relation',
     'xaxis': {
       'title': 'Avg. Electric Capacity (MWe)'
     },

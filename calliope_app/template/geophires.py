@@ -156,7 +156,9 @@ def geophires_request(request):
         job_meta = Job_Meta.objects.filter(inputs=input_params).first()
         if job_meta is None:
             payload["jobPreexisting"] = False
-            job_meta = Job_Meta.objects.create(inputs=input_params, status=task_status.RUNNING, type="geophires")
+            job_input_params = input_params
+            job_input_params["template_type"] = template_type.name
+            job_meta = Job_Meta.objects.create(inputs=job_input_params, status=task_status.RUNNING, type="geophires")
             async_result = run_geophires.apply_async(
                 kwargs={
                     "job_meta_id": job_meta.id,
