@@ -219,12 +219,15 @@ def geophires_outputs(request):
     df = pd.read_csv(output_file)
 
     # TODO update outputs to be these, np.array() for all of them?
-    # max_electricity_cap	
-    # surface_cost_to_electric_slope	
-    # surface_om_cost_to_electric_slope	
-    # max_heat_cap	
-    # subsurface_cost_to_thermal_slope	
-    # subsurface_om_cost_to_thermal_slope
+    # max_elec_gen
+    # elec_cap_vs_surface_cost
+    # elec_cap_vs_surface_o&m_cost
+    # max_avg_therm_ext
+    # therm_cap_vs_reservoir_cost
+    # therm_cap_vs_reservoir_om_cost
+    # elec_prod_to_therm_ext_ratio
+    # heat_prod_to_therm_ext_ratio
+    # therm_ext_to_therm_ext_ratio
     
     thermal_capacity = np.array(df["Average Reservoir Heat Extraction (MWth)"])
     electric_capacity = np.array(df["Average Total Electricity Generation (MWe)"])
