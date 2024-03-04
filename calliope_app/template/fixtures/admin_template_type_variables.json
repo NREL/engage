@@ -156,7 +156,7 @@
         "pk": 10,
         "model": "template.template_type_variable",
         "fields": {
-            "name": "Number_of_segments",
+            "name": "number_of_segments",
             "pretty_name": "Number of Subsurface Segments",
             "template_type": 1,
             "units": null,
@@ -292,7 +292,7 @@
         "pk": 18,
         "model": "template.template_type_variable",
         "fields": {
-            "name": "Fracture_shape",
+            "name": "fracture_shape",
             "pretty_name": "Shape of Fracture",
             "template_type": 1,
             "units": null,
@@ -309,7 +309,7 @@
         "pk": 19,
         "model": "template.template_type_variable",
         "fields": {
-            "name": "Fracture_feight",
+            "name": "fracture_height",
             "pretty_name": "Fracture Height",
             "template_type": 1,
             "units": "m",
@@ -326,7 +326,7 @@
         "pk": 20,
         "model": "template.template_type_variable",
         "fields": {
-            "name": "Number_of_fractures",
+            "name": "number_of_fractures",
             "pretty_name": "Number of Fractures",
             "template_type": 1,
             "units": null,
@@ -343,7 +343,7 @@
         "pk": 21,
         "model": "template.template_type_variable",
         "fields": {
-            "name": "Well_drilling_cost_correlation",
+            "name": "well_drilling_cost_correlation",
             "pretty_name": "Well Drilling Cost Correlation",
             "template_type": 1,
             "units": null,

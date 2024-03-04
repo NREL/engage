@@ -337,6 +337,8 @@ function requestGeophires() {
         templateVars[name] = value;
     }
 
+    templateVars.templateType = $('#templateType').val();
+
     $("#loadingGeophires").show();
     $('#geophiresError').attr("hidden", true);
     $.ajax({

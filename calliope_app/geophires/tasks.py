@@ -45,13 +45,11 @@ class GeophiresTask(Task):
     ime_limit=600,
     ignore_result=True
 )
-def run_geophires(job_meta_id, plant, params, *args, **kwargs):
+def run_geophires(job_meta_id, params, *args, **kwargs):
     """Run geophires task
 
     Parameters
     ----------
-    plant : str
-        The plant type
     params : dict
         The geophires parameters
     """
@@ -64,13 +62,12 @@ def run_geophires(job_meta_id, plant, params, *args, **kwargs):
     input_params = GeophiresParams(**params)
 
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    result_file = os.path.join(settings.DATA_STORAGE, "geophires", f"{job_meta_id}__{plant}__{timestamp}.csv")
+    result_file = os.path.join(settings.DATA_STORAGE, "geophires", f"{job_meta_id}__{timestamp}.csv")
 
-    geophiers = Geophires(plant)
+    geophiers = Geophires(params) #possibly remove since this is happening a level up now?
     output_params, output_file = geophiers.run(input_params=input_params, output_file=result_file)
 
     return {
-        "plant": plant,
         "output_params": output_params,
         "output_file": output_file
     }
