@@ -1,308 +1,563 @@
 [
-  {
-    "model": "template.template_type_variable",
-    "pk": 1,
-    "fields": {
-      "name": "reservoir_heat_capacity",
-      "pretty_name": "Reservoir Heat Capacity",
-      "template_type": 1,
-      "units": "J/kg/K",
-      "default_value": "774",
-      "min": null,
-      "max": null,
-      "description": "Constant and uniform reservoir rock heat capacity. The heat capacity of the geothermal fluid. This parameter determines how much energy can be stored in the fluid as its temperature changes.",
-      "timeseries_enabled": null,
-      "category": "GEOPHIRES Inputs",
-      "choices": "[]"
+    {
+        "pk": 1,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "reservoir_heat_capacity",
+            "pretty_name": "Reservoir Heat Capacity",
+            "template_type": 1,
+            "units": "J/kg/K",
+            "default_value": 774.0,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 2,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "reservoir_density",
+            "pretty_name": "Reservoir Density",
+            "template_type": 1,
+            "units": "kg/m3",
+            "default_value": 1463.0,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 3,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "reservoir_thermal_conductivity",
+            "pretty_name": "Reservoir Thermal Conductivity",
+            "template_type": 1,
+            "units": "W/m/K",
+            "default_value": 3.4,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 4,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "min_reservoir_depth",
+            "pretty_name": "Reservoir Depth Minimum",
+            "template_type": 1,
+            "units": "km",
+            "default_value": 1.0,
+            "min": 1.0,
+            "max": 6.0,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 5,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "max_reservoir_depth",
+            "pretty_name": "Reservoir Depth Maximum",
+            "template_type": 1,
+            "units": "km",
+            "default_value": 6.0,
+            "min": 1.0,
+            "max": 6.0,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 6,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "min_production_wells",
+            "pretty_name": "Number of Production Wells Minimum",
+            "template_type": 1,
+            "units": null,
+            "default_value": 1.0,
+            "min": 1.0,
+            "max": 6.0,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 7,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "max_production_wells",
+            "pretty_name": "Number of Production Wells Maximum",
+            "template_type": 1,
+            "units": null,
+            "default_value": 6.0,
+            "min": 1.0,
+            "max": 6.0,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 8,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "min_injection_wells",
+            "pretty_name": "Number of Injection Wells Minimum",
+            "template_type": 1,
+            "units": null,
+            "default_value": 1.0,
+            "min": 1.0,
+            "max": 6.0,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 9,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "max_injection_wells",
+            "pretty_name": "Number of Injection Wells Maximum",
+            "template_type": 1,
+            "units": null,
+            "default_value": 6.0,
+            "min": 1.0,
+            "max": 6.0,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 10,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "number_of_segments",
+            "pretty_name": "Number of Subsurface Segments",
+            "template_type": 1,
+            "units": null,
+            "default_value": 4.0,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 11,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "gradient_1",
+            "pretty_name": "Temperature Gradient #1",
+            "template_type": 1,
+            "units": "C/km",
+            "default_value": 55.0,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 12,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "thickness_grad1",
+            "pretty_name": "Gradient Segment #1 Thickness",
+            "template_type": 1,
+            "units": "km",
+            "default_value": 1.0,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 13,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "gradient_2",
+            "pretty_name": "Temperature Gradient #2",
+            "template_type": 1,
+            "units": "C/km",
+            "default_value": 55.0,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 14,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "thickness_grad2",
+            "pretty_name": "Gradient Segment #2 Thickness",
+            "template_type": 1,
+            "units": "km",
+            "default_value": 1.0,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 15,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "gradient_3",
+            "pretty_name": "Temperature Gradient #3",
+            "template_type": 1,
+            "units": "C/km",
+            "default_value": 55.0,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 16,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "thickness_grad3",
+            "pretty_name": "Gradient Segment #3 Thickness",
+            "template_type": 1,
+            "units": "km",
+            "default_value": 1.0,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 17,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "gradient_4",
+            "pretty_name": "Temperature Gradient #4",
+            "template_type": 1,
+            "units": "C/km",
+            "default_value": 55.0,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 18,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "fracture_shape",
+            "pretty_name": "Shape of Fracture",
+            "template_type": 1,
+            "units": null,
+            "default_value": 3.0,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 19,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "fracture_height",
+            "pretty_name": "Fracture Height",
+            "template_type": 1,
+            "units": "m",
+            "default_value": 600.0,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 20,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "number_of_fractures",
+            "pretty_name": "Number of Fractures",
+            "template_type": 1,
+            "units": null,
+            "default_value": 20.0,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 21,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "well_drilling_cost_correlation",
+            "pretty_name": "Well Drilling Cost Correlation",
+            "template_type": 1,
+            "units": null,
+            "default_value": 10.0,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": "{'Vertical Small Diameter, Baseline': 1}, {'Vertical Small Diameter, Intermediate 1': 2}, {'Vertical Small Diameter, Intermediate 2': 3}, {'Vertical Small Diameter, Ideal': 4}, {'Deviated Small Diameter, Baseline': 5}, {'Deviated Small Diameter, Intermediate 1': 6}, {'Deviated Small Diameter, Intermediate 2': 7}, {'Deviated Small Diameter, Ideal': 8}, {'Vertical Large Diameter, Baseline': 9}, {'Vertical Large Diameter, Intermediate 1': 10}, {'Vertical Large Diameter, Intermediate 2': 11}, {'Vertical Large Diameter, Ideal': 12}, {'Deviated Large Diameter, Baseline': 13}, {'Deviated Large Diameter, Intermediate 1': 14}, {'Deviated Large Diameter, Intermediate 2': 15}, {'Deviated Large Diameter, Ideal': 16}, {'Simple - user specified cost per meter': 17}"
+        }
+    },
+    {
+        "pk": 22,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "target_prod_temp_min",
+            "pretty_name": "Target Production Temperature Min",
+            "template_type": 1,
+            "units": "C",
+            "default_value": 150.0,
+            "min": 40.0,
+            "max": 500.0,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 23,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "target_prod_temp_max",
+            "pretty_name": "Target Production Temperature Max",
+            "template_type": 1,
+            "units": "C",
+            "default_value": 250.0,
+            "min": 40.0,
+            "max": 500.0,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 24,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "lifetime",
+            "pretty_name": "Project Lifetime",
+            "template_type": 1,
+            "units": "Year",
+            "default_value": 30.0,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 25,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "max_elec_gen",
+            "pretty_name": "Maximum Electricity Capacity",
+            "template_type": 1,
+            "units": "MW",
+            "default_value": null,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Outputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 26,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "elec_cap_vs_surface_cost",
+            "pretty_name": "Surface Cost to Electric Slope",
+            "template_type": 1,
+            "units": "$/kW",
+            "default_value": null,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Outputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 27,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "elec_cap_vs_surface_o&m_cost",
+            "pretty_name": "Surface O&M Cost to Electric Slope",
+            "template_type": 1,
+            "units": "$/kW",
+            "default_value": null,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Outputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 28,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "max_avg_therm_ext",
+            "pretty_name": "Maximum Reservoir Heat Extraction",
+            "template_type": 1,
+            "units": "MW",
+            "default_value": null,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Outputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 29,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "therm_cap_vs_reservoir_cost",
+            "pretty_name": "Subsurface Cost to Thermal Slope",
+            "template_type": 1,
+            "units": "$/kW",
+            "default_value": null,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Outputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 30,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "therm_cap_vs_reservoir_om_cost",
+            "pretty_name": "Subsurface O&M Cost to Thermal Slope",
+            "template_type": 1,
+            "units": "$/kW",
+            "default_value": null,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Outputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 31,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "elec_prod_to_therm_ext_ratio",
+            "pretty_name": "Themal to Electric Conversion Ratio",
+            "template_type": 1,
+            "units": null,
+            "default_value": null,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Outputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 32,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "heat_prod_to_therm_ext_ratio",
+            "pretty_name": "Themal to Heat Conversion Ratio",
+            "template_type": 1,
+            "units": null,
+            "default_value": null,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Outputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 33,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "therm_ext_to_therm_ext_ratio",
+            "pretty_name": "Themal to Thermal Conversion Ratio",
+            "template_type": 1,
+            "units": null,
+            "default_value": null,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Outputs",
+            "choices": null
+        }
     }
-  },
-  {
-    "model": "template.template_type_variable",
-    "pk": 4,
-    "fields": {
-      "name": "reservoir_density",
-      "pretty_name": "Reservoir Density",
-      "template_type": 1,
-      "units": "kg/m3",
-      "default_value": "1463",
-      "min": null,
-      "max": null,
-      "description": "Constant and uniform reservoir rock density. The density of the geothermal fluid in the reservoir. This parameter affects the fluid's buoyancy and flow behavior, which can in turn affect the overall performance of the geothermal system.",
-      "timeseries_enabled": null,
-      "category": "GEOPHIRES Inputs",
-      "choices": "[]"
-    }
-  },
-  {
-    "model": "template.template_type_variable",
-    "pk": 7,
-    "fields": {
-      "name": "reservoir_thermal_conductivity",
-      "pretty_name": "Reservoir Thermal Conductivity",
-      "template_type": 1,
-      "units": "W/m/K",
-      "default_value": "3.4",
-      "min": null,
-      "max": null,
-      "description": "Constant and uniform reservoir rock thermal conductivity. The thermal conductivity of the geothermal rock or other material surrounding the reservoir. This parameter affects how efficiently heat can be transferred from the hot fluid in the reservoir to the surrounding rock, which can impact the overall energy output of the system.",
-      "timeseries_enabled": null,
-      "category": "GEOPHIRES Inputs",
-      "choices": "[]"
-    }
-  },
-  {
-    "model": "template.template_type_variable",
-    "pk": 8,
-    "fields": {
-      "name": "min_reservoir_depth",
-      "pretty_name": "Reservoir Depth Minimum",
-      "template_type": 1,
-      "units": "km",
-      "default_value": "1",
-      "min": 0.5,
-      "max": 5,
-      "description": "This input variable specifies the maximum depth of the geothermal reservoir.",
-      "timeseries_enabled": null,
-      "category": "GEOPHIRES Inputs",
-      "choices": "[]"
-    }
-  },
-  {
-    "model": "template.template_type_variable",
-    "pk": 9,
-    "fields": {
-      "name": "max_reservoir_depth",
-      "pretty_name": "Reservoir Depth Maximum",
-      "template_type": 1,
-      "units": "km",
-      "default_value": "5",
-      "min": null,
-      "max": null,
-      "description": "This input variable specifies the maximum depth of the geothermal reservoir in kilometers.",
-      "timeseries_enabled": null,
-      "category": "GEOPHIRES Inputs",
-      "choices": "[]"
-    }
-  },
-  {
-    "model": "template.template_type_variable",
-    "pk": 10,
-    "fields": {
-      "name": "min_production_wells",
-      "pretty_name": "Number of Production Wells Minimum",
-      "template_type": 1,
-      "units": "NA",
-      "default_value": "1",
-      "min": 1,
-      "max": 6,
-      "description": "This input variable specifies the minimum number of (identical) wells that can be used to extract fluid from the geothermal reservoir.",
-      "timeseries_enabled": null,
-      "category": "GEOPHIRES Inputs",
-      "choices": "[]"
-    }
-  },
-  {
-    "model": "template.template_type_variable",
-    "pk": 11,
-    "fields": {
-      "name": "max_production_wells",
-      "pretty_name": "Number of Production Wells Maximum",
-      "template_type": 1,
-      "units": "NA",
-      "default_value": "6",
-      "min": 1,
-      "max": 6,
-      "description": "This input variable specifies the maximum number of (identical) wells that can be used to extract fluid from the geothermal reservoir. Production wells are used to collect the hot fluid from the reservoir and deliver it to the geothermal power plant.",
-      "timeseries_enabled": null,
-      "category": "GEOPHIRES Inputs",
-      "choices": "[]"
-    }
-  },
-  {
-    "model": "template.template_type_variable",
-    "pk": 12,
-    "fields": {
-      "name": "min_injection_wells",
-      "pretty_name": "Number of Injection Wells Minimum",
-      "template_type": 1,
-      "units": "NA",
-      "default_value": "2",
-      "min": 1,
-      "max": 6,
-      "description": "This input variable specifies the minimum number of (identical) wells that can be used to inject fluid into the geothermal reservoir.",
-      "timeseries_enabled": null,
-      "category": "GEOPHIRES Inputs",
-      "choices": "[]"
-    }
-  },
-  {
-    "model": "template.template_type_variable",
-    "pk": 13,
-    "fields": {
-      "name": "max_injection_wells",
-      "pretty_name": "Number of Injection Wells Maximum",
-      "template_type": 1,
-      "units": "NA",
-      "default_value": "2",
-      "min": 1,
-      "max": 6,
-      "description": "This input variable specifies the maximum number of (identical) wells that can be used to inject fluid into the geothermal reservoir. Injection wells are used to deliver cooler water or other fluid to the reservoir, which then heats up and can be extracted through production wells.",
-      "timeseries_enabled": null,
-      "category": "GEOPHIRES Inputs",
-      "choices": "[]"
-    }
-  },
-  {
-    "model": "template.template_type_variable",
-    "pk": 14,
-    "fields": {
-      "name": "gradient",
-      "pretty_name": "Gradient",
-      "template_type": 1,
-      "units": "C/km",
-      "default_value": "65",
-      "min": null,
-      "max": null,
-      "description": "The gradient refers to the rate at which the temperature of the geothermal reservoir rock segment changes with depth. A higher gradient indicates a more rapid increase in temperature with depth, which can potentially yield higher temperatures and, thus, more energy.",
-      "timeseries_enabled": null,
-      "category": "GEOPHIRES Inputs",
-      "choices": "[]"
-    }
-  },
-  {
-    "model": "template.template_type_variable",
-    "pk": 22,
-    "fields": {
-      "name": "max_electricity_cap",
-      "pretty_name": "Maximum Electricity Capacity",
-      "template_type": 1,
-      "units": "MW",
-      "default_value": null,
-      "min": null,
-      "max": null,
-      "description": "",
-      "timeseries_enabled": null,
-      "category": "GEOPHIRES Outputs",
-      "choices": "[]"
-    }
-  },
-  {
-    "model": "template.template_type_variable",
-    "pk": 23,
-    "fields": {
-      "name": "surface_plant_efficiency",
-      "pretty_name": "Surface Plant Efficiency",
-      "template_type": 1,
-      "units": "%",
-      "default_value": null,
-      "min": null,
-      "max": null,
-      "description": "",
-      "timeseries_enabled": null,
-      "category": "GEOPHIRES Outputs",
-      "choices": "[]"
-    }
-  },
-  {
-    "model": "template.template_type_variable",
-    "pk": 24,
-    "fields": {
-      "name": "surface_cost_to_electric_slope",
-      "pretty_name": "Surface Cost to Electric Slope",
-      "template_type": 1,
-      "units": "$/MW",
-      "default_value": null,
-      "min": null,
-      "max": null,
-      "description": "",
-      "timeseries_enabled": null,
-      "category": "GEOPHIRES Outputs",
-      "choices": "[]"
-    }
-  },
-  {
-    "model": "template.template_type_variable",
-    "pk": 25,
-    "fields": {
-      "name": "surface_om_cost_to_electric_slope",
-      "pretty_name": "Surface O&M Cost to Electric Slope",
-      "template_type": 1,
-      "units": "$/MW",
-      "default_value": null,
-      "min": null,
-      "max": null,
-      "description": "",
-      "timeseries_enabled": null,
-      "category": "GEOPHIRES Outputs",
-      "choices": "[]"
-    }
-  },
-  {
-    "model": "template.template_type_variable",
-    "pk": 26,
-    "fields": {
-      "name": "max_heat_cap",
-      "pretty_name": "Maximum Heat Capacity",
-      "template_type": 1,
-      "units": "MW",
-      "default_value": null,
-      "min": null,
-      "max": null,
-      "description": "",
-      "timeseries_enabled": null,
-      "category": "GEOPHIRES Outputs",
-      "choices": "[]"
-    }
-  },
-  {
-    "model": "template.template_type_variable",
-    "pk": 27,
-    "fields": {
-      "name": "subsurface_cost_to_thermal_slope",
-      "pretty_name": "Subsurface Cost to Thermal Slope",
-      "template_type": 1,
-      "units": "$/MW",
-      "default_value": null,
-      "min": null,
-      "max": null,
-      "description": "",
-      "timeseries_enabled": null,
-      "category": "GEOPHIRES Outputs",
-      "choices": "[]"
-    }
-  },
-  {
-    "model": "template.template_type_variable",
-    "pk": 28,
-    "fields": {
-      "name": "subsurface_om_cost_to_thermal_slope",
-      "pretty_name": "Subsurface O&M  Cost to Thermal Slope",
-      "template_type": 1,
-      "units": "$/MW",
-      "default_value": null,
-      "min": null,
-      "max": null,
-      "description": "",
-      "timeseries_enabled": null,
-      "category": "GEOPHIRES Outputs",
-      "choices": "[]"
-    }
-  },
-  {
-    "model": "template.template_type_variable",
-    "pk": 30,
-    "fields": {
-      "name": "lifetime",
-      "pretty_name": "Lifetime",
-      "template_type": 1,
-      "units": "years",
-      "default_value": null,
-      "min": null,
-      "max": null,
-      "description": "",
-      "timeseries_enabled": null,
-      "category": "GEOPHIRES Outputs",
-      "choices": "[]"
-    }
-  }
 ]

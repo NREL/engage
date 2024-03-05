@@ -14,6 +14,7 @@ from api.models.configuration import Job_Meta
 from geophires.tasks import run_geophires, task_status
 from geophires.v2 import objective, curve_fit
 from taskmeta.models import CeleryTask
+from template.models import Template_Type
 
 logger = logging.getLogger(__name__)
 
@@ -65,71 +66,103 @@ def geophires_request_status(request):
 @csrf_protect
 def geophires_request(request):
     """
-    Parameters:
-    reservoir_heat_capacity: required
-    reservoir_density: required
-    reservoir_thermal_conductivity: required
-    gradient: required
-    min_reservoir_depth: required
-    max_reservoir_depth: required
-    min_production_wells: required
-    max_production_wells: required
-    min_injection_wells: required
-    max_injection_wells: required
-
     Returns (json): Action Confirmation
 
     Example:
     POST: /geophires/
     """
     formData = json.loads(request.POST["form_data"])
-
+    template_type = Template_Type.objects.filter(id=formData["templateType"]).first()
     payload = {"message": "starting runnning geophires"}
 
-    #seralize data
+    # seralize data
     input_params = {
+        # hardcoded
+        "max_temperature": 400,
+        "print_output_to_console": 0,
+
+        # floats
         "reservoir_heat_capacity": float(formData["reservoir_heat_capacity"]),
         "reservoir_density": float(formData["reservoir_density"]),
         "reservoir_thermal_conductivity": float(formData["reservoir_thermal_conductivity"]),
-        "gradient": float(formData["gradient"]),
-
-        # TODO: Step sizes are hardcoded, need to refactor later
-        "min_temperature": 400,
-        "max_temperature": 400,
-        "temperature_step": 25.0,
-
         "min_reservoir_depth": float(formData["min_reservoir_depth"]),
         "max_reservoir_depth": float(formData["max_reservoir_depth"]),
-        "reservoir_depth_step": 0.1,
+        "number_of_segments": float(formData["number_of_segments"]),
+        "gradient_1": float(formData["gradient_1"]),
+        "gradient_2": float(formData["gradient_2"]),
+        "gradient_3": float(formData["gradient_3"]),
+        "gradient_4": float(formData["gradient_4"]),
+        "fracture_shape": float(formData["fracture_shape"]),
+        "fracture_height": float(formData["fracture_height"]),
+        "number_of_fractures": float(formData["number_of_fractures"]),
+        "well_drilling_cost_correlation": float(formData["well_drilling_cost_correlation"]),
+        "target_prod_temp_min": float(formData["target_prod_temp_min"]),
+        "target_prod_temp_max": float(formData["target_prod_temp_max"]),
+        "lifetime": float(formData["lifetime"]),
+        "production_well_diameter": float(formData["production_well_diameter"]),
+        "injection_well_diameter": float(formData["injection_well_diameter"]),
 
+        # ints
         "min_production_wells": int(formData["min_production_wells"]),
-        "max_production_wells": int(formData["max_production_wells"]),
-        "production_wells_step": 1,
-
+        "min_production_wells": int(formData["min_production_wells"]),
         "min_injection_wells": int(formData["min_injection_wells"]),
-        "max_injection_wells": int(formData["max_injection_wells"]),
-        "injection_wells_step": 1
+        "min_injection_wells": int(formData["min_injection_wells"]),
+
     }
 
-    if None in (formData["reservoir_heat_capacity"], formData["reservoir_density"], formData["reservoir_thermal_conductivity"], formData["gradient"],
-        formData["min_reservoir_depth"], formData["max_reservoir_depth"], formData["min_production_wells"],
-        formData["max_production_wells"], formData["min_injection_wells"], formData["max_injection_wells"]):
+    # Template based params
+    if template_type and template_type.name == "EGS_chp":
+        formData["end_use_option"] = 31
+        formData["injection_temperature"] = 50
+        formData["reservoir_model"] = 3
+        formData["drawdown_parameter"] = 0.00002
+        formData["circulation_pump_efficiency"] = 0.00002
+        formData["reservoir_volume_option"] = 1
+        formData["power_plant_type"] = 1
+
+    if None in (formData["reservoir_heat_capacity"],
+        formData["reservoir_density"],
+        formData["reservoir_thermal_conductivity"],
+        formData["min_reservoir_depth"], 
+        formData["max_reservoir_depth"], 
+        formData["number_of_segments"], 
+        formData["gradient_1"],
+        formData["gradient_2"],
+        formData["gradient_3"],
+        formData["gradient_4"],
+        formData["fracture_shape"],
+        formData["fracture_height"],
+        formData["number_of_fractures"],
+        formData["well_drilling_cost_correlation"],
+        formData["target_prod_temp_min"],
+        formData["target_prod_temp_max"],  
+        formData["lifetime"],   
+        formData["production_well_diameter"],   
+        formData["injection_well_diameter"],     
+        formData["min_production_wells"],
+        formData["max_production_wells"], 
+        formData["min_injection_wells"], 
+        formData["max_injection_wells"],
+        formData["end_use_option"],
+        formData["injection_temperature"],
+        formData["reservoir_model"],
+        formData["drawdown_parameter"],
+        formData["circulation_pump_efficiency"],
+        formData["reservoir_volume_option"],
+        formData["power_plant_type"]):
         raise ValidationError(f"Error: Required field not provided for GEOPHIRES.")
 
     try:
-        inputs = {
-            "input_plant": "binary_subcritical",
-            "input_params": input_params
-        }
-        job_meta = Job_Meta.objects.filter(inputs=inputs).first()
+        job_meta = Job_Meta.objects.filter(inputs=input_params).first()
         if job_meta is None:
             payload["jobPreexisting"] = False
-            job_meta = Job_Meta.objects.create(inputs=inputs, status=task_status.RUNNING, type="geophires")
+            job_input_params = input_params
+            job_input_params["template_type"] = template_type.name
+            job_meta = Job_Meta.objects.create(inputs=job_input_params, status=task_status.RUNNING, type="geophires")
             async_result = run_geophires.apply_async(
                 kwargs={
                     "job_meta_id": job_meta.id,
-                    "plant": inputs["input_plant"],
-                    "params": inputs["input_params"],
+                    "params": input_params,
                 }
             )
             celery_task = CeleryTask.objects.get(task_id=async_result.id)
@@ -180,11 +213,22 @@ def geophires_outputs(request):
     job_meta_id = request.GET.get('id')
     job_meta = Job_Meta.objects.get(id=job_meta_id)
 
-    plant = job_meta.outputs["plant"]
     output_params = job_meta.outputs["output_params"]
     output_file = job_meta.outputs["output_file"]
 
     df = pd.read_csv(output_file)
+
+    # TODO update outputs to be these, np.array() for all of them?
+    # max_elec_gen
+    # elec_cap_vs_surface_cost
+    # elec_cap_vs_surface_o&m_cost
+    # max_avg_therm_ext
+    # therm_cap_vs_reservoir_cost
+    # therm_cap_vs_reservoir_om_cost
+    # elec_prod_to_therm_ext_ratio
+    # heat_prod_to_therm_ext_ratio
+    # therm_ext_to_therm_ext_ratio
+    
     thermal_capacity = np.array(df["Average Reservoir Heat Extraction (MWth)"])
     electric_capacity = np.array(df["Average Total Electricity Generation (MWe)"])
     subsurface_cost = np.array((df["Wellfield Cost ($M)"] + df["Field Gathering System Cost ($M)"]))
@@ -241,9 +285,7 @@ def geophires_outputs(request):
     label_b4        = f"y={a4:.4f}x+{np.min(b4_values):.4f}" if np.min(b4_values) > 0 else f"y={a4:.4f}x{np.min(b4_values):.4f}"
     label_b4        = f"<br><br><span>{label_b4}</span><br><span style='font-size: 9px'>{note}</span>"
 
-    pretty_plant = plant.replace("_", " ").title()
     outputs = {
-        "plant": pretty_plant,
         "params": output_params,
         "pwells": [int(i) for i in  production_wells],
         "depths": depths.tolist(),
