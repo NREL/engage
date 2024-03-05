@@ -18,7 +18,7 @@ from scipy.optimize import curve_fit
 from taskmeta.models import CeleryTask
 from geophires_x_client import GeophiresXClient
 import matplotlib.pyplot as plt
-
+from geophires.utils import fit_linear_model, fit_lower_bound
 logger = logging.getLogger(__name__)
 
 
@@ -272,6 +272,7 @@ def geophires_outputs(request):
     a1, b1          = popt
     x1_line         = np.asarray([np.min(x1), np.max(x1)])
     b1_values       = y1 - np.multiply(a1, x1)
+    # Change this line to fit_lower_bound
     lower_b1_line   = objective(x1_line, a1, np.min(b1_values))
     label_b1        = f"y={a1:.4f}x+{np.min(b1_values):.4f}" if np.min(b1_values) > 0 else f"y={a1:.4f}x{np.min(b1_values):.4f}"
     label_b1        = f"<br><br><span>{label_b1}</span><br><span style='font-size: 9px'>{note}</span>"
@@ -283,6 +284,7 @@ def geophires_outputs(request):
     a2, b2          = popt
     x2_line         = np.asarray([np.min(x2), np.max(x2)])
     b2_values       = y2 - np.multiply(a2, x2)
+    # Change this line to fit_lower_bound
     lower_b2_line   = objective(x2_line, a2, np.min(b2_values))
     label_b2        = f"y={a2:.4f}x+{np.min(b2_values):.4f}" if np.min(b2_values) > 0 else f"y={a2:.4f}x{np.min(b2_values):.4f}"
     label_b2        = f"<br><br><span>{label_b2}</span><br><span style='font-size: 9px'>{note}</span>"
@@ -292,6 +294,7 @@ def geophires_outputs(request):
     y3              = reservoir_cost
     popt, _         = curve_fit(objective, x3, y3)
     a3, b3         = popt
+    # Change this line to fit_lower_bound
     x3_line         = np.asarray([np.min(x3), np.max(x3)])
     b3_values       = y3 - np.multiply(a3, x3)
     lower_b3_line   = objective(x3_line, a3, np.min(b3_values))
@@ -305,6 +308,7 @@ def geophires_outputs(request):
     a4, b4         = popt
     x4_line         = np.asarray([np.min(x4), np.max(x4)])
     b4_values       = y4 - np.multiply(a4, x4)
+    # Change this line to fit_linear_model. 
     lower_b4_line   = objective(x4_line, a4, np.min(b4_values))
     label_b4        = f"y={a4:.4f}x+{np.min(b4_values):.4f}" if np.min(b4_values) > 0 else f"y={a4:.4f}x{np.min(b4_values):.4f}"
     label_b4        = f"<br><br><span>{label_b4}</span><br><span style='font-size: 9px'>{note}</span>"
