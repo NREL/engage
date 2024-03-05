@@ -75,7 +75,7 @@
             "pretty_name": "Reservoir Depth Maximum",
             "template_type": 1,
             "units": "km",
-            "default_value": 6.0,
+            "default_value": 6,
             "min": 1.0,
             "max": 6.0,
             "description": "Add Later",
@@ -92,7 +92,7 @@
             "pretty_name": "Number of Production Wells Minimum",
             "template_type": 1,
             "units": null,
-            "default_value": 1.0,
+            "default_value": 1,
             "min": 1.0,
             "max": 6.0,
             "description": "Add Later",
@@ -109,7 +109,7 @@
             "pretty_name": "Number of Production Wells Maximum",
             "template_type": 1,
             "units": null,
-            "default_value": 6.0,
+            "default_value": 6,
             "min": 1.0,
             "max": 6.0,
             "description": "Add Later",
@@ -143,7 +143,7 @@
             "pretty_name": "Number of Injection Wells Maximum",
             "template_type": 1,
             "units": null,
-            "default_value": 6.0,
+            "default_value": 6,
             "min": 1.0,
             "max": 6.0,
             "description": "Add Later",
@@ -557,6 +557,40 @@
             "description": "Add Later",
             "timeseries_enabled": null,
             "category": "GEOPHIRES Outputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 34,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "production_well_diameter",
+            "pretty_name": "Production Well Diameter",
+            "template_type": 1,
+            "units": "m",
+            "default_value": 8.5,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 35,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "injection_well_diameter",
+            "pretty_name": "Injection Well Diametere",
+            "template_type": 1,
+            "units": "m",
+            "default_value": 8.5,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     }
