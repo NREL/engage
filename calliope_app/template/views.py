@@ -124,6 +124,9 @@ def update_template(request):
     name: required
     template_type_id: required
     location: required
+    form_data: required
+
+    };
 
     Returns (json): Action Confirmation
 
@@ -136,8 +139,8 @@ def update_template(request):
         model_uuid = escape(request.POST.get("model_uuid")) if request.POST.get("model_uuid") else False
         template_id = escape(request.POST.get("template_id")) if request.POST.get("template_id") else False
         name = escape(request.POST.get("name"))
-        template_type_id = escape(request.POST["template_type"])
-        location_id = escape(request.POST["location"])
+        template_type_id = escape(request.POST.get("template_type"))
+        location_id = escape(request.POST.get("location"))
         varData = json.loads(request.POST["form_data"])
 
         templateVars = []
@@ -203,11 +206,15 @@ def update_template(request):
                         equation = equation.replace('||'+name+'||', template_variable.value)
 
                     # override carrier placeholder strings with units from carrier where applicable
-                    units = template_type_tech_param.parameter.units.replace('[[in_rate]]', rate_unit_in).replace('[[in_quantity]]', quantity_unit_in).replace('[[out_quantity]]', rate_unit_out).replace('[[out_rate]]', quantity_unit_out)
-                    value, rawValue = convert_units_no_pipe(ureg, equation, units)
+                    if template_type_tech_param.parameter.units != "" and "#" not in template_type_tech_param.parameter.units and "<" not in template_type_tech_param.parameter.units:
+                        units = template_type_tech_param.parameter.units.replace('[[in_rate]]', rate_unit_in).replace('[[in_quantity]]', quantity_unit_in).replace('[[out_quantity]]', rate_unit_out).replace('[[out_rate]]', quantity_unit_out)
+                        value, rawValue = convert_units_no_pipe(ureg, equation, units)
+                    else:
+                        value = equation
+                        rawValue = equation
                     Tech_Param.objects.create(
                         parameter=template_type_tech_param.parameter,
-                        tech=tech,
+                        technology=tech,
                         value=value,
                         raw_value=rawValue,
                         model=model,
@@ -250,8 +257,13 @@ def update_template(request):
                         equation = equation.replace('||'+name+'||', template_variable.value)
 
                     # override carrier placeholder strings with units from carrier where applicable
-                    units = template_type_loc_tech_param.parameter.units.replace('[[in_rate]]', rate_unit_in).replace('[[in_quantity]]', quantity_unit_in).replace('[[out_quantity]]', rate_unit_out).replace('[[out_rate]]', quantity_unit_out)
-                    value, rawValue = convert_units_no_pipe(ureg, equation, units)
+                    if template_type_loc_tech_param.parameter.units != "" and "#" not in template_type_loc_tech_param.parameter.units and "<" not in template_type_loc_tech_param.parameter.units:
+                        units = template_type_loc_tech_param.parameter.units.replace('[[in_rate]]', rate_unit_in).replace('[[in_quantity]]', quantity_unit_in).replace('[[out_quantity]]', rate_unit_out).replace('[[out_rate]]', quantity_unit_out)
+                        value, rawValue = convert_units_no_pipe(ureg, equation, units)
+                    else:
+                        value = equation
+                        rawValue = equation
+                    
                     Loc_Tech_Param.objects.create(
                         parameter=template_type_loc_tech_param.parameter,
                         loc_tech=loc_tech,
