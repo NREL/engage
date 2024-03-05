@@ -32,6 +32,10 @@ wells_inj_stop = 5
 
 well_cost_correlation = 1
 
+def objective(x, a, b):
+    """A simple objective function"""
+    return a * x + b
+
 def safe_extract(df, column_name):
     if column_name in df.columns:
         return np.array(df[column_name])
