@@ -84,11 +84,10 @@ def fit_linear_model(x, y, res, m_offset, b_offset):
 
 
 class geophires_parametrization_analysis:
-    def __init__(self, plant, prod_temp_min, prod_temp_max):
+    def __init__(self, prod_temp_min, prod_temp_max):
         self.client = GeophiresXClient()
         self.df_results = []
         self.parameter_list = []
-        self.plant = plant
         self.prod_min = prod_temp_min
         self.prod_max = prod_temp_max  # Corrected this line to properly set prod_max
         self.results_cache = {}  # Cache for storing results
@@ -220,7 +219,7 @@ class geophires_parametrization_analysis:
         return pd.DataFrame(self.df_results)
 
 
-def generate_parameters(base_params, depth_range, flow_rate_range, wells_prod_range, wells_inj_range, prod_diam, inj_diam,cost_correlation):
+def generate_parameters(base_params, depth_range, flow_rate_range, wells_prod_range, wells_inj_range):
     parameter_list = []
     depth_start, depth_stop, depth_step = depth_range
     flow_rate_start, flow_rate_stop, flow_rate_step = flow_rate_range
@@ -242,9 +241,6 @@ def generate_parameters(base_params, depth_range, flow_rate_range, wells_prod_ra
                         'Reservoir Depth': depth,
                         'Number of Production Wells': wells_prod,
                         'Number of Injection Wells': wells_inj,
-                        'Production Well Diameter': prod_diam,
-                        'Injection Well Diameter': inj_diam,
-                        'Well Drilling Cost Correlation': cost_correlation,
                     })
                     parameter_list.append(params)
     return parameter_list

@@ -9,28 +9,11 @@ Interated on Apr 24 2023 10:00:01
 @engage: Jianli Gu
 """
 
-
-##################################### ADDED #################################
 import pandas as pd
 from geophires_x_client import GeophiresXClient
 from geophires_x_client.geophires_input_parameters import GeophiresInputParameters
 from geophires.utils import fit_lower_bound, fit_linear_model, geophires_parametrization_analysis, generate_parameters
 import numpy as np
-
-#============================================================================================
-#============================================INPUTS==========================================
-#============================================================================================
-
-environment     = 'HYDRO'  # HYDRO OR EGS
-technology      = 'chp' #chp, binary_orc, double_flash, direct_use
-
-target_prod_temp_min   = 200
-target_prod_temp_max   = 250
-
-prod_well_diam = 8.5
-inj_well_diam = 8.5
-
-well_cost_correlation = 1
 
 # Define variables for ranges and steps
 depth_start = 1
@@ -46,278 +29,8 @@ wells_prod_stop = 5
 
 wells_inj_start = 1
 wells_inj_stop = 5
-#============================================================================================
-#============================================================================================
 
-
-plant           = f'{environment}_{technology}'
-
-# Define base parameters for each technology#
-base_params = {
-    'HYDRO_chp': {
-       'Reservoir Model': 4,
-       'Drawdown Parameter': 0.003,
-       'Number of Segments': 1,
-       'Gradient 1': 70,
-       'Maximum Temperature': 400,
-       'Ramey Production Wellbore Model': 0,
-       'Production Wellbore Temperature Drop': 5,
-       'Injection Wellbore Temperature Gain': 3,
-       'Reservoir Volume Option': 1,
-       'Injectivity Index': 5,
-       'Injection Temperature': 50,
-       'Maximum Drawdown': 1,
-       'Reservoir Heat Capacity': 1000,
-       'Reservoir Density': 3000,
-       'Reservoir Thermal Conductivity': 3,
-       'Water Loss Fraction': 0.02,
-       'End-Use Option': 31,
-       'Power Plant Type': 1,
-       'Circulation Pump Efficiency': 0.80,
-       'Plant Lifetime': 30,
-       'Print Output to Console': 0
-   },
-    'EGS_chp': {
-       'Reservoir Model':3,
-       'Drawdown Parameter': 0.00002,
-       'Number of Segments': 4,
-       'Gradient 1':55,
-       'Thickness 1':1,
-       'Gradient 2':55,
-       'Thickness 2':1,
-       'Gradient 3':55,
-       'Thickness 3':1,
-       'Gradient 4':55,
-       'Maximum Temperature': 400,
-       'Injection Temperature': 50,
-       'Reservoir Heat Capacity': 1000,
-       'Reservoir Density': 3000,
-       'Reservoir Thermal Conductivity': 3,
-       'End-Use Option': 31,
-       'Circulation Pump Efficiency': 0.80,
-       'Plant Lifetime': 30,
-       'Fracture Shape': 3,                   
-       'Fracture Height': 600,
-       'Number of Fractures':20,               
-       'Reservoir Volume Option': 1,
-       'Power Plant Type': 1,
-       'Print Output to Console': 0
-   },
-    'HYDRO_binary_orc': {
-       'Reservoir Model': 4,
-       'Drawdown Parameter': 0.003,
-       'Number of Segments': 1,    
-       'Gradient 1': 70,
-       'Ramey Production Wellbore Model': 0,
-       'Production Wellbore Temperature Drop': 0,
-       'Injection Wellbore Temperature Gain': 0,
-       'Maximum Temperature': 400,
-       'Reservoir Volume Option': 4,
-       'Reservoir Volume': 1e9,
-       'Water Loss Fraction': 0.0,
-       'Injectivity Index': 10,
-       'Productivity Index': 10,
-       'Injection Temperature': 70,
-       'Maximum Drawdown': 1,
-       'Reservoir Heat Capacity': 1050,
-       'Reservoir Density': 2700,
-       'Reservoir Thermal Conductivity': 3,
-       'End-Use Option': 1,
-       'Power Plant Type': 1,
-       'Circulation Pump Efficiency': 0.8,
-       'Utilization Factor': 0.9,
-       'Surface Temperature': 15,
-       'Ambient Temperature': 15,
-       'Plant Lifetime': 30,
-       'Print Output to Console': 0,
-   },
-    'EGS_binary_orc': {
-       'Reservoir Model':3,
-       'Drawdown Parameter': 0.00002,
-       'Number of Segments': 4,
-       'Gradient 1':55,
-       'Thickness 1':1,
-       'Gradient 2':55,
-       'Thickness 2':1,
-       'Gradient 3':55,
-       'Thickness 3':1,
-       'Gradient 4':55,
-       'Maximum Temperature': 400,
-       'Injection Temperature': 70,
-       'Reservoir Heat Capacity': 1000,
-       'Reservoir Density': 3000,
-       'Reservoir Thermal Conductivity': 3,
-       'End-Use Option': 1,
-       'Power Plant Type': 1,
-       'Circulation Pump Efficiency': 0.80,
-       'Plant Lifetime': 30,
-       'Fracture Shape': 3,                   
-       'Fracture Height': 600,
-       'Number of Fractures':20,               
-       'Reservoir Volume Option': 1,
-       'Print Output to Console': 0
-   },
-    'EGS_direct_use': {
-       'Reservoir Model': 1,
-       'Number of Segments': 1,
-       'Gradient 1': 30,
-
-       'Ramey Production Wellbore Model': 1,
-       'Injection Wellbore Temperature Gain': 0,
-       'Fracture Shape': 3,
-       'Fracture Height': 700,
-       'Reservoir Volume Option': 1,
-       'Fracture Separation': 100,
-       'Reservoir Impedance': 0.05,
-       'Injection Temperature': 40,
-       'Maximum Drawdown': 0.3,
-       'Reservoir Heat Capacity': 975,
-       'Reservoir Density': 3000,
-       'Reservoir Thermal Conductivity': 3.2,
-       'End-Use Option': 2,
-       'Circulation Pump Efficiency': 0.8,
-       'End-Use Efficiency Factor': 0.9,
-       'Surface Temperature': 20,
-       'Ambient Temperature': 20,
-       'Plant Lifetime': 30,
-       'Power Plant Type': 1,
-       'Print Output to Console': 0
-   },
-    'HYDRO_direct_use': {
-       'Reservoir Model': 4,
-       'Drawdown Parameter': 0.003,
-       'Number of Segments': 1,
-       'Gradient 1': 50,
-       'Maximum Temperature': 400,
-       'Ramey Production Wellbore Model': 0,
-       'Production Wellbore Temperature Drop': 5,
-       'Injection Wellbore Temperature Gain': 3,
-       'Reservoir Volume Option': 1,
-       'Injectivity Index': 5,
-       'Injection Temperature': 40,
-       'Maximum Drawdown': 1,
-       'Reservoir Heat Capacity': 1000,
-       'Reservoir Density': 3000,
-       'Reservoir Thermal Conductivity': 3,
-       'Water Loss Fraction': 0.02,
-       'End-Use Option': 2,
-       'Circulation Pump Efficiency': 0.80,
-       'Plant Lifetime': 30,
-       'Power Plant Type': 1,
-       'Print Output to Console': 0
-   },
-    'HYDRO_double_flash': {
-       'Reservoir Model': 4,
-       'Drawdown Parameter': 0.003,
-       'Number of Segments': 1,
-       'Gradient 1': 75,
-       'Maximum Temperature': 400,
-       'Ramey Production Wellbore Model': 0,
-       'Production Wellbore Temperature Drop': 5,
-       'Injection Wellbore Temperature Gain': 3,
-       'Reservoir Volume Option': 1,
-       'Injectivity Index': 5,
-       'Injection Temperature': 70,
-       'Maximum Drawdown': 1,
-       'Reservoir Heat Capacity': 1000,
-       'Reservoir Density': 3000,
-       'Reservoir Thermal Conductivity': 3,
-       'Water Loss Fraction': 0.02,
-       'End-Use Option': 1,
-       'Circulation Pump Efficiency': 0.80,
-       'Plant Lifetime': 30,
-       'Power Plant Type': 4,
-       'Print Output to Console': 0
-},
-    'EGS_double_flash': {
-       'Reservoir Model':3,
-       'Drawdown Parameter': 0.00002,
-       'Number of Segments': 4,
-       'Gradient 1':75,
-       'Thickness 1':1,
-       'Gradient 2':75,
-       'Thickness 2':1,
-       'Gradient 3':75,
-       'Thickness 3':1,
-       'Gradient 4':75,
-       'Maximum Temperature': 400,
-       'Injection Temperature': 70,
-       'Reservoir Heat Capacity': 1000,
-       'Reservoir Density': 3000,
-       'Reservoir Thermal Conductivity': 3,
-       'End-Use Option': 1,
-       'Circulation Pump Efficiency': 0.80,
-       'Plant Lifetime': 30,
-       'Fracture Shape': 3,                   
-       'Fracture Height': 600,
-       'Number of Fractures':20,               
-       'Reservoir Volume Option': 1,
-       'Power Plant Type': 4,
-       'Print Output to Console': 0
-   },
-    'HYDRO_cchp': {
-       'Reservoir Model': 4,
-       'Drawdown Parameter': 0.003,
-       'Number of Segments': 1,
-       'Gradient 1': 70,
-       'Maximum Temperature': 400,
-       'Ramey Production Wellbore Model': 0,
-       'Production Wellbore Temperature Drop': 5,
-       'Injection Wellbore Temperature Gain': 3,
-       'Reservoir Volume Option': 1,
-       'Injectivity Index': 5,
-       'Injection Temperature': 40,
-       'Maximum Drawdown': 1,
-       'Reservoir Heat Capacity': 1000,
-       'Reservoir Density': 3000,
-       'Reservoir Thermal Conductivity': 3,
-       'Water Loss Fraction': 0.02,
-       'End-Use Option': 31,
-       'Power Plant Type': 1,
-       'Circulation Pump Efficiency': 0.80,
-       'Plant Lifetime': 30,
-       'Print Output to Console': 0
-   },
-    'EGS_cchp': {
-       'Reservoir Model':3,
-       'Drawdown Parameter': 0.00002,
-       'Number of Segments': 4,
-       'Gradient 1':55,
-       'Thickness 1':1,
-       'Gradient 2':55,
-       'Thickness 2':1,
-       'Gradient 3':55,
-       'Thickness 3':1,
-       'Gradient 4':55,
-       'Maximum Temperature': 400,
-       'Injection Temperature': 40,
-       'Reservoir Heat Capacity': 1000,
-       'Reservoir Density': 3000,
-       'Reservoir Thermal Conductivity': 3,
-       'End-Use Option': 31,
-       'Circulation Pump Efficiency': 0.80,
-       'Plant Lifetime': 30,
-       'Fracture Shape': 3,                   
-       'Fracture Height': 600,
-       'Number of Fractures':20,               
-       'Reservoir Volume Option': 1,
-       'Power Plant Type': 1,
-       'Print Output to Console': 0
-   }
-}
-# Update the technology_to_function dictionary to include the new naming
-technology_to_function = {
-    'EGS_chp': generate_parameters,
-    'HYDRO_chp': generate_parameters,
-    'HYDRO_binary_orc': generate_parameters,
-    'EGS_binary_orc': generate_parameters,
-    'HYDRO_double_flash': generate_parameters,
-    'EGS_double_flash': generate_parameters,
-    'HYDRO_direct_use': generate_parameters,
-    'EGS_direct_use': generate_parameters,
-    'EGS_cchp': generate_parameters,
-    'HYDRO_cchp': generate_parameters,
-}
+well_cost_correlation = 1
 
 def safe_extract(df, column_name):
     if column_name in df.columns:
@@ -328,7 +41,6 @@ def safe_extract(df, column_name):
 
 
 ##################################### FINISHED #################################
-
 import datetime
 import io
 import math
@@ -347,48 +59,6 @@ TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "configs")
 
 logger = logging.getLogger(__name__)
 
-GEO_TEMPLATE_FILES = {
-    "binary_subcritical": os.path.join(TEMPLATE_DIR, "binary_subcritical.txt"),
-    "binary_supercritical": os.path.join(TEMPLATE_DIR, "binary_supercritical.txt"),
-    "chp_topping": os.path.join(TEMPLATE_DIR, "chp_topping.txt"),
-    "direct_use": os.path.join(TEMPLATE_DIR, "direct_use.txt"),
-    "flash_double": os.path.join(TEMPLATE_DIR, "flash_double.txt"),
-    "flash_single": os.path.join(TEMPLATE_DIR, "flash_single.txt")
-}
-
-
-def objective(x, a, b):
-    """A simple objective function"""
-    return a * x + b
-
-@dataclass
-class GeophiresParams:
-    reservoir_heat_capacity: float
-    reservoir_density: float
-    reservoir_thermal_conductivity: float
-    gradient: float
-
-    # max temperature
-    min_temperature: int
-    max_temperature: int
-    temperature_step: float
-
-    # reservoir depth
-    min_reservoir_depth: float
-    max_reservoir_depth: float
-    reservoir_depth_step: float
-
-    # production wells should
-    min_production_wells: int
-    max_production_wells: int
-    production_wells_step: int
-
-    # Injection wells
-    min_injection_wells: int
-    max_injection_wells: int
-    injection_wells_step: int
-
-
 class Geophires(object):
     def run(self, input_params, output_file):
 
@@ -397,27 +67,50 @@ class Geophires(object):
         flow_rate_range = (flow_rate_start, flow_rate_stop, flow_rate_step)
         wells_prod_range = (wells_prod_start, wells_prod_stop)  # Implicit step of 1
         wells_inj_range = (wells_inj_start, wells_inj_stop)    # Implicit step of 1
-        # Generate parameters based on the selected technology and environment
-        if plant in technology_to_function and plant in input_params:
-            logger.info("\n\n\n Entered \n\n\n")
+        
+        base_params = {
+            'Reservoir Model': input_params["reservoir_model"],
+            'Drawdown Parameter': input_params["drawdown_parameter"],
+            'Number of Segments': input_params["number_of_segments"],
+            'Gradient 1':  input_params["gradient_1"],
+            'Gradient 2': input_params["gradient_2"],
+            'Gradient 3': input_params["gradient_3"],
+            'Gradient 4': input_params["gradient_4"],
+            'Maximum Temperature': input_params["maximum_temperature"],
+            'Injection Temperature': input_params["injection_temperature"],
+            'Reservoir Heat Capacity': input_params["reservoir_heat_capacity"],
+            'Reservoir Density': input_params["reservoir_density"],
+            'Reservoir Thermal Conductivity': input_params["reservoir_thermal_conductivity"],
+            'End-Use Option': input_params["end_use_option"],
+            'Circulation Pump Efficiency': input_params["circulation_pump_efficiency"],
+            'Plant Lifetime': input_params["lifetime"],
+            'Fracture Shape': input_params["fracture_shape"],                   
+            'Fracture Height': input_params["fracture_height"],
+            'Number of Fractures': input_params["number_of_fractures"],               
+            'Reservoir Volume Option': input_params["reservoir_volume_option"],
+            'Power Plant Type': input_params["power_plant_type"],
+            'Print Output to Console': input_params["print_output_to_console"],
+            "Production Well Diameter": input_params["production_well_diameter"],
+            "Injection Well Diameter": input_params["injection_well_diameter"],
+            "Well Drilling Cost Correlation": well_cost_correlation,                                
+        }
 
-            generated_parameters = technology_to_function[plant](input_params,depth_range,
-                                                                flow_rate_range,wells_prod_range,wells_inj_range, 
-                                                                prod_well_diam, inj_well_diam, well_cost_correlation)  
-            
-            # Assume EngageAnalysis is a previously defined class for analysis
-            engage_analysis = geophires_parametrization_analysis(plant,target_prod_temp_min, target_prod_temp_max)
+        # set non-required parameters
+        if input_params["thickness_1"] is not None:
+            base_params["Thickness 1"] = input_params["thickness_1"]
+        if input_params["thickness_2"] is not None:
+            base_params["Thickness 2"] = input_params["thickness_2"]
+        if input_params["thickness_3"] is not None:
+            base_params["Thickness 3"] = input_params["thickness_3"]
 
-            # Prepare parameters for analysis (Assuming this method is defined in EngageAnalysis)
-            engage_analysis.prepare_parameters(generated_parameters)
+        run_parameters = generate_parameters(base_params, depth_range, flow_rate_range, wells_prod_range, wells_inj_range)
 
-            logger.info(f"============System Configured for {environment}-{technology} Plant=================\n")
-            print(generated_parameters[0])
-            print(f"\n===================================================================================")
-        else:
+        # Assume EngageAnalysis is a previously defined class for analysis
+        engage_analysis = geophires_parametrization_analysis(input_params["target_prod_temp_min"], input_params["target_prod_temp_max"])
 
-            logger.info(f"Combination '{plant}' is not supported.")
-            print(f"Combination '{plant}' is not supported.")
+        # Prepare parameters for analysis (Assuming this method is defined in EngageAnalysis)
+        engage_analysis.prepare_parameters(run_parameters)
+
         logger.info("\n\n\n Runing Iterations \n\n\n")
         engage_analysis.run_iterations()
         logger.info("\n\n\n Getting Dataframe \n\n\n")

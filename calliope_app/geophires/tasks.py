@@ -67,9 +67,9 @@ def run_geophires(job_meta_id, params, *args, **kwargs):
 
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     result_file = os.path.join(settings.DATA_STORAGE, "geophires", f"{job_meta_id}__{timestamp}.csv")
-    geophiers = Geophires()
+    geophires = Geophires()
 
-    output_params, output_file = geophiers.run(input_params=params, output_file=result_file)
+    output_params, output_file = geophires.run(input_params=params, output_file=result_file)
     logger.info(f"Output file: {output_file}")
     logger.info(f"result file: {result_file}")
 
