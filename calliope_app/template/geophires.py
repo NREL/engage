@@ -152,9 +152,8 @@ def geophires_request(request):
         # ints
         "min_production_wells": int(formData["min_production_wells"]),
         "min_production_wells": int(formData["min_production_wells"]),
+        "min_injection_wells": formData["min_injection_wells"],
         "min_injection_wells": int(formData["min_injection_wells"]),
-        "min_injection_wells": int(formData["min_injection_wells"]),
-
     }
 
     # Template based params
