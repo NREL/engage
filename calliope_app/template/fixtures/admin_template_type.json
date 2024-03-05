@@ -1,11 +1,11 @@
 [
     {
-        "model": "template.template_type",
         "pk": 1,
+        "model": "template.template_type",
         "fields": {
-            "name": "binary_orc",
-            "pretty_name": "Binary ORC Geothermal Power Plant",
-            "description": "A binary cycle (ORC) geothermal power plant is a type of geothermal power plant that generates electricity by using heat from the Earth's subsurface to produce steam, which is then used to generate electricity through a turbine and generator. The Organic Rankine Cycle (ORC) is commonly accepted as a viable technology to convert from low to medium-temperature geothermal energy into electrical energy. These plants use geothermal fluids with a lower temperature range of around 100-200°C, which is too low to generate steam but can still be used to generate electricity."
+            "name": "EGS_chp",
+            "pretty_name": "EGS Combined Heat and Power (CHP)",
+            "description": "Add later"
         }
     }
 ]

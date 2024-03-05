@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from api.models.engage import User_Profile
-from account.validators import email_validator, unicode_email_validator, unicode_chars_validator 
+from account.validators import email_validator, unicode_email_validator, unicode_chars_validator
 
 
 class UserRegistrationForm(UserCreationForm):
@@ -51,7 +51,7 @@ class UserRegistrationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ("email", "first_name", "last_name", "organization", "password1", "password2")
-    
+
     def clean_email(self):
         email = self.cleaned_data["email"]
 
@@ -60,7 +60,7 @@ class UserRegistrationForm(UserCreationForm):
             registered = True
         except User.DoesNotExist:
             registered = False
-        
+
         if registered:
             raise forms.ValidationError("This email already registered, please login with it.")
 
@@ -99,12 +99,12 @@ class UserAuthenticationForm(AuthenticationForm):
     }
 
     def clean(self):
-        email = self.cleaned_data.get("username")  # username == email here
+        email = self.cleaned_data.get("username").lower()  # username == email here
         password = self.cleaned_data.get("password")
 
         if email is not None and password:
             self.user_cache = authenticate(self.request, username=email, password=password)
-            
+
             if self.user_cache is None:
                 # If user is inactive, then it's not allowed to authenticate
                 try:
@@ -114,7 +114,7 @@ class UserAuthenticationForm(AuthenticationForm):
                     raise e
                 except User.DoesNotExist:
                     pass
-                
+
                 raise self.get_invalid_login_error()
             else:
                 self.confirm_login_allowed(self.user_cache)

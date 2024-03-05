@@ -2,7 +2,7 @@
 var params = {'id': job_meta_id};
 
 $.getJSON('/geophires/outputs/', params, function(data) {
-  var plant = data["plant"];
+  var template_type = data["template_type"];
   var pwells = data["pwells"];
   var depths = data["depths"];
   var plottext = [];
@@ -39,12 +39,12 @@ $.getJSON('/geophires/outputs/', params, function(data) {
     }
   ];
   var layout1 = {
-    'title': plant + ' Surface Cost-to-Electric Capacity',
+    'title': ' Subsurface Cost-to-Thermal Capacity Relation',
     'xaxis': {
-      'title': 'Avg. Electric capacity (MWe)'
+      'title': 'Avg. Thermal Capacity (MWth)'
     },
     'yaxis': {
-      'title': 'Surface Total Cost ($M)'
+      'title': 'Subsurface Total Cost ($M)'
     }
   }
   Plotly.plot('plot1', data1, layout1);
@@ -76,12 +76,12 @@ $.getJSON('/geophires/outputs/', params, function(data) {
     }
   ];
   var layout2 = {
-    'title': plant + ' Surface O&M Cost-to-Electric Capacity',
+    'title': ' Surface Cost-to-Electric Capacity Relation',
     'xaxis': {
-      'title': 'Avg. Electric capacity (MWe)'
+      'title': 'Avg. Electric Capacity (MWe)'
     },
     'yaxis': {
-      'title': 'Surface O&M Total Cost ($M)'
+      'title': 'Surface Total Cost ($M)'
     }
   }
   Plotly.plot('plot2', data2, layout2);
@@ -113,12 +113,12 @@ $.getJSON('/geophires/outputs/', params, function(data) {
     },
   ];
   var layout3 = {
-    'title': plant + ' Reservoir Cost-to-Thermal Capacity',
+    'title': ' Subsurface O&M Cost-to-Thermal Capacity Relation',
     'xaxis': {
-      'title': 'Avg. Thermal capacity (MWth)'
+      'title': 'Avg. Thermal Capacity (MWth)'
     },
     'yaxis': {
-      'title': 'Reservoir Total Cost ($M)'
+      'title': 'Subsurface Total O&M Cost ($M)'
     }
   }
   Plotly.plot('plot3', data3, layout3);
@@ -150,12 +150,12 @@ $.getJSON('/geophires/outputs/', params, function(data) {
     }
   ];
   var layout4 = {
-    'title': plant + ' Rservoir O&M Cost-to-Thermal Capacity',
+    'title': ' Surface O&M Cost-to-Electric Capacity Relation',
     'xaxis': {
-      'title': 'Avg. Thermal capacity (MWth)'
+      'title': 'Avg. Electric Capacity (MWe)'
     },
     'yaxis': {
-      'title': 'Reservoir O&M Total Cost ($M)'
+      'title': 'Surface O&M Total Cost ($M)'
     }
   }
   Plotly.plot('plot4', data4, layout4);

@@ -12,7 +12,6 @@ from geophires.geophiresx import GeophiresParams, Geophires
 import logging
 logger = logging.getLogger(__name__)
 
-
 class GeophiresTask(Task):
     """
     A celery task class for executing a geophires job.
@@ -48,13 +47,11 @@ class GeophiresTask(Task):
     ime_limit=600,
     ignore_result=True
 )
-def run_geophires(job_meta_id, plant, params, *args, **kwargs):
+def run_geophires(job_meta_id, params, *args, **kwargs):
     """Run geophires task
 
     Parameters
     ----------
-    plant : str
-        The plant type
     params : dict
         The geophires parameters
     """
@@ -66,17 +63,17 @@ def run_geophires(job_meta_id, plant, params, *args, **kwargs):
     job_meta.status = task_status.RUNNING
     job_meta.save()
     logger.info(f"\n\n ------ Params ------\n\n")
-    input_params = GeophiresParams(**params)
+    #input_params = GeophiresParams(**params)
 
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    result_file = os.path.join(settings.DATA_STORAGE, "geophires", f"{job_meta_id}__{plant}__{timestamp}.csv")
-    geophiers = Geophires(plant)
-    output_params, output_file = geophiers.run(input_params=input_params, output_file=result_file)
+    result_file = os.path.join(settings.DATA_STORAGE, "geophires", f"{job_meta_id}__{timestamp}.csv")
+    geophiers = Geophires(params) #possibly remove since this is happening a level up now?
+
+    output_params, output_file = geophiers.run(input_params=params, output_file=result_file)
     # logger.info(f"Output file: {output_file}")
     # logger.info(f"result file: {result_file}")
 
     return {
-        "plant": plant,
         "output_params": output_params,
         "output_file": output_file
     }
