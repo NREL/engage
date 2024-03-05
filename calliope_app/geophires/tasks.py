@@ -7,7 +7,7 @@ from django.conf import settings
 from api.models.configuration import Job_Meta
 from api.tasks import task_status
 from calliope_app.celery import app
-from geophires.geophiresx import GeophiresParams, Geophires
+from geophires.geophiresx import Geophires
 
 import logging
 logger = logging.getLogger(__name__)
@@ -67,11 +67,11 @@ def run_geophires(job_meta_id, params, *args, **kwargs):
 
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     result_file = os.path.join(settings.DATA_STORAGE, "geophires", f"{job_meta_id}__{timestamp}.csv")
-    geophiers = Geophires(params) #possibly remove since this is happening a level up now?
+    geophiers = Geophires()
 
     output_params, output_file = geophiers.run(input_params=params, output_file=result_file)
-    # logger.info(f"Output file: {output_file}")
-    # logger.info(f"result file: {result_file}")
+    logger.info(f"Output file: {output_file}")
+    logger.info(f"result file: {result_file}")
 
     return {
         "output_params": output_params,

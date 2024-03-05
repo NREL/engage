@@ -390,10 +390,6 @@ class GeophiresParams:
 
 
 class Geophires(object):
-
-    def __init__(self, plant):
-        self.plant = plant
-
     def run(self, input_params, output_file):
 
         logger.info("\n\n\n Started Run \n\n\n")
@@ -402,10 +398,10 @@ class Geophires(object):
         wells_prod_range = (wells_prod_start, wells_prod_stop)  # Implicit step of 1
         wells_inj_range = (wells_inj_start, wells_inj_stop)    # Implicit step of 1
         # Generate parameters based on the selected technology and environment
-        if plant in technology_to_function and plant in base_params:
+        if plant in technology_to_function and plant in input_params:
             logger.info("\n\n\n Entered \n\n\n")
 
-            generated_parameters = technology_to_function[plant](base_params[plant],depth_range,
+            generated_parameters = technology_to_function[plant](input_params,depth_range,
                                                                 flow_rate_range,wells_prod_range,wells_inj_range, 
                                                                 prod_well_diam, inj_well_diam, well_cost_correlation)  
             

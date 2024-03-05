@@ -4,7 +4,7 @@ import datetime
 from django.conf import settings
 from django.test import TestCase
 
-# from geophires.geophiresx import Geophires, GeophiresParams
+from geophires.geophiresx import Geophires
 
 class GeophiresTestCase(TestCase):
     
@@ -38,10 +38,9 @@ class GeophiresTestCase(TestCase):
         )
         
         ## Run
-        input_params = GeophiresParams(**inputs)
 
         job_meta_id = '123'
         result_file = os.path.join(settings.DATA_STORAGE, "geophires", f"{job_meta_id}__{plant}__{start_time}.csv")
         
-        geophiers = Geophires(plant)
-        geophiers.run(input_params=input_params, output_file=result_file)
+        geophiers = Geophires()
+        geophiers.run(input_params=inputs, output_file=result_file)
