@@ -6,17 +6,26 @@ var bulk_confirmation = false,
 	map_mode = 'scenarios',
     carriers = null,
     // Re-factor to dictionary
-    constraints = ["demand_share_min", "demand_share_max", "demand_share_equals",
-     "demand_share_per_timestep_min", "demand_share_per_timestep_max", "demand_share_per_timestep_equals",
-      "demand_share_per_timestep_decision", "carrier_prod_share_min", "carrier_prod_share_max",
-       "carrier_prod_share_equals", "carrier_prod_share_per_timestep_min", "carrier_prod_share_per_timestep_max",
-        "carrier_prod_share_per_timestep_equals", "net_import_share_min", "net_import_share_max",
-         "net_import_share_equals", "carrier_prod_min", "carrier_prod_max", "carrier_prod_equals",
-         "carrier_con_min", "carrier_con_max", "carrier_con_equals", "cost_max", "cost_min",
-       "cost_equals", "cost_var_max", "cost_var_min", "cost_var_equals", "cost_investment_max",
-    "cost_investment_min", "cost_investment_equals", "energy_cap_share_min", "energy_cap_share_max",
-"energy_cap_share_equals", "energy_cap_min", "energy_cap_max", "energy_cap_equals", "resource_area_min",
-"resource_area_max", "resource_area_equals", "storage_cap_min", "storage_cap_max", "storage_cap_equals"];
+    constraints = {
+        "demand_share_min":"carriers", "demand_share_max":"carriers", "demand_share_equals":"carriers",
+        "demand_share_per_timestep_min":"carriers", "demand_share_per_timestep_max":"carriers", "demand_share_per_timestep_equals":"carriers",
+        "demand_share_per_timestep_decision":"carriers", "carrier_prod_share_min":"carriers", "carrier_prod_share_max":"carriers",
+        "carrier_prod_share_equals":"carriers", "carrier_prod_share_per_timestep_min":"carriers", "carrier_prod_share_per_timestep_max":"carriers",
+        "carrier_prod_share_per_timestep_equals":"carriers", "net_import_share_min":"carriers", "net_import_share_max":"carriers",
+        "net_import_share_equals":"carriers", "carrier_prod_min":"carriers", "carrier_prod_max":"carriers", "carrier_prod_equals":"carriers",
+        "carrier_con_min":"carriers", "carrier_con_max":"carriers", "carrier_con_equals":"carriers", "cost_max":"costs", "cost_min":"costs",
+        "cost_equals":"costs", "cost_var_max":"costs", "cost_var_min":"costs", "cost_var_equals":"costs", "cost_investment_max":"costs",
+        "cost_investment_min":"costs", "cost_investment_equals":"costs", "energy_cap_share_min":"none", "energy_cap_share_max":"none",
+        "energy_cap_share_equals":"none", "energy_cap_min":"none", "energy_cap_max":"none", "energy_cap_equals":"none", "resource_area_min":"none",
+        "resource_area_max":"none", "resource_area_equals":"none", "storage_cap_min":"none", "storage_cap_max":"none", "storage_cap_equals":"none",
+        "target_reserve_share_equals":"carriers", "target_reserve_share_max":"carriers", "target_reserve_share_min":"carriers",
+        "target_reserve_adder_equals":"carriers", "target_reserve_adder_max":"carriers", "target_reserve_adder_min":"carriers",
+        "target_reserve_abs_equals":"carriers", "target_reserve_abs_max":"carriers", "target_reserve_abs_min":"carriers",
+        "target_reserve_share_operating_equals":"carriers", "target_reserve_share_operating_max":"carriers",
+        "target_reserve_share_operating_min":"carriers", "target_reserve_abs_operating_equals":"carriers",
+        "target_reserve_abs_operating_max":"carriers", "target_reserve_abs_operating_min":"carriers",
+        "target_reserve_adder_operating_equals":"carriers", "target_reserve_adder_operating_max":"carriers", "target_reserve_adder_operating_min":"carriers"
+    };
 
 $( document ).ready(function() {
 
@@ -290,7 +299,7 @@ function updateDialogObject() {
         Object.keys(dialogObj[constraint]).forEach(fieldKey => {
             if (fieldKey !== "locs" && fieldKey !== "techs" && fieldKey !== "techs_lhs" && fieldKey !== "techs_rhs" && fieldKey !== "locs_lhs" && fieldKey !== "locs_rhs") {
                 let value = $("#" + constraintId + fieldKey + "-val").val() ? $("#" + constraintId + fieldKey + "-val").val() : "";
-                if (constraints.indexOf(fieldKey) <= 30) {
+                if (constraints[fieldKey] !== "none") {
                     let key = $("#" + constraintId + fieldKey + "-key").val() ? $("#" + constraintId + fieldKey + "-key").val() : "";
                     dialogObj[constraint][fieldKey] = {};
                     if (key) {
@@ -474,14 +483,14 @@ function updateConstraintTypes(constraint, constraintId, constraintContent) {
             });
             let constraintFields = "#fields-" + constraintId + fieldKey;
             $(constraintContent).append("<div id='fields-" + constraintId + fieldKey + "' class='constraint-key-value' ></div>");
-            if (constraints.indexOf(fieldKey) <= 30) {
+            if (constraints[fieldKey] != 'none') {
                 if (!dialogObj[constraint][fieldKey] || typeof dialogObj[constraint][fieldKey] !== 'object') {
                     dialogObj[constraint][fieldKey] = {};
                 }
                 const key = Object.keys(dialogObj[constraint][fieldKey]).length !== 0 ? Object.keys(dialogObj[constraint][fieldKey])[0] : "";
                 const val = key ? dialogObj[constraint][fieldKey][Object.keys(dialogObj[constraint][fieldKey])[0]] : "";
                 $(constraintFields).append( "<label><b>" + djangoTranslateKey + "</b></label>");
-                let dropdownArray = constraints.indexOf(fieldKey) <= 21 ? carriers : ["co2", "ch4", "co2e", "n2o", "monetary"];
+                let dropdownArray = constraints[fieldKey] == 'carriers' ? carriers : ["co2", "ch4", "co2e", "n2o", "monetary"];
                 if (key.length > 0 && dropdownArray.indexOf(key) === -1) {
                     dropdownArray.push(key);
                 }
@@ -513,8 +522,10 @@ function updateConstraintTypes(constraint, constraintId, constraintContent) {
     $(constraintContent).append( "<br><label><b>" + djangoTranslateNew + ' ' + djangoTranslateConstraint + "</b></label>");
     $(constraintContent).append( "<select style='margin-bottom:1em' class='form-control smol' id='new-constraint-dropdown-" + constraintId + "' data-toggle='tooltip' data-placement='left'></select>" );
     $('#new-constraint-dropdown-' + constraintId ).append( "<option></option>" );
-    for (let i = 0; i < constraints.length; i++) {
-        $('#new-constraint-dropdown-' + constraintId ).append( "<option value=" + constraints[i] + ">" + constraints[i] + "</option>" );
+    i = 0;
+    for (const [fieldKey,fieldValue] of Object.entries(constraints)) {
+        i=i+1;
+        $('#new-constraint-dropdown-' + constraintId ).append( "<option value=" + fieldKey + ">" + fieldKey + "</option>" );
     }
 
     $(constraintContent).append("<div class='form-group col-md-8'><input disabled id='new_constraint_btn_" + constraintId + "' type='submit' class='btn btn-sm btn-success' name='" + constraint + "' value='+ " + djangoTranslateConstraint + "'></div>");
