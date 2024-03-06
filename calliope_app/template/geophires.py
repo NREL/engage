@@ -296,7 +296,7 @@ def geophires_outputs(request):
     )
 
     # Label notes
-    note = "Best fit to least cost, the slope indicates the $/MW<br>"
+    note = "Best fit to least cost, the slope indicates the $/KWe<br>"
 
     # Plot1
     x1 = electric_capacity
