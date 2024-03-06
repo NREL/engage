@@ -3,6 +3,7 @@ var params = {'id': job_meta_id};
 
 $.getJSON('/geophires/outputs/', params, function(data) {
   var template_type = data["template_type"];
+  $("#template_name").text(template_type);
   var pwells = data["pwells"];
   var plottext = [];
   pwells.forEach((well, index) => {

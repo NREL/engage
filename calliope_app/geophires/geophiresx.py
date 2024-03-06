@@ -10,8 +10,6 @@ Interated on Apr 24 2023 10:00:01
 """
 
 import pandas as pd
-from geophires_x_client import GeophiresXClient
-from geophires_x_client.geophires_input_parameters import GeophiresInputParameters
 from geophires.utils import fit_lower_bound, fit_linear_model, geophires_parametrization_analysis, generate_parameters
 import numpy as np
 
@@ -29,10 +27,6 @@ wells_prod_stop = 5
 
 wells_inj_start = 1
 wells_inj_stop = 5
-
-def objective(x, a, b):
-    """A simple objective function"""
-    return a * x + b
 
 def safe_extract(df, column_name):
     if column_name in df.columns:
@@ -64,8 +58,8 @@ class Geophires(object):
     def run(self, input_params, output_file):
 
         logger.info("\n\n\n Started Run \n\n\n")
-        logger.info(f"\n\n\n {input_params} \n\n\n")
         
+        print (f"\n\n\n {input_params} \n\n\n")
         depth_range = (depth_start, depth_stop, depth_step)
         flow_rate_range = (flow_rate_start, flow_rate_stop, flow_rate_step)
         wells_prod_range = (wells_prod_start, wells_prod_stop)  # Implicit step of 1

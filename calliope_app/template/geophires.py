@@ -12,11 +12,7 @@ from django.shortcuts import render
 
 from api.models.configuration import Job_Meta
 from geophires.tasks import run_geophires, task_status
-# from geophires.geophiresx import Geophires
-from geophires.geophiresx import objective
-from scipy.optimize import curve_fit
 from taskmeta.models import CeleryTask
-from geophires_x_client import GeophiresXClient
 import matplotlib.pyplot as plt
 from geophires.utils import fit_linear_model, fit_lower_bound
 from template.models import Template_Type
@@ -120,6 +116,7 @@ def geophires_request(request):
     POST: /geophires/
     """
     formData = json.loads(request.POST["form_data"])
+    print ("from front end tempalte_type " + str(formData["templateType"]) + "\n\n")
     template_type = Template_Type.objects.filter(id=formData["templateType"]).first()
     payload = {"message": "starting runnning geophires"}
     input_params = {
@@ -257,6 +254,7 @@ def geophires_outputs(request):
     """
     job_meta_id = request.GET.get('id')
     job_meta = Job_Meta.objects.get(id=job_meta_id)
+    template_type = Template_Type.objects.filter(id=job_meta.inputs["template_type"]).first()
 
     output_params = job_meta.outputs["output_params"]
     output_file = job_meta.outputs["output_file"]
@@ -303,9 +301,6 @@ def geophires_outputs(request):
     # Plot1
     x1 = electric_capacity
     y1 = surface_cost
-    popt, _         = curve_fit(objective, x1, y1)
-    # a1, b1          = popt
-    # x1_line         = np.asarray([np.min(x1), np.max(x1)])
     a1, b1, x1_line, lower_b1_line, label_b1 = fit_lower_bound(x1, y1,1)         # electric cap vs surface cost
     b1_values       = y1 - np.multiply(a1, x1)
     # Change this line to fit_lower_bound
@@ -315,9 +310,6 @@ def geophires_outputs(request):
     # Plot2
     x2              = electric_capacity
     y2              = surface_o_m_cost
-    # popt, _         = curve_fit(objective, x2, y2)
-    # a2, b2          = popt
-    # x2_line         = np.asarray([np.min(x2), np.max(x2)])
     a2, b2, x2_line, lower_b2_line, label_b2 = fit_lower_bound(x2, y2,1) 
     b2_values       = y2 - np.multiply(a2, x2)
     # Change this line to fit_lower_bound
@@ -327,10 +319,6 @@ def geophires_outputs(request):
     # Plot3
     x3              = thermal_capacity
     y3              = reservoir_cost
-    # popt, _         = curve_fit(objective, x3, y3)
-    # a3, b3         = popt
-    # Change this line to fit_lower_bound
-    # x3_line         = np.asarray([np.min(x3), np.max(x3)])
     a3, b3, x3_line, lower_b3_line, label_b3 = fit_linear_model(x3, y3,3,0.3,0) 
     b3_values       = y3 - np.multiply(a3, x3)
     label_b3        = f"y={a3:.4f}x+{np.min(b3_values):.4f}" if np.min(b3_values) > 0 else f"y={a3:.4f}x{np.min(b3_values):.4f}"
@@ -339,9 +327,6 @@ def geophires_outputs(request):
     # Plot4
     x4              = thermal_capacity
     y4              = reservoir_o_m_cost
-    popt, _         = curve_fit(objective, x4, y4)
-    # a4, b4         = popt
-    # x4_line         = np.asarray([np.min(x4), np.max(x4)])
     a4, b4, x4_line, lower_b4_line, label_b4 = fit_lower_bound(x4, y4,1) 
     b4_values       = y4 - np.multiply(a4, x4)
 
@@ -356,7 +341,7 @@ def geophires_outputs(request):
         "params": output_params,
         "pwells": [int(i) for i in  electric_capacity],
         "temperature": unique_temp.tolist(),
-
+        "template_type": template_type.pretty_name,
         "plot1": {
             "x1": x1.tolist(),
             "y1": y1.tolist(),
