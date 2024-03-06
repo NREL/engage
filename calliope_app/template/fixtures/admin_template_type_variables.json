@@ -160,7 +160,7 @@
             "pretty_name": "Number of Subsurface Segments",
             "template_type": 1,
             "units": null,
-            "default_value": 4.0,
+            "default_value": 4,
             "min": null,
             "max": null,
             "description": "Add Later",

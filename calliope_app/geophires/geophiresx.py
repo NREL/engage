@@ -96,16 +96,16 @@ class Geophires(object):
             'Print Output to Console': input_params["print_output_to_console"],
             "Production Well Diameter": input_params["production_well_diameter"],
             "Injection Well Diameter": input_params["injection_well_diameter"],
-            "Well Drilling Cost Correlation": well_cost_correlation,                                
+            "Well Drilling Cost Correlation": input_params["well_drilling_cost_correlation"],                       
         }
 
         # set non-required parameters
-        if input_params["thickness_1"] is not None:
-            base_params["Thickness 1"] = input_params["thickness_1"]
-        if input_params["thickness_2"] is not None:
-            base_params["Thickness 2"] = input_params["thickness_2"]
-        if input_params["thickness_3"] is not None:
-            base_params["Thickness 3"] = input_params["thickness_3"]
+        if input_params["thickness_grad1"] is not None:
+            base_params["Thickness 1"] = input_params["thickness_grad1"]
+        if input_params["thickness_grad2"] is not None:
+            base_params["Thickness 2"] = input_params["thickness_grad2"]
+        if input_params["thickness_grad3"] is not None:
+            base_params["Thickness 3"] = input_params["thickness_grad3"]
 
         run_parameters = generate_parameters(base_params, depth_range, flow_rate_range, wells_prod_range, wells_inj_range)
 

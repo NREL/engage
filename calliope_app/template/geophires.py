@@ -104,7 +104,6 @@ def geophires_request(request):
         "reservoir_thermal_conductivity": float(formData["reservoir_thermal_conductivity"]),
         "min_reservoir_depth": float(formData["min_reservoir_depth"]),
         "max_reservoir_depth": float(formData["max_reservoir_depth"]),
-        "number_of_segments": float(formData["number_of_segments"]),
         "gradient_1": float(formData["gradient_1"]),
         "gradient_2": float(formData["gradient_2"]),
         "gradient_3": float(formData["gradient_3"]),
@@ -121,9 +120,10 @@ def geophires_request(request):
 
         # ints
         "min_production_wells": int(formData["min_production_wells"]),
-        "min_production_wells": int(formData["min_production_wells"]),
-        "min_injection_wells": formData["min_injection_wells"],
+        "max_production_wells": int(formData["max_production_wells"]),
         "min_injection_wells": int(formData["min_injection_wells"]),
+        "max_injection_wells": int(formData["max_injection_wells"]),
+        "number_of_segments": int(formData["number_of_segments"]),
     }
 
     # Template based params
