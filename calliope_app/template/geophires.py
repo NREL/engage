@@ -150,51 +150,51 @@ def geophires_request(request):
 
         # ints
         "min_production_wells": int(formData["min_production_wells"]),
-        "min_production_wells": int(formData["min_production_wells"]),
+        "max_production_wells": int(formData["max_production_wells"]),
         "min_injection_wells": float(formData["min_injection_wells"]),
-        "min_injection_wells": float(formData["min_injection_wells"]),
+        "max_injection_wells": float(formData["max_injection_wells"]),
     }
 
     # Template based params
-    if template_type and template_type.name == "EGS_chp":
-        formData["end_use_option"] = 31
-        formData["injection_temperature"] = 50
-        formData["reservoir_model"] = 3
-        formData["drawdown_parameter"] = 0.00002
-        formData["circulation_pump_efficiency"] = 0.00002
-        formData["reservoir_volume_option"] = 1
-        formData["power_plant_type"] = 1
+    if template_type and template_type.id == 1:
+        input_params["end_use_option"] = 31
+        input_params["injection_temperature"] = 50
+        input_params["reservoir_model"] = 3
+        input_params["drawdown_parameter"] = 0.00002
+        input_params["circulation_pump_efficiency"] = 0.80
+        input_params["reservoir_volume_option"] = 1
+        input_params["power_plant_type"] = 1
 
     if None in (formData["reservoir_heat_capacity"],
-        formData["reservoir_density"],
-        formData["reservoir_thermal_conductivity"],
-        formData["min_reservoir_depth"], 
-        formData["max_reservoir_depth"], 
-        formData["number_of_segments"], 
-        formData["gradient_1"],
-        formData["gradient_2"],
-        formData["gradient_3"],
-        formData["gradient_4"],
-        formData["fracture_shape"],
-        formData["fracture_height"],
-        formData["number_of_fractures"],
-        formData["well_drilling_cost_correlation"],
-        formData["target_prod_temp_min"],
-        formData["target_prod_temp_max"],  
-        formData["lifetime"],   
-        formData["production_well_diameter"],   
-        formData["injection_well_diameter"],     
-        formData["min_production_wells"],
-        formData["max_production_wells"], 
-        formData["min_injection_wells"], 
-        formData["max_injection_wells"],
-        formData["end_use_option"],
-        formData["injection_temperature"],
-        formData["reservoir_model"],
-        formData["drawdown_parameter"],
-        formData["circulation_pump_efficiency"],
-        formData["reservoir_volume_option"],
-        formData["power_plant_type"]):
+        input_params["reservoir_density"],
+        input_params["reservoir_thermal_conductivity"],
+        input_params["min_reservoir_depth"], 
+        input_params["max_reservoir_depth"], 
+        input_params["number_of_segments"], 
+        input_params["gradient_1"],
+        input_params["gradient_2"],
+        input_params["gradient_3"],
+        input_params["gradient_4"],
+        input_params["fracture_shape"],
+        input_params["fracture_height"],
+        input_params["number_of_fractures"],
+        input_params["well_drilling_cost_correlation"],
+        input_params["target_prod_temp_min"],
+        input_params["target_prod_temp_max"],  
+        input_params["lifetime"],   
+        input_params["production_well_diameter"],   
+        input_params["injection_well_diameter"],     
+        input_params["min_production_wells"],
+        input_params["max_production_wells"], 
+        input_params["min_injection_wells"], 
+        input_params["max_injection_wells"],
+        input_params["end_use_option"],
+        input_params["injection_temperature"],
+        input_params["reservoir_model"],
+        input_params["drawdown_parameter"],
+        input_params["circulation_pump_efficiency"],
+        input_params["reservoir_volume_option"],
+        input_params["power_plant_type"]):
         raise ValidationError(f"Error: Required field not provided for GEOPHIRES.")
 
     try:
@@ -202,7 +202,7 @@ def geophires_request(request):
         if job_meta is None:
             payload["jobPreexisting"] = False
             job_input_params = input_params
-            job_input_params["template_type"] = template_type.name
+            job_input_params["template_type"] = template_type.id
             job_meta = Job_Meta.objects.create(inputs=job_input_params, status=task_status.RUNNING, type="geophires")
             async_result = run_geophires.apply_async(
                 kwargs={
