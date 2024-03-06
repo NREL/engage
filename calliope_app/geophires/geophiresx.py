@@ -42,7 +42,6 @@ def safe_extract(df, column_name):
         return np.zeros(len(df))
 
 
-##################################### FINISHED #################################
 import datetime
 import io
 import math
@@ -65,45 +64,76 @@ class Geophires(object):
     def run(self, input_params, output_file):
 
         logger.info("\n\n\n Started Run \n\n\n")
+        logger.info(f"\n\n\n {input_params} \n\n\n")
+
         depth_range = (depth_start, depth_stop, depth_step)
         flow_rate_range = (flow_rate_start, flow_rate_stop, flow_rate_step)
         wells_prod_range = (wells_prod_start, wells_prod_stop)  # Implicit step of 1
         wells_inj_range = (wells_inj_start, wells_inj_stop)    # Implicit step of 1
-        
+
         base_params = {
-            'Reservoir Model': input_params["reservoir_model"],
-            'Drawdown Parameter': input_params["drawdown_parameter"],
-            'Number of Segments': input_params["number_of_segments"],
-            'Gradient 1':  input_params["gradient_1"],
-            'Gradient 2': input_params["gradient_2"],
-            'Gradient 3': input_params["gradient_3"],
-            'Gradient 4': input_params["gradient_4"],
-            'Maximum Temperature': input_params["maximum_temperature"],
-            'Injection Temperature': input_params["injection_temperature"],
-            'Reservoir Heat Capacity': input_params["reservoir_heat_capacity"],
-            'Reservoir Density': input_params["reservoir_density"],
-            'Reservoir Thermal Conductivity': input_params["reservoir_thermal_conductivity"],
-            'End-Use Option': input_params["end_use_option"],
-            'Circulation Pump Efficiency': input_params["circulation_pump_efficiency"],
-            'Plant Lifetime': input_params["lifetime"],
-            'Fracture Shape': input_params["fracture_shape"],                   
-            'Fracture Height': input_params["fracture_height"],
-            'Number of Fractures': input_params["number_of_fractures"],               
-            'Reservoir Volume Option': input_params["reservoir_volume_option"],
-            'Power Plant Type': input_params["power_plant_type"],
-            'Print Output to Console': input_params["print_output_to_console"],
-            "Production Well Diameter": input_params["production_well_diameter"],
-            "Injection Well Diameter": input_params["injection_well_diameter"],
-            "Well Drilling Cost Correlation": 1 #input_params["well_drilling_cost_correlation"],                       
+            'Drawdown Parameter': 0.00002,
+            'Reservoir Model':3,
+            'Number of Segments': 4,
+            'Gradient 1':55,
+            'Thickness 1':1,
+            'Gradient 2':55,
+            'Thickness 2':1,
+            'Gradient 3':55,
+            'Thickness 3':1,
+            'Gradient 4':55,
+            'Maximum Temperature': 400,
+            'Injection Temperature': 50,
+            'Reservoir Heat Capacity': 1000,
+            'Reservoir Density': 3000,
+            'Reservoir Thermal Conductivity': 3,
+            'End-Use Option': 31,
+            'Circulation Pump Efficiency': 0.80,
+            'Plant Lifetime': 30,
+            'Fracture Shape': 3,                   
+            'Fracture Height': 600,
+            'Number of Fractures':20,               
+            'Reservoir Volume Option': 1,
+            'Power Plant Type': 1,
+            'Print Output to Console': 0
         }
+        # base_params = {
+        #     'Reservoir Model': 3, 
+        #     'Drawdown Parameter': input_params["drawdown_parameter"],
+        #     'Number of Segments': input_params["number_of_segments"],
+        #     'Gradient 1':  input_params["gradient_1"],
+        #     'Gradient 2': input_params["gradient_2"],
+        #     'Gradient 3': input_params["gradient_3"],
+        #     'Gradient 4': input_params["gradient_4"],
+        #     'Maximum Temperature': input_params["maximum_temperature"],
+        #     'Injection Temperature': input_params["injection_temperature"],
+        #     'Reservoir Heat Capacity': input_params["reservoir_heat_capacity"],
+        #     'Reservoir Density': input_params["reservoir_density"],
+        #     'Reservoir Thermal Conductivity': input_params["reservoir_thermal_conductivity"],
+        #     'End-Use Option': input_params["end_use_option"],
+        #     'Circulation Pump Efficiency': input_params["circulation_pump_efficiency"],
+        #     'Plant Lifetime': input_params["lifetime"],
+        #     'Fracture Shape': input_params["fracture_shape"],                   
+        #     'Fracture Height': input_params["fracture_height"],
+        #     'Number of Fractures': input_params["number_of_fractures"],               
+        #     'Reservoir Volume Option': input_params["reservoir_volume_option"],
+        #     'Power Plant Type': input_params["power_plant_type"],
+        #     'Print Output to Console': input_params["print_output_to_console"],
+        #     "Production Well Diameter": input_params["production_well_diameter"],
+        #     "Injection Well Diameter": input_params["injection_well_diameter"],
+        #     "Well Drilling Cost Correlation": 1 #input_params["well_drilling_cost_correlation"],
+        # }
 
         # set non-required parameters
-        if input_params["thickness_grad1"] is not None:
-            base_params["Thickness 1"] = input_params["thickness_grad1"]
-        if input_params["thickness_grad2"] is not None:
-            base_params["Thickness 2"] = input_params["thickness_grad2"]
-        if input_params["thickness_grad3"] is not None:
-            base_params["Thickness 3"] = input_params["thickness_grad3"]
+        if "thickness_grad1" in base_params.keys():
+            if base_params["thickness_grad1"] is not None:
+                base_params["Thickness 1"] = input_params["thickness_grad1"]
+        if "thickness_grad2" in input_params.keys():
+            if input_params["thickness_grad2"] is not None:
+                base_params["Thickness 2"] = input_params["thickness_grad2"]
+        if "thickness_grad3" in base_params.keys():
+            if base_params["thickness_grad3"] is not None:
+                base_params["Thickness 3"] = input_params["thickness_grad3"]
 
         run_parameters = generate_parameters(base_params, depth_range, flow_rate_range, wells_prod_range, wells_inj_range)
 
@@ -122,7 +152,7 @@ class Geophires(object):
         # Check if the dataframe is empty after filtering
         if df_final.empty:
             logger.info("============================================================================================")
-            logger.info("Consider revising the target temperature range, as achieving the specified temperatures may not be feasible with ", plant)
+            logger.info("Consider revising the target temperature range, as achieving the specified temperatures may not be feasible with ")
             logger.info("============================================================================================")
             return dict(), output_file
 
@@ -167,6 +197,7 @@ class Geophires(object):
         # Convert slopes from $/MW to $/kW by multiplying each element by 1000, 
         slope_dollars_per_kw = [value * 1000 if value != 1 else np.nan for value in slope_values]
 
+
         data = {
             'relation': [  # Converted to all lowercase and removed spaces
                 'elec_cap_vs_surface_cost',
@@ -208,12 +239,26 @@ class Geophires(object):
         mapping_df.round(5)
         # turn mapping_df into a dictionary
         output_params = mapping_df.to_dict()
+        output_params = {
+            output_params['relation'][0]: output_params['value'][0],
+            output_params['relation'][1]: output_params['value'][1],
+            output_params['relation'][2]: output_params['value'][2],
+            output_params['relation'][3]: output_params['value'][3],
+            output_params['relation'][4]: output_params['value'][4],
+            output_params['relation'][5]: output_params['value'][5],
+            output_params['relation'][6]: output_params['value'][6],
+            output_params['relation'][7]: output_params['value'][7],
+        }
         logger.info("\n\n\n-------- Output Parameters ----------\n\n")
         logger.info(output_params)
         logger.info("\n\n\n-------- Output Parameters ----------\n\n")
+
         # ########################################
         # ########################################
+        
         logger.info(f"\n\n------- Outputs received ----------\n\n")
+        
+        
         return output_params, output_file
 
     def generate_config_files(self, input_params):

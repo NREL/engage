@@ -4,11 +4,9 @@ var params = {'id': job_meta_id};
 $.getJSON('/geophires/outputs/', params, function(data) {
   var template_type = data["template_type"];
   var pwells = data["pwells"];
-  var depths = data["depths"];
   var plottext = [];
   pwells.forEach((well, index) => {
-    const depth = depths[index];
-    var tooltip = "Depth: " + depth.toFixed(2) + "(m)" + "<br>Number of Production Wells: " + well;
+    var tooltip = "Number of Production Wells: " + well;
     plottext.push(tooltip);
   });
 
@@ -24,7 +22,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
         color: pwells, //'green'
       },
       text: plottext,
-      hovertemplate: '%{text}<br>Avg. Thermal Capacity: %{x:.2f}(MWth)<br>Subsurface Total Cost: %{y:.2f}($M)',
+      hovertemplate: '%{text}<br>Avg. Thermal Capacity: %{x:.2f}(KWth)<br>Subsurface Total Cost: %{y:.2f}($M)',
     },
     {
       x: data["plot1"]['x1_line'],
@@ -39,9 +37,9 @@ $.getJSON('/geophires/outputs/', params, function(data) {
     }
   ];
   var layout1 = {
-    'title': ' Subsurface Cost-to-Thermal Capacity Relation',
+    'title': 'Surface Cost-to-Electric Capacity',
     'xaxis': {
-      'title': 'Avg. Thermal Capacity (MWth)'
+      'title': 'Avg. Electric capacity (KWe)'
     },
     'yaxis': {
       'title': 'Subsurface Total Cost ($M)'
@@ -61,7 +59,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
         color: pwells, //'blue'
       },
       text: plottext,
-      hovertemplate: '%{text}<br>Avg. Electric Capacity:%{x:.2f}(MWe)<br>Surface Total Cost: %{y:.2f}($M)',
+      hovertemplate: '%{text}<br>Avg. Electric Capacity:%{x:.2f}(KWe)<br>Surface Total Cost: %{y:.2f}($M)',
     },
     {
       x: data["plot2"]['x2_line'],
@@ -76,12 +74,12 @@ $.getJSON('/geophires/outputs/', params, function(data) {
     }
   ];
   var layout2 = {
-    'title': ' Surface Cost-to-Electric Capacity Relation',
+    'title': 'Surface O&M Cost-to-Electric Capacity',
     'xaxis': {
-      'title': 'Avg. Electric Capacity (MWe)'
+      'title': 'Avg. Electric Capacity (KWe)'
     },
     'yaxis': {
-      'title': 'Surface Total Cost ($M)'
+      'title': 'Surface O&M Total Cost ($M)'
     }
   }
   Plotly.plot('plot2', data2, layout2);
@@ -98,7 +96,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
         color: pwells, //'purple'
       },
       text: plottext,
-      hovertemplate: '%{text}<br>Avg. Thermal Capacity:%{x:.2f}(MWth)<br>Subsurface Total O&M Cost: %{y:.2f}($M)',
+      hovertemplate: '%{text}<br>Avg. Thermal Capacity:%{x:.2f}(KWth)<br>Subsurface Total O&M Cost: %{y:.2f}($M)',
     },
     {
       x: data["plot3"]['x3_line'],
@@ -113,12 +111,12 @@ $.getJSON('/geophires/outputs/', params, function(data) {
     },
   ];
   var layout3 = {
-    'title': ' Subsurface O&M Cost-to-Thermal Capacity Relation',
+    'title': ' Reservoir Cost-to-Thermal Capacity',
     'xaxis': {
-      'title': 'Avg. Thermal Capacity (MWth)'
+      'title': 'Avg. Thermal capacity (KWth)'
     },
     'yaxis': {
-      'title': 'Subsurface Total O&M Cost ($M)'
+      'title': 'Reservoir Total Cost ($M)'
     }
   }
   Plotly.plot('plot3', data3, layout3);
@@ -135,7 +133,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
         color: pwells, //'orange'
       },
       text: plottext,
-      hovertemplate: '%{text}<br>Avg. Electric Capacity: %{x:.2f}(MWe)<br>Surface O&M Total Cost: %{y:.2f}($M)',
+      hovertemplate: '%{text}<br>Avg. Electric Capacity: %{x:.2f}(KWe)<br>Surface O&M Total Cost: %{y:.2f}($M)',
     },
     {
       x: data["plot4"]['x4_line'],
@@ -150,12 +148,12 @@ $.getJSON('/geophires/outputs/', params, function(data) {
     }
   ];
   var layout4 = {
-    'title': ' Surface O&M Cost-to-Electric Capacity Relation',
+    'title': ' Reservoir O&M Cost-to-Thermal Capacity',
     'xaxis': {
-      'title': 'Avg. Electric Capacity (MWe)'
+      'title': 'Avg. Thermal capacity (KWe)'
     },
     'yaxis': {
-      'title': 'Surface O&M Total Cost ($M)'
+      'title': 'Reservoir O&M Total Cost ($M)'
     }
   }
   Plotly.plot('plot4', data4, layout4);
