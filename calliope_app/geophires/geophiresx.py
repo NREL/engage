@@ -30,8 +30,6 @@ wells_prod_stop = 5
 wells_inj_start = 1
 wells_inj_stop = 5
 
-well_cost_correlation = 1
-
 def objective(x, a, b):
     """A simple objective function"""
     return a * x + b
@@ -96,7 +94,7 @@ class Geophires(object):
             'Print Output to Console': input_params["print_output_to_console"],
             "Production Well Diameter": input_params["production_well_diameter"],
             "Injection Well Diameter": input_params["injection_well_diameter"],
-            "Well Drilling Cost Correlation": input_params["well_drilling_cost_correlation"],                       
+            "Well Drilling Cost Correlation": 1 #input_params["well_drilling_cost_correlation"],                       
         }
 
         # set non-required parameters
