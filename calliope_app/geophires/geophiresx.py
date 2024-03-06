@@ -9,6 +9,33 @@ Interated on Apr 24 2023 10:00:01
 @engage: Jianli Gu
 """
 
+import pandas as pd
+from geophires.utils import fit_lower_bound, fit_linear_model, geophires_parametrization_analysis, generate_parameters
+import numpy as np
+
+# Define variables for ranges and steps
+depth_start = 1
+depth_stop = 5
+depth_step = 0.1
+
+flow_rate_start = 50
+flow_rate_stop = 150
+flow_rate_step = 50
+
+wells_prod_start = 1
+wells_prod_stop = 5
+
+wells_inj_start = 1
+wells_inj_stop = 5
+
+def safe_extract(df, column_name):
+    if column_name in df.columns:
+        return np.array(df[column_name])
+    else:
+        print(f"'{column_name}' not found in DataFrame. Filling with zeros.")
+        return np.zeros(len(df))
+
+
 import datetime
 import io
 import math
@@ -20,191 +47,212 @@ from typing import Union
 import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
-
+import logging
 from django.conf import settings
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "configs")
 
-GEO_TEMPLATE_FILES = {
-    "binary_subcritical": os.path.join(TEMPLATE_DIR, "binary_subcritical.txt"),
-    "binary_supercritical": os.path.join(TEMPLATE_DIR, "binary_supercritical.txt"),
-    "chp_topping": os.path.join(TEMPLATE_DIR, "chp_topping.txt"),
-    "direct_use": os.path.join(TEMPLATE_DIR, "direct_use.txt"),
-    "flash_double": os.path.join(TEMPLATE_DIR, "flash_double.txt"),
-    "flash_single": os.path.join(TEMPLATE_DIR, "flash_single.txt")
-}
-
-
-def objective(x, a, b):
-    """A simple objective function"""
-    return a * x + b
-
-
-@dataclass
-class GeophiresParams:
-    reservoir_heat_capacity: float
-    reservoir_density: float
-    reservoir_thermal_conductivity: float
-    gradient: float
-
-    # max temperature
-    min_temperature: int
-    max_temperature: int
-    temperature_step: float
-
-    # reservoir depth
-    min_reservoir_depth: float
-    max_reservoir_depth: float
-    reservoir_depth_step: float
-
-    # production wells should
-    min_production_wells: int
-    max_production_wells: int
-    production_wells_step: int
-
-    # Injection wells
-    min_injection_wells: int
-    max_injection_wells: int
-    injection_wells_step: int
-
+logger = logging.getLogger(__name__)
 
 class Geophires(object):
-
-    def __init__(self, plant):
-        if plant not in GEO_TEMPLATE_FILES:
-            names = GEO_TEMPLATE_FILES.keys()
-            raise Exception(
-                f"Plant '{plant}' is not supported, available plant types are: {names}"
-            )
-        self.plant = plant
-        self.template_file = GEO_TEMPLATE_FILES[self.plant]
-        self.template_data = self.get_template_data(self.template_file)
-        self.results = {"data": [], "params": {}}
-
-    def get_template_data(self, template_file):
-        """Read template into dictionary."""
-        with open(template_file, "r") as f:
-            template_data = f.readlines()
-        return template_data
-
     def run(self, input_params, output_file):
-        config_files = self.generate_config_files(input_params)
-        for filelike in config_files:
-            self._perform_run(filelike)
 
-        # Export xlsx result file
-        if self.plant == 'direct_use':
-            df_final = pd.DataFrame(self.results["data"], columns = [
-                'Depth (m)',
-                'Number of Prod/Inj Wells',
-                'Wellfield Cost ($M)',
-                'Surface Plant Cost ($M)',
-                'Exploration Cost ($M)',
-                'Field Gathering System Cost ($M)',
-                'Wellfield O&M Cost ($M/year)',
-                'Surface Plant O&M Cost ($M/year)',
-                'Make-Up Water O&M Cost ($M/year)',
-                'Average Reservoir Heat Extraction (MWth)',
-                'Maximum reservoir temperature (deg.C)',
-                # 'Average Total Electricity Generation (MWe)',
-                "Efficiency",                                   ####ADDEDD
-                "Interest Rate",                                ####ADDEDD
-                "Lifetime"                                      ####ADDEDD
-            ])
+        logger.info("\n\n\n Started Run \n\n\n")
+        
+        print (f"\n\n\n {input_params} \n\n\n")
+        depth_range = (depth_start, depth_stop, depth_step)
+        flow_rate_range = (flow_rate_start, flow_rate_stop, flow_rate_step)
+        wells_prod_range = (wells_prod_start, wells_prod_stop)  # Implicit step of 1
+        wells_inj_range = (wells_inj_start, wells_inj_stop)    # Implicit step of 1
 
-            df_final = df_final.sort_values(by=[
-                'Depth (m)',
-                'Number of Prod/Inj Wells'
-            ], ascending=[True, True])
+        # base_params = {
+        #     'Drawdown Parameter': 0.00002,
+        #     'Reservoir Model':3,
+        #     'Number of Segments': 4,
+        #     'Gradient 1':55,
+        #     'Thickness 1':1,
+        #     'Gradient 2':55,
+        #     'Thickness 2':1,
+        #     'Gradient 3':55,
+        #     'Thickness 3':1,
+        #     'Gradient 4':55,
+        #     'Maximum Temperature': 400,
+        #     'Injection Temperature': 50,
+        #     'Reservoir Heat Capacity': 1000,
+        #     'Reservoir Density': 3000,
+        #     'Reservoir Thermal Conductivity': 3,
+        #     'End-Use Option': 31,
+        #     'Circulation Pump Efficiency': 0.80,
+        #     'Plant Lifetime': 30,
+        #     'Fracture Shape': 3,                   
+        #     'Fracture Height': 600,
+        #     'Number of Fractures':20,               
+        #     'Reservoir Volume Option': 1,
+        #     'Power Plant Type': 1,
+        #     'Print Output to Console': 0
+        # }
+        base_params = {
+            'Reservoir Model': 3, 
+            'Drawdown Parameter': 0.00002,
+            'Number of Segments': input_params["number_of_segments"],
+            'Gradient 1':  input_params["gradient_1"],
+            'Gradient 2': input_params["gradient_2"],
+            'Gradient 3': input_params["gradient_3"],
+            'Gradient 4': input_params["gradient_4"],
+            'Maximum Temperature': input_params["max_temperature"],
+            'Injection Temperature': input_params["injection_temperature"],
+            'Reservoir Heat Capacity': input_params["reservoir_heat_capacity"],
+            'Reservoir Density': input_params["reservoir_density"],
+            'Reservoir Thermal Conductivity': input_params["reservoir_thermal_conductivity"],
+            'End-Use Option': input_params["end_use_option"],
+            'Circulation Pump Efficiency': input_params["circulation_pump_efficiency"],
+            'Plant Lifetime': input_params["lifetime"],
+            'Fracture Shape': input_params["fracture_shape"],                   
+            'Fracture Height': input_params["fracture_height"],
+            'Number of Fractures': input_params["number_of_fractures"],               
+            'Reservoir Volume Option': input_params["reservoir_volume_option"],
+            'Power Plant Type': input_params["power_plant_type"],
+            'Print Output to Console': input_params["print_output_to_console"],
+            "Production Well Diameter": input_params["production_well_diameter"],
+            "Injection Well Diameter": input_params["injection_well_diameter"],
+            "Well Drilling Cost Correlation": 1 #input_params["well_drilling_cost_correlation"],
+        }
 
-            df_final.to_csv(output_file, index=False, encoding='utf-8')
+        # set non-required parameters
+        if "thickness_grad1" in base_params.keys():
+            if base_params["thickness_grad1"] is not None:
+                base_params["Thickness 1"] = input_params["thickness_grad1"]
+        if "thickness_grad2" in input_params.keys():
+            if input_params["thickness_grad2"] is not None:
+                base_params["Thickness 2"] = input_params["thickness_grad2"]
+        if "thickness_grad3" in base_params.keys():
+            if base_params["thickness_grad3"] is not None:
+                base_params["Thickness 3"] = input_params["thickness_grad3"]
 
-        else:
-            df_final = pd.DataFrame(self.results["data"], columns = [
-                'Depth (m)',
-                'Number of Prod Wells',
-                'Number of Inj Wells',
-                'Maximum Reservoir Temperature (deg.C)',
-                'Wellfield Cost ($M)',
-                'Surface Plant Cost ($M)',
-                'Exploration Cost ($M)',
-                'Field Gathering System Cost ($M)',
-                'Wellfield O&M Cost ($M/year)',
-                'Surface Plant O&M Cost ($M/year)',
-                'Make-Up Water O&M Cost ($M/year)',
-                'Average Reservoir Heat Extraction (MWth)',
-                'Average Total Electricity Generation (MWe)',
-                "Efficiency",                                   ####ADDEDD
-                "Interest Rate",                                ####ADDEDD
-                "Lifetime"                                      ####ADDEDD
-            ])
+        run_parameters = generate_parameters(base_params, depth_range, flow_rate_range, wells_prod_range, wells_inj_range)
 
-            df_final = df_final.sort_values(by=[
-                'Depth (m)',
-                'Number of Prod Wells'
-            ], ascending=[True, True])
+        # Assume EngageAnalysis is a previously defined class for analysis
+        engage_analysis = geophires_parametrization_analysis(input_params["target_prod_temp_min"], input_params["target_prod_temp_max"])
 
-            df_final.to_csv(output_file, index=False, encoding='utf-8')
+        # Prepare parameters for analysis (Assuming this method is defined in EngageAnalysis)
+        engage_analysis.prepare_parameters(run_parameters)
 
-        ########################################
-        ######### Mapping of Variable ##########
-        ########################################
+        logger.info("\n\n\n Runing Iterations \n\n\n")
+        engage_analysis.run_iterations()
+        logger.info("\n\n\n Getting Dataframe \n\n\n")
+        df_final = engage_analysis.get_final_dataframe()
+        # Remove rows where any of the values are negative
+        df_final = df_final[(df_final >= 0).all(axis=1)]
+        # Check if the dataframe is empty after filtering
+        if df_final.empty:
+            logger.info("============================================================================================")
+            logger.info("Consider revising the target temperature range, as achieving the specified temperatures may not be feasible with ")
+            logger.info("============================================================================================")
+            return dict(), output_file
+
+
+        # Sorting and saving to Excel
+        df_final = df_final.sort_values(
+            by=['Depth (km)', 'Number of Prod Wells', 'Number of Inj Wells'], ascending=[True, True, True]
+        )
+        logger.info("\n\n\n Saving Dataframe \n\n\n")
+        df_final.to_csv(output_file, index=False, encoding='utf-8')
+        logger.info("\n\n\n Saved Dataframe \n\n\n")
+        logger.info(f"\n\n\n {df_final.head()} \n\n\n")
+        logger.info(f"\n\n\n {df_final.columns} \n\n\n")
+
+        # ########################################
+        # ######### Mapping of Variable ##########
+        # ########################################
         df_line = df_final
         df_line = df_line.append(pd.Series(0, index=df_line.columns), ignore_index=True)
+        # max_stuff = np.max(df_line['Average Reservoir Heat Extraction (MWth)'])
+        x1 = np.array(df_line['Average Reservoir Heat Extraction (MWth)'])
+        y1 = np.array(df_line['Average Heat Production (MWth)'])
+        electric_capacity = safe_extract(df_final, 'Average Electricity Production (MWe)')
+        surface_cost = safe_extract(df_final, 'Surface Plant Cost ($M)')
+        surface_o_m_cost = safe_extract(df_final, 'Surface maintenance costs ($MUSD/yr)')
+        # eff = safe_extract(df_final, 'Eff ($MUSD/yr)')
 
-        max_e_cap               = np.max(df_line['Average Total Electricity Generation (MWe)'])     ####ADDEDD
-        max_h_cap               = np.max(df_line['Average Reservoir Heat Extraction (MWth)'])       ####ADDEDD
-        plant_efficiency        = float(np.average(df_line['Efficiency']))                          ####ADDEDD
-        lifecycle               = int(df_line['Lifetime'][1])                                       ####ADDEDD
-        rate                    = float(df_line['Interest Rate'][1])                                ####ADDEDD
+        # Reservoir related data
+        thermal_capacity = safe_extract(df_final, 'Average Reservoir Heat Extraction (MWth)')
+        reservoir_cost = safe_extract(df_final, 'Drilling and completion cost ($MUSD)')
+        reservoir_o_m_cost = safe_extract(df_final, 'Wellfield maintenance costs ($MUSD/yr)') + safe_extract(
+            df_final, 'Make-Up Water O&M Cost ($MUSD/year)'
+    )
 
-        thermal_capacity         = np.array(df_line['Average Reservoir Heat Extraction (MWth)'])
-        electric_capacity        =  np.array(df_line['Average Total Electricity Generation (MWe)'])
-        subsurface_cost          = np.add(np.array(df_line['Wellfield Cost ($M)']), np.array(df_line['Field Gathering System Cost ($M)']))
-        surface_cost             = np.array(df_line['Surface Plant Cost ($M)'])
-        subsurface_o_m_cost      = np.add(np.array(df_line['Wellfield O&M Cost ($M/year)']), np.array(df_line['Make-Up Water O&M Cost ($M/year)']))
-        surface_o_m_cost         = np.array(df_line['Surface Plant O&M Cost ($M/year)'])
+        a2, b2, x2_line, lower_b2_line, label_b2 = fit_lower_bound(electric_capacity, surface_cost,0)         # electric cap vs surface cost
+        a3, b3, x3_line, lower_b3_line, label_b3 = fit_lower_bound(electric_capacity, surface_o_m_cost,1)     # electric cap vs surface O&M cost
+        # Reservoir
+        a5, b5, x5_line, lower_b5_line, label_b5 = fit_linear_model(thermal_capacity, reservoir_cost,3,0.3,0)        # thermal cap vs reservoir cost
+        a6, b6, x6_line, lower_b6_line, label_b6 = fit_lower_bound(thermal_capacity, reservoir_o_m_cost,0)    # thermal cap vs reservoir O&M cost
+        slope_values = [a2, a3, a5, a6]
 
-        x1              = thermal_capacity
-        y1              = subsurface_cost
-        popt, _         = curve_fit(objective, x1, y1)
-        a1, b1          = popt  #slope of line
+        # Convert slopes from $/MW to $/kW by multiplying each element by 1000, 
+        slope_dollars_per_kw = [value * 1000 if value != 1 else np.nan for value in slope_values]
 
-        x2              = electric_capacity
-        y2              = surface_cost
-        popt, _         = curve_fit(objective, x2, y2)
-        a2, b2          = popt #a2 slope of the line
 
-        x3              = thermal_capacity
-        y3              = subsurface_o_m_cost
-        popt, _         = curve_fit(objective, x3, y3)
-        a3, b3         = popt
+        data = {
+            'relation': [  # Converted to all lowercase and removed spaces
+                'elec_cap_vs_surface_cost',
+                'elec_cap_vs_surface_om_cost',
+                'therm_cap_vs_reservoir_cost',
+                'therm_cap_vs_reservoir_om_cost'
+            ],
+            'value': slope_dollars_per_kw
+        }
 
-        x4              = electric_capacity #Raw
-        y4              = surface_o_m_cost  #raw
-        popt, _         = curve_fit(objective, x4, y4)
-        a4, b4         = popt
+        mapping_df = pd.DataFrame(data)
 
-        ####    Supply(Subsurface) + Conversion (Surface)
-        ####    Supply Carrier (Thermal)
-        ####    Conversion Input Carrier (Thermal) -> Output Carrier (Power)
+        additional_vals = {}
 
-        output_params = dict(
-            max_electricity_cap                     = max_e_cap,                       ### [MW] Conversion (Surface)                   ->     Maximum production capacity
-            surface_plant_efficiency                = plant_efficiency,                ### [%] Conversion (Surface)                    ->     Conversion Efficiency (instead of c-rate)
-            surface_cost_to_electric_slope          = a2,                              ### [$/MW] Conversion (Surface)                   ->     Cost of Production Capacity
-            surface_om_cost_to_electric_slope       = a3,                              ### [$/MW] Conversion (Surface)                   ->     Annual Fixed O&M Cost
+        # Check if the column exists before calculating its mean
+        if 'Ratio Avg Reservoir Heat Extraction to Ratio Avg Reservoir Heat Extraction' in df_final.columns:
+            additional_vals['therm_ext_to_therm_ext_ratio'] = df_final['Ratio Avg Reservoir Heat Extraction to Ratio Avg Reservoir Heat Extraction'].mean()
 
-            max_heat_cap                            = max_h_cap,                       ### [MW] Supply     (Subsurface)                ->     Maximum production capacity
-            subsurface_cost_to_thermal_slope        = a1,                              ### [$/MW] Supply     (Subsurface)                ->     Cost of Production Capacity
-            subsurface_om_cost_to_thermal_slope     = a4,                              ### [$/MW] Supply     (Subsurface)                ->     Annual Fixed O&M Cost
-            interest_rate                           = rate*100,                        ### [%] maps to both conversion and supply      ->     Interest rate
-            lifetime                                = lifecycle                        ### [years] maps to both conversion and supply  ->     Lifetime and amortization period
-        )
+        if 'Ratio Avg Heat Production to Avg Reservoir Heat Extraction' in df_final.columns:
+            additional_vals['heat_prod_to_therm_ext_ratio'] = df_final['Ratio Avg Heat Production to Avg Reservoir Heat Extraction'].mean()
 
-        ########################################
-        ########################################
+        if 'Ratio Avg Electricity Production to Avg Reservoir Heat Extraction' in df_final.columns:
+            additional_vals['elec_prod_to_therm_ext_ratio'] = df_final['Ratio Avg Electricity Production to Avg Reservoir Heat Extraction'].mean()
 
+        if 'Maximum Total Electricity Generation (MWe)'in df_final.columns:
+            additional_vals['max_elec_gen_mwe'] = df_final['Maximum Total Electricity Generation (MWe)'].max()*10
+
+        additional_vals['max_therm_ext_mwth'] = df_final['Average Reservoir Heat Extraction (MWth)'].max()*10
+
+
+        # Adding additional values to the DataFrame
+        for relationship_name, additional_val in additional_vals.items():
+            mapping_df = pd.concat([mapping_df, pd.DataFrame({'relation': [relationship_name], 'value': [additional_val]})], ignore_index=True)
+
+        # Save to CSV (Note: 'plant' variable needs to be defined earlier in your code)
+        # mapping_df.to_csv(f'results/{plant}_mapping.csv', index=False)
+
+        # Display the rounded DataFrame
+        mapping_df.round(5)
+        # turn mapping_df into a dictionary
+        output_params = mapping_df.to_dict()
+        output_params = {
+            output_params['relation'][0]: output_params['value'][0],
+            output_params['relation'][1]: output_params['value'][1],
+            output_params['relation'][2]: output_params['value'][2],
+            output_params['relation'][3]: output_params['value'][3],
+            output_params['relation'][4]: output_params['value'][4],
+            output_params['relation'][5]: output_params['value'][5],
+            output_params['relation'][6]: output_params['value'][6],
+            output_params['relation'][7]: output_params['value'][7],
+        }
+        logger.info("\n\n\n-------- Output Parameters ----------\n\n")
+        logger.info(output_params)
+        logger.info("\n\n\n-------- Output Parameters ----------\n\n")
+
+        # ########################################
+        # ########################################
+        
+        logger.info(f"\n\n------- Outputs received ----------\n\n")
+        
+        
         return output_params, output_file
 
     def generate_config_files(self, input_params):
@@ -948,7 +996,7 @@ class Geophires(object):
                 else:
                     usebuiltinoutletplantcorrelation = 1
                     print("Warning: No valid plant outlet pressure provided. GEOPHIRES will calculate plant outlet pressure based on production wellhead pressure and surface equipment pressure drop of 10 psi")
-
+                    print("No valid plant outlet pressure provided. GEOPHIRES will calculate plant outlet")
 
         #impedance: impedance per wellpair (input as GPa*s/m^3 and converted to KPa/kg/s (assuming 1000 for density))
         #try:
@@ -1995,7 +2043,7 @@ class Geophires(object):
                     print("Warning: GEOPHIRES calculates negative production well pumping depth. No production well pumps will be assumed")
                 elif pumpdepthfinal > 600:
                     print("Warning: GEOPHIRES calculates pump depth to be deeper than 600 m. Verify reservoir pressure, production well flow rate and production well dimensions")
-
+                    print("GEOPHIRES calculates pump depth to be deeper than 600 m.")
                 #calculate production well pumping pressure [kPa]
                 DP3 = Pprodwellhead - (Phydrostatic - prodwellflowrate/PIkPa - rhowaterprod*9.81*depth/1E3 - f3*(rhowaterprod*vprod**2/2.)*(depth/prodwelldiam)/1E3)
                 #DP3 = [0 if x<0 else x for x in DP3] #set negative values to 0
@@ -2605,511 +2653,6 @@ class Geophires(object):
             interest_rate = discountrate
         elif econmodel == 3:
             pass
-
-        # #---------------------------------------
-        # #write results to output file and screen
-        # #---------------------------------------
-
-        # # Export txt result file
-        # with open(TODO,'w+') as f:
-        #     f.write('                               *****************\n')
-        #     f.write('                               ***CASE REPORT***\n')
-        #     f.write('                               *****************\n')
-        #     f.write('\n')
-        #     f.write('                           ***SUMMARY OF RESULTS***\n')
-        #     f.write('\n')
-        #     if enduseoption == 1:
-        #         f.write("      End-Use Option = Electricity\n")
-        #     elif enduseoption == 2:
-        #         f.write("      End-Use Option = Direct-Use Heat\n")
-        #     elif enduseoption == 31: #topping cycle
-        #         f.write("      End-Use Option = Cogeneration Topping Cycle\n")
-        #         f.write("      Heat sales considered as extra income\n")
-        #     elif enduseoption == 32: #topping cycle
-        #         f.write("      End-Use Option = Cogeneration Topping Cycle\n")
-        #         f.write("      Electricity sales considered as extra income\n")
-        #     elif enduseoption == 41: #bottoming cycle
-        #         f.write("      End-Use Option = Cogeneration Bottoming Cycle\n")
-        #         f.write("      Heat Sales considered as extra income\n")
-        #     elif enduseoption == 42: #bottoming cycle
-        #         f.write("      End-Use Option = Cogeneration Bottoming Cycle\n")
-        #         f.write("      Electricity sales considered as extra income\n")
-        #     elif enduseoption == 51: #cogen split of mass flow rate
-        #         f.write("      End-Use Option = Cogeneration Parallel Cycle\n")
-        #         f.write("      Heat sales considered as extra income\n")
-        #     elif enduseoption == 52: #cogen split of mass flow rate
-        #         f.write("      End-Use Option = Cogeneration Parallel Cycle\n")
-        #         f.write("      Electricity sales considered as extra income\n")
-
-        #     if enduseoption == 1 or enduseoption > 2:    #there is an electricity component
-        #         f.write("      Average Net Electricity Production (MWe)          " + "{0:10.2f}".format(np.average(NetElectricityProduced))+"\n")
-        #     if enduseoption > 1:    #there is a direct-use component
-        #         f.write("      Average Direct-Use Heat Production (MWth)         " + "{0:10.2f}".format(np.average(HeatProduced))+"\n")
-
-        #     if (enduseoption % 10) == 1:    #levelized cost expressed as LCOE
-        #         f.write("      Electricity breakeven price (cents/kWh)           " + "{0:10.2f}".format(Price)+"\n")
-        #     elif (enduseoption % 10) == 2:    #levelized cost expressed as LCOH
-        #         f.write("      Direct-Use heat breakeven price ($/MMBTU)         " + "{0:10.2f}".format(Price)+"\n")
-
-        #     f.write("      Number of production wells                     " + "{0:10.0f}".format(nprod)+"\n")
-        #     f.write("      Number of injection wells                      " + "{0:10.0f}".format(ninj)+"\n")
-        #     f.write("      Flowrate per production well (kg/s)              " + "{0:10.1f}".format(prodwellflowrate)+"\n")
-        #     f.write("      Well depth (m)                                   " + "{0:10.1f}".format(depth)+"\n")
-        #     if numseg == 1:
-        #         f.write('      Geothermal gradient (deg.C/km)                   '+"{0:10.1f}".format((gradient[0]*1E3))+'\n')
-        #     elif numseg == 2:
-        #         f.write('      Segment 1 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[0]*1E3))+'\n')
-        #         f.write('      Segment 1 thickness (km)                       '+"{0:10.0f}".format((layerthickness[0]/1E3))+'\n')
-        #         f.write('      Segment 2 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[1]*1E3))+'\n')
-        #     elif numseg == 3:
-        #         f.write('      Segment 1 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[0]*1E3))+'\n')
-        #         f.write('      Segment 1 thickness (km)                       '+"{0:10.0f}".format((layerthickness[0]/1E3))+'\n')
-        #         f.write('      Segment 2 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[1]*1E3))+'\n')
-        #         f.write('      Segment 2 thickness (km)                       '+"{0:10.0f}".format((layerthickness[1]/1E3))+'\n')
-        #         f.write('      Segment 3 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[2]*1E3))+'\n')
-        #     elif numseg == 4:
-        #         f.write('      Segment 1 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[0]*1E3))+'\n')
-        #         f.write('      Segment 1 thickness (km)                       '+"{0:10.0f}".format((layerthickness[0]/1E3))+'\n')
-        #         f.write('      Segment 2 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[1]*1E3))+'\n')
-        #         f.write('      Segment 2 thickness (km)                       '+"{0:10.0f}".format((layerthickness[1]/1E3))+'\n')
-        #         f.write('      Segment 3 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[2]*1E3))+'\n')
-        #         f.write('      Segment 3 thickness (km)                       '+"{0:10.0f}".format((layerthickness[2]/1E3))+'\n')
-        #         f.write('      Segment 4 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[3]*1E3))+'\n')
-
-
-        #     f.write('\n')
-        #     f.write('\n')
-        #     f.write('                           ***ECONOMIC PARAMETERS***\n')
-        #     f.write('\n')
-        #     if econmodel == 1:
-        #         f.write("      Economic Model = Fixed Charge Rate (FCR) Model\n")
-        #         f.write("      Fixed Charge Rate (FCR) (%)                       " + "{0:10.2f}".format((FCR*100))+'\n')
-        #     elif econmodel == 2:
-        #         f.write("      Economic Model = Standard Levelized Cost Model\n")
-        #         f.write("      Interest Rate (%)                                 " + "{0:10.2f}".format((discountrate*100))+'\n')
-        #     elif econmodel == 3:
-        #         f.write("      Economic Model  = BICYCLE Model\n")
-        #     f.write('      Accrued financing during construction (%)         '+"{0:10.2f}".format((inflrateconstruction*100))+'\n')
-        #     f.write('      Project lifetime (years)                       '+"{0:10.0f}".format((plantlifetime))+'\n')
-        #     f.write('      Capacity factor (%)                              '+"{0:10.1f}".format((utilfactor)*100)+'\n')
-
-        #     f.write('\n')
-        #     f.write('                          ***ENGINEERING PARAMETERS***\n')
-        #     f.write('\n')
-        #     f.write("      Well depth (m)                                   " + "{0:10.1f}".format(depth)+"\n")
-        #     f.write("      Water loss rate (%)                              " + "{0:10.1f}".format(waterloss*100)+"\n")
-        #     f.write("      Pump efficiency (%)                              " + "{0:10.1f}".format(pumpeff*100)+"\n")
-        #     f.write("      Injection temperature (deg.C)                    " + "{0:10.1f}".format(Tinj)+"\n")
-        #     if rameyoptionprod == 1:
-        #         f.write("      Production Wellbore heat transmission calculated with Ramey's model\n")
-        #         f.write("      Average production well temperature drop (deg.C) "+"{0:10.1f}".format(np.average(ProdTempDrop))+"\n")
-        #     elif rameyoptionprod == 0:
-        #         f.write("      User-provided production well temperature drop\n")
-        #         f.write("      Constant production well temperature drop (deg.C)"+"{0:10.1f}".format(tempdropprod)+"\n")
-        #     f.write("      Flowrate per production well (kg/s)              " + "{0:10.1f}".format(prodwellflowrate)+"\n")
-        #     f.write("      Injection well casing ID (inches)                  " + "{0:10.3f}".format(injwelldiam/0.0254)+"\n")
-        #     f.write("      Produciton well casing ID (inches)                 " + "{0:10.3f}".format(prodwelldiam/0.0254)+"\n")
-        #     f.write("      Number of times redrilling                     " + "{0:10.0f}".format(redrill)+"\n")
-        #     if enduseoption == 1 or enduseoption > 2:
-        #         if pptype == 1:
-        #             f.write("      Power plant type                                        Subcritical ORC\n")
-        #         elif pptype == 2:
-        #             f.write("      Power plant type                                        Supercritical ORC\n")
-        #         elif pptype == 3:
-        #             f.write("      Power plant type                                        Single-Flash\n")
-        #         elif pptype == 4:
-        #             f.write("      Power plant type                                        Double-Flash\n")
-        #     f.write('\n')
-        #     f.write('\n')
-        #     f.write('                         ***RESOURCE CHARACTERISTICS***\n')
-        #     f.write('\n')
-        #     f.write('      Maximum reservoir temperature (deg.C)            '+"{0:10.1f}".format((Tmax))+'\n')
-        #     f.write('      Number of segments                             '+"{0:10.0f}".format((numseg))+'\n')
-        #     if numseg == 1:
-        #         f.write('      Geothermal gradient (deg.C/km)                   '+"{0:10.1f}".format((gradient[0]*1E3))+'\n')
-        #     elif numseg == 2:
-        #         f.write('      Segment 1 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[0]*1E3))+'\n')
-        #         f.write('      Segment 1 thickness (km)                       '+"{0:10.0f}".format((layerthickness[0]/1E3))+'\n')
-        #         f.write('      Segment 2 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[1]*1E3))+'\n')
-        #     elif numseg == 3:
-        #         f.write('      Segment 1 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[0]*1E3))+'\n')
-        #         f.write('      Segment 1 thickness (km)                       '+"{0:10.0f}".format((layerthickness[0]/1E3))+'\n')
-        #         f.write('      Segment 2 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[1]*1E3))+'\n')
-        #         f.write('      Segment 2 thickness (km)                       '+"{0:10.0f}".format((layerthickness[1]/1E3))+'\n')
-        #         f.write('      Segment 3 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[2]*1E3))+'\n')
-        #     elif numseg == 4:
-        #         f.write('      Segment 1 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[0]*1E3))+'\n')
-        #         f.write('      Segment 1 thickness (km)                       '+"{0:10.0f}".format((layerthickness[0]/1E3))+'\n')
-        #         f.write('      Segment 2 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[1]*1E3))+'\n')
-        #         f.write('      Segment 2 thickness (km)                       '+"{0:10.0f}".format((layerthickness[1]/1E3))+'\n')
-        #         f.write('      Segment 3 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[2]*1E3))+'\n')
-        #         f.write('      Segment 3 thickness (km)                       '+"{0:10.0f}".format((layerthickness[2]/1E3))+'\n')
-        #         f.write('      Segment 4 geothermal gradient (deg.C/km)         '+"{0:10.1f}".format((gradient[3]*1E3))+'\n')
-
-        #     f.write('\n')
-        #     f.write('\n')
-        #     f.write('                           ***RESERVOIR PARAMETERS***\n')
-        #     f.write('\n')
-        #     if resoption == 1:
-        #         f.write("      Reservoir Model = Multiple Parallel Fractures Model\n")
-        #     elif resoption == 2:
-        #         f.write("      Reservoir Model = 1-D Linear Heat Sweep Model\n")
-        #     elif resoption == 3:
-        #         f.write("      Reservoir Model = Single Fracture m/A Thermal Drawdown Model\n")
-        #         f.write("      m/A Drawdown Parameter (kg/s/m^2)                       " + "{0:.5f}".format(drawdp)+"\n" )
-        #     elif resoption == 4:
-        #         f.write("      Reservoir Model = Annual Percentage Thermal Drawdown Model\n")
-        #         f.write("      Annual Thermal Drawdown (%/year)                        " + "{0:.3f}".format(drawdp*100) + "\n" )
-        #     elif resoption == 5:
-        #         f.write("      Reservoir Model = User-Provided Temperature Profile\n")
-        #     elif resoption == 6:
-        #         f.write("      Reservoir Model = TOUGH2 Simulator\n")
-
-        #     f.write("      Bottom-hole temperature (deg.C)                   "+"{0:10.2f}".format((Trock))+'\n')
-        #     if resoption >3:
-        #         f.write('      Warning: the reservoir dimensions and thermo-physical properties \n')
-        #         f.write('               listed below are default values if not provided by the user.   \n')
-        #         f.write('               They are only used for calculating remaining heat content.  \n')
-
-        #     if resoption == 1 or resoption == 2:
-        #         if fracshape == 1:
-        #             f.write('      Fracture model = circular fracture with known area \n')
-        #             f.write("      Well seperation = fracture diameter (m)           "+"{0:10.2f}".format(fracheight)+'\n')
-        #         elif fracshape == 2:
-        #             f.write('      Fracture model = circular fracture with known diameter\n')
-        #             f.write("      Well seperation = fracture diameter (m)           "+"{0:10.2f}".format(fracheight)+'\n')
-        #         elif fracshape == 3:
-        #             f.write('      Fracture model = square fracture with known fracture height\n')
-        #             f.write("      Well seperation = fracture height (m)             "+"{0:10.2f}".format(fracheight)+'\n')
-        #         elif fracshape == 4:
-        #             f.write('      Fracture model = rectangular fracture with known fracture height and width\n')
-        #             f.write("      Well seperation = fracture height (m)             "+"{0:10.2f}".format(fracheight)+'\n')
-        #             f.write("      Fracture width (m)                                "+"{0:10.2f}".format(fracwidth)+'\n')
-        #         f.write("      Fracture area (m^2)                            "+"{0:10.0f}".format(fracarea)+'\n')
-        #     if resvoloption == 1:
-        #         f.write('      Reservoir volume calculated with fracture separation and number of fractures as input\n')
-        #     elif resvoloption == 2:
-        #         f.write('      Number of fractures calculated with reservoir volume and fracture separation as input\n')
-        #     elif resvoloption == 3:
-        #         f.write('      Fracture separation calculated with reservoir volume and number of fractures as input\n')
-        #     elif resvoloption == 4:
-        #         f.write('      Reservoir volume provided as input\n')
-        #     if resvoloption in [1,2,3]:
-        #         f.write("      Number of fractures                               "+"{0:10.2f}".format(fracnumb)+'\n')
-        #         f.write("      Fracture separation (m)                           "+"{0:10.2f}".format(fracsep)+'\n')
-        #     f.write("      Reservoir volume (m^3)                         "+"{0:10.0f}".format(resvol)+'\n')
-        #     if impedancemodelused == 1:
-        #         f.write("      Reservoir impedance (GPa/m^3/s)                   "+"{0:10.2f}".format((impedance/1000))+'\n')
-        #     else:
-        #         f.write("      Reservoir hydrostatic pressure (kPa)              "+"{0:10.2f}".format(Phydrostatic)+'\n')
-        #         f.write("      Plant outlet pressure (kPa)                       "+"{0:10.2f}".format(Pplantoutlet)+'\n')
-        #         if productionwellpumping == 1:
-        #             f.write("      Production wellhead pressure (kPa)                "+"{0:10.2f}".format(Pprodwellhead)+'\n')
-        #             f.write("      Productivity Index (kg/s/bar)                     "+"{0:10.2f}".format(PI)+'\n')
-        #         f.write("      Injectivity Index (kg/s/bar)                      "+"{0:10.2f}".format(II)+'\n')
-
-        #     f.write("      Reservoir density (kg/m^3)                        "+"{0:10.2f}".format((rhorock))+'\n')
-        #     if rameyoptionprod == 1 or resoption in [1,2,3,6]:
-        #         f.write("      Reservoir thermal conductivity (W/m/K)            "+"{0:10.2f}".format((krock))+'\n')
-        #     f.write("      Reservoir heat capacity (J/kg/K)                  "+"{0:10.2f}".format((cprock))+'\n')
-        #     if resoption == 2 or (resoption == 6 and usebuiltintough2model == 1):
-        #         f.write("      Reservoir porosity (%)                            "+"{0:10.2f}".format((porrock*100))+'\n')
-        #     if resoption == 6 and usebuiltintough2model == 1:
-        #         f.write("      Reservoir permeability (m^2)                      "+"{0:10.2E}".format(permrock)+'\n')
-        #         f.write("      Reservoir thickness (m)                           "+"{0:10.2f}".format(resthickness)+'\n')
-        #         f.write("      Reservoir width (m)                               "+"{0:10.2f}".format(reswidth)+'\n')
-        #         f.write("      Well separation (m)                               "+"{0:10.2f}".format(wellsep)+'\n')
-
-        #     f.write('\n')
-        #     f.write('\n')
-        #     f.write('                          ***CAPITAL COSTS (M$)***\n')
-        #     f.write('\n')
-        #     if totalcapcostvalid == 0:
-        #         f.write('      Drilling and completion costs                     '+"{0:10.2f}".format((Cwell))+'\n')
-        #         f.write('      Drilling and completion costs per well            '+"{0:10.2f}".format((Cwell/(nprod+ninj)))+'\n')
-        #         f.write('      Stimulation costs                                 '+"{0:10.2f}".format((Cstim))+'\n')
-        #         f.write('      Surface power plant costs                         '+"{0:10.2f}".format((Cplant))+'\n')
-        #         f.write('      Field gathering system costs                      '+"{0:10.2f}".format((Cgath))+'\n')
-        #         if pipinglength > 0:
-        #             f.write('      Transmission pipeline cost                        '+"{0:10.2f}".format((Cpiping))+'\n')
-        #         f.write('      Total surface equipment costs                     '+"{0:10.2f}".format((Cplant+Cgath))+'\n')
-        #         f.write('      Exploration costs                                 '+"{0:10.2f}".format((Cexpl))+'\n')
-        #     if totalcapcostvalid == 1 and redrill > 0:
-        #         f.write('      Drilling and completion costs (for redrilling)    '+"{0:10.2f}".format((Cwell))+'\n')
-        #         f.write('      Drilling and completion costs per redrilled well  '+"{0:10.2f}".format((Cwell/(nprod+ninj)))+'\n')
-        #         f.write('      Stimulation costs (for redrilling)                '+"{0:10.2f}".format((Cstim))+'\n')
-        #     f.write('      Total capital costs                               '+"{0:10.2f}".format((Ccap))+'\n')
-
-        #     if econmodel == 1:
-        #         f.write('      Annualized capital costs                          '+"{0:10.2f}".format((Ccap*(1+inflrateconstruction)*FCR))+'\n')
-
-
-
-        #     f.write('\n')
-        #     f.write('\n')
-        #     f.write('                ***OPERATING AND MAINTENANCE COSTS (M$/yr)***\n')
-        #     f.write('\n')
-        #     if oamtotalfixedvalid == 0:
-        #         f.write('      Wellfield maintenance costs                       '+"{0:10.2f}".format((Coamwell))+'\n')
-        #         f.write('      Power plant maintenance costs                     '+"{0:10.2f}".format((Coamplant))+'\n')
-        #         f.write('      Water costs                                       '+"{0:10.2f}".format((Coamwater))+'\n')
-        #         if enduseoption == 2:
-        #             f.write('      Average annual pumping costs                      '+"{0:10.2f}".format((averageannualpumpingcosts))+'\n')
-        #             f.write('      Total operating and maintenance costs             '+"{0:10.2f}".format((Coam+averageannualpumpingcosts))+'\n')
-        #         else:
-        #             f.write('      Total operating and maintenance costs             '+"{0:10.2f}".format((Coam))+'\n')
-
-
-        #     f.write('\n')
-        #     f.write('\n')
-        #     f.write('                           ***POWER GENERATION RESULTS***\n')
-        #     f.write('\n')
-        #     if enduseoption == 1 or enduseoption > 2: #there is electricity component
-        #         f.write('      Initial geofluid availability (MWe/(kg/s)         '+"{0:10.2f}".format((Availability[0]))+'\n')
-        #         f.write('      Initial net power generation (MWe)                '+"{0:10.2f}".format((NetElectricityProduced[0]))+'\n')
-        #         f.write('      Average net power generation (MWe)                '+"{0:10.2f}".format(np.average(NetElectricityProduced))+'\n')
-        #         f.write('      Initial pumping power/net installed power (%)     '+"{0:10.2f}".format((PumpingPower[0]/NetElectricityProduced[0]*100))+'\n')
-        #         f.write('      Average Annual Net Electricity Generation (GWh/yr)'+"{0:10.2f}".format(np.average(NetkWhProduced/1E6))+'\n')
-        #     if enduseoption > 1: #there is direct-use component
-        #         f.write('      Initial direct-use heat production (MWth)         '+"{0:10.2f}".format((HeatProduced[0]))+'\n')
-        #         f.write('      Average direct-use heat production (MWth)         '+"{0:10.2f}".format(np.average(HeatProduced))+'\n')
-        #         f.write('      Average annual heat production (GWh/yr)           '+"{0:10.2f}".format(np.average(HeatkWhProduced/1E6))+'\n')
-
-        #     if impedancemodelused == 1:
-        #         f.write('      Average total geofluid pressure drop (kPa)       '+"{0:10.1f}".format(np.average(DP))+'\n')
-        #         f.write('      Average injection well pressure drop (kPa)       '+"{0:10.1f}".format(np.average(DP1))+'\n')
-        #         f.write('      Average reservoir pressure drop (kPa)            '+"{0:10.1f}".format(np.average(DP2))+'\n')
-        #         f.write('      Average production well pressure drop (kPa)      '+"{0:10.1f}".format(np.average(DP3))+'\n')
-        #         f.write('      Average buoyancy correction (kPa)                '+"{0:10.1f}".format(np.average(DP4))+'\n')
-        #     else:
-        #         f.write('      Average injection well pump pressure drop (kPa)       '+"{0:10.1f}".format(np.average(DP1))+'\n')
-        #         if productionwellpumping == 1:
-        #             f.write('      Average production well pump pressure drop (kPa)      '+"{0:10.1f}".format(np.average(DP3))+'\n')
-
-
-        #     f.write('\n')
-        #     f.write('                                        ******************************\n')
-        #     f.write('                                        *  POWER GENERATION PROFILE  *\n')
-        #     f.write('                                        ******************************\n')
-        #     if enduseoption == 1:   #only electricity
-        #         f.write('  YEAR            THERMAL                    GEOFLUID                    PUMP                    NET                    FIRST LAW\n')
-        #         f.write('                  DRAWDOWN                  TEMPERATURE                  POWER                  POWER                   EFFICIENCY\n')
-        #         f.write('                                              (deg C)                    (MWe)                  (MWe)                       (%)\n')
-        #         for i in range(0, plantlifetime+1):
-        #             f.write('  {0:2.0f}              {1:8.4f}                   {2:8.2f}                  {3:8.4f}               {4:8.4f}                   {5:8.4f}'.format(i, ProducedTemperature[i*timestepsperyear]/ProducedTemperature[0], ProducedTemperature[i*timestepsperyear], PumpingPower[i*timestepsperyear], NetElectricityProduced[i*timestepsperyear], FirstLawEfficiency[i*timestepsperyear]*100)+'\n')
-        #     elif enduseoption == 2: #only direct-use
-        #         f.write('  YEAR            THERMAL                    GEOFLUID                    PUMP                    NET\n')
-        #         f.write('                  DRAWDOWN                  TEMPERATURE                  POWER                   HEAT\n')
-        #         f.write('                                              (deg C)                    (MWe)                  (MWth)\n')
-        #         for i in range(0, plantlifetime+1):
-        #             f.write('  {0:2.0f}              {1:8.4f}                   {2:8.2f}                  {3:8.4f}               {4:8.4f}'.format(i, ProducedTemperature[i*timestepsperyear]/ProducedTemperature[0], ProducedTemperature[i*timestepsperyear], PumpingPower[i*timestepsperyear], HeatProduced[i*timestepsperyear])+'\n')
-        #     elif enduseoption > 2:  #both electricity and direct-use
-        #         f.write('  YEAR            THERMAL                    GEOFLUID                    PUMP                    NET                     NET                    FIRST LAW\n')
-        #         f.write('                  DRAWDOWN                  TEMPERATURE                  POWER                  POWER                    HEAT                   EFFICIENCY\n')
-        #         f.write('                                              (deg C)                    (MWe)                  (MWe)                   (MWth)                      (%)\n')
-        #         for i in range(0, plantlifetime+1):
-        #             f.write('  {0:2.0f}              {1:8.4f}                   {2:8.2f}                  {3:8.4f}               {4:8.4f}                   {5:8.4f}                    {6:8.4f}'.format(i, ProducedTemperature[i*timestepsperyear]/ProducedTemperature[0], ProducedTemperature[i*timestepsperyear], PumpingPower[i*timestepsperyear], NetElectricityProduced[i*timestepsperyear],HeatProduced[i*timestepsperyear],FirstLawEfficiency[i*timestepsperyear]*100)+'\n')
-        #     f.write('\n')
-
-        #     f.write('\n')
-        #     f.write('                              ***************************************************************\n')
-        #     f.write('                              *  HEAT AND/OR ELECTRICITY EXTRACTION AND GENERATION PROFILE  *\n')
-        #     f.write('                              ***************************************************************\n')
-        #     if enduseoption == 1:  #only electricity
-        #         f.write('  YEAR             ELECTRICITY                   HEAT                RESERVOIR            PERCENTAGE OF\n')
-        #         f.write('                    PROVIDED                   EXTRACTED            HEAT CONTENT        TOTAL HEAT MINED\n')
-        #         f.write('                   (GWh/year)                  (GWh/year)            (10^15 J)                 (%)\n')
-        #         for i in range(0, plantlifetime):
-        #             f.write('  {0:2.0f}              {1:8.1f}                    {2:8.1f}              {3:8.2f}               {4:8.2f}'.format(i+1, NetkWhProduced[i]/1E6, HeatkWhExtracted[i]/1E6, RemainingReservoirHeatContent[i], (InitialReservoirHeatContent-RemainingReservoirHeatContent[i])*100/InitialReservoirHeatContent)+'\n')
-        #     elif enduseoption == 2: #only direct-use
-        #         f.write('  YEAR               HEAT                       HEAT                RESERVOIR            PERCENTAGE OF\n')
-        #         f.write('                    PROVIDED                   EXTRACTED            HEAT CONTENT        TOTAL HEAT MINED\n')
-        #         f.write('                   (GWh/year)                  (GWh/year)            (10^15 J)                 (%)\n')
-        #         for i in range(0, plantlifetime):
-        #             f.write('  {0:2.0f}              {1:8.1f}                    {2:8.1f}              {3:8.2f}               {4:8.2f}'.format(i+1, HeatkWhProduced[i]/1E6, HeatkWhExtracted[i]/1E6, RemainingReservoirHeatContent[i], (InitialReservoirHeatContent-RemainingReservoirHeatContent[i])*100/InitialReservoirHeatContent)+'\n')
-        #     elif enduseoption > 2:  #both electricity and direct-use
-        #         f.write('  YEAR               HEAT                   ELECTRICITY                  HEAT                RESERVOIR            PERCENTAGE OF\n')
-        #         f.write('                    PROVIDED                 PROVIDED                  EXTRACTED            HEAT CONTENT        TOTAL HEAT MINED\n')
-        #         f.write('                   (GWh/year)               (GWh/year)                 (GWh/year)            (10^15 J)                 (%)\n')
-        #         for i in range(0, plantlifetime):
-        #             f.write('  {0:2.0f}              {1:8.1f}                 {2:8.1f}                    {3:8.2f}              {4:8.2f}               {5:8.2f}'.format(i+1, HeatkWhProduced[i]/1E6, NetkWhProduced[i]/1E6, HeatkWhExtracted[i]/1E6, RemainingReservoirHeatContent[i], (InitialReservoirHeatContent-RemainingReservoirHeatContent[i])*100/InitialReservoirHeatContent)+'\n')
-        #     f.write('\n')
-
-        # #print results to console screen
-        # if printoutput == 1:
-        #     print("")
-        #     print("----------------------------")
-        #     print("GEOPHIRES Simulation Results")
-        #     print("----------------------------")
-        #     print("")
-        #     print("1. Simulation Metadata")
-        #     print("----------------------")
-        #     print(" GEOPHIRES Version = 2.0")
-        #     print(" GEOPHIRES Build Date = 2018-01-02")
-        #     currentdate = datetime.datetime.now().strftime("%Y-%m-%d")
-        #     currenttime = datetime.datetime.now().strftime("%H:%M")
-        #     print(" Simulation Date = "+ currentdate)
-        #     print(" Simulation Time = "+ currenttime)
-        #     print(" Calculation Time = "+"{0:.3f}".format((time.time()-tic)) +" s")
-
-        #     print("")
-        #     print("2. Summary of Simulation Results")
-        #     print("--------------------------------")
-        #     if printoutput == 1:
-        #         #say what type of end-use option
-        #         if enduseoption == 1:
-        #             print(" End-Use Option = Electricity")
-        #         elif enduseoption == 2:
-        #             print(" End-Use Option = Direct-Use Heat")
-        #         elif enduseoption == 31: #topping cycle
-        #             print(" End-Use Option = Cogeneration Topping Cycle")
-        #             print(" Heat sales considered as extra income")
-        #         elif enduseoption == 32: #topping cycle
-        #             print(" End-Use Option = Cogeneration Topping Cycle")
-        #             print(" Electricity sales considered as extra income")
-        #         elif enduseoption == 41: #bottoming cycle
-        #             print(" End-Use Option = Cogeneration Bottoming Cycle")
-        #             print(" Heat Sales considered as extra income")
-        #         elif enduseoption == 42: #bottoming cycle
-        #             print(" End-Use Option = Cogeneration Bottoming Cycle")
-        #             print(" Electricity sales considered as extra income")
-        #         elif enduseoption == 51: #cogen split of mass flow rate
-        #             print(" End-Use Option = Cogeneration Parallel Cycle")
-        #             print(" Heat sales considered as extra income")
-        #         elif enduseoption == 52: #cogen split of mass flow rate
-        #             print(" End-Use Option = Cogeneration Parallel Cycle")
-        #             print(" Electricity sales considered as extra income")
-        #         #say what type of power plant
-        #         if enduseoption == 1 or enduseoption > 2:
-        #             if pptype == 1:
-        #                 print(" Power Plant Type = Subcritical ORC")
-        #             elif pptype == 2:
-        #                 print(" Power Plant Type = Supercritical ORC")
-        #             elif pptype == 3:
-        #                 print(" Power Plant Type = Single-Flash")
-        #             elif pptype == 4:
-        #                 print(" Power Plant Type = Double-Flash")
-
-        #         #print(NetElectricityProduced)
-        #         if enduseoption == 1 or enduseoption > 2:
-        #             print(" Average Net Electricity Generation = " + "{0:.2f}".format(np.average(NetElectricityProduced)) +" MWe" )
-        #         if enduseoption > 1:
-        #             print(" Average Net Heat Production = " + "{0:.2f}".format(np.average(HeatProduced)) +" MWth" )
-
-        #         #print LCOE/LCOH
-        #         if enduseoption == 1:
-        #             print(" LCOE = " + "{0:.1f}".format((Price)) +" cents/kWh")
-        #         elif enduseoption == 2:
-        #             print(" LCOH = " + "{0:.1f}".format((Price)) +" $/MMBTU")
-        #         elif enduseoption % 10 == 1: #heat sales is additional income revenuw stream
-        #             print(" LCOE = " + "{0:.1f}".format((Price)) +" cents/kWh")
-        #             print(" Additional average annual revenue from heat sales = " + "{0:.1f}".format(np.average(annualheatincome)) +" M$/year")
-        #         elif enduseoption % 10 == 1: #electricity sales is additional income revenuw stream
-        #             print(" LCOH = " + "{0:.1f}".format((Price)) +" $/MMBTU")
-        #             print(" Additional average annual revenue from electricity sales = " + "{0:.1f}".format(np.average(annualelectricityincome)) +" M$/year")
-        #         #say what type of economic model is used
-        #         if econmodel == 1:
-        #             print(" Economic Model Used = Fixed Charge Rate (FCR) Model")
-        #             print(" Fixed Charge Rate (FCR) = " + "{0:.2f}".format((FCR*100))+"%")
-        #         elif econmodel == 2:
-        #             print(" Economic Model Used = Standard Levelized Cost Model")
-        #             print(" Discount Rate = " + "{0:.2f}".format((discountrate*100))+"%")
-        #         elif econmodel == 3:
-        #             print(" Economic Model Used = BICYCLE Model")
-
-        #         print("")
-        #         print("3. Reservoir Simulation Results")
-        #         print("-------------------------------")
-        #         if resoption == 1:
-        #             print(" Reservoir Model = Multiple Parallel Fractures Model")
-        #         elif resoption == 2:
-        #             print(" Reservoir Model = 1-D Linear Heat Sweep Model")
-        #         elif resoption == 3:
-        #             print(" Reservoir Model = Single Fracture m/A Thermal Drawdown Model")
-        #             print(" m/A Drawdown Parameter = " + "{0:.5f}".format(drawdp) + " kg/s/m^2" )
-        #         elif resoption == 4:
-        #             print(" Reservoir Model = Annual Percentage Thermal Drawdown Model")
-        #             print(" Annual Thermal Drawdown = " + "{0:.3f}".format(drawdp*100) + " %/year" )
-        #         elif resoption == 5:
-        #             print(" Reservoir Model = User-Provided Temperature Profile")
-        #         elif resoption == 6:
-        #             print(" Reservoir Model = TOUGH2 EOS1 Simulator")
-
-        #         print(" Number of Production Wells = " + "{0:.0f}".format((nprod)))
-        #         print(" Number of Injection Wells = " + "{0:.0f}".format((ninj)))
-        #         print(" Number of Times Redrilling = " + "{0:.0f}".format((redrill)))
-        #         print(" Well Depth = " + "{0:.1f}".format((depth)) + " m")
-        #         print(" Flow Rate per Production Well = " + "{0:.0f}".format((prodwellflowrate))+" kg/s")
-        #         print(" Initial Reservoir Temperature = " + "{0:.1f}".format(Trock) + "°C" )
-        #         print(" Maximum Production Temperature = " + "{0:.1f}".format(np.max(ProducedTemperature)) + "°C" )
-        #         print(" Average Production Temperature = " + "{0:.1f}".format(np.average(ProducedTemperature)) + "°C" )
-        #         print(" Minimum Production Temperature = " + "{0:.1f}".format(np.min(ProducedTemperature)) + "°C" )
-        #         print(" Initial Production Temperature = " + "{0:.1f}".format((ProducedTemperature[0])) +"°C" )
-        #         print(" Average Reservoir Heat Extraction = " + "{0:.2f}".format(np.average(HeatExtracted)) +" MWth" )
-        #         if rameyoptionprod == 1:
-        #             print(" Production Wellbore Heat Transmission Model = Ramey Model")
-        #             print(" Average Production Well Temperature Drop = " +"{0:.1f}".format(np.average(ProdTempDrop))  +"°C" )
-        #         elif rameyoptionprod == 0:
-        #             print(" Wellbore Heat Transmission Model = Constant Temperature Drop of " +"{0:.1f}".format(tempdropprod)  +"°C" )
-        #         if impedancemodelused == 1:
-        #             print(" Total Average Pressure Drop = "+"{0:.1f}".format(np.average(DP)) + " kPa")
-        #             print("    Average Injection Well Pressure Drop = "+"{0:.1f}".format(np.average(DP1)) +" kPa")
-        #             print("    Average Reservoir Pressure Drop = "+"{0:.1f}".format(np.average(DP2)) +" kPa")
-        #             print("    Average Production Well Pressure Drop = "+"{0:.1f}".format(np.average(DP3)) +" kPa")
-        #             print("    Average Buoyancy Pressure Drop = "+"{0:.1f}".format(np.average(DP4)) +" kPa")
-        #         else:
-        #             print(" Average Injection Well Pump Pressure Drop = "+"{0:.1f}".format(np.average(DP1)) +" kPa")
-        #             if productionwellpumping == 1:
-        #                 print(" Average Production Well Pump Pressure Drop = "+"{0:.1f}".format(np.average(DP3)) +" kPa")
-
-        #         print("")
-        #         print("4. Surface Equipment Simulation Results")
-        #         print("---------------------------------------")
-        #         if enduseoption == 1 or enduseoption > 2:
-        #             print(" Maximum Total Electricity Generation = " + "{0:.2f}".format(np.max(ElectricityProduced)) +" MWe" )
-        #             print(" Average Total Electricity Generation = " + "{0:.2f}".format(np.average(ElectricityProduced)) +" MWe" )
-        #             print(" Minimum Total Electricity Generation = " + "{0:.2f}".format(np.min(ElectricityProduced)) +" MWe" )
-        #             print(" Initial Total Electricity Generation = " + "{0:.2f}".format((ElectricityProduced[0])) +" MWe" )
-        #             print(" Maximum Net Electricity Generation = " + "{0:.2f}".format(np.max(NetElectricityProduced)) +" MWe" )
-        #             print(" Average Net Electricity Generation = " + "{0:.2f}".format(np.average(NetElectricityProduced)) +" MWe" )
-        #             print(" Minimum Net Electricity Generation = " + "{0:.2f}".format(np.min(NetElectricityProduced)) +" MWe" )
-        #             print(" Initial Net Electricity Generation = " + "{0:.2f}".format((NetElectricityProduced[0])) +" MWe" )
-        #             print(" Average Annual Total Electricity Generation = " + "{0:.2f}".format(np.average(TotalkWhProduced/1E6)) +" GWh")
-        #             print(" Average Annual Net Electricity Generation = " + "{0:.2f}".format(np.average(NetkWhProduced/1E6)) +" GWh")
-        #         if enduseoption > 1:
-        #             print(" Maximum Net Heat Production = " + "{0:.2f}".format(np.max(HeatProduced)) +" MWth" )
-        #             print(" Average Net Heat Production = " + "{0:.2f}".format(np.average(HeatProduced)) +" MWth" )
-        #             print(" Minimum Net Heat Production = " + "{0:.2f}".format(np.min(HeatProduced)) +" MWth" )
-        #             print(" Initial Net Heat Production = " + "{0:.2f}".format((HeatProduced[0])) +" MWth" )
-        #             print(" Average Annual Heat Production = " + "{0:.2f}".format(np.average(HeatkWhProduced/1E6)) +" GWh")
-        #         print(" Average Pumping Power = " + "{0:.2f}".format(np.average(PumpingPower)) +" MWe" )
-
-        #         print("")
-        #         print("5. Capital and O&M Costs")
-        #         print("------------------------")
-        #         print(" Total Capital Cost = " + "{0:.2f}".format(Ccap) +" M$" )
-        #         if totalcapcostvalid == 0:
-        #             print("   Wellfield Cost = " + "{0:.2f}".format(Cwell) +" M$" )
-        #             print("   Surface Plant Cost = " + "{0:.2f}".format(Cplant) +" M$" )
-        #             print("   Exploration Cost = " + "{0:.2f}".format(Cexpl) +" M$" )
-        #             print("   Field Gathering System Cost = " + "{0:.2f}".format(Cgath) +" M$" )
-        #             if pipinglength > 0:
-        #                 print("   Transmission Pipeline Cost = " + "{0:.2f}".format(Cpiping) +" M$" )
-        #             print("   Stimulation Cost = " + "{0:.2f}".format(Cstim) +" M$" )
-        #         if enduseoption == 2:
-        #             print(" Total O&M Cost = " + "{0:.2f}".format(Coam+averageannualpumpingcosts) +" M$/year" )
-        #         else:
-        #             print(" Total O&M Cost = " + "{0:.2f}".format(Coam) +" M$/year" )
-        #         if oamtotalfixedvalid == 0:
-        #             print("   Wellfield O&M Cost = " + "{0:.2f}".format(Coamwell) +" M$/year" )
-        #             print("   Surface Plant O&M Cost = " + "{0:.2f}".format(Coamplant) +" M$/year" )
-        #             print("   Make-Up Water O&M Cost = " + "{0:.2f}".format(Coamwater) +" M$/year" )
-        #             if enduseoption == 2:
-        #                 print("   Average annual pumping costs = " + "{0:.2f}".format(averageannualpumpingcosts) +" M$/year" )
-
-        #         print("")
-        #         print("6. Power Generation Profile")
-        #         print("---------------------------")
 
         if enduseoption == 1:   #only electricity
             print('  YEAR   THERMAL     GEOFLUID       PUMP      NET      FIRST LAW')
