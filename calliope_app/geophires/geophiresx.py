@@ -13,20 +13,12 @@ import pandas as pd
 from geophires.utils import fit_lower_bound, fit_linear_model, geophires_parametrization_analysis, generate_parameters
 import numpy as np
 
-# Define variables for ranges and steps
-depth_start = 1
-depth_stop = 5
+# Define hardcoded parameters
 depth_step = 0.1
 
 flow_rate_start = 50
 flow_rate_stop = 150
 flow_rate_step = 50
-
-wells_prod_start = 1
-wells_prod_stop = 5
-
-wells_inj_start = 1
-wells_inj_stop = 5
 
 def safe_extract(df, column_name):
     if column_name in df.columns:
@@ -58,8 +50,17 @@ class Geophires(object):
     def run(self, input_params, output_file):
 
         logger.info("\n\n\n Started Run \n\n\n")
-        
         print (f"\n\n\n {input_params} \n\n\n")
+
+        depth_start = input_params["min_reservoir_depth"]
+        depth_stop = input_params["max_reservoir_depth"]
+
+        wells_prod_start = input_params["min_production_wells"]
+        wells_prod_stop = input_params["max_production_wells"]
+
+        wells_inj_start = input_params["min_injection_wells"]
+        wells_inj_stop = input_params["max_injection_wells"]
+      
         depth_range = (depth_start, depth_stop, depth_step)
         flow_rate_range = (flow_rate_start, flow_rate_stop, flow_rate_step)
         wells_prod_range = (wells_prod_start, wells_prod_stop)  # Implicit step of 1
@@ -92,8 +93,8 @@ class Geophires(object):
         #     'Print Output to Console': 0
         # }
         base_params = {
-            'Reservoir Model': 3, 
-            'Drawdown Parameter': 0.00002,
+            'Reservoir Model': input_params["reservoir_model"], 
+            'Drawdown Parameter': input_params["drawdown_parameter"],
             'Number of Segments': input_params["number_of_segments"],
             'Gradient 1':  input_params["gradient_1"],
             'Gradient 2': input_params["gradient_2"],
@@ -119,15 +120,12 @@ class Geophires(object):
         }
 
         # set non-required parameters
-        if "thickness_grad1" in base_params.keys():
-            if base_params["thickness_grad1"] is not None:
-                base_params["Thickness 1"] = input_params["thickness_grad1"]
-        if "thickness_grad2" in input_params.keys():
-            if input_params["thickness_grad2"] is not None:
-                base_params["Thickness 2"] = input_params["thickness_grad2"]
-        if "thickness_grad3" in base_params.keys():
-            if base_params["thickness_grad3"] is not None:
-                base_params["Thickness 3"] = input_params["thickness_grad3"]
+        if input_params["thickness_grad1"] is not None:
+            base_params["Thickness 1"] = input_params["thickness_grad1"]
+        if input_params["thickness_grad2"] is not None:
+            base_params["Thickness 2"] = input_params["thickness_grad2"]
+        if input_params["thickness_grad3"] is not None:
+            base_params["Thickness 3"] = input_params["thickness_grad3"]
 
         run_parameters = generate_parameters(base_params, depth_range, flow_rate_range, wells_prod_range, wells_inj_range)
 
@@ -256,6 +254,7 @@ class Geophires(object):
         return output_params, output_file
 
     def generate_config_files(self, input_params):
+        # Is this used?
         """Generate input file-like config of geophires based on given parameters
 
         Returns

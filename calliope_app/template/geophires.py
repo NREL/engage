@@ -21,35 +21,6 @@ from template.models import Template_Type
 logger = logging.getLogger(__name__)
 
 
-def map_params(formData, geo_technology):
-    if geo_technology.lower() == "egs_chp":
-        return {
-            "reservoir_heat_capacity": 1,
-            "reservoir_density": 1,
-            "reservoir_thermal_conductivity": 1,
-            "min_reservoir_depth": 1,
-            "max_reservoir_depth": 1,
-            "min_production_wells": 1,
-            "max_production_wells": 1,
-            "min_injection_wells": 1,
-            "max_injection_wells": 1,
-            "Number_of_segments": 1,
-            "Gradient_1": 1,
-            "Gradient_2": 1,
-            "Gradient_3": 1,
-            "Gradient_4": 1,
-            "Fracture_Shape": 1,
-            "Fracture_Height": 1,  
-            "Number_of_Fractures": 1,
-            "Well_Drilling_Cost_Correlation": 1,
-            "target_prod_temp_min": 1,
-            "target_prod_temp_max": 1,
-            "lifetime": 1,
-            "thickness_grad1": 1,
-            "thickness_grad2": 1,
-            "thickness_grad3": format(formData["thickness 3"]),
-    }
-
 # Function to safely extract a column as an array, or fill with zeros if not present
 def safe_extract(df, column_name):
     if column_name in df.columns:
@@ -130,7 +101,6 @@ def geophires_request(request):
         "reservoir_thermal_conductivity": float(formData["reservoir_thermal_conductivity"]),
         "min_reservoir_depth": float(formData["min_reservoir_depth"]),
         "max_reservoir_depth": float(formData["max_reservoir_depth"]),
-        "number_of_segments": int(float(formData["number_of_segments"])),
         "gradient_1": float(formData["gradient_1"]),
         "gradient_2": float(formData["gradient_2"]),
         "gradient_3": float(formData["gradient_3"]),
@@ -141,23 +111,32 @@ def geophires_request(request):
         "well_drilling_cost_correlation": float(formData["well_drilling_cost_correlation"]),
         "target_prod_temp_min": float(formData["target_prod_temp_min"]),
         "target_prod_temp_max": float(formData["target_prod_temp_max"]),
-        "lifetime": float(formData["lifetime"]),
         "production_well_diameter": float(formData["production_well_diameter"]),
         "injection_well_diameter": float(formData["injection_well_diameter"]),
+        "lifetime": float(formData["lifetime"]),
 
         # ints
         "min_production_wells": int(formData["min_production_wells"]),
         "max_production_wells": int(formData["max_production_wells"]),
-        "min_injection_wells": float(formData["min_injection_wells"]),
-        "max_injection_wells": float(formData["max_injection_wells"]),
+        "min_injection_wells": int(formData["min_injection_wells"]),
+        "max_injection_wells": int(formData["max_injection_wells"]),
+        "number_of_segments": int(formData["number_of_segments"]),
     }
 
     # Template based params
-    if template_type and template_type.id == 1:
+    if template_type.id == 1:
         input_params["end_use_option"] = 31
         input_params["injection_temperature"] = 50
         input_params["reservoir_model"] = 3
-        input_params["drawdown_parameter"] = 0.00002
+        input_params["drawdown_parameter"] = float(0.00002)
+        input_params["circulation_pump_efficiency"] = 0.80
+        input_params["reservoir_volume_option"] = 1
+        input_params["power_plant_type"] = 1
+    elif template_type.id == 2:
+        input_params["end_use_option"] = 31
+        input_params["injection_temperature"] = 50
+        input_params["reservoir_model"] = 4
+        input_params["drawdown_parameter"] = float(0.003)
         input_params["circulation_pump_efficiency"] = 0.80
         input_params["reservoir_volume_option"] = 1
         input_params["power_plant_type"] = 1
