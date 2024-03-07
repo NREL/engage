@@ -55,7 +55,7 @@
         "fields": {
             "template_type": 1,
             "template_loc_1": 2,
-            "template_loc_2": 1.0,
+            "template_loc_2": 1,
             "template_tech": 7
         }
     },
@@ -65,7 +65,7 @@
         "fields": {
             "template_type": 1,
             "template_loc_1": 1,
-            "template_loc_2": 5.0,
+            "template_loc_2": 5,
             "template_tech": 9
         }
     },
@@ -75,7 +75,7 @@
         "fields": {
             "template_type": 1,
             "template_loc_1": 1,
-            "template_loc_2": 3.0,
+            "template_loc_2": 3,
             "template_tech": 8
         }
     },
@@ -85,8 +85,98 @@
         "fields": {
             "template_type": 1,
             "template_loc_1": 1,
-            "template_loc_2": 4.0,
+            "template_loc_2": 4,
             "template_tech": 8
+        }
+    },
+    {
+        "pk": 10,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 2,
+            "template_loc_1": 6,
+            "template_loc_2": null,
+            "template_tech": 11
+        }
+    },
+    {
+        "pk": 11,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 2,
+            "template_loc_1": 7,
+            "template_loc_2": null,
+            "template_tech": 10
+        }
+    },
+    {
+        "pk": 12,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 2,
+            "template_loc_1": 8,
+            "template_loc_2": null,
+            "template_tech": 14
+        }
+    },
+    {
+        "pk": 13,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 2,
+            "template_loc_1": 9,
+            "template_loc_2": null,
+            "template_tech": 13
+        }
+    },
+    {
+        "pk": 14,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 2,
+            "template_loc_1": 10,
+            "template_loc_2": null,
+            "template_tech": 14
+        }
+    },
+    {
+        "pk": 15,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 2,
+            "template_loc_1": 7,
+            "template_loc_2": 6,
+            "template_tech": 16
+        }
+    },
+    {
+        "pk": 16,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 2,
+            "template_loc_1": 6,
+            "template_loc_2": 10,
+            "template_tech": 18
+        }
+    },
+    {
+        "pk": 17,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 2,
+            "template_loc_1": 6,
+            "template_loc_2": 8,
+            "template_tech": 17
+        }
+    },
+    {
+        "pk": 18,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 2,
+            "template_loc_1": 6,
+            "template_loc_2": 9,
+            "template_tech": 17
         }
     }
 ]

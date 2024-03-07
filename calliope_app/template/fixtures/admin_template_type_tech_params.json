@@ -4,21 +4,12 @@
         "model": "template.template_type_tech_param",
         "fields": {
             "template_tech": 1,
-            "parameter": 6,
-            "equation": "Power"
-        }
-    },
-    {
-        "pk": 2,
-        "model": "template.template_type_tech_param",
-        "fields": {
-            "template_tech": 1,
-            "parameter": 5,
+            "parameter": 4,
             "equation": "Thermal"
         }
     },
     {
-        "pk": 3,
+        "pk": 2,
         "model": "template.template_type_tech_param",
         "fields": {
             "template_tech": 2,
@@ -27,7 +18,7 @@
         }
     },
     {
-        "pk": 4,
+        "pk": 3,
         "model": "template.template_type_tech_param",
         "fields": {
             "template_tech": 2,
@@ -36,7 +27,7 @@
         }
     },
     {
-        "pk": 5,
+        "pk": 4,
         "model": "template.template_type_tech_param",
         "fields": {
             "template_tech": 2,
@@ -45,7 +36,7 @@
         }
     },
     {
-        "pk": 6,
+        "pk": 5,
         "model": "template.template_type_tech_param",
         "fields": {
             "template_tech": 2,
@@ -54,7 +45,7 @@
         }
     },
     {
-        "pk": 7,
+        "pk": 6,
         "model": "template.template_type_tech_param",
         "fields": {
             "template_tech": 2,
@@ -63,11 +54,218 @@
         }
     },
     {
-        "pk": 8,
+        "pk": 7,
         "model": "template.template_type_tech_param",
         "fields": {
             "template_tech": 2,
             "parameter": 139,
+            "equation": "Power"
+        }
+    },
+    {
+        "pk": 8,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 3,
+            "parameter": 5,
+            "equation": "Heat"
+        }
+    },
+    {
+        "pk": 9,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 3,
+            "parameter": 6,
+            "equation": "Demand MMBTU"
+        }
+    },
+    {
+        "pk": 10,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 4,
+            "parameter": 4,
+            "equation": "Demand MMBTU"
+        }
+    },
+    {
+        "pk": 11,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 5,
+            "parameter": 4,
+            "equation": "Demand MMBTU"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 6,
+            "parameter": 4,
+            "equation": "Power"
+        }
+    },
+    {
+        "pk": 13,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 7,
+            "parameter": 4,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 14,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 8,
+            "parameter": 4,
+            "equation": "Demand MMBTU"
+        }
+    },
+    {
+        "pk": 15,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 9,
+            "parameter": 4,
+            "equation": "Power"
+        }
+    },
+    {
+        "pk": 16,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 10,
+            "parameter": 4,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 17,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 11,
+            "parameter": 7,
+            "equation": "{'carrier_out_2': {'Heat': ||heat_prod_to_therm_ext_ratio||}, 'carrier_in': {'Thermal': ||therm_ext_to_therm_ext_ratio||}, 'carrier_out': {'Power': ||elec_prod_to_therm_ext_ratio||}}"
+        }
+    },
+    {
+        "pk": 18,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 11,
+            "parameter": 70,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 19,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 11,
+            "parameter": 71,
+            "equation": "Power"
+        }
+    },
+    {
+        "pk": 20,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 11,
+            "parameter": 67,
+            "equation": "Heat"
+        }
+    },
+    {
+        "pk": 21,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 11,
+            "parameter": 138,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 22,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 11,
+            "parameter": 139,
+            "equation": "Power"
+        }
+    },
+    {
+        "pk": 23,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 12,
+            "parameter": 5,
+            "equation": "Heat"
+        }
+    },
+    {
+        "pk": 24,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 12,
+            "parameter": 6,
+            "equation": "Demand MMBTU"
+        }
+    },
+    {
+        "pk": 25,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 13,
+            "parameter": 4,
+            "equation": "Demand MMBTU"
+        }
+    },
+    {
+        "pk": 26,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 14,
+            "parameter": 4,
+            "equation": "Demand MMBTU"
+        }
+    },
+    {
+        "pk": 27,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 15,
+            "parameter": 4,
+            "equation": "Power"
+        }
+    },
+    {
+        "pk": 28,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 16,
+            "parameter": 4,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 29,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 17,
+            "parameter": 4,
+            "equation": "Demand MMBTU"
+        }
+    },
+    {
+        "pk": 30,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 18,
+            "parameter": 4,
             "equation": "Power"
         }
     }

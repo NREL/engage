@@ -87,7 +87,6 @@ def geophires_request(request):
     POST: /geophires/
     """
     formData = json.loads(request.POST["form_data"])
-    print ("from front end tempalte_type " + str(formData["templateType"]) + "\n\n")
     template_type = Template_Type.objects.filter(id=formData["templateType"]).first()
     payload = {"message": "starting runnning geophires"}
     input_params = {
@@ -104,10 +103,10 @@ def geophires_request(request):
         "gradient_1": float(formData["gradient_1"]),
         "gradient_2": float(formData["gradient_2"]),
         "gradient_3": float(formData["gradient_3"]),
-        "gradient_4": float(formData["gradient_4"]),
-        "fracture_shape": float(formData["fracture_shape"]),
-        "fracture_height": float(formData["fracture_height"]),
-        "number_of_fractures": float(formData["number_of_fractures"]),
+        "gradient_4": float(formData["gradient_4"]), 
+        "thickness_grad1": float(formData["thickness_grad1"]),
+        "thickness_grad2": float(formData["thickness_grad2"]),
+        "thickness_grad3": float(formData["thickness_grad3"]), 
         "well_drilling_cost_correlation": float(formData["well_drilling_cost_correlation"]),
         "target_prod_temp_min": float(formData["target_prod_temp_min"]),
         "target_prod_temp_max": float(formData["target_prod_temp_max"]),
@@ -116,12 +115,14 @@ def geophires_request(request):
         "lifetime": float(formData["lifetime"]),
 
         # ints
-        "min_production_wells": int(formData["min_production_wells"]),
+        "min_production_wells": int(formData["min_production_wells"]), 
         "max_production_wells": int(formData["max_production_wells"]),
         "min_injection_wells": int(formData["min_injection_wells"]),
         "max_injection_wells": int(formData["max_injection_wells"]),
         "number_of_segments": int(formData["number_of_segments"]),
     }
+
+    #input_params["number_of_segments"] = formData["number_of_segments"] if formData["number_of_segments"] is not None else ""
 
     # Template based params
     if template_type.id == 1:
@@ -132,6 +133,9 @@ def geophires_request(request):
         input_params["circulation_pump_efficiency"] = 0.80
         input_params["reservoir_volume_option"] = 1
         input_params["power_plant_type"] = 1
+        input_params["fracture_shape"] = float(formData["fracture_shape"])
+        input_params["fracture_height"] = float(formData["fracture_height"])
+        input_params["number_of_fractures"] = float(formData["number_of_fractures"])
     elif template_type.id == 2:
         input_params["end_use_option"] = 31
         input_params["injection_temperature"] = 50
@@ -140,6 +144,11 @@ def geophires_request(request):
         input_params["circulation_pump_efficiency"] = 0.80
         input_params["reservoir_volume_option"] = 1
         input_params["power_plant_type"] = 1
+        input_params['ramey_production_wellbore_model'] = 0,
+        input_params['production_wellbore_temperature_drop'] = 5,
+        input_params['injection_wellbore_temperature_gain'] = 3,
+        input_params['water_loss_fraction'] = 0.02,
+        input_params['injectivity_index'] = 5,
 
     if None in (formData["reservoir_heat_capacity"],
         input_params["reservoir_density"],
@@ -151,9 +160,6 @@ def geophires_request(request):
         input_params["gradient_2"],
         input_params["gradient_3"],
         input_params["gradient_4"],
-        input_params["fracture_shape"],
-        input_params["fracture_height"],
-        input_params["number_of_fractures"],
         input_params["well_drilling_cost_correlation"],
         input_params["target_prod_temp_min"],
         input_params["target_prod_temp_max"],  
@@ -174,11 +180,11 @@ def geophires_request(request):
         raise ValidationError(f"Error: Required field not provided for GEOPHIRES.")
 
     try:
-        job_meta = Job_Meta.objects.filter(inputs=input_params).first()
+        job_input_params = input_params
+        job_input_params["template_type"] = template_type.id
+        job_meta = Job_Meta.objects.filter(inputs=job_input_params).first()
         if job_meta is None:
             payload["jobPreexisting"] = False
-            job_input_params = input_params
-            job_input_params["template_type"] = template_type.id
             job_meta = Job_Meta.objects.create(inputs=job_input_params, status=task_status.RUNNING, type="geophires")
             async_result = run_geophires.apply_async(
                 kwargs={

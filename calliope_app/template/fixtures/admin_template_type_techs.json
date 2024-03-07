@@ -79,5 +79,86 @@
             "template_type": 1,
             "abstract_tech": 5
         }
+    },
+    {
+        "pk": 10,
+        "model": "template.template_type_tech",
+        "fields": {
+            "name": "Hydrothermal Geothermal Reservoir",
+            "template_type": 2,
+            "abstract_tech": 1
+        }
+    },
+    {
+        "pk": 11,
+        "model": "template.template_type_tech",
+        "fields": {
+            "name": "Hydrothermal Plant",
+            "template_type": 2,
+            "abstract_tech": 7
+        }
+    },
+    {
+        "pk": 12,
+        "model": "template.template_type_tech",
+        "fields": {
+            "name": "Conversion MWth to MMBTU",
+            "template_type": 2,
+            "abstract_tech": 6
+        }
+    },
+    {
+        "pk": 13,
+        "model": "template.template_type_tech",
+        "fields": {
+            "name": "Heat Sink",
+            "template_type": 2,
+            "abstract_tech": 4
+        }
+    },
+    {
+        "pk": 14,
+        "model": "template.template_type_tech",
+        "fields": {
+            "name": "Heat Demand",
+            "template_type": 2,
+            "abstract_tech": 3
+        }
+    },
+    {
+        "pk": 15,
+        "model": "template.template_type_tech",
+        "fields": {
+            "name": "Power Demand",
+            "template_type": 2,
+            "abstract_tech": 3
+        }
+    },
+    {
+        "pk": 16,
+        "model": "template.template_type_tech",
+        "fields": {
+            "name": "Reservoir Transmission",
+            "template_type": 2,
+            "abstract_tech": 5
+        }
+    },
+    {
+        "pk": 17,
+        "model": "template.template_type_tech",
+        "fields": {
+            "name": "Hydrothermal to Demand Transmission",
+            "template_type": 2,
+            "abstract_tech": 5
+        }
+    },
+    {
+        "pk": 18,
+        "model": "template.template_type_tech",
+        "fields": {
+            "name": "Hydrothermal to Power Transmission",
+            "template_type": 2,
+            "abstract_tech": 5
+        }
     }
 ]

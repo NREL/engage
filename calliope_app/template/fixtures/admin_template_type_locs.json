@@ -6,7 +6,7 @@
             "name": "CHP_Plant",
             "template_type": 1,
             "latitude_offset": 10,
-            "longitude_offset": 5
+            "longitude_offset": 0
         }
     },
     {
@@ -15,8 +15,8 @@
         "fields": {
             "name": "Geothermal_Reservoir",
             "template_type": 1,
-            "latitude_offset": 30,
-            "longitude_offset": 15
+            "latitude_offset": 0,
+            "longitude_offset": 0
         }
     },
     {
@@ -25,8 +25,8 @@
         "fields": {
             "name": "Heat_Demand",
             "template_type": 1,
-            "latitude_offset": 40,
-            "longitude_offset": 20
+            "latitude_offset": 20,
+            "longitude_offset": -10
         }
     },
     {
@@ -35,8 +35,8 @@
         "fields": {
             "name": "Heat_Sink",
             "template_type": 1,
-            "latitude_offset": 50,
-            "longitude_offset": 25
+            "latitude_offset": 10,
+            "longitude_offset": -10
         }
     },
     {
@@ -45,8 +45,58 @@
         "fields": {
             "name": "Power_Demand",
             "template_type": 1,
-            "latitude_offset": 60,
-            "longitude_offset": 30
+            "latitude_offset": 20,
+            "longitude_offset": 10
+        }
+    },
+    {
+        "pk": 6,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "CHP_Plant",
+            "template_type": 2,
+            "latitude_offset": 10,
+            "longitude_offset": 0
+        }
+    },
+    {
+        "pk": 7,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Geothermal_Reservoir",
+            "template_type": 2,
+            "latitude_offset": 0,
+            "longitude_offset": 0
+        }
+    },
+    {
+        "pk": 8,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Heat_Demand",
+            "template_type": 2,
+            "latitude_offset": 20,
+            "longitude_offset": -10
+        }
+    },
+    {
+        "pk": 9,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Heat_Sink",
+            "template_type": 2,
+            "latitude_offset": 10,
+            "longitude_offset": -10
+        }
+    },
+    {
+        "pk": 10,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Power_Demand",
+            "template_type": 2,
+            "latitude_offset": 20,
+            "longitude_offset": 10
         }
     }
 ]
