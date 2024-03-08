@@ -247,18 +247,6 @@ def geophires_outputs(request):
     df = pd.read_csv(output_file)
     logger.info(f"\n\n\n ------- Read DF ------ \n\n\n")
     
-
-    # TODO update outputs to be these, np.array() for all of them?
-    # max_elec_gen
-    # elec_cap_vs_surface_cost
-    # elec_cap_vs_surface_o&m_cost
-    # max_avg_therm_ext
-    # therm_cap_vs_reservoir_cost
-    # therm_cap_vs_reservoir_om_cost
-    # elec_prod_to_therm_ext_ratio
-    # heat_prod_to_therm_ext_ratio
-    # therm_ext_to_therm_ext_ratio
-    
     # Prepare data for plots
     cmap = plt.get_cmap('plasma')
     unique_prod_wells = df['Number of Prod Wells'].unique()
