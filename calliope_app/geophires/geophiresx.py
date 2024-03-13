@@ -13,20 +13,12 @@ import pandas as pd
 from geophires.utils import fit_lower_bound, fit_linear_model, geophires_parametrization_analysis, generate_parameters
 import numpy as np
 
-# Define variables for ranges and steps
-depth_start = 1
-depth_stop = 5
+# Define hardcoded parameters
 depth_step = 0.1
 
 flow_rate_start = 50
 flow_rate_stop = 150
 flow_rate_step = 50
-
-wells_prod_start = 1
-wells_prod_stop = 5
-
-wells_inj_start = 1
-wells_inj_stop = 5
 
 def safe_extract(df, column_name):
     if column_name in df.columns:
@@ -58,8 +50,17 @@ class Geophires(object):
     def run(self, input_params, output_file):
 
         logger.info("\n\n\n Started Run \n\n\n")
-        
         print (f"\n\n\n {input_params} \n\n\n")
+
+        depth_start = input_params["min_reservoir_depth"]
+        depth_stop = input_params["max_reservoir_depth"]
+
+        wells_prod_start = input_params["min_production_wells"]
+        wells_prod_stop = input_params["max_production_wells"]
+
+        wells_inj_start = input_params["min_injection_wells"]
+        wells_inj_stop = input_params["max_injection_wells"]
+      
         depth_range = (depth_start, depth_stop, depth_step)
         flow_rate_range = (flow_rate_start, flow_rate_stop, flow_rate_step)
         wells_prod_range = (wells_prod_start, wells_prod_stop)  # Implicit step of 1
@@ -92,8 +93,8 @@ class Geophires(object):
         #     'Print Output to Console': 0
         # }
         base_params = {
-            'Reservoir Model': 3, 
-            'Drawdown Parameter': 0.00002,
+            'Reservoir Model': input_params["reservoir_model"], 
+            'Drawdown Parameter': input_params["drawdown_parameter"],
             'Number of Segments': input_params["number_of_segments"],
             'Gradient 1':  input_params["gradient_1"],
             'Gradient 2': input_params["gradient_2"],
@@ -106,10 +107,7 @@ class Geophires(object):
             'Reservoir Thermal Conductivity': input_params["reservoir_thermal_conductivity"],
             'End-Use Option': input_params["end_use_option"],
             'Circulation Pump Efficiency': input_params["circulation_pump_efficiency"],
-            'Plant Lifetime': input_params["lifetime"],
-            'Fracture Shape': input_params["fracture_shape"],                   
-            'Fracture Height': input_params["fracture_height"],
-            'Number of Fractures': input_params["number_of_fractures"],               
+            'Plant Lifetime': input_params["lifetime"],              
             'Reservoir Volume Option': input_params["reservoir_volume_option"],
             'Power Plant Type': input_params["power_plant_type"],
             'Print Output to Console': input_params["print_output_to_console"],
@@ -118,16 +116,25 @@ class Geophires(object):
             "Well Drilling Cost Correlation": 1 #input_params["well_drilling_cost_correlation"],
         }
 
-        # set non-required parameters
-        if "thickness_grad1" in base_params.keys():
-            if base_params["thickness_grad1"] is not None:
-                base_params["Thickness 1"] = input_params["thickness_grad1"]
-        if "thickness_grad2" in input_params.keys():
-            if input_params["thickness_grad2"] is not None:
-                base_params["Thickness 2"] = input_params["thickness_grad2"]
-        if "thickness_grad3" in base_params.keys():
-            if base_params["thickness_grad3"] is not None:
-                base_params["Thickness 3"] = input_params["thickness_grad3"]
+        # set non-required parameters         
+        if "thickness_grad1" in input_params:
+            base_params["Thickness 1"] = input_params["thickness_grad1"]
+        if "thickness_grad2" in input_params:
+            base_params["Thickness 2"] = input_params["thickness_grad2"]
+        if "thickness_grad3" in input_params:
+            base_params["Thickness 3"] = input_params["thickness_grad3"]
+        if "ramey_production_wellbore_model" in input_params:
+            base_params["Ramey Production Wellbore Model"] = input_params["ramey_production_wellbore_model"]
+        if "production_wellbore_temperature_drop" in input_params:
+            base_params["Production Wellbore Temperature Drop"] = input_params["production_wellbore_temperature_drop"]
+        if "injection_wellbore_temperature_gain" in input_params:
+            base_params["Injection Wellbore Temperature Gain"] = input_params["injection_wellbore_temperature_gain"]
+        if "fracture_shape" in input_params:
+            base_params["Fracture Shape"] = input_params["fracture_shape"]
+        if "fracture_height" in input_params:
+            base_params["Fracture Height"] = input_params["fracture_height"]
+        if "number_of_fractures" in input_params:
+            base_params["Number of Fractures"] = input_params["number_of_fractures"]
 
         run_parameters = generate_parameters(base_params, depth_range, flow_rate_range, wells_prod_range, wells_inj_range)
 
@@ -242,6 +249,7 @@ class Geophires(object):
             output_params['relation'][5]: output_params['value'][5],
             output_params['relation'][6]: output_params['value'][6],
             output_params['relation'][7]: output_params['value'][7],
+            output_params['relation'][8]: output_params['value'][8],
         }
         logger.info("\n\n\n-------- Output Parameters ----------\n\n")
         logger.info(output_params)
@@ -256,6 +264,7 @@ class Geophires(object):
         return output_params, output_file
 
     def generate_config_files(self, input_params):
+        # Is this used?
         """Generate input file-like config of geophires based on given parameters
 
         Returns
