@@ -43,8 +43,8 @@ class GeophiresTask(Task):
 @app.task(
     base=GeophiresTask,
     queue="short_queue",
-    soft_time_limit=600-6,
-    ime_limit=600,
+    soft_time_limit=(6000 - 100),
+    ime_limit=(6000),
     ignore_result=True
 )
 def run_geophires(job_meta_id, params, *args, **kwargs):
