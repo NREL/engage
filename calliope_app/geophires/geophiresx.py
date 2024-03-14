@@ -14,7 +14,7 @@ from geophires.utils import fit_lower_bound, fit_linear_model, geophires_paramet
 import numpy as np
 
 # Define hardcoded parameters
-depth_step = 0.1
+depth_step = 0.2 # 200 meters   
 
 flow_rate_start = 50
 flow_rate_stop = 150
