@@ -93,6 +93,7 @@ def geophires_request(request):
         # hardcoded
         "max_temperature": 400,
         "print_output_to_console": 0,
+        'power_plant_type': 1, #except if we add double flash = 4
 
         # floats
         "reservoir_heat_capacity": float(formData["reservoir_heat_capacity"]),
@@ -133,7 +134,6 @@ def geophires_request(request):
         input_params["drawdown_parameter"] = float(0.00002)
         input_params["circulation_pump_efficiency"] = 0.80
         input_params["reservoir_volume_option"] = 1
-        input_params["power_plant_type"] = 1
         input_params["fracture_shape"] = float(formData["fracture_shape"])
         input_params["fracture_height"] = float(formData["fracture_height"])
         input_params["number_of_fractures"] = float(formData["number_of_fractures"])
@@ -145,12 +145,100 @@ def geophires_request(request):
         input_params["drawdown_parameter"] = float(0.003)
         input_params["circulation_pump_efficiency"] = 0.80
         input_params["reservoir_volume_option"] = 1
-        input_params["power_plant_type"] = 1
-        input_params['ramey_production_wellbore_model'] = 0,
-        input_params['production_wellbore_temperature_drop'] = 5,
-        input_params['injection_wellbore_temperature_gain'] = 3,
-        input_params['water_loss_fraction'] = 0.02,
-        input_params['injectivity_index'] = 5,
+        input_params['ramey_production_wellbore_model'] = 0
+        input_params['production_wellbore_temperature_drop'] = 5
+        input_params['injection_wellbore_temperature_gain'] = 3
+        input_params['water_loss_fraction'] = 0.02
+        input_params['injectivity_index'] = 5
+    if template_type.id == 3:
+        # HYDRO_binary_orc
+        input_params["end_use_option"] = 1
+        input_params["injection_temperature"] = 70
+        input_params["reservoir_model"] = 4
+        input_params["drawdown_parameter"] = float(0.003)
+        input_params["circulation_pump_efficiency"] = 0.80
+        input_params["reservoir_volume_option"] = 4
+        input_params['ramey_production_wellbore_model'] = 0
+        input_params['production_wellbore_temperature_drop'] = 0
+        input_params['injection_wellbore_temperature_gain'] = 0
+        input_params['water_loss_fraction'] = 0.0
+        input_params["reservoir_volume"] = 1e9 # add in geophiresx
+        input_params["injectivity_index"] = 10 
+        input_params["productivity_index"] = 10 # add in geophiresx
+        input_params["gradient_1"] = 70 # not hardcoded (remove from here)
+        input_params["ambient_temperature"] = 70 # hardcode? new param 
+        input_params["surface_temperature"] = 15 # hardcode? new param 
+        input_params["utilization_factor"] = .9 # hardcode? new param 
+        input_params["utilization_factor"] = .9 # hardcode? new param 
+        # Maximum_Drawdown = drawdown_parameter?   'Maximum Drawdown': 1,
+    if template_type.id == 4:
+        # EGS_binary_orc
+        input_params["end_use_option"] = 1
+        input_params["injection_temperature"] = 70
+        input_params["reservoir_model"] = 3
+        input_params["drawdown_parameter"] = float(0.00002)
+        input_params["circulation_pump_efficiency"] = 0.80
+        input_params["reservoir_volume_option"] = 1
+        input_params["fracture_shape"] = float(formData["fracture_shape"])
+        input_params["fracture_height"] = float(formData["fracture_height"])
+        input_params["number_of_fractures"] = float(formData["number_of_fractures"])
+    elif template_type.id == 5:
+        # HYDRO_cchp
+        input_params["end_use_option"] = 31
+        input_params["injection_temperature"] = 50
+        input_params["reservoir_model"] = 3
+        input_params["drawdown_parameter"] = float(0.003)
+        input_params["circulation_pump_efficiency"] = 0.80
+        input_params["reservoir_volume_option"] = 1
+        input_params["fracture_shape"] = float(formData["fracture_shape"])
+        input_params["fracture_height"] = float(formData["fracture_height"])
+        input_params["number_of_fractures"] = float(formData["number_of_fractures"])
+    elif template_type.id == 6:
+        # EGS_cchp
+        input_params["end_use_option"] = 31
+        input_params["injection_temperature"] = 50
+        input_params["reservoir_model"] = 4
+        input_params["drawdown_parameter"] = float(0.00002)
+        input_params["circulation_pump_efficiency"] = 0.80
+        input_params["reservoir_volume_option"] = 1
+        input_params['ramey_production_wellbore_model'] = 0
+        input_params['production_wellbore_temperature_drop'] = 5
+        input_params['injection_wellbore_temperature_gain'] = 3
+        input_params['water_loss_fraction'] = 0.02
+        input_params['injectivity_index'] = 5
+    elif template_type.id == 7:
+        # EGS_direct_use
+        input_params["end_use_option"] = 2
+        input_params["injection_temperature"] = 40
+        input_params["reservoir_model"] = 3
+        input_params["drawdown_parameter"] = float(0.003)
+        input_params["circulation_pump_efficiency"] = 0.80
+        input_params["reservoir_volume_option"] = 1
+        input_params["ramey_production_wellbore_model"] = 1
+        input_params["injection_wellbore_temperature_gain"] = 0
+        input_params["fracture_seperation"] = 100 # new hardcoded?
+        input_params["reservoir_impedance"] = 0.05 # new hardcoded?
+        input_params["end-use_efficiency_factor"] = 0.9 # new hardcoded?
+        input_params["ambient_temperature"] = 20 # hardcode? new param 
+        input_params["surface_temperature"] = 20 # hardcode? new param 
+        input_params["fracture_shape"] = float(formData["fracture_shape"])
+        input_params["fracture_height"] = float(formData["fracture_height"])
+        input_params["number_of_fractures"] = float(formData["number_of_fractures"])
+        input_params["maximum_drawdown"] = float(0.3)
+    elif template_type.id == 8:
+        # HYDRO_direct_use
+        input_params["end_use_option"] = 2
+        input_params["injection_temperature"] = 40
+        input_params["reservoir_model"] = 4
+        input_params["drawdown_parameter"] = float(0.003)
+        input_params["circulation_pump_efficiency"] = 0.80
+        input_params["reservoir_volume_option"] = 1
+        input_params["ramey_production_wellbore_model"] = 0
+        input_params["production_wellbore_temperature_drop"] = 5
+        input_params["injection_wellbore_temperature_gain"] = 3
+        input_params["water_loss_fraction"] = 0.02
+        input_params["injectivity_index"] = 5
+        input_params["maximum_drawdown"] = 1
 
     if None in (formData["reservoir_heat_capacity"],
         input_params["reservoir_density"],
@@ -158,10 +246,6 @@ def geophires_request(request):
         input_params["min_reservoir_depth"], 
         input_params["max_reservoir_depth"], 
         input_params["number_of_segments"], 
-        input_params["gradient_1"],
-        input_params["gradient_2"],
-        input_params["gradient_3"],
-        input_params["gradient_4"],
         input_params["well_drilling_cost_correlation"],
         input_params["target_prod_temp_min"],
         input_params["target_prod_temp_max"],  
