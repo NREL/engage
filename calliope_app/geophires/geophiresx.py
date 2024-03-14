@@ -135,6 +135,12 @@ class Geophires(object):
             base_params["Fracture Height"] = input_params["fracture_height"]
         if "number_of_fractures" in input_params:
             base_params["Number of Fractures"] = input_params["number_of_fractures"]
+        if "ambient_temperature" in input_params:
+            base_params["Ambient Temperature"] = input_params["ambient_temperature"]
+        if "surface_temperature" in input_params:
+            base_params["Surface Temperature"] = input_params["surface_temperature"]
+        if "utilization_factor" in input_params:
+            base_params["Utilization Factor"] = input_params["utilization_factor"]
 
         run_parameters = generate_parameters(base_params, depth_range, flow_rate_range, wells_prod_range, wells_inj_range)
 
