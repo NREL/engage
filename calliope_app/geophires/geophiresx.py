@@ -123,6 +123,14 @@ class Geophires(object):
             base_params["Thickness 2"] = input_params["thickness_grad2"]
         if "thickness_grad3" in input_params:
             base_params["Thickness 3"] = input_params["thickness_grad3"]
+        if "gradient_1" in input_params:
+            base_params["Gradient 1"] = input_params["gradient_1"]
+        if "gradient_2" in input_params:
+            base_params["Gradient 2"] = input_params["gradient_2"]
+        if "gradient_3" in input_params:
+            base_params["Gradient 3"] = input_params["gradient_3"]
+        if "gradient_4" in input_params:
+            base_params["Gradient 4"] = input_params["gradient_4"]
         if "ramey_production_wellbore_model" in input_params:
             base_params["Ramey Production Wellbore Model"] = input_params["ramey_production_wellbore_model"]
         if "production_wellbore_temperature_drop" in input_params:
@@ -141,6 +149,14 @@ class Geophires(object):
             base_params["Surface Temperature"] = input_params["surface_temperature"]
         if "utilization_factor" in input_params:
             base_params["Utilization Factor"] = input_params["utilization_factor"]
+        if "maximum_drawdown" in input_params:
+            base_params["Maximum Drawdown"] = input_params["maximum_drawdown"]
+        if "fracture_seperation" in input_params:
+            base_params["Fracture Seperation"] = input_params["fracture_seperation"]
+        if "reservoir_impedance" in input_params:
+            base_params["Reservoir Impedance"] = input_params["reservoir_impedance"]
+        if "end-use_efficiency_factor" in input_params:
+            base_params["End-Use Efficiency Factor"] = input_params["end-use_efficiency_factor"]
 
         run_parameters = generate_parameters(base_params, depth_range, flow_rate_range, wells_prod_range, wells_inj_range)
 
