@@ -239,18 +239,11 @@ class Geophires(object):
         # Display the rounded DataFrame
         mapping_df.round(5)
         # turn mapping_df into a dictionary
-        output_params = mapping_df.to_dict()
-        output_params = {
-            output_params['relation'][0]: output_params['value'][0],
-            output_params['relation'][1]: output_params['value'][1],
-            output_params['relation'][2]: output_params['value'][2],
-            output_params['relation'][3]: output_params['value'][3],
-            output_params['relation'][4]: output_params['value'][4],
-            output_params['relation'][5]: output_params['value'][5],
-            output_params['relation'][6]: output_params['value'][6],
-            output_params['relation'][7]: output_params['value'][7],
-            output_params['relation'][8]: output_params['value'][8],
-        }
+        temp_output_params = mapping_df.to_dict()
+        output_params = {}
+        for i in range(temp_output_params['relation']):
+            output_params[temp_output_params['relation'][i]] = temp_output_params['value'][i]
+
         logger.info("\n\n\n-------- Output Parameters ----------\n\n")
         logger.info(output_params)
         logger.info("\n\n\n-------- Output Parameters ----------\n\n")
