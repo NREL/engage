@@ -66,32 +66,6 @@ class Geophires(object):
         wells_prod_range = (wells_prod_start, wells_prod_stop)  # Implicit step of 1
         wells_inj_range = (wells_inj_start, wells_inj_stop)    # Implicit step of 1
 
-        # base_params = {
-        #     'Drawdown Parameter': 0.00002,
-        #     'Reservoir Model':3,
-        #     'Number of Segments': 4,
-        #     'Gradient 1':55,
-        #     'Thickness 1':1,
-        #     'Gradient 2':55,
-        #     'Thickness 2':1,
-        #     'Gradient 3':55,
-        #     'Thickness 3':1,
-        #     'Gradient 4':55,
-        #     'Maximum Temperature': 400,
-        #     'Injection Temperature': 50,
-        #     'Reservoir Heat Capacity': 1000,
-        #     'Reservoir Density': 3000,
-        #     'Reservoir Thermal Conductivity': 3,
-        #     'End-Use Option': 31,
-        #     'Circulation Pump Efficiency': 0.80,
-        #     'Plant Lifetime': 30,
-        #     'Fracture Shape': 3,                   
-        #     'Fracture Height': 600,
-        #     'Number of Fractures':20,               
-        #     'Reservoir Volume Option': 1,
-        #     'Power Plant Type': 1,
-        #     'Print Output to Console': 0
-        # }
         base_params = {
             'Reservoir Model': input_params["reservoir_model"], 
             'Drawdown Parameter': input_params["drawdown_parameter"],
