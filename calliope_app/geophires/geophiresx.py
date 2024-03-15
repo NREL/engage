@@ -131,9 +131,11 @@ class Geophires(object):
             base_params["Reservoir Impedance"] = input_params["reservoir_impedance"]
         if "end-use_efficiency_factor" in input_params:
             base_params["End-Use Efficiency Factor"] = input_params["end-use_efficiency_factor"]
+        if "productivity_index" in input_params:
+            base_params["Productivity Index"] = input_params["productivity_index"]
 
-        run_parameters = generate_parameters(base_params, depth_range, flow_rate_range, wells_prod_range, wells_inj_range)
-
+        run_parameters = generate_parameters(base_params, depth_range, flow_rate_range, wells_prod_range, wells_inj_range, base_params["Production Well Diameter"], base_params["Injection Well Diameter"], base_params["Well Drilling Cost Correlation"])
+    
         # Assume EngageAnalysis is a previously defined class for analysis
         engage_analysis = geophires_parametrization_analysis(input_params["target_prod_temp_min"], input_params["target_prod_temp_max"])
 

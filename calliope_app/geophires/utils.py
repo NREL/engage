@@ -217,9 +217,8 @@ class geophires_parametrization_analysis:
 
     def get_final_dataframe(self):
         return pd.DataFrame(self.df_results)
-
-
-def generate_parameters(base_params, depth_range, flow_rate_range, wells_prod_range, wells_inj_range):
+    
+def generate_parameters(base_params, depth_range, flow_rate_range, wells_prod_range, wells_inj_range, prod_diam, inj_diam, cost_correlation):
     parameter_list = []
     depth_start, depth_stop, depth_step = depth_range
     flow_rate_start, flow_rate_stop, flow_rate_step = flow_rate_range
@@ -230,17 +229,16 @@ def generate_parameters(base_params, depth_range, flow_rate_range, wells_prod_ra
         for flow_rate in range(flow_rate_start, flow_rate_stop, flow_rate_step):
             for wells_prod in range(wells_prod_start, wells_prod_stop + 1):
                 for wells_inj in range(wells_inj_start, wells_inj_stop + 1):
-                    if wells_inj < wells_prod:
-                        continue
-
-                    # Create a copy of the base parameters and update specific values
-                    params = base_params.copy()
-                    params.update({
-                        # 'Power Plant Type': plant_type,  # Uncomment if plant_type is to be used
-                        'Production Flow Rate per Well': flow_rate,
-                        'Reservoir Depth': depth,
-                        'Number of Production Wells': wells_prod,
-                        'Number of Injection Wells': wells_inj,
-                    })
-                    parameter_list.append(params)
+                    if wells_prod == wells_inj or wells_prod == 2 * wells_inj:
+                        params = base_params.copy()
+                        params.update({
+                            'Production Flow Rate per Well': flow_rate,
+                            'Reservoir Depth': depth,
+                            'Number of Production Wells': wells_prod,
+                            'Number of Injection Wells': wells_inj,
+                            'Production Well Diameter': prod_diam,
+                            'Injection Well Diameter': inj_diam,
+                            'Well Drilling Cost Correlation': cost_correlation,
+                        })
+                        parameter_list.append(params)
     return parameter_list
