@@ -3,7 +3,7 @@
         "pk": 1,
         "model": "template.template_type_tech",
         "fields": {
-            "name": "EGS CHP Geothermal Reservoir",
+            "name": "EGS Geothermal Reservoir",
             "template_type": 1,
             "abstract_tech": 1
         }
@@ -66,7 +66,7 @@
         "pk": 8,
         "model": "template.template_type_tech",
         "fields": {
-            "name": "EGS CHP to Demand Transmission",
+            "name": "Heat Demand Transmission",
             "template_type": 1,
             "abstract_tech": 5
         }
@@ -75,7 +75,7 @@
         "pk": 9,
         "model": "template.template_type_tech",
         "fields": {
-            "name": "EGS CHP to Power Transmission",
+            "name": "Power Demand Transmission",
             "template_type": 1,
             "abstract_tech": 5
         }
@@ -147,7 +147,7 @@
         "pk": 17,
         "model": "template.template_type_tech",
         "fields": {
-            "name": "Hydrothermal to Demand Transmission",
+            "name": "Heat Demand Transmission",
             "template_type": 2,
             "abstract_tech": 5
         }
@@ -156,8 +156,98 @@
         "pk": 18,
         "model": "template.template_type_tech",
         "fields": {
-            "name": "Hydrothermal to Power Transmission",
+            "name": "Power Demand Transmission",
             "template_type": 2,
+            "abstract_tech": 5
+        }
+    },
+    {
+        "pk": 19,
+        "model": "template.template_type_tech",
+        "fields": {
+            "name": "EGS Geothermal Reservoir",
+            "template_type": 3,
+            "abstract_tech": 1
+        }
+    },
+    {
+        "pk": 20,
+        "model": "template.template_type_tech",
+        "fields": {
+            "name": "EGS Subcritical Binary ORC Plant",
+            "template_type": 3,
+            "abstract_tech": 6
+        }
+    },
+    {
+        "pk": 21,
+        "model": "template.template_type_tech",
+        "fields": {
+            "name": "Power Demand",
+            "template_type": 3,
+            "abstract_tech": 3
+        }
+    },
+    {
+        "pk": 22,
+        "model": "template.template_type_tech",
+        "fields": {
+            "name": "Reservoir Transmission",
+            "template_type": 3,
+            "abstract_tech": 5
+        }
+    },
+    {
+        "pk": 23,
+        "model": "template.template_type_tech",
+        "fields": {
+            "name": "Power Demand Transmission",
+            "template_type": 3,
+            "abstract_tech": 5
+        }
+    },
+    {
+        "pk": 24,
+        "model": "template.template_type_tech",
+        "fields": {
+            "name": "Hydrothermal Geothermal Reservoir",
+            "template_type": 4,
+            "abstract_tech": 1
+        }
+    },
+    {
+        "pk": 25,
+        "model": "template.template_type_tech",
+        "fields": {
+            "name": "Hydrothermal Subcritical Binary ORC Plant",
+            "template_type": 4,
+            "abstract_tech": 6
+        }
+    },
+    {
+        "pk": 26,
+        "model": "template.template_type_tech",
+        "fields": {
+            "name": "Power Demand",
+            "template_type": 4,
+            "abstract_tech": 3
+        }
+    },
+    {
+        "pk": 27,
+        "model": "template.template_type_tech",
+        "fields": {
+            "name": "Reservoir Transmission",
+            "template_type": 4,
+            "abstract_tech": 5
+        }
+    },
+    {
+        "pk": 28,
+        "model": "template.template_type_tech",
+        "fields": {
+            "name": "Power Demand Transmission",
+            "template_type": 4,
             "abstract_tech": 5
         }
     }

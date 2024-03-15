@@ -78,5 +78,45 @@
             "rate_unit": "MMBTU/h",
             "quantity_unit": "MMBTU"
         }
+    },
+    {
+        "pk": 9,
+        "model": "template.template_type_carrier",
+        "fields": {
+            "template_type": 3,
+            "name": "Thermal",
+            "rate_unit": "kW",
+            "quantity_unit": "kWh"
+        }
+    },
+    {
+        "pk": 10,
+        "model": "template.template_type_carrier",
+        "fields": {
+            "template_type": 3,
+            "name": "Power",
+            "rate_unit": "kW",
+            "quantity_unit": "kWh"
+        }
+    },
+    {
+        "pk": 11,
+        "model": "template.template_type_carrier",
+        "fields": {
+            "template_type": 4,
+            "name": "Thermal",
+            "rate_unit": "kW",
+            "quantity_unit": "kWh"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "template.template_type_carrier",
+        "fields": {
+            "template_type": 4,
+            "name": "Power",
+            "rate_unit": "kW",
+            "quantity_unit": "kWh"
+        }
     }
 ]

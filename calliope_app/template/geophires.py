@@ -121,10 +121,7 @@ def geophires_request(request):
         "max_production_wells": int(formData["max_production_wells"]),
         "min_injection_wells": int(formData["min_injection_wells"]),
         "max_injection_wells": int(formData["max_injection_wells"]),
-        "number_of_segments": int(formData["number_of_segments"]),
     }
-
-    #input_params["number_of_segments"] = formData["number_of_segments"] if formData["number_of_segments"] is not None else ""
 
     # Template based params
     if template_type.id == 1:
@@ -153,6 +150,17 @@ def geophires_request(request):
         input_params['injectivity_index'] = 5
         input_params["productivity_index"] = 10 # add in geophiresx
     if template_type.id == 3:
+        # EGS_binary_orc
+        input_params["end_use_option"] = 1
+        input_params["injection_temperature"] = 70
+        input_params["reservoir_model"] = 3
+        input_params["drawdown_parameter"] = float(0.00002)
+        input_params["circulation_pump_efficiency"] = 0.80
+        input_params["reservoir_volume_option"] = 1
+        input_params["fracture_shape"] = float(formData["fracture_shape"])
+        input_params["fracture_height"] = float(formData["fracture_height"])
+        input_params["number_of_fractures"] = float(formData["number_of_fractures"])
+    if template_type.id == 4:
         # HYDRO_binary_orc
         input_params["end_use_option"] = 1
         input_params["injection_temperature"] = 70
@@ -170,17 +178,6 @@ def geophires_request(request):
         #input_params["surface_temperature"] = 15 # defaulted
         #input_params["utilization_factor"] = .9 # defaulted
         #input_params["maximum_drawdown"] = 1 # defaulted
-    if template_type.id == 4:
-        # EGS_binary_orc
-        input_params["end_use_option"] = 1
-        input_params["injection_temperature"] = 70
-        input_params["reservoir_model"] = 3
-        input_params["drawdown_parameter"] = float(0.00002)
-        input_params["circulation_pump_efficiency"] = 0.80
-        input_params["reservoir_volume_option"] = 1
-        input_params["fracture_shape"] = float(formData["fracture_shape"])
-        input_params["fracture_height"] = float(formData["fracture_height"])
-        input_params["number_of_fractures"] = float(formData["number_of_fractures"])
     elif template_type.id == 5:
         # HYDRO_cchp
         input_params["end_use_option"] = 31

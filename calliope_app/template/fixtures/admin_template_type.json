@@ -1,20 +1,38 @@
 [
     {
-        "model": "template.template_type",
         "pk": 1,
+        "model": "template.template_type",
         "fields": {
             "name": "EGS_chp",
             "pretty_name": "EGS Combined Heat and Power (CHP)",
-            "description": ""
+            "description": "An EGS Combined Heat and Power (CHP)"
         }
     },
     {
-        "model": "template.template_type",
         "pk": 2,
+        "model": "template.template_type",
         "fields": {
             "name": "HYDRO_chp",
             "pretty_name": "Hydrothermal Combined Heat and Power (CHP)",
-            "description": ""
+            "description": "A hydrothermal Combined Heat and Power (CHP)"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "template.template_type",
+        "fields": {
+            "name": "EGS_binary_orc",
+            "pretty_name": "EGS Subcritical Binary ORC",
+            "description": "An EGS Subcritical Binary ORC plant."
+        }
+    },
+    {
+        "pk": 4,
+        "model": "template.template_type",
+        "fields": {
+            "name": "HYDRO_binary_orc",
+            "pretty_name": "HYDRO Subcritical Binary ORC",
+            "description": "A hydrothermal binary ORC plant."
         }
     }
 ]
