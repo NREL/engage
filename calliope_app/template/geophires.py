@@ -94,6 +94,7 @@ def geophires_request(request):
         "max_temperature": 400,
         "print_output_to_console": 0,
         'power_plant_type': 1, #except if we add double flash = 4
+        "number_of_segments": 4,
 
         # floats
         "reservoir_heat_capacity": float(formData["reservoir_heat_capacity"]),
@@ -150,6 +151,7 @@ def geophires_request(request):
         input_params['injection_wellbore_temperature_gain'] = 3
         input_params['water_loss_fraction'] = 0.02
         input_params['injectivity_index'] = 5
+        input_params["productivity_index"] = 10 # add in geophiresx
     if template_type.id == 3:
         # HYDRO_binary_orc
         input_params["end_use_option"] = 1
@@ -162,15 +164,12 @@ def geophires_request(request):
         input_params['production_wellbore_temperature_drop'] = 0
         input_params['injection_wellbore_temperature_gain'] = 0
         input_params['water_loss_fraction'] = 0.0
-        input_params["reservoir_volume"] = 1e9 # add in geophiresx
         input_params["injectivity_index"] = 10 
-        input_params["productivity_index"] = 10 # add in geophiresx
-        input_params["gradient_1"] = 70 # not hardcoded (remove from here)
-        input_params["ambient_temperature"] = 70 # hardcode? new param 
-        input_params["surface_temperature"] = 15 # hardcode? new param 
-        input_params["utilization_factor"] = .9 # hardcode? new param 
-        input_params["utilization_factor"] = .9 # hardcode? new param 
-        # Maximum_Drawdown = drawdown_parameter?   'Maximum Drawdown': 1,
+        input_params["productivity_index"] = 10 
+        #input_params["ambient_temperature"] = 70 # defaulted
+        #input_params["surface_temperature"] = 15 # defaulted
+        #input_params["utilization_factor"] = .9 # defaulted
+        #input_params["maximum_drawdown"] = 1 # defaulted
     if template_type.id == 4:
         # EGS_binary_orc
         input_params["end_use_option"] = 1
@@ -240,28 +239,9 @@ def geophires_request(request):
         input_params["injectivity_index"] = 5
         input_params["maximum_drawdown"] = 1
 
-    if None in (formData["reservoir_heat_capacity"],
-        input_params["reservoir_density"],
-        input_params["reservoir_thermal_conductivity"],
-        input_params["min_reservoir_depth"], 
-        input_params["max_reservoir_depth"], 
-        input_params["number_of_segments"], 
-        input_params["well_drilling_cost_correlation"],
-        input_params["target_prod_temp_min"],
-        input_params["target_prod_temp_max"],  
-        input_params["lifetime"],   
-        input_params["production_well_diameter"],   
-        input_params["injection_well_diameter"],     
-        input_params["min_production_wells"],
-        input_params["max_production_wells"], 
-        input_params["min_injection_wells"], 
-        input_params["max_injection_wells"],
+    # needs to know what the carrier is, all other values can be defaulted.
+    if None in (
         input_params["end_use_option"],
-        input_params["injection_temperature"],
-        input_params["reservoir_model"],
-        input_params["drawdown_parameter"],
-        input_params["circulation_pump_efficiency"],
-        input_params["reservoir_volume_option"],
         input_params["power_plant_type"]):
         raise ValidationError(f"Error: Required field not provided for GEOPHIRES.")
 
