@@ -54,7 +54,7 @@ class Template_Type_Loc(models.Model):
     longitude_offset = models.FloatField()
 
     def __str__(self):
-        return '%s' % (self.name)
+        return '%s - %s' % (self.template_type, self.name)
 
 class Template_Type_Tech(models.Model):
     class Meta:
@@ -77,7 +77,7 @@ class Template_Type_Tech(models.Model):
     #     return ','.join(list(p.values_list('value', flat=True)))
 
     def __str__(self):
-        return '%s' % (self.name)
+        return '%s - %s' % (self.template_type, self.name)
 
 class Template_Type_Loc_Tech(models.Model):
     class Meta:
