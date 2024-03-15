@@ -1584,6 +1584,23 @@
         "pk": 94,
         "model": "template.template_type_variable",
         "fields": {
+            "name": "max_therm_ext_mwth",
+            "pretty_name": "Maximum Reservoir Heat Extraction",
+            "template_type": 3,
+            "units": "MW",
+            "default_value": null,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Outputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 95,
+        "model": "template.template_type_variable",
+        "fields": {
             "name": "therm_cap_vs_reservoir_cost",
             "pretty_name": "Subsurface Cost to Thermal Slope",
             "template_type": 3,
@@ -1598,7 +1615,7 @@
         }
     },
     {
-        "pk": 95,
+        "pk": 96,
         "model": "template.template_type_variable",
         "fields": {
             "name": "therm_cap_vs_reservoir_om_cost",
@@ -1615,11 +1632,11 @@
         }
     },
     {
-        "pk": 96,
+        "pk": 97,
         "model": "template.template_type_variable",
         "fields": {
             "name": "elec_prod_to_therm_ext_ratio",
-            "pretty_name": "Themal to Electric Conversion Ratio",
+            "pretty_name": "Electric to Thermal Conversion Ratio",
             "template_type": 3,
             "units": null,
             "default_value": null,
@@ -1632,7 +1649,7 @@
         }
     },
     {
-        "pk": 97,
+        "pk": 98,
         "model": "template.template_type_variable",
         "fields": {
             "name": "reservoir_heat_capacity",
@@ -1649,7 +1666,7 @@
         }
     },
     {
-        "pk": 98,
+        "pk": 99,
         "model": "template.template_type_variable",
         "fields": {
             "name": "reservoir_density",
@@ -1666,7 +1683,7 @@
         }
     },
     {
-        "pk": 99,
+        "pk": 100,
         "model": "template.template_type_variable",
         "fields": {
             "name": "reservoir_thermal_conductivity",
@@ -1683,7 +1700,7 @@
         }
     },
     {
-        "pk": 100,
+        "pk": 101,
         "model": "template.template_type_variable",
         "fields": {
             "name": "min_reservoir_depth",
@@ -1700,7 +1717,7 @@
         }
     },
     {
-        "pk": 101,
+        "pk": 102,
         "model": "template.template_type_variable",
         "fields": {
             "name": "max_reservoir_depth",
@@ -1717,7 +1734,7 @@
         }
     },
     {
-        "pk": 102,
+        "pk": 103,
         "model": "template.template_type_variable",
         "fields": {
             "name": "min_production_wells",
@@ -1734,7 +1751,7 @@
         }
     },
     {
-        "pk": 103,
+        "pk": 104,
         "model": "template.template_type_variable",
         "fields": {
             "name": "max_production_wells",
@@ -1751,7 +1768,7 @@
         }
     },
     {
-        "pk": 104,
+        "pk": 105,
         "model": "template.template_type_variable",
         "fields": {
             "name": "min_injection_wells",
@@ -1768,7 +1785,7 @@
         }
     },
     {
-        "pk": 105,
+        "pk": 106,
         "model": "template.template_type_variable",
         "fields": {
             "name": "max_injection_wells",
@@ -1785,7 +1802,7 @@
         }
     },
     {
-        "pk": 106,
+        "pk": 107,
         "model": "template.template_type_variable",
         "fields": {
             "name": "gradient_1",
@@ -1802,7 +1819,7 @@
         }
     },
     {
-        "pk": 107,
+        "pk": 108,
         "model": "template.template_type_variable",
         "fields": {
             "name": "thickness_grad1",
@@ -1819,7 +1836,7 @@
         }
     },
     {
-        "pk": 108,
+        "pk": 109,
         "model": "template.template_type_variable",
         "fields": {
             "name": "gradient_2",
@@ -1836,7 +1853,7 @@
         }
     },
     {
-        "pk": 109,
+        "pk": 110,
         "model": "template.template_type_variable",
         "fields": {
             "name": "thickness_grad2",
@@ -1853,7 +1870,7 @@
         }
     },
     {
-        "pk": 110,
+        "pk": 111,
         "model": "template.template_type_variable",
         "fields": {
             "name": "gradient_3",
@@ -1870,7 +1887,7 @@
         }
     },
     {
-        "pk": 111,
+        "pk": 112,
         "model": "template.template_type_variable",
         "fields": {
             "name": "thickness_grad3",
@@ -1887,7 +1904,7 @@
         }
     },
     {
-        "pk": 112,
+        "pk": 113,
         "model": "template.template_type_variable",
         "fields": {
             "name": "gradient_4",
@@ -1904,7 +1921,7 @@
         }
     },
     {
-        "pk": 113,
+        "pk": 114,
         "model": "template.template_type_variable",
         "fields": {
             "name": "well_drilling_cost_correlation",
@@ -1921,7 +1938,7 @@
         }
     },
     {
-        "pk": 114,
+        "pk": 115,
         "model": "template.template_type_variable",
         "fields": {
             "name": "target_prod_temp_min",
@@ -1938,7 +1955,7 @@
         }
     },
     {
-        "pk": 115,
+        "pk": 116,
         "model": "template.template_type_variable",
         "fields": {
             "name": "target_prod_temp_max",
@@ -1955,7 +1972,7 @@
         }
     },
     {
-        "pk": 116,
+        "pk": 117,
         "model": "template.template_type_variable",
         "fields": {
             "name": "production_well_diameter",
@@ -1972,7 +1989,7 @@
         }
     },
     {
-        "pk": 117,
+        "pk": 118,
         "model": "template.template_type_variable",
         "fields": {
             "name": "injection_well_diameter",
@@ -1989,7 +2006,7 @@
         }
     },
     {
-        "pk": 118,
+        "pk": 119,
         "model": "template.template_type_variable",
         "fields": {
             "name": "lifetime",
@@ -2006,7 +2023,7 @@
         }
     },
     {
-        "pk": 119,
+        "pk": 120,
         "model": "template.template_type_variable",
         "fields": {
             "name": "max_elec_gen_mwe",
@@ -2023,7 +2040,7 @@
         }
     },
     {
-        "pk": 120,
+        "pk": 121,
         "model": "template.template_type_variable",
         "fields": {
             "name": "elec_cap_vs_surface_cost",
@@ -2040,7 +2057,7 @@
         }
     },
     {
-        "pk": 121,
+        "pk": 122,
         "model": "template.template_type_variable",
         "fields": {
             "name": "elec_cap_vs_surface_om_cost",
@@ -2057,7 +2074,24 @@
         }
     },
     {
-        "pk": 122,
+        "pk": 123,
+        "model": "template.template_type_variable",
+        "fields": {
+            "name": "max_therm_ext_mwth",
+            "pretty_name": "Maximum Reservoir Heat Extraction",
+            "template_type": 4,
+            "units": "MW",
+            "default_value": null,
+            "min": null,
+            "max": null,
+            "description": "Add Later",
+            "timeseries_enabled": null,
+            "category": "GEOPHIRES Outputs",
+            "choices": null
+        }
+    },
+    {
+        "pk": 124,
         "model": "template.template_type_variable",
         "fields": {
             "name": "therm_cap_vs_reservoir_cost",
@@ -2074,7 +2108,7 @@
         }
     },
     {
-        "pk": 123,
+        "pk": 125,
         "model": "template.template_type_variable",
         "fields": {
             "name": "therm_cap_vs_reservoir_om_cost",
@@ -2091,11 +2125,11 @@
         }
     },
     {
-        "pk": 124,
+        "pk": 126,
         "model": "template.template_type_variable",
         "fields": {
             "name": "elec_prod_to_therm_ext_ratio",
-            "pretty_name": "Themal to Electric Conversion Ratio",
+            "pretty_name": "Electric to Thermal Conversion Ratio",
             "template_type": 4,
             "units": null,
             "default_value": null,
