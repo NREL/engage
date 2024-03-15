@@ -100,35 +100,39 @@ class geophires_parametrization_analysis:
         return results.get('value', None)
 
     def calculate_ratios(self, data_row):
-        # Make sure the required data is present
+        # Make sure at least one of the required data is present
         required_keys = [
             'Average Reservoir Heat Extraction (MWth)',
             'Average Heat Production (MWth)',
             'Average Electricity Production (MWe)',
         ]
 
-        if not all(key in data_row for key in required_keys):
-            print('Required data is missing to calculate ratios.')
+        if not any(key in data_row for key in required_keys):
+            print('At least one required data key is missing to calculate ratios.')
             return None
 
-        # Calculate ratios
-        heat_extraction = data_row['Average Reservoir Heat Extraction (MWth)']
-        heat_production = data_row['Average Heat Production (MWth)']
-        electricity_production = data_row['Average Electricity Production (MWe)']
-
+        # Initialize ratios dictionary with default values
         ratios = {
-            'Ratio Avg Reservoir Heat Extraction to Ratio Avg Reservoir Heat Extraction': heat_extraction
-            / heat_extraction
-            if heat_extraction
-            else 0.0,
-            'Ratio Avg Heat Production to Avg Reservoir Heat Extraction': heat_production / heat_extraction
-            if heat_extraction
-            else 0.0,
-            'Ratio Avg Electricity Production to Avg Reservoir Heat Extraction': electricity_production
-            / heat_extraction
-            if heat_extraction
-            else 0.0,
+            'Ratio Avg Reservoir Heat Extraction to Ratio Avg Reservoir Heat Extraction': 0.0,
+            'Ratio Avg Heat Production to Avg Reservoir Heat Extraction': 0.0,
+            'Ratio Avg Electricity Production to Avg Reservoir Heat Extraction': 0.0,
         }
+
+        # Update ratios if data is available
+        heat_extraction = data_row.get('Average Reservoir Heat Extraction (MWth)', 0)
+        if heat_extraction:
+            ratios[
+                'Ratio Avg Reservoir Heat Extraction to Ratio Avg Reservoir Heat Extraction'
+            ] = 1.0  # Always 1 since it's the same value divided by itself
+            heat_production = data_row.get('Average Heat Production (MWth)', 0)
+            electricity_production = data_row.get('Average Electricity Production (MWe)', 0)
+
+            if heat_production:
+                ratios['Ratio Avg Heat Production to Avg Reservoir Heat Extraction'] = heat_production / heat_extraction
+            if electricity_production:
+                ratios['Ratio Avg Electricity Production to Avg Reservoir Heat Extraction'] = (
+                    electricity_production / heat_extraction
+                )
 
         return ratios
 
