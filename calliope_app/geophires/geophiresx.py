@@ -172,8 +172,8 @@ class Geophires(object):
         df_line = df_final
         df_line = df_line.append(pd.Series(0, index=df_line.columns), ignore_index=True)
         # max_stuff = np.max(df_line['Average Reservoir Heat Extraction (MWth)'])
-        x1 = np.array(df_line['Average Reservoir Heat Extraction (MWth)'])
-        y1 = np.array(df_line['Average Heat Production (MWth)'])
+        #x1 = np.array(df_line['Average Reservoir Heat Extraction (MWth)'])
+        #y1 = np.array(df_line['Average Heat Production (MWth)'])
         electric_capacity = safe_extract(df_final, 'Average Electricity Production (MWe)')
         surface_cost = safe_extract(df_final, 'Surface Plant Cost ($M)')
         surface_o_m_cost = safe_extract(df_final, 'Surface maintenance costs ($MUSD/yr)')
