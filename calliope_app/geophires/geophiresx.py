@@ -189,7 +189,7 @@ class Geophires(object):
         a2, b2, x2_line, lower_b2_line, label_b2 = fit_lower_bound(electric_capacity, surface_cost,0)         # electric cap vs surface cost
         a3, b3, x3_line, lower_b3_line, label_b3 = fit_lower_bound(electric_capacity, surface_o_m_cost,1)     # electric cap vs surface O&M cost
         # Reservoir
-        a5, b5, x5_line, lower_b5_line, label_b5 = fit_lower_bound(thermal_capacity, reservoir_cost,3,0.3,0)        # thermal cap vs reservoir cost
+        a5, b5, x5_line, lower_b5_line, label_b5 = fit_lower_bound(thermal_capacity, reservoir_cost,1)        # thermal cap vs reservoir cost
         a6, b6, x6_line, lower_b6_line, label_b6 = fit_lower_bound(thermal_capacity, reservoir_o_m_cost,0)    # thermal cap vs reservoir O&M cost
         slope_values = [a2, a3, a5, a6]
 
