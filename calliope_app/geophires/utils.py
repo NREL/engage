@@ -135,7 +135,7 @@ class geophires_parametrization_analysis:
                 )
 
         return ratios
-
+    
     def process_multiple(self, input_params):
         # Initialize data_row at the beginning of the method
         data_row = {}
@@ -221,7 +221,7 @@ class geophires_parametrization_analysis:
 
     def get_final_dataframe(self):
         return pd.DataFrame(self.df_results)
-    
+
 def generate_parameters(base_params, depth_range, flow_rate_range, wells_prod_range, wells_inj_range, prod_diam, inj_diam, cost_correlation):
     parameter_list = []
     depth_start, depth_stop, depth_step = depth_range
@@ -230,8 +230,9 @@ def generate_parameters(base_params, depth_range, flow_rate_range, wells_prod_ra
     wells_inj_start, wells_inj_stop = wells_inj_range    # Assuming step is 1
 
     for depth in np.arange(depth_start, depth_stop, depth_step):
-        for flow_rate in range(flow_rate_start, flow_rate_stop, flow_rate_step):
+        for flow_rate in np.arange(flow_rate_start, flow_rate_stop, flow_rate_step):
             for wells_prod in range(wells_prod_start, wells_prod_stop + 1):
+                # Enforce the ratio of production to injection wells to be either 1:1 (doublet) or 2:1 (triplet)
                 for wells_inj in range(wells_inj_start, wells_inj_stop + 1):
                     if wells_prod == wells_inj or wells_prod == 2 * wells_inj:
                         params = base_params.copy()

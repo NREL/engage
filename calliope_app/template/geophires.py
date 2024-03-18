@@ -355,7 +355,7 @@ def geophires_outputs(request):
     # Plot3
     x3              = thermal_capacity
     y3              = reservoir_cost
-    a3, b3, x3_line, lower_b3_line, label_b3 = fit_linear_model(x3, y3,3,0.3,0) 
+    a3, b3, x3_line, lower_b3_line, label_b3 = fit_lower_bound(x3, y3, 1) 
     b3_values       = y3 - np.multiply(a3, x3)
     label_b3        = f"y={a3:.4f}x+{np.min(b3_values):.4f}" if np.min(b3_values) > 0 else f"y={a3:.4f}x{np.min(b3_values):.4f}"
     label_b3        = f"<br><br><span>{label_b3}</span><br><span style='font-size: 9px'>{note}</span>"
@@ -363,13 +363,11 @@ def geophires_outputs(request):
     # Plot4
     x4              = thermal_capacity
     y4              = reservoir_o_m_cost
-    a4, b4, x4_line, lower_b4_line, label_b4 = fit_lower_bound(x4, y4,1) 
+    a4, b4, x4_line, lower_b4_line, label_b4 = fit_lower_bound(x4, y4, 1) 
     b4_values       = y4 - np.multiply(a4, x4)
-
-    # Change this line to fit_linear_model. 
+    # Fit Lower. 
     label_b4        = f"y={a4:.4f}x+{np.min(b4_values):.4f}" if np.min(b4_values) > 0 else f"y={a4:.4f}x{np.min(b4_values):.4f}"
     label_b4        = f"<br><br><span>{label_b4}</span><br><span style='font-size: 9px'>{note}</span>"
-    a4, b4, x4_line, lower_b4_line, label_b4 = fit_lower_bound(thermal_capacity, reservoir_o_m_cost,0)    # thermal cap vs reservoir O&M cost
     
     # Reservoir
 
