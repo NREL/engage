@@ -14,7 +14,7 @@ from api.models.configuration import Job_Meta
 from geophires.tasks import run_geophires, task_status
 from taskmeta.models import CeleryTask
 import matplotlib.pyplot as plt
-from geophires.utils import fit_linear_model, fit_lower_bound
+from geophires.utils import fit_lower_bound
 from template.models import Template_Type
 
 
