@@ -318,7 +318,7 @@ def geophires_outputs(request):
     unique_temp = df['Average Production Temperature (degC)'].unique()
 
     # Safe extraction of columns
-    heating_capacity = safe_extract(df, 'Average Heat Production (MWth)')
+    #heating_capacity = safe_extract(df, 'Average Heat Production (MWth)')
     electric_capacity = safe_extract(df, 'Average Electricity Production (MWe)')
     surface_cost = safe_extract(df, 'Surface Plant Cost ($M)')
     surface_o_m_cost = safe_extract(df, 'Surface maintenance costs ($MUSD/yr)')

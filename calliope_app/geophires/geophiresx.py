@@ -172,8 +172,6 @@ class Geophires(object):
         df_line = df_final
         df_line = df_line.append(pd.Series(0, index=df_line.columns), ignore_index=True)
         # max_stuff = np.max(df_line['Average Reservoir Heat Extraction (MWth)'])
-        #x1 = np.array(df_line['Average Reservoir Heat Extraction (MWth)'])
-        #y1 = np.array(df_line['Average Heat Production (MWth)'])
         electric_capacity = safe_extract(df_final, 'Average Electricity Production (MWe)')
         surface_cost = safe_extract(df_final, 'Surface Plant Cost ($M)')
         surface_o_m_cost = safe_extract(df_final, 'Surface maintenance costs ($MUSD/yr)')
@@ -184,7 +182,7 @@ class Geophires(object):
         reservoir_cost = safe_extract(df_final, 'Drilling and completion cost ($MUSD)')
         reservoir_o_m_cost = safe_extract(df_final, 'Wellfield maintenance costs ($MUSD/yr)') + safe_extract(
             df_final, 'Make-Up Water O&M Cost ($MUSD/year)'
-    )
+        )
 
         a2, b2, x2_line, lower_b2_line, label_b2 = fit_lower_bound(electric_capacity, surface_cost,0)         # electric cap vs surface cost
         a3, b3, x3_line, lower_b3_line, label_b3 = fit_lower_bound(electric_capacity, surface_o_m_cost,1)     # electric cap vs surface O&M cost
@@ -237,13 +235,11 @@ class Geophires(object):
         # Display the rounded DataFrame
         mapping_df.round(5)
         # turn mapping_df into a dictionary
-        temp_output_params = mapping_df.to_dict()
-        output_params = {}
-        for i in range(temp_output_params['relation']):
-            output_params[temp_output_params['relation'][i]] = temp_output_params['value'][i]
+        output_params = mapping_df.set_index('relation')['value'].to_dict()
 
         logger.info("\n\n\n-------- Output Parameters ----------\n\n")
         logger.info(output_params)
+
         logger.info("\n\n\n-------- Output Parameters ----------\n\n")
 
         # ########################################
