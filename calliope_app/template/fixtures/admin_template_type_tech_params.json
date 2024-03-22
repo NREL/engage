@@ -283,7 +283,7 @@
         "model": "template.template_type_tech_param",
         "fields": {
             "template_tech": 20,
-            "parameter": 5,
+            "parameter": 70,
             "equation": "Thermal"
         }
     },
@@ -292,7 +292,7 @@
         "model": "template.template_type_tech_param",
         "fields": {
             "template_tech": 20,
-            "parameter": 6,
+            "parameter": 71,
             "equation": "Power"
         }
     },
@@ -337,7 +337,7 @@
         "model": "template.template_type_tech_param",
         "fields": {
             "template_tech": 25,
-            "parameter": 5,
+            "parameter": 70,
             "equation": "Thermal"
         }
     },
@@ -346,7 +346,7 @@
         "model": "template.template_type_tech_param",
         "fields": {
             "template_tech": 25,
-            "parameter": 6,
+            "parameter": 71,
             "equation": "Power"
         }
     },
