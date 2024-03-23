@@ -5,8 +5,8 @@
         "fields": {
             "name": "CHP_Plant",
             "template_type": 1,
-            "latitude_offset": 10,
-            "longitude_offset": 0
+            "latitude_offset": 0.0001,
+            "longitude_offset": 0.0
         }
     },
     {
@@ -15,8 +15,8 @@
         "fields": {
             "name": "Geothermal_Reservoir",
             "template_type": 1,
-            "latitude_offset": 0,
-            "longitude_offset": 0
+            "latitude_offset": 0.0,
+            "longitude_offset": 0.0
         }
     },
     {
@@ -25,8 +25,8 @@
         "fields": {
             "name": "Heat_Demand",
             "template_type": 1,
-            "latitude_offset": 20,
-            "longitude_offset": -10
+            "latitude_offset": 0.0002,
+            "longitude_offset": -0.0001
         }
     },
     {
@@ -35,8 +35,8 @@
         "fields": {
             "name": "Heat_Sink",
             "template_type": 1,
-            "latitude_offset": 10,
-            "longitude_offset": -10
+            "latitude_offset": 0.0001,
+            "longitude_offset": -0.0001
         }
     },
     {
@@ -45,8 +45,8 @@
         "fields": {
             "name": "Power_Demand",
             "template_type": 1,
-            "latitude_offset": 20,
-            "longitude_offset": 10
+            "latitude_offset": 0.0002,
+            "longitude_offset": 0.0001
         }
     },
     {
@@ -55,8 +55,8 @@
         "fields": {
             "name": "CHP_Plant",
             "template_type": 2,
-            "latitude_offset": 10,
-            "longitude_offset": 0
+            "latitude_offset": 0.0001,
+            "longitude_offset": 0.0
         }
     },
     {
@@ -65,8 +65,8 @@
         "fields": {
             "name": "Geothermal_Reservoir",
             "template_type": 2,
-            "latitude_offset": 0,
-            "longitude_offset": 0
+            "latitude_offset": 0.0,
+            "longitude_offset": 0.0
         }
     },
     {
@@ -75,8 +75,8 @@
         "fields": {
             "name": "Heat_Demand",
             "template_type": 2,
-            "latitude_offset": 20,
-            "longitude_offset": -10
+            "latitude_offset": 0.0002,
+            "longitude_offset": -0.0001
         }
     },
     {
@@ -85,8 +85,8 @@
         "fields": {
             "name": "Heat_Sink",
             "template_type": 2,
-            "latitude_offset": 10,
-            "longitude_offset": -10
+            "latitude_offset": 0.0001,
+            "longitude_offset": -0.0001
         }
     },
     {
@@ -95,8 +95,8 @@
         "fields": {
             "name": "Power_Demand",
             "template_type": 2,
-            "latitude_offset": 20,
-            "longitude_offset": 10
+            "latitude_offset": 0.0002,
+            "longitude_offset": 0.0001
         }
     },
     {
@@ -105,8 +105,8 @@
         "fields": {
             "name": "BinaryORC_Plant",
             "template_type": 3,
-            "latitude_offset": 10,
-            "longitude_offset": 0
+            "latitude_offset": 0.0001,
+            "longitude_offset": 0.0
         }
     },
     {
@@ -115,8 +115,8 @@
         "fields": {
             "name": "Geothermal_Reservoir",
             "template_type": 3,
-            "latitude_offset": 0,
-            "longitude_offset": 0
+            "latitude_offset": 0.0,
+            "longitude_offset": 0.0
         }
     },
     {
@@ -125,8 +125,8 @@
         "fields": {
             "name": "Power_Demand",
             "template_type": 3,
-            "latitude_offset": 20,
-            "longitude_offset": 10
+            "latitude_offset": 0.0002,
+            "longitude_offset": 0.0001
         }
     },
     {
@@ -135,8 +135,8 @@
         "fields": {
             "name": "BinaryORC_Plant",
             "template_type": 4,
-            "latitude_offset": 10,
-            "longitude_offset": 0
+            "latitude_offset": 0.0001,
+            "longitude_offset": 0.0
         }
     },
     {
@@ -145,8 +145,8 @@
         "fields": {
             "name": "Geothermal_Reservoir",
             "template_type": 4,
-            "latitude_offset": 0,
-            "longitude_offset": 0
+            "latitude_offset": 0.0,
+            "longitude_offset": 0.0
         }
     },
     {
@@ -155,8 +155,68 @@
         "fields": {
             "name": "Power_Demand",
             "template_type": 4,
-            "latitude_offset": 20,
-            "longitude_offset": 10
+            "latitude_offset": 0.0002,
+            "longitude_offset": 0.0001
+        }
+    },
+    {
+        "pk": 17,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Direct_Use_Plant",
+            "template_type": 5,
+            "latitude_offset": 0.0001,
+            "longitude_offset": 0.0
+        }
+    },
+    {
+        "pk": 18,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Geothermal_Reservoir",
+            "template_type": 5,
+            "latitude_offset": 0.0,
+            "longitude_offset": 0.0
+        }
+    },
+    {
+        "pk": 19,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Heat_Demand",
+            "template_type": 5,
+            "latitude_offset": 0.0002,
+            "longitude_offset": 0.0001
+        }
+    },
+    {
+        "pk": 20,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Direct_Use_Plant",
+            "template_type": 6,
+            "latitude_offset": 0.0001,
+            "longitude_offset": 0.0
+        }
+    },
+    {
+        "pk": 21,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Geothermal_Reservoir",
+            "template_type": 6,
+            "latitude_offset": 0.0,
+            "longitude_offset": 0.0
+        }
+    },
+    {
+        "pk": 22,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Heat_Demand",
+            "template_type": 6,
+            "latitude_offset": 0.0002,
+            "longitude_offset": 0.0001
         }
     }
 ]

@@ -34,5 +34,41 @@
             "pretty_name": "HYDRO Subcritical Binary ORC",
             "description": "A hydrothermal binary ORC plant."
         }
+    },
+    {
+        "pk": 5,
+        "model": "template.template_type",
+        "fields": {
+            "name": "EGS_direct_use",
+            "pretty_name": "EGS  Direct Use ORC",
+            "description": "An EGS direct use plant."
+        }
+    },
+    {
+        "pk": 6,
+        "model": "template.template_type",
+        "fields": {
+            "name": "HYDRO_direct_use",
+            "pretty_name": "HYDRO Direct Use ORC",
+            "description": "A hydrothermal direct use plant."
+        }
+    },
+    {
+        "pk": 7,
+        "model": "template.template_type",
+        "fields": {
+            "name": "EGS_cchp",
+            "pretty_name": "EGS  Combined Cooling Heat and Power (CCHP)",
+            "description": "An EGS combined cooling heat and power (CCHP)"
+        }
+    },
+    {
+        "pk": 8,
+        "model": "template.template_type",
+        "fields": {
+            "name": "HYDRO_cchp",
+            "pretty_name": "HYDRO Combined Cooling Heat and Power (CCHP)",
+            "description": "A hydrothermal combined cooling heat and power (CCHP)"
+        }
     }
 ]

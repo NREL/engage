@@ -376,5 +376,149 @@
             "parameter": 4,
             "equation": "Power"
         }
+    },
+    {
+        "pk": 43,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 29,
+            "parameter": 4,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 44,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 30,
+            "parameter": 5,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 45,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 30,
+            "parameter": 6,
+            "equation": "Power"
+        }
+    },
+    {
+        "pk": 46,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 31,
+            "parameter": 4,
+            "equation": "Heat"
+        }
+    },
+    {
+        "pk": 47,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 32,
+            "parameter": 4,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 48,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 33,
+            "parameter": 4,
+            "equation": "Heat"
+        }
+    },
+    {
+        "pk": 49,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 34,
+            "parameter": 5,
+            "equation": "Power"
+        }
+    },
+    {
+        "pk": 50,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 34,
+            "parameter": 6,
+            "equation": "Heat"
+        }
+    },
+    {
+        "pk": 51,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 35,
+            "parameter": 4,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 52,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 36,
+            "parameter": 5,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 53,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 36,
+            "parameter": 6,
+            "equation": "Power"
+        }
+    },
+    {
+        "pk": 54,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 37,
+            "parameter": 4,
+            "equation": "Heat"
+        }
+    },
+    {
+        "pk": 55,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 38,
+            "parameter": 4,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 56,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 39,
+            "parameter": 4,
+            "equation": "Heat"
+        }
+    },
+    {
+        "pk": 57,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 40,
+            "parameter": 5,
+            "equation": "Power"
+        }
+    },
+    {
+        "pk": 58,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 40,
+            "parameter": 6,
+            "equation": "Heat"
+        }
     }
 ]
