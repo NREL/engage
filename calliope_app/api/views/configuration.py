@@ -1467,8 +1467,6 @@ def get_map_box_token(request):
                 from_email=settings.AWS_SES_FROM_EMAIL,
                 recipient_list=recipient_list
             )
-
-
     limit.save()
     payload = {"message": settings.MAPBOX_TOKEN}
     return HttpResponse(json.dumps(payload), content_type="application/json")
