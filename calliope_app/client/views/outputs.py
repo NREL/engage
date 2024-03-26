@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+import requests
 
 from api.models.engage import Help_Guide, ComputeEnvironment
 from api.models.configuration import Model
@@ -41,7 +42,7 @@ def runs_view(request, model_uuid):
         "scenarios": scenarios,
         "session_scenario": session_scenario,
         "can_edit": can_edit,
-        "mapbox_token": settings.MAPBOX_TOKEN,
+        "mapbox_token": True,
         "cambium_url": settings.CAMBIUM_URL + '?project=' + str(model.uuid),
         "help_content": Help_Guide.get_safe_html('runs'),
     }
@@ -110,13 +111,12 @@ def map_viz_view(request, model_uuid, run_id):
     subset_time = run.subset_time  # 2005-01-01 to 2005-01-07
     run_min_date, run_max_date = re.match(
         "^(\d{4}-\d{2}-\d{2}) to (\d{4}-\d{2}-\d{2})$", subset_time).groups()
-
     context = {
         "timezones": common_timezones,
         "model": model,
         "run": run,
         "scenario": run.scenario,
-        "mapbox_token": settings.MAPBOX_TOKEN,
+        "mapbox_token": True,
         "can_edit": can_edit,
         "run_min_date": run_min_date,
         "run_max_date": run_max_date

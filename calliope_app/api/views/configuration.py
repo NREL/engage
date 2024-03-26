@@ -13,7 +13,8 @@ from django.core.exceptions import ValidationError
 from django.utils.html import escape
 from PySAM import Windpower
 from PySAM.ResourceTools import FetchResourceFiles
-
+from django_ratelimit.decorators import ratelimit
+from api.models.engage import RequestRateLimit
 from api.models.calliope import Abstract_Tech, Run_Parameter
 from api.models.configuration import Location, Technology, Tech_Param, \
     Loc_Tech, Loc_Tech_Param, ParamsManager, Scenario, Scenario_Param, \
@@ -22,7 +23,9 @@ from api.models.configuration import Location, Technology, Tech_Param, \
 from api.tasks import task_status, upload_ts, copy_model
 from api.utils import recursive_escape
 from taskmeta.models import CeleryTask
+import logging
 
+logger = logging.getLogger(__name__)
 
 def validate_model_name(value):
     if len(value) < 3:
@@ -1430,4 +1433,42 @@ def remove_flags(request):
     else:
         payload = {"message": "Success."}
 
+    return HttpResponse(json.dumps(payload), content_type="application/json")
+
+from datetime import date
+from django.core.mail import send_mail
+
+
+
+@csrf_protect
+@ratelimit(key='ip', rate='10/m')
+@ratelimit(key='ip', rate='1000/d')
+def get_map_box_token(request):
+    year, month = date.today().year, date.today().month
+    id = int(f"{year}{month}")
+    user_key = str(request.user) 
+    limit, created = RequestRateLimit.objects.get_or_create(
+        id=id,
+        year=year, 
+        month=month, 
+        defaults={"user_requests": {}}
+    )
+    if user_key not in limit.user_requests:
+        limit.user_requests[user_key] = 0
+    limit.user_requests[user_key] += 1
+    limit.total += 1
+    if limit.total < 40000: 
+            recipient_list = [admin.email for admin in User.objects.filter(is_superuser=True)]
+            if not recipient_list:
+                return
+            send_mail(
+                subject="NREL ENGAGE NOTIFICATION",
+                message="WARNING: you have hit 40,000 API calls on engage Mapbox",
+                from_email=settings.AWS_SES_FROM_EMAIL,
+                recipient_list=recipient_list
+            )
+
+
+    limit.save()
+    payload = {"message": settings.MAPBOX_TOKEN}
     return HttpResponse(json.dumps(payload), content_type="application/json")

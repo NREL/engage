@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from api.models.engage import Help_Guide
+from api.models.engage import Help_Guide, RequestRateLimit
 from api.models.calliope import Abstract_Tech, Abstract_Tech_Param, \
     Parameter, Run_Parameter
 from api.models.configuration import Model, Model_User, Model_Comment, \
@@ -137,7 +137,6 @@ class Scenario_Param_Admin(admin.ModelAdmin):
     list_display = ['id', 'scenario', 'run_parameter', 'year', 'value',
                     'model', 'created', 'updated']
 
-
 class Run_Admin(admin.ModelAdmin):
     list_filter = ['model', 'calliope_066_upgraded', 'status','cluster','manual']
     list_display = ['id', 'scenario', 'year', 'subset_time', 'status',
@@ -150,6 +149,10 @@ class Run_Admin(admin.ModelAdmin):
 class Carrier_Admin(admin.ModelAdmin):
     list_filter = ['model']
     list_display = ['id', 'model', 'name', 'rate_unit', 'quantity_unit', 'created', 'updated']
+
+class RequestRateLimit_Admin(admin.ModelAdmin):
+    list_filter = ['month', 'year']
+    list_display = ['id','year', 'month', 'total', 'user_requests']
 
 
 admin.site.register(Help_Guide, Help_Guide_Admin)
@@ -176,3 +179,4 @@ admin.site.register(Scenario_Param, Scenario_Param_Admin)
 admin.site.register(Run, Run_Admin)
 admin.site.register(ComputeEnvironment, ComputeEnvironmentAdmin)
 admin.site.register(Carrier,Carrier_Admin)
+admin.site.register(RequestRateLimit, RequestRateLimit_Admin)

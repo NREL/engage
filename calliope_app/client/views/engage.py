@@ -43,7 +43,7 @@ def home_view(request):
         "user_models": user_models,
         "public_models": public_models,
         "snapshots": snapshots,
-        "mapbox_token": settings.MAPBOX_TOKEN,
+        "mapbox_token": True,
         "help_content": Help_Guide.get_safe_html('home'),
     }
 
