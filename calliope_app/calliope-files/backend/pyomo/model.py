@@ -14,6 +14,7 @@ import xarray as xr
 
 import pyomo.core as po  # pylint: disable=import-error
 from pyomo.opt import SolverFactory  # pylint: disable=import-error
+from pyomo.contrib.appsi.plugins import load
 
 # pyomo.environ is needed for pyomo solver plugins
 import pyomo.environ as pe  # pylint: disable=unused-import,import-error
@@ -35,6 +36,9 @@ from calliope import exceptions
 from calliope.core.attrdict import AttrDict
 
 logger = logging.getLogger(__name__)
+
+# NOTE: Load contrib solvers with pyomo==6.7.0
+load()
 
 
 def generate_model(model_data):
@@ -199,7 +203,9 @@ def solve_model(
     Returns a Pyomo results object
     """
     if opt is None:
-        opt = SolverFactory(solver, solver_io=solver_io)
+        # NOTE: pyomo==6.7.0 Solve factory does not have solver_io argument.
+        # opt = SolverFactory(solver, solver_io=solver_io)
+        opt = SolverFactory(solver)
         if "persistent" in solver:
             solve_kwargs.update({"save_results": False, "load_solutions": False})
             opt.set_instance(backend_model)
@@ -212,7 +218,9 @@ def solve_model(
         solve_kwargs.update({"symbolic_solver_labels": True, "keepfiles": True})
         os.makedirs(save_logs, exist_ok=True)
         TempfileManager.tempdir = save_logs  # Sets log output dir
-    if "warmstart" in solve_kwargs.keys() and solver in ["glpk", "cbc","amplxpress"]:
+
+    # NOTE: pop warmstart for appsi_highs solver as well.
+    if "warmstart" in solve_kwargs.keys() and solver in ["glpk", "cbc", "appsi_highs"]:
         if solve_kwargs.pop("warmstart") is True:
             exceptions.warn(
                 "The chosen solver, {}, does not suport warmstart, which may "
