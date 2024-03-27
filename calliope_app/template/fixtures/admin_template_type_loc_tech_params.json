@@ -50,7 +50,7 @@
         "fields": {
             "template_loc_tech": 1,
             "parameter": 11,
-            "equation": "||max_therm_ext_mwth||"
+            "equation": "||max_therm_ext_kwth||"
         }
     },
     {
@@ -86,7 +86,7 @@
         "fields": {
             "template_loc_tech": 2,
             "parameter": 11,
-            "equation": "||max_elec_gen_mwe||"
+            "equation": "||max_elec_gen_kwe||"
         }
     },
     {
@@ -176,7 +176,7 @@
         "fields": {
             "template_loc_tech": 11,
             "parameter": 11,
-            "equation": "||max_therm_ext_mwth||"
+            "equation": "||max_therm_ext_kwth||"
         }
     },
     {
@@ -212,7 +212,7 @@
         "fields": {
             "template_loc_tech": 12,
             "parameter": 11,
-            "equation": "||max_elec_gen_mwe||"
+            "equation": "||max_elec_gen_kwe||"
         }
     },
     {
@@ -302,7 +302,7 @@
         "fields": {
             "template_loc_tech": 21,
             "parameter": 11,
-            "equation": "||max_therm_ext_mwth||"
+            "equation": "||max_therm_ext_kwth||"
         }
     },
     {
@@ -329,7 +329,7 @@
         "fields": {
             "template_loc_tech": 22,
             "parameter": 11,
-            "equation": "||max_elec_gen_mwe||"
+            "equation": "||max_elec_gen_kwe||"
         }
     },
     {
@@ -428,7 +428,7 @@
         "fields": {
             "template_loc_tech": 26,
             "parameter": 11,
-            "equation": "||max_therm_ext_mwth||"
+            "equation": "||max_therm_ext_kwth||"
         }
     },
     {
@@ -455,7 +455,7 @@
         "fields": {
             "template_loc_tech": 27,
             "parameter": 11,
-            "equation": "||max_elec_gen_mwe||"
+            "equation": "||max_elec_gen_kwe||"
         }
     },
     {
@@ -554,7 +554,7 @@
         "fields": {
             "template_loc_tech": 32,
             "parameter": 11,
-            "equation": "||max_therm_ext_mwth||"
+            "equation": "||max_therm_ext_kwth||"
         }
     },
     {
@@ -653,7 +653,7 @@
         "fields": {
             "template_loc_tech": 38,
             "parameter": 11,
-            "equation": "||max_therm_ext_mwth||"
+            "equation": "||max_therm_ext_kwth||"
         }
     },
     {

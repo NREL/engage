@@ -115,7 +115,7 @@ def geophires_request(request):
         "production_well_diameter": float(formData["production_well_diameter"]),
         "injection_well_diameter": float(formData["injection_well_diameter"]),
         "lifetime": float(formData["lifetime"]),
-        "interest_rate": float(formData["interest_rate"]),
+        "interest_rate": float(formData["interest_rate"])*.01,
         "electricity_rate": float(formData["electricity_rate"]), 
 
         # ints

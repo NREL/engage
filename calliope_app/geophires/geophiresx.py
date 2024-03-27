@@ -222,9 +222,9 @@ class Geophires(object):
             additional_vals['elec_prod_to_therm_ext_ratio'] = df_final['Ratio Avg Electricity Production to Avg Reservoir Heat Extraction'].mean()
 
         if 'Maximum Total Electricity Generation (MWe)'in df_final.columns:
-            additional_vals['max_elec_gen_mwe'] = df_final['Maximum Total Electricity Generation (MWe)'].max()*10
+            additional_vals['max_elec_gen_kwe'] = df_final['Maximum Total Electricity Generation (MWe)'].max()*10*1000
 
-        additional_vals['max_therm_ext_mwth'] = df_final['Average Reservoir Heat Extraction (MWth)'].max()*10
+        additional_vals['max_therm_ext_kwth'] = df_final['Average Reservoir Heat Extraction (MWth)'].max()*10*1000
 
 
         # Adding additional values to the DataFrame
