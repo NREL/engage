@@ -133,7 +133,8 @@ Load templates
       admin_template_type_techs.json \
       admin_template_type_locs.json \
       admin_template_type_loc_techs.json \
-      admin_template_type_parameters.json \
+      admin_template_type_loc_tech_params.json \
+      admin_template_type_tech_params.json \
       admin_template_type_carriers.json
 
 

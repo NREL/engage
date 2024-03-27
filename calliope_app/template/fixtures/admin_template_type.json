@@ -1,11 +1,74 @@
 [
     {
-        "model": "template.template_type",
         "pk": 1,
+        "model": "template.template_type",
         "fields": {
-            "name": "binary_orc",
-            "pretty_name": "Binary ORC Geothermal Power Plant",
-            "description": "A binary cycle (ORC) geothermal power plant is a type of geothermal power plant that generates electricity by using heat from the Earth's subsurface to produce steam, which is then used to generate electricity through a turbine and generator. The Organic Rankine Cycle (ORC) is commonly accepted as a viable technology to convert from low to medium-temperature geothermal energy into electrical energy. These plants use geothermal fluids with a lower temperature range of around 100-200°C, which is too low to generate steam but can still be used to generate electricity."
+            "name": "EGS_chp",
+            "pretty_name": "EGS Combined Heat and Power (CHP)",
+            "description": "An EGS Combined Heat and Power (CHP)"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "template.template_type",
+        "fields": {
+            "name": "HYDRO_chp",
+            "pretty_name": "Hydrothermal Combined Heat and Power (CHP)",
+            "description": "A hydrothermal Combined Heat and Power (CHP)"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "template.template_type",
+        "fields": {
+            "name": "EGS_binary_orc",
+            "pretty_name": "EGS Subcritical Binary ORC",
+            "description": "An EGS Subcritical Binary ORC plant."
+        }
+    },
+    {
+        "pk": 4,
+        "model": "template.template_type",
+        "fields": {
+            "name": "HYDRO_binary_orc",
+            "pretty_name": "HYDRO Subcritical Binary ORC",
+            "description": "A hydrothermal binary ORC plant."
+        }
+    },
+    {
+        "pk": 5,
+        "model": "template.template_type",
+        "fields": {
+            "name": "EGS_direct_use",
+            "pretty_name": "EGS  Direct Use ORC",
+            "description": "An EGS direct use plant."
+        }
+    },
+    {
+        "pk": 6,
+        "model": "template.template_type",
+        "fields": {
+            "name": "HYDRO_direct_use",
+            "pretty_name": "HYDRO Direct Use ORC",
+            "description": "A hydrothermal direct use plant."
+        }
+    },
+    {
+        "pk": 7,
+        "model": "template.template_type",
+        "fields": {
+            "name": "EGS_cchp",
+            "pretty_name": "EGS  Combined Cooling Heat and Power (CCHP)",
+            "description": "An EGS combined cooling heat and power (CCHP)"
+        }
+    },
+    {
+        "pk": 8,
+        "model": "template.template_type",
+        "fields": {
+            "name": "HYDRO_cchp",
+            "pretty_name": "HYDRO Combined Cooling Heat and Power (CCHP)",
+            "description": "A hydrothermal combined cooling heat and power (CCHP)"
         }
     }
 ]

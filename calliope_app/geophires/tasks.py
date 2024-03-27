@@ -7,7 +7,10 @@ from django.conf import settings
 from api.models.configuration import Job_Meta
 from api.tasks import task_status
 from calliope_app.celery import app
-from geophires.v2 import GeophiresParams, Geophires
+from geophires.geophiresx import Geophires
+
+import logging
+logger = logging.getLogger(__name__)
 
 class GeophiresTask(Task):
     """
@@ -40,36 +43,37 @@ class GeophiresTask(Task):
 @app.task(
     base=GeophiresTask,
     queue="short_queue",
-    soft_time_limit=600-6,
-    ime_limit=600,
+    soft_time_limit=(6000 - 100),
+    ime_limit=(6000),
     ignore_result=True
 )
-def run_geophires(job_meta_id, plant, params, *args, **kwargs):
+def run_geophires(job_meta_id, params, *args, **kwargs):
     """Run geophires task
 
     Parameters
     ----------
-    plant : str
-        The plant type
     params : dict
         The geophires parameters
     """
+    # Log the geophires with logger
+    # logger.info(f"Args skipped.......................................")
+    # model = args[0]
     ## Update job meta
     job_meta = Job_Meta.objects.get(id=job_meta_id)
     job_meta.status = task_status.RUNNING
     job_meta.save()
-
-    ## Geophires job run
-    input_params = GeophiresParams(**params)
+    logger.info(f"\n\n ------ Params ------\n\n")
+    #input_params = GeophiresParams(**params)
 
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    result_file = os.path.join(settings.DATA_STORAGE, "geophires", f"{job_meta_id}__{plant}__{timestamp}.csv")
+    result_file = os.path.join(settings.DATA_STORAGE, "geophires", f"{job_meta_id}__{timestamp}.csv")
+    geophires = Geophires()
 
-    geophiers = Geophires(plant)
-    output_params, output_file = geophiers.run(input_params=input_params, output_file=result_file)
+    output_params, output_file = geophires.run(input_params=params, output_file=result_file)
+    logger.info(f"Output file: {output_file}")
+    logger.info(f"result file: {result_file}")
 
     return {
-        "plant": plant,
         "output_params": output_params,
         "output_file": output_file
     }

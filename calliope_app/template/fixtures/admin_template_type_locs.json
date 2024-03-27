@@ -1,12 +1,222 @@
 [
-  {
-    "model": "template.template_type_loc",
-    "pk": 1,
-    "fields": {
-      "name": "Binary ORC Location",
-      "template_type": 1,
-      "latitude_offset": 0.0,
-      "longitude_offset": 0.0
+    {
+        "pk": 1,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "CHP_Plant",
+            "template_type": 1,
+            "latitude_offset": 0.0001,
+            "longitude_offset": 0.0
+        }
+    },
+    {
+        "pk": 2,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Geothermal_Reservoir",
+            "template_type": 1,
+            "latitude_offset": 0.0,
+            "longitude_offset": 0.0
+        }
+    },
+    {
+        "pk": 3,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Heat_Demand",
+            "template_type": 1,
+            "latitude_offset": 0.0002,
+            "longitude_offset": -0.0001
+        }
+    },
+    {
+        "pk": 4,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Heat_Sink",
+            "template_type": 1,
+            "latitude_offset": 0.0001,
+            "longitude_offset": -0.0001
+        }
+    },
+    {
+        "pk": 5,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Power_Demand",
+            "template_type": 1,
+            "latitude_offset": 0.0002,
+            "longitude_offset": 0.0001
+        }
+    },
+    {
+        "pk": 6,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "CHP_Plant",
+            "template_type": 2,
+            "latitude_offset": 0.0001,
+            "longitude_offset": 0.0
+        }
+    },
+    {
+        "pk": 7,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Geothermal_Reservoir",
+            "template_type": 2,
+            "latitude_offset": 0.0,
+            "longitude_offset": 0.0
+        }
+    },
+    {
+        "pk": 8,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Heat_Demand",
+            "template_type": 2,
+            "latitude_offset": 0.0002,
+            "longitude_offset": -0.0001
+        }
+    },
+    {
+        "pk": 9,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Heat_Sink",
+            "template_type": 2,
+            "latitude_offset": 0.0001,
+            "longitude_offset": -0.0001
+        }
+    },
+    {
+        "pk": 10,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Power_Demand",
+            "template_type": 2,
+            "latitude_offset": 0.0002,
+            "longitude_offset": 0.0001
+        }
+    },
+    {
+        "pk": 11,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "BinaryORC_Plant",
+            "template_type": 3,
+            "latitude_offset": 0.0001,
+            "longitude_offset": 0.0
+        }
+    },
+    {
+        "pk": 12,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Geothermal_Reservoir",
+            "template_type": 3,
+            "latitude_offset": 0.0,
+            "longitude_offset": 0.0
+        }
+    },
+    {
+        "pk": 13,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Power_Demand",
+            "template_type": 3,
+            "latitude_offset": 0.0002,
+            "longitude_offset": 0.0001
+        }
+    },
+    {
+        "pk": 14,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "BinaryORC_Plant",
+            "template_type": 4,
+            "latitude_offset": 0.0001,
+            "longitude_offset": 0.0
+        }
+    },
+    {
+        "pk": 15,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Geothermal_Reservoir",
+            "template_type": 4,
+            "latitude_offset": 0.0,
+            "longitude_offset": 0.0
+        }
+    },
+    {
+        "pk": 16,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Power_Demand",
+            "template_type": 4,
+            "latitude_offset": 0.0002,
+            "longitude_offset": 0.0001
+        }
+    },
+    {
+        "pk": 17,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Direct_Use_Plant",
+            "template_type": 5,
+            "latitude_offset": 0.0001,
+            "longitude_offset": 0.0
+        }
+    },
+    {
+        "pk": 18,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Geothermal_Reservoir",
+            "template_type": 5,
+            "latitude_offset": 0.0,
+            "longitude_offset": 0.0
+        }
+    },
+    {
+        "pk": 19,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Heat_Demand",
+            "template_type": 5,
+            "latitude_offset": 0.0002,
+            "longitude_offset": 0.0001
+        }
+    },
+    {
+        "pk": 20,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Direct_Use_Plant",
+            "template_type": 6,
+            "latitude_offset": 0.0001,
+            "longitude_offset": 0.0
+        }
+    },
+    {
+        "pk": 21,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Geothermal_Reservoir",
+            "template_type": 6,
+            "latitude_offset": 0.0,
+            "longitude_offset": 0.0
+        }
+    },
+    {
+        "pk": 22,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "Heat_Demand",
+            "template_type": 6,
+            "latitude_offset": 0.0002,
+            "longitude_offset": 0.0001
+        }
     }
-  }
 ]
