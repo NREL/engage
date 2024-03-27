@@ -49,7 +49,7 @@ RUN pip install flower>=1.1.0
 
 COPY . .
 
-# For calliope==0.6.8 works with HiGHS solver with pyomo==6.7.0
+# For calliope==0.6.8 works with HiGHS solver in pyomo==6.7.0
 COPY ./calliope-files/backend/pyomo/model.py /usr/local/lib/python3.8/site-packages/calliope/backend/pyomo/model.py
 COPY ./calliope-files/backend/run.py /usr/local/lib/python3.8/site-packages/calliope/backend/run.py
 
