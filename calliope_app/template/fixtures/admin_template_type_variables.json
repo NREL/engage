@@ -4517,7 +4517,7 @@
             "max": null,
             "description": "Constant and uniform reservoir rock heat capacity. The heat capacity of the geothermal fluid. This parameter determines how much energy can be stored in the fluid as its temperature changes.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4534,7 +4534,7 @@
             "max": null,
             "description": "Constant and uniform reservoir rock density. The density of the geothermal fluid in the reservoir. This parameter affects the fluid's buoyancy and flow behavior, which can in turn affect the overall performance of the geothermal system.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4551,7 +4551,7 @@
             "max": null,
             "description": "Constant and uniform reservoir rock thermal conductivity. The thermal conductivity of the geothermal rock or other material surrounding the reservoir. This parameter affects how efficiently heat can be transferred from the hot fluid in the reservoir to the surrounding rock, which can impact the overall energy output of the system.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4568,7 +4568,7 @@
             "max": 10,
             "description": "This input variable specifies the minimum depth of the geothermal reservoir in kilometers.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4585,7 +4585,7 @@
             "max": 10,
             "description": "This input variable specifies the maximum depth of the geothermal reservoir  in kilometers.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4602,7 +4602,7 @@
             "max": 10,
             "description": "This input variable specifies the minimum number of (identical) wells that can be used to extract fluid from the geothermal reservoir. Note: The configuration only allows doublet (1:1 production to injection) an triplet (2:1 production to injection).",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4619,7 +4619,7 @@
             "max": 10,
             "description": "This input variable specifies the maximum number of (identical) wells that can be used to extract fluid from the geothermal reservoir. Note: The configuration only allows doublet (1:1 production to injection) an triplet (2:1 production to injection).",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4636,7 +4636,7 @@
             "max": 10,
             "description": "This input variable specifies the minimum number of (identical) wells that can be used to inject fluid into the geothermal reservoir.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4653,7 +4653,7 @@
             "max": 10,
             "description": "This input variable specifies the maximum number of (identical) wells that can be used to inject fluid into the geothermal reservoir.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4670,7 +4670,7 @@
             "max": null,
             "description": "Defines temperature gradient of subsurface segment 1. The gradient refers to the rate at which the temperature of the geothermal reservoir rock segment changes with depth. A higher gradient indicates a more rapid increase in temperature with depth, which can potentially yield higher temperatures and, thus, more energy.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4687,7 +4687,7 @@
             "max": null,
             "description": "Defines the thickness is kilometers of gradient #1",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4704,7 +4704,7 @@
             "max": null,
             "description": "Defines temperature gradient of subsurface segment 2. The gradient refers to the rate at which the temperature of the geothermal reservoir rock segment changes with depth. A higher gradient indicates a more rapid increase in temperature with depth, which can potentially yield higher temperatures and, thus, more energy.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4721,7 +4721,7 @@
             "max": null,
             "description": "Defines the thickness is kilometers of gradient #2",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4738,7 +4738,7 @@
             "max": null,
             "description": "Defines temperature gradient of subsurface segment 3. The gradient refers to the rate at which the temperature of the geothermal reservoir rock segment changes with depth. A higher gradient indicates a more rapid increase in temperature with depth, which can potentially yield higher temperatures and, thus, more energy.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4755,7 +4755,7 @@
             "max": null,
             "description": "Defines the thickness is kilometers of gradient #3",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4772,7 +4772,7 @@
             "max": null,
             "description": "Defines temperature gradient of subsurface segment 4 (until final depth). No segment thickness is necessary as input. The gradient refers to the rate at which the temperature of the geothermal reservoir rock segment changes with depth. A higher gradient indicates a more rapid increase in temperature with depth, which can potentially yield higher temperatures and, thus, more energy.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4789,7 +4789,7 @@
             "max": null,
             "description": "This parameter defines the shape of fractures within the geothermal reservoir, a critical factor in determining the flow and extraction efficiency of geothermal fluids",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4806,7 +4806,7 @@
             "max": null,
             "description": "Specifies the height of fractures within the geothermal reservoir",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4823,7 +4823,7 @@
             "max": null,
             "description": "This input defines the total number of fractures engineered or naturally occurring within the geothermal reservoir, affecting the system's overall fluid flow and heat extraction capabilities.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5622,7 +5622,7 @@
             "max": null,
             "description": "Constant and uniform reservoir rock heat capacity. The heat capacity of the geothermal fluid. This parameter determines how much energy can be stored in the fluid as its temperature changes.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5639,7 +5639,7 @@
             "max": null,
             "description": "Constant and uniform reservoir rock density. The density of the geothermal fluid in the reservoir. This parameter affects the fluid's buoyancy and flow behavior, which can in turn affect the overall performance of the geothermal system.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5656,7 +5656,7 @@
             "max": null,
             "description": "Constant and uniform reservoir rock thermal conductivity. The thermal conductivity of the geothermal rock or other material surrounding the reservoir. This parameter affects how efficiently heat can be transferred from the hot fluid in the reservoir to the surrounding rock, which can impact the overall energy output of the system.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5673,7 +5673,7 @@
             "max": 10,
             "description": "This input variable specifies the minimum depth of the geothermal reservoir in kilometers.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5690,7 +5690,7 @@
             "max": 10,
             "description": "This input variable specifies the maximum depth of the geothermal reservoir  in kilometers.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5707,7 +5707,7 @@
             "max": 10,
             "description": "This input variable specifies the minimum number of (identical) wells that can be used to extract fluid from the geothermal reservoir. Note: The configuration only allows doublet (1:1 production to injection) an triplet (2:1 production to injection).",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5724,7 +5724,7 @@
             "max": 10,
             "description": "This input variable specifies the maximum number of (identical) wells that can be used to extract fluid from the geothermal reservoir. Note: The configuration only allows doublet (1:1 production to injection) an triplet (2:1 production to injection).",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5741,7 +5741,7 @@
             "max": 10,
             "description": "This input variable specifies the minimum number of (identical) wells that can be used to inject fluid into the geothermal reservoir.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5758,7 +5758,7 @@
             "max": 10,
             "description": "This input variable specifies the maximum number of (identical) wells that can be used to inject fluid into the geothermal reservoir.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5775,7 +5775,7 @@
             "max": null,
             "description": "Defines temperature gradient of subsurface segment 1. The gradient refers to the rate at which the temperature of the geothermal reservoir rock segment changes with depth. A higher gradient indicates a more rapid increase in temperature with depth, which can potentially yield higher temperatures and, thus, more energy.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5792,7 +5792,7 @@
             "max": null,
             "description": "Defines the thickness is kilometers of gradient #1",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5809,7 +5809,7 @@
             "max": null,
             "description": "Defines temperature gradient of subsurface segment 2. The gradient refers to the rate at which the temperature of the geothermal reservoir rock segment changes with depth. A higher gradient indicates a more rapid increase in temperature with depth, which can potentially yield higher temperatures and, thus, more energy.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5826,7 +5826,7 @@
             "max": null,
             "description": "Defines the thickness is kilometers of gradient #2",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5843,7 +5843,7 @@
             "max": null,
             "description": "Defines temperature gradient of subsurface segment 3. The gradient refers to the rate at which the temperature of the geothermal reservoir rock segment changes with depth. A higher gradient indicates a more rapid increase in temperature with depth, which can potentially yield higher temperatures and, thus, more energy.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5860,7 +5860,7 @@
             "max": null,
             "description": "Defines the thickness is kilometers of gradient #3",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5877,7 +5877,7 @@
             "max": null,
             "description": "Defines temperature gradient of subsurface segment 4 (until final depth). No segment thickness is necessary as input. The gradient refers to the rate at which the temperature of the geothermal reservoir rock segment changes with depth. A higher gradient indicates a more rapid increase in temperature with depth, which can potentially yield higher temperatures and, thus, more energy.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5894,7 +5894,7 @@
             "max": null,
             "description": "This parameter defines the shape of fractures within the geothermal reservoir, a critical factor in determining the flow and extraction efficiency of geothermal fluids",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5911,7 +5911,7 @@
             "max": null,
             "description": "Specifies the height of fractures within the geothermal reservoir",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5928,7 +5928,7 @@
             "max": null,
             "description": "This input defines the total number of fractures engineered or naturally occurring within the geothermal reservoir, affecting the system's overall fluid flow and heat extraction capabilities.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
