@@ -418,5 +418,485 @@
             "template_loc_2": 22.0,
             "template_tech": 39
         }
+    },
+    {
+        "pk": 43,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 7,
+            "template_loc_1": 24,
+            "template_loc_2": null,
+            "template_tech": 41
+        }
+    },
+    {
+        "pk": 44,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 7,
+            "template_loc_1": 23,
+            "template_loc_2": null,
+            "template_tech": 42
+        }
+    },
+    {
+        "pk": 45,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 7,
+            "template_loc_1": 23,
+            "template_loc_2": null,
+            "template_tech": 43
+        }
+    },
+    {
+        "pk": 46,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 7,
+            "template_loc_1": 26,
+            "template_loc_2": null,
+            "template_tech": 44
+        }
+    },
+    {
+        "pk": 47,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 7,
+            "template_loc_1": 25,
+            "template_loc_2": null,
+            "template_tech": 45
+        }
+    },
+    {
+        "pk": 48,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 7,
+            "template_loc_1": 27,
+            "template_loc_2": null,
+            "template_tech": 46
+        }
+    },
+    {
+        "pk": 49,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 7,
+            "template_loc_1": 28,
+            "template_loc_2": null,
+            "template_tech": 47
+        }
+    },
+    {
+        "pk": 50,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 7,
+            "template_loc_1": 28,
+            "template_loc_2": null,
+            "template_tech": 48
+        }
+    },
+    {
+        "pk": 51,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 7,
+            "template_loc_1": 29,
+            "template_loc_2": null,
+            "template_tech": 49
+        }
+    },
+    {
+        "pk": 52,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 7,
+            "template_loc_1": 24,
+            "template_loc_2": 23.0,
+            "template_tech": 50
+        }
+    },
+    {
+        "pk": 53,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 7,
+            "template_loc_1": 24,
+            "template_loc_2": 28.0,
+            "template_tech": 50
+        }
+    },
+    {
+        "pk": 54,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 7,
+            "template_loc_1": 23,
+            "template_loc_2": 25.0,
+            "template_tech": 51
+        }
+    },
+    {
+        "pk": 55,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 7,
+            "template_loc_1": 23,
+            "template_loc_2": 27.0,
+            "template_tech": 52
+        }
+    },
+    {
+        "pk": 56,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 7,
+            "template_loc_1": 28,
+            "template_loc_2": 29.0,
+            "template_tech": 53
+        }
+    },
+    {
+        "pk": 57,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 8,
+            "template_loc_1": 31,
+            "template_loc_2": null,
+            "template_tech": 54
+        }
+    },
+    {
+        "pk": 58,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 8,
+            "template_loc_1": 30,
+            "template_loc_2": null,
+            "template_tech": 55
+        }
+    },
+    {
+        "pk": 59,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 8,
+            "template_loc_1": 30,
+            "template_loc_2": null,
+            "template_tech": 56
+        }
+    },
+    {
+        "pk": 60,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 8,
+            "template_loc_1": 33,
+            "template_loc_2": null,
+            "template_tech": 57
+        }
+    },
+    {
+        "pk": 61,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 8,
+            "template_loc_1": 32,
+            "template_loc_2": null,
+            "template_tech": 58
+        }
+    },
+    {
+        "pk": 62,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 8,
+            "template_loc_1": 34,
+            "template_loc_2": null,
+            "template_tech": 59
+        }
+    },
+    {
+        "pk": 63,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 8,
+            "template_loc_1": 35,
+            "template_loc_2": null,
+            "template_tech": 60
+        }
+    },
+    {
+        "pk": 64,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 8,
+            "template_loc_1": 35,
+            "template_loc_2": null,
+            "template_tech": 61
+        }
+    },
+    {
+        "pk": 65,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 8,
+            "template_loc_1": 36,
+            "template_loc_2": null,
+            "template_tech": 62
+        }
+    },
+    {
+        "pk": 66,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 8,
+            "template_loc_1": 31,
+            "template_loc_2": 30.0,
+            "template_tech": 63
+        }
+    },
+    {
+        "pk": 67,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 8,
+            "template_loc_1": 31,
+            "template_loc_2": 35.0,
+            "template_tech": 63
+        }
+    },
+    {
+        "pk": 68,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 8,
+            "template_loc_1": 30,
+            "template_loc_2": 32.0,
+            "template_tech": 64
+        }
+    },
+    {
+        "pk": 69,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 8,
+            "template_loc_1": 30,
+            "template_loc_2": 34.0,
+            "template_tech": 65
+        }
+    },
+    {
+        "pk": 70,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 8,
+            "template_loc_1": 35,
+            "template_loc_2": 36.0,
+            "template_tech": 66
+        }
+    },
+    {
+        "pk": 71,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 9,
+            "template_loc_1": 38,
+            "template_loc_2": null,
+            "template_tech": 67
+        }
+    },
+    {
+        "pk": 72,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 9,
+            "template_loc_1": 37,
+            "template_loc_2": null,
+            "template_tech": 68
+        }
+    },
+    {
+        "pk": 73,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 9,
+            "template_loc_1": 39,
+            "template_loc_2": null,
+            "template_tech": 69
+        }
+    },
+    {
+        "pk": 74,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 9,
+            "template_loc_1": 38,
+            "template_loc_2": 37.0,
+            "template_tech": 70
+        }
+    },
+    {
+        "pk": 75,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 9,
+            "template_loc_1": 37,
+            "template_loc_2": 39.0,
+            "template_tech": 71
+        }
+    },
+    {
+        "pk": 76,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 10,
+            "template_loc_1": 41,
+            "template_loc_2": null,
+            "template_tech": 72
+        }
+    },
+    {
+        "pk": 77,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 10,
+            "template_loc_1": 40,
+            "template_loc_2": null,
+            "template_tech": 73
+        }
+    },
+    {
+        "pk": 78,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 10,
+            "template_loc_1": 42,
+            "template_loc_2": null,
+            "template_tech": 74
+        }
+    },
+    {
+        "pk": 79,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 10,
+            "template_loc_1": 41,
+            "template_loc_2": 40.0,
+            "template_tech": 75
+        }
+    },
+    {
+        "pk": 80,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 10,
+            "template_loc_1": 40,
+            "template_loc_2": 42.0,
+            "template_tech": 76
+        }
+    },
+    {
+        "pk": 81,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 11,
+            "template_loc_1": 44,
+            "template_loc_2": null,
+            "template_tech": 77
+        }
+    },
+    {
+        "pk": 82,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 11,
+            "template_loc_1": 43,
+            "template_loc_2": null,
+            "template_tech": 78
+        }
+    },
+    {
+        "pk": 83,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 11,
+            "template_loc_1": 45,
+            "template_loc_2": null,
+            "template_tech": 79
+        }
+    },
+    {
+        "pk": 84,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 11,
+            "template_loc_1": 44,
+            "template_loc_2": 43.0,
+            "template_tech": 80
+        }
+    },
+    {
+        "pk": 85,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 11,
+            "template_loc_1": 43,
+            "template_loc_2": 45.0,
+            "template_tech": 81
+        }
+    },
+    {
+        "pk": 86,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 12,
+            "template_loc_1": 47,
+            "template_loc_2": null,
+            "template_tech": 82
+        }
+    },
+    {
+        "pk": 87,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 12,
+            "template_loc_1": 46,
+            "template_loc_2": null,
+            "template_tech": 83
+        }
+    },
+    {
+        "pk": 88,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 12,
+            "template_loc_1": 48,
+            "template_loc_2": null,
+            "template_tech": 84
+        }
+    },
+    {
+        "pk": 89,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 12,
+            "template_loc_1": 47,
+            "template_loc_2": 46.0,
+            "template_tech": 85
+        }
+    },
+    {
+        "pk": 90,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 12,
+            "template_loc_1": 46,
+            "template_loc_2": 48.0,
+            "template_tech": 86
+        }
     }
 ]

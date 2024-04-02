@@ -46,7 +46,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
       'title': 'Subsurface Total Cost ($M)'
     }
   }
-  if (!template_type.includes("Direct")) {
+  if (!template_type.includes("Direct") || !template_type.includes("Flash")) {
     Plotly.plot('plot1', data1, layout1);
   }
 
@@ -85,7 +85,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
       'title': 'Surface O&M Total Cost ($M)'
     }
   }
-  if (!template_type.includes("Direct")) {
+  if (!template_type.includes("Direct")  || !template_type.includes("Flash")) {
     Plotly.plot('plot2', data2, layout2);
   }
 
