@@ -4857,7 +4857,7 @@
             "max": 500.0,
             "description": "Sets the minimum target temperature for fluid production in the geothermal system",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4874,7 +4874,7 @@
             "max": 500.0,
             "description": "Sets the maximum target temperature for fluid production in the geothermal system",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4891,7 +4891,7 @@
             "max": null,
             "description": "Sets the production well diameter. Depending on the size of the well, well drilling cost correlation will have to be adjusted to ensure that the cost correlation is consistent with either large or small diameter cost correlations",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4908,7 +4908,7 @@
             "max": null,
             "description": "Sets the injection well diameter. Depending on the size of the well, well drilling cost correlation will have to be adjusted to ensure that the cost correlation is consistent with either large or small diameter cost correlations",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4925,7 +4925,7 @@
             "max": null,
             "description": "This parameter specifies the expected operational lifespan of the EGS Combined Heat and Power project.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4942,7 +4942,7 @@
             "max": null,
             "description": "Specifies the interest rate during the project lifecycle",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -4959,7 +4959,7 @@
             "max": null,
             "description": "Specifies the cost of electricity",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5962,7 +5962,7 @@
             "max": 500.0,
             "description": "Sets the minimum target temperature for fluid production in the geothermal system",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5979,7 +5979,7 @@
             "max": 500.0,
             "description": "Sets the maximum target temperature for fluid production in the geothermal system",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -5996,7 +5996,7 @@
             "max": null,
             "description": "Sets the production well diameter. Depending on the size of the well, well drilling cost correlation will have to be adjusted to ensure that the cost correlation is consistent with either large or small diameter cost correlations",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -6013,7 +6013,7 @@
             "max": null,
             "description": "Sets the injection well diameter. Depending on the size of the well, well drilling cost correlation will have to be adjusted to ensure that the cost correlation is consistent with either large or small diameter cost correlations",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -6030,7 +6030,7 @@
             "max": null,
             "description": "This parameter specifies the expected operational lifespan of the EGS Combined Heat and Power project.",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -6047,7 +6047,7 @@
             "max": null,
             "description": "Specifies the interest rate during the project lifecycle",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
@@ -6064,7 +6064,7 @@
             "max": null,
             "description": "Specifies the cost of electricity",
             "timeseries_enabled": null,
-            "category": "GEOPHIRES Outputs",
+            "category": "GEOPHIRES Inputs",
             "choices": null
         }
     },
