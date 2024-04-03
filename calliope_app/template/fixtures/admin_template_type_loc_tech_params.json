@@ -5,12 +5,7 @@
         "fields": {
             "template_loc_tech": 1,
             "parameter": 24,
-            "equation": "True",
-            "template_loc_1": 2.0,
-            "template_loc_2": null,
-            "template_tech": 1.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "True"
         }
     },
     {
@@ -19,12 +14,7 @@
         "fields": {
             "template_loc_tech": 1,
             "parameter": 28,
-            "equation": 1,
-            "template_loc_1": 1.0,
-            "template_loc_2": null,
-            "template_tech": 2.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 1
         }
     },
     {
@@ -33,12 +23,7 @@
         "fields": {
             "template_loc_tech": 1,
             "parameter": 40,
-            "equation": "energy_per_cap",
-            "template_loc_1": 1.0,
-            "template_loc_2": null,
-            "template_tech": 3.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "energy_per_cap"
         }
     },
     {
@@ -47,12 +32,7 @@
         "fields": {
             "template_loc_tech": 1,
             "parameter": 53,
-            "equation": "||therm_cap_vs_reservoir_cost||",
-            "template_loc_1": 4.0,
-            "template_loc_2": null,
-            "template_tech": 4.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_cost||"
         }
     },
     {
@@ -61,12 +41,7 @@
         "fields": {
             "template_loc_tech": 1,
             "parameter": 58,
-            "equation": "||therm_cap_vs_reservoir_om_cost||",
-            "template_loc_1": 3.0,
-            "template_loc_2": null,
-            "template_tech": 5.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
     {
@@ -75,12 +50,7 @@
         "fields": {
             "template_loc_tech": 1,
             "parameter": 11,
-            "equation": "||max_therm_ext_kwth||",
-            "template_loc_1": 5.0,
-            "template_loc_2": null,
-            "template_tech": 5.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_therm_ext_kwth||"
         }
     },
     {
@@ -89,12 +59,7 @@
         "fields": {
             "template_loc_tech": 1,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": 2.0,
-            "template_loc_2": 1.0,
-            "template_tech": 7.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -103,12 +68,7 @@
         "fields": {
             "template_loc_tech": 1,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": 1.0,
-            "template_loc_2": 3.0,
-            "template_tech": 8.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -117,12 +77,7 @@
         "fields": {
             "template_loc_tech": 2,
             "parameter": 14,
-            "equation": 16.6,
-            "template_loc_1": 1.0,
-            "template_loc_2": 4.0,
-            "template_tech": 8.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 16.6
         }
     },
     {
@@ -131,12 +86,7 @@
         "fields": {
             "template_loc_tech": 2,
             "parameter": 11,
-            "equation": "||max_elec_gen_kwe||",
-            "template_loc_1": 1.0,
-            "template_loc_2": 5.0,
-            "template_tech": 9.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_elec_gen_kwe||"
         }
     },
     {
@@ -145,12 +95,7 @@
         "fields": {
             "template_loc_tech": 2,
             "parameter": 53,
-            "equation": "||elec_cap_vs_surface_cost||",
-            "template_loc_1": 7.0,
-            "template_loc_2": null,
-            "template_tech": 10.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_cap_vs_surface_cost||"
         }
     },
     {
@@ -159,12 +104,7 @@
         "fields": {
             "template_loc_tech": 2,
             "parameter": 58,
-            "equation": "||elec_cap_vs_surface_om_cost||",
-            "template_loc_1": 6.0,
-            "template_loc_2": null,
-            "template_tech": 11.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_cap_vs_surface_om_cost||"
         }
     },
     {
@@ -173,12 +113,7 @@
         "fields": {
             "template_loc_tech": 2,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": 6.0,
-            "template_loc_2": null,
-            "template_tech": 12.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -187,12 +122,7 @@
         "fields": {
             "template_loc_tech": 2,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": 9.0,
-            "template_loc_2": null,
-            "template_tech": 13.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -201,12 +131,7 @@
         "fields": {
             "template_loc_tech": 11,
             "parameter": 24,
-            "equation": "True",
-            "template_loc_1": 8.0,
-            "template_loc_2": null,
-            "template_tech": 14.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "True"
         }
     },
     {
@@ -215,12 +140,7 @@
         "fields": {
             "template_loc_tech": 11,
             "parameter": 28,
-            "equation": 1,
-            "template_loc_1": 10.0,
-            "template_loc_2": null,
-            "template_tech": 14.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 1
         }
     },
     {
@@ -229,12 +149,7 @@
         "fields": {
             "template_loc_tech": 11,
             "parameter": 40,
-            "equation": "energy_per_cap",
-            "template_loc_1": 7.0,
-            "template_loc_2": 6.0,
-            "template_tech": 16.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "energy_per_cap"
         }
     },
     {
@@ -243,12 +158,7 @@
         "fields": {
             "template_loc_tech": 11,
             "parameter": 53,
-            "equation": "||therm_cap_vs_reservoir_cost||",
-            "template_loc_1": 6.0,
-            "template_loc_2": 8.0,
-            "template_tech": 17.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_cost||"
         }
     },
     {
@@ -257,12 +167,7 @@
         "fields": {
             "template_loc_tech": 11,
             "parameter": 58,
-            "equation": "||therm_cap_vs_reservoir_om_cost||",
-            "template_loc_1": 6.0,
-            "template_loc_2": 9.0,
-            "template_tech": 17.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
     {
@@ -271,12 +176,7 @@
         "fields": {
             "template_loc_tech": 11,
             "parameter": 11,
-            "equation": "||max_therm_ext_kwth||",
-            "template_loc_1": 6.0,
-            "template_loc_2": 10.0,
-            "template_tech": 18.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_therm_ext_kwth||"
         }
     },
     {
@@ -285,12 +185,7 @@
         "fields": {
             "template_loc_tech": 11,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": 12.0,
-            "template_loc_2": null,
-            "template_tech": 19.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -299,12 +194,7 @@
         "fields": {
             "template_loc_tech": 11,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": 11.0,
-            "template_loc_2": null,
-            "template_tech": 20.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -313,12 +203,7 @@
         "fields": {
             "template_loc_tech": 12,
             "parameter": 14,
-            "equation": 16.6,
-            "template_loc_1": 13.0,
-            "template_loc_2": null,
-            "template_tech": 21.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 16.6
         }
     },
     {
@@ -327,12 +212,7 @@
         "fields": {
             "template_loc_tech": 12,
             "parameter": 11,
-            "equation": "||max_elec_gen_kwe||",
-            "template_loc_1": 12.0,
-            "template_loc_2": 11.0,
-            "template_tech": 22.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_elec_gen_kwe||"
         }
     },
     {
@@ -341,12 +221,7 @@
         "fields": {
             "template_loc_tech": 12,
             "parameter": 53,
-            "equation": "||elec_cap_vs_surface_cost||",
-            "template_loc_1": 11.0,
-            "template_loc_2": 13.0,
-            "template_tech": 23.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_cap_vs_surface_cost||"
         }
     },
     {
@@ -355,12 +230,7 @@
         "fields": {
             "template_loc_tech": 12,
             "parameter": 58,
-            "equation": "||elec_cap_vs_surface_om_cost||",
-            "template_loc_1": 15.0,
-            "template_loc_2": null,
-            "template_tech": 24.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_cap_vs_surface_om_cost||"
         }
     },
     {
@@ -369,12 +239,7 @@
         "fields": {
             "template_loc_tech": 12,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": 14.0,
-            "template_loc_2": null,
-            "template_tech": 25.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -383,12 +248,7 @@
         "fields": {
             "template_loc_tech": 12,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": 16.0,
-            "template_loc_2": null,
-            "template_tech": 26.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -397,12 +257,7 @@
         "fields": {
             "template_loc_tech": 21,
             "parameter": 40,
-            "equation": "energy_per_cap",
-            "template_loc_1": 15.0,
-            "template_loc_2": 14.0,
-            "template_tech": 27.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "energy_per_cap"
         }
     },
     {
@@ -411,12 +266,7 @@
         "fields": {
             "template_loc_tech": 21,
             "parameter": 24,
-            "equation": "True",
-            "template_loc_1": 14.0,
-            "template_loc_2": 16.0,
-            "template_tech": 28.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "True"
         }
     },
     {
@@ -425,12 +275,7 @@
         "fields": {
             "template_loc_tech": 21,
             "parameter": 28,
-            "equation": 1,
-            "template_loc_1": 17.0,
-            "template_loc_2": null,
-            "template_tech": 30.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 1
         }
     },
     {
@@ -439,12 +284,7 @@
         "fields": {
             "template_loc_tech": 21,
             "parameter": 53,
-            "equation": "||therm_cap_vs_reservoir_cost||",
-            "template_loc_1": 18.0,
-            "template_loc_2": null,
-            "template_tech": 29.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_cost||"
         }
     },
     {
@@ -453,12 +293,7 @@
         "fields": {
             "template_loc_tech": 21,
             "parameter": 58,
-            "equation": "||therm_cap_vs_reservoir_om_cost||",
-            "template_loc_1": 19.0,
-            "template_loc_2": null,
-            "template_tech": 31.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
     {
@@ -467,12 +302,7 @@
         "fields": {
             "template_loc_tech": 21,
             "parameter": 11,
-            "equation": "||max_therm_ext_kwth||",
-            "template_loc_1": 17.0,
-            "template_loc_2": null,
-            "template_tech": 34.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_therm_ext_kwth||"
         }
     },
     {
@@ -481,12 +311,7 @@
         "fields": {
             "template_loc_tech": 21,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": 18.0,
-            "template_loc_2": 17.0,
-            "template_tech": 32.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -495,12 +320,7 @@
         "fields": {
             "template_loc_tech": 21,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": 17.0,
-            "template_loc_2": 19.0,
-            "template_tech": 33.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -509,12 +329,7 @@
         "fields": {
             "template_loc_tech": 22,
             "parameter": 11,
-            "equation": "||max_elec_gen_kwe||",
-            "template_loc_1": 20.0,
-            "template_loc_2": null,
-            "template_tech": 36.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_elec_gen_kwe||"
         }
     },
     {
@@ -523,12 +338,7 @@
         "fields": {
             "template_loc_tech": 22,
             "parameter": 53,
-            "equation": "||elec_cap_vs_surface_cost||",
-            "template_loc_1": 21.0,
-            "template_loc_2": null,
-            "template_tech": 35.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_cap_vs_surface_cost||"
         }
     },
     {
@@ -537,12 +347,7 @@
         "fields": {
             "template_loc_tech": 22,
             "parameter": 58,
-            "equation": "||elec_cap_vs_surface_om_cost||",
-            "template_loc_1": 22.0,
-            "template_loc_2": null,
-            "template_tech": 37.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_cap_vs_surface_om_cost||"
         }
     },
     {
@@ -551,12 +356,7 @@
         "fields": {
             "template_loc_tech": 22,
             "parameter": 18,
-            "equation": "||elec_prod_to_therm_ext_ratio||",
-            "template_loc_1": 20.0,
-            "template_loc_2": null,
-            "template_tech": 40.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_prod_to_therm_ext_ratio||"
         }
     },
     {
@@ -565,12 +365,7 @@
         "fields": {
             "template_loc_tech": 22,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": 21.0,
-            "template_loc_2": 20.0,
-            "template_tech": 38.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -579,12 +374,7 @@
         "fields": {
             "template_loc_tech": 22,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": 20.0,
-            "template_loc_2": 22.0,
-            "template_tech": 39.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -593,12 +383,7 @@
         "fields": {
             "template_loc_tech": 26,
             "parameter": 24,
-            "equation": "True",
-            "template_loc_1": 24.0,
-            "template_loc_2": null,
-            "template_tech": 41.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "True"
         }
     },
     {
@@ -607,12 +392,7 @@
         "fields": {
             "template_loc_tech": 26,
             "parameter": 28,
-            "equation": 1,
-            "template_loc_1": 23.0,
-            "template_loc_2": null,
-            "template_tech": 42.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 1
         }
     },
     {
@@ -621,12 +401,7 @@
         "fields": {
             "template_loc_tech": 26,
             "parameter": 40,
-            "equation": "energy_per_cap",
-            "template_loc_1": 23.0,
-            "template_loc_2": null,
-            "template_tech": 43.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "energy_per_cap"
         }
     },
     {
@@ -635,12 +410,7 @@
         "fields": {
             "template_loc_tech": 26,
             "parameter": 53,
-            "equation": "||therm_cap_vs_reservoir_cost||",
-            "template_loc_1": 26.0,
-            "template_loc_2": null,
-            "template_tech": 44.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_cost||"
         }
     },
     {
@@ -649,12 +419,7 @@
         "fields": {
             "template_loc_tech": 26,
             "parameter": 58,
-            "equation": "||therm_cap_vs_reservoir_om_cost||",
-            "template_loc_1": 25.0,
-            "template_loc_2": null,
-            "template_tech": 45.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
     {
@@ -663,12 +428,7 @@
         "fields": {
             "template_loc_tech": 26,
             "parameter": 11,
-            "equation": "||max_therm_ext_kwth||",
-            "template_loc_1": 27.0,
-            "template_loc_2": null,
-            "template_tech": 46.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_therm_ext_kwth||"
         }
     },
     {
@@ -677,12 +437,7 @@
         "fields": {
             "template_loc_tech": 26,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": 28.0,
-            "template_loc_2": null,
-            "template_tech": 47.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -691,12 +446,7 @@
         "fields": {
             "template_loc_tech": 26,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": 28.0,
-            "template_loc_2": null,
-            "template_tech": 48.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -705,12 +455,7 @@
         "fields": {
             "template_loc_tech": 27,
             "parameter": 11,
-            "equation": "||max_elec_gen_kwe||",
-            "template_loc_1": 29.0,
-            "template_loc_2": null,
-            "template_tech": 49.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_elec_gen_kwe||"
         }
     },
     {
@@ -719,12 +464,7 @@
         "fields": {
             "template_loc_tech": 27,
             "parameter": 53,
-            "equation": "||elec_cap_vs_surface_cost||",
-            "template_loc_1": 24.0,
-            "template_loc_2": 23.0,
-            "template_tech": 50.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_cap_vs_surface_cost||"
         }
     },
     {
@@ -733,12 +473,7 @@
         "fields": {
             "template_loc_tech": 27,
             "parameter": 58,
-            "equation": "||elec_cap_vs_surface_om_cost||",
-            "template_loc_1": 24.0,
-            "template_loc_2": 28.0,
-            "template_tech": 50.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_cap_vs_surface_om_cost||"
         }
     },
     {
@@ -747,12 +482,7 @@
         "fields": {
             "template_loc_tech": 27,
             "parameter": 18,
-            "equation": "||elec_prod_to_therm_ext_ratio||",
-            "template_loc_1": 23.0,
-            "template_loc_2": 25.0,
-            "template_tech": 51.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_prod_to_therm_ext_ratio||"
         }
     },
     {
@@ -761,12 +491,7 @@
         "fields": {
             "template_loc_tech": 27,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": 23.0,
-            "template_loc_2": 26.0,
-            "template_tech": 51.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -775,12 +500,7 @@
         "fields": {
             "template_loc_tech": 27,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": 23.0,
-            "template_loc_2": 27.0,
-            "template_tech": 52.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -789,12 +509,7 @@
         "fields": {
             "template_loc_tech": 32,
             "parameter": 40,
-            "equation": "energy_per_cap",
-            "template_loc_1": 28.0,
-            "template_loc_2": 29.0,
-            "template_tech": 53.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "energy_per_cap"
         }
     },
     {
@@ -803,12 +518,7 @@
         "fields": {
             "template_loc_tech": 32,
             "parameter": 24,
-            "equation": "True",
-            "template_loc_1": 31.0,
-            "template_loc_2": null,
-            "template_tech": 54.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "True"
         }
     },
     {
@@ -817,12 +527,7 @@
         "fields": {
             "template_loc_tech": 32,
             "parameter": 28,
-            "equation": 1,
-            "template_loc_1": 30.0,
-            "template_loc_2": null,
-            "template_tech": 55.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 1
         }
     },
     {
@@ -831,12 +536,7 @@
         "fields": {
             "template_loc_tech": 32,
             "parameter": 53,
-            "equation": "||therm_cap_vs_reservoir_cost||",
-            "template_loc_1": 30.0,
-            "template_loc_2": null,
-            "template_tech": 56.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_cost||"
         }
     },
     {
@@ -845,12 +545,7 @@
         "fields": {
             "template_loc_tech": 32,
             "parameter": 58,
-            "equation": "||therm_cap_vs_reservoir_om_cost||",
-            "template_loc_1": 33.0,
-            "template_loc_2": null,
-            "template_tech": 57.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
     {
@@ -859,12 +554,7 @@
         "fields": {
             "template_loc_tech": 32,
             "parameter": 11,
-            "equation": "||max_therm_ext_kwth||",
-            "template_loc_1": 32.0,
-            "template_loc_2": null,
-            "template_tech": 58.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_therm_ext_kwth||"
         }
     },
     {
@@ -873,12 +563,7 @@
         "fields": {
             "template_loc_tech": 32,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": 34.0,
-            "template_loc_2": null,
-            "template_tech": 59.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -887,12 +572,7 @@
         "fields": {
             "template_loc_tech": 32,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": 35.0,
-            "template_loc_2": null,
-            "template_tech": 60.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -901,12 +581,7 @@
         "fields": {
             "template_loc_tech": 31,
             "parameter": 18,
-            "equation": "||heat_prod_to_therm_ext_ratio||",
-            "template_loc_1": 35.0,
-            "template_loc_2": null,
-            "template_tech": 61.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||heat_prod_to_therm_ext_ratio||"
         }
     },
     {
@@ -915,12 +590,7 @@
         "fields": {
             "template_loc_tech": 31,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": 36.0,
-            "template_loc_2": null,
-            "template_tech": 62.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -929,12 +599,7 @@
         "fields": {
             "template_loc_tech": 31,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": 31.0,
-            "template_loc_2": 30.0,
-            "template_tech": 63.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -943,12 +608,7 @@
         "fields": {
             "template_loc_tech": 38,
             "parameter": 40,
-            "equation": "energy_per_cap",
-            "template_loc_1": 31.0,
-            "template_loc_2": 35.0,
-            "template_tech": 63.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "energy_per_cap"
         }
     },
     {
@@ -957,12 +617,7 @@
         "fields": {
             "template_loc_tech": 38,
             "parameter": 24,
-            "equation": "True",
-            "template_loc_1": 30.0,
-            "template_loc_2": 32.0,
-            "template_tech": 64.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "True"
         }
     },
     {
@@ -971,12 +626,7 @@
         "fields": {
             "template_loc_tech": 38,
             "parameter": 28,
-            "equation": 1,
-            "template_loc_1": 30.0,
-            "template_loc_2": 33.0,
-            "template_tech": 64.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 1
         }
     },
     {
@@ -985,12 +635,7 @@
         "fields": {
             "template_loc_tech": 38,
             "parameter": 53,
-            "equation": "||therm_cap_vs_reservoir_cost||",
-            "template_loc_1": 30.0,
-            "template_loc_2": 34.0,
-            "template_tech": 65.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_cost||"
         }
     },
     {
@@ -999,12 +644,7 @@
         "fields": {
             "template_loc_tech": 38,
             "parameter": 58,
-            "equation": "||therm_cap_vs_reservoir_om_cost||",
-            "template_loc_1": 35.0,
-            "template_loc_2": 36.0,
-            "template_tech": 66.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
     {
@@ -1013,12 +653,7 @@
         "fields": {
             "template_loc_tech": 38,
             "parameter": 11,
-            "equation": "||max_therm_ext_kwth||",
-            "template_loc_1": 38.0,
-            "template_loc_2": null,
-            "template_tech": 67.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_therm_ext_kwth||"
         }
     },
     {
@@ -1027,12 +662,7 @@
         "fields": {
             "template_loc_tech": 38,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": 37.0,
-            "template_loc_2": null,
-            "template_tech": 68.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -1041,12 +671,7 @@
         "fields": {
             "template_loc_tech": 38,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": 39.0,
-            "template_loc_2": null,
-            "template_tech": 69.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -1055,12 +680,7 @@
         "fields": {
             "template_loc_tech": 37,
             "parameter": 18,
-            "equation": "||heat_prod_to_therm_ext_ratio||",
-            "template_loc_1": 38.0,
-            "template_loc_2": 37.0,
-            "template_tech": 70.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||heat_prod_to_therm_ext_ratio||"
         }
     },
     {
@@ -1069,12 +689,7 @@
         "fields": {
             "template_loc_tech": 37,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": 37.0,
-            "template_loc_2": 39.0,
-            "template_tech": 71.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -1083,12 +698,7 @@
         "fields": {
             "template_loc_tech": 37,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": 41.0,
-            "template_loc_2": null,
-            "template_tech": 72.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -1097,12 +707,7 @@
         "fields": {
             "template_loc_tech": 43,
             "parameter": 24,
-            "equation": "True",
-            "template_loc_1": 40.0,
-            "template_loc_2": null,
-            "template_tech": 73.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "True"
         }
     },
     {
@@ -1111,12 +716,7 @@
         "fields": {
             "template_loc_tech": 43,
             "parameter": 28,
-            "equation": 1,
-            "template_loc_1": 42.0,
-            "template_loc_2": null,
-            "template_tech": 74.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 1
         }
     },
     {
@@ -1125,12 +725,7 @@
         "fields": {
             "template_loc_tech": 43,
             "parameter": 40,
-            "equation": "energy_per_cap",
-            "template_loc_1": 41.0,
-            "template_loc_2": 40.0,
-            "template_tech": 75.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "energy_per_cap"
         }
     },
     {
@@ -1139,12 +734,7 @@
         "fields": {
             "template_loc_tech": 43,
             "parameter": 53,
-            "equation": "||therm_cap_vs_reservoir_cost||",
-            "template_loc_1": 40.0,
-            "template_loc_2": 42.0,
-            "template_tech": 76.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_cost||"
         }
     },
     {
@@ -1153,12 +743,7 @@
         "fields": {
             "template_loc_tech": 43,
             "parameter": 58,
-            "equation": "||therm_cap_vs_reservoir_om_cost||",
-            "template_loc_1": 44.0,
-            "template_loc_2": null,
-            "template_tech": 77.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
     {
@@ -1167,12 +752,7 @@
         "fields": {
             "template_loc_tech": 43,
             "parameter": 11,
-            "equation": "||max_therm_ext_kwth||",
-            "template_loc_1": 43.0,
-            "template_loc_2": null,
-            "template_tech": 78.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_therm_ext_kwth||"
         }
     },
     {
@@ -1181,12 +761,7 @@
         "fields": {
             "template_loc_tech": 43,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": 45.0,
-            "template_loc_2": null,
-            "template_tech": 79.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -1195,12 +770,7 @@
         "fields": {
             "template_loc_tech": 43,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": 44.0,
-            "template_loc_2": 43.0,
-            "template_tech": 80.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -1209,12 +779,7 @@
         "fields": {
             "template_loc_tech": 44,
             "parameter": 14,
-            "equation": 16.6,
-            "template_loc_1": 43.0,
-            "template_loc_2": 45.0,
-            "template_tech": 81.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 16.6
         }
     },
     {
@@ -1223,12 +788,7 @@
         "fields": {
             "template_loc_tech": 44,
             "parameter": 11,
-            "equation": "||max_elec_gen_kwe||",
-            "template_loc_1": 47.0,
-            "template_loc_2": null,
-            "template_tech": 82.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_elec_gen_kwe||"
         }
     },
     {
@@ -1237,12 +797,7 @@
         "fields": {
             "template_loc_tech": 44,
             "parameter": 53,
-            "equation": "||elec_cap_vs_surface_cost||",
-            "template_loc_1": 46.0,
-            "template_loc_2": null,
-            "template_tech": 83.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_cap_vs_surface_cost||"
         }
     },
     {
@@ -1251,12 +806,7 @@
         "fields": {
             "template_loc_tech": 44,
             "parameter": 58,
-            "equation": "||elec_cap_vs_surface_om_cost||",
-            "template_loc_1": 48.0,
-            "template_loc_2": null,
-            "template_tech": 84.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_cap_vs_surface_om_cost||"
         }
     },
     {
@@ -1265,12 +815,7 @@
         "fields": {
             "template_loc_tech": 44,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": 47.0,
-            "template_loc_2": 46.0,
-            "template_tech": 85.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -1279,12 +824,7 @@
         "fields": {
             "template_loc_tech": 44,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": 46.0,
-            "template_loc_2": 48.0,
-            "template_tech": 86.0,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -1293,12 +833,7 @@
         "fields": {
             "template_loc_tech": 49,
             "parameter": 18,
-            "equation": 0.8,
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 0.8
         }
     },
     {
@@ -1307,12 +842,7 @@
         "fields": {
             "template_loc_tech": 49,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -1321,12 +851,7 @@
         "fields": {
             "template_loc_tech": 49,
             "parameter": 53,
-            "equation": 511.8,
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 511.8
         }
     },
     {
@@ -1335,12 +860,7 @@
         "fields": {
             "template_loc_tech": 49,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -1349,12 +869,7 @@
         "fields": {
             "template_loc_tech": 49,
             "parameter": 58,
-            "equation": 0.000853,
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 0.000853
         }
     },
     {
@@ -1363,12 +878,7 @@
         "fields": {
             "template_loc_tech": 58,
             "parameter": 24,
-            "equation": "True",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "True"
         }
     },
     {
@@ -1377,12 +887,7 @@
         "fields": {
             "template_loc_tech": 58,
             "parameter": 28,
-            "equation": 1,
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 1
         }
     },
     {
@@ -1391,12 +896,7 @@
         "fields": {
             "template_loc_tech": 58,
             "parameter": 40,
-            "equation": "energy_per_cap",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "energy_per_cap"
         }
     },
     {
@@ -1405,12 +905,7 @@
         "fields": {
             "template_loc_tech": 58,
             "parameter": 53,
-            "equation": "||therm_cap_vs_reservoir_cost||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_cost||"
         }
     },
     {
@@ -1419,12 +914,7 @@
         "fields": {
             "template_loc_tech": 58,
             "parameter": 58,
-            "equation": "||therm_cap_vs_reservoir_om_cost||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
     {
@@ -1433,12 +923,7 @@
         "fields": {
             "template_loc_tech": 58,
             "parameter": 11,
-            "equation": "||max_therm_ext_kwth||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_therm_ext_kwth||"
         }
     },
     {
@@ -1447,12 +932,7 @@
         "fields": {
             "template_loc_tech": 58,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -1461,12 +941,7 @@
         "fields": {
             "template_loc_tech": 58,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -1475,12 +950,7 @@
         "fields": {
             "template_loc_tech": 59,
             "parameter": 14,
-            "equation": 16.6,
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 16.6
         }
     },
     {
@@ -1489,12 +959,7 @@
         "fields": {
             "template_loc_tech": 59,
             "parameter": 11,
-            "equation": "||max_elec_gen_kwe||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_elec_gen_kwe||"
         }
     },
     {
@@ -1503,12 +968,7 @@
         "fields": {
             "template_loc_tech": 59,
             "parameter": 53,
-            "equation": "||elec_cap_vs_surface_cost||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_cap_vs_surface_cost||"
         }
     },
     {
@@ -1517,12 +977,7 @@
         "fields": {
             "template_loc_tech": 59,
             "parameter": 58,
-            "equation": "||elec_cap_vs_surface_om_cost||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_cap_vs_surface_om_cost||"
         }
     },
     {
@@ -1531,12 +986,7 @@
         "fields": {
             "template_loc_tech": 59,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -1545,12 +995,7 @@
         "fields": {
             "template_loc_tech": 59,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -1559,12 +1004,7 @@
         "fields": {
             "template_loc_tech": 64,
             "parameter": 18,
-            "equation": 0.8,
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 0.8
         }
     },
     {
@@ -1573,12 +1013,7 @@
         "fields": {
             "template_loc_tech": 64,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -1587,12 +1022,7 @@
         "fields": {
             "template_loc_tech": 64,
             "parameter": 53,
-            "equation": 511.8,
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 511.8
         }
     },
     {
@@ -1601,12 +1031,7 @@
         "fields": {
             "template_loc_tech": 64,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -1615,12 +1040,7 @@
         "fields": {
             "template_loc_tech": 64,
             "parameter": 58,
-            "equation": 0.000853,
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 0.000853
         }
     },
     {
@@ -1629,12 +1049,7 @@
         "fields": {
             "template_loc_tech": 73,
             "parameter": 40,
-            "equation": "energy_per_cap",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "energy_per_cap"
         }
     },
     {
@@ -1643,12 +1058,7 @@
         "fields": {
             "template_loc_tech": 73,
             "parameter": 24,
-            "equation": "True",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "True"
         }
     },
     {
@@ -1657,12 +1067,7 @@
         "fields": {
             "template_loc_tech": 73,
             "parameter": 28,
-            "equation": 1,
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 1
         }
     },
     {
@@ -1671,12 +1076,7 @@
         "fields": {
             "template_loc_tech": 73,
             "parameter": 53,
-            "equation": "||therm_cap_vs_reservoir_cost||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_cost||"
         }
     },
     {
@@ -1685,12 +1085,7 @@
         "fields": {
             "template_loc_tech": 73,
             "parameter": 58,
-            "equation": "||therm_cap_vs_reservoir_om_cost||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
     {
@@ -1699,12 +1094,7 @@
         "fields": {
             "template_loc_tech": 73,
             "parameter": 11,
-            "equation": "||max_therm_ext_kwth||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_therm_ext_kwth||"
         }
     },
     {
@@ -1713,12 +1103,7 @@
         "fields": {
             "template_loc_tech": 73,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -1727,12 +1112,7 @@
         "fields": {
             "template_loc_tech": 73,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -1741,12 +1121,7 @@
         "fields": {
             "template_loc_tech": 74,
             "parameter": 11,
-            "equation": "||max_elec_gen_kwe||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_elec_gen_kwe||"
         }
     },
     {
@@ -1755,12 +1130,7 @@
         "fields": {
             "template_loc_tech": 74,
             "parameter": 53,
-            "equation": "||elec_cap_vs_surface_cost||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_cap_vs_surface_cost||"
         }
     },
     {
@@ -1769,12 +1139,7 @@
         "fields": {
             "template_loc_tech": 74,
             "parameter": 58,
-            "equation": "||elec_cap_vs_surface_om_cost||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_cap_vs_surface_om_cost||"
         }
     },
     {
@@ -1783,12 +1148,7 @@
         "fields": {
             "template_loc_tech": 74,
             "parameter": 18,
-            "equation": "||elec_prod_to_therm_ext_ratio||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_prod_to_therm_ext_ratio||"
         }
     },
     {
@@ -1797,12 +1157,7 @@
         "fields": {
             "template_loc_tech": 74,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -1811,12 +1166,7 @@
         "fields": {
             "template_loc_tech": 74,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -1825,12 +1175,7 @@
         "fields": {
             "template_loc_tech": 78,
             "parameter": 40,
-            "equation": "energy_per_cap",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "energy_per_cap"
         }
     },
     {
@@ -1839,12 +1184,7 @@
         "fields": {
             "template_loc_tech": 78,
             "parameter": 24,
-            "equation": "True",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "True"
         }
     },
     {
@@ -1853,12 +1193,7 @@
         "fields": {
             "template_loc_tech": 78,
             "parameter": 28,
-            "equation": 1,
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 1
         }
     },
     {
@@ -1867,12 +1202,7 @@
         "fields": {
             "template_loc_tech": 78,
             "parameter": 53,
-            "equation": "||therm_cap_vs_reservoir_cost||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_cost||"
         }
     },
     {
@@ -1881,12 +1211,7 @@
         "fields": {
             "template_loc_tech": 78,
             "parameter": 58,
-            "equation": "||therm_cap_vs_reservoir_om_cost||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
     {
@@ -1895,12 +1220,7 @@
         "fields": {
             "template_loc_tech": 78,
             "parameter": 11,
-            "equation": "||max_therm_ext_kwth||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_therm_ext_kwth||"
         }
     },
     {
@@ -1909,12 +1229,7 @@
         "fields": {
             "template_loc_tech": 78,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -1923,12 +1238,7 @@
         "fields": {
             "template_loc_tech": 78,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -1937,12 +1247,7 @@
         "fields": {
             "template_loc_tech": 79,
             "parameter": 11,
-            "equation": "||max_elec_gen_kwe||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_elec_gen_kwe||"
         }
     },
     {
@@ -1951,12 +1256,7 @@
         "fields": {
             "template_loc_tech": 79,
             "parameter": 53,
-            "equation": "||elec_cap_vs_surface_cost||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_cap_vs_surface_cost||"
         }
     },
     {
@@ -1965,12 +1265,7 @@
         "fields": {
             "template_loc_tech": 79,
             "parameter": 58,
-            "equation": "||elec_cap_vs_surface_om_cost||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_cap_vs_surface_om_cost||"
         }
     },
     {
@@ -1979,12 +1274,7 @@
         "fields": {
             "template_loc_tech": 79,
             "parameter": 18,
-            "equation": "||elec_prod_to_therm_ext_ratio||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_prod_to_therm_ext_ratio||"
         }
     },
     {
@@ -1993,12 +1283,7 @@
         "fields": {
             "template_loc_tech": 79,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -2007,12 +1292,7 @@
         "fields": {
             "template_loc_tech": 79,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -2021,12 +1301,7 @@
         "fields": {
             "template_loc_tech": 83,
             "parameter": 40,
-            "equation": "energy_per_cap",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "energy_per_cap"
         }
     },
     {
@@ -2035,12 +1310,7 @@
         "fields": {
             "template_loc_tech": 83,
             "parameter": 24,
-            "equation": "True",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "True"
         }
     },
     {
@@ -2049,12 +1319,7 @@
         "fields": {
             "template_loc_tech": 83,
             "parameter": 28,
-            "equation": 1,
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 1
         }
     },
     {
@@ -2063,12 +1328,7 @@
         "fields": {
             "template_loc_tech": 83,
             "parameter": 53,
-            "equation": "||therm_cap_vs_reservoir_cost||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_cost||"
         }
     },
     {
@@ -2077,12 +1337,7 @@
         "fields": {
             "template_loc_tech": 83,
             "parameter": 58,
-            "equation": "||therm_cap_vs_reservoir_om_cost||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
     {
@@ -2091,12 +1346,7 @@
         "fields": {
             "template_loc_tech": 83,
             "parameter": 11,
-            "equation": "||max_therm_ext_kwth||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_therm_ext_kwth||"
         }
     },
     {
@@ -2105,12 +1355,7 @@
         "fields": {
             "template_loc_tech": 83,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -2119,12 +1364,7 @@
         "fields": {
             "template_loc_tech": 83,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -2133,12 +1373,7 @@
         "fields": {
             "template_loc_tech": 84,
             "parameter": 11,
-            "equation": "||max_elec_gen_kwe||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_elec_gen_kwe||"
         }
     },
     {
@@ -2147,12 +1382,7 @@
         "fields": {
             "template_loc_tech": 84,
             "parameter": 53,
-            "equation": "||elec_cap_vs_surface_cost||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_cap_vs_surface_cost||"
         }
     },
     {
@@ -2161,12 +1391,7 @@
         "fields": {
             "template_loc_tech": 84,
             "parameter": 58,
-            "equation": "||elec_cap_vs_surface_om_cost||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_cap_vs_surface_om_cost||"
         }
     },
     {
@@ -2175,12 +1400,7 @@
         "fields": {
             "template_loc_tech": 84,
             "parameter": 18,
-            "equation": "||elec_prod_to_therm_ext_ratio||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_prod_to_therm_ext_ratio||"
         }
     },
     {
@@ -2189,12 +1409,7 @@
         "fields": {
             "template_loc_tech": 84,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -2203,12 +1418,7 @@
         "fields": {
             "template_loc_tech": 84,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -2217,12 +1427,7 @@
         "fields": {
             "template_loc_tech": 88,
             "parameter": 40,
-            "equation": "energy_per_cap",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "energy_per_cap"
         }
     },
     {
@@ -2231,12 +1436,7 @@
         "fields": {
             "template_loc_tech": 88,
             "parameter": 24,
-            "equation": "True",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "True"
         }
     },
     {
@@ -2245,12 +1445,7 @@
         "fields": {
             "template_loc_tech": 88,
             "parameter": 28,
-            "equation": 1,
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": 1
         }
     },
     {
@@ -2259,12 +1454,7 @@
         "fields": {
             "template_loc_tech": 88,
             "parameter": 53,
-            "equation": "||therm_cap_vs_reservoir_cost||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_cost||"
         }
     },
     {
@@ -2273,12 +1463,7 @@
         "fields": {
             "template_loc_tech": 88,
             "parameter": 58,
-            "equation": "||therm_cap_vs_reservoir_om_cost||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
     {
@@ -2287,12 +1472,7 @@
         "fields": {
             "template_loc_tech": 88,
             "parameter": 11,
-            "equation": "||max_therm_ext_kwth||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_therm_ext_kwth||"
         }
     },
     {
@@ -2301,12 +1481,7 @@
         "fields": {
             "template_loc_tech": 88,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -2315,12 +1490,7 @@
         "fields": {
             "template_loc_tech": 88,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     },
     {
@@ -2329,12 +1499,7 @@
         "fields": {
             "template_loc_tech": 89,
             "parameter": 11,
-            "equation": "||max_elec_gen_kwe||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||max_elec_gen_kwe||"
         }
     },
     {
@@ -2343,12 +1508,7 @@
         "fields": {
             "template_loc_tech": 89,
             "parameter": 53,
-            "equation": "||elec_cap_vs_surface_cost||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_cap_vs_surface_cost||"
         }
     },
     {
@@ -2357,12 +1517,7 @@
         "fields": {
             "template_loc_tech": 89,
             "parameter": 58,
-            "equation": "||elec_cap_vs_surface_om_cost||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_cap_vs_surface_om_cost||"
         }
     },
     {
@@ -2371,12 +1526,7 @@
         "fields": {
             "template_loc_tech": 89,
             "parameter": 18,
-            "equation": "||elec_prod_to_therm_ext_ratio||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||elec_prod_to_therm_ext_ratio||"
         }
     },
     {
@@ -2385,12 +1535,7 @@
         "fields": {
             "template_loc_tech": 89,
             "parameter": 25,
-            "equation": "||lifetime||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||lifetime||"
         }
     },
     {
@@ -2399,12 +1544,7 @@
         "fields": {
             "template_loc_tech": 89,
             "parameter": 57,
-            "equation": "||interest_rate||",
-            "template_loc_1": null,
-            "template_loc_2": null,
-            "template_tech": null,
-            "Unnamed: 7": null,
-            "Unnamed: 8": null
+            "equation": "||interest_rate||"
         }
     }
 ]
