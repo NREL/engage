@@ -545,12 +545,22 @@
         "fields": {
             "template_type": 7,
             "template_loc_1": 23,
+            "template_loc_2": 26.0,
+            "template_tech": 51
+        }
+    },
+    {
+        "pk": 56,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 7,
+            "template_loc_1": 23,
             "template_loc_2": 27.0,
             "template_tech": 52
         }
     },
     {
-        "pk": 56,
+        "pk": 57,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 7,
@@ -560,7 +570,7 @@
         }
     },
     {
-        "pk": 57,
+        "pk": 58,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 8,
@@ -570,7 +580,7 @@
         }
     },
     {
-        "pk": 58,
+        "pk": 59,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 8,
@@ -580,7 +590,7 @@
         }
     },
     {
-        "pk": 59,
+        "pk": 60,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 8,
@@ -590,7 +600,7 @@
         }
     },
     {
-        "pk": 60,
+        "pk": 61,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 8,
@@ -600,7 +610,7 @@
         }
     },
     {
-        "pk": 61,
+        "pk": 62,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 8,
@@ -610,7 +620,7 @@
         }
     },
     {
-        "pk": 62,
+        "pk": 63,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 8,
@@ -620,7 +630,7 @@
         }
     },
     {
-        "pk": 63,
+        "pk": 64,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 8,
@@ -630,7 +640,7 @@
         }
     },
     {
-        "pk": 64,
+        "pk": 65,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 8,
@@ -640,7 +650,7 @@
         }
     },
     {
-        "pk": 65,
+        "pk": 66,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 8,
@@ -650,7 +660,7 @@
         }
     },
     {
-        "pk": 66,
+        "pk": 67,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 8,
@@ -660,7 +670,7 @@
         }
     },
     {
-        "pk": 67,
+        "pk": 68,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 8,
@@ -670,7 +680,7 @@
         }
     },
     {
-        "pk": 68,
+        "pk": 69,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 8,
@@ -680,7 +690,17 @@
         }
     },
     {
-        "pk": 69,
+        "pk": 70,
+        "model": "template.template_type_loc_tech",
+        "fields": {
+            "template_type": 8,
+            "template_loc_1": 30,
+            "template_loc_2": 33.0,
+            "template_tech": 64
+        }
+    },
+    {
+        "pk": 71,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 8,
@@ -690,7 +710,7 @@
         }
     },
     {
-        "pk": 70,
+        "pk": 72,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 8,
@@ -700,7 +720,7 @@
         }
     },
     {
-        "pk": 71,
+        "pk": 73,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 9,
@@ -710,7 +730,7 @@
         }
     },
     {
-        "pk": 72,
+        "pk": 74,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 9,
@@ -720,7 +740,7 @@
         }
     },
     {
-        "pk": 73,
+        "pk": 75,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 9,
@@ -730,7 +750,7 @@
         }
     },
     {
-        "pk": 74,
+        "pk": 76,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 9,
@@ -740,7 +760,7 @@
         }
     },
     {
-        "pk": 75,
+        "pk": 77,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 9,
@@ -750,7 +770,7 @@
         }
     },
     {
-        "pk": 76,
+        "pk": 78,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 10,
@@ -760,7 +780,7 @@
         }
     },
     {
-        "pk": 77,
+        "pk": 79,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 10,
@@ -770,7 +790,7 @@
         }
     },
     {
-        "pk": 78,
+        "pk": 80,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 10,
@@ -780,7 +800,7 @@
         }
     },
     {
-        "pk": 79,
+        "pk": 81,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 10,
@@ -790,7 +810,7 @@
         }
     },
     {
-        "pk": 80,
+        "pk": 82,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 10,
@@ -800,7 +820,7 @@
         }
     },
     {
-        "pk": 81,
+        "pk": 83,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 11,
@@ -810,7 +830,7 @@
         }
     },
     {
-        "pk": 82,
+        "pk": 84,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 11,
@@ -820,7 +840,7 @@
         }
     },
     {
-        "pk": 83,
+        "pk": 85,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 11,
@@ -830,7 +850,7 @@
         }
     },
     {
-        "pk": 84,
+        "pk": 86,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 11,
@@ -840,7 +860,7 @@
         }
     },
     {
-        "pk": 85,
+        "pk": 87,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 11,
@@ -850,7 +870,7 @@
         }
     },
     {
-        "pk": 86,
+        "pk": 88,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 12,
@@ -860,7 +880,7 @@
         }
     },
     {
-        "pk": 87,
+        "pk": 89,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 12,
@@ -870,7 +890,7 @@
         }
     },
     {
-        "pk": 88,
+        "pk": 90,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 12,
@@ -880,7 +900,7 @@
         }
     },
     {
-        "pk": 89,
+        "pk": 91,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 12,
@@ -890,7 +910,7 @@
         }
     },
     {
-        "pk": 90,
+        "pk": 92,
         "model": "template.template_type_loc_tech",
         "fields": {
             "template_type": 12,
