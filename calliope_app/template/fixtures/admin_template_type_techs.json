@@ -5,7 +5,8 @@
         "fields": {
             "name": "EGS Geothermal Reservoir [EGS CHP]",
             "template_type": 1,
-            "abstract_tech": 1
+            "abstract_tech": 1,
+            "version_tag": "EGS CHP Template"
         }
     },
     {
@@ -14,7 +15,8 @@
         "fields": {
             "name": "EGS CHP Plant [EGS CHP]",
             "template_type": 1,
-            "abstract_tech": 7
+            "abstract_tech": 7,
+            "version_tag": "EGS CHP Template"
         }
     },
     {
@@ -23,7 +25,8 @@
         "fields": {
             "name": "Conversion MWth to MMBTU [EGS CHP]",
             "template_type": 1,
-            "abstract_tech": 6
+            "abstract_tech": 6,
+            "version_tag": "EGS CHP Template"
         }
     },
     {
@@ -32,7 +35,8 @@
         "fields": {
             "name": "Heat Sink [EGS CHP]",
             "template_type": 1,
-            "abstract_tech": 4
+            "abstract_tech": 4,
+            "version_tag": "EGS CHP Template"
         }
     },
     {
@@ -41,7 +45,8 @@
         "fields": {
             "name": "Heat Demand [EGS CHP]",
             "template_type": 1,
-            "abstract_tech": 3
+            "abstract_tech": 3,
+            "version_tag": "EGS CHP Template"
         }
     },
     {
@@ -50,7 +55,8 @@
         "fields": {
             "name": "Power Demand [EGS CHP]",
             "template_type": 1,
-            "abstract_tech": 3
+            "abstract_tech": 3,
+            "version_tag": "EGS CHP Template"
         }
     },
     {
@@ -59,7 +65,8 @@
         "fields": {
             "name": "Reservoir Transmission [EGS CHP]",
             "template_type": 1,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "EGS CHP Template"
         }
     },
     {
@@ -68,7 +75,8 @@
         "fields": {
             "name": "Heat Demand Transmission [EGS CHP]",
             "template_type": 1,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "EGS CHP Template"
         }
     },
     {
@@ -77,7 +85,8 @@
         "fields": {
             "name": "Power Demand Transmission [EGS CHP]",
             "template_type": 1,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "EGS CHP Template"
         }
     },
     {
@@ -86,7 +95,8 @@
         "fields": {
             "name": "Hydrothermal Geothermal Reservoir [Hydro CHP]",
             "template_type": 2,
-            "abstract_tech": 1
+            "abstract_tech": 1,
+            "version_tag": "Hydro CHP Template"
         }
     },
     {
@@ -95,7 +105,8 @@
         "fields": {
             "name": "Hydrothermal Plant [Hydro CHP]",
             "template_type": 2,
-            "abstract_tech": 7
+            "abstract_tech": 7,
+            "version_tag": "Hydro CHP Template"
         }
     },
     {
@@ -104,7 +115,8 @@
         "fields": {
             "name": "Conversion MWth to MMBTU [Hydro CHP]",
             "template_type": 2,
-            "abstract_tech": 6
+            "abstract_tech": 6,
+            "version_tag": "Hydro CHP Template"
         }
     },
     {
@@ -113,7 +125,8 @@
         "fields": {
             "name": "Heat Sink [Hydro CHP]",
             "template_type": 2,
-            "abstract_tech": 4
+            "abstract_tech": 4,
+            "version_tag": "Hydro CHP Template"
         }
     },
     {
@@ -122,7 +135,8 @@
         "fields": {
             "name": "Heat Demand [Hydro CHP]",
             "template_type": 2,
-            "abstract_tech": 3
+            "abstract_tech": 3,
+            "version_tag": "Hydro CHP Template"
         }
     },
     {
@@ -131,7 +145,8 @@
         "fields": {
             "name": "Power Demand [Hydro CHP]",
             "template_type": 2,
-            "abstract_tech": 3
+            "abstract_tech": 3,
+            "version_tag": "Hydro CHP Template"
         }
     },
     {
@@ -140,7 +155,8 @@
         "fields": {
             "name": "Reservoir Transmission [Hydro CHP]",
             "template_type": 2,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "Hydro CHP Template"
         }
     },
     {
@@ -149,7 +165,8 @@
         "fields": {
             "name": "Heat Demand Transmission [Hydro CHP]",
             "template_type": 2,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "Hydro CHP Template"
         }
     },
     {
@@ -158,7 +175,8 @@
         "fields": {
             "name": "Power Demand Transmission [Hydro CHP]",
             "template_type": 2,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "Hydro CHP Template"
         }
     },
     {
@@ -167,7 +185,8 @@
         "fields": {
             "name": "EGS Geothermal Reservoir [EGS Binary ORC]",
             "template_type": 3,
-            "abstract_tech": 1
+            "abstract_tech": 1,
+            "version_tag": "EGS Binary ORC Template"
         }
     },
     {
@@ -176,7 +195,8 @@
         "fields": {
             "name": "EGS Subcritical Binary ORC Plant [EGS Binary ORC]",
             "template_type": 3,
-            "abstract_tech": 6
+            "abstract_tech": 6,
+            "version_tag": "EGS Binary ORC Template"
         }
     },
     {
@@ -185,7 +205,8 @@
         "fields": {
             "name": "Power Demand [EGS Binary ORC]",
             "template_type": 3,
-            "abstract_tech": 3
+            "abstract_tech": 3,
+            "version_tag": "EGS Binary ORC Template"
         }
     },
     {
@@ -194,7 +215,8 @@
         "fields": {
             "name": "Reservoir Transmission [EGS Binary ORC]",
             "template_type": 3,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "EGS Binary ORC Template"
         }
     },
     {
@@ -203,7 +225,8 @@
         "fields": {
             "name": "Power Demand Transmission [EGS Binary ORC]",
             "template_type": 3,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "EGS Binary ORC Template"
         }
     },
     {
@@ -212,7 +235,8 @@
         "fields": {
             "name": "Hydrothermal Geothermal Reservoir [Hydro Binary ORC]",
             "template_type": 4,
-            "abstract_tech": 1
+            "abstract_tech": 1,
+            "version_tag": "Hydro Binary ORC Template"
         }
     },
     {
@@ -221,7 +245,8 @@
         "fields": {
             "name": "Hydrothermal Subcritical Binary ORC Plant [Hydro Binary ORC]",
             "template_type": 4,
-            "abstract_tech": 6
+            "abstract_tech": 6,
+            "version_tag": "Hydro Binary ORC Template"
         }
     },
     {
@@ -230,7 +255,8 @@
         "fields": {
             "name": "Power Demand [Hydro Binary ORC]",
             "template_type": 4,
-            "abstract_tech": 3
+            "abstract_tech": 3,
+            "version_tag": "Hydro Binary ORC Template"
         }
     },
     {
@@ -239,7 +265,8 @@
         "fields": {
             "name": "Reservoir Transmission [Hydro Binary ORC]",
             "template_type": 4,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "Hydro Binary ORC Template"
         }
     },
     {
@@ -248,7 +275,8 @@
         "fields": {
             "name": "Power Demand Transmission [Hydro Binary ORC]",
             "template_type": 4,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "Hydro Binary ORC Template"
         }
     },
     {
@@ -257,7 +285,8 @@
         "fields": {
             "name": "EGS Geothermal Reservoir [EGS Direct-Use]",
             "template_type": 5,
-            "abstract_tech": 1
+            "abstract_tech": 1,
+            "version_tag": "EGS Direct-Use Template"
         }
     },
     {
@@ -266,7 +295,8 @@
         "fields": {
             "name": "EGS Heat Exchanger [EGS Direct-Use]",
             "template_type": 5,
-            "abstract_tech": 6
+            "abstract_tech": 6,
+            "version_tag": "EGS Direct-Use Template"
         }
     },
     {
@@ -275,7 +305,8 @@
         "fields": {
             "name": "Heat Demand [EGS Direct-Use]",
             "template_type": 5,
-            "abstract_tech": 3
+            "abstract_tech": 3,
+            "version_tag": "EGS Direct-Use Template"
         }
     },
     {
@@ -284,7 +315,8 @@
         "fields": {
             "name": "Reservoir Transmission [EGS Direct-Use]",
             "template_type": 5,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "EGS Direct-Use Template"
         }
     },
     {
@@ -293,7 +325,8 @@
         "fields": {
             "name": "Heat Demand Transmission [EGS Direct-Use]",
             "template_type": 5,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "EGS Direct-Use Template"
         }
     },
     {
@@ -302,7 +335,8 @@
         "fields": {
             "name": "Conversion kW to MMBTU [EGS Direct-Use]",
             "template_type": 5,
-            "abstract_tech": 6
+            "abstract_tech": 6,
+            "version_tag": "EGS Direct-Use Template"
         }
     },
     {
@@ -311,7 +345,8 @@
         "fields": {
             "name": "Hydrothermal Geothermal Reservoir [Hydro Direct Use]",
             "template_type": 6,
-            "abstract_tech": 1
+            "abstract_tech": 1,
+            "version_tag": "Hydro Direct Use Template"
         }
     },
     {
@@ -320,7 +355,8 @@
         "fields": {
             "name": "Hydrothermal Heat Exchanger [Hydro Direct-Use]",
             "template_type": 6,
-            "abstract_tech": 6
+            "abstract_tech": 6,
+            "version_tag": "Hydro Direct Use Template"
         }
     },
     {
@@ -329,7 +365,8 @@
         "fields": {
             "name": "Heat Demand [Hydro Direct-Use]",
             "template_type": 6,
-            "abstract_tech": 3
+            "abstract_tech": 3,
+            "version_tag": "Hydro Direct Use Template"
         }
     },
     {
@@ -338,7 +375,8 @@
         "fields": {
             "name": "Reservoir Transmission [Hydro Direct-Use]",
             "template_type": 6,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "Hydro Direct Use Template"
         }
     },
     {
@@ -347,7 +385,8 @@
         "fields": {
             "name": "Heat Demand Transmission [Hydro Direct-Use]",
             "template_type": 6,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "Hydro Direct Use Template"
         }
     },
     {
@@ -356,7 +395,8 @@
         "fields": {
             "name": "Conversion kW to MMBTU [Hydro Direct-Use]",
             "template_type": 6,
-            "abstract_tech": 6
+            "abstract_tech": 6,
+            "version_tag": "Hydro Direct Use Template"
         }
     },
     {
@@ -365,7 +405,8 @@
         "fields": {
             "name": "EGS Geothermal Reservoir [EGS CCHP]",
             "template_type": 7,
-            "abstract_tech": 1
+            "abstract_tech": 1,
+            "version_tag": "EGS CCHP Template"
         }
     },
     {
@@ -374,7 +415,8 @@
         "fields": {
             "name": "EGS CCHP Plant [EGS CCHP]",
             "template_type": 7,
-            "abstract_tech": 7
+            "abstract_tech": 7,
+            "version_tag": "EGS CCHP Template"
         }
     },
     {
@@ -383,7 +425,8 @@
         "fields": {
             "name": "Conversion MWth to MMBTU [EGS CCHP]",
             "template_type": 7,
-            "abstract_tech": 6
+            "abstract_tech": 6,
+            "version_tag": "EGS CCHP Template"
         }
     },
     {
@@ -392,7 +435,8 @@
         "fields": {
             "name": "Heat Sink [EGS CCHP]",
             "template_type": 7,
-            "abstract_tech": 4
+            "abstract_tech": 4,
+            "version_tag": "EGS CCHP Template"
         }
     },
     {
@@ -401,7 +445,8 @@
         "fields": {
             "name": "Heat Demand [EGS CCHP]",
             "template_type": 7,
-            "abstract_tech": 3
+            "abstract_tech": 3,
+            "version_tag": "EGS CCHP Template"
         }
     },
     {
@@ -410,7 +455,8 @@
         "fields": {
             "name": "Power Demand [EGS CCHP]",
             "template_type": 7,
-            "abstract_tech": 3
+            "abstract_tech": 3,
+            "version_tag": "EGS CCHP Template"
         }
     },
     {
@@ -419,7 +465,8 @@
         "fields": {
             "name": "Absorption Chiller  [EGS CCHP]",
             "template_type": 7,
-            "abstract_tech": 6
+            "abstract_tech": 6,
+            "version_tag": "EGS CCHP Template"
         }
     },
     {
@@ -428,7 +475,8 @@
         "fields": {
             "name": "Conversion MWth to TOR [EGS CCHP]",
             "template_type": 7,
-            "abstract_tech": 6
+            "abstract_tech": 6,
+            "version_tag": "EGS CCHP Template"
         }
     },
     {
@@ -437,7 +485,8 @@
         "fields": {
             "name": "Cooling Demand [EGS CCHP]",
             "template_type": 7,
-            "abstract_tech": 3
+            "abstract_tech": 3,
+            "version_tag": "EGS CCHP Template"
         }
     },
     {
@@ -446,7 +495,8 @@
         "fields": {
             "name": "Reservoir Transmission [EGS CCHP]",
             "template_type": 7,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "EGS CCHP Template"
         }
     },
     {
@@ -455,7 +505,8 @@
         "fields": {
             "name": "Heat Demand Transmission [EGS CCHP]",
             "template_type": 7,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "EGS CCHP Template"
         }
     },
     {
@@ -464,7 +515,8 @@
         "fields": {
             "name": "Power Demand Transmission [EGS CCHP]",
             "template_type": 7,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "EGS CCHP Template"
         }
     },
     {
@@ -473,7 +525,8 @@
         "fields": {
             "name": "Cooling Demand Transmission [EGS CCHP]",
             "template_type": 7,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "EGS CCHP Template"
         }
     },
     {
@@ -482,7 +535,8 @@
         "fields": {
             "name": "Hydrothermal  Geothermal Reservoir [Hydro CCHP]",
             "template_type": 8,
-            "abstract_tech": 1
+            "abstract_tech": 1,
+            "version_tag": "Hydro CCHP Template"
         }
     },
     {
@@ -491,7 +545,8 @@
         "fields": {
             "name": "Hydrothermal  CCHP Plant [Hydro CCHP]",
             "template_type": 8,
-            "abstract_tech": 7
+            "abstract_tech": 7,
+            "version_tag": "Hydro CCHP Template"
         }
     },
     {
@@ -500,7 +555,8 @@
         "fields": {
             "name": "Conversion MWth to MMBTU [Hydro CCHP]",
             "template_type": 8,
-            "abstract_tech": 6
+            "abstract_tech": 6,
+            "version_tag": "Hydro CCHP Template"
         }
     },
     {
@@ -509,7 +565,8 @@
         "fields": {
             "name": "Heat Sink [Hydro CCHP]",
             "template_type": 8,
-            "abstract_tech": 4
+            "abstract_tech": 4,
+            "version_tag": "Hydro CCHP Template"
         }
     },
     {
@@ -518,7 +575,8 @@
         "fields": {
             "name": "Heat Demand [Hydro CCHP]",
             "template_type": 8,
-            "abstract_tech": 3
+            "abstract_tech": 3,
+            "version_tag": "Hydro CCHP Template"
         }
     },
     {
@@ -527,7 +585,8 @@
         "fields": {
             "name": "Power Demand [Hydro CCHP]",
             "template_type": 8,
-            "abstract_tech": 3
+            "abstract_tech": 3,
+            "version_tag": "Hydro CCHP Template"
         }
     },
     {
@@ -536,7 +595,8 @@
         "fields": {
             "name": "Absorption Chiller [Hydro CCHP]",
             "template_type": 8,
-            "abstract_tech": 6
+            "abstract_tech": 6,
+            "version_tag": "Hydro CCHP Template"
         }
     },
     {
@@ -545,7 +605,8 @@
         "fields": {
             "name": "Conversion MWth to TOR [Hydro CCHP]",
             "template_type": 8,
-            "abstract_tech": 6
+            "abstract_tech": 6,
+            "version_tag": "Hydro CCHP Template"
         }
     },
     {
@@ -554,7 +615,8 @@
         "fields": {
             "name": "Cooling Demand [Hydro CCHP]",
             "template_type": 8,
-            "abstract_tech": 3
+            "abstract_tech": 3,
+            "version_tag": "Hydro CCHP Template"
         }
     },
     {
@@ -563,7 +625,8 @@
         "fields": {
             "name": "Reservoir Transmission [Hydro CCHP]",
             "template_type": 8,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "Hydro CCHP Template"
         }
     },
     {
@@ -572,7 +635,8 @@
         "fields": {
             "name": "Heat Demand Transmission [Hydro CCHP]",
             "template_type": 8,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "Hydro CCHP Template"
         }
     },
     {
@@ -581,7 +645,8 @@
         "fields": {
             "name": "Power Demand Transmission [Hydro CCHP]",
             "template_type": 8,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "Hydro CCHP Template"
         }
     },
     {
@@ -590,7 +655,8 @@
         "fields": {
             "name": "Cooling Demand Transmission [Hydro CCHP]",
             "template_type": 8,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "Hydro CCHP Template"
         }
     },
     {
@@ -599,7 +665,8 @@
         "fields": {
             "name": "EGS Geothermal Reservoir [EGS Single-Flash]",
             "template_type": 9,
-            "abstract_tech": 1
+            "abstract_tech": 1,
+            "version_tag": "EGS Single-Flash Template"
         }
     },
     {
@@ -608,7 +675,8 @@
         "fields": {
             "name": "EGS Single-Flash Plant [EGS Single-Flash]",
             "template_type": 9,
-            "abstract_tech": 6
+            "abstract_tech": 6,
+            "version_tag": "EGS Single-Flash Template"
         }
     },
     {
@@ -617,7 +685,8 @@
         "fields": {
             "name": "Power Demand [EGS Single-Flash]",
             "template_type": 9,
-            "abstract_tech": 3
+            "abstract_tech": 3,
+            "version_tag": "EGS Single-Flash Template"
         }
     },
     {
@@ -626,7 +695,8 @@
         "fields": {
             "name": "Reservoir Transmission [EGS Single-Flash]",
             "template_type": 9,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "EGS Single-Flash Template"
         }
     },
     {
@@ -635,7 +705,8 @@
         "fields": {
             "name": "Power Demand Transmission [EGS Single-Flash]",
             "template_type": 9,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "EGS Single-Flash Template"
         }
     },
     {
@@ -644,7 +715,8 @@
         "fields": {
             "name": "Hydrothermal  Geothermal Reservoir [Hydro Single-Flash]",
             "template_type": 10,
-            "abstract_tech": 1
+            "abstract_tech": 1,
+            "version_tag": "Hydro Single-Flash Template"
         }
     },
     {
@@ -653,7 +725,8 @@
         "fields": {
             "name": "Hydrothermal  Single-Flash Plant [Hydro Single-Flash]",
             "template_type": 10,
-            "abstract_tech": 6
+            "abstract_tech": 6,
+            "version_tag": "Hydro Single-Flash Template"
         }
     },
     {
@@ -662,7 +735,8 @@
         "fields": {
             "name": "Power Demand [Hydro Single-Flash]",
             "template_type": 10,
-            "abstract_tech": 3
+            "abstract_tech": 3,
+            "version_tag": "Hydro Single-Flash Template"
         }
     },
     {
@@ -671,7 +745,8 @@
         "fields": {
             "name": "Reservoir Transmission [Hydro Single-Flash]",
             "template_type": 10,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "Hydro Single-Flash Template"
         }
     },
     {
@@ -680,7 +755,8 @@
         "fields": {
             "name": "Power Demand Transmission [Hydro Single-Flash]",
             "template_type": 10,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "Hydro Single-Flash Template"
         }
     },
     {
@@ -689,7 +765,8 @@
         "fields": {
             "name": "EGS Geothermal Reservoir [EGS Double-Flash]",
             "template_type": 11,
-            "abstract_tech": 1
+            "abstract_tech": 1,
+            "version_tag": "EGS Double-Flash Template"
         }
     },
     {
@@ -698,7 +775,8 @@
         "fields": {
             "name": "EGS Double-Flash Plant [EGS Double-Flash]",
             "template_type": 11,
-            "abstract_tech": 6
+            "abstract_tech": 6,
+            "version_tag": "EGS Double-Flash Template"
         }
     },
     {
@@ -707,7 +785,8 @@
         "fields": {
             "name": "Power Demand [EGS Double-Flash]",
             "template_type": 11,
-            "abstract_tech": 3
+            "abstract_tech": 3,
+            "version_tag": "EGS Double-Flash Template"
         }
     },
     {
@@ -716,7 +795,8 @@
         "fields": {
             "name": "Reservoir Transmission [EGS Double-Flash]",
             "template_type": 11,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "EGS Double-Flash Template"
         }
     },
     {
@@ -725,7 +805,8 @@
         "fields": {
             "name": "Power Demand Transmission [EGS Double-Flash]",
             "template_type": 11,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "EGS Double-Flash Template"
         }
     },
     {
@@ -734,7 +815,8 @@
         "fields": {
             "name": "Hydrothermal  Geothermal Reservoir [Hydro Double-Flash]",
             "template_type": 12,
-            "abstract_tech": 1
+            "abstract_tech": 1,
+            "version_tag": "Hydro Double-Flash Template"
         }
     },
     {
@@ -743,7 +825,8 @@
         "fields": {
             "name": "Hydrothermal Double-Flash Plant [Hydro Double-Flash]",
             "template_type": 12,
-            "abstract_tech": 6
+            "abstract_tech": 6,
+            "version_tag": "Hydro Double-Flash Template"
         }
     },
     {
@@ -752,7 +835,8 @@
         "fields": {
             "name": "Power Demand [Hydro Double-Flash]",
             "template_type": 12,
-            "abstract_tech": 3
+            "abstract_tech": 3,
+            "version_tag": "Hydro Double-Flash Template"
         }
     },
     {
@@ -761,7 +845,8 @@
         "fields": {
             "name": "Reservoir Transmission [Hydro Double-Flash]",
             "template_type": 12,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "Hydro Double-Flash Template"
         }
     },
     {
@@ -770,7 +855,8 @@
         "fields": {
             "name": "Power Demand Transmission [Hydro Double-Flash]",
             "template_type": 12,
-            "abstract_tech": 5
+            "abstract_tech": 5,
+            "version_tag": "Hydro Double-Flash Template"
         }
     }
 ]
