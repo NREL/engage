@@ -29,3 +29,4 @@ ruamel.yaml == 0.16.0
 scikit-learn >= 1.1.1
 xarray >= 2022.6.0
 highspy >= 1.5.3
+xpress >= 8.12.3
