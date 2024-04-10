@@ -28,7 +28,10 @@ from django.utils.text import slugify
 from api.models.outputs import Run, Cambium
 from api.tasks import run_model, task_status, build_model,upload_ts
 from api.models.calliope import Abstract_Tech, Abstract_Tech_Param, Parameter
-from api.models.configuration import Model, ParamsManager, User_File, Location, Technology, Tech_Param, Loc_Tech, Loc_Tech_Param, Timeseries_Meta, Carrier
+from api.models.configuration import (
+    Model, ParamsManager, User_File, Location, Technology,
+    Tech_Param, Loc_Tech, Loc_Tech_Param, Timeseries_Meta, Carrier, Scenario_Param
+)
 from api.models.engage import ComputeEnvironment
 from api.utils import zip_folder, initialize_units, convert_units, noconv_units
 from batch.managers import AWSBatchJobManager
@@ -287,45 +290,51 @@ def optimize(request):
             r.batch_job.save()
             r.save()
 
-        # NOTE: After switch to HiGHS solver, Engage could run unlimited jobs in parallel.
-        # As HiGHS is opensource, no software license required, no need to check 'all_complete' before submitting new jobs.
-        job = manager.generate_job_message(run_id=run.id, user_id=request.user.id, depends_on=[])
-        response = manager.submit_job(job)
-        logger.info(
-            "Model run %s starts to execute in '%s' comptute environment with container job.",
-            run.id, environment.name
-        )
-        try:
-            batch_job = BatchTask.objects.get(task_id=response["jobId"])
-        except BatchTask.DoesNotExist:
-            batch_job = BatchTask.objects.create(task_id=response["jobId"], status=batch_task_status.SUBMITTED)
-        run.batch_job = batch_job
-        run.status = task_status.QUEUED
-        run.save()
-        payload = {"task_id": response.get("jobId")}
-        if run.group != '':
-            future_runs = Run.objects.filter(group=run.group,year__gt=run.year).order_by('year')
-            for next_run in future_runs:
-                if next_run.status == task_status.BUILT:
-                    logger.info("Found a subsequent gradient model for year %s.",next_run.year)
-                    job = manager.generate_job_message(run_id=next_run.id, user_id=request.user.id,
-                                                        depends_on=[run.batch_job.task_id])
-                    response = manager.submit_job(job)
-                    logger.info(
-                        "Graidient model run %s queued to execute in '%s' comptute environment with container job waiting on run %s.",
-                        next_run.id, environment.name, run.id
-                    )
-                    try:
-                        batch_job = BatchTask.objects.get(task_id=response["jobId"])
-                    except BatchTask.DoesNotExist:
-                        batch_job = BatchTask.objects.create(task_id=response["jobId"], status=batch_task_status.SUBMITTED)
-                    next_run.batch_job = batch_job
-                    next_run.status = task_status.QUEUED
-                    next_run.save()
-                    run = next_run
-                else:
-                    logger.info("Found a subsequent gradient model for year %s but it was not built.",next_run.year)
-                    break
+        scenario_param = Scenario_Param.objects.filter(scenario=Run.scenario, run_parameter__name="solver")
+        is_xpress_solver = "xpress" in scenario_param.value
+        if is_xpress_solver and (not all_complete):
+            payload = {
+                "status": "BLOCKED",
+                "message": f"Compute environment '{environment.name}' is in use, please try again later."
+            }
+        else:
+            job = manager.generate_job_message(run_id=run.id, user_id=request.user.id, depends_on=[])
+            response = manager.submit_job(job)
+            logger.info(
+                "Model run %s starts to execute in '%s' comptute environment with container job.",
+                run.id, environment.name
+            )
+            try:
+                batch_job = BatchTask.objects.get(task_id=response["jobId"])
+            except BatchTask.DoesNotExist:
+                batch_job = BatchTask.objects.create(task_id=response["jobId"], status=batch_task_status.SUBMITTED)
+            run.batch_job = batch_job
+            run.status = task_status.QUEUED
+            run.save()
+            payload = {"task_id": response.get("jobId")}
+            if run.group != '':
+                future_runs = Run.objects.filter(group=run.group,year__gt=run.year).order_by('year')
+                for next_run in future_runs:
+                    if next_run.status == task_status.BUILT:
+                        logger.info("Found a subsequent gradient model for year %s.",next_run.year)
+                        job = manager.generate_job_message(run_id=next_run.id, user_id=request.user.id,
+                                                            depends_on=[run.batch_job.task_id])
+                        response = manager.submit_job(job)
+                        logger.info(
+                            "Graidient model run %s queued to execute in '%s' comptute environment with container job waiting on run %s.",
+                            next_run.id, environment.name, run.id
+                        )
+                        try:
+                            batch_job = BatchTask.objects.get(task_id=response["jobId"])
+                        except BatchTask.DoesNotExist:
+                            batch_job = BatchTask.objects.create(task_id=response["jobId"], status=batch_task_status.SUBMITTED)
+                        next_run.batch_job = batch_job
+                        next_run.status = task_status.QUEUED
+                        next_run.save()
+                        run = next_run
+                    else:
+                        logger.info("Found a subsequent gradient model for year %s but it was not built.",next_run.year)
+                        break
 
     # Unknown environment, not supported
     else:
