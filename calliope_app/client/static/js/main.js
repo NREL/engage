@@ -706,9 +706,12 @@ function add_marker(name, id, type, draggable, coordinates) {
 	marker._element.addEventListener('mouseenter', function(e) {
 		var m = e.target._marker;
 		$('#map-legend').html(m.description);
+		$('#map-legend').css('display', '');
+
 	});
 	marker._element.addEventListener('mouseleave', function(e) {
 		$('#map-legend').html("");
+		$('#map-legend').css('display', 'none');
 	});
 	marker._element.addEventListener('mouseup', function(e) {
 		var m = e.target._marker;
