@@ -290,7 +290,7 @@ def optimize(request):
             r.batch_job.save()
             r.save()
 
-        is_xpress_solver = "xpress" in environment.solver
+        is_xpress_solver = "xpress" in str(environment.solver)
         if is_xpress_solver and (not all_complete):
             payload = {
                 "status": "BLOCKED",
