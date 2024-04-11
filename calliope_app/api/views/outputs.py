@@ -290,14 +290,7 @@ def optimize(request):
             r.batch_job.save()
             r.save()
 
-        is_xpress_solver = False
-        try:
-            scenario_param = Scenario_Param.objects.get(scenario=Run.scenario, run_parameter__name="solver")
-            is_xpress_solver = "xpress" in scenario_param.value
-            logger.info("Current solver used in this scenario: %s", scenario_param.value)
-        except:
-            pass
-
+        is_xpress_solver = "xpress" in environment.solver
         if is_xpress_solver and (not all_complete):
             payload = {
                 "status": "BLOCKED",
