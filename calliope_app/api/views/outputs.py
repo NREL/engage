@@ -294,6 +294,7 @@ def optimize(request):
         try:
             scenario_param = Scenario_Param.objects.get(scenario=Run.scenario, run_parameter__name="solver")
             is_xpress_solver = "xpress" in scenario_param.value
+            logger.info("Current solver used in this scenario: %s", scenario_param.value)
         except:
             pass
 
