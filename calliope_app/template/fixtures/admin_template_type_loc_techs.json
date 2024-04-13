@@ -3,7 +3,7 @@
         "pk": 1,
         "model": "template.template_type_loc_tech",
         "fields": {
-            "template_type": 1,
+            "template_type": 4,
             "template_loc_1": 2,
             "template_loc_2": null,
             "template_tech": 1
@@ -13,7 +13,7 @@
         "pk": 2,
         "model": "template.template_type_loc_tech",
         "fields": {
-            "template_type": 1,
+            "template_type": 4,
             "template_loc_1": 1,
             "template_loc_2": null,
             "template_tech": 2
@@ -23,7 +23,7 @@
         "pk": 3,
         "model": "template.template_type_loc_tech",
         "fields": {
-            "template_type": 1,
+            "template_type": 4,
             "template_loc_1": 1,
             "template_loc_2": null,
             "template_tech": 3
@@ -33,7 +33,7 @@
         "pk": 4,
         "model": "template.template_type_loc_tech",
         "fields": {
-            "template_type": 1,
+            "template_type": 4,
             "template_loc_1": 4,
             "template_loc_2": null,
             "template_tech": 4
@@ -43,7 +43,7 @@
         "pk": 5,
         "model": "template.template_type_loc_tech",
         "fields": {
-            "template_type": 1,
+            "template_type": 4,
             "template_loc_1": 3,
             "template_loc_2": null,
             "template_tech": 5
@@ -53,7 +53,7 @@
         "pk": 6,
         "model": "template.template_type_loc_tech",
         "fields": {
-            "template_type": 1,
+            "template_type": 4,
             "template_loc_1": 5,
             "template_loc_2": null,
             "template_tech": 5
@@ -63,7 +63,7 @@
         "pk": 7,
         "model": "template.template_type_loc_tech",
         "fields": {
-            "template_type": 1,
+            "template_type": 4,
             "template_loc_1": 2,
             "template_loc_2": 1.0,
             "template_tech": 7
@@ -73,7 +73,7 @@
         "pk": 8,
         "model": "template.template_type_loc_tech",
         "fields": {
-            "template_type": 1,
+            "template_type": 4,
             "template_loc_1": 1,
             "template_loc_2": 3.0,
             "template_tech": 8
@@ -83,7 +83,7 @@
         "pk": 9,
         "model": "template.template_type_loc_tech",
         "fields": {
-            "template_type": 1,
+            "template_type": 4,
             "template_loc_1": 1,
             "template_loc_2": 4.0,
             "template_tech": 8
@@ -93,7 +93,7 @@
         "pk": 10,
         "model": "template.template_type_loc_tech",
         "fields": {
-            "template_type": 1,
+            "template_type": 4,
             "template_loc_1": 1,
             "template_loc_2": 5.0,
             "template_tech": 9
@@ -253,7 +253,7 @@
         "pk": 26,
         "model": "template.template_type_loc_tech",
         "fields": {
-            "template_type": 4,
+            "template_type": 1,
             "template_loc_1": 15,
             "template_loc_2": null,
             "template_tech": 24
@@ -263,7 +263,7 @@
         "pk": 27,
         "model": "template.template_type_loc_tech",
         "fields": {
-            "template_type": 4,
+            "template_type": 1,
             "template_loc_1": 14,
             "template_loc_2": null,
             "template_tech": 25
@@ -273,7 +273,7 @@
         "pk": 28,
         "model": "template.template_type_loc_tech",
         "fields": {
-            "template_type": 4,
+            "template_type": 1,
             "template_loc_1": 16,
             "template_loc_2": null,
             "template_tech": 26
@@ -283,7 +283,7 @@
         "pk": 29,
         "model": "template.template_type_loc_tech",
         "fields": {
-            "template_type": 4,
+            "template_type": 1,
             "template_loc_1": 15,
             "template_loc_2": 14.0,
             "template_tech": 27
@@ -293,7 +293,7 @@
         "pk": 30,
         "model": "template.template_type_loc_tech",
         "fields": {
-            "template_type": 4,
+            "template_type": 1,
             "template_loc_1": 14,
             "template_loc_2": 16.0,
             "template_tech": 28

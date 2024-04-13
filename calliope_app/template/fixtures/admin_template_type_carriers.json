@@ -3,7 +3,7 @@
         "pk": 1,
         "model": "template.template_type_carrier",
         "fields": {
-            "template_type": 1,
+            "template_type": 4,
             "name": "Thermal",
             "rate_unit": "kW",
             "quantity_unit": "kWh"
@@ -13,7 +13,7 @@
         "pk": 2,
         "model": "template.template_type_carrier",
         "fields": {
-            "template_type": 1,
+            "template_type": 4,
             "name": "Heat",
             "rate_unit": "kW",
             "quantity_unit": "kWh"
@@ -23,7 +23,7 @@
         "pk": 3,
         "model": "template.template_type_carrier",
         "fields": {
-            "template_type": 1,
+            "template_type": 4,
             "name": "Power",
             "rate_unit": "kW",
             "quantity_unit": "kWh"
@@ -33,7 +33,7 @@
         "pk": 4,
         "model": "template.template_type_carrier",
         "fields": {
-            "template_type": 1,
+            "template_type": 4,
             "name": "Demand MMBTU",
             "rate_unit": "MMBTU/h",
             "quantity_unit": "MMBTU"
@@ -103,7 +103,7 @@
         "pk": 11,
         "model": "template.template_type_carrier",
         "fields": {
-            "template_type": 4,
+            "template_type": 1,
             "name": "Thermal",
             "rate_unit": "kW",
             "quantity_unit": "kWh"
@@ -113,7 +113,7 @@
         "pk": 12,
         "model": "template.template_type_carrier",
         "fields": {
-            "template_type": 4,
+            "template_type": 1,
             "name": "Power",
             "rate_unit": "kW",
             "quantity_unit": "kWh"

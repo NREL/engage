@@ -5,7 +5,7 @@
         "fields": {
             "name": "reservoir_heat_capacity",
             "pretty_name": "Reservoir Heat Capacity",
-            "template_type": 1,
+            "template_type": 4,
             "units": "J/kg/K",
             "default_value": 774.0,
             "min": null,
@@ -22,7 +22,7 @@
         "fields": {
             "name": "reservoir_density",
             "pretty_name": "Reservoir Density",
-            "template_type": 1,
+            "template_type": 4,
             "units": "kg/m3",
             "default_value": 1463.0,
             "min": null,
@@ -39,7 +39,7 @@
         "fields": {
             "name": "reservoir_thermal_conductivity",
             "pretty_name": "Reservoir Thermal Conductivity",
-            "template_type": 1,
+            "template_type": 4,
             "units": "W/m/K",
             "default_value": 3.4,
             "min": null,
@@ -56,7 +56,7 @@
         "fields": {
             "name": "min_reservoir_depth",
             "pretty_name": "Reservoir Depth Minimum",
-            "template_type": 1,
+            "template_type": 4,
             "units": "km",
             "default_value": 1,
             "min": 1,
@@ -73,7 +73,7 @@
         "fields": {
             "name": "max_reservoir_depth",
             "pretty_name": "Reservoir Depth Maximum",
-            "template_type": 1,
+            "template_type": 4,
             "units": "km",
             "default_value": 6,
             "min": 1,
@@ -90,7 +90,7 @@
         "fields": {
             "name": "min_production_wells",
             "pretty_name": "Number of Production Wells Minimum",
-            "template_type": 1,
+            "template_type": 4,
             "units": null,
             "default_value": 1,
             "min": 1,
@@ -107,7 +107,7 @@
         "fields": {
             "name": "max_production_wells",
             "pretty_name": "Number of Production Wells Maximum",
-            "template_type": 1,
+            "template_type": 4,
             "units": null,
             "default_value": 6,
             "min": 1,
@@ -124,7 +124,7 @@
         "fields": {
             "name": "min_injection_wells",
             "pretty_name": "Number of Injection Wells Minimum",
-            "template_type": 1,
+            "template_type": 4,
             "units": null,
             "default_value": 1,
             "min": 1,
@@ -141,7 +141,7 @@
         "fields": {
             "name": "max_injection_wells",
             "pretty_name": "Number of Injection Wells Maximum",
-            "template_type": 1,
+            "template_type": 4,
             "units": null,
             "default_value": 6,
             "min": 1,
@@ -158,7 +158,7 @@
         "fields": {
             "name": "gradient_1",
             "pretty_name": "Temperature Gradient #1",
-            "template_type": 1,
+            "template_type": 4,
             "units": "C/km",
             "default_value": 55.0,
             "min": null,
@@ -175,7 +175,7 @@
         "fields": {
             "name": "thickness_grad1",
             "pretty_name": "Gradient Segment #1 Thickness",
-            "template_type": 1,
+            "template_type": 4,
             "units": "km",
             "default_value": 1,
             "min": null,
@@ -192,7 +192,7 @@
         "fields": {
             "name": "gradient_2",
             "pretty_name": "Temperature Gradient #2",
-            "template_type": 1,
+            "template_type": 4,
             "units": "C/km",
             "default_value": 55.0,
             "min": null,
@@ -209,7 +209,7 @@
         "fields": {
             "name": "thickness_grad2",
             "pretty_name": "Gradient Segment #2 Thickness",
-            "template_type": 1,
+            "template_type": 4,
             "units": "km",
             "default_value": 1,
             "min": null,
@@ -226,7 +226,7 @@
         "fields": {
             "name": "gradient_3",
             "pretty_name": "Temperature Gradient #3",
-            "template_type": 1,
+            "template_type": 4,
             "units": "C/km",
             "default_value": 55.0,
             "min": null,
@@ -243,7 +243,7 @@
         "fields": {
             "name": "thickness_grad3",
             "pretty_name": "Gradient Segment #3 Thickness",
-            "template_type": 1,
+            "template_type": 4,
             "units": "km",
             "default_value": 1,
             "min": null,
@@ -260,7 +260,7 @@
         "fields": {
             "name": "gradient_4",
             "pretty_name": "Temperature Gradient #4",
-            "template_type": 1,
+            "template_type": 4,
             "units": "C/km",
             "default_value": 55.0,
             "min": null,
@@ -277,7 +277,7 @@
         "fields": {
             "name": "fracture_shape",
             "pretty_name": "Shape of Fracture",
-            "template_type": 1,
+            "template_type": 4,
             "units": null,
             "default_value": 3.0,
             "min": null,
@@ -294,7 +294,7 @@
         "fields": {
             "name": "fracture_height",
             "pretty_name": "Fracture Height",
-            "template_type": 1,
+            "template_type": 4,
             "units": "m",
             "default_value": 600.0,
             "min": null,
@@ -311,7 +311,7 @@
         "fields": {
             "name": "number_of_fractures",
             "pretty_name": "Number of Fractures",
-            "template_type": 1,
+            "template_type": 4,
             "units": null,
             "default_value": 20.0,
             "min": null,
@@ -328,7 +328,7 @@
         "fields": {
             "name": "well_drilling_cost_correlation",
             "pretty_name": "Well Drilling Cost Correlation",
-            "template_type": 1,
+            "template_type": 4,
             "units": null,
             "default_value": 1,
             "min": null,
@@ -345,7 +345,7 @@
         "fields": {
             "name": "target_prod_temp_min",
             "pretty_name": "Target Production Temperature Min",
-            "template_type": 1,
+            "template_type": 4,
             "units": "C",
             "default_value": 150.0,
             "min": 40.0,
@@ -362,7 +362,7 @@
         "fields": {
             "name": "target_prod_temp_max",
             "pretty_name": "Target Production Temperature Max",
-            "template_type": 1,
+            "template_type": 4,
             "units": "C",
             "default_value": 200.0,
             "min": 40.0,
@@ -379,7 +379,7 @@
         "fields": {
             "name": "production_well_diameter",
             "pretty_name": "Production Well Diameter",
-            "template_type": 1,
+            "template_type": 4,
             "units": "m",
             "default_value": 8.5,
             "min": null,
@@ -396,7 +396,7 @@
         "fields": {
             "name": "injection_well_diameter",
             "pretty_name": "Injection Well Diameter",
-            "template_type": 1,
+            "template_type": 4,
             "units": "m",
             "default_value": 8.5,
             "min": null,
@@ -413,7 +413,7 @@
         "fields": {
             "name": "lifetime",
             "pretty_name": "Project Lifetime",
-            "template_type": 1,
+            "template_type": 4,
             "units": "Year",
             "default_value": 30.0,
             "min": null,
@@ -430,7 +430,7 @@
         "fields": {
             "name": "interest_rate",
             "pretty_name": "Interest Rate",
-            "template_type": 1,
+            "template_type": 4,
             "units": "%",
             "default_value": 5.0,
             "min": null,
@@ -447,7 +447,7 @@
         "fields": {
             "name": "electricity_rate",
             "pretty_name": "Electricity Rate",
-            "template_type": 1,
+            "template_type": 4,
             "units": "$/kWh",
             "default_value": 0.0925,
             "min": null,
@@ -464,7 +464,7 @@
         "fields": {
             "name": "max_elec_gen_kwe",
             "pretty_name": "Maximum Electricity Capacity",
-            "template_type": 1,
+            "template_type": 4,
             "units": "kW",
             "default_value": null,
             "min": null,
@@ -481,7 +481,7 @@
         "fields": {
             "name": "elec_cap_vs_surface_cost",
             "pretty_name": "Surface Cost to Electric Slope",
-            "template_type": 1,
+            "template_type": 4,
             "units": "$/kW",
             "default_value": null,
             "min": null,
@@ -498,7 +498,7 @@
         "fields": {
             "name": "elec_cap_vs_surface_om_cost",
             "pretty_name": "Surface O&M Cost to Electric Slope",
-            "template_type": 1,
+            "template_type": 4,
             "units": "$/kW",
             "default_value": null,
             "min": null,
@@ -515,7 +515,7 @@
         "fields": {
             "name": "max_therm_ext_kwth",
             "pretty_name": "Maximum Reservoir Heat Extraction",
-            "template_type": 1,
+            "template_type": 4,
             "units": "kW",
             "default_value": null,
             "min": null,
@@ -532,7 +532,7 @@
         "fields": {
             "name": "therm_cap_vs_reservoir_cost",
             "pretty_name": "Subsurface Cost to Thermal Slope",
-            "template_type": 1,
+            "template_type": 4,
             "units": "$/kW",
             "default_value": null,
             "min": null,
@@ -549,7 +549,7 @@
         "fields": {
             "name": "therm_cap_vs_reservoir_om_cost",
             "pretty_name": "Subsurface O&M Cost to Thermal Slope",
-            "template_type": 1,
+            "template_type": 4,
             "units": "$/kW",
             "default_value": null,
             "min": null,
@@ -566,7 +566,7 @@
         "fields": {
             "name": "elec_prod_to_therm_ext_ratio",
             "pretty_name": "Thermal to Electric Conversion Ratio",
-            "template_type": 1,
+            "template_type": 4,
             "units": null,
             "default_value": null,
             "min": null,
@@ -583,7 +583,7 @@
         "fields": {
             "name": "heat_prod_to_therm_ext_ratio",
             "pretty_name": "Thermal to Heat Conversion Ratio",
-            "template_type": 1,
+            "template_type": 4,
             "units": null,
             "default_value": null,
             "min": null,
@@ -600,7 +600,7 @@
         "fields": {
             "name": "therm_ext_to_therm_ext_ratio",
             "pretty_name": "Thermal to Thermal Conversion Ratio",
-            "template_type": 1,
+            "template_type": 4,
             "units": null,
             "default_value": null,
             "min": null,
@@ -1756,7 +1756,7 @@
         "fields": {
             "name": "reservoir_heat_capacity",
             "pretty_name": "Reservoir Heat Capacity",
-            "template_type": 4,
+            "template_type": 1,
             "units": "J/kg/K",
             "default_value": 1050.0,
             "min": null,
@@ -1773,7 +1773,7 @@
         "fields": {
             "name": "reservoir_density",
             "pretty_name": "Reservoir Density",
-            "template_type": 4,
+            "template_type": 1,
             "units": "kg/m3",
             "default_value": 2700.0,
             "min": null,
@@ -1790,7 +1790,7 @@
         "fields": {
             "name": "reservoir_thermal_conductivity",
             "pretty_name": "Reservoir Thermal Conductivity",
-            "template_type": 4,
+            "template_type": 1,
             "units": "W/m/K",
             "default_value": 3.0,
             "min": null,
@@ -1807,7 +1807,7 @@
         "fields": {
             "name": "min_reservoir_depth",
             "pretty_name": "Reservoir Depth Minimum",
-            "template_type": 4,
+            "template_type": 1,
             "units": "km",
             "default_value": 1,
             "min": 1,
@@ -1824,7 +1824,7 @@
         "fields": {
             "name": "max_reservoir_depth",
             "pretty_name": "Reservoir Depth Maximum",
-            "template_type": 4,
+            "template_type": 1,
             "units": "km",
             "default_value": 6,
             "min": 1,
@@ -1841,7 +1841,7 @@
         "fields": {
             "name": "min_production_wells",
             "pretty_name": "Number of Production Wells Minimum",
-            "template_type": 4,
+            "template_type": 1,
             "units": null,
             "default_value": 1,
             "min": 1,
@@ -1858,7 +1858,7 @@
         "fields": {
             "name": "max_production_wells",
             "pretty_name": "Number of Production Wells Maximum",
-            "template_type": 4,
+            "template_type": 1,
             "units": null,
             "default_value": 6,
             "min": 1,
@@ -1875,7 +1875,7 @@
         "fields": {
             "name": "min_injection_wells",
             "pretty_name": "Number of Injection Wells Minimum",
-            "template_type": 4,
+            "template_type": 1,
             "units": null,
             "default_value": 1,
             "min": 1,
@@ -1892,7 +1892,7 @@
         "fields": {
             "name": "max_injection_wells",
             "pretty_name": "Number of Injection Wells Maximum",
-            "template_type": 4,
+            "template_type": 1,
             "units": null,
             "default_value": 6,
             "min": 1,
@@ -1909,7 +1909,7 @@
         "fields": {
             "name": "gradient_1",
             "pretty_name": "Temperature Gradient #1",
-            "template_type": 4,
+            "template_type": 1,
             "units": "C/km",
             "default_value": 70.0,
             "min": null,
@@ -1926,7 +1926,7 @@
         "fields": {
             "name": "thickness_grad1",
             "pretty_name": "Gradient Segment #1 Thickness",
-            "template_type": 4,
+            "template_type": 1,
             "units": "km",
             "default_value": 1,
             "min": null,
@@ -1943,7 +1943,7 @@
         "fields": {
             "name": "gradient_2",
             "pretty_name": "Temperature Gradient #2",
-            "template_type": 4,
+            "template_type": 1,
             "units": "C/km",
             "default_value": 70.0,
             "min": null,
@@ -1960,7 +1960,7 @@
         "fields": {
             "name": "thickness_grad2",
             "pretty_name": "Gradient Segment #2 Thickness",
-            "template_type": 4,
+            "template_type": 1,
             "units": "km",
             "default_value": 1,
             "min": null,
@@ -1977,7 +1977,7 @@
         "fields": {
             "name": "gradient_3",
             "pretty_name": "Temperature Gradient #3",
-            "template_type": 4,
+            "template_type": 1,
             "units": "C/km",
             "default_value": 70.0,
             "min": null,
@@ -1994,7 +1994,7 @@
         "fields": {
             "name": "thickness_grad3",
             "pretty_name": "Gradient Segment #3 Thickness",
-            "template_type": 4,
+            "template_type": 1,
             "units": "km",
             "default_value": 1,
             "min": null,
@@ -2011,7 +2011,7 @@
         "fields": {
             "name": "gradient_4",
             "pretty_name": "Temperature Gradient #4",
-            "template_type": 4,
+            "template_type": 1,
             "units": "C/km",
             "default_value": 70.0,
             "min": null,
@@ -2028,7 +2028,7 @@
         "fields": {
             "name": "well_drilling_cost_correlation",
             "pretty_name": "Well Drilling Cost Correlation",
-            "template_type": 4,
+            "template_type": 1,
             "units": null,
             "default_value": 1,
             "min": null,
@@ -2045,7 +2045,7 @@
         "fields": {
             "name": "target_prod_temp_min",
             "pretty_name": "Target Production Temperature Min",
-            "template_type": 4,
+            "template_type": 1,
             "units": "C",
             "default_value": 100.0,
             "min": 40.0,
@@ -2062,7 +2062,7 @@
         "fields": {
             "name": "target_prod_temp_max",
             "pretty_name": "Target Production Temperature Max",
-            "template_type": 4,
+            "template_type": 1,
             "units": "C",
             "default_value": 180.0,
             "min": 40.0,
@@ -2079,7 +2079,7 @@
         "fields": {
             "name": "production_well_diameter",
             "pretty_name": "Production Well Diameter",
-            "template_type": 4,
+            "template_type": 1,
             "units": "m",
             "default_value": 8.5,
             "min": null,
@@ -2096,7 +2096,7 @@
         "fields": {
             "name": "injection_well_diameter",
             "pretty_name": "Injection Well Diameter",
-            "template_type": 4,
+            "template_type": 1,
             "units": "m",
             "default_value": 8.5,
             "min": null,
@@ -2113,7 +2113,7 @@
         "fields": {
             "name": "lifetime",
             "pretty_name": "Project Lifetime",
-            "template_type": 4,
+            "template_type": 1,
             "units": "Year",
             "default_value": 30.0,
             "min": null,
@@ -2130,7 +2130,7 @@
         "fields": {
             "name": "interest_rate",
             "pretty_name": "Interest Rate",
-            "template_type": 4,
+            "template_type": 1,
             "units": "%",
             "default_value": 5.0,
             "min": null,
@@ -2147,7 +2147,7 @@
         "fields": {
             "name": "electricity_rate",
             "pretty_name": "Electricity Rate",
-            "template_type": 4,
+            "template_type": 1,
             "units": "$/kW",
             "default_value": 0.0925,
             "min": null,
@@ -2164,7 +2164,7 @@
         "fields": {
             "name": "max_elec_gen_kwe",
             "pretty_name": "Maximum Electricity Capacity",
-            "template_type": 4,
+            "template_type": 1,
             "units": "kW",
             "default_value": null,
             "min": null,
@@ -2181,7 +2181,7 @@
         "fields": {
             "name": "elec_cap_vs_surface_cost",
             "pretty_name": "Surface Cost to Electric Slope",
-            "template_type": 4,
+            "template_type": 1,
             "units": "$/kW",
             "default_value": null,
             "min": null,
@@ -2198,7 +2198,7 @@
         "fields": {
             "name": "elec_cap_vs_surface_om_cost",
             "pretty_name": "Surface O&M Cost to Electric Slope",
-            "template_type": 4,
+            "template_type": 1,
             "units": "$/kW",
             "default_value": null,
             "min": null,
@@ -2215,7 +2215,7 @@
         "fields": {
             "name": "max_therm_ext_kwth",
             "pretty_name": "Maximum Reservoir Heat Extraction",
-            "template_type": 4,
+            "template_type": 1,
             "units": "kW",
             "default_value": null,
             "min": null,
@@ -2232,7 +2232,7 @@
         "fields": {
             "name": "therm_cap_vs_reservoir_cost",
             "pretty_name": "Subsurface Cost to Thermal Slope",
-            "template_type": 4,
+            "template_type": 1,
             "units": "$/kW",
             "default_value": null,
             "min": null,
@@ -2249,7 +2249,7 @@
         "fields": {
             "name": "therm_cap_vs_reservoir_om_cost",
             "pretty_name": "Subsurface O&M Cost to Thermal Slope",
-            "template_type": 4,
+            "template_type": 1,
             "units": "$/kW",
             "default_value": null,
             "min": null,
@@ -2266,7 +2266,7 @@
         "fields": {
             "name": "elec_prod_to_therm_ext_ratio",
             "pretty_name": "Electric to Thermal Conversion Ratio",
-            "template_type": 4,
+            "template_type": 1,
             "units": null,
             "default_value": null,
             "min": null,
