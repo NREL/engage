@@ -4,7 +4,7 @@
         "model": "template.template_type_loc",
         "fields": {
             "name": "CHP_Plant",
-            "template_type": 1,
+            "template_type": 4,
             "latitude_offset": 0.003,
             "longitude_offset": 0.002
         }
@@ -14,7 +14,7 @@
         "model": "template.template_type_loc",
         "fields": {
             "name": "Geothermal_Reservoir",
-            "template_type": 1,
+            "template_type": 4,
             "latitude_offset": 0.002,
             "longitude_offset": 0.002
         }
@@ -24,7 +24,7 @@
         "model": "template.template_type_loc",
         "fields": {
             "name": "Heat_Demand",
-            "template_type": 1,
+            "template_type": 4,
             "latitude_offset": 0.004,
             "longitude_offset": 0.001
         }
@@ -34,7 +34,7 @@
         "model": "template.template_type_loc",
         "fields": {
             "name": "Heat_Sink",
-            "template_type": 1,
+            "template_type": 4,
             "latitude_offset": 0.003,
             "longitude_offset": 0.001
         }
@@ -44,7 +44,7 @@
         "model": "template.template_type_loc",
         "fields": {
             "name": "Power_Demand",
-            "template_type": 1,
+            "template_type": 4,
             "latitude_offset": 0.004,
             "longitude_offset": 0.003
         }
@@ -134,7 +134,7 @@
         "model": "template.template_type_loc",
         "fields": {
             "name": "BinaryORC_Plant",
-            "template_type": 4,
+            "template_type": 1,
             "latitude_offset": 0.003,
             "longitude_offset": 0.002
         }
@@ -144,7 +144,7 @@
         "model": "template.template_type_loc",
         "fields": {
             "name": "Geothermal_Reservoir",
-            "template_type": 4,
+            "template_type": 1,
             "latitude_offset": 0.002,
             "longitude_offset": 0.002
         }
@@ -154,7 +154,7 @@
         "model": "template.template_type_loc",
         "fields": {
             "name": "Power_Demand",
-            "template_type": 4,
+            "template_type": 1,
             "latitude_offset": 0.004,
             "longitude_offset": 0.003
         }

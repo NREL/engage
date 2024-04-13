@@ -125,7 +125,7 @@ def geophires_request(request):
     }
 
     # Template based params
-    if template_type.id == 1:
+    if template_type.id == 4:
        # EGS_chp
         input_params['power_plant_type'] = 1
         input_params["end_use_option"] = 31
@@ -164,7 +164,7 @@ def geophires_request(request):
         input_params["fracture_shape"] = float(formData["fracture_shape"])
         input_params["fracture_height"] = float(formData["fracture_height"])
         input_params["number_of_fractures"] = float(formData["number_of_fractures"])
-    if template_type.id == 4:
+    if template_type.id == 1:
         # HYDRO_binary_orc
         input_params['power_plant_type'] = 1
         input_params["end_use_option"] = 1

@@ -1,6 +1,6 @@
 [
     {
-        "pk": 1,
+        "pk": 4,
         "model": "template.template_type",
         "fields": {
             "name": "EGS_chp",
@@ -27,7 +27,7 @@
         }
     },
     {
-        "pk": 4,
+        "pk": 1,
         "model": "template.template_type",
         "fields": {
             "name": "HYDRO_binary_orc",

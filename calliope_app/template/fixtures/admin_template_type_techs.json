@@ -4,7 +4,7 @@
         "model": "template.template_type_tech",
         "fields": {
             "name": "EGS Geothermal Reservoir [EGS CHP]",
-            "template_type": 1,
+            "template_type": 4,
             "abstract_tech": 1,
             "version_tag": "EGS CHP Template"
         }
@@ -14,7 +14,7 @@
         "model": "template.template_type_tech",
         "fields": {
             "name": "EGS CHP Plant [EGS CHP]",
-            "template_type": 1,
+            "template_type": 4,
             "abstract_tech": 7,
             "version_tag": "EGS CHP Template"
         }
@@ -24,7 +24,7 @@
         "model": "template.template_type_tech",
         "fields": {
             "name": "Conversion MWth to MMBTU [EGS CHP]",
-            "template_type": 1,
+            "template_type": 4,
             "abstract_tech": 6,
             "version_tag": "EGS CHP Template"
         }
@@ -34,7 +34,7 @@
         "model": "template.template_type_tech",
         "fields": {
             "name": "Heat Sink [EGS CHP]",
-            "template_type": 1,
+            "template_type": 4,
             "abstract_tech": 4,
             "version_tag": "EGS CHP Template"
         }
@@ -44,7 +44,7 @@
         "model": "template.template_type_tech",
         "fields": {
             "name": "Heat Demand [EGS CHP]",
-            "template_type": 1,
+            "template_type": 4,
             "abstract_tech": 3,
             "version_tag": "EGS CHP Template"
         }
@@ -54,7 +54,7 @@
         "model": "template.template_type_tech",
         "fields": {
             "name": "Power Demand [EGS CHP]",
-            "template_type": 1,
+            "template_type": 4,
             "abstract_tech": 3,
             "version_tag": "EGS CHP Template"
         }
@@ -64,7 +64,7 @@
         "model": "template.template_type_tech",
         "fields": {
             "name": "Reservoir Transmission [EGS CHP]",
-            "template_type": 1,
+            "template_type": 4,
             "abstract_tech": 5,
             "version_tag": "EGS CHP Template"
         }
@@ -74,7 +74,7 @@
         "model": "template.template_type_tech",
         "fields": {
             "name": "Heat Demand Transmission [EGS CHP]",
-            "template_type": 1,
+            "template_type": 4,
             "abstract_tech": 5,
             "version_tag": "EGS CHP Template"
         }
@@ -84,7 +84,7 @@
         "model": "template.template_type_tech",
         "fields": {
             "name": "Power Demand Transmission [EGS CHP]",
-            "template_type": 1,
+            "template_type": 4,
             "abstract_tech": 5,
             "version_tag": "EGS CHP Template"
         }
@@ -234,7 +234,7 @@
         "model": "template.template_type_tech",
         "fields": {
             "name": "Hydrothermal Geothermal Reservoir [Hydro Binary ORC]",
-            "template_type": 4,
+            "template_type": 1,
             "abstract_tech": 1,
             "version_tag": "Hydro Binary ORC Template"
         }
@@ -244,7 +244,7 @@
         "model": "template.template_type_tech",
         "fields": {
             "name": "Hydrothermal Subcritical Binary ORC Plant [Hydro Binary ORC]",
-            "template_type": 4,
+            "template_type": 1,
             "abstract_tech": 6,
             "version_tag": "Hydro Binary ORC Template"
         }
@@ -254,7 +254,7 @@
         "model": "template.template_type_tech",
         "fields": {
             "name": "Power Demand [Hydro Binary ORC]",
-            "template_type": 4,
+            "template_type": 1,
             "abstract_tech": 3,
             "version_tag": "Hydro Binary ORC Template"
         }
@@ -264,7 +264,7 @@
         "model": "template.template_type_tech",
         "fields": {
             "name": "Reservoir Transmission [Hydro Binary ORC]",
-            "template_type": 4,
+            "template_type": 1,
             "abstract_tech": 5,
             "version_tag": "Hydro Binary ORC Template"
         }
@@ -274,7 +274,7 @@
         "model": "template.template_type_tech",
         "fields": {
             "name": "Power Demand Transmission [Hydro Binary ORC]",
-            "template_type": 4,
+            "template_type": 1,
             "abstract_tech": 5,
             "version_tag": "Hydro Binary ORC Template"
         }
