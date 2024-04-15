@@ -131,6 +131,7 @@ function initiate_units() {
   math.createUnit('Calorie', {definition: '3.968 BTU', aliases: ['Calorie', 'Calories']});
   math.createUnit('kgal', {definition: '1000 gallons', aliases: ['kgal', 'kilogallon', 'kgals', 'kilogallons'], baseName: 'kgal'});
   math.createUnit('mbtu', {definition: '1 MMBTU', aliases: ['mbtu']});
+  math.createUnit('TOR', {definition: '0.012 MMBTU/h', aliases: ['TOR']});
 
 	user_defined_units.forEach(function(item) {
 		var pretty_name = item['name'],

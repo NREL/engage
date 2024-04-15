@@ -294,6 +294,7 @@ def initialize_units():
     ureg.define('dollar = 1 = dollars')
     ureg.define('cent = .01 dollar = cent = cents')
     ureg.define('units = 1 = unit')
+    ureg.define('TOR = 0.012 MMBTU/h')
 
     return ureg
 
