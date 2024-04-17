@@ -89,7 +89,7 @@ class Geophires(object):
             'Print Output to Console': input_params["print_output_to_console"],
             "Production Well Diameter": input_params["production_well_diameter"],
             "Injection Well Diameter": input_params["injection_well_diameter"],
-            "Well Drilling Cost Correlation": 1 #input_params["well_drilling_cost_correlation"],
+            "Well Drilling Cost Correlation": input_params["well_drilling_cost_correlation"],
         }
 
         # set non-required parameters         
