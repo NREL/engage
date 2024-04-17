@@ -625,11 +625,20 @@ function appendCategoryVariables(template_type_vars, category) {
         } else {
             units = "<span style='width:80px;margin-left:.4em' class='text-sm parameter-units'></span>";
         }
+        let varInput = categoryVariables[i].choices ? 
+          "<select id='template_type_var_" + categoryVariables[i].id + "' class='form-control tech-param-input " + techParamsClass + "' name='" + categoryVariables[i].pretty_name +"'></select>"
+         : "<input id='template_type_var_" + categoryVariables[i].id + "' class='form-control tech-param-input " + techParamsClass + "' name='" + categoryVariables[i].pretty_name +"'></input>";
         let convertedValue = "<span id='template_type_var_converted_" + categoryVariables[i].id + "' class='tech-param-converted' style='display:none;' name='" + categoryVariables[i].pretty_name + "'>" + categoryVariables[i].default_value + "</span>";
         $('#'+ categoryId).append( "<div class='col-6 tech-params' data-toggle='tooltip' data-placement='bottom' title='" + desc +
             "' data-original-title='" + desc + "'><label class='template-label'><b>" + categoryVariables[i].pretty_name + "</b></label></div>"
-        + "<div class='col-6 tech-params'><input id='template_type_var_" + categoryVariables[i].id + "' class='form-control tech-param-input " + techParamsClass + "' name='" + categoryVariables[i].pretty_name +"'></input>"
-        + convertedValue + units + "</div>");
+        + "<div class='col-6 tech-params'>" + varInput + convertedValue + units + "</div>");
+        if (categoryVariables[i].choices) {
+            for (const obj of categoryVariables[i].choices) {
+                for (const key in obj) {
+                    $('#template_type_var_' + categoryVariables[i].id).append("<option value='" + obj[key] + "'>" + key + "</option>");
+                }
+            }
+        }
 
         if (categoryVariables[i].default_value) {
             $('#template_type_var_' + categoryVariables[i].id).val(categoryVariables[i].default_value);
