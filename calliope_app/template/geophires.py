@@ -108,7 +108,6 @@ def geophires_request(request):
         "thickness_grad1": float(formData["thickness_grad1"]),
         "thickness_grad2": float(formData["thickness_grad2"]),
         "thickness_grad3": float(formData["thickness_grad3"]), 
-        "well_drilling_cost_correlation": float(formData["well_drilling_cost_correlation"]),
         "target_prod_temp_min": float(formData["target_prod_temp_min"]),
         "target_prod_temp_max": float(formData["target_prod_temp_max"]),
         "production_well_diameter": float(formData["production_well_diameter"]),
@@ -122,6 +121,7 @@ def geophires_request(request):
         "max_production_wells": int(formData["max_production_wells"]),
         "min_injection_wells": int(formData["min_injection_wells"]),
         "max_injection_wells": int(formData["max_injection_wells"]),
+        "well_drilling_cost_correlation": int(formData["well_drilling_cost_correlation"]),
     }
 
     # Template based params
