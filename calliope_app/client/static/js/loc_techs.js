@@ -640,7 +640,11 @@ function appendCategoryVariables(template_type_vars, category) {
         if (categoryVariables[i].choices) {
             for (const obj of categoryVariables[i].choices) {
                 for (const key in obj) {
-                    $('#template_type_var_' + categoryVariables[i].id).append("<option value='" + obj[key] + "'>" + key + "</option>");
+                    if (obj[key] == categoryVariables[i].default_value) {
+                        $('#template_type_var_' + categoryVariables[i].id).append("<option selected value='" + obj[key] + "'>" + key + "</option>");
+                    } else {
+                        $('#template_type_var_' + categoryVariables[i].id).append("<option value='" + obj[key] + "'>" + key + "</option>");
+                    }
                 }
             }
         } else {
