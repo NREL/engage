@@ -40,7 +40,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
   var layout1 = {
     'title': 'Surface Cost-to-Electric Capacity',
     'xaxis': {
-      'title': 'Avg. Electric capacity (KWe)'
+      'title': 'Avg. Electric capacity (MWe)'
     },
     'yaxis': {
       'title': 'Subsurface Total Cost ($M)'
@@ -79,7 +79,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
   var layout2 = {
     'title': 'Surface O&M Cost-to-Electric Capacity',
     'xaxis': {
-      'title': 'Avg. Electric Capacity (KWe)'
+      'title': 'Avg. Electric Capacity (MWe)'
     },
     'yaxis': {
       'title': 'Surface O&M Total Cost ($M)'
@@ -118,7 +118,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
   var layout3 = {
     'title': ' Reservoir Cost-to-Thermal Capacity',
     'xaxis': {
-      'title': 'Avg. Thermal capacity (KWth)'
+      'title': 'Avg. Thermal capacity (MWth)'
     },
     'yaxis': {
       'title': 'Reservoir Total Cost ($M)'
@@ -155,7 +155,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
   var layout4 = {
     'title': ' Reservoir O&M Cost-to-Thermal Capacity',
     'xaxis': {
-      'title': 'Avg. Thermal capacity (KWe)'
+      'title': 'Avg. Thermal capacity (MWe)'
     },
     'yaxis': {
       'title': 'Reservoir O&M Total Cost ($M)'
