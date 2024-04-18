@@ -333,7 +333,12 @@ function requestGeophires() {
         let name = template_data.template_type_variables.filter(obj => {
             return obj.id === id
           })[0].name;
-        let value = $("#template_type_var_converted_" + id).text() && toNumber($("#template_type_var_converted_" + id).text()) && $("#template_type_var_" + id).data('units') != 'NA' ? toNumber($("#template_type_var_converted_" + id).text()) : templateVarElements[i].value;
+        let value;
+        if ($("#template_type_var_converted_" + id).text() && toNumber($("#template_type_var_converted_" + id).text()) && $("#template_type_var_" + id).data('units') != 'NA' && !$("#template_type_var_" + id).is("select")) {
+            value = toNumber($("#template_type_var_converted_" + id).text())
+        } else { 
+            value = templateVarElements[i].value;
+        }
         if (!value) {
             resetGeophiresButton(true);
         }
@@ -638,13 +643,13 @@ function appendCategoryVariables(template_type_vars, category) {
                     $('#template_type_var_' + categoryVariables[i].id).append("<option value='" + obj[key] + "'>" + key + "</option>");
                 }
             }
-        }
-
-        if (categoryVariables[i].default_value) {
-            $('#template_type_var_' + categoryVariables[i].id).val(categoryVariables[i].default_value);
-            $('#template_type_var_' + categoryVariables[i].id).attr("value", categoryVariables[i].default_value);
         } else {
-            $('#template_type_var_' + categoryVariables[i].id).val("");
+            if (categoryVariables[i].default_value) {
+                $('#template_type_var_' + categoryVariables[i].id).val(categoryVariables[i].default_value);
+                $('#template_type_var_' + categoryVariables[i].id).attr("value", categoryVariables[i].default_value);
+            } else {
+                $('#template_type_var_' + categoryVariables[i].id).val("");
+            }
         }
 
         if (categoryVariables[i].category == geoOutputs) {
