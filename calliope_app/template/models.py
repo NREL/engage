@@ -1,11 +1,10 @@
 from django.db import models
-from api.models.calliope import Abstract_Tech, Parameter
+from api.models.calliope import Abstract_Tech, Parameter, Abstract_Tech_Param
 from api.models.configuration import Location, Model, Timeseries_Meta, Technology, Technology, Abstract_Tech, Loc_Tech
-from django.contrib.postgres.fields import ArrayField
-from django.db.models.signals import pre_delete 
 from django.dispatch import receiver
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, pre_save
 from django.db.models import Q
+from django.core.exceptions import ValidationError
 
 from api.models.utils import EngageManager
 
@@ -187,6 +186,15 @@ class Template_Variable(models.Model):
 
     def __str__(self):
         return '%s' % (self.template_type_variable)
+
+@receiver(pre_save, sender=Template_Type_Loc_Tech_Param)
+def validate_before_save(sender, instance, **kwargs):
+    if sender == Template_Type_Loc_Tech_Param:
+        abstractTechParam = Abstract_Tech_Param.objects.filter(abstract_tech=instance.template_loc_tech.template_tech.abstract_tech, parameter=instance.parameter)
+        if abstractTechParam is not None:
+            print ("Valid parameter for the given technology assoiacted with this Template_Type_Loc_Tech_Param")
+        else: 
+            raise ValidationError(f"Error: Invalid parameter for the given technology assoiacted with this Template_Type_Loc_Tech_Param '{instance.id}'")
 
 @receiver(post_delete, sender=Template)
 def signal_function_name(sender, instance, using, **kwargs):
