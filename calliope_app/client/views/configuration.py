@@ -229,7 +229,6 @@ def loc_techs_view(request, model_uuid):
         session_technology_id = int(session_technology_id)
     if session_loc_tech_id:
         request.session['loc_tech_id'] = int(session_loc_tech_id)
-    logger.info(f"Session Stuff: {request.session}")
     context = {
         "timezones": common_timezones,
         "model": model,
