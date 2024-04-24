@@ -5,8 +5,8 @@ Issue Tracking
 --------------
 We welcome bug reports, feature requests and pull requests through Engage's `Github issue tracker <https://github.com/NREL/Engage/issues>`_.
 
-The issues submitted via the issue tracker corresponds to a specific action with a well-defined completion state: 
-Bugfix, New Feature, Documentation Update, Code Clean-up. After an issue ticket is opened, a member of Engage team will give it an initial classification, 
+The issues submitted via the issue tracker corresponds to a specific action with a well-defined completion state:
+Bugfix, New Feature, Documentation Update, Code Clean-up. After an issue ticket is opened, a member of Engage team will give it an initial classification,
 make a valiation, response, close and/or assign it to a milestone.
 
 
@@ -38,7 +38,7 @@ To update the Sphinx documentation here, use command below:
 .. code-block:: bash
 
     $ cd docs
-    $ make html
+    $ make docs
     $ git push origin branch-name
 
 The updatetd documentation will display after `branch-name` merged into master.

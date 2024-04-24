@@ -185,6 +185,9 @@ function renderTemplateModal() {
 
     if ($("#templateType").children('option').length === 0) {
         $("#templateType").append( "<option value=''></option>");
+        template_data.template_types.sort(function (a, b) {
+            return a.pretty_name < b.pretty_name ? -1 : 1;
+        });
         for (let i = 0; i < template_data.template_types.length; i++) {
             if (template_edit.name == template_data.template_types[i]) {
                 $("#templateType").append( "<option selected value=" + template_data.template_types[i].id + ">" + template_data.template_types[i].pretty_name + "</option>");
@@ -330,12 +333,19 @@ function requestGeophires() {
         let name = template_data.template_type_variables.filter(obj => {
             return obj.id === id
           })[0].name;
-        let value = $("#template_type_var_converted_" + id).text() && toNumber($("#template_type_var_converted_" + id).text()) && $("#template_type_var_" + id).data('units') != 'NA' ? toNumber($("#template_type_var_converted_" + id).text()) : templateVarElements[i].value;
+        let value;
+        if ($("#template_type_var_converted_" + id).text() && toNumber($("#template_type_var_converted_" + id).text()) && $("#template_type_var_" + id).data('units') != 'NA' && !$("#template_type_var_" + id).is("select")) {
+            value = toNumber($("#template_type_var_converted_" + id).text())
+        } else { 
+            value = templateVarElements[i].value;
+        }
         if (!value) {
             resetGeophiresButton(true);
         }
         templateVars[name] = value;
     }
+
+    templateVars.templateType = $('#templateType').val();
 
     $("#loadingGeophires").show();
     $('#geophiresError').attr("hidden", true);
@@ -620,21 +630,34 @@ function appendCategoryVariables(template_type_vars, category) {
         } else {
             units = "<span style='width:80px;margin-left:.4em' class='text-sm parameter-units'></span>";
         }
+        let varInput = categoryVariables[i].choices ? 
+          "<select id='template_type_var_" + categoryVariables[i].id + "' class='form-control tech-param-input " + techParamsClass + "' name='" + categoryVariables[i].pretty_name +"'></select>"
+         : "<input id='template_type_var_" + categoryVariables[i].id + "' class='form-control tech-param-input " + techParamsClass + "' name='" + categoryVariables[i].pretty_name +"'></input>";
         let convertedValue = "<span id='template_type_var_converted_" + categoryVariables[i].id + "' class='tech-param-converted' style='display:none;' name='" + categoryVariables[i].pretty_name + "'>" + categoryVariables[i].default_value + "</span>";
         $('#'+ categoryId).append( "<div class='col-6 tech-params' data-toggle='tooltip' data-placement='bottom' title='" + desc +
             "' data-original-title='" + desc + "'><label class='template-label'><b>" + categoryVariables[i].pretty_name + "</b></label></div>"
-        + "<div class='col-6 tech-params'><input id='template_type_var_" + categoryVariables[i].id + "' class='form-control tech-param-input " + techParamsClass + "' name='" + categoryVariables[i].pretty_name +"'></input>"
-        + convertedValue + units + "</div>");
-
-        if (categoryVariables[i].default_value) {
-            $('#template_type_var_' + categoryVariables[i].id).val(categoryVariables[i].default_value);
-            $('#template_type_var_' + categoryVariables[i].id).attr("value", categoryVariables[i].default_value);
+        + "<div class='col-6 tech-params'>" + varInput + convertedValue + units + "</div>");
+        if (categoryVariables[i].choices) {
+            for (const obj of categoryVariables[i].choices) {
+                for (const key in obj) {
+                    if (obj[key] == categoryVariables[i].default_value) {
+                        $('#template_type_var_' + categoryVariables[i].id).append("<option selected value='" + obj[key] + "'>" + key + "</option>");
+                    } else {
+                        $('#template_type_var_' + categoryVariables[i].id).append("<option value='" + obj[key] + "'>" + key + "</option>");
+                    }
+                }
+            }
         } else {
-            $('#template_type_var_' + categoryVariables[i].id).val("");
+            if (categoryVariables[i].default_value) {
+                $('#template_type_var_' + categoryVariables[i].id).val(categoryVariables[i].default_value);
+                $('#template_type_var_' + categoryVariables[i].id).attr("value", categoryVariables[i].default_value);
+            } else {
+                $('#template_type_var_' + categoryVariables[i].id).val("");
+            }
         }
 
         if (categoryVariables[i].category == geoOutputs) {
-            $('#template_type_var_' + categoryVariables[i].id).prop("disabled",true);
+            //$('#template_type_var_' + categoryVariables[i].id).prop("disabled",true);
         }
 
         $('#template_type_var_' + categoryVariables[i].id).attr({

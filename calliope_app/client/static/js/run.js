@@ -191,7 +191,10 @@ function activate_runs() {
 				'csrfmiddlewaretoken': getCookie('csrftoken'),
 			},
 			dataType: 'json',
-			success: function () {
+			success: function (data) {
+        if (data['status'] == 'BLOCKED') {
+					alert(data["message"]);
+				}
 				refresh_run_dashboard();
 			}
 		});
