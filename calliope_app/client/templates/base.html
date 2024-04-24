@@ -38,7 +38,6 @@
 			type: 'GET',
 			dataType: 'json',
 			success: function (data) {
-				console.log(`data ${data}`);
 				mapboxgl.accessToken = data.message; 
 			},
 			error: function (xhr, status, error) {
