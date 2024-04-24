@@ -1462,7 +1462,7 @@ def get_map_box_token(request):
             if not recipient_list:
                 return
             send_mail(
-                subject="NREL ENGAGE NOTIFICATION",
+                subject="Engage Alert - Mapbox",
                 message="WARNING: you have hit 40,000 API calls on engage Mapbox",
                 from_email=settings.AWS_SES_FROM_EMAIL,
                 recipient_list=recipient_list
@@ -1474,7 +1474,7 @@ def get_map_box_token(request):
             if not recipient_list:
                 return
             send_mail(
-                subject="NREL ENGAGE NOTIFICATION",
+                subject="Engage Alert - Mapbox",
                 message="WARNING: you have hit 50,000 API calls on engage Mapbox. Mapbox will not render!",
                 from_email=settings.AWS_SES_FROM_EMAIL,
                 recipient_list=recipient_list
