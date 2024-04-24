@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import logging
 from datetime import date
 from django.core.mail import send_mail
 import numpy as np
