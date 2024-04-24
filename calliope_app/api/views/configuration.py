@@ -1421,7 +1421,7 @@ def get_map_box_token(request):
         limit.user_requests[user_key] = 0
     limit.user_requests[user_key] += 1
     limit.total += 1
-    if limit.total == 40000 and limit.total % 100 == 0 and limit.total < 50000: 
+    if (limit.total >= 40000 and limit.total % 100 == 0) and limit.total < 50000: 
             recipient_list = [admin.email for admin in User.objects.filter(is_superuser=True)]
             if not recipient_list:
                 return
@@ -1431,6 +1431,7 @@ def get_map_box_token(request):
                 from_email=settings.AWS_SES_FROM_EMAIL,
                 recipient_list=recipient_list
             )
+    # Only included for testing purposes
     if limit <= 50000:
             recipient_list = [admin.email for admin in User.objects.filter(is_superuser=True)]
             if not recipient_list:
