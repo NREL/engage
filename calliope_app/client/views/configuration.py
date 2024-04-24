@@ -103,7 +103,6 @@ def locations_view(request, model_uuid):
             loc_techs[l2] = [lt]
         elif l2 is not None:
             loc_techs[l2].append(lt)
-    logger.info(f"Session Stuff: {request.user}")
 
     context = {
         "user": request.user,
@@ -229,7 +228,6 @@ def loc_techs_view(request, model_uuid):
         session_technology_id = int(session_technology_id)
     if session_loc_tech_id:
         request.session['loc_tech_id'] = int(session_loc_tech_id)
-    logger.info(f"Session Stuff: {request.session}")
     context = {
         "timezones": common_timezones,
         "model": model,
