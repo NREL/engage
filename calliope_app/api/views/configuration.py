@@ -25,7 +25,6 @@ from api.models.configuration import Location, Technology, Tech_Param, \
 from api.tasks import task_status, upload_ts, copy_model
 from api.utils import recursive_escape
 from taskmeta.models import CeleryTask
-import logging
 
 logger = logging.getLogger(__name__)
 
