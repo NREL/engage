@@ -103,7 +103,6 @@ def locations_view(request, model_uuid):
             loc_techs[l2] = [lt]
         elif l2 is not None:
             loc_techs[l2].append(lt)
-    logger.info(f"Session Stuff: {request.user}")
 
     context = {
         "user": request.user,
