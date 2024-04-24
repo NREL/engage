@@ -1,7 +1,8 @@
 import json
 import os
 import re
-
+from datetime import date
+from django.core.mail import send_mail
 import numpy as np
 from django.conf import settings
 from django.views.decorators.csrf import csrf_protect
@@ -1434,9 +1435,6 @@ def remove_flags(request):
         payload = {"message": "Success."}
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
-
-from datetime import date
-from django.core.mail import send_mail
 
 
 
