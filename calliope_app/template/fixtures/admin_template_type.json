@@ -40,8 +40,8 @@
         "model": "template.template_type",
         "fields": {
             "name": "EGS_direct_use",
-            "pretty_name": "EGS  Direct-Use",
-            "description": "An enhanced geothermal system (EGS) Direct-Use is defined as utilization of the  geothermal brine generated from an artificially stimulated reservoir through a heat exchanger for residential and space heating, district heating, agriculture (greenhouses), thermal tourism (SPAs), fish farming, snow melting, dairies (pasteurizing milk), industrial applications (textile, paper, food, and beverage, …etc.) and many other applications. Direct use of EGS resources range between 50°C and 120°C, which is suitable to generate heat."
+            "pretty_name": "EGS Direct Use",
+            "description": "An enhanced geothermal system (EGS) Direct Use is defined as utilization of the  geothermal brine generated from an artificially stimulated reservoir through a heat exchanger for residential and space heating, district heating, agriculture (greenhouses), thermal tourism (SPAs), fish farming, snow melting, dairies (pasteurizing milk), industrial applications (textile, paper, food, and beverage, …etc.) and many other applications. Direct use of EGS resources range between 50°C and 120°C, which is suitable to generate heat."
         }
     },
     {
@@ -49,8 +49,8 @@
         "model": "template.template_type",
         "fields": {
             "name": "HYDRO_direct_use",
-            "pretty_name": "Hydrothermal Direct-Use",
-            "description": "A hydrothermal Direct-Use is defined as utilization of the geothermal fluids by using heat from the Earth's subsurface geothermal brine through a heat exchanger for residential and space heating, district heating, agriculture (greenhouses), thermal tourism (SPAs), fish farming, snow melting, dairies (pasteurizing milk), industrial applications (textile, paper, food, and beverage, …etc.) and many other applications. Direct use of hydrothermal resources range between 50°C and 120°C, which is suitable to generate heat."
+            "pretty_name": "Hydrothermal Direct Use",
+            "description": "A hydrothermal Direct Use is defined as utilization of the geothermal fluids by using heat from the Earth's subsurface geothermal brine through a heat exchanger for residential and space heating, district heating, agriculture (greenhouses), thermal tourism (SPAs), fish farming, snow melting, dairies (pasteurizing milk), industrial applications (textile, paper, food, and beverage, …etc.) and many other applications. Direct use of hydrothermal resources range between 50°C and 120°C, which is suitable to generate heat."
         }
     },
     {
@@ -58,7 +58,7 @@
         "model": "template.template_type",
         "fields": {
             "name": "EGS_cchp",
-            "pretty_name": "EGS  Combined Cooling Heat and Power (CCHP)",
+            "pretty_name": "EGS Combined Cooling Heat and Power (CCHP)",
             "description": "An enhanced geothermal system (EGS) combined cooling heating and power plant (CCHP) is a type of geothermal power plant that generates refregiration, heating and electricity via geothermal brine generated from an artificially stimulated reservoir. CCHP is commonly accepted as a viable technology to convert from medium to high-temperature geothermal energy which generates electricity through a turbine and generator, heat through a heat exchanger, and cooling through an absorption chiller. These plants use geothermal fluids with a temperature range between 150°C and 200°C."
         }
     },
@@ -77,7 +77,7 @@
         "fields": {
             "name": "EGS_flash_single",
             "pretty_name": "EGS Single Flash",
-            "description": "An enhanced geothermal system (EGS) single-flash power plant is a type of geothermal power plant that evaporates hot geothermal fluids generated from an artificially stimulated reservoir to steam by reducing the pressure of the entering liquid and directing it through a turbine. These plants use geothermal fluids with a temperature range between 200°C and 300°C, which is suitable to generate electricity."
+            "description": "An enhanced geothermal system (EGS) single flash power plant is a type of geothermal power plant that evaporates hot geothermal fluids generated from an artificially stimulated reservoir to steam by reducing the pressure of the entering liquid and directing it through a turbine. These plants use geothermal fluids with a temperature range between 200°C and 300°C, which is suitable to generate electricity."
         }
     },
     {
@@ -86,7 +86,7 @@
         "fields": {
             "name": "HYDRO_flash_single",
             "pretty_name": "Hydrothermal Single Flash",
-            "description": "An hydrothermal single-flash power plant is a type of geothermal power plant that evaporates hot geothermal fluids from the Earth's subsurface geothermal brine to steam by reducing the pressure of the entering liquid and directing it through a turbine. These plants use geothermal fluids with a temperature range between 200°C and 300°C, which is suitable to generate electricity."
+            "description": "An hydrothermal single flash power plant is a type of geothermal power plant that evaporates hot geothermal fluids from the Earth's subsurface geothermal brine to steam by reducing the pressure of the entering liquid and directing it through a turbine. These plants use geothermal fluids with a temperature range between 200°C and 300°C, which is suitable to generate electricity."
         }
     },
     {
@@ -94,8 +94,8 @@
         "model": "template.template_type",
         "fields": {
             "name": "EGS_flash_double",
-            "pretty_name": "EGS Double-Flash",
-            "description": "An enhanced geothermal system (EGS) double-flash power plant is a type of geothermal power plant that evaporates hot geothermal fluids generated from an artificially stimulated reservoir to steam by reducing the pressure of the entering liquid and directing it through a turbine. Then it flashes the remaining hot fluid of the first stage, separated, and fed into a dual-inlet turbine or into two separate turbines. These plants use geothermal fluids with a temperature range between 250°C and 350°C, which is suitable to generate electricity."
+            "pretty_name": "EGS Double Flash",
+            "description": "An enhanced geothermal system (EGS) double flash power plant is a type of geothermal power plant that evaporates hot geothermal fluids generated from an artificially stimulated reservoir to steam by reducing the pressure of the entering liquid and directing it through a turbine. Then it flashes the remaining hot fluid of the first stage, separated, and fed into a dual-inlet turbine or into two separate turbines. These plants use geothermal fluids with a temperature range between 250°C and 350°C, which is suitable to generate electricity."
         }
     },
     {
@@ -103,8 +103,8 @@
         "model": "template.template_type",
         "fields": {
             "name": "HYDRO_flash_double",
-            "pretty_name": "Hydrothermal Double-Flash",
-            "description": "A hydrothermal double-flash power plant is a type of geothermal power plant that evaporates hot geothermal fluids from the Earth's subsurface geothermal brine to steam by reducing the pressure of the entering liquid and directing it through a turbine. Then it flashes the remaining hot fluid of the first stage, separated, and fed into a dual-inlet turbine or into two separate turbines. These plants use geothermal fluids with a temperature range between 250°C and 350°C, which is suitable to generate electricity."
+            "pretty_name": "Hydrothermal Double Flash",
+            "description": "A hydrothermal double flash power plant is a type of geothermal power plant that evaporates hot geothermal fluids from the Earth's subsurface geothermal brine to steam by reducing the pressure of the entering liquid and directing it through a turbine. Then it flashes the remaining hot fluid of the first stage, separated, and fed into a dual-inlet turbine or into two separate turbines. These plants use geothermal fluids with a temperature range between 250°C and 350°C, which is suitable to generate electricity."
         }
     }
 ]
