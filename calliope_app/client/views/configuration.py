@@ -269,7 +269,6 @@ def scenarios_view(request, model_uuid):
     session_scenario = scenarios.filter(id=session_scenario_id).first()
     api_url = "http://0.0.0.0:8000/api/map_box_token"
     response = requests.get(api_url)
-    logger.info(f"User {request.user}")
     context = {
         "user": request.user,
         "timezones": common_timezones,
