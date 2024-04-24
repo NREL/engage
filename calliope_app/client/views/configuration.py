@@ -10,7 +10,6 @@ from api.models.calliope import Parameter, Abstract_Tech
 from api.models.configuration import Model, User_File, \
     Technology, Loc_Tech, Timeseries_Meta, Model_User, \
     Model_Comment, Carrier, Tech_Param, Loc_Tech_Param
-import requests
 from pytz import common_timezones
 import logging
 
