@@ -103,6 +103,7 @@ def locations_view(request, model_uuid):
             loc_techs[l2] = [lt]
         elif l2 is not None:
             loc_techs[l2].append(lt)
+    logger.info(f"Session Stuff: {request.user}")
 
     context = {
         "user": request.user,
@@ -228,6 +229,7 @@ def loc_techs_view(request, model_uuid):
         session_technology_id = int(session_technology_id)
     if session_loc_tech_id:
         request.session['loc_tech_id'] = int(session_loc_tech_id)
+    logger.info(f"Session Stuff: {request.session}")
     context = {
         "timezones": common_timezones,
         "model": model,
@@ -267,8 +269,7 @@ def scenarios_view(request, model_uuid):
 
     session_scenario_id = request.session.get('scenario_id', None)
     session_scenario = scenarios.filter(id=session_scenario_id).first()
-    api_url = "http://0.0.0.0:8000/api/map_box_token"
-    response = requests.get(api_url)
+
     context = {
         "user": request.user,
         "timezones": common_timezones,
