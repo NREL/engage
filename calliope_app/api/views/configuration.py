@@ -1409,11 +1409,9 @@ def remove_flags(request):
 @ratelimit(key='ip', rate='1000/d')
 def get_map_box_token(request):
     year, month = date.today().year, date.today().month
-    id = int(f"{year}{month}")
     user_key = str(request.user) 
     logger.info(f"User Key: {user_key}")
     limit, created = RequestRateLimit.objects.get_or_create(
-        id=id,
         year=year, 
         month=month, 
         defaults={"user_requests": {}}
@@ -1424,6 +1422,7 @@ def get_map_box_token(request):
     limit.total += 1
     recipient_list = [admin.email for admin in User.objects.filter(is_superuser=True)]
     logger.info(f"Total: {limit.total}, type: {type(limit.total)}")
+    limit.save()
     if (limit.total >= 40000 and limit.total % 100 == 0) and (limit.total < 50000) and recipient_list:
         send_mail(
             subject="NREL ENGAGE NOTIFICATION",
@@ -1441,7 +1440,7 @@ def get_map_box_token(request):
         payload = {"message": False}
         return HttpResponse(json.dumps(payload), content_type="application/json")
 
-    limit.save()
+    
     payload = {"message": settings.MAPBOX_TOKEN}
     logger.info(f"Payload {payload}")
     return HttpResponse(json.dumps(payload), content_type="application/json")
