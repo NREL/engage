@@ -1411,6 +1411,7 @@ def get_map_box_token(request):
     year, month = date.today().year, date.today().month
     id = int(f"{year}{month}")
     user_key = str(request.user) 
+    logger.info(f"User Key: {user_key}")
     limit, created = RequestRateLimit.objects.get_or_create(
         id=id,
         year=year, 
@@ -1422,26 +1423,25 @@ def get_map_box_token(request):
     limit.user_requests[user_key] += 1
     limit.total += 1
     recipient_list = [admin.email for admin in User.objects.filter(is_superuser=True)]
-    if (limit.total >= 40000 and limit.total % 100 == 0) and limit.total < 50000: 
-        if not recipient_list:
-            return
+    logger.info(f"Total: {limit.total}, type: {type(limit.total)}")
+    if (limit.total >= 40000 and limit.total % 100 == 0) and (limit.total < 50000) and recipient_list:
         send_mail(
             subject="NREL ENGAGE NOTIFICATION",
             message="WARNING: you have hit 40,000 API calls on engage Mapbox",
             from_email=settings.AWS_SES_FROM_EMAIL,
             recipient_list=recipient_list
         )
-    if limit <= 50000: # Only included for testing purposes
-        if not recipient_list:
-            return
+    if limit.total >= 50000 and recipient_list:
         send_mail(
             subject="NREL ENGAGE NOTIFICATION",
             message="WARNING: you have hit 50,000 API calls on engage Mapbox. Mapbox will not render!",
             from_email=settings.AWS_SES_FROM_EMAIL,
             recipient_list=recipient_list
         )
-        return 
+        payload = {"message": False}
+        return HttpResponse(json.dumps(payload), content_type="application/json")
 
     limit.save()
     payload = {"message": settings.MAPBOX_TOKEN}
+    logger.info(f"Payload {payload}")
     return HttpResponse(json.dumps(payload), content_type="application/json")
