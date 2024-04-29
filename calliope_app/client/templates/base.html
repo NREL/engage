@@ -23,11 +23,11 @@
 
 	<link rel="stylesheet" type="text/css" href="{% static 'leaflet/leaflet.css' %}">
 	<script type="text/javascript" src="{% static 'leaflet/leaflet.js' %}"></script>
+	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
+	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet' />
 
 
 	{% if mapbox_token %}
-	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
-	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet' />
 	<script type="text/javascript" id="mapbox-token">
 		$.ajax({
 			url: '/en/api/get_map_box_token/',
