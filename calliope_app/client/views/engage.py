@@ -20,9 +20,7 @@ def home_view(request):
     """
     token_response = get_map_box_token(request)
     response = json.loads(token_response.content.decode('utf-8'))
-    token = ""
-    if token_response.status_code == 200:
-        token = response.get("token") 
+    token = response.get("token") 
 
     user_models = Model_User.objects.filter(
         user=request.user,
