@@ -82,9 +82,11 @@ def locations_view(request, model_uuid):
     http://0.0.0.0:8000/<model_uuid>/locations
     """
     token_response = get_map_box_token(request)
-    response = json.loads(token_response.content.decode('utf-8'))
-    token = response.get("token") 
-
+    if token_response.status_code == 200:
+        response = json.loads(token_response.content.decode('utf-8'))
+        token = response.get("token") 
+    else:
+        token = ""
     model = Model.by_uuid(model_uuid)
     try:
         can_edit = model.handle_view_access(request.user)
@@ -217,8 +219,12 @@ def loc_techs_view(request, model_uuid):
     http://0.0.0.0:8000/<model_uuid>/loc_techs
     """
     token_response = get_map_box_token(request)
-    response = json.loads(token_response.content.decode('utf-8'))
-    token = response.get("token") 
+    if token_response.status_code == 200:
+        response = json.loads(token_response.content.decode('utf-8'))
+        logger.info(f"Response: {response}")
+        token = response.get("token") 
+    else:
+        token = ""
 
     model = Model.by_uuid(model_uuid)
     try:
@@ -265,9 +271,11 @@ def scenarios_view(request, model_uuid):
     http://0.0.0.0:8000/<model_uuid>/scenarios
     """
     token_response = get_map_box_token(request)
-    response = json.loads(token_response.content.decode('utf-8'))
-    token = response.get("token") 
-
+    if token_response.status_code == 200:
+        response = json.loads(token_response.content.decode('utf-8'))
+        token = response.get("token") 
+    else:
+        token = ""
     model = Model.by_uuid(model_uuid)
     try:
         can_edit = model.handle_view_access(request.user)

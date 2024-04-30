@@ -1403,7 +1403,7 @@ def remove_flags(request):
         payload = {"message": "Success."}
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
-
+ 
 @csrf_protect
 @ratelimit(key='ip', rate='10/m', block=False)
 @ratelimit(key='ip', rate='1000/d', block=False)
