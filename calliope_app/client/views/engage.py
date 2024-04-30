@@ -1,3 +1,4 @@
+import json
 from pytz import common_timezones
 from django.conf import settings
 from django.shortcuts import render
@@ -5,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from api.models.engage import Help_Guide
 from api.models.configuration import Model, Model_User
+from api.views.configuration import get_map_box_token
 
 @login_required
 def home_view(request):
@@ -16,6 +18,9 @@ def home_view(request):
     Example:
     http://0.0.0.0:8000/
     """
+    token_response = get_map_box_token(request)
+    response = json.loads(token_response.content.decode('utf-8'))
+    token = response.get("message")
 
     user_models = Model_User.objects.filter(
         user=request.user,
@@ -43,7 +48,7 @@ def home_view(request):
         "user_models": user_models,
         "public_models": public_models,
         "snapshots": snapshots,
-        "mapbox_token": True,
+        "mapbox_token": token,
         "help_content": Help_Guide.get_safe_html('home'),
     }
 
