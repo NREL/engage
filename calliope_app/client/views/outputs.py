@@ -26,7 +26,9 @@ def runs_view(request, model_uuid):
     """
     token_response = get_map_box_token(request)
     response = json.loads(token_response.content.decode('utf-8'))
-    token = response.get("message")
+    token = ""
+    if token_response.status_code == 200:
+        token = response.get("token") 
 
     model = Model.by_uuid(model_uuid)
     try:
@@ -104,7 +106,9 @@ def map_viz_view(request, model_uuid, run_id):
     http://0.0.0.0:8000/<model_uuid>/<run_id>/map_viz """
     token_response = get_map_box_token(request)
     response = json.loads(token_response.content.decode('utf-8'))
-    token = response.get("message")
+    token = ""
+    if token_response.status_code == 200:
+        token = response.get("token") 
 
     model = Model.by_uuid(model_uuid)
     try:

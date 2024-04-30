@@ -83,7 +83,10 @@ def locations_view(request, model_uuid):
     """
     token_response = get_map_box_token(request)
     response = json.loads(token_response.content.decode('utf-8'))
-    token = response.get("message")
+    token = ""
+    if token_response.status_code == 200:
+        token = response.get("token") 
+        
     model = Model.by_uuid(model_uuid)
     try:
         can_edit = model.handle_view_access(request.user)
@@ -217,7 +220,9 @@ def loc_techs_view(request, model_uuid):
     """
     token_response = get_map_box_token(request)
     response = json.loads(token_response.content.decode('utf-8'))
-    token = response.get("message")
+    token = ""
+    if token_response.status_code == 200:
+        token = response.get("token") 
 
     model = Model.by_uuid(model_uuid)
     try:
@@ -265,7 +270,9 @@ def scenarios_view(request, model_uuid):
     """
     token_response = get_map_box_token(request)
     response = json.loads(token_response.content.decode('utf-8'))
-    token = response.get("message")
+    token = ""
+    if token_response.status_code == 200:
+        token = response.get("token") 
 
     model = Model.by_uuid(model_uuid)
     try:
