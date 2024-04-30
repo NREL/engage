@@ -215,6 +215,9 @@ def loc_techs_view(request, model_uuid):
     Example:
     http://0.0.0.0:8000/<model_uuid>/loc_techs
     """
+    token_response = get_map_box_token(request)
+    response = json.loads(token_response.content.decode('utf-8'))
+    token = response.get("message")
 
     model = Model.by_uuid(model_uuid)
     try:
@@ -238,7 +241,7 @@ def loc_techs_view(request, model_uuid):
         "technologies": list(technologies),
         "session_technology_id": session_technology_id,
         "can_edit": can_edit,
-        "mapbox_token": True,
+        "mapbox_token": token,
         "help_content": Help_Guide.get_safe_html('nodes'),
     }
 
@@ -260,6 +263,9 @@ def scenarios_view(request, model_uuid):
     Example:
     http://0.0.0.0:8000/<model_uuid>/scenarios
     """
+    token_response = get_map_box_token(request)
+    response = json.loads(token_response.content.decode('utf-8'))
+    token = response.get("message")
 
     model = Model.by_uuid(model_uuid)
     try:

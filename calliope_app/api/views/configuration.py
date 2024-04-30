@@ -1442,5 +1442,4 @@ def get_map_box_token(request):
 
     
     payload = {"message": settings.MAPBOX_TOKEN}
-    logger.info(f"Payload {payload}")
     return HttpResponse(json.dumps(payload), content_type="application/json")
