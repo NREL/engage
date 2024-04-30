@@ -135,7 +135,7 @@ class Scenario_Loc_Tech_Admin(admin.ModelAdmin):
 class Scenario_Param_Admin(admin.ModelAdmin):
     list_filter = ['model']
     list_display = ['id', 'scenario', 'run_parameter', 'year', 'value',
-                    'model', 'created', 'updated']
+                    'model', 'created', 'updated', 'tab']
 
 
 class Run_Admin(admin.ModelAdmin):

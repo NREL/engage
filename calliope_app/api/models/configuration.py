@@ -1309,7 +1309,8 @@ class Scenario_Param(models.Model):
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
-
+    tab = models.TextField(default=None)
+    
     @classmethod
     def update(cls, scenario, form_data):
         """ Update the Scenario parameters stored in Scenario_Param """
