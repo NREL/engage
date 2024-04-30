@@ -32,7 +32,7 @@ However we didn't provide in docker environment for development purpose, if you 
 HiGHS
 ------
 
-In the deployed Engage application at NREL, it integrates high-performance open-source solver `HiGHS <https://highs.dev/>`_
+In the deployed Engage application at NREL, it uses commercial `FICO XPRESS <https://www.fico.com/en/products/fico-xpress-optimization>`_ 
 to solve Calliope models with fast speed and large memory in compute node.
 
 HiGHS

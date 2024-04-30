@@ -127,3 +127,18 @@ class ComputeEnvironment(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class RequestRateLimit(models.Model):
+    year = models.PositiveSmallIntegerField()
+    month = models.PositiveSmallIntegerField()
+    total = models.PositiveIntegerField(default=0)
+    user_requests = models.JSONField(default=dict)
+
+    class Meta:
+        db_table = "request_rate_limit"
+        verbose_name = "[Admin] Request Rate Limit"
+        verbose_name_plural = "[Admin] Request Rate Limits"
+
+    def __str__(self):
+        return f"{self.year}, {self.month}, {self.total}"
