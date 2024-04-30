@@ -1,3 +1,4 @@
+import json
 from django.conf import settings
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -5,6 +6,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.db.models import Q
 from django_ratelimit.decorators import ratelimit
+from django.http import JsonResponse
 from api.models.engage import Help_Guide
 from api.models.calliope import Parameter, Abstract_Tech
 from api.models.configuration import Model, User_File, \
@@ -12,6 +14,7 @@ from api.models.configuration import Model, User_File, \
     Model_Comment, Carrier, Tech_Param, Loc_Tech_Param
 from pytz import common_timezones
 import logging
+from api.views.configuration import get_map_box_token
 
 logger = logging.getLogger(__name__)
 
@@ -78,7 +81,9 @@ def locations_view(request, model_uuid):
     Example:
     http://0.0.0.0:8000/<model_uuid>/locations
     """
-
+    token_response = get_map_box_token(request)
+    response = json.loads(token_response.content.decode('utf-8'))
+    token = response.get("message")
     model = Model.by_uuid(model_uuid)
     try:
         can_edit = model.handle_view_access(request.user)
@@ -110,7 +115,7 @@ def locations_view(request, model_uuid):
         "model": model,
         "locations": locations,
         "loc_techs": loc_techs,
-        "mapbox_token": True,
+        "mapbox_token": token,
         "can_edit": can_edit,
         "help_content": Help_Guide.get_safe_html('locations'),
     }
@@ -273,7 +278,7 @@ def scenarios_view(request, model_uuid):
         "model": model,
         "scenarios": scenarios,
         "session_scenario": session_scenario,
-        "mapbox_token": True,
+        "mapbox_token": token,
         "can_edit": can_edit,
         "help_content": Help_Guide.get_safe_html('scenarios'),
     }

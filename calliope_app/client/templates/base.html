@@ -26,23 +26,12 @@
 	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
 	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet' />
 
-
 	{% if mapbox_token %}
-	<script type="text/javascript" id="mapbox-token">
-		$.ajax({
-			url: '/en/api/get_map_box_token/',
-			data: {
-				'user': "user"
-			},
-			type: 'GET',
-			dataType: 'json',
-			success: function (data) {
-				mapboxgl.accessToken = data.message; 
-			},
-			error: function (xhr, status, error) {
-				console.error("Error fetching Mapbox token: ", error);
-			}
-		});
+	<!-- Load MapBox -->
+	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
+	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet' />
+	<script type="text/javascript">
+		mapboxgl.accessToken = "{{ mapbox_token }}";
 	</script>
 	{% endif %}
 
