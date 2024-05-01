@@ -36,7 +36,6 @@
 	<table id="settings_table" class="table table-hover table-sm">
 		<tbody>
 			{% for param in parameters %}
-				<!-- {% if param.run_parameter.tab  == "scenarios" %} -->
 					{% if param.run_parameter.can_evolve %}
 						<!-- Parameter Master Row For Evolving Parameters -->
 						<tr class="param_header table-default" data-param_id="{{ param.run_parameter.id }}">
@@ -148,7 +147,6 @@
 							{% endif %}
 						</tr>
 					{% endif %}
-					<!-- {% endif %} -->
 				{% endfor %}
 		</tbody>
 	</table>

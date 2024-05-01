@@ -429,7 +429,7 @@ def scenario(request):
     colors = model.color_lookup
     parameters = Scenario_Param.objects.filter(
         model_id=model.id, scenario_id=scenario_id, 
-        run_parameter__user_visibility=True, tab="scenarios")
+        run_parameter__user_visibility=True, run_parameter__tab="scenarios")
 
     scenario = Scenario.objects.filter(id=scenario_id).first()
 

@@ -52,7 +52,8 @@
       "can_evolve": "False",
       "name": "name",
       "default_value": "",
-      "choices": "[]"
+      "choices": "[]",
+      "tab": ""
     }
   },
   {
@@ -70,7 +71,8 @@
       "can_evolve": "False",
       "name": "random_seed",
       "default_value": "",
-      "choices": "[]"
+      "choices": "[]",
+      "tab": ""
     }
   },
   {
@@ -107,7 +109,8 @@
       "can_evolve": "False",
       "name": "subset_time",
       "default_value": "",
-      "choices": "[]"
+      "choices": "[]",
+      "tab": ""
     }
   },
   {
@@ -144,7 +147,8 @@
       "can_evolve": "False",
       "name": "timeseries_data_path",
       "default_value": ".",
-      "choices": "[]"
+      "choices": "[]",
+      "tab": ""
     }
   },
   {
@@ -162,7 +166,8 @@
       "can_evolve": "False",
       "name": "timeseries_data",
       "default_value": "",
-      "choices": "[]"
+      "choices": "[]",
+      "tab": ""
     }
   },
   {
@@ -180,7 +185,8 @@
       "can_evolve": "False",
       "name": "timeseries_dateformat",
       "default_value": "%Y-%m-%d %H:%M:%S",
-      "choices": "[]"
+      "choices": "[]",
+      "tab": ""
     }
   },
   {
@@ -198,7 +204,8 @@
       "can_evolve": "False",
       "name": "backend",
       "default_value": "pyomo",
-      "choices": "[\"pyomo\"]"
+      "choices": "[\"pyomo\"]",
+      "tab": ""
     }
   },
   {
@@ -292,7 +299,8 @@
       "can_evolve": "False",
       "name": "objective_options",
       "default_value": "",
-      "choices": "[]"
+      "choices": "[]",
+      "tab": ""
     }
   },
   {
@@ -386,7 +394,8 @@
       "can_evolve": "False",
       "name": "solver_io",
       "default_value": "",
-      "choices": "[]"
+      "choices": "[]",
+      "tab": ""
     }
   },
   {
@@ -404,7 +413,8 @@
       "can_evolve": "False",
       "name": "solver_options",
       "default_value": "",
-      "choices": "[]"
+      "choices": "[]",
+      "tab": ""
     }
   },
   {

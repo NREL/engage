@@ -5,10 +5,11 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from api.models.engage import Help_Guide, ComputeEnvironment
 from api.models.configuration import Model, Scenario_Param
-
 import re
 from pytz import common_timezones
+import logging 
 
+logger = logging.getLogger(__name__)
 
 def runs_view(request, model_uuid):
     """
@@ -66,7 +67,7 @@ def add_runs_view(request, model_uuid, scenario_id):
     can_edit = model.handle_view_access(request.user)
     parameters = Scenario_Param.objects.filter(
         model_id=model.id, scenario_id=scenario_id, 
-        run_parameter__user_visibility=True, tag="runs")
+        run_parameter__user_visibility=True, run_parameter__tab="runs")
     try:
         default_environment = ComputeEnvironment.objects.get(name__iexact="default")
     except ComputeEnvironment.DoesNotExist:
@@ -91,7 +92,7 @@ def add_runs_view(request, model_uuid, scenario_id):
         "scenario": model.scenarios.get(id=scenario_id),
         "can_edit": can_edit,
         "help_content": Help_Guide.get_safe_html('add_run'),
-        "parameters": parameters,
+        "parameters": parameters
     }
 
     return render(request, "add_run.html", context)
