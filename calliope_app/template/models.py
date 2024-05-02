@@ -1,4 +1,5 @@
 from django.db import models
+import logging
 from api.models.calliope import Abstract_Tech, Parameter, Abstract_Tech_Param
 from api.models.configuration import Location, Model, Timeseries_Meta, Technology, Technology, Abstract_Tech, Loc_Tech
 from django.dispatch import receiver
@@ -7,6 +8,8 @@ from django.db.models import Q
 from django.core.exceptions import ValidationError
 
 from api.models.utils import EngageManager
+
+logger = logging.getLogger(__name__)
 
 # Create your models here.
 class Template_Type(models.Model):
@@ -192,7 +195,7 @@ def validate_before_save(sender, instance, **kwargs):
     if sender == Template_Type_Loc_Tech_Param:
         abstractTechParam = Abstract_Tech_Param.objects.filter(abstract_tech=instance.template_loc_tech.template_tech.abstract_tech, parameter=instance.parameter)
         if abstractTechParam is not None:
-            print ("Valid parameter for the given technology assoiacted with this Template_Type_Loc_Tech_Param")
+            logger.info("Valid parameter for the given technology assoiacted with this Template_Type_Loc_Tech_Param")
         else: 
             raise ValidationError(f"Error: Invalid parameter for the given technology assoiacted with this Template_Type_Loc_Tech_Param '{instance.id}'")
 
