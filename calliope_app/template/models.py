@@ -61,7 +61,7 @@ class Template_Type_Tech(models.Model):
         verbose_name_plural = "[Admin] Template Type Techs"
 
     name = models.CharField(max_length=200)
-    description = models.CharField(max_length=200, blank=True, null=True)
+    description = models.CharField(max_length=600, blank=True, null=True)
     template_type = models.ForeignKey(Template_Type, on_delete=models.CASCADE)
     abstract_tech = models.ForeignKey(Abstract_Tech, on_delete=models.CASCADE)
     version_tag = models.CharField(max_length=200, blank=True, null=True)
