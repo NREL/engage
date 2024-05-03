@@ -78,7 +78,7 @@
 							{% endfor %}
 						</select>
 					</td>
-					{% elif next_param.parameter_id != param.parameter_id and param.year == 0 %}
+					{% elif next_param.parampeter_id != param.parameter_id and param.year == 0 %}
 					<td class="head_value centered" style="position:relative;" data-param_id={{ param.parameter_id }}>
 						{% if param.choices or param.parameter_is_carrier %}
 						<select {% if not can_edit %}disabled{% endif %} class="static_inputs form-control parameter-value parameter-value-existing" name="edit[parameter][{{ param.parameter_id }}]" data-value="{{ param.value }}">
@@ -91,7 +91,7 @@
 								<option selected></option>
 								{% endif %}
 								{% for choice in carriers %}
-								<option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
+								<option value="{{ choice.name }}" {% if choice.name == param.value %}selected{% endif %}>{{ choice.name }}</option>
 								{% endfor %}
 							{% endif %}
 						</select>
@@ -174,7 +174,7 @@
 								<option selected></option>
 								{% endif %}
 								{% for choice in carriers %}
-								<option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
+								<option value="{{ choice.name }}" {% if choice.name == param.value %}selected{% endif %}>{{ choice.name }}</option>
 								{% endfor %}
 							{% endif %}
 						</select>
@@ -219,7 +219,7 @@
 							{% else %}
 								<option selected></option>
 								{% for choice in carriers %}
-								<option value="{{ choice }}">{{ choice }}</option>
+								<option value="{{ choice.name }}">{{ choice.name }}</option>
 								{% endfor %}
 							{% endif %}
 						</select>

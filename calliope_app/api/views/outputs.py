@@ -28,10 +28,13 @@ from django.utils.text import slugify
 from api.models.outputs import Run, Cambium
 from api.tasks import run_model, task_status, build_model,upload_ts
 from api.models.calliope import Abstract_Tech, Abstract_Tech_Param, Parameter
-from api.models.configuration import Model, ParamsManager, User_File, Location, Technology, Tech_Param, Loc_Tech, Loc_Tech_Param, Timeseries_Meta
+from api.models.configuration import (
+    Model, ParamsManager, User_File, Location, Technology,
+    Tech_Param, Loc_Tech, Loc_Tech_Param, Timeseries_Meta, Carrier, Scenario_Param
+)
 from api.models.engage import ComputeEnvironment
 from api.utils import zip_folder, initialize_units, convert_units, noconv_units
-from batch.managers import AWSBatchJobManager 
+from batch.managers import AWSBatchJobManager
 from taskmeta.models import CeleryTask, BatchTask, batch_task_status
 
 from calliope_app.celery import app
@@ -262,7 +265,7 @@ def optimize(request):
             run.status = task_status.QUEUED
             run.save()
             payload = {"task_id": async_result.id}
-    
+
     # Batch task
     elif environment.type == "Container Job":
         manager = AWSBatchJobManager(compute_environment=environment)
@@ -272,7 +275,7 @@ def optimize(request):
             compute_environment__name=environment.name,
             status__in=[task_status.QUEUED, task_status.RUNNING]
         )
-        result, all_complete = manager.describe_jobs(jobs=[r.batch_job.task_id for r in _runs])
+        result, all_complete = manager.describe_jobs(jobs=list({r.batch_job.task_id for r in _runs}))
         logger.info("Current uncomplete Batch job status: %s", result)
         for r in _runs:
             if r.batch_job.task_id not in result:
@@ -286,8 +289,9 @@ def optimize(request):
                 r.batch_job.status = batch_task_status.FAILED
             r.batch_job.save()
             r.save()
-        
-        if not all_complete:
+
+        is_xpress_solver = "xpress" in str(environment.solver)
+        if is_xpress_solver and (not all_complete):
             payload = {
                 "status": "BLOCKED",
                 "message": f"Compute environment '{environment.name}' is in use, please try again later."
@@ -330,7 +334,7 @@ def optimize(request):
                     else:
                         logger.info("Found a subsequent gradient model for year %s but it was not built.",next_run.year)
                         break
-    
+
     # Unknown environment, not supported
     else:
         raise Exception("Failed to submit job, unknown compute environment")
@@ -372,7 +376,7 @@ def delete_run(request):
         except Exception as e:
             logger.warning("Cambium removal failed")
             logger.exception(e)
-    
+
     # Terminate Celery Task
     if run.run_task and run.run_task.status not in [task_status.FAILURE, task_status.SUCCESS]:
         task_id = run.run_task.task_id
@@ -397,7 +401,7 @@ def delete_run(request):
         run.batch_job.result = ""
         run.batch_job.traceback = reason
         run.batch_job.save()
-    
+
     run.delete()
 
     return HttpResponseRedirect("")
@@ -551,7 +555,7 @@ def upload_outputs(request):
     description (str): optional
     myfile (file): required
 
-    Returns: 
+    Returns:
 
     Example:
     POST: /api/upload_outputs/
@@ -578,7 +582,7 @@ def upload_outputs(request):
             out_dir = os.path.join(model_dir,"outputs")
             if not os.path.exists(out_dir):
                 os.makedirs(out_dir, exist_ok=True)
-            
+
             fs = FileSystemStorage()
             filename = os.path.basename(fs.save(os.path.join(out_dir,myfile.name), myfile))
 
@@ -613,7 +617,7 @@ def upload_locations(request):
     myfile (file): required
     col_map (dict): optional
 
-    Returns: 
+    Returns:
 
     Example:
     POST: /api/upload_locations/
@@ -669,7 +673,7 @@ def upload_locations(request):
                 location.available_area = row['available_area']
                 location.description = row['description']
                 location.save()
-            
+
         return render(request, "bulkresults.html", context)
 
     context['logs'].append("No file found")
@@ -688,7 +692,7 @@ def upload_techs(request):
     myfile (file): required
     col_map (dict): optional
 
-    Returns: 
+    Returns:
 
     Example:
     POST: /api/upload_techs/
@@ -754,7 +758,7 @@ def upload_techs(request):
                             tag=row['tag'],
                             pretty_tag=row['pretty_tag']
                         )
-                    
+
                 else:
                     technology = Technology.objects.filter(model=model,id=row['id']).first()
                     if not technology:
@@ -785,6 +789,30 @@ def upload_techs(request):
                         value=row['pretty_name'],
                     )
                 update_dict = {'edit':{'parameter':{},'timeseries':{}},'add':{},'essentials':{}}
+                # Grab in/out carriers and their units
+                units_in_ids= ParamsManager.get_tagged_params('units_in')
+                units_out_ids= ParamsManager.get_tagged_params('units_out')
+                units_in_names = Parameter.objects.filter(id__in=units_in_ids).values_list('name', flat=True)
+                carrier_in_name = [row[c] for c in units_in_names if c in row][0]
+                units_out_names = Parameter.objects.filter(id__in=units_out_ids).values_list('name', flat=True)
+                carrier_out_name = [row[c] for c in units_out_names if (c in row and not pd.isnull(row[c]))][0]
+
+                carrier_in = Carrier.objects.filter(model=model,name=carrier_in_name)
+                if carrier_in:
+                    carrier_in = carrier_in.first()
+                    in_rate = carrier_in.rate_unit
+                    in_quantity = carrier_in.quantity_unit
+                else:
+                    in_rate = 'kW'
+                    in_quantity = 'kWh'
+                carrier_out = Carrier.objects.filter(model=model,name=carrier_out_name)
+                if carrier_out:
+                    carrier_out = carrier_out.first()
+                    out_rate = carrier_out.rate_unit
+                    out_quantity = carrier_out.quantity_unit
+                else:
+                    out_rate = 'kW'
+                    out_quantity = 'kWh'
                 for f,v in row.iteritems():
                     if pd.isnull(v):
                         continue
@@ -874,6 +902,7 @@ def upload_techs(request):
                                 update_dict['edit']['parameter'][p.pk] = v
                         else:
                             try:
+                                p_units = p.units.replace('[[in_rate]]',in_rate).replace('[[in_quantity]]',in_quantity).replace('[[out_rate]]',out_rate).replace('[[out_quantity]]',out_quantity)
                                 if pyear:
                                     if p.pk not in update_dict['add']:
                                         update_dict['add'][p.pk] = {'year':[],'value':[]}
@@ -882,12 +911,12 @@ def upload_techs(request):
                                         update_dict['add'][p.pk]['value'].append(update_dict['edit']['parameter'][p.pk])
                                         update_dict['edit']['parameter'].pop(p.pk)
                                     update_dict['add'][p.pk]['year'].append(pyear)
-                                    update_dict['add'][p.pk]['value'].append(convert_units(ureg,v,p.units))
+                                    update_dict['add'][p.pk]['value'].append(convert_units(ureg,v,p_units))
                                 elif p.pk in update_dict['add']:
                                     update_dict['add'][p.pk]['year'].append('0')
                                     update_dict['add'][p.pk]['value'].append(v)
                                 else:
-                                    update_dict['edit']['parameter'][p.pk] = convert_units(ureg,v,p.units)
+                                    update_dict['edit']['parameter'][p.pk] = convert_units(ureg,v,p_units)
                             except Exception as e:
                                 context['logs'].append(str(i)+'- Tech '+str(row['pretty_name'])+': Column '+f+' '+str(e)+'. Error converting units. Parameter skipped.')
                                 continue
@@ -914,7 +943,7 @@ def upload_loctechs(request):
     myfile (file): required
     col_map (dict): optional
 
-    Returns: 
+    Returns:
 
     Example:
     POST: /api/upload_loctechs/
@@ -966,6 +995,30 @@ def upload_loctechs(request):
                         else:
                             context['logs'].append(str(i)+'- Tech '+str(row['technology'])+'-'+str(row['tag'])+' missing. Skipped.')
                         continue
+
+                # Grab in/out carriers and their units
+                units_in_ids= ParamsManager.get_tagged_params('units_in')
+                units_out_ids= ParamsManager.get_tagged_params('units_out')
+                carrier_in_param = Tech_Param.objects.filter(technology=technology, parameter_id__in=units_in_ids).first()
+                carrier_out_param = Tech_Param.objects.filter(technology=technology, parameter_id__in=units_out_ids).first()
+
+                carrier_in = Carrier.objects.filter(model=model,name=carrier_in_param.value)
+                if carrier_in:
+                    carrier_in = carrier_in.first()
+                    in_rate = carrier_in.rate_unit
+                    in_quantity = carrier_in.quantity_unit
+                else:
+                    in_rate = 'kW'
+                    in_quantity = 'kWh'
+                carrier_out = Carrier.objects.filter(model=model,name=carrier_out_param.value)
+                if carrier_out:
+                    carrier_out = carrier_out.first()
+                    out_rate = carrier_out.rate_unit
+                    out_quantity = carrier_out.quantity_unit
+                else:
+                    out_rate = 'kW'
+                    out_quantity = 'kWh'
+
                 location = Location.objects.filter(model_id=model.id,pretty_name=row['location_1']).first()
                 if location==None:
                     location = Location.objects.filter(model_id=model.id,name=row['location_1']).first()
@@ -1112,6 +1165,7 @@ def upload_loctechs(request):
                                 update_dict['edit']['parameter'][p.pk] = v
                         else:
                             try:
+                                p_units = p.units.replace('[[in_rate]]',in_rate).replace('[[in_quantity]]',in_quantity).replace('[[out_rate]]',out_rate).replace('[[out_quantity]]',out_quantity)
                                 if pyear:
                                     if p.pk not in update_dict['add']:
                                         update_dict['add'][p.pk] = {'year':[],'value':[]}
@@ -1120,15 +1174,15 @@ def upload_loctechs(request):
                                         update_dict['add'][p.pk]['value'].append(update_dict['edit']['parameter'][p.pk])
                                         update_dict['edit']['parameter'].pop(p.pk)
                                     update_dict['add'][p.pk]['year'].append(pyear)
-                                    update_dict['add'][p.pk]['value'].append(convert_units(ureg,v,p.units))
+                                    update_dict['add'][p.pk]['value'].append(convert_units(ureg,v,p_units))
                                 elif p.pk in update_dict['add']:
                                     update_dict['add'][p.pk]['year'].append('0')
                                     update_dict['add'][p.pk]['value'].append(v)
                                 else:
-                                    update_dict['edit']['parameter'][p.pk] = convert_units(ureg,v,p.units)
+                                    update_dict['edit']['parameter'][p.pk] = convert_units(ureg,v,p_units)
                             except Exception as e:
                                 context['logs'].append(str(i)+'- Tech '+str(row['technology'])+': Column '+f+' '+str(e)+'. Error converting units. Parameter skipped.')
-                                continue                    
+                                continue
                 loctech.update(update_dict)
             except Exception as e:
                 logger.warning('ERROR in upload_loctechs')
@@ -1150,7 +1204,7 @@ def bulk_downloads(request):
     model_uuid (uuid): required
     file_list (list): required
 
-    Returns: 
+    Returns:
     Zip containing one or more files.
 
     Example:
@@ -1170,7 +1224,7 @@ def bulk_downloads(request):
         if locations_df.empty:
             locations_df = pd.DataFrame(columns=[f.name for f in Location._meta.get_fields()])
             locations_df.drop(columns=['location_1','location_2','model','created','updated','deleted'],inplace=True)
-        else:  
+        else:
             locations_df.drop(columns=['model_id','created','updated','deleted'],inplace=True)
         loc_buff = io.StringIO()
         locations_df.to_csv(loc_buff,index=False)
@@ -1286,7 +1340,7 @@ def bulk_downloads(request):
         loc_techs_buff = io.StringIO()
         loc_techs_df.to_csv(loc_techs_buff,index=False)
         file_buffs['loc_techs.csv'] = (loc_techs_buff)
-        
+
     zip_buff = io.BytesIO()
     zip_file = zipfile.ZipFile(zip_buff, 'w')
     for buff in file_buffs.keys():

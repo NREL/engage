@@ -27,6 +27,11 @@
 								<button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-sm btn-outline-danger loc_tech-delete" title="{% trans 'Delete node' %}"><i class="fas fa-trash"></i></button>
 							</div>
 					</td>
+                    <td>
+                        {% if loc_tech.template_id %}
+                        <div data-toggle="tooltip" data-placement="bottom" data-original-title="This location was created from a Node Group." title="This technology was created from a Node Group." style="max-width: 20px;"><img src="../../../static/images/node_group_icon.svg" alt="Node group icon" style="width: 14px;"></div>
+                        {% endif %}
+                    </td>
 				</tr>
 				{% endfor %}
 			</table>

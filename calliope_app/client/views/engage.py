@@ -1,13 +1,10 @@
 from pytz import common_timezones
-
 from django.conf import settings
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-
 from api.models.engage import Help_Guide
 from api.models.configuration import Model, Model_User
-
 
 @login_required
 def home_view(request):

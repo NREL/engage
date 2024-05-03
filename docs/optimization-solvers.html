@@ -1,17 +1,16 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>Optimization Solvers &#8212; Engage 0.1.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b3523f8e" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=2389946f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Language Translation" href="language-translation.html" />
@@ -32,46 +31,51 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="optimization-solvers">
-<h1>Optimization Solvers<a class="headerlink" href="#optimization-solvers" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="glpk">
-<h2>GLPK<a class="headerlink" href="#glpk" title="Permalink to this headline">¶</a></h2>
+  <section id="optimization-solvers">
+<h1>Optimization Solvers<a class="headerlink" href="#optimization-solvers" title="Permalink to this heading">¶</a></h1>
+<section id="glpk">
+<h2>GLPK<a class="headerlink" href="#glpk" title="Permalink to this heading">¶</a></h2>
 <p>Engage uses a free and open-source solver <a class="reference external" href="https://www.gnu.org/software/glpk/">GLPK</a>
 for development purpose, and it is already built into the docker image.</p>
 <p>GLPK supports the GNU MathProg modeling language - subset of the AMPL language, and include
 a variety of components, for detailed information, please refer to <a class="reference external" href="https://www.gnu.org/software/glpk/">https://www.gnu.org/software/glpk/</a>.</p>
 <p>However, it takes too much time and memory for solving large Calliope models.</p>
-</div>
-<div class="section" id="scip">
-<h2>SCIP<a class="headerlink" href="#scip" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="scip">
+<h2>SCIP<a class="headerlink" href="#scip" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://scip.zib.de/">SCIP</a> is currently one of the fastest non-commercial solvers for mixed integer programming (MIP)
 and mixed integer nonlinear programming (MINLP). It is also a framework for constraint integer
 programming and branch-cut-and-price. It allows for total control of the solution process and
 the access of detailed information down to the guts of the solver.</p>
 <p>However we didn’t provide in docker environment for development purpose, if you need, here are the steps for installing SCIP solver,</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ <span class="nb">cd</span> ~/scipoptsuite-5.0.0/ <span class="o">&amp;&amp;</span> make
-$ <span class="nb">cd</span> ~/scipoptsuite-5.0.0/scip/interfaces/ampl/ <span class="o">&amp;&amp;</span> ./get.ASL -y
-$ <span class="nb">cd</span> ~/scipoptsuite-5.0.0/scip/interfaces/ampl/solvers/ <span class="o">&amp;&amp;</span> sh configurehere <span class="o">&amp;&amp;</span> make
-$ <span class="nb">cd</span> ~/scipoptsuite-5.0.0/scip/interfaces/ampl/ <span class="o">&amp;&amp;</span> make
-$ cp ~/scipoptsuite-5.0.0/scip/interfaces/ampl/bin/scipampl /usr/local/bin/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/scipoptsuite-5.0.0/<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/scipoptsuite-5.0.0/scip/interfaces/ampl/<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>./get.ASL<span class="w"> </span>-y
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/scipoptsuite-5.0.0/scip/interfaces/ampl/solvers/<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sh<span class="w"> </span>configurehere<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/scipoptsuite-5.0.0/scip/interfaces/ampl/<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make
+$<span class="w"> </span>cp<span class="w"> </span>~/scipoptsuite-5.0.0/scip/interfaces/ampl/bin/scipampl<span class="w"> </span>/usr/local/bin/
 </pre></div>
 </div>
-</div>
-<div class="section" id="xpress">
-<h2>XPRESS<a class="headerlink" href="#xpress" title="Permalink to this headline">¶</a></h2>
-<p>In the deployed Engage application at NREL, it uses commercial <a class="reference external" href="https://www.fico.com/en/products/fico-xpress-optimization">FICO XPRESS</a>
+</section>
+<section id="highs">
+<h2>HiGHS<a class="headerlink" href="#highs" title="Permalink to this heading">¶</a></h2>
+<p>In the deployed Engage application at NREL, it integrates high-performance open-source solver <a class="reference external" href="https://highs.dev/">HiGHS</a>
 to solve Calliope models with fast speed and large memory in compute node.</p>
-</div>
-<div class="section" id="more-choice">
-<h2>More Choice<a class="headerlink" href="#more-choice" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="id4">
+<h2>HiGHS<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h2>
+<p>NREL Engage deployment also integrates the commercial solver <a class="reference external" href="https://www.fico.com/en/products/fico-xpress-optimization">FICO XPRESS</a>
+to solve Calliope models with high performance and large compute resources.</p>
+</section>
+<section id="more-choice">
+<h2>More Choice<a class="headerlink" href="#more-choice" title="Permalink to this heading">¶</a></h2>
 <p>In behind, Calliope interfaces to <a class="reference external" href="http://www.pyomo.org/">Pyomo</a>  - a Python-based, open-source optimization modeling language with
-a diverse set of optimization capabilities. With the <a class="reference external" href="https://calliope.readthedocs.io/en/v0.6.7/api/api.html#api-backend-interface">API interface</a>
+a diverse set of optimization capabilities. With the <a class="reference external" href="https://calliope.readthedocs.io/en/v0.6.8/api/api.html#api-backend-interface">API interface</a>
 provided by Calliope, you can specify the customized solver options.</p>
 <p>For more solver choice, please refer to <a class="reference external" href="https://calliope.readthedocs.io/en/stable/user/advanced_features.html#specifying-custom-solver-options">specifying-custom-solver-options</a></p>
 <p>Refer to <a class="reference external" href="https://calliope.readthedocs.io/en/stable/user/troubleshooting.html#influence-of-solver-choice-on-speed">influence-of-solver-choice-on-speed</a>
 for more information about problem solving speed with different solvers.</p>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -90,14 +94,15 @@ for more information about problem solving speed with different solvers.</p>
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developer-guide.html">Developer Guide</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Optimization Solvers</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#glpk">GLPK</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#scip">SCIP</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#xpress">XPRESS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#highs">HiGHS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">HiGHS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#more-choice">More Choice</a></li>
 </ul>
 </li>
@@ -121,12 +126,12 @@ for more information about problem solving speed with different solvers.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -140,11 +145,11 @@ for more information about problem solving speed with different solvers.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020, NREL.
+      &copy;2020, Alliance for Sustainable Energy, LLC.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="_sources/optimization-solvers.rst.txt"

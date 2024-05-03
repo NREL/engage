@@ -1,18 +1,47 @@
+import json
+import os
+import string
+from datetime import datetime, timedelta
+
+import numpy as np
+import pandas as pd
+
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 from django.utils.timezone import make_aware
 
-from api.models.configuration import Scenario_Param, Scenario_Loc_Tech, \
+from api.models.configuration import Scenario_Param, Scenario, Scenario_Loc_Tech, \
     Timeseries_Meta, ParamsManager, Model, User_File, Carrier, Tech_Param
 from api.utils import get_cols_from_csv
 
-import os
-import json
-from datetime import datetime, timedelta
-import string
-import pandas as pd
+
+@csrf_protect
+def group_constraint_options(request):
+    """
+    Retrieve all carriers for a model
+
+    Parameters:
+    model_uuid (uuid): required
+
+    Returns: HttpResponse
+
+    Example:
+    GET: /component/group_constraint_options/
+    """
+
+    model_uuid = request.GET['model_uuid']
+    model = Model.by_uuid(model_uuid)
+    model.handle_view_access(request.user)
+
+    response = {
+        "carriers": list(model.carriers.values()),
+        "locations": list(model.locations.values()),
+        "technologies": list(model.technologies.values()),
+    }
+
+    return JsonResponse(response, safe=False)
 
 
 @csrf_protect
@@ -124,7 +153,7 @@ def all_tech_params(request):
     for carrier in model.carriers_old:
         if carrier not in carriers.keys():
             carriers[carrier] = {'rate':'kW','quantity':'kWh'}
-    
+
     carriers = [{'name':c,'rate':v['rate'],'quantity':v['quantity']} for c,v in carriers.items()]
 
     for param in parameters:
@@ -137,10 +166,10 @@ def all_tech_params(request):
     context = {"technology": technology,
                "essentials": essentials,
                "carriers": carriers,
-               "required_carrier_ids": [4, 5, 6, 138, 139, 70, 71],
-               "cplus_carrier_ids": [138, 139, 66, 67, 68, 69],
-               "units_in_ids": [4,5,70],
-               "units_out_ids": [4,6,71],
+               "required_carrier_ids": ParamsManager.get_tagged_params('required_carrier'),
+               "cplus_carrier_ids": ParamsManager.get_tagged_params('cplus_carrier'),
+               "units_in_ids": ParamsManager.get_tagged_params('units_in'),
+               "units_out_ids": ParamsManager.get_tagged_params('units_out'),
                "can_edit": can_edit}
     html_essentials = list(render(request,
                                   'technology_essentials.html',
@@ -245,8 +274,8 @@ def all_loc_tech_params(request):
     timeseries = Timeseries_Meta.objects.filter(model=model, failure=False,
                                                 is_uploading=False)
 
-    units_in_ids = [4,5,70]
-    units_out_ids = [4,6,71]
+    units_in_ids= ParamsManager.get_tagged_params('units_in')
+    units_out_ids= ParamsManager.get_tagged_params('units_out')
 
     carrier_in = Tech_Param.objects.filter(technology=loc_tech.technology, parameter__id__in=units_in_ids).first().value
     carrier_out = Tech_Param.objects.filter(technology=loc_tech.technology, parameter__id__in=units_out_ids).first().value
@@ -258,7 +287,7 @@ def all_loc_tech_params(request):
     for carrier in model.carriers_old:
         if carrier not in carriers.keys():
             carriers[carrier] = {'rate':'kW','quantity':'kWh'}
-    
+
     carrier_in = carriers[carrier_in]
     carrier_out = carriers[carrier_out]
     carriers = [{'name':c,'rate':v['rate'],'quantity':v['quantity']} for c,v in carriers.items()]
@@ -358,13 +387,18 @@ def timeseries_view(request):
         # get max value for each day
         timeseries = timeseries.resample('D').max()
 
-    timestamps = timeseries.datetime.dt.strftime(
-        '%Y-%m-%d %H:%M:%S').values.tolist()
+    timeseries_contains_nan = bool(timeseries.isna().any().any()) or bool(timeseries.datetime.isna().any().any())
+    if timeseries_contains_nan:
+        timeseries = timeseries.replace(np.nan, None)
+        timeseries.datetime = timeseries.datetime.replace(np.nan, None)
+
+    timestamps = timeseries.datetime.dt.strftime('%Y-%m-%d %H:%M:%S').values.tolist()
     values = timeseries.value.values.tolist()
 
     payload = {
         'timestamps': timestamps,
         'values': values,
+        'timeseries_contains_nan': timeseries_contains_nan
     }
     return JsonResponse(payload)
 
@@ -394,8 +428,10 @@ def scenario(request):
     # Scenario Parameters
     colors = model.color_lookup
     parameters = Scenario_Param.objects.filter(
-        model_id=model.id, scenario_id=scenario_id,
+        model_id=model.id, scenario_id=scenario_id, 
         run_parameter__user_visibility=True)
+
+    scenario = Scenario.objects.filter(id=scenario_id).first()
 
     # All Loc Techs
     loc_techs = []
@@ -403,7 +439,7 @@ def scenario(request):
     lts = lts.values('id', 'technology_id', 'technology__pretty_name',
                      'technology__pretty_tag',
                      'technology__abstract_tech__icon',
-                     'location_1__pretty_name', 'location_2__pretty_name')
+                     'location_1__pretty_name', 'location_2__pretty_name', 'template_id')
     for lt in lts:
         tech_id = lt["technology_id"]
         color = colors[tech_id] if tech_id in colors.keys() else "#000"
@@ -414,6 +450,7 @@ def scenario(request):
             "technology": lt["technology__pretty_name"],
             "location_1": lt["location_1__pretty_name"],
             "location_2": lt["location_2__pretty_name"],
+            "template_id": lt["template_id"],
             "color": color,
             "icon": lt["technology__abstract_tech__icon"]})
 
@@ -431,7 +468,9 @@ def scenario(request):
     context = {
         "model": model,
         "parameters": parameters,
-        "can_edit": can_edit}
+        "can_edit": can_edit,
+        "scenario": scenario,
+        }
     scenario_settings = list(render(request,
                                     'scenario_settings.html',
                                     context))[0]

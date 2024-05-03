@@ -45,7 +45,9 @@ LOCAL_APPS = [
     'account.apps.AccountConfig',
     'api.apps.ApiConfig',
     'client.apps.ClientConfig',
+    'geophires.apps.GeophiresConfig',
     'taskmeta.apps.TaskmetaConfig',
+    'template.apps.TemplateConfig'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
@@ -127,7 +129,7 @@ MESSAGE_TAGS = {
 gettext = lambda s: s
 LANGUAGES = [
     ('en', gettext('English')),
-    # ('es', gettext('Spanish')),
+    ('es', gettext('Spanish')),
     ('fr', gettext('French')),
     # Add new langugage here
 ]

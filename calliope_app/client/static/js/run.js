@@ -192,7 +192,7 @@ function activate_runs() {
 			},
 			dataType: 'json',
 			success: function (data) {
-				if (data['status'] == 'BLOCKED') {
+        if (data['status'] == 'BLOCKED') {
 					alert(data["message"]);
 				}
 				refresh_run_dashboard();

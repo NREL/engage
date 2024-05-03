@@ -7,7 +7,7 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_protect
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils.html import escape
@@ -20,6 +20,7 @@ from api.models.configuration import Location, Technology, Tech_Param, \
     Scenario_Loc_Tech, Timeseries_Meta, Model, Model_Comment, \
     Model_Favorite, User_File, Model_User, Carrier
 from api.tasks import task_status, upload_ts, copy_model
+from api.utils import recursive_escape
 from taskmeta.models import CeleryTask
 
 
@@ -31,7 +32,7 @@ def validate_model_name(value):
     matched = regex.search(value)
     if matched is None:
         return
-    
+
     diff = set(value).difference(set(["(", ")", " ", "-", "_"]))
     if len(diff) == 0:
         raise ValidationError("Error: Invalid model name, should not contain only symbols")
@@ -222,12 +223,12 @@ def validate_model_comment(value):
     value = value.strip()
     if len(value) == 0:
         raise ValidationError("Please write your comment.")
-    
+
     regex = re.compile(r"(<(.*)>.*?|<(.*) />)")
     matched = regex.search(value)
     if matched is None:
         return
-    
+
     result = matched.group(0)
     raise ValidationError(f"Invalid comment string, please remove '{result}'")
 
@@ -287,6 +288,7 @@ def update_carriers(request):
     form_data = json.loads(request.POST["form_data"])
     model = Model.by_uuid(model_uuid)
     err_msg = ''
+    flags = False
     if 'edit' in form_data:
         for i,c in form_data['edit'].items():
             if i != 'new':
@@ -295,9 +297,14 @@ def update_carriers(request):
                 carrier.quantity_unit = c['carrier-quantity']
                 carrier.description = c['carrier-desc']
                 carrier.save()
+                model.check_model_carrier_units(carrier)
+                flags = True
             else:
                 try:
                     carrier = Carrier.objects.create(model=model,name=c['carrier-name'],rate_unit=c['carrier-rate'],quantity_unit=c['carrier-quantity'],description=c.get('carrier-desc',''))
+                    if carrier.name in model.carriers_old:
+                        model.check_model_carrier_units(carrier)
+                        flags = True
                 except Exception as e:
                     err_msg += str(e)
 
@@ -308,7 +315,7 @@ def update_carriers(request):
     if err_msg != '':
         payload = {"message": err_msg}
     else:
-        payload = {"message": "Success."}
+        payload = {"message": "Success.", "flags":flags}
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
 
@@ -486,7 +493,7 @@ def add_technology(request):
     POST: /api/add_technolgy/
     """
 
-    model_uuid = request.POST["model_uuid"]
+    model_uuid = escape(request.POST["model_uuid"])
     technology_pretty_name = escape(request.POST["technology_name"])
     technology_id = escape(request.POST.get("technology_id", "")) or None
     technology_type = escape(request.POST["technology_type"])
@@ -589,16 +596,10 @@ def update_tech_params(request):
     Example:
     POST: /api/update_tech_params/
     """
-
-    model_uuid = request.POST["model_uuid"]
+    model_uuid = escape(request.POST["model_uuid"])
     technology_id = escape(request.POST["technology_id"])
     form_data = json.loads(request.POST["form_data"])
-    
-    escaped_form_data = {}
-    for key, value in form_data.items():
-        if isinstance(value, str):
-            value = escape(value)
-        escaped_form_data[key] = value
+    escaped_form_data = recursive_escape(form_data)
 
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
@@ -985,32 +986,41 @@ def toggle_scenario_loc_tech(request):
 
 
 @csrf_protect
-def update_scenario_params(request):
+def update_scenario(request):
     """
-    Update the parameters on a scenario. Parameter data is provided in a
-    form_data object which stores updates under the following keys:
+    Update the parameters on a scenario and scenario detail information. 
+    Parameter data is provided in a form_data object which stores updates under the following keys:
         'add', 'edit', 'delete'
 
     Parameters:
     model_uuid (uuid): required
     scenario_id (int): required
-    form_data (json): required
+    description (json): required
+    name (json): optional
 
     Returns (json): Action Confirmation
 
     Example:
-    POST: /api/update_scenario_params/
+    POST: /api/update_scenario/
     """
 
     model_uuid = request.POST["model_uuid"]
     scenario_id = request.POST["scenario_id"]
+    scenario_description = escape(request.POST["description"].strip())
+    scenario_name = escape(request.POST["name"].strip())
     form_data = json.loads(request.POST["form_data"])
-
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
-
+ 
     scenario = model.scenarios.filter(id=scenario_id).first()
+    if len(scenario_name) == 0:
+        scenario_name = scenario.name
     Scenario_Param.update(scenario, form_data)
+ 
+    Scenario.objects.filter(id=scenario_id).update(
+            description=scenario_description,
+            name=scenario_name
+        )
 
     # Log Activity
     comment = "{} updated the scenario: {}.".format(
@@ -1023,7 +1033,6 @@ def update_scenario_params(request):
     payload = {"message": "Success."}
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
-
 
 @csrf_protect
 def delete_scenario(request):
@@ -1160,6 +1169,28 @@ def delete_file(request):
     payload = {"message": "Success."}
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
+
+
+def download_file(request, model_uuid, file_id):
+    """
+    Download a user's timeseries file
+
+    Parameters:
+    model_uuid (uuid): required
+    file_id (int): required
+
+    Returns (FileResponse):
+
+    Example:
+    GET: /api/download_file/model_uuid/file_id/
+    """
+    model = Model.by_uuid(model_uuid)
+    model.handle_edit_access(request.user)
+
+    file_record = User_File.objects.get(model=model, id=file_id)
+    response = FileResponse(file_record.filename.open())
+    response['Content-Disposition'] = f'attachment; filename="{file_record.filename.name}"'
+    return response
 
 
 @csrf_protect
@@ -1327,3 +1358,44 @@ def wtk_fetch_resource_files(coordinate):
     wtk_fp = wtk_path_dict[coordinate]
 
     return wtk_fp
+
+@csrf_protect
+def remove_flags(request):
+    """
+    Remove flags on specific parameters
+
+    Parameters:
+    model_uuid (uuid): required
+    form_data (json): required
+
+    Returns (json): Action Confirmation
+
+    Example:
+    POST: /api/remove_flags/
+    """
+
+    model_uuid = escape(request.POST["model_uuid"])
+    form_data = json.loads(request.POST["form_data"])
+    escaped_form_data = recursive_escape(form_data)
+    model = Model.by_uuid(model_uuid)
+    model.handle_edit_access(request.user)
+    err_msg = ''
+
+    for p in escaped_form_data:
+        if p.get('type',None) == 'tech' and 'id' in p:
+            param = Tech_Param.objects.get(id=p['id'])
+            param.flags = []
+            param.save()
+        elif p.get('type',None) == 'loc_tech':
+            param = Loc_Tech_Param.objects.get(id=p['id'])
+            param.flags = []
+            param.save()
+        else:
+            err_msg = 'Not a valid type.'
+
+    if err_msg != '':
+        payload = {"message": err_msg}
+    else:
+        payload = {"message": "Success."}
+
+    return HttpResponse(json.dumps(payload), content_type="application/json")

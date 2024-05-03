@@ -9,7 +9,7 @@ from api.models.engage import Help_Guide
 from api.models.calliope import Parameter, Abstract_Tech
 from api.models.configuration import Model, User_File, \
     Technology, Loc_Tech, Timeseries_Meta, Model_User, \
-    Model_Comment, Carrier
+    Model_Comment, Carrier, Tech_Param, Loc_Tech_Param
 
 from pytz import common_timezones
 
@@ -88,7 +88,7 @@ def locations_view(request, model_uuid):
     lts = Loc_Tech.objects.filter(
         Q(location_1_id__in=location_ids) | Q(location_2_id__in=location_ids))
     lts = lts.values("id", "technology_id", "location_1_id", "location_2_id",
-                     "technology__pretty_name", "technology__pretty_tag")
+                     "technology__pretty_name", "technology__pretty_tag", "template_id")
     loc_techs = {}
     for lt in lts:
         l1, l2 = lt["location_1_id"], lt["location_2_id"]
@@ -138,7 +138,7 @@ def technologies_view(request, model_uuid):
         return HttpResponseRedirect(reverse('home'))
 
     technologies = model.technologies.values(
-        "id", "pretty_name", "pretty_tag", "abstract_tech__icon")
+        "id", "pretty_name", "pretty_tag", "abstract_tech__icon", "template_type_id")
     session_technology_id = request.GET.get('tech_id', None)
     if not session_technology_id:
         session_technology_id = request.session.get('technology_id', None)
@@ -215,7 +215,7 @@ def loc_techs_view(request, model_uuid):
         return HttpResponseRedirect(reverse('home'))
 
     technologies = model.technologies.values(
-        "id", "pretty_name", "pretty_tag", "abstract_tech__icon")
+        "id", "pretty_name", "pretty_tag", "abstract_tech__icon", "template_type_id")
     session_technology_id = request.GET.get('tech_id', None)
     session_loc_tech_id = request.GET.get('loc_tech_id', None)
     if not session_technology_id:
@@ -424,3 +424,30 @@ def carriers_view(request, model_uuid):
     }
 
     return render(request, "carriers.html", context)
+
+@login_required
+def model_flags_view(request, model_uuid):
+    """
+    View the "Model Flags" page
+
+    Parameters:
+    model_uuid (uuid): required
+
+    Returns: HttpResponse
+
+    Example:
+    http://0.0.0.0:8000/<model_uuid>/model_flags/
+    """
+
+    model = Model.by_uuid(model_uuid)
+    can_edit = model.handle_view_access(request.user)
+
+    context = {
+        "model": model,
+        "tech_params": Tech_Param.objects.filter(model=model,flags__len__gt=0),
+        "loc_tech_params": Loc_Tech_Param.objects.filter(model=model,flags__len__gt=0),
+        "can_edit": can_edit,
+        "help_content": Help_Guide.get_safe_html('carriers'),
+    }
+
+    return render(request, "model_flags.html", context)

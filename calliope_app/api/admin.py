@@ -6,14 +6,14 @@ from api.models.calliope import Abstract_Tech, Abstract_Tech_Param, \
 from api.models.configuration import Model, Model_User, Model_Comment, \
     Location, Technology, Tech_Param, Model_Favorite, User_File, \
     Loc_Tech, Loc_Tech_Param, Timeseries_Meta, Scenario, \
-    Scenario_Loc_Tech, Scenario_Param, Carrier
+    Scenario_Loc_Tech, Scenario_Param, Job_Meta, Carrier
 from api.models.outputs import Run
 from api.models.engage import User_Profile, ComputeEnvironment
 
 
 class ComputeEnvironmentAdmin(admin.ModelAdmin):
     filter_horizontal = ("users",)
-    list_display = ['id',  'name', 'full_name', 'is_default', 'ncpu', 'memory', 'type', '_users']
+    list_display = ['id',  'name', 'full_name', 'is_default', 'solver', 'ncpu', 'memory', 'type', '_users']
 
     @staticmethod
     def _users(instance):
@@ -34,7 +34,7 @@ class Parameter_Admin(admin.ModelAdmin):
     # fields = []
     list_display = ['id', 'root', 'category', 'name', 'pretty_name',
                     'description', 'timeseries_enabled', 'units', 'choices',
-                    'is_systemwide', 'is_essential', 'is_carrier']
+                    'is_systemwide', 'is_essential', 'is_carrier','tags']
     list_editable = ['units']
 
 
@@ -82,13 +82,13 @@ class Run_Parameter_Admin(admin.ModelAdmin):
 class Location_Admin(admin.ModelAdmin):
     list_filter = ['model']
     list_display = ['id', 'pretty_name', 'name', 'latitude', 'longitude',
-                    'available_area', 'model', 'created', 'updated']
+                    'available_area', 'model', 'created', 'updated', 'template_id', 'template_type_loc_id']
 
 
 class Technology_Admin(admin.ModelAdmin):
     list_filter = ['model']
     list_display = ['id', 'pretty_name', 'abstract_tech', 'name', 'tag',
-                    'pretty_tag', 'model', 'created', 'updated']
+                    'pretty_tag', 'model', 'created', 'updated', 'template_type_id', 'template_type_tech_id']
 
 
 class Tech_Param_Admin(admin.ModelAdmin):
@@ -101,7 +101,7 @@ class Tech_Param_Admin(admin.ModelAdmin):
 class Loc_Tech_Admin(admin.ModelAdmin):
     list_filter = ['model']
     list_display = ['id', 'location_1', 'location_2', 'technology',
-                    'model', 'created', 'updated']
+                    'model', 'created', 'updated', 'template_id', 'template_type_loc_tech_id']
 
 
 class Loc_Tech_Param_Admin(admin.ModelAdmin):
@@ -110,6 +110,8 @@ class Loc_Tech_Param_Admin(admin.ModelAdmin):
                     'raw_value', 'timeseries', 'timeseries_meta', 'model',
                     'created', 'updated']
 
+class Job_Meta_Admin(admin.ModelAdmin):
+    list_display = ['id', 'type', 'status', 'inputs', 'outputs', 'message', 'created', 'job_task']
 
 class Timeseries_Meta_Admin(admin.ModelAdmin):
     list_filter = ['model']
@@ -144,7 +146,7 @@ class Run_Admin(admin.ModelAdmin):
                     'plots_path', 'model', 'build_task', 'run_task',
                     'deprecated', 'published','cluster','manual',
                     'calliope_066_upgraded', 'calliope_066_errors']
-    
+
 class Carrier_Admin(admin.ModelAdmin):
     list_filter = ['model']
     list_display = ['id', 'model', 'name', 'rate_unit', 'quantity_unit', 'created', 'updated']
@@ -166,6 +168,7 @@ admin.site.register(Technology, Technology_Admin)
 admin.site.register(Tech_Param, Tech_Param_Admin)
 admin.site.register(Loc_Tech, Loc_Tech_Admin)
 admin.site.register(Loc_Tech_Param, Loc_Tech_Param_Admin)
+admin.site.register(Job_Meta, Job_Meta_Admin)
 admin.site.register(Timeseries_Meta, Timeseries_Meta_Admin)
 admin.site.register(Scenario, Scenario_Admin)
 admin.site.register(Scenario_Loc_Tech, Scenario_Loc_Tech_Admin)

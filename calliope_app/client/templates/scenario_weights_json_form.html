@@ -1,0 +1,202 @@
+{% load static %}
+{% load i18n %}
+<style>
+.help-text {
+    font-size: .8em;
+}
+.input-field {
+    display: inline-block;
+}
+.smol {
+    max-width: 300px;
+    float: right;
+}
+.multi-line {
+    max-width: 300px;
+}
+#constraints-label {
+    padding-top: 25px;
+    font-size: 20px;
+}
+.constraint-name {
+    font-family: Arial, sans-serif;
+    font-size: 25px;
+    display: inline-block;
+}
+.constraint-delete {
+    float: right
+}
+.group-constraint-delete {
+    margin-top: 10px;
+    float: right
+}
+.constraint-key-value {
+    padding-left: 5em;
+    margin-top: 10px;
+}
+
+#tabs {
+ width: 100%;
+ height: 35px; 
+ border-bottom: solid 1px #CCC;
+ padding-right: 2px;
+ margin-top: 30px;
+ padding-left: 10px;
+}
+
+a {
+    cursor: pointer;
+}
+
+#tabs li {
+  float: left; 
+  list-style: none; 
+  border-top: 1px solid #ccc; 
+  border-left: 1px solid #ccc; 
+  border-right: 1px solid #ccc; 
+  margin-right: 5px; 
+  border-top-left-radius: 3px;  
+  border-top-right-radius: 3px;
+  outline: none;
+}
+
+#tabs li a { 
+ font-family: Arial, Helvetica, sans-serif; 
+ font-size: small;
+ font-weight: bold; 
+ color: #666666;
+ padding-top: 5px;
+ padding-left: 7px;
+ padding-right: 7px;
+ padding-bottom: 8px; 
+ display: block; 
+ background: #c4d7ea;
+ border-top-left-radius: 3px; 
+ border-top-right-radius: 3px; 
+ text-decoration: none;
+ outline: none;
+}
+
+#tabs li a.inactive{
+ padding-top: 5px;
+ padding-bottom: 8px;
+ padding-left: 8px;
+ padding-right: 8px;
+ background: #FFF;
+ outline: none;
+ border-bottom: solid 1px #CCC;
+
+}
+
+#tabs li a:hover, #tabs li a.inactive:hover {
+   outline: none;
+}
+
+.tab-container {
+ clear: both;           
+ width: 100%; 
+ text-align: left;
+ padding-top: 20px;
+}
+
+.amsify-label {
+ width: 650px;
+ padding-top: 10px;
+}
+
+.cateogry-expander {
+    font-size: 24px;
+    background-color: #ccd0d6;
+    cursor: pointer;
+    height: 40px;
+}
+
+.cateogry-expander .fas {
+    margin-right: 25px;
+}
+
+.cateogry-expander h5 {
+    margin-left: .6em;
+    padding: 0.2em 1em 0.2em 0;
+}
+
+.cateogry-expander {
+    border-radius: .3px;
+    margin: 0px -15px;
+}
+
+.unit-inputs {
+    width: 62%;
+    display: inline-block;
+    float: right;
+}
+.form-units {
+    float: right;
+}
+.form-inputs {
+    float: left;
+}
+.modal-header {
+    padding-left: 0;
+}
+</style>
+
+<form id="scenario_weights_json_form" method="post" tabindex="-1" role="dialog"  onsubmit="return false;"  aria-hidden="true">
+    <div class="modal-header">
+        <h5 class="modal-title" id="scenarioSettingsWeightsModalTitle">{% trans "Weights of cost classes" %}</h5>
+        <button type="button" class="close weights-close" data-dismiss="modal" aria-label="Close" id="weights-close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>  
+    <div>
+        <br>
+        <div class="form-row">
+            <!-- object inputs {'monetary': 1, 'co2': 0, 'ch4': 0, 'n2o': 0, 'co2e': 0}-->
+            <div id="dialog-inputs" class="form-group" style="width: 100%;">
+                <label><b>Monetary</b></label>
+                <div class="unit-inputs">
+                    <input class="form-control smol form-inputs" id="monetary" name="" aria-label="Input a number">
+                    <span class="form-units">{% trans "Weighted Cost per" %} $</span>
+                </div>
+            </div>
+            <div id="dialog-inputs" class="form-group" style="width: 100%;">
+                <label><b>CO2</b></label>
+                <div class="unit-inputs">
+                    <input class="form-control smol form-inputs" id="co2" name="" aria-label="Input a number">
+                    <span class="form-units">{% trans "Weighted Cost per" %} kg</span>
+                </div>
+            </div>
+            <div id="dialog-inputs" class="form-group" style="width: 100%;">
+                <label><b>CH4</b></label>
+                <div class="unit-inputs">
+                    <input class="form-control smol form-inputs" id="ch4" name="" aria-label="Input a number">
+                    <span class="form-units">{% trans "Weighted Cost per" %} kg</span>
+                </div>
+            </div>
+            <div id="dialog-inputs" class="form-group" style="width: 100%;">
+                <label><b>N2O</b></label>
+                <div class="unit-inputs">
+                    <input class="form-control smol form-inputs" id="n2o" name="" aria-label="Input a number">
+                    <span class="form-units">{% trans "Weighted Cost per" %} kg</span>
+                </div>
+            </div>
+            <div id="dialog-inputs" class="form-group" style="width: 100%;">
+                <label><b>CO2e</b></label>
+                <div class="unit-inputs">
+                    <input class="form-control smol form-inputs" id="co2e" name="" aria-label="Input a number">
+                    <span class="form-units">{% trans "Weighted Cost per" %} kg</span>
+                </div>
+            </div>
+            <hr>
+            <div class="form-group col-md-6"></div>
+            <hr>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <!-- <input id="settings_import_cancel" type="submit" style="border: 1px solid black;margin-right:1em;" class="btn btn-sm weights-close" name="" value="{% trans 'Cancel' %}"> -->
+            <input id="settings_weights_import_data" type="submit" class="btn btn-sm btn-warning" name="" value="{% trans 'Convert Fields to JSON' %}">
+        </div>
+    </div>
+    <br>
+</form>
