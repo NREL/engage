@@ -72,7 +72,7 @@ def delete_template(request):
         raise ValidationError(f"Error: Template ID has not been provided.")
     
     #NOTE: any updates to this section of code should also be made for templates post_delete (that code is also triggered by a UI deletion)
-    technologies = Technology.objects.filter(template_type_id=template.template_type_id, model_id=template.model)
+    technologies = Technology.objects.filter(model_id=template.model, template_type_id=template.template_type_id)
     for tech in technologies:
         # Delete if there are no other nodes outside of the template are using this tech
         loc_techs = Loc_Tech.objects.filter(technology=tech)
@@ -86,7 +86,7 @@ def delete_template(request):
         if uniqueToTemplate:
             Technology.objects.filter(id=tech.id).delete()
 
-    locations = Location.objects.filter(template_id=template_id)
+    locations = Location.objects.filter(model_id=template.model, template_id=template_id)
     for loc in locations:
         # Delete if there are no other nodes outside of the template that are using this location 
         loc_techs = Loc_Tech.objects.filter(Q(location_1=loc) | Q(location_2=loc))
@@ -98,7 +98,10 @@ def delete_template(request):
                 uniqueToTemplate = False
                 break
     
-        if uniqueToTemplate:
+        templateTypeLoc = Template_Type_Loc.objects.filter(id=loc.template_type_loc)
+        if templateTypeLoc.name == "||primary||":
+            Location.objects.filter(id=loc.id).update(template_type=None, template_type_loc=None)
+        elif uniqueToTemplate:
             Location.objects.filter(id=loc.id).delete()
 
     Loc_Tech.objects.filter(template_id=template_id).delete()
@@ -328,15 +331,22 @@ def get_or_create_template_locations(template_type_locs, model, name, location, 
                 long = 180 
             elif (long < -180):
                 long = -180 
-            new_location = Location.objects.create(
-                pretty_name=name + ' - ' + template_type_loc['name'],
-                name=template_type_loc['name'].replace(' ', '-'),
-                latitude=lat, 
-                longitude=long, 
-                model=model,
-                template_id=template.id,
-                template_type_loc_id=template_type_loc['id'],
-            )
+            if template_type_loc['name'].lower() == "||primary||": 
+                if location.template_id is None:
+                    location.update(template_id=template.id, template_type_loc_id=template_type_loc['id'])
+                else:
+                    message = "Error: The selected Primary Location is already assoicted with a template, please select a different location '" + location.pretty_name + "' before attempting to add this Node Group to the model again."
+                    raise ValidationError(message, code=400)
+            else:
+                new_location = Location.objects.create(
+                    pretty_name=name + ' - ' + template_type_loc['name'],
+                    name=template_type_loc['name'].replace(' ', '-'),
+                    latitude=lat, 
+                    longitude=long, 
+                    model=model,
+                    template_id=template.id,
+                    template_type_loc_id=template_type_loc['id'],
+                )
             new_locations[template_type_loc['id']] = new_location
     return new_locations
 
