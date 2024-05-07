@@ -53,7 +53,8 @@
       "name": "name",
       "default_value": "",
       "choices": "[]",
-      "tab": ""
+      "tab": "",
+      "runs": {}
     }
   },
   {
@@ -129,7 +130,8 @@
       "name": "time",
       "default_value": "",
       "choices": "[]",
-      "tab": "runs"
+      "tab": "runs",
+      "runs": {}
     }
   },
   {
@@ -433,7 +435,8 @@
       "name": "solver",
       "default_value": "amplxpress",
       "choices": "[\"glpk\",\"appsi_highs\",\"amplxpress\",\"xpress_direct\"]",
-      "tab": "runs"
+      "tab": "runs",
+      "runs": {}
     }
   },
   {

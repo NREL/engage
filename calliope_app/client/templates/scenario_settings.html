@@ -36,119 +36,119 @@
 	<table id="settings_table" class="table table-hover table-sm">
 		<tbody>
 			{% for param in parameters %}
-					{% if param.run_parameter.can_evolve %}
-						<!-- Parameter Master Row For Evolving Parameters -->
-						<tr class="param_header table-default" data-param_id="{{ param.run_parameter.id }}">
-
-							<!-- Parameter Names -->
-							{% ifchanged param.run_parameter.pretty_name %}						  
-								<td style="cursor:help;" class="text-sm"><b>{{ param.run_parameter.pretty_name }}</b>
-									<span class="tooltip-text">{{ param.run_parameter.description }}</span>
-								</td>
-								<td style="cursor:help;" class="text-sm">{{ param.run_parameter.root }}.{{ param.run_parameter.name }}
-									<span class="tooltip-text">{{ param.run_parameter.description }}</span>
-								</td>
-								<td>
-									<button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-default btn-sm transparent run-parameter-value-add"><i class="fas fa-plus"></i> {% trans "Row" %}</button>
-								</td>
-							{% else %}
-								<td colspan=2 style="border-top:none;"></td>
-								<td>
-									<button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-default btn-sm transparent run-parameter-value-remove"><i class="fas fa-minus"></i> {% trans "Row" %}</button>
-								</td>
-							{% endifchanged %}
-
-							<!-- Parameter Years -->
+				{% if param.run_parameter.can_evolve %}
+					<!-- Parameter Master Row For Evolving Parameters -->
+					<tr class="param_header table-default" data-param_id="{{ param.run_parameter.id }}">
+						<!-- Parameter Names -->
+						{% ifchanged param.run_parameter.pretty_name %}						  
+							<td style="cursor:help;" class="text-sm"><b>{{ param.run_parameter.pretty_name }}</b>
+								<span class="tooltip-text">{{ param.run_parameter.description }}</span>
+							</td>
+							<td style="cursor:help;" class="text-sm">{{ param.run_parameter.root }}.{{ param.run_parameter.name }}
+								<span class="tooltip-text">{{ param.run_parameter.description }}</span>
+							</td>
 							<td>
-								<input {% if not can_edit %}disabled{% endif %} type="number" class="form-control run-parameter-year" placeholder="YYYY" value="{% if param.year != 0 %}{{ param.year }}{% endif %}" name="edit[year][{{ param.id }}]">
+								<button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-default btn-sm transparent run-parameter-value-add"><i class="fas fa-plus"></i> {% trans "Row" %}</button>
 							</td>
-
-							<!-- Parameter Values -->
-							<td colspan=2 class="head_value centered" data-param_id="{{ param.run_parameter.id }}">
-								{% if param.run_parameter.choices %}
-								<select {% if not can_edit %}disabled{% endif %} class="form-control run-parameter-value" value="{{ param.value }}" name="edit[value][{{ param.id }}]">
-									{% for choice in param.run_parameter.choices %}
-									<option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
-									{% endfor %}
-								</select>
-								{% else %}
-								<textarea rows=1 {% if not can_edit %}disabled{% endif %} style="text-align:left;" class="form-control run-parameter-value" value="{{ param.value }}" name="edit[value][{{ param.id }}]" data-toggle="tooltip" data-placement="left">{{ param.value }}</textarea>
-								{% endif %}
-								<input {% if not can_edit %}disabled{% endif %} style="display: none" class="check_delete" type="checkbox" name="delete[{{ param.id }}]">
+						{% else %}
+							<td colspan=2 style="border-top:none;"></td>
+							<td>
+								<button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-default btn-sm transparent run-parameter-value-remove"><i class="fas fa-minus"></i> {% trans "Row" %}</button>
 							</td>
-							<!-- Scenarios settings run parameter ids hardcoded for modals id = 25 is the group constraints modal --> 
-							{% if param.run_parameter.id == 25 %}
-								<td> 
-									<button {% if not can_edit %}disabled{% endif %} type="button" class="scenario-constraints-dialog-btn btn btn-sm" style="margin-top:7px;" name="dialog[value][{{ param.id }}]"><i class="fas fa-edit"></i></button>
-								</td>
-							{% else %}
-								<td></td>
-							{% endif %}
-						</tr>
-						{% ifchanged param.run_parameter.pretty_name %}
-							<!-- Parameter ADD Row For Evolving Parameters -->
-							<tr class="param_header_add table-warning" data-param_id="{{ param.run_parameter.id }}" style="display: none" >
-
-								<td colspan=3 style="border-top:none;"></td>
-								<td>
-									<input {% if not can_edit %}disabled{% endif %} type="number" class="form-control add-run-parameter-year" placeholder="YYYY" name="add[{{ param.run_parameter_id }}][years][]">
-								</td>
-								<!-- Parameter Values -->
-								<td colspan=2 class="head_value centered" data-param_id="{{ param.run_parameter.id }}">
-									{% if param.run_parameter.choices %}
-									<select {% if not can_edit %}disabled{% endif %} class="form-control add-run-parameter-value" name="add[{{ param.run_parameter_id }}][values][]">
-										{% for choice in param.run_parameter.choices %}
-										<option>{{ choice }}</option>
-										{% endfor %}
-									</select>
-									{% else %}
-									<textarea rows=1 {% if not can_edit %}disabled{% endif %} style="text-align:left;" class="form-control add-run-parameter-value" name="add[{{ param.run_parameter_id }}][values][]"></textarea>
-									{% endif %}
-								</td>
-								<td></td>
-							</tr>
 						{% endifchanged %}
-
-					{% else %}
-						<!-- Parameter Master Row For Static Parameters -->
-						<tr class="param_header table-default" data-param_id="{{ param.run_parameter.id }}">
-
-							<!-- Parameter Names -->
-							<td style="cursor:help;" class="text-sm">
-								<b>{{ param.run_parameter.pretty_name }}</b>
-								<span class="tooltip-text">{{ param.run_parameter.description }}</span>
+				
+						<!-- Parameter Years -->
+						<td>
+							<input {% if not can_edit %}disabled{% endif %} type="number" class="form-control run-parameter-year" placeholder="YYYY" value="{% if param.year != 0 %}{{ param.year }}{% endif %}" name="edit[year][{{ param.id }}]">
+						</td>
+				
+						<!-- Parameter Values -->
+						<td colspan=2 class="head_value centered" data-param_id="{{ param.run_parameter.id }}">
+							{% if param.run_parameter.choices %}
+							<select {% if not can_edit %}disabled{% endif %} class="form-control run-parameter-value" value="{{ param.value }}" name="edit[value][{{ param.id }}]">
+								{% for choice in param.run_parameter.choices %}
+								<option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
+								{% endfor %}
+							</select>
+							{% else %}
+							<textarea rows=1 {% if not can_edit %}disabled{% endif %} style="text-align:left;" class="form-control run-parameter-value" value="{{ param.value }}" name="edit[value][{{ param.id }}]" data-toggle="tooltip" data-placement="left">{{ param.value }}</textarea>
+							{% endif %}
+							<input {% if not can_edit %}disabled{% endif %} style="display: none" class="check_delete" type="checkbox" name="delete[{{ param.id }}]">
+						</td>
+						<!-- Scenarios settings run parameter ids hardcoded for modals id = 25 is the group constraints modal --> 
+						{% if param.run_parameter.id == 25 %}
+							<td> 
+								<button {% if not can_edit %}disabled{% endif %} type="button" class="scenario-constraints-dialog-btn btn btn-sm" style="margin-top:7px;" name="dialog[value][{{ param.id }}]"><i class="fas fa-edit"></i></button>
 							</td>
-							<td style="cursor:help;" class="text-sm">
-								{{ param.run_parameter.root }}.{{ param.run_parameter.name }}
-								<span class="tooltip-text">{{ param.run_parameter.description }}</span>
+						{% else %}
+							<td></td>
+						{% endif %}
+					</tr>
+					{% ifchanged param.run_parameter.pretty_name %}
+						<!-- Parameter ADD Row For Evolving Parameters -->
+						<tr class="param_header_add table-warning" data-param_id="{{ param.run_parameter.id }}" style="display: none" >
+				
+							<td colspan=3 style="border-top:none;"></td>
+							<td>
+								<input {% if not can_edit %}disabled{% endif %} type="number" class="form-control add-run-parameter-year" placeholder="YYYY" name="add[{{ param.run_parameter_id }}][years][]">
 							</td>
-													<td colspan=2></td>
-
 							<!-- Parameter Values -->
 							<td colspan=2 class="head_value centered" data-param_id="{{ param.run_parameter.id }}">
 								{% if param.run_parameter.choices %}
-								<select {% if not can_edit %}disabled{% endif %} class="form-control run-parameter-value" value="{{ param.value }}" name="edit[value][{{ param.id }}]">
+								<select {% if not can_edit %}disabled{% endif %} class="form-control add-run-parameter-value" name="add[{{ param.run_parameter_id }}][values][]">
 									{% for choice in param.run_parameter.choices %}
-									<option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
+									<option>{{ choice }}</option>
 									{% endfor %}
 								</select>
 								{% else %}
-								<textarea rows=1 {% if not can_edit %}disabled{% endif %} style="text-align:left;" class="form-control run-parameter-value" value="{{ param.value }}" name="edit[value][{{ param.id }}]" data-toggle="tooltip" data-placement="left">{{ param.value }}</textarea>
+								<textarea rows=1 {% if not can_edit %}disabled{% endif %} style="text-align:left;" class="form-control add-run-parameter-value" name="add[{{ param.run_parameter_id }}][values][]"></textarea>
 								{% endif %}
 							</td>
-
-							<!-- Scenarios settings run parameter ids hardcoded for modals id = 26 is the weights of cost classes dialog --> 
-							{% if param.run_parameter.id == 26 %}
-								<td> 
-									<button {% if not can_edit %}disabled{% endif %} type="button" class="scenario-weight-dialog-btn btn btn-sm" style="margin-top:7px;" name="dialog[value][{{ param.id }}]"><i class="fas fa-edit"></i></button>
-								</td>
-							{% else %}
-								<td></td>
-							{% endif %}
+							<td></td>
 						</tr>
-					{% endif %}
-				{% endfor %}
-		</tbody>
+					{% endifchanged %}
+				
+				{% else %}
+					<!-- Parameter Master Row For Static Parameters -->
+					<tr class="param_header table-default" data-param_id="{{ param.run_parameter.id }}">
+				
+						<!-- Parameter Names -->
+						<td style="cursor:help;" class="text-sm">
+							<b>{{ param.run_parameter.pretty_name }}</b>
+							<span class="tooltip-text">{{ param.run_parameter.description }}</span>
+						</td>
+						<td style="cursor:help;" class="text-sm">
+							{{ param.run_parameter.root }}.{{ param.run_parameter.name }}
+							<span class="tooltip-text">{{ param.run_parameter.description }}</span>
+						</td>
+												<td colspan=2></td>
+				
+						<!-- Parameter Values -->
+						<td colspan=2 class="head_value centered" data-param_id="{{ param.run_parameter.id }}">
+							{% if param.run_parameter.choices %}
+							<select {% if not can_edit %}disabled{% endif %} class="form-control run-parameter-value" value="{{ param.value }}" name="edit[value][{{ param.id }}]">
+								{% for choice in param.run_parameter.choices %}
+								<option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
+								{% endfor %}
+							</select>
+							{% else %}
+							<textarea rows=1 {% if not can_edit %}disabled{% endif %} style="text-align:left;" class="form-control run-parameter-value" value="{{ param.value }}" name="edit[value][{{ param.id }}]" data-toggle="tooltip" data-placement="left">{{ param.value }}</textarea>
+							{% endif %}
+						</td>
+				
+						<!-- Scenarios settings run parameter ids hardcoded for modals id = 26 is the weights of cost classes dialog --> 
+						{% if param.run_parameter.id == 26 %}
+							<td> 
+								<button {% if not can_edit %}disabled{% endif %} type="button" class="scenario-weight-dialog-btn btn btn-sm" style="margin-top:7px;" name="dialog[value][{{ param.id }}]"><i class="fas fa-edit"></i></button>
+							</td>
+						{% else %}
+							<td></td>
+						{% endif %}
+					</tr>
+				{% endif %}
+			{% endfor %}
+			
+					</tbody>
 	</table>
 </div>
 

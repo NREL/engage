@@ -27,11 +27,12 @@ from django.utils.text import slugify
 
 from api.models.outputs import Run, Cambium
 from api.tasks import run_model, task_status, build_model,upload_ts
-from api.models.calliope import Abstract_Tech, Abstract_Tech_Param, Parameter
+from api.models.calliope import Abstract_Tech, Abstract_Tech_Param, Parameter, Run_Parameter
 from api.models.configuration import (
     Model, ParamsManager, User_File, Location, Technology,
     Tech_Param, Loc_Tech, Loc_Tech_Param, Timeseries_Meta, Carrier, Scenario_Param
 )
+
 from api.models.engage import ComputeEnvironment
 from api.utils import zip_folder, initialize_units, convert_units, noconv_units
 from batch.managers import AWSBatchJobManager
@@ -60,7 +61,10 @@ def build(request):
     Example:
     GET: /api/build/
     """
-
+    parameters = request.GET.get('parameters', None)
+    parameters = json.loads(parameters)
+    logger.info(parameters)
+    logger.info(type(parameters))
     # Input parameters
     model_uuid = request.GET.get("model_uuid", None)
     scenario_id = request.GET.get("scenario_id", None)
@@ -82,6 +86,7 @@ def build(request):
 
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
+
 
     try:
         start_date = datetime.strptime(start_date, "%Y-%m-%d")
@@ -106,6 +111,7 @@ def build(request):
                 years = [start_date.year]+years
             groupname = 'Group-'+timestamp
         for year in sorted(years):
+
             start_date = start_date.replace(year=year)
             end_date = end_date.replace(year=year)
             subset_time = str(start_date.date()) + " to " + str(end_date.date())
@@ -151,6 +157,13 @@ def build(request):
                 )
             inputs_path = inputs_path.lower().replace(" ", "-")
             os.makedirs(inputs_path, exist_ok=True)
+            logger.info(parameters)
+            for id in parameters.keys():
+                run_parameter = Run_Parameter.objects.get(pk=int(id))
+                if not run_parameter.run:
+                    run_parameter.run = {}
+                run_parameter.run[run.id] = parameters[id]
+                run_parameter.save()
 
             # Celery task
             async_result = build_model.apply_async(
@@ -163,9 +176,12 @@ def build(request):
                     "end_date": end_date,
                 }
             )
+
             build_task = CeleryTask.objects.get(task_id=async_result.id)
             run.build_task = build_task
             run.save()
+
+
             logger.info("Model run %s starts to build in celery worker.", run.id)
 
         payload = {

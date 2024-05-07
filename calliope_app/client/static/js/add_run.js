@@ -24,6 +24,15 @@ $(document).ready(function () {
 			years = $('#years').val(),
 			notes = $('#notes').val();
 
+		var parameters = {};
+		$('#run_parameters .parameter-row').each(function() {
+			var paramId = $(this).data('param-id');
+			var value = $(this).find('.run-parameter-value').val();
+			parameters[paramId] = value;
+		});
+		console.log(parameters);
+	
+
 		// fix timezone issues
 		sd = new Date(sd.getTime() + sd.getTimezoneOffset() * 60000);
 		ed = new Date(ed.getTime() + ed.getTimezoneOffset() * 60000);
@@ -48,29 +57,29 @@ $(document).ready(function () {
 
 			$.ajax({
 				url: '/' + LANGUAGE_CODE + '/api/build/',
+				contentType: 'application/json',  // Specify that you're sending JSON
 				data: {
-				  'model_uuid': model_uuid,
-				  'scenario_id': scenario_id,
-				  'start_date': start_date,
-				  'end_date': end_date,
-				  'cluster': cluster,
-				  'manual':manual,
-				  'timestep':timestep,
-				  'run_env': run_env,
-				  'years':years,
-				  'notes':notes
+					'model_uuid': model_uuid,
+					'scenario_id': scenario_id,
+					'start_date': start_date,
+					'end_date': end_date,
+					'cluster': cluster,
+					'manual': manual,
+					'timestep': timestep,
+					'run_env': run_env,
+					'years': years,
+					'notes': notes,
+					'parameters': JSON.stringify(parameters)
 				},
 				dataType: 'json',
-				success: function (data) {
-					if (data['status'] == 'Success') {
-						window.location = '/' + model_uuid + '/runs/';
-					} else {
-						$('#build-error').html(data['message']);
-						$('#master-save').prop('disabled', false);
-					};
+				success: function(response) {
+					// handle response
+				},
+				error: function(xhr, status, error) {
+					console.error("Error: " + error);
 				}
 			});
-		};
+					};
 	});
 
 	// Automatically deactivate clustering if manual is enabled.
