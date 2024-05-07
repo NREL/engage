@@ -158,13 +158,15 @@ def build(request):
             inputs_path = inputs_path.lower().replace(" ", "-")
             os.makedirs(inputs_path, exist_ok=True)
             logger.info(parameters)
+
+            run.run_options = {}
+            
             for id in parameters.keys():
                 run_parameter = Run_Parameter.objects.get(pk=int(id))
-                if not run_parameter.run:
-                    run_parameter.run = {}
-                run_parameter.run[run.id] = parameters[id]
-                run_parameter.save()
-
+                if run_parameter.root not in run.run_options.keys():
+                    run.run_options[run_parameter.root] = {}
+                run.run_options[run_parameter.root][run_parameter.name] = parameters[id]
+            logger.info(run.run_options)
             # Celery task
             async_result = build_model.apply_async(
                 kwargs={
