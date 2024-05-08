@@ -63,8 +63,7 @@ def build(request):
     """
     parameters = request.GET.get('parameters', None)
     parameters = json.loads(parameters)
-    logger.info(parameters)
-    logger.info(type(parameters))
+
     # Input parameters
     model_uuid = request.GET.get("model_uuid", None)
     scenario_id = request.GET.get("scenario_id", None)
@@ -157,7 +156,6 @@ def build(request):
                 )
             inputs_path = inputs_path.lower().replace(" ", "-")
             os.makedirs(inputs_path, exist_ok=True)
-            logger.info(parameters)
 
             run.run_options = {}
             
@@ -166,7 +164,7 @@ def build(request):
                 if run_parameter.root not in run.run_options.keys():
                     run.run_options[run_parameter.root] = {}
                 run.run_options[run_parameter.root][run_parameter.name] = parameters[id]
-            logger.info(run.run_options)
+
             # Celery task
             async_result = build_model.apply_async(
                 kwargs={
