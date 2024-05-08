@@ -72,14 +72,16 @@ $(document).ready(function () {
 					'parameters': JSON.stringify(parameters)
 				},
 				dataType: 'json',
-				success: function(response) {
-					// handle response
-				},
-				error: function(xhr, status, error) {
-					console.error("Error: " + error);
+				success: function (data) {
+					if (data['status'] == 'Success') {
+						window.location = '/' + model_uuid + '/runs/';
+					} else {
+						$('#build-error').html(data['message']);
+						$('#master-save').prop('disabled', false);
+					};
 				}
 			});
-					};
+		};
 	});
 
 	// Automatically deactivate clustering if manual is enabled.

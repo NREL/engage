@@ -156,16 +156,13 @@ def build(request):
                 )
             inputs_path = inputs_path.lower().replace(" ", "-")
             os.makedirs(inputs_path, exist_ok=True)
-
-            run.run_options = {}
             
+            run.run_options = []
             for id in parameters.keys():
-                run_parameter = Run_Parameter.objects.get(pk=int(id))
-                if run_parameter.root not in run.run_options.keys():
-                    run.run_options[run_parameter.root] = {}
-                run.run_options[run_parameter.root][run_parameter.name] = parameters[id]
-
-            # Celery task
+                run_parameter= Run_Parameter.objects.get(pk=int(id))
+                run.run_options.append({'root':run_parameter.root,'name':run_parameter.name,'value':parameters[id]})
+           
+            # Celery task        
             async_result = build_model.apply_async(
                 kwargs={
                     "inputs_path": inputs_path,
@@ -180,7 +177,6 @@ def build(request):
             build_task = CeleryTask.objects.get(task_id=async_result.id)
             run.build_task = build_task
             run.save()
-
 
             logger.info("Model run %s starts to build in celery worker.", run.id)
 
@@ -201,7 +197,6 @@ def build(request):
                 str(e)
             ),
         }
-
     return HttpResponse(json.dumps(payload, indent=4), content_type="application/json")
 
 
