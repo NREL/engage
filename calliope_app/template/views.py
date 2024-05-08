@@ -98,9 +98,12 @@ def delete_template(request):
                 uniqueToTemplate = False
                 break
     
-        templateTypeLoc = Template_Type_Loc.objects.filter(id=loc.template_type_loc)
+        templateTypeLoc = Template_Type_Loc.objects.get(id=loc.template_type_loc_id)
         if templateTypeLoc.name == "||primary||":
-            Location.objects.filter(id=loc.id).update(template_type=None, template_type_loc=None)
+            primaryLoc = Location.objects.get(id=loc.id)
+            primaryLoc.template_id = None
+            primaryLoc.template_type_loc_id = None
+            primaryLoc.save()
         elif uniqueToTemplate:
             Location.objects.filter(id=loc.id).delete()
 
@@ -333,12 +336,16 @@ def get_or_create_template_locations(template_type_locs, model, name, location, 
                 long = -180 
             if template_type_loc['name'].lower() == "||primary||": 
                 if location.template_id is None:
-                    location.update(template_id=template.id, template_type_loc_id=template_type_loc['id'])
+                    primaryLoc = Location.objects.get(id=location.id)
+                    primaryLoc.template_id = template.id
+                    primaryLoc.template_type_loc_id = template_type_loc['id']
+                    primaryLoc.save()
+                    new_locations[template_type_loc['id']] = primaryLoc
                 else:
                     message = "Error: The selected Primary Location is already assoicted with a template, please select a different location '" + location.pretty_name + "' before attempting to add this Node Group to the model again."
                     raise ValidationError(message, code=400)
             else:
-                new_location = Location.objects.create(
+                new_locations[template_type_loc['id']] = Location.objects.create(
                     pretty_name=name + ' - ' + template_type_loc['name'],
                     name=template_type_loc['name'].replace(' ', '-'),
                     latitude=lat, 
@@ -347,7 +354,6 @@ def get_or_create_template_locations(template_type_locs, model, name, location, 
                     template_id=template.id,
                     template_type_loc_id=template_type_loc['id'],
                 )
-            new_locations[template_type_loc['id']] = new_location
     return new_locations
 
 # Create template technologies
