@@ -21,9 +21,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def get_model_yaml_set(run_id, scenario_id, year):
+def get_model_yaml_set(run, scenario_id, year):
     """ Function pulls model parameters from Database for YAML """
-    run = Run.objects.get(pk=run_id)
     params = Scenario_Param.objects.filter(scenario_id=scenario_id,
                                            year__lte=year).order_by('-year')
     # Initialize the Return list

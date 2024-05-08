@@ -214,12 +214,12 @@ def build_model(inputs_path, run_id, model_uuid, scenario_id,
     model = Model.objects.get(uuid=model_uuid)
     scenario = Scenario.objects.get(id=scenario_id)
 
-    build_model_yaml(run.id, scenario_id, start_date, inputs_path)
+    build_model_yaml(run, scenario_id, start_date, inputs_path)
     build_model_csv(model, scenario, start_date, end_date, inputs_path, run.timestep)
 
     return inputs_path
 
-def build_model_yaml(run_id, scenario_id, start_date, inputs_path):
+def build_model_yaml(run, scenario_id, start_date, inputs_path):
 
     scenario_id = int(scenario_id)
     if isinstance(start_date, datetime):
@@ -228,7 +228,7 @@ def build_model_yaml(run_id, scenario_id, start_date, inputs_path):
         year = date_parse(start_date).year
 
     # model.yaml
-    model_yaml_set = get_model_yaml_set(run_id, scenario_id, year)
+    model_yaml_set = get_model_yaml_set(run, scenario_id, year)
     with open(os.path.join(inputs_path, "model.yaml"), 'w') as outfile:
         yaml.dump(model_yaml_set, outfile, default_flow_style=False)
 
