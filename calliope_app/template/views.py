@@ -98,12 +98,12 @@ def delete_template(request):
                 uniqueToTemplate = False
                 break
     
-        templateTypeLoc = Template_Type_Loc.objects.get(id=loc.template_type_loc_id)
-        if templateTypeLoc.name == "||primary||":
-            primaryLoc = Location.objects.get(id=loc.id)
-            primaryLoc.template_id = None
-            primaryLoc.template_type_loc_id = None
-            primaryLoc.save()
+        template_type_loc = Template_Type_Loc.objects.get(id=loc.template_type_loc_id)
+        if template_type_loc.name == "||primary||":
+            primary_loc = Location.objects.get(id=loc.id)
+            primary_loc.template_id = None
+            primary_loc.template_type_loc_id = None
+            primary_loc.save()
         elif uniqueToTemplate:
             Location.objects.filter(id=loc.id).delete()
 
@@ -186,7 +186,11 @@ def update_template(request):
                 location=location,
             )
 
-        new_locations = get_or_create_template_locations(template_type_locs, model, name, location, template)
+        try:
+            new_locations = get_or_create_template_locations(template_type_locs, model, name, location, template)
+        except ValidationError as e:
+            payload = {"message": str(e.message), "code": str(e.code)}
+            return HttpResponse(json.dumps(payload), content_type="application/json")
         new_technologies = get_or_create_template_technologies(template_type_techs, model, template_type_id)
         new_loc_techs = create_template_loc_techs(template_type_loc_techs, model, name, template_type_id, template)
         new_template_variables = create_template_variables(templateVars, template)
@@ -342,7 +346,7 @@ def get_or_create_template_locations(template_type_locs, model, name, location, 
                     primaryLoc.save()
                     new_locations[template_type_loc['id']] = primaryLoc
                 else:
-                    message = "Error: The selected Primary Location is already assoicted with a template, please select a different location '" + location.pretty_name + "' before attempting to add this Node Group to the model again."
+                    message = "Error: The selected Primary Location is already associated with a template, please select a different location besides '" + location.pretty_name + "' before attempting to add this Node Group to the model again."
                     raise ValidationError(message, code=400)
             else:
                 new_locations[template_type_loc['id']] = Location.objects.create(
