@@ -75,7 +75,7 @@
 							<!-- Edit Buttons -->
 							<td class="centered">
                 <button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-sm btn-outline-success file-download" title="{% trans 'Download file' %}">
-                  <a href="{% url 'download_file' model_uuid=model.uuid file_id=file.id %}"><i class="fas fa-download"></i></a>
+                  <a {% if not can_edit %}style="pointer-events: none;"{% endif %} href="{% url 'download_file' model_uuid=model.uuid file_id=file.id %}"><i class="fas fa-download"></i></a>
                 </button>
 								<button {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-sm btn-outline-danger file-delete" title="{% trans 'Delete file' %}">
                   <i class="fas fa-trash"></i>
