@@ -19,27 +19,38 @@
 	<div class="col-4"></div>
 	<div class="col-4 centered">
 		<br>
-		<h5><b>Add a Collaborator:</b></h5>
+		<h5><b>Select a Model:</b></h5>
 		<span id="collaborator_message" class="hide" style="color:red;">{% trans "Error" %}</span>
 		<select id="model_uuid" class="model-dropdown-search form-control" placeholder="{% trans 'Select a model' %}..." data-placeholder="Select a model..." style="width:100%" required>
 			<option value="" selected disabled>{%trans "Select a model" %}...</option>
 			{% for user_model in user_models %}
-			{% if user_model.can_edit %}
 			<option value="{{ user_model.model.uuid }}" data-id='{{ user_model.model.uuid }}' data-name='{{ user_model.model }}' {% if selected_model_uuid == user_model.model.get_uuid %}selected="selected"{% endif %}>{{ user_model.model }}</option>
-			{% endif %}
 			{% endfor %}
 		</select>
-		<br><br>
-		<select id="collaborator_id" class="collaborator-dropdown-search form-control" placeholder="{% trans 'Select a user' %}..." data-placeholder="Select a user..." style="width:100%" required>
-			<option value="" disabled selected>{% trans "Select a user" %}...</option>
-			{% for user in users %}
-		  	<option value='{{ user.id }}' data-id='{{ user.id }}' data-name='<i class="fas fa-user"></i>&nbsp;&nbsp;{{ user.first_name }} {{ user.last_name }} - {{user.user_profile.organization}}'>
-          {{ user.first_name }} {{ user.last_name }} - {{ user.user_profile.organization }}
-        </option>
-		  	{% endfor %}
-		</select>
-		<br><br>
-		<script type="text/javascript">
+        <br><br>
+        <div id="collaborator_id_wrapper">
+            <select id="collaborator_id" class="collaborator-dropdown-search form-control" placeholder="{% trans 'Select a user' %}..." data-placeholder="Select a user..." style="width:100%" required>
+                <option value="" disabled selected>{% trans "Select a user" %}...</option>
+                {% for user in users %}
+                    <option value='{{ user.id }}' data-id='{{ user.id }}' data-name='<i class="fas fa-user"></i>&nbsp;&nbsp;{{ user.first_name }} {{ user.last_name }} - {{user.user_profile.organization}}'>
+                        {{ user.first_name }} {{ user.last_name }} - {{ user.user_profile.organization }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <br><br>
+
+        {% for user_model in user_models %}
+            {% if user_model.can_edit %}
+                <div style="display:none;" id="edit_users_{{ user_model.model.uuid }}" class="edit-users">
+                    <input id="remove_collaborator_btn" style="width:33%;float:left;border-color:black" class="btn btn-outline-danger" type="button" value="{% trans 'Remove' %}">
+                    <input id="add_collaborator_btn_view_only" style="width:33%;float:left;background-color:yellow;border-color:black" class="btn btn-warning" type="button" data-collaborator_can_edit=0 value="{% trans 'View Only' %}">
+                    <input id="add_collaborator_btn" style="width:33%" class="btn btn-success" type="button" data-collaborator_can_edit=1 value="{% trans 'Can Edit' %}">
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <script type="text/javascript">
 			function formatState (state) {
 			  if (!state.id) {
 			    return state.text;
@@ -58,10 +69,7 @@
 			  templateSelection: formatState
 			});
 		</script>
-		<input id="remove_collaborator_btn" style="width:33%;float:left;border-color:black" class="btn btn-outline-danger" type="button" value="{% trans 'Remove' %}">
-		<input id="add_collaborator_btn_view_only" style="width:33%;float:left;background-color:yellow;border-color:black" class="btn btn-warning" type="button" data-collaborator_can_edit=0 value="{% trans 'View Only' %}">
-		<input id="add_collaborator_btn" style="width:33%" class="btn btn-success" type="button" data-collaborator_can_edit=1 value="{% trans 'Can Edit' %}">
-		<br><br><br>
+        <br><br><br>
 	</div>
 	<div class="col-4"></div>
 </div>
@@ -79,7 +87,7 @@
 				<td>{% if collaborator.user.is_staff %}<span style="color:green;">{% trans "Administrator" %}</span>{% endif %}</td>
 				<td>{{ collaborator.user.first_name }} {{ collaborator.user.last_name }}</td>
 				<td>{{ collaborator.user.user_profile.organization }}</td>
-				<td>{% if collaborator.can_edit %}<span style="padding:4px;background-color:green;color:white">&nbsp;&nbsp;<i class="fas fa-tools"></i>&nbsp;&nbsp;{% trans 'Can Edit' %}&nbsp;&nbsp;</span>{% else %}<span style="padding:4px;background-color:yellow;border:solid 1px;">&nbsp;<i class="fas fa-eye"></i>&nbsp;View Only&nbsp;</span>{% endif %}</td>
+				<td>{% if collaborator.can_edit %}<span style="padding:4px;background-color:green;color:white">&nbsp;&nbsp;<i class="fas fa-tools"></i>&nbsp;&nbsp;{% trans 'Can Edit' %}&nbsp;&nbsp;</span>{% else %}<span style="padding:4px;background-color:yellow;border:solid 1px;margin:0 3">&nbsp;<i class="fas fa-eye"></i>&nbsp;View Only&nbsp;</span>{% endif %}</td>
 			</tr>
 			{% endfor %}
 		{% endfor %}

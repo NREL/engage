@@ -6,6 +6,20 @@ $(document).ready(function () {
 	})
 	filter_collaborators($.trim($('#model_uuid').val()))
 
+    $("#collaborator_id_wrapper").hide();
+
+    $('#model_uuid').change(function() {
+        $("#collaborator_id_wrapper").hide();
+
+        $('.edit-users').hide();
+        var selectedUUID = $(this).val();
+        $('#edit_users_' + selectedUUID).show();
+
+        if ($('#edit_users_' + selectedUUID).length) {
+            $("#collaborator_id_wrapper").show();
+        }
+    });
+
 	// Add model
 	$('#add_collaborator_btn, #add_collaborator_btn_view_only, #remove_collaborator_btn').on('click', function () {
 		var model_uuid = $.trim($("#model_uuid").val());
@@ -36,6 +50,8 @@ $(document).ready(function () {
 		};
 
 	});
+
+    $("#collaborator_id").hide();
 });
 
 function filter_collaborators(model_uuid) {
