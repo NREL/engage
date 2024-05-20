@@ -15,6 +15,7 @@ from django.core.exceptions import ValidationError
 from django.utils.html import escape
 from PySAM import Windpower
 from PySAM.ResourceTools import FetchResourceFiles
+from django.db import connection
 from django_ratelimit.decorators import ratelimit
 from api.models.engage import RequestRateLimit
 from api.models.calliope import Abstract_Tech, Run_Parameter
@@ -314,7 +315,8 @@ def update_carriers(request):
 
     if 'delete' in form_data:
         for i,c in form_data['delete']['carrier'].items():
-            Carrier.objects.filter(id=i).delete()
+            with connection.cursor() as cursor:
+                cursor.execute(f"DELETE FROM {Carrier._meta.db_table} WHERE id = %s", [i])
 
     if err_msg != '':
         payload = {"message": err_msg}
