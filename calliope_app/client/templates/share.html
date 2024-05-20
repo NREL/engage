@@ -74,6 +74,7 @@
 			</tr>
 			{% for collaborator in user_model.model.collaborators %}
 			<tr class="colab-row" data-uuid="{{ user_model.model.uuid }}">
+				<td>{{ collaborator.user }} {{ collaborator.role }}</td>
 				<td>{% if collaborator.user.is_staff %}<span style="color:green;">{% trans "Administrator" %}</span>{% endif %}</td>
 				<td>{{ collaborator.user.first_name }} {{ collaborator.user.last_name }}</td>
 				<td>{{ collaborator.user.user_profile.organization }}</td>
