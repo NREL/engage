@@ -1,7 +1,9 @@
 import json
 import os
 import re
-
+import logging
+from datetime import date
+from django.core.mail import send_mail
 import numpy as np
 from django.conf import settings
 from django.views.decorators.csrf import csrf_protect
@@ -13,7 +15,9 @@ from django.core.exceptions import ValidationError
 from django.utils.html import escape
 from PySAM import Windpower
 from PySAM.ResourceTools import FetchResourceFiles
-
+from django.db import connection
+from django_ratelimit.decorators import ratelimit
+from api.models.engage import RequestRateLimit
 from api.models.calliope import Abstract_Tech, Run_Parameter
 from api.models.configuration import Location, Technology, Tech_Param, \
     Loc_Tech, Loc_Tech_Param, ParamsManager, Scenario, Scenario_Param, \
@@ -23,6 +27,7 @@ from api.tasks import task_status, upload_ts, copy_model
 from api.utils import recursive_escape
 from taskmeta.models import CeleryTask
 
+logger = logging.getLogger(__name__)
 
 def validate_model_name(value):
     if len(value) < 3:
@@ -310,7 +315,8 @@ def update_carriers(request):
 
     if 'delete' in form_data:
         for i,c in form_data['delete']['carrier'].items():
-            Carrier.objects.filter(id=i).delete()
+            with connection.cursor() as cursor:
+                cursor.execute(f"DELETE FROM {Carrier._meta.db_table} WHERE id = %s", [i])
 
     if err_msg != '':
         payload = {"message": err_msg}
@@ -1398,4 +1404,45 @@ def remove_flags(request):
     else:
         payload = {"message": "Success."}
 
+    return HttpResponse(json.dumps(payload), content_type="application/json")
+ 
+@csrf_protect
+@ratelimit(key='ip', rate='10/m', block=False)
+@ratelimit(key='ip', rate='1000/d', block=False)
+def get_map_box_token(request):
+    was_limited = getattr(request, 'limited', False)
+    if was_limited:
+        return HttpResponse({"token": ""}, status=429)
+
+    year, month = date.today().year, date.today().month
+    user_key = str(request.user) 
+    limit, created = RequestRateLimit.objects.get_or_create(
+        year=year, 
+        month=month, 
+        defaults={"user_requests": {}}
+    )
+    if user_key not in limit.user_requests:
+        limit.user_requests[user_key] = 0
+    limit.user_requests[user_key] += 1
+    limit.total += 1
+    recipient_list = [admin.email for admin in User.objects.filter(is_superuser=True)]
+    limit.save()
+    if (limit.total >= 40000 and limit.total % 100 == 0) and (limit.total < 50000) and recipient_list:
+        send_mail(
+            subject="Engage Mapbox Alert",
+            message="WARNING: you have hit 40,000 API calls on engage Mapbox",
+            from_email=settings.AWS_SES_FROM_EMAIL,
+            recipient_list=recipient_list
+        )
+    if limit.total >= 50000 and recipient_list:
+        send_mail(
+            subject="Engage Mapbox Alert",
+            message="WARNING: you have hit 50,000 API calls on engage Mapbox. Mapbox will not render!",
+            from_email=settings.AWS_SES_FROM_EMAIL,
+            recipient_list=recipient_list
+        )
+        payload = {"token": ""}
+        return HttpResponse(json.dumps(payload), content_type="application/json")
+    # Human readable
+    payload = {"token": settings.MAPBOX_TOKEN}
     return HttpResponse(json.dumps(payload), content_type="application/json")

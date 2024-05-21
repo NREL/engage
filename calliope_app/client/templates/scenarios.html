@@ -16,10 +16,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const leftPanel = document.getElementById('left-panel');
     const rightPanel = document.getElementById('right-panel');
-    const container = leftPanel.parentNode; 
+    const container = leftPanel.parentNode;
 
     splitter_vertical.addEventListener('mousedown', function(e) {
-        e.preventDefault(); 
+        e.preventDefault();
         isDragging = true;
         document.addEventListener('mousemove', onMouseMove);
         document.addEventListener('mouseup', onMouseUp);
@@ -79,9 +79,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (!isLeftPanelCollapsed) {
             leftPanel.style.width = '0px';
-            leftPanel.style.minWidth = '0px'; 
+            leftPanel.style.minWidth = '0px';
             rightPanel.style.width = 'calc(100% - 10px)'; // Adjust based on the actual splitter width
-            
+
             // Update the toggle button icon
             toggleBtn.classList.remove('fa-chevron-left');
             toggleBtn.classList.add('fa-chevron-right');
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
             leftPanel.style.width = '50%'; // Or your desired default width
             leftPanel.style.minWidth = ''; // Reset to default or specify your desired min-width
             rightPanel.style.width = 'calc(50% - 10px)'; // Adjust based on your layout and the splitter width
-            
+
             // Update the toggle button icon
             toggleBtn.classList.remove('fa-chevron-right');
             toggleBtn.classList.add('fa-chevron-left');
@@ -125,21 +125,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     .gutter.gutter-horizontal {
       width: 10px;
-      height: 100%; 
+      height: 100%;
       position: relative;
       cursor: col-resize;
     }
     .gutter.gutter-horizontal::before {
-      content: "Hide"; 
-      content: "\f053"; 
-      font-family: 'FontAwesome'; 
+      content: "Hide";
+      content: "\f053";
+      font-family: 'FontAwesome';
       display: block;
       position: absolute;
       color: white;
-      left: 50%; 
-      top: 50%; 
-      transform: translate(-50%, -50%); 
-      font-weight: 900; 
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: 900;
     }
     .left-panel {
       z-index: 1;
@@ -151,8 +151,8 @@ document.addEventListener('DOMContentLoaded', function() {
       max-width: calc(70%-11px);
     }
     .splitter_upper {
-      position: relative; 
-      z-index: 1; 
+      position: relative;
+      z-index: 1;
     }
     .splitter_lower {
         position: relative;
@@ -173,10 +173,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	{% include "scenario_selector.html" %}
 </div>
 <div style="height: calc(100% - 160px);">
+    <!-- Map -->
     <div class="splitter_upper row splittable" style="height: 50%;min-height: 320px;">
       <!-- Scenario -->
       <div id="left-panel" class="left-panel">
-        {% include "scenarios_details.html" %}
+        {% include "scenario_details.html" %}
         <div style="padding-left:15px;">
           <button id="scenario-settings" type="button" class="btn btn-sm btn-warning"  data-target="#modal_scenario_settings">
             {% trans "Scenario Settings" %}
@@ -199,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
       <div id="scenarios_dashboard" class="splitter_lower row" style="overflow-y: scroll; height: 50%;">
         <div style="width: 100%;" id="scenario_configuration"></div>
 
-  
+
     </div>
 </div>
 </div>
