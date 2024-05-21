@@ -54,7 +54,7 @@ class Model_Admin(admin.ModelAdmin):
 
 class Model_User_Admin(admin.ModelAdmin):
     list_filter = ['model']
-    list_display = ['id', 'model', 'role', 'user', 'can_edit',
+    list_display = ['id', 'model', 'user', 'can_edit',
                     'last_access', 'notifications']
 
 

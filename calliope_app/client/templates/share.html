@@ -69,14 +69,20 @@
 	<div class="col-10 centered">
 		<table class="table table-hover table-sm" style="background-color: #f3f3f3; white-space: nowrap;">
 		{% for user_model in user_models %}
-			<tr class="tbl-header colab-row" data-uuid="{{ user_model.model.uuid }}">
-				<th colspan=4><b>{% if user_model.model.public is True %}<i class="fa fa-globe"></i>&nbsp;&nbsp;&nbsp;{% endif %}{{ user_model.model }}:</b></th>
+			{% if forloop.first %}
+			<tr>
+				<th>Model</th>
+				<th>User Role</th>
+				<th>User Name</th>
+				<th>Organization</th>
+				<th>Permissions</th>
 			</tr>
+			{% endif %}
 			{% for collaborator in user_model.model.collaborators %}
 			<tr class="colab-row" data-uuid="{{ user_model.model.uuid }}">
-				<td>{{ collaborator.user }} {{ collaborator.role }}</td>
+				<td>{{user_model.model}}</td>
 				<td>{% if collaborator.user.is_staff %}<span style="color:green;">{% trans "Administrator" %}</span>{% endif %}</td>
-				<td>{{ collaborator.user.first_name }} {{ collaborator.user.last_name }}</td>
+				<td>{{ collaborator.user }}</td>	
 				<td>{{ collaborator.user.user_profile.organization }}</td>
 				<td>{% if collaborator.can_edit %}<span style="padding:4px;background-color:green;color:white">&nbsp;&nbsp;<i class="fas fa-tools"></i>&nbsp;&nbsp;{% trans 'Can Edit' %}&nbsp;&nbsp;</span>{% else %}<span style="padding:4px;background-color:yellow;border:solid 1px;">&nbsp;<i class="fas fa-eye"></i>&nbsp;View Only&nbsp;</span>{% endif %}</td>
 			</tr>
