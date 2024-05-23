@@ -35,6 +35,9 @@ urlpatterns = [
     path('get_mapbox_token/',
          configuration_views.get_mapbox_token,
          name='get_mapbox_token'),
+    path('get_mapbox_token/',
+         configuration_views.get_mapbox_token,
+         name='map_box_token'),
 
     # Locations
     path('update_location/',

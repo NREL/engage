@@ -221,7 +221,6 @@ def loc_techs_view(request, model_uuid):
     token_response = get_mapbox_token(request)
     if token_response.status_code == 200:
         response = json.loads(token_response.content.decode('utf-8'))
-        logger.info(f"Response: {response}")
         token = response.get("token") 
     else:
         token = ""
