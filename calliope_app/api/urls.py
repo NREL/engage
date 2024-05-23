@@ -32,8 +32,8 @@ urlpatterns = [
     path('remove_flags/',
          configuration_views.remove_flags,
          name='remove_flags'),
-    path('get_map_box_token/',
-         configuration_views.get_map_box_token,
+    path('get_mapbox_token/',
+         configuration_views.get_mapbox_token,
          name='map_box_token'),
 
     # Locations
