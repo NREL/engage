@@ -9,7 +9,7 @@ from api.models.engage import Help_Guide, ComputeEnvironment
 from api.models.configuration import Model
 import re
 from pytz import common_timezones
-from api.views.configuration import get_map_box_token
+from api.views.configuration import get_mapbox_token
 
 
 def runs_view(request, model_uuid):
@@ -24,7 +24,7 @@ def runs_view(request, model_uuid):
     Example:
     http://0.0.0.0:8000/<model_uuid>/run
     """
-    token_response = get_map_box_token(request)
+    token_response = get_mapbox_token(request)
     if token_response.status_code == 200:
         response = json.loads(token_response.content.decode('utf-8'))
         token = response.get("token") 
@@ -105,7 +105,7 @@ def add_runs_view(request, model_uuid, scenario_id):
 def map_viz_view(request, model_uuid, run_id):
     """ Example:
     http://0.0.0.0:8000/<model_uuid>/<run_id>/map_viz """
-    token_response = get_map_box_token(request)
+    token_response = get_mapbox_token(request)
     if token_response.status_code == 200:
         response = json.loads(token_response.content.decode('utf-8'))
         token = response.get("token") 

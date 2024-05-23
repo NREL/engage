@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from api.models.engage import Help_Guide
 from api.models.configuration import Model, Model_User
-from api.views.configuration import get_map_box_token
+from api.views.configuration import get_mapbox_token
 
 @login_required
 def home_view(request):
@@ -18,7 +18,7 @@ def home_view(request):
     Example:
     http://0.0.0.0:8000/
     """
-    token_response = get_map_box_token(request)
+    token_response = get_mapbox_token(request)
     if token_response.status_code == 200:
         response = json.loads(token_response.content.decode('utf-8'))
         token = response.get("token") 
