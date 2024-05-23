@@ -9,10 +9,6 @@ from .base import *
 # ------------------------------------------------------------------------------
 env = environ.Env()
 
-SETTINGS_READ_ENV_FILE = env.str('DJANGO_SETTINGS_READ_ENV_FILE', True)
-if SETTINGS_READ_ENV_FILE:
-    env.read_env(str(ROOT_DIR.path(".env")))
-
 # GENERAL
 # ------------------------------------------------------------------------------
 DEBUG = True

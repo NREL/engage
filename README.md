@@ -10,13 +10,42 @@ Engage is a free, open-access energy system planning tool that allows multiple u
 - Docker Compose (e.g. ```brew install docker-compose```)
 
 
-## Development
+## Setup Public Stream
 
-Please refer to the documentation to setup development environment,
+``` bash
+$ git remote add public https://github.com/NREL/engage.git
+$ git remote -v # check
+$ git remote set-url --push public DISABLE
+```
+IMPORTANT! Please never `push` to the `public` stream.
 
+## Fetch Public Updates
+
+For dev branch
+```bash
+$ git checkout dev
+$ git fetch public
+$ git merge public/dev
+```
+
+For master branch
+```bash
+$ git checkout master
+$ git fetch public
+$ git merge public/master
+```
+
+## NREL Deploy
+
+Jenkins - https://jenkins.nrelcloud.org/login?from=%2F
+
+* `dev` branch deploy on dev environment.
+* `master` branch deploy on production environment. 
+
+
+## Documentation
 https://nrel.github.io/engage
 
-and the developer guide to contribute to Enage project.
 
 ## License
 BSD 3-Clause License

@@ -409,7 +409,7 @@
       "user_visibility": "True",
       "can_evolve": "False",
       "name": "solver",
-      "default_value": "appsi_highs",
+      "default_value": "amplxpress",
       "choices": "[\"glpk\",\"appsi_highs\",\"amplxpress\",\"xpress_direct\"]"
     }
   },

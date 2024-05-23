@@ -1,0 +1,77 @@
+FROM python:3.8-slim-bookworm
+
+# set environmental variables
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONDONTWRITEBYTECODE=TRUE
+ENV PYTHONUNBUFFERED=TRUE
+
+RUN mkdir /www /data /static && mkdir -p /opt/python/log
+
+# mount volume
+VOLUME /static
+
+# install system dependencies
+RUN apt-get update -y --fix-missing && apt-get upgrade -y \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        libgmp3-dev \
+        libz-dev \
+        libreadline-dev \
+        libncurses5-dev \
+        postgresql-client \
+        python3-dev \
+        supervisor \
+        netcat-openbsd \
+    && rm -rf /var/lib/apt/lists/*
+
+# Solvers
+WORKDIR /solvers
+COPY solvers/ /solvers
+
+# Solver: GLPK 4.65
+RUN cd /solvers && tar -zxvf glpk-4.65.tar.gz
+WORKDIR /solvers/glpk-4.65
+RUN ./configure \
+	&& make \
+	&& make check \
+	&& make install \
+	&& make distclean \
+	&& ldconfig \
+    # Cleanup
+	&& rm -rf /user/local/glpk-4.65.tar.gz \
+	&& apt-get clean
+
+# nginx config
+COPY _config/default.conf /etc/nginx/site-enabled/
+
+WORKDIR /www/
+
+# python packages
+COPY requirements.txt /www/
+RUN pip install --upgrade pip setuptools
+RUN pip install -r requirements.txt
+RUN pip install calliope==0.6.8 --no-deps
+RUN pip install gunicorn==20.1.0
+
+COPY calliope-files/sets.py /usr/local/lib/python3.8/site-packages/calliope/preprocess/sets.py
+COPY calliope-files/constraint_sets.py /usr/local/lib/python3.8/site-packages/calliope/preprocess/constraint_sets.py
+COPY calliope-files/defaults.yaml /usr/local/lib/python3.8/site-packages/calliope/config/defaults.yaml
+COPY calliope-files/costs.py /usr/local/lib/python3.8/site-packages/calliope/backend/pyomo/constraints/costs.py
+COPY calliope-files/model.py /usr/local/lib/python3.8/site-packages/calliope/backend/pyomo/model.py
+COPY calliope-files/util.py /usr/local/lib/python3.8/site-packages/calliope/backend/pyomo/util.py
+
+# For calliope==0.6.8 works with HiGHS solver with pyomo==6.7.0
+COPY ./calliope-files/backend/pyomo/model.py /usr/local/lib/python3.8/site-packages/calliope/backend/pyomo/model.py
+COPY ./calliope-files/backend/run.py /usr/local/lib/python3.8/site-packages/calliope/backend/run.py
+
+# operations
+ARG LOG_DIR=/opt/python/log
+RUN mkdir -p $LOG_DIR
+RUN touch $LOG_DIR/supervisord.log $LOG_DIR/celery_worker.log $LOG_DIR/celery_flower.log
+RUN chmod 777 $LOG_DIR/supervisord.log $LOG_DIR/celery_worker.log $LOG_DIR/celery_flower.log
+
+COPY . .
+
+RUN pip install -e .

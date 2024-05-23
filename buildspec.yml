@@ -1,0 +1,41 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.8
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - GIT_BRANCH=$CODEBUILD_SOURCE_VERSION
+      - echo Git branch name is $GIT_BRANCH.
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - SHA_TAG=${COMMIT_HASH:=latest}
+      - BUILD_TAG=$CODEBUILD_BUILD_NUMBER-$SHA_TAG
+      - BATCH_TAG=batch-$GIT_BRANCH
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Build docker image $IMAGE_REPO_NAME:$IMAGE_TAG ...
+      - cd calliope_app && docker build -t $IMAGE_REPO_NAME:latest -f ./deploy/Dockerfile .
+      - docker tag $IMAGE_REPO_NAME:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$BUILD_TAG
+      - docker tag $IMAGE_REPO_NAME:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - echo Build completed on `date`
+      - echo Start pushing the docker image...
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$BUILD_TAG
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - docker tag $IMAGE_REPO_NAME:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$BATCH_TAG
+      - |
+        BATCH_IMAGE_DETAILS=$(aws ecr describe-images --region us-west-2 --repository-name $IMAGE_REPO_NAME --image-ids imageTag=$BATCH_TAG --output json --query "imageDetails")
+        echo $BATCH_IMAGE_DETAILS
+        if [ "$BATCH_IMAGE_DETAILS" != "[]" ]; then
+          echo Delete existing batch image
+          aws ecr batch-delete-image --repository-name $IMAGE_REPO_NAME --image-ids imageTag=$BATCH_TAG
+        fi
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$BATCH_TAG
+      - echo The batch image pushed to ECR repo.
+      - echo All docker images pushed on `date`
+  post_build:
+    commands:
+      - echo Build done in `date`

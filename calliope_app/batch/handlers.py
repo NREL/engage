@@ -113,6 +113,7 @@ class ModelRunExecutor:
                 user_id=self.user_id
             )
             self._handle_on_success()
+            logger.info("Model run & export success!")
         except Exception as exc:
             self._handle_on_failure(exc)
             raise exc
