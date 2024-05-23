@@ -1407,9 +1407,15 @@ def remove_flags(request):
     return HttpResponse(json.dumps(payload), content_type="application/json")
  
 @csrf_protect
+<<<<<<<<< Temporary merge branch 1
 @ratelimit(key='user_or_ip', rate='10/m', block=False)
 @ratelimit(key='user_or_ip', rate='1000/d', block=False)
+def get_map_box_token(request):
+=========
+@ratelimit(key='ip', rate='10/m', block=False)
+@ratelimit(key='ip', rate='1000/d', block=False)
 def get_mapbox_token(request):
+>>>>>>>>> Temporary merge branch 2
     was_limited = getattr(request, 'limited', False)
     if was_limited:
         return HttpResponse({"token": ""}, status=429)
