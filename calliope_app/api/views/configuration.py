@@ -1409,7 +1409,7 @@ def remove_flags(request):
 @csrf_protect
 @ratelimit(key='user_or_ip', rate='10/m', block=False)
 @ratelimit(key='user_or_ip', rate='1000/d', block=False)
-def get_map_box_token(request):
+def get_mapbox_token(request):
     was_limited = getattr(request, 'limited', False)
     if was_limited:
         return HttpResponse({"token": ""}, status=429)
