@@ -1407,8 +1407,8 @@ def remove_flags(request):
     return HttpResponse(json.dumps(payload), content_type="application/json")
  
 @csrf_protect
-@ratelimit(key='user', rate='10/m', block=False) 
-@ratelimit(key='user', rate='1000/d', block=False) 
+@ratelimit(key='user', rate='10/m', block=False)
+@ratelimit(key='user', rate='1000/d', block=False)
 def get_mapbox_token(request):
     was_limited = getattr(request, 'limited', False)
     if was_limited:
