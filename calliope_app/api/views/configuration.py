@@ -1413,7 +1413,6 @@ def get_mapbox_token(request):
     was_limited = getattr(request, 'limited', False)
     if was_limited:
         return HttpResponse({"token": ""}, status=429)
-
     year, month = date.today().year, date.today().month
     user_key = str(request.user) 
     limit, created = RequestRateLimit.objects.get_or_create(
