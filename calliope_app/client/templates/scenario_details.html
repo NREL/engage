@@ -20,7 +20,7 @@
 
             <label for="scenario-description" class="col-sm-3 col-form-label"><b>{% trans "Description" %}:</b></label>
             <div class="col-sm-9">
-              <textarea id="scenario_description" class="scenario_description" data-placement="right" rows="4"> {{session_scenario.description}} </textarea>
+              <textarea id="scenario_description" class="scenario_description" data-placement="right" rows="4"> {% if session_scenario.description != None %}{{ session_scenario.description}}{% else %}{% endif %}</textarea>
              </div>
          </div>
     </div>
@@ -30,10 +30,8 @@
 <script>
 
   $( document ).ready(function() {
-
     $('#scenario_description, #scenario_name').on('change keyup paste', function () {
       $('#master-save').removeClass('hide');
     });
-
   });
 </script>
