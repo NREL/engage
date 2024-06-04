@@ -1441,8 +1441,8 @@ from django.core.mail import send_mail
 
 
 @csrf_protect
-@ratelimit(key='ip', rate='10/m')
-@ratelimit(key='ip', rate='1000/d')
+@ratelimit(key='user', rate='10/m')
+@ratelimit(key='user', rate='1000/d')
 def get_map_box_token(request):
     year, month = date.today().year, date.today().month
     id = int(f"{year}{month}")
