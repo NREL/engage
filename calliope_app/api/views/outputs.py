@@ -28,10 +28,13 @@ from django.utils.text import slugify
 from api.models.outputs import Run, Cambium
 from api.tasks import run_model, task_status, build_model,upload_ts
 from api.models.calliope import Abstract_Tech, Abstract_Tech_Param, Parameter
-from api.models.configuration import Model, ParamsManager, User_File, Location, Technology, Tech_Param, Loc_Tech, Loc_Tech_Param, Timeseries_Meta, Carrier
+from api.models.configuration import (
+    Model, ParamsManager, User_File, Location, Technology,
+    Tech_Param, Loc_Tech, Loc_Tech_Param, Timeseries_Meta, Carrier, Scenario_Param
+)
 from api.models.engage import ComputeEnvironment
 from api.utils import zip_folder, initialize_units, convert_units, noconv_units
-from batch.managers import AWSBatchJobManager 
+from batch.managers import AWSBatchJobManager
 from taskmeta.models import CeleryTask, BatchTask, batch_task_status
 
 from calliope_app.celery import app
@@ -262,7 +265,7 @@ def optimize(request):
             run.status = task_status.QUEUED
             run.save()
             payload = {"task_id": async_result.id}
-    
+
     # Batch task
     elif environment.type == "Container Job":
         manager = AWSBatchJobManager(compute_environment=environment)
@@ -372,7 +375,7 @@ def delete_run(request):
         except Exception as e:
             logger.warning("Cambium removal failed")
             logger.exception(e)
-    
+
     # Terminate Celery Task
     if run.run_task and run.run_task.status not in [task_status.FAILURE, task_status.SUCCESS]:
         task_id = run.run_task.task_id
@@ -397,7 +400,7 @@ def delete_run(request):
         run.batch_job.result = ""
         run.batch_job.traceback = reason
         run.batch_job.save()
-    
+
     run.delete()
 
     return HttpResponseRedirect("")
@@ -551,7 +554,7 @@ def upload_outputs(request):
     description (str): optional
     myfile (file): required
 
-    Returns: 
+    Returns:
 
     Example:
     POST: /api/upload_outputs/
@@ -578,7 +581,7 @@ def upload_outputs(request):
             out_dir = os.path.join(model_dir,"outputs")
             if not os.path.exists(out_dir):
                 os.makedirs(out_dir, exist_ok=True)
-            
+
             fs = FileSystemStorage()
             filename = os.path.basename(fs.save(os.path.join(out_dir,myfile.name), myfile))
 
@@ -613,7 +616,7 @@ def upload_locations(request):
     myfile (file): required
     col_map (dict): optional
 
-    Returns: 
+    Returns:
 
     Example:
     POST: /api/upload_locations/
@@ -669,7 +672,7 @@ def upload_locations(request):
                 location.available_area = row['available_area']
                 location.description = row['description']
                 location.save()
-            
+
         return render(request, "bulkresults.html", context)
 
     context['logs'].append("No file found")
@@ -688,7 +691,7 @@ def upload_techs(request):
     myfile (file): required
     col_map (dict): optional
 
-    Returns: 
+    Returns:
 
     Example:
     POST: /api/upload_techs/
@@ -754,7 +757,7 @@ def upload_techs(request):
                             tag=row['tag'],
                             pretty_tag=row['pretty_tag']
                         )
-                    
+
                 else:
                     technology = Technology.objects.filter(model=model,id=row['id']).first()
                     if not technology:
@@ -939,7 +942,7 @@ def upload_loctechs(request):
     myfile (file): required
     col_map (dict): optional
 
-    Returns: 
+    Returns:
 
     Example:
     POST: /api/upload_loctechs/
@@ -991,7 +994,7 @@ def upload_loctechs(request):
                         else:
                             context['logs'].append(str(i)+'- Tech '+str(row['technology'])+'-'+str(row['tag'])+' missing. Skipped.')
                         continue
-                
+
                 # Grab in/out carriers and their units
                 units_in_ids= ParamsManager.get_tagged_params('units_in')
                 units_out_ids= ParamsManager.get_tagged_params('units_out')
@@ -1178,7 +1181,7 @@ def upload_loctechs(request):
                                     update_dict['edit']['parameter'][p.pk] = convert_units(ureg,v,p_units)
                             except Exception as e:
                                 context['logs'].append(str(i)+'- Tech '+str(row['technology'])+': Column '+f+' '+str(e)+'. Error converting units. Parameter skipped.')
-                                continue                    
+                                continue
                 loctech.update(update_dict)
             except Exception as e:
                 logger.warning('ERROR in upload_loctechs')
@@ -1200,7 +1203,7 @@ def bulk_downloads(request):
     model_uuid (uuid): required
     file_list (list): required
 
-    Returns: 
+    Returns:
     Zip containing one or more files.
 
     Example:
@@ -1220,7 +1223,7 @@ def bulk_downloads(request):
         if locations_df.empty:
             locations_df = pd.DataFrame(columns=[f.name for f in Location._meta.get_fields()])
             locations_df.drop(columns=['location_1','location_2','model','created','updated','deleted'],inplace=True)
-        else:  
+        else:
             locations_df.drop(columns=['model_id','created','updated','deleted'],inplace=True)
         loc_buff = io.StringIO()
         locations_df.to_csv(loc_buff,index=False)
@@ -1336,7 +1339,7 @@ def bulk_downloads(request):
         loc_techs_buff = io.StringIO()
         loc_techs_df.to_csv(loc_techs_buff,index=False)
         file_buffs['loc_techs.csv'] = (loc_techs_buff)
-        
+
     zip_buff = io.BytesIO()
     zip_file = zipfile.ZipFile(zip_buff, 'w')
     for buff in file_buffs.keys():

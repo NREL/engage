@@ -1,7 +1,9 @@
 import json
 import os
 import re
-
+import logging
+from datetime import date
+from django.core.mail import send_mail
 import numpy as np
 from django.conf import settings
 from django.views.decorators.csrf import csrf_protect
@@ -13,6 +15,7 @@ from django.core.exceptions import ValidationError
 from django.utils.html import escape
 from PySAM import Windpower
 from PySAM.ResourceTools import FetchResourceFiles
+from django.db import connection
 from django_ratelimit.decorators import ratelimit
 from api.models.engage import RequestRateLimit
 from api.models.calliope import Abstract_Tech, Run_Parameter
@@ -23,7 +26,6 @@ from api.models.configuration import Location, Technology, Tech_Param, \
 from api.tasks import task_status, upload_ts, copy_model
 from api.utils import recursive_escape
 from taskmeta.models import CeleryTask
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -313,7 +315,8 @@ def update_carriers(request):
 
     if 'delete' in form_data:
         for i,c in form_data['delete']['carrier'].items():
-            Carrier.objects.filter(id=i).delete()
+            with connection.cursor() as cursor:
+                cursor.execute(f"DELETE FROM {Carrier._meta.db_table} WHERE id = %s", [i])
 
     if err_msg != '':
         payload = {"message": err_msg}
@@ -989,36 +992,40 @@ def toggle_scenario_loc_tech(request):
 
 
 @csrf_protect
-def update_scenario_params(request):
+def update_scenario(request):
     """
-    Update the parameters on a scenario. Parameter data is provided in a
-    form_data object which stores updates under the following keys:
+    Update the parameters on a scenario and scenario detail information. 
+    Parameter data is provided in a form_data object which stores updates under the following keys:
         'add', 'edit', 'delete'
 
     Parameters:
     model_uuid (uuid): required
     scenario_id (int): required
-    form_data (json): required
+    description (json): required
+    name (json): optional
 
     Returns (json): Action Confirmation
 
     Example:
-    POST: /api/update_scenario_params/
+    POST: /api/update_scenario/
     """
 
     model_uuid = request.POST["model_uuid"]
     scenario_id = request.POST["scenario_id"]
-    scenario_description = escape(request.POST["scenario_description"].strip())
+    scenario_description = escape(request.POST["description"].strip())
+    scenario_name = escape(request.POST["name"].strip())
     form_data = json.loads(request.POST["form_data"])
- 
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
  
     scenario = model.scenarios.filter(id=scenario_id).first()
+    if len(scenario_name) == 0:
+        scenario_name = scenario.name
     Scenario_Param.update(scenario, form_data)
  
     Scenario.objects.filter(id=scenario_id).update(
             description=scenario_description,
+            name=scenario_name
         )
 
     # Log Activity
@@ -1032,42 +1039,6 @@ def update_scenario_params(request):
     payload = {"message": "Success."}
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
-
-@csrf_protect
-def update_scenario_name(request):
-    """
-    Update the name of a scenario. 
-    Parameters:
-    model_uuid (uuid): required
-    scenario_id (int): required
-    new_scenario_name (str): required
-    Returns (json): Action confirmation
-    Example: 
-    POST: /api/update_scenario_name/
-    """
-    model_uuid = request.POST["model_uuid"]
-    scenario_id = request.POST["scenario_id"]
-    new_scenario_name = escape(request.POST["new_scenario_name"].strip())
-
-    model = Model.by_uuid(model_uuid)
-    model.handle_edit_access(request.user)
-    scenario = model.scenarios.filter(id=scenario_id).first()
-    #Scenario_Param.update(scenario, new_scenario_name)
-    if scenario: 
-        scenario.name = new_scenario_name
-        scenario.save()
-        #Log Activity
-        comment = "{} updated the scenario name to: {}".format(
-        request.user.get_full_name(), new_scenario_name
-        )
-        Model_Comment.objects.create(model=model, comment=comment, type="edit")
-        model.notify_collaborators(request.user)
-        model.deprecate_runs(scenario_id=scenario_id)
-
-        payload = {"message:" : "Scenario name updated successfully."}
-        return HttpResponse(json.dumps(payload), content_type="application/json")
-    return HttpResponse(json.dumps({"message": "Failed to update the scenario name, Invalid request"}), content_type="application/json")
-
 
 @csrf_protect
 def delete_scenario(request):
@@ -1434,21 +1405,24 @@ def remove_flags(request):
         payload = {"message": "Success."}
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
-
-from datetime import date
-from django.core.mail import send_mail
-
-
-
+ 
 @csrf_protect
+<<<<<<< rate-limit
 @ratelimit(key='user', rate='10/m')
 @ratelimit(key='user', rate='1000/d')
 def get_map_box_token(request):
+=======
+@ratelimit(key='user', rate='10/m', block=False)
+@ratelimit(key='user', rate='1000/d', block=False)
+def get_mapbox_token(request):
+    was_limited = getattr(request, 'limited', False)
+    if was_limited:
+        return HttpResponse({"token": ""}, status=429)
+
+>>>>>>> dev
     year, month = date.today().year, date.today().month
-    id = int(f"{year}{month}")
     user_key = str(request.user) 
     limit, created = RequestRateLimit.objects.get_or_create(
-        id=id,
         year=year, 
         month=month, 
         defaults={"user_requests": {}}
@@ -1457,28 +1431,24 @@ def get_map_box_token(request):
         limit.user_requests[user_key] = 0
     limit.user_requests[user_key] += 1
     limit.total += 1
-    if limit.total == 40000 and limit.total % 100 == 0 and limit.total < 50000: 
-            recipient_list = [admin.email for admin in User.objects.filter(is_superuser=True)]
-            if not recipient_list:
-                return
-            send_mail(
-                subject="NREL ENGAGE NOTIFICATION",
-                message="WARNING: you have hit 40,000 API calls on engage Mapbox",
-                from_email=settings.AWS_SES_FROM_EMAIL,
-                recipient_list=recipient_list
-            )
-    if limit <= 50000:
-            recipient_list = [admin.email for admin in User.objects.filter(is_superuser=True)]
-            if not recipient_list:
-                return
-            send_mail(
-                subject="NREL ENGAGE NOTIFICATION",
-                message="WARNING: you have hit 50,000 API calls on engage Mapbox. Mapbox will not render!",
-                from_email=settings.AWS_SES_FROM_EMAIL,
-                recipient_list=recipient_list
-            )
-            return 
-
+    recipient_list = [admin.email for admin in User.objects.filter(is_superuser=True)]
     limit.save()
-    payload = {"message": settings.MAPBOX_TOKEN}
+    if (limit.total >= 40000 and limit.total % 100 == 0) and (limit.total < 50000) and recipient_list:
+        send_mail(
+            subject="Engage Mapbox Alert",
+            message="WARNING: you have hit 40,000 API calls on engage Mapbox",
+            from_email=settings.AWS_SES_FROM_EMAIL,
+            recipient_list=recipient_list
+        )
+    if limit.total >= 50000 and recipient_list:
+        send_mail(
+            subject="Engage Mapbox Alert",
+            message="WARNING: you have hit 50,000 API calls on engage Mapbox. Mapbox will not render!",
+            from_email=settings.AWS_SES_FROM_EMAIL,
+            recipient_list=recipient_list
+        )
+        payload = {"token": ""}
+        return HttpResponse(json.dumps(payload), content_type="application/json")
+    # Human readable
+    payload = {"token": settings.MAPBOX_TOKEN}
     return HttpResponse(json.dumps(payload), content_type="application/json")

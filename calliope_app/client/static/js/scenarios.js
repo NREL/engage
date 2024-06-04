@@ -5,47 +5,63 @@ var bulk_confirmation = false,
     disable_new_constraint = true,
 	map_mode = 'scenarios',
     carriers = null,
-    constraints = ["demand_share_min", "demand_share_max", "demand_share_equals",
-     "demand_share_per_timestep_min", "demand_share_per_timestep_max", "demand_share_per_timestep_equals",
-      "demand_share_per_timestep_decision", "carrier_prod_share_min", "carrier_prod_share_max",
-       "carrier_prod_share_equals", "carrier_prod_share_per_timestep_min", "carrier_prod_share_per_timestep_max",
-        "carrier_prod_share_per_timestep_equals", "net_import_share_min", "net_import_share_max",
-         "net_import_share_equals", "carrier_prod_min", "carrier_prod_max", "carrier_prod_equals", 
-         "carrier_con_min", "carrier_con_max", "carrier_con_equals", "cost_max", "cost_min",
-       "cost_equals", "cost_var_max", "cost_var_min", "cost_var_equals", "cost_investment_max",
-    "cost_investment_min", "cost_investment_equals", "energy_cap_share_min", "energy_cap_share_max",
-"energy_cap_share_equals", "energy_cap_min", "energy_cap_max", "energy_cap_equals", "resource_area_min",
-"resource_area_max", "resource_area_equals", "storage_cap_min", "storage_cap_max", "storage_cap_equals"];
-
-const MAX_SCENARIO_NAME_LENGTH = 200;
+    // Re-factor to dictionary
+    constraints = {
+        "demand_share_min":"carriers", "demand_share_max":"carriers", "demand_share_equals":"carriers",
+        "demand_share_per_timestep_min":"carriers", "demand_share_per_timestep_max":"carriers", "demand_share_per_timestep_equals":"carriers",
+        "demand_share_per_timestep_decision":"carriers", "carrier_prod_share_min":"carriers", "carrier_prod_share_max":"carriers",
+        "carrier_prod_share_equals":"carriers", "carrier_prod_share_per_timestep_min":"carriers", "carrier_prod_share_per_timestep_max":"carriers",
+        "carrier_prod_share_per_timestep_equals":"carriers", "net_import_share_min":"carriers", "net_import_share_max":"carriers",
+        "net_import_share_equals":"carriers", "carrier_prod_min":"carriers", "carrier_prod_max":"carriers", "carrier_prod_equals":"carriers",
+        "carrier_con_min":"carriers", "carrier_con_max":"carriers", "carrier_con_equals":"carriers", "cost_max":"costs", "cost_min":"costs",
+        "cost_equals":"costs", "cost_var_max":"costs", "cost_var_min":"costs", "cost_var_equals":"costs", "cost_investment_max":"costs",
+        "cost_investment_min":"costs", "cost_investment_equals":"costs", "energy_cap_share_min":"none", "energy_cap_share_max":"none",
+        "energy_cap_share_equals":"none", "energy_cap_min":"none", "energy_cap_max":"none", "energy_cap_equals":"none", "resource_area_min":"none",
+        "resource_area_max":"none", "resource_area_equals":"none", "storage_cap_min":"none", "storage_cap_max":"none", "storage_cap_equals":"none",
+        "target_reserve_share_equals":"carriers", "target_reserve_share_max":"carriers", "target_reserve_share_min":"carriers",
+        "target_reserve_adder_equals":"carriers", "target_reserve_adder_max":"carriers", "target_reserve_adder_min":"carriers",
+        "target_reserve_abs_equals":"carriers", "target_reserve_abs_max":"carriers", "target_reserve_abs_min":"carriers",
+        "target_reserve_share_operating_equals":"carriers", "target_reserve_share_operating_max":"carriers",
+        "target_reserve_share_operating_min":"carriers", "target_reserve_abs_operating_equals":"carriers",
+        "target_reserve_abs_operating_max":"carriers", "target_reserve_abs_operating_min":"carriers",
+        "target_reserve_adder_operating_equals":"carriers", "target_reserve_adder_operating_max":"carriers", "target_reserve_adder_operating_min":"carriers"
+    };
 
 $( document ).ready(function() {
 
 	// Resize Dashboard
 	splitter_resize();
 
+	$('#map-legend').css("display", "none");
 	$('#master-new').removeClass('hide');
 
 	$('#scenario').on('change', function() {
 		get_scenario_configuration();
 	});
 
-	$('#master-settings').on('click', function() {
-		$('.master-btn').addClass('hide')
-		$('#master-save').removeClass('hide')
-		$('#master-cancel').removeClass('hide')
-
-		$('#form_scenario_settings').removeClass('hide')
-		$('#scenario_configuration').addClass('hide')
+    $('#scenario-settings').on('click', function() {
+		$('#pvwatts_form').hide();
+        $('#wtk_form').hide();
+		$('#scenario_constraints_json_form').hide();
+        $('#scenario_weights_json_form').hide();
+        $('#modal_scenario_settings').show();
+		$("#data-source-modal").css('display', "block");
 	});
 
 	$('#master-save').on('click', function() {
-		$('.master-btn').addClass('hide')
-		$('#master-settings').removeClass('hide');
+        $('.master-btn').addClass('hide')
+        $('#master-settings').removeClass('hide');
+        $('#form_scenario_settings').addClass('hide');
+        $('#scenario_configuration').removeClass('hide')
+        save_scenario_settings();
+	});
 
-		$('#form_scenario_settings').addClass('hide');
-		$('#scenario_configuration').removeClass('hide')
-		save_scenario_settings();
+	$('#modal-save').on('click', function() {
+        $('.master-btn').addClass('hide')
+        $('#master-settings').removeClass('hide');
+        $('#form_scenario_settings').addClass('hide');
+        $('#scenario_configuration').removeClass('hide')
+        save_modal_scenario_settings();
 	});
 
 	$('#master-new').on('click', function() {
@@ -54,6 +70,11 @@ $( document ).ready(function() {
 	});
 
 	$('#master-cancel').on('click', function() {
+		var model_uuid = $('#header').data('model_uuid');
+		window.location = '/' + model_uuid + '/scenarios/';
+	});
+
+	$('#modal-cancel').on('click', function() {
 		var model_uuid = $('#header').data('model_uuid');
 		window.location = '/' + model_uuid + '/scenarios/';
 	});
@@ -75,16 +96,14 @@ function save_scenario_settings() {
 	var model_uuid = $('#header').data('model_uuid'),
 		scenario_id = $("#scenario option:selected").data('id')
 		form_data = $("#form_scenario_settings :input").serializeJSON();
-
-	var scenario_description = $('#scenario_description').val();
-
 	$.ajax({
-		url: '/' + LANGUAGE_CODE + '/api/update_scenario_params/',
+		url: '/' + LANGUAGE_CODE + '/api/update_scenario/',
 		type: 'POST',
 		data: {
 			'model_uuid': model_uuid,
 			'scenario_id': scenario_id,
-			'scenario_description' : scenario_description,
+			'description' : $('#scenario_description').val(),
+            'name' :$('#scenario_name').val(),
 			'form_data': JSON.stringify(form_data),
 			'csrfmiddlewaretoken': getCookie('csrftoken'),
 		},
@@ -94,14 +113,38 @@ function save_scenario_settings() {
 			location.reload();
 		}
 	});
-
 }
+
+function save_modal_scenario_settings() {
+
+	var model_uuid = $('#header').data('model_uuid'),
+		scenario_id = $("#scenario option:selected").data('id')
+		form_data = $("#scenario_settings :input").serializeJSON();
+	$.ajax({
+		url: '/' + LANGUAGE_CODE + '/api/update_scenario/',
+		type: 'POST',
+		data: {
+			'model_uuid': model_uuid,
+			'scenario_id': scenario_id,
+			'description' : $('#scenario_description').val(),
+            'name' :$('#scenario_name').val(),
+			'form_data': JSON.stringify(form_data),
+			'csrfmiddlewaretoken': getCookie('csrftoken'),
+		},
+		dataType: 'json',
+		success: function (data) {
+			window.onbeforeunload = null;
+			location.reload();
+		}
+	});
+}
+
 
 function get_scenario_configuration() {
 	$('.viz-spinner').show();
 	var model_uuid = $('#header').data('model_uuid'),
 		scenario_id = $("#scenario option:selected").data('id');
-	
+
 	if (scenario_id != undefined) {
 		$.ajax({
 			url: '/' + LANGUAGE_CODE + '/component/scenario/',
@@ -113,6 +156,7 @@ function get_scenario_configuration() {
 			success: function (data) {
 				active_lt_ids = data['active_lt_ids'];
 				loc_techs = data['loc_techs'];
+        $('#scenario_details').html(data['scenario_details']);
 				$('#scenario_settings').html(data['scenario_settings']);
 				activate_scenario_settings();
 
@@ -168,25 +212,10 @@ function get_scenario_configuration() {
 					$('#master-settings').removeClass('hide');
 				}
 
-				$('#edit-scenario-name').on('click', function() {
-					var currentScenarioName = prompt('Enter the new scenario name:','');
-
-					if(currentScenarioName ==null || currentScenarioName == '') {
-						alert('Scenario Name cannot be empty. Please enter a scenario name.');
-					}
-                    else {
-                        if(currentScenarioName.length > MAX_SCENARIO_NAME_LENGTH) {
-                            alert('Scenario Name is too long. Please enter a name with a maximum length of '+ MAX_SCENARIO_NAME_LENGTH + ' characters (including spaces).');
-                        }
-                        else {
-                            $('#scenario-name').text(currentScenarioName);
-						    update_scenario_name(currentScenarioName);
-                        }
-                    }
-				});
-
 				$('#scenario-delete').on('click', function() {
 					var model_uuid = $('#header').data('model_uuid'),
+                    // Here is tto change
+
 						scenario_id = $("#scenario option:selected").data('id');
 					var confirmation = confirm('This will remove all configurations and runs for this scenario.\nAre you sure you want to delete?');
 					if (confirmation) {
@@ -207,35 +236,12 @@ function get_scenario_configuration() {
 					};
 				});
 
-				function update_scenario_name(newScenarioName){
-					var model_uuid = $('#header').data('model_uuid'),
-					scenario_id = $("#scenario option:selected").data('id');
-					$.ajax({
-						url: '/' + LANGUAGE_CODE + '/api/update_scenario_name/',
-						type: 'POST',
-						data: {
-							'model_uuid': model_uuid,
-							'scenario_id': scenario_id,
-							'new_scenario_name': newScenarioName,
-							'csrfmiddlewaretoken': getCookie('csrftoken'),
-						},
-						dataType: 'json',
-						success: function (data) {
-							window.onbeforeunload = null;
-							location.reload();
-							alert('Scenario Name Updated Successfully.');
-						},
-						error: function() {
-							alert('Failed to update scenario name. Please try again.');
-						}
-					});
-				};
 			}
 		});
 	} else {
 		$('.viz-spinner').hide();
 		$('#map').remove();
-		$('#scenario_configuration').html('<div class="col-12 text-center"><br/><br/><h4>Select or create a scenario above!</h4></div>');
+		// $('#scenario_configuration').html('<div class="col-12 text-center"><br/><br/><h4>Select or create a scenario above!</h4></div>');
 	};
 };
 
@@ -262,7 +268,7 @@ function updateDialogObject() {
         } else {
             delete dialogObj[constraint].techs_rhs;
         }
-        
+
         // Locations
         var locsInput = $("#" + constraintId + "_locs").val();
         if (locsInput && locsInput.length > 0) {
@@ -289,7 +295,7 @@ function updateDialogObject() {
         Object.keys(dialogObj[constraint]).forEach(fieldKey => {
             if (fieldKey !== "locs" && fieldKey !== "techs" && fieldKey !== "techs_lhs" && fieldKey !== "techs_rhs" && fieldKey !== "locs_lhs" && fieldKey !== "locs_rhs") {
                 let value = $("#" + constraintId + fieldKey + "-val").val() ? $("#" + constraintId + fieldKey + "-val").val() : "";
-                if (constraints.indexOf(fieldKey) <= 30) {
+                if (constraints[fieldKey] !== "none") {
                     let key = $("#" + constraintId + fieldKey + "-key").val() ? $("#" + constraintId + fieldKey + "-key").val() : "";
                     dialogObj[constraint][fieldKey] = {};
                     if (key) {
@@ -297,7 +303,7 @@ function updateDialogObject() {
                     }
                 } else {
                     dialogObj[constraint][fieldKey] = value;
-                } 
+                }
             }
         });
     });
@@ -305,7 +311,7 @@ function updateDialogObject() {
 
 function getModelCarriers() {
     var model_uuid = $('#header').data('model_uuid');
-    
+
     $.ajax({
         url: '/' + LANGUAGE_CODE + '/component/group_constraint_options/',
         async: false,
@@ -329,7 +335,7 @@ function updateDialogGroupConstraints(initialLoad) {
     Object.keys(dialogObj).forEach(constraint => {
         let constraintId = safeHTMLId(constraint);
         $('#dialog-inputs').append( "<div id='" + constraintId + "' style='padding-top:1.5em'></div>");
-        $("#" + constraintId).append( "<div class='cateogry-expander'><a><h5 class='constraint-name'><div style='float: right;'><i class='fas fa-caret-down'></i><i class='fas fa-caret-up hide'></i>" + constraint 
+        $("#" + constraintId).append( "<div class='cateogry-expander'><a><h5 class='constraint-name'><div style='float: right;'><i class='fas fa-caret-down'></i><i class='fas fa-caret-up hide'></i>" + constraint
         + "</div></h5></a></div>");
         $("#" + constraintId).append( "<div id='" + constraintId + "-content" + "' class=''>");
         let constraintContent = "#" + constraintId + "-content";
@@ -337,7 +343,7 @@ function updateDialogGroupConstraints(initialLoad) {
 
         //Display techs and locs first
         dialogObj[constraint].techs = dialogObj[constraint].techs ? dialogObj[constraint].techs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_techs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter technologies.'><b>" + djangoTranslateTechnologies + "</b></label><br>" + 
+        $(constraintContent).append("<div id='" + constraintId + "_techs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter technologies.'><b>" + djangoTranslateTechnologies + "</b></label><br>" +
         "<select id='" + constraintId + "_techs' name='" + djangoTranslateTechnologies + "' multiple searchable></select></div>");
         for (var t in technologies) {
             $('#' + constraintId + '_techs').append('<option value="'+ technologies[t].name + '" '+ (dialogObj[constraint].techs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
@@ -347,7 +353,7 @@ function updateDialogGroupConstraints(initialLoad) {
         });
 
         dialogObj[constraint].techs_lhs = dialogObj[constraint].techs_lhs ? dialogObj[constraint].techs_lhs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_techs_lhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter left hand-side technologies.'><b>" + djangoTranslateTechnologies + djangoTranslateLeftHand + "</b></label><br>" + 
+        $(constraintContent).append("<div id='" + constraintId + "_techs_lhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter left hand-side technologies.'><b>" + djangoTranslateTechnologies + djangoTranslateLeftHand + "</b></label><br>" +
         "<select id='" + constraintId + "_techs_lhs' name='" + djangoTranslateTechnologies + ' ' + djangoTranslateLeftHand + "' multiple searchable></select></div>");
         for (var t in technologies) {
             $('#' + constraintId + '_techs_lhs').append('<option value="'+ technologies[t].name + '" '+ (dialogObj[constraint].techs_lhs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
@@ -357,7 +363,7 @@ function updateDialogGroupConstraints(initialLoad) {
         });
 
         dialogObj[constraint].techs_rhs = dialogObj[constraint].techs_rhs ? dialogObj[constraint].techs_rhs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_techs_rhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter right hand-side technologies.'><b>" + djangoTranslateTechnologies + djangoTranslateRightHand + "</b></label><br>" + 
+        $(constraintContent).append("<div id='" + constraintId + "_techs_rhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter right hand-side technologies.'><b>" + djangoTranslateTechnologies + djangoTranslateRightHand + "</b></label><br>" +
         "<select id='" + constraintId + "_techs_rhs' name='" + djangoTranslateTechnologies + ' ' + djangoTranslateRightHand + "' multiple searchable></select></div>");
         for (var t in technologies) {
             $('#' + constraintId + '_techs_rhs').append('<option value="'+ technologies[t].name + '" '+ (dialogObj[constraint].techs_rhs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
@@ -371,7 +377,7 @@ function updateDialogGroupConstraints(initialLoad) {
         }
 
         dialogObj[constraint].locs = dialogObj[constraint].locs ? dialogObj[constraint].locs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_locs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter locations.'><b>" + djangoTranslateLocations + "</b></label><br>" + 
+        $(constraintContent).append("<div id='" + constraintId + "_locs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter locations.'><b>" + djangoTranslateLocations + "</b></label><br>" +
         "<select id='" + constraintId + "_locs' name='" + djangoTranslateLocations + "' multiple searchable></select></div>");
         for (var l in locations) {
             $('#' + constraintId + '_locs').append('<option value="'+ locations[l].name + '" '+ (dialogObj[constraint].locs.includes(locations[l].name) ? ' selected' : '') +'>' + locations[l].pretty_name + '</option>');
@@ -381,7 +387,7 @@ function updateDialogGroupConstraints(initialLoad) {
         });
 
         dialogObj[constraint].locs_lhs = dialogObj[constraint].locs_lhs ? dialogObj[constraint].locs_lhs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_locs_lhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter left hand-side locations.'><b>" + djangoTranslateLocations + ' ' + djangoTranslateLeftHand + "</b></label><br>" + 
+        $(constraintContent).append("<div id='" + constraintId + "_locs_lhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter left hand-side locations.'><b>" + djangoTranslateLocations + ' ' + djangoTranslateLeftHand + "</b></label><br>" +
         "<select id='" + constraintId + "_locs_lhs' name='" + djangoTranslateLocations + ' ' + djangoTranslateLeftHand + "' multiple searchable></select></div>");
         for (var l in locations) {
             $('#' + constraintId + '_locs_lhs').append('<option value="'+ locations[l].name + '" '+ (dialogObj[constraint].locs_lhs.includes(locations[l].name) ? ' selected' : '') +'>' + locations[l].pretty_name + '</option>');
@@ -391,7 +397,7 @@ function updateDialogGroupConstraints(initialLoad) {
         });
 
         dialogObj[constraint].locs_rhs = dialogObj[constraint].locs_rhs ? dialogObj[constraint].locs_rhs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_locs_rhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter right hand-side locations.'><b>" + djangoTranslateLocations + ' ' + djangoTranslateRightHand + "</b></label><br>" + 
+        $(constraintContent).append("<div id='" + constraintId + "_locs_rhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter right hand-side locations.'><b>" + djangoTranslateLocations + ' ' + djangoTranslateRightHand + "</b></label><br>" +
         "<select id='" + constraintId + "_locs_rhs' name='" + djangoTranslateLocations + ' ' + djangoTranslateRightHand + "' multiple searchable></select></div>");
         for (var l in locations) {
             $('#' + constraintId + '_locs_rhs').append('<option value="'+ locations[l].name + '" '+ (dialogObj[constraint].locs_rhs.includes(locations[l].name) ? ' selected' : '') +'>' + locations[l].pretty_name + '</option>');
@@ -416,7 +422,7 @@ function updateDialogGroupConstraints(initialLoad) {
 
         if (!(dialogObj[constraint].techs_rhs && dialogObj[constraint].techs_lhs && dialogObj[constraint].techs)) {
             $("#" + constraintId + "_toggle_techs").click(function(){
-                $("#" + constraintId + "_techs_container").toggle();                    
+                $("#" + constraintId + "_techs_container").toggle();
                 $("#" + constraintId + "_techs_lhs_container").toggle();
                 $("#" + constraintId + "_techs_rhs_container").toggle();
             });
@@ -425,11 +431,11 @@ function updateDialogGroupConstraints(initialLoad) {
         if (!dialogObj[constraint].locs_rhs && !dialogObj[constraint].locs_lhs) {
             $("#" + constraintId + "_locs_lhs_container").hide();
             $("#" + constraintId + "_locs_rhs_container").hide();
-        } 
+        }
 
         if (!(dialogObj[constraint].locs_rhs && dialogObj[constraint].locs_lhs && dialogObj[constraint].locs)) {
             $("#" + constraintId + "_toggle_locs").click(function(){
-                $("#" + constraintId + "_locs_container").toggle();                    
+                $("#" + constraintId + "_locs_container").toggle();
                 $("#" + constraintId + "_locs_lhs_container").toggle();
                 $("#" + constraintId + "_locs_rhs_container").toggle();
             });
@@ -473,14 +479,14 @@ function updateConstraintTypes(constraint, constraintId, constraintContent) {
             });
             let constraintFields = "#fields-" + constraintId + fieldKey;
             $(constraintContent).append("<div id='fields-" + constraintId + fieldKey + "' class='constraint-key-value' ></div>");
-            if (constraints.indexOf(fieldKey) <= 30) {
+            if (constraints[fieldKey] != 'none') {
                 if (!dialogObj[constraint][fieldKey] || typeof dialogObj[constraint][fieldKey] !== 'object') {
                     dialogObj[constraint][fieldKey] = {};
                 }
                 const key = Object.keys(dialogObj[constraint][fieldKey]).length !== 0 ? Object.keys(dialogObj[constraint][fieldKey])[0] : "";
                 const val = key ? dialogObj[constraint][fieldKey][Object.keys(dialogObj[constraint][fieldKey])[0]] : "";
                 $(constraintFields).append( "<label><b>" + djangoTranslateKey + "</b></label>");
-                let dropdownArray = constraints.indexOf(fieldKey) <= 21 ? carriers : ["co2", "ch4", "co2e", "n2o", "monetary"];
+                let dropdownArray = constraints[fieldKey] == 'carriers' ? carriers : ["co2", "ch4", "co2e", "n2o", "monetary"];
                 if (key.length > 0 && dropdownArray.indexOf(key) === -1) {
                     dropdownArray.push(key);
                 }
@@ -512,8 +518,10 @@ function updateConstraintTypes(constraint, constraintId, constraintContent) {
     $(constraintContent).append( "<br><label><b>" + djangoTranslateNew + ' ' + djangoTranslateConstraint + "</b></label>");
     $(constraintContent).append( "<select style='margin-bottom:1em' class='form-control smol' id='new-constraint-dropdown-" + constraintId + "' data-toggle='tooltip' data-placement='left'></select>" );
     $('#new-constraint-dropdown-' + constraintId ).append( "<option></option>" );
-    for (let i = 0; i < constraints.length; i++) {
-        $('#new-constraint-dropdown-' + constraintId ).append( "<option value=" + constraints[i] + ">" + constraints[i] + "</option>" );
+    i = 0;
+    for (const [fieldKey,fieldValue] of Object.entries(constraints)) {
+        i=i+1;
+        $('#new-constraint-dropdown-' + constraintId ).append( "<option value=" + fieldKey + ">" + fieldKey + "</option>" );
     }
 
     $(constraintContent).append("<div class='form-group col-md-8'><input disabled id='new_constraint_btn_" + constraintId + "' type='submit' class='btn btn-sm btn-success' name='" + constraint + "' value='+ " + djangoTranslateConstraint + "'></div>");
@@ -555,7 +563,7 @@ function setGroupConstraintClassLogic() {
             $(this).find('.fa-caret-up').addClass('hide');
             $(this).find('.fa-caret-down').removeClass('hide');
         }
-    }); 
+    });
 }
 
 function activate_scenario_settings() {
@@ -592,6 +600,7 @@ function activate_scenario_settings() {
 		$('#pvwatts_form').hide();
         $('#wtk_form').hide();
 		$('#scenario_constraints_json_form').hide();
+        $('#modal_scenario_settings').hide();
         $('#scenario_weights_json_form').show();
 		$("#data-source-modal").css('display', "block");
 
@@ -614,6 +623,7 @@ function activate_scenario_settings() {
 		$('#pvwatts_form').hide();
         $('#wtk_form').hide();
         $('#scenario_weights_json_form').hide();
+        $('#modal_scenario_settings').hide();
 		$('#scenario_constraints_json_form').show();
 		$("#data-source-modal").css('display', "block");
 
@@ -635,7 +645,7 @@ function activate_scenario_settings() {
                                 newTechs += ","
                             }
                         }
-                    } 
+                    }
                     dialogObj[constraint].techs = newTechs;
                 }
                 if (fieldKey === "techs_lhs") {
@@ -647,7 +657,7 @@ function activate_scenario_settings() {
                                 newTechs += ","
                             }
                         }
-                    } 
+                    }
                     dialogObj[constraint].techs_lhs = newTechs;
                 }
                 if (fieldKey === "techs_rhs") {
@@ -659,7 +669,7 @@ function activate_scenario_settings() {
                                 newTechs += ","
                             }
                         }
-                    } 
+                    }
                     dialogObj[constraint].techs_rhs = newTechs;
                 }
 
@@ -710,13 +720,13 @@ function activate_scenario_settings() {
         $('#tabs li a:not(:first)').addClass('inactive');
         $('.tab-container').hide();
         $('.tab-container:first').show();
-            
+
         $('#tabs li a').click(function(){
             var t = $(this).attr('id');
-            if($(this).hasClass('inactive')){ 
-                $('#tabs li a').addClass('inactive');           
+            if($(this).hasClass('inactive')){
+                $('#tabs li a').addClass('inactive');
                 $(this).removeClass('inactive');
-                
+
                 $('.tab-container').hide();
                 $('#'+ t + 'C').fadeIn('slow');
             }
@@ -732,7 +742,13 @@ function activate_scenario_settings() {
     $('#settings_import_data').on('click', function() {
         updateDialogObject();
         $('textarea[name="edit' + dialogInputId + '"]').text(JSON.stringify(dialogObj, undefined, 2));
-        $('#data-source-modal').hide();
+        $('#scenario_constraints_json_form').hide();
+        $('#modal_scenario_settings').show();
+	});
+
+    $('#settings_import_cancel').on('click', function() {
+        $('#scenario_constraints_json_form').hide();
+        $('#modal_scenario_settings').show();
 	});
 
     $('#settings_weights_import_data').on('click', function() {
@@ -743,7 +759,10 @@ function activate_scenario_settings() {
         dialogObj["co2e"] = $("#co2e").val();
 
         $('textarea[name="edit' + dialogInputId + '"]').text(JSON.stringify(dialogObj, undefined, 2));
-        $('#data-source-modal').hide();
+        $('#scenario_weights_json_form').hide();
+        $('#modal_scenario_settings').show();
+
+        // $('#data-source-modal').hide();
 	});
 
     $('.group-constraints-close, .weights-close').on('click', function() {
@@ -759,7 +778,6 @@ function activate_scenario_settings() {
             $('#new_group_constraint_btn').attr("disabled", true);
         }
     });
-
 }
 
 function filter_nodes() {

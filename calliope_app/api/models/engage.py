@@ -63,7 +63,7 @@ class User_Profile(models.Model):
                 password=password,
                 is_active=False
             )
-        
+
         profile = User_Profile.objects.filter(user=user).first()
         if not profile:
             profile = User_Profile.objects.create(
@@ -114,6 +114,7 @@ class ComputeEnvironment(models.Model):
     full_name = models.CharField(max_length=120)
     is_default = models.BooleanField(default=False)
     type = models.CharField(max_length=60, choices=ENV_TYPES)
+    solver = models.CharField(max_length=60, null=True, blank=True)
     ncpu = models.PositiveSmallIntegerField(null=True, blank=True)
     memory = models.PositiveSmallIntegerField(null=True, blank=True)
     cmd = models.TextField(blank=True, null=True)

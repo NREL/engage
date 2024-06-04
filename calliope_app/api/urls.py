@@ -32,9 +32,9 @@ urlpatterns = [
     path('remove_flags/',
          configuration_views.remove_flags,
          name='remove_flags'),
-    path('get_map_box_token/',
-         configuration_views.get_map_box_token,
-         name='map_box_token'),
+    path('get_mapbox_token/',
+         configuration_views.get_mapbox_token,
+         name='get_mapbox_token'),
 
     # Locations
     path('update_location/',
@@ -81,15 +81,12 @@ urlpatterns = [
     path('toggle_scenario_loc_tech/',
          configuration_views.toggle_scenario_loc_tech,
          name='toggle_scenario_loc_tech'),
-    path('update_scenario_params/',
-         configuration_views.update_scenario_params,
-         name='update_scenario_params'),
+    path('update_scenario/',
+         configuration_views.update_scenario,
+         name='update_scenario'),
     path('delete_scenario/',
          configuration_views.delete_scenario,
          name='delete_scenario'),
-     path('update_scenario_name/', 
-          configuration_views.update_scenario_name, 
-          name = 'update_scenario_name'),
 
     # Files
     path('upload_file/',

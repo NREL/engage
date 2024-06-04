@@ -171,12 +171,12 @@ class APIScenarioURLTestCase(TestCase):
                 self.assertEqual(reverse(view_name), url)
                 self.assertEqual(resolve(url).view_name, view_name)
 
-    def test_update_scenario_params(self):
-        view_name = "update_scenario_params"
+    def test_update_scenario(self):
+        view_name = "update_scenario"
 
         for language_code, _ in settings.LANGUAGES:
             with translation.override(language_code):
-                url = f"/{language_code}/api/update_scenario_params/"
+                url = f"/{language_code}/api/update_scenario/"
                 self.assertEqual(reverse(view_name), url)
                 self.assertEqual(resolve(url).view_name, view_name)
 

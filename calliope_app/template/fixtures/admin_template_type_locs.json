@@ -1,12 +1,122 @@
 [
-  {
-    "model": "template.template_type_loc",
-    "pk": 1,
-    "fields": {
-      "name": "Binary ORC Location",
-      "template_type": 1,
-      "latitude_offset": 0.0,
-      "longitude_offset": 0.0
+    {
+        "pk": 1,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "||primary||",
+            "template_type": 4,
+            "latitude_offset": 0.00305,
+            "longitude_offset": 0.002024
+        }
+    },
+    {
+        "pk": 2,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "||primary||",
+            "template_type": 2,
+            "latitude_offset": 0.002986,
+            "longitude_offset": 0.001809
+        }
+    },
+    {
+        "pk": 3,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "||primary||",
+            "template_type": 3,
+            "latitude_offset": 0.003065,
+            "longitude_offset": 0.001828
+        }
+    },
+    {
+        "pk": 4,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "||primary||",
+            "template_type": 1,
+            "latitude_offset": 0.003152,
+            "longitude_offset": 0.001944
+        }
+    },
+    {
+        "pk": 5,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "||primary||",
+            "template_type": 5,
+            "latitude_offset": 0.002977,
+            "longitude_offset": 0.001899
+        }
+    },
+    {
+        "pk": 6,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "||primary||",
+            "template_type": 6,
+            "latitude_offset": 0.002977,
+            "longitude_offset": 0.002031
+        }
+    },
+    {
+        "pk": 7,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "||primary||",
+            "template_type": 7,
+            "latitude_offset": 0.003158,
+            "longitude_offset": 0.001909
+        }
+    },
+    {
+        "pk": 8,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "||primary||",
+            "template_type": 8,
+            "latitude_offset": 0.003077,
+            "longitude_offset": 0.001859
+        }
+    },
+    {
+        "pk": 9,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "||primary||",
+            "template_type": 9,
+            "latitude_offset": 0.002953,
+            "longitude_offset": 0.002147
+        }
+    },
+    {
+        "pk": 10,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "||primary||",
+            "template_type": 10,
+            "latitude_offset": 0.003054,
+            "longitude_offset": 0.001977
+        }
+    },
+    {
+        "pk": 11,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "||primary||",
+            "template_type": 11,
+            "latitude_offset": 0.002954,
+            "longitude_offset": 0.002007
+        }
+    },
+    {
+        "pk": 12,
+        "model": "template.template_type_loc",
+        "fields": {
+            "name": "||primary||",
+            "template_type": 12,
+            "latitude_offset": 0.002953,
+            "longitude_offset": 0.001858
+        }
     }
-  }
 ]

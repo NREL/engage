@@ -21,30 +21,13 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-free-6.0.0-web/css/all.min.css' %}">
 
-	<!-- <link rel="stylesheet" type="text/css" href="{% static 'leaflet/leaflet.css' %}">
-	<script type="text/javascript" src="{% static 'leaflet/leaflet.js' %}"></script> -->
 
 	{% if mapbox_token %}
-	
+	<!-- Load MapBox -->
 	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
 	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet' />
-	<script type="text/javascript" id="mapbox-token">
-		$.ajax({
-			url: '/en/api/get_map_box_token/',
-			data: {
-				'user': "user"
-				// 'user': '{{ user }}',
-			},
-			type: 'GET',
-			dataType: 'json',
-			success: function (data) {
-				console.log(`data ${data}`);
-				mapboxgl.accessToken = data.message; 
-			},
-			error: function (xhr, status, error) {
-				console.error("Error fetching Mapbox token: ", error);
-			}
-		});
+	<script type="text/javascript">
+		mapboxgl.accessToken = "{{ mapbox_token }}";
 	</script>
 	{% endif %}
 
@@ -222,14 +205,15 @@
 
 	<!-- Data Source Modal -->
 	{% if model %}
-	<div id="data-source-modal">
+	<div id="data-source-modal" style="z-index: 100001;">
 	  	<div id="data-source-modal-content">
 	  		{% include "pvwatts_form.html" %}
 	  		{% include "wtk_form.html" %}
             {% include "scenario_constraints_json_form.html" %}
             {% include "scenario_weights_json_form.html" %}
 			{% include "new_carrier.html" %}
-	  	</div>
+			{% include "scenario_settings_modal.html" %}
+		</div>
 	</div>
 	{% endif %}
 

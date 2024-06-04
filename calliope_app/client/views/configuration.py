@@ -1,3 +1,4 @@
+import json
 from django.conf import settings
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -5,14 +6,15 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.db.models import Q
 from django_ratelimit.decorators import ratelimit
+from django.http import JsonResponse
 from api.models.engage import Help_Guide
 from api.models.calliope import Parameter, Abstract_Tech
 from api.models.configuration import Model, User_File, \
     Technology, Loc_Tech, Timeseries_Meta, Model_User, \
     Model_Comment, Carrier, Tech_Param, Loc_Tech_Param
-import requests
 from pytz import common_timezones
 import logging
+from api.views.configuration import get_mapbox_token
 
 logger = logging.getLogger(__name__)
 
@@ -79,7 +81,12 @@ def locations_view(request, model_uuid):
     Example:
     http://0.0.0.0:8000/<model_uuid>/locations
     """
-
+    token_response = get_mapbox_token(request)
+    if token_response.status_code == 200:
+        response = json.loads(token_response.content.decode('utf-8'))
+        token = response.get("token") 
+    else:
+        token = ""
     model = Model.by_uuid(model_uuid)
     try:
         can_edit = model.handle_view_access(request.user)
@@ -103,7 +110,6 @@ def locations_view(request, model_uuid):
             loc_techs[l2] = [lt]
         elif l2 is not None:
             loc_techs[l2].append(lt)
-    logger.info(f"Session Stuff: {request.user}")
 
     context = {
         "user": request.user,
@@ -112,7 +118,7 @@ def locations_view(request, model_uuid):
         "model": model,
         "locations": locations,
         "loc_techs": loc_techs,
-        "mapbox_token": True,
+        "mapbox_token": token,
         "can_edit": can_edit,
         "help_content": Help_Guide.get_safe_html('locations'),
     }
@@ -212,6 +218,12 @@ def loc_techs_view(request, model_uuid):
     Example:
     http://0.0.0.0:8000/<model_uuid>/loc_techs
     """
+    token_response = get_mapbox_token(request)
+    if token_response.status_code == 200:
+        response = json.loads(token_response.content.decode('utf-8'))
+        token = response.get("token") 
+    else:
+        token = ""
 
     model = Model.by_uuid(model_uuid)
     try:
@@ -229,14 +241,13 @@ def loc_techs_view(request, model_uuid):
         session_technology_id = int(session_technology_id)
     if session_loc_tech_id:
         request.session['loc_tech_id'] = int(session_loc_tech_id)
-    logger.info(f"Session Stuff: {request.session}")
     context = {
         "timezones": common_timezones,
         "model": model,
         "technologies": list(technologies),
         "session_technology_id": session_technology_id,
         "can_edit": can_edit,
-        "mapbox_token": True,
+        "mapbox_token": token,
         "help_content": Help_Guide.get_safe_html('nodes'),
     }
 
@@ -258,7 +269,12 @@ def scenarios_view(request, model_uuid):
     Example:
     http://0.0.0.0:8000/<model_uuid>/scenarios
     """
-
+    token_response = get_mapbox_token(request)
+    if token_response.status_code == 200:
+        response = json.loads(token_response.content.decode('utf-8'))
+        token = response.get("token") 
+    else:
+        token = ""
     model = Model.by_uuid(model_uuid)
     try:
         can_edit = model.handle_view_access(request.user)
@@ -269,16 +285,14 @@ def scenarios_view(request, model_uuid):
 
     session_scenario_id = request.session.get('scenario_id', None)
     session_scenario = scenarios.filter(id=session_scenario_id).first()
-    api_url = "http://0.0.0.0:8000/api/map_box_token"
-    response = requests.get(api_url)
-    logger.info(f"User {request.user}")
+
     context = {
         "user": request.user,
         "timezones": common_timezones,
         "model": model,
         "scenarios": scenarios,
         "session_scenario": session_scenario,
-        "mapbox_token": True,
+        "mapbox_token": token,
         "can_edit": can_edit,
         "help_content": Help_Guide.get_safe_html('scenarios'),
     }

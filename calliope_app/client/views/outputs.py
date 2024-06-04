@@ -1,15 +1,15 @@
+import json
 from django.conf import settings
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 import requests
-
 from api.models.engage import Help_Guide, ComputeEnvironment
 from api.models.configuration import Model
-
 import re
 from pytz import common_timezones
+from api.views.configuration import get_mapbox_token
 
 
 def runs_view(request, model_uuid):
@@ -24,6 +24,12 @@ def runs_view(request, model_uuid):
     Example:
     http://0.0.0.0:8000/<model_uuid>/run
     """
+    token_response = get_mapbox_token(request)
+    if token_response.status_code == 200:
+        response = json.loads(token_response.content.decode('utf-8'))
+        token = response.get("token") 
+    else:
+        token = ""
 
     model = Model.by_uuid(model_uuid)
     try:
@@ -42,7 +48,7 @@ def runs_view(request, model_uuid):
         "scenarios": scenarios,
         "session_scenario": session_scenario,
         "can_edit": can_edit,
-        "mapbox_token": True,
+        "mapbox_token": token,
         "cambium_url": settings.CAMBIUM_URL + '?project=' + str(model.uuid),
         "help_content": Help_Guide.get_safe_html('runs'),
     }
@@ -99,6 +105,12 @@ def add_runs_view(request, model_uuid, scenario_id):
 def map_viz_view(request, model_uuid, run_id):
     """ Example:
     http://0.0.0.0:8000/<model_uuid>/<run_id>/map_viz """
+    token_response = get_mapbox_token(request)
+    if token_response.status_code == 200:
+        response = json.loads(token_response.content.decode('utf-8'))
+        token = response.get("token") 
+    else:
+        token = ""
 
     model = Model.by_uuid(model_uuid)
     try:
@@ -116,7 +128,7 @@ def map_viz_view(request, model_uuid, run_id):
         "model": model,
         "run": run,
         "scenario": run.scenario,
-        "mapbox_token": True,
+        "mapbox_token": token,
         "can_edit": can_edit,
         "run_min_date": run_min_date,
         "run_max_date": run_max_date

@@ -13,7 +13,7 @@ from api.models.engage import User_Profile, ComputeEnvironment
 
 class ComputeEnvironmentAdmin(admin.ModelAdmin):
     filter_horizontal = ("users",)
-    list_display = ['id',  'name', 'full_name', 'is_default', 'ncpu', 'memory', 'type', '_users']
+    list_display = ['id',  'name', 'full_name', 'is_default', 'solver', 'ncpu', 'memory', 'type', '_users']
 
     @staticmethod
     def _users(instance):

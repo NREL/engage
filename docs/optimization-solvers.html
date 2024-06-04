@@ -56,15 +56,16 @@ $<span class="w"> </span>cp<span class="w"> </span>~/scipoptsuite-5.0.0/scip/int
 </pre></div>
 </div>
 </section>
-<section id="xpress">
-<h2>XPRESS<a class="headerlink" href="#xpress" title="Permalink to this heading">¶</a></h2>
-<p>In the deployed Engage application at NREL, it uses commercial <a class="reference external" href="https://www.fico.com/en/products/fico-xpress-optimization">FICO XPRESS</a>
-to solve Calliope models with fast speed and large memory in compute node.</p>
+<section id="highs">
+<h2>HiGHS<a class="headerlink" href="#highs" title="Permalink to this heading">¶</a></h2>
+<p>In the deployed Engage application at NREL, it uses high-performance solver <a class="reference external" href="https://highs.dev/">HiGHS</a>
+to solve Calliope models with fast speed and large memory in compute node. It’s open-source, for more information,
+please refer to its official documentation <a class="reference external" href="https://highs.dev/#docs">https://highs.dev/#docs</a></p>
 </section>
 <section id="more-choice">
 <h2>More Choice<a class="headerlink" href="#more-choice" title="Permalink to this heading">¶</a></h2>
 <p>In behind, Calliope interfaces to <a class="reference external" href="http://www.pyomo.org/">Pyomo</a>  - a Python-based, open-source optimization modeling language with
-a diverse set of optimization capabilities. With the <a class="reference external" href="https://calliope.readthedocs.io/en/v0.6.7/api/api.html#api-backend-interface">API interface</a>
+a diverse set of optimization capabilities. With the <a class="reference external" href="https://calliope.readthedocs.io/en/v0.6.8/api/api.html#api-backend-interface">API interface</a>
 provided by Calliope, you can specify the customized solver options.</p>
 <p>For more solver choice, please refer to <a class="reference external" href="https://calliope.readthedocs.io/en/stable/user/advanced_features.html#specifying-custom-solver-options">specifying-custom-solver-options</a></p>
 <p>Refer to <a class="reference external" href="https://calliope.readthedocs.io/en/stable/user/troubleshooting.html#influence-of-solver-choice-on-speed">influence-of-solver-choice-on-speed</a>
@@ -96,7 +97,7 @@ for more information about problem solving speed with different solvers.</p>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Optimization Solvers</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#glpk">GLPK</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#scip">SCIP</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#xpress">XPRESS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#highs">HiGHS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#more-choice">More Choice</a></li>
 </ul>
 </li>

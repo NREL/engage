@@ -1,13 +1,15 @@
 from django.db import models
-from api.models.calliope import Abstract_Tech, Parameter
+import logging
+from api.models.calliope import Abstract_Tech, Parameter, Abstract_Tech_Param
 from api.models.configuration import Location, Model, Timeseries_Meta, Technology, Technology, Abstract_Tech, Loc_Tech
-from django.contrib.postgres.fields import ArrayField
-from django.db.models.signals import pre_delete 
 from django.dispatch import receiver
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, pre_save
 from django.db.models import Q
+from django.core.exceptions import ValidationError
 
 from api.models.utils import EngageManager
+
+logger = logging.getLogger(__name__)
 
 # Create your models here.
 class Template_Type(models.Model):
@@ -38,7 +40,7 @@ class Template_Type_Variable(models.Model):
     description = models.TextField(blank=True, null=True)
     timeseries_enabled = models.BooleanField(blank=True, null=True)
     category = models.CharField(max_length=200, blank=True, null=True)
-    choices = ArrayField(models.CharField(max_length=10), blank=True, null=True)
+    choices = models.JSONField(blank=True, null=True)
 
     def __str__(self):
         return '%s' % (self.name)
@@ -54,7 +56,7 @@ class Template_Type_Loc(models.Model):
     longitude_offset = models.FloatField()
 
     def __str__(self):
-        return '%s' % (self.name)
+        return '%s - %s' % (self.template_type, self.name)
 
 class Template_Type_Tech(models.Model):
     class Meta:
@@ -62,18 +64,10 @@ class Template_Type_Tech(models.Model):
         verbose_name_plural = "[Admin] Template Type Techs"
 
     name = models.CharField(max_length=200)
-    description = models.CharField(max_length=200, blank=True, null=True)
+    description = models.CharField(max_length=600, blank=True, null=True)
     template_type = models.ForeignKey(Template_Type, on_delete=models.CASCADE)
     abstract_tech = models.ForeignKey(Abstract_Tech, on_delete=models.CASCADE)
     version_tag = models.CharField(max_length=200, blank=True, null=True)
-    energy_carrier = models.CharField(max_length=200, blank=True, null=True)
-    carrier_in = models.CharField(max_length=200, blank=True, null=True)
-    carrier_out = models.CharField(max_length=200, blank=True, null=True)
-    carrier_in_2 = models.CharField(max_length=200, blank=True, null=True)
-    carrier_out_2 = models.CharField(max_length=200, blank=True, null=True)
-    carrier_in_3 = models.CharField(max_length=200, blank=True, null=True)
-    carrier_out_3 = models.CharField(max_length=200, blank=True, null=True)
-    carrier_ratios = models.CharField(max_length=200, blank=True, null=True)
     #color = models.CharField(max_length=200) looks like technologies is doing something fancy with this
 
     # @property
@@ -85,7 +79,7 @@ class Template_Type_Tech(models.Model):
     #     return ','.join(list(p.values_list('value', flat=True)))
 
     def __str__(self):
-        return '%s' % (self.name)
+        return '%s - %s' % (self.template_type, self.name)
 
 class Template_Type_Loc_Tech(models.Model):
     class Meta:
@@ -107,12 +101,24 @@ class Template_Type_Loc_Tech(models.Model):
         else:
             return '%s[%s] at %s' % (self.template_tech, self.template_tech.abstract_tech, self.template_loc_1)
 
-class Template_Type_Parameter(models.Model):
+class Template_Type_Loc_Tech_Param(models.Model):
     class Meta:
-        db_table = "template_type_parameters"
-        verbose_name_plural = "[Admin] Template Type Parameters"
+        db_table = "template_type_loc_tech_parameters"
+        verbose_name_plural = "[Admin] Template Type Loc Tech Parameters"
 
     template_loc_tech = models.ForeignKey(Template_Type_Loc_Tech, on_delete=models.CASCADE)
+    parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE)
+    equation = models.CharField(max_length=200)
+
+    def __str__(self):
+        return '%s' % (self.equation)
+    
+class Template_Type_Tech_Param(models.Model):
+    class Meta:
+        db_table = "template_type_tech_params"
+        verbose_name_plural = "[Admin] Template Type Tech Parameters"
+
+    template_tech = models.ForeignKey(Template_Type_Tech, on_delete=models.CASCADE)
     parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE)
     equation = models.CharField(max_length=200)
 
@@ -183,6 +189,15 @@ class Template_Variable(models.Model):
 
     def __str__(self):
         return '%s' % (self.template_type_variable)
+
+@receiver(pre_save, sender=Template_Type_Loc_Tech_Param)
+def validate_before_save(sender, instance, **kwargs):
+    if sender == Template_Type_Loc_Tech_Param:
+        abstractTechParam = Abstract_Tech_Param.objects.filter(abstract_tech=instance.template_loc_tech.template_tech.abstract_tech, parameter=instance.parameter)
+        if abstractTechParam is not None:
+            logger.info("Valid parameter for the given technology assoiacted with this Template_Type_Loc_Tech_Param")
+        else: 
+            raise ValidationError(f"Error: Invalid parameter for the given technology assoiacted with this Template_Type_Loc_Tech_Param '{instance.id}'")
 
 @receiver(post_delete, sender=Template)
 def signal_function_name(sender, instance, using, **kwargs):
