@@ -1407,19 +1407,12 @@ def remove_flags(request):
     return HttpResponse(json.dumps(payload), content_type="application/json")
  
 @csrf_protect
-<<<<<<< rate-limit
 @ratelimit(key='user', rate='10/m')
 @ratelimit(key='user', rate='1000/d')
-def get_map_box_token(request):
-=======
-@ratelimit(key='user', rate='10/m', block=False)
-@ratelimit(key='user', rate='1000/d', block=False)
 def get_mapbox_token(request):
     was_limited = getattr(request, 'limited', False)
     if was_limited:
         return HttpResponse({"token": ""}, status=429)
-
->>>>>>> dev
     year, month = date.today().year, date.today().month
     user_key = str(request.user) 
     limit, created = RequestRateLimit.objects.get_or_create(
