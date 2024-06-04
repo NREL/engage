@@ -327,7 +327,6 @@ class Model_User(models.Model):
         ordering = ['user__user_profile__organization']
     objects = EngageManager()
     objects_all = models.Manager()
-
     model = models.ForeignKey(Model, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     can_edit = models.BooleanField(default=False)

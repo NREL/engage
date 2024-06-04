@@ -14,7 +14,7 @@ from api.models.configuration import Model, User_File, \
     Model_Comment, Carrier, Tech_Param, Loc_Tech_Param
 from pytz import common_timezones
 import logging
-from api.views.configuration import get_map_box_token
+from api.views.configuration import get_mapbox_token
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +81,7 @@ def locations_view(request, model_uuid):
     Example:
     http://0.0.0.0:8000/<model_uuid>/locations
     """
-    token_response = get_map_box_token(request)
+    token_response = get_mapbox_token(request)
     if token_response.status_code == 200:
         response = json.loads(token_response.content.decode('utf-8'))
         token = response.get("token") 
@@ -218,10 +218,9 @@ def loc_techs_view(request, model_uuid):
     Example:
     http://0.0.0.0:8000/<model_uuid>/loc_techs
     """
-    token_response = get_map_box_token(request)
+    token_response = get_mapbox_token(request)
     if token_response.status_code == 200:
         response = json.loads(token_response.content.decode('utf-8'))
-        logger.info(f"Response: {response}")
         token = response.get("token") 
     else:
         token = ""
@@ -270,7 +269,7 @@ def scenarios_view(request, model_uuid):
     Example:
     http://0.0.0.0:8000/<model_uuid>/scenarios
     """
-    token_response = get_map_box_token(request)
+    token_response = get_mapbox_token(request)
     if token_response.status_code == 200:
         response = json.loads(token_response.content.decode('utf-8'))
         token = response.get("token") 

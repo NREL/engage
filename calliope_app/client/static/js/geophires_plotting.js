@@ -43,7 +43,7 @@ $.getJSON('/geophires/outputs/', params, function(data) {
       'title': 'Avg. Electric capacity (MWe)'
     },
     'yaxis': {
-      'title': 'Subsurface Total Cost ($M)'
+      'title': 'Surface Total Cost ($M)'
     }
   }
   if (!template_type.includes("Direct") || !template_type.includes("Flash")) {
