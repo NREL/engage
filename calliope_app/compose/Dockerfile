@@ -27,9 +27,6 @@ RUN apt-get update -y --fix-missing \
     coinor-cbc \
     && rm -rf /var/lib/apt/lists/*
 
-# verify CBC installation
-RUN cbc --version
-
 # install python packages
 WORKDIR /www
 COPY requirements.txt requirements-dev.txt /www/

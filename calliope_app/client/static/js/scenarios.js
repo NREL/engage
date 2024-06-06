@@ -86,9 +86,7 @@ $( document ).ready(function() {
             $('#new_group_constraint_btn').attr("disabled", true);
         }
     });
-
 	get_scenario_configuration();
-
 });
 
 function save_scenario_settings() {
