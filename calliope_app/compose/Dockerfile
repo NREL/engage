@@ -18,7 +18,6 @@ RUN apt-get update -y --fix-missing \
     libncurses5-dev \
     gettext \
     postgresql-client \
-    curl \
     gfortran \
     libblas-dev \
     liblapack-dev \
