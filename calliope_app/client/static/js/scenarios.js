@@ -246,6 +246,7 @@ function get_scenario_configuration() {
 function updateDialogObject() {
     Object.keys(dialogObj).forEach(constraint => {
         let constraintId = safeHTMLId(constraint);
+
         var techsInput = $("#" + constraintId + "_techs").val();
         if (techsInput && techsInput.length > 0) {
             dialogObj[constraint].techs = techsInput;
@@ -289,10 +290,16 @@ function updateDialogObject() {
             delete dialogObj[constraint].locs_rhs;
         }
 
-        //add constraints
+        // Add constraints
         Object.keys(dialogObj[constraint]).forEach(fieldKey => {
             if (fieldKey !== "locs" && fieldKey !== "techs" && fieldKey !== "techs_lhs" && fieldKey !== "techs_rhs" && fieldKey !== "locs_lhs" && fieldKey !== "locs_rhs") {
-                let value = $("#" + constraintId + fieldKey + "-val").val() ? $("#" + constraintId + fieldKey + "-val").val() : "";
+                let value = $("#" + constraintId + fieldKey + "-val").val();
+                if (value) {
+                    value = parseInt(value, 10); 
+                } else {
+                    value = 0; 
+                }
+
                 if (constraints[fieldKey] !== "none") {
                     let key = $("#" + constraintId + fieldKey + "-key").val() ? $("#" + constraintId + fieldKey + "-key").val() : "";
                     dialogObj[constraint][fieldKey] = {};
@@ -328,7 +335,7 @@ function getModelCarriers() {
 function updateDialogGroupConstraints(initialLoad) {
     $('#dialog-inputs').empty();
     if (dialogObj.length > 0) {
-        $('#dialog-inputs').append( "<h3><b>Constraint Groups</b></h3>");
+        $('#dialog-inputs').append("<h3><b>Constraint Groups</b></h3>");
     }
     Object.keys(dialogObj).forEach(constraint => {
         let constraintId = safeHTMLId(constraint);
@@ -502,7 +509,7 @@ function updateConstraintTypes(constraint, constraintId, constraintContent) {
                 });
 
                 $(constraintFields).append( "<label><b>" + djangoTranslateValue + " </b></label>");
-                $(constraintFields).append( "<input id='" + constraintId + fieldKey + "-val' name='dialogObj[constraint][fieldKey].value' class='form-control smol' placeholder='' value='" + val + "'></input><br><br>" );
+                $(constraintFields).append("<input type='number' id='" + constraintId + fieldKey + "-val' name='dialogObj[constraint][" + fieldKey + "].value' class='form-control smol' placeholder='' value='" + val + "' step='1'></input><br><br>");
             } else {
                 $(constraintFields).append( "<label><b>" + djangoTranslateValue + "</b></label>");
                 $(constraintFields).append( "<input id='" + constraintId + fieldKey + "-val' name='dialogObj[constraint][fieldKey]' class='form-control smol' placeholder='' value='" + dialogObj[constraint][fieldKey] + "'></input><br><br>" );
