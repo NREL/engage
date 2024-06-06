@@ -1582,7 +1582,7 @@ class Carrier(models.Model):
     description = models.TextField(blank=True, null=True)
     model = models.ForeignKey(Model, on_delete=models.CASCADE)
     rate_unit = models.CharField(max_length=20)
-    quantity_unit = models.IntegerField(max_length=20)
+    quantity_unit = models.CharField(max_length=20)
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
