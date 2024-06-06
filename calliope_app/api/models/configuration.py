@@ -1566,6 +1566,8 @@ class ParamsManager():
         queryset = Parameter.objects.filter(tags__contains=[tag])
         categories = [param.id for param in queryset]
         return categories
+    
+
 class Carrier(models.Model):
     class Meta:
         db_table = "carrier"
