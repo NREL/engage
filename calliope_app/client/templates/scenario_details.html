@@ -7,7 +7,7 @@
     </div>
 
     <div class="col-11">
-        <div id="name-form" class="form-group row" style="padding-left:15px">
+        <div id="name-form" class="form-group row" style="margin-left:15px">
             <label for="scenario-name" class="col-sm-3 col-form-label"><b>{% trans "Name" %}:</b></label>
             <div class="col-sm-9">
                 <input type="text" style="width:100%" id="scenario_name" data-placement="left" value="{{session_scenario.name}}">
@@ -16,11 +16,10 @@
     </div>
 
     <div class="col-11">
-        <div class="form-group row" style="padding-left:15px">
-
+        <div class="form-group row" style="margin-left:15px">
             <label for="scenario-description" class="col-sm-3 col-form-label"><b>{% trans "Description" %}:</b></label>
             <div class="col-sm-9">
-              <textarea id="scenario_description" class="scenario_description" data-placement="right" rows="4"> {{session_scenario.description}} </textarea>
+              <textarea id="scenario_description" class="scenario_description" data-placement="right" rows="4"> {% if session_scenario.description != None %}{{ session_scenario.description}}{% else %}{% endif %}</textarea>
              </div>
          </div>
     </div>
@@ -30,10 +29,8 @@
 <script>
 
   $( document ).ready(function() {
-
     $('#scenario_description, #scenario_name').on('change keyup paste', function () {
       $('#master-save').removeClass('hide');
     });
-
   });
 </script>
