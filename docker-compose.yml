@@ -1,8 +1,3 @@
-version: "3"
-
-volumes:
-  data:
-
 services:
 
   redis:
@@ -79,7 +74,7 @@ services:
 
   app:
     platform: linux/x86_64
-    build: 
+    build:
       context: calliope_app
       dockerfile: compose/Dockerfile
     image: calliope-app
@@ -99,3 +94,7 @@ services:
       - long_worker
       - celery_flower
     command: ["./wait-for-postgres.sh", "compose/run-calliope-app.sh"]
+
+
+volumes:
+  data:

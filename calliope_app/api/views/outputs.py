@@ -300,9 +300,8 @@ def optimize(request):
                 r.batch_job.status = batch_task_status.FAILED
             r.batch_job.save()
             r.save()
-
-        is_xpress_solver = "xpress" in str(environment.solver)
-        if is_xpress_solver and (not all_complete):
+        
+        if not all_complete:
             payload = {
                 "status": "BLOCKED",
                 "message": f"Compute environment '{environment.name}' is in use, please try again later."
@@ -345,7 +344,7 @@ def optimize(request):
                     else:
                         logger.info("Found a subsequent gradient model for year %s but it was not built.",next_run.year)
                         break
-
+    
     # Unknown environment, not supported
     else:
         raise Exception("Failed to submit job, unknown compute environment")

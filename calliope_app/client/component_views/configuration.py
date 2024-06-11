@@ -428,8 +428,8 @@ def scenario(request):
     # Scenario Parameters
     colors = model.color_lookup
     parameters = Scenario_Param.objects.filter(
-        model_id=model.id, scenario_id=scenario_id, 
-        run_parameter__user_visibility=True, run_parameter__tab="scenarios")
+    model_id=model.id, scenario_id=scenario_id, 
+    run_parameter__user_visibility=True, run_parameter__tab="scenarios")
 
     scenario = Scenario.objects.filter(id=scenario_id).first()
 
@@ -490,14 +490,19 @@ def scenario(request):
                                          'scenario_configuration.html',
                                          context))[0]
 
+    session_context = context.copy()
+    session_context.update({'session_scenario': scenario})
+    scenario_details = list(render(request, 'scenario_details.html', session_context))[0]
+
     payload = {
         'model_id': model.id,
         'scenario_id': scenario_id,
         'loc_techs': loc_techs,
         'active_lt_ids': active_lt_ids,
         'scenario_settings': scenario_settings.decode('utf-8'),
-        'scenario_configuration': scenario_configuration.decode('utf-8')}
-
+        'scenario_configuration': scenario_configuration.decode('utf-8'),
+        'scenario_details': scenario_details.decode('utf-8')
+    }
     return HttpResponse(json.dumps(payload, indent=4),
                         content_type="application/json")
 

@@ -185,14 +185,15 @@ function renderTemplateModal() {
 
     if ($("#templateType").children('option').length === 0) {
         $("#templateType").append( "<option value=''></option>");
-        template_data.template_types.sort(function (a, b) {
-            return a.pretty_name < b.pretty_name ? -1 : 1;
+        let templateTypesDropdown = template_data.template_types;
+        templateTypesDropdown.sort(function (a, b) {
+            return a.pretty_name.localeCompare(b.pretty_name);
         });
-        for (let i = 0; i < template_data.template_types.length; i++) {
+        for (let i = 0; i < templateTypesDropdown.length; i++) {
             if (template_edit.name == template_data.template_types[i]) {
-                $("#templateType").append( "<option selected value=" + template_data.template_types[i].id + ">" + template_data.template_types[i].pretty_name + "</option>");
+                $("#templateType").append( "<option selected value=" + templateTypesDropdown[i].id + ">" + templateTypesDropdown[i].pretty_name + "</option>");
             } else {
-                $("#templateType").append( "<option value=" + template_data.template_types[i].id + ">" + template_data.template_types[i].pretty_name + "</option>" );
+                $("#templateType").append( "<option value=" + templateTypesDropdown[i].id + ">" + templateTypesDropdown[i].pretty_name + "</option>" );
             }
         }
     }

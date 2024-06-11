@@ -129,7 +129,7 @@
         "pk": 15,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 11,
+            "template_loc_tech": 5,
             "parameter": 24,
             "equation": "True"
         }
@@ -138,7 +138,7 @@
         "pk": 16,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 11,
+            "template_loc_tech": 5,
             "parameter": 28,
             "equation": 1
         }
@@ -147,7 +147,7 @@
         "pk": 17,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 11,
+            "template_loc_tech": 5,
             "parameter": 40,
             "equation": "energy_per_cap"
         }
@@ -156,7 +156,7 @@
         "pk": 18,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 11,
+            "template_loc_tech": 5,
             "parameter": 53,
             "equation": "||therm_cap_vs_reservoir_cost||"
         }
@@ -165,7 +165,7 @@
         "pk": 19,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 11,
+            "template_loc_tech": 5,
             "parameter": 58,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
@@ -174,7 +174,7 @@
         "pk": 20,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 11,
+            "template_loc_tech": 5,
             "parameter": 11,
             "equation": "||max_therm_ext_kwth||"
         }
@@ -183,7 +183,7 @@
         "pk": 21,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 11,
+            "template_loc_tech": 5,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -192,7 +192,7 @@
         "pk": 22,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 11,
+            "template_loc_tech": 5,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -201,7 +201,7 @@
         "pk": 23,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 12,
+            "template_loc_tech": 6,
             "parameter": 14,
             "equation": 16.6
         }
@@ -210,7 +210,7 @@
         "pk": 24,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 12,
+            "template_loc_tech": 6,
             "parameter": 11,
             "equation": "||max_elec_gen_kwe||"
         }
@@ -219,7 +219,7 @@
         "pk": 25,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 12,
+            "template_loc_tech": 6,
             "parameter": 53,
             "equation": "||elec_cap_vs_surface_cost||"
         }
@@ -228,7 +228,7 @@
         "pk": 26,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 12,
+            "template_loc_tech": 6,
             "parameter": 58,
             "equation": "||elec_cap_vs_surface_om_cost||"
         }
@@ -237,7 +237,7 @@
         "pk": 27,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 12,
+            "template_loc_tech": 6,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -246,7 +246,7 @@
         "pk": 28,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 12,
+            "template_loc_tech": 6,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -255,7 +255,7 @@
         "pk": 29,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 21,
+            "template_loc_tech": 9,
             "parameter": 40,
             "equation": "energy_per_cap"
         }
@@ -264,7 +264,7 @@
         "pk": 30,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 21,
+            "template_loc_tech": 9,
             "parameter": 24,
             "equation": "True"
         }
@@ -273,7 +273,7 @@
         "pk": 31,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 21,
+            "template_loc_tech": 9,
             "parameter": 28,
             "equation": 1
         }
@@ -282,7 +282,7 @@
         "pk": 32,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 21,
+            "template_loc_tech": 9,
             "parameter": 53,
             "equation": "||therm_cap_vs_reservoir_cost||"
         }
@@ -291,7 +291,7 @@
         "pk": 33,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 21,
+            "template_loc_tech": 9,
             "parameter": 58,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
@@ -300,7 +300,7 @@
         "pk": 34,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 21,
+            "template_loc_tech": 9,
             "parameter": 11,
             "equation": "||max_therm_ext_kwth||"
         }
@@ -309,7 +309,7 @@
         "pk": 35,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 21,
+            "template_loc_tech": 9,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -318,7 +318,7 @@
         "pk": 36,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 21,
+            "template_loc_tech": 9,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -327,7 +327,7 @@
         "pk": 37,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 22,
+            "template_loc_tech": 10,
             "parameter": 11,
             "equation": "||max_elec_gen_kwe||"
         }
@@ -336,7 +336,7 @@
         "pk": 38,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 22,
+            "template_loc_tech": 10,
             "parameter": 53,
             "equation": "||elec_cap_vs_surface_cost||"
         }
@@ -345,7 +345,7 @@
         "pk": 39,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 22,
+            "template_loc_tech": 10,
             "parameter": 58,
             "equation": "||elec_cap_vs_surface_om_cost||"
         }
@@ -354,7 +354,7 @@
         "pk": 40,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 22,
+            "template_loc_tech": 10,
             "parameter": 18,
             "equation": "||elec_prod_to_therm_ext_ratio||"
         }
@@ -363,7 +363,7 @@
         "pk": 41,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 22,
+            "template_loc_tech": 10,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -372,7 +372,7 @@
         "pk": 42,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 22,
+            "template_loc_tech": 10,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -381,7 +381,7 @@
         "pk": 43,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 26,
+            "template_loc_tech": 11,
             "parameter": 24,
             "equation": "True"
         }
@@ -390,7 +390,7 @@
         "pk": 44,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 26,
+            "template_loc_tech": 11,
             "parameter": 28,
             "equation": 1
         }
@@ -399,7 +399,7 @@
         "pk": 45,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 26,
+            "template_loc_tech": 11,
             "parameter": 40,
             "equation": "energy_per_cap"
         }
@@ -408,7 +408,7 @@
         "pk": 46,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 26,
+            "template_loc_tech": 11,
             "parameter": 53,
             "equation": "||therm_cap_vs_reservoir_cost||"
         }
@@ -417,7 +417,7 @@
         "pk": 47,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 26,
+            "template_loc_tech": 11,
             "parameter": 58,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
@@ -426,7 +426,7 @@
         "pk": 48,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 26,
+            "template_loc_tech": 11,
             "parameter": 11,
             "equation": "||max_therm_ext_kwth||"
         }
@@ -435,7 +435,7 @@
         "pk": 49,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 26,
+            "template_loc_tech": 11,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -444,7 +444,7 @@
         "pk": 50,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 26,
+            "template_loc_tech": 11,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -453,7 +453,7 @@
         "pk": 51,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 27,
+            "template_loc_tech": 12,
             "parameter": 11,
             "equation": "||max_elec_gen_kwe||"
         }
@@ -462,7 +462,7 @@
         "pk": 52,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 27,
+            "template_loc_tech": 12,
             "parameter": 53,
             "equation": "||elec_cap_vs_surface_cost||"
         }
@@ -471,7 +471,7 @@
         "pk": 53,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 27,
+            "template_loc_tech": 12,
             "parameter": 58,
             "equation": "||elec_cap_vs_surface_om_cost||"
         }
@@ -480,7 +480,7 @@
         "pk": 54,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 27,
+            "template_loc_tech": 12,
             "parameter": 18,
             "equation": "||elec_prod_to_therm_ext_ratio||"
         }
@@ -489,7 +489,7 @@
         "pk": 55,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 27,
+            "template_loc_tech": 12,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -498,7 +498,7 @@
         "pk": 56,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 27,
+            "template_loc_tech": 12,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -507,7 +507,7 @@
         "pk": 57,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 32,
+            "template_loc_tech": 13,
             "parameter": 40,
             "equation": "energy_per_cap"
         }
@@ -516,7 +516,7 @@
         "pk": 58,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 32,
+            "template_loc_tech": 13,
             "parameter": 24,
             "equation": "True"
         }
@@ -525,7 +525,7 @@
         "pk": 59,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 32,
+            "template_loc_tech": 13,
             "parameter": 28,
             "equation": 1
         }
@@ -534,7 +534,7 @@
         "pk": 60,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 32,
+            "template_loc_tech": 13,
             "parameter": 53,
             "equation": "||therm_cap_vs_reservoir_cost||"
         }
@@ -543,7 +543,7 @@
         "pk": 61,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 32,
+            "template_loc_tech": 13,
             "parameter": 58,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
@@ -552,7 +552,7 @@
         "pk": 62,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 32,
+            "template_loc_tech": 13,
             "parameter": 11,
             "equation": "||max_therm_ext_kwth||"
         }
@@ -561,7 +561,7 @@
         "pk": 63,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 32,
+            "template_loc_tech": 13,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -570,7 +570,7 @@
         "pk": 64,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 32,
+            "template_loc_tech": 13,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -579,7 +579,7 @@
         "pk": 65,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 31,
+            "template_loc_tech": 14,
             "parameter": 18,
             "equation": "||heat_prod_to_therm_ext_ratio||"
         }
@@ -588,7 +588,7 @@
         "pk": 66,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 31,
+            "template_loc_tech": 14,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -597,7 +597,7 @@
         "pk": 67,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 31,
+            "template_loc_tech": 14,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -606,7 +606,7 @@
         "pk": 68,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 38,
+            "template_loc_tech": 16,
             "parameter": 40,
             "equation": "energy_per_cap"
         }
@@ -615,7 +615,7 @@
         "pk": 69,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 38,
+            "template_loc_tech": 16,
             "parameter": 24,
             "equation": "True"
         }
@@ -624,7 +624,7 @@
         "pk": 70,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 38,
+            "template_loc_tech": 16,
             "parameter": 28,
             "equation": 1
         }
@@ -633,7 +633,7 @@
         "pk": 71,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 38,
+            "template_loc_tech": 16,
             "parameter": 53,
             "equation": "||therm_cap_vs_reservoir_cost||"
         }
@@ -642,7 +642,7 @@
         "pk": 72,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 38,
+            "template_loc_tech": 16,
             "parameter": 58,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
@@ -651,7 +651,7 @@
         "pk": 73,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 38,
+            "template_loc_tech": 16,
             "parameter": 11,
             "equation": "||max_therm_ext_kwth||"
         }
@@ -660,7 +660,7 @@
         "pk": 74,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 38,
+            "template_loc_tech": 16,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -669,7 +669,7 @@
         "pk": 75,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 38,
+            "template_loc_tech": 16,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -678,7 +678,7 @@
         "pk": 76,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 37,
+            "template_loc_tech": 17,
             "parameter": 18,
             "equation": "||heat_prod_to_therm_ext_ratio||"
         }
@@ -687,7 +687,7 @@
         "pk": 77,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 37,
+            "template_loc_tech": 17,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -696,7 +696,7 @@
         "pk": 78,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 37,
+            "template_loc_tech": 17,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -705,7 +705,7 @@
         "pk": 79,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 43,
+            "template_loc_tech": 19,
             "parameter": 24,
             "equation": "True"
         }
@@ -714,7 +714,7 @@
         "pk": 80,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 43,
+            "template_loc_tech": 19,
             "parameter": 28,
             "equation": 1
         }
@@ -723,7 +723,7 @@
         "pk": 81,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 43,
+            "template_loc_tech": 19,
             "parameter": 40,
             "equation": "energy_per_cap"
         }
@@ -732,7 +732,7 @@
         "pk": 82,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 43,
+            "template_loc_tech": 19,
             "parameter": 53,
             "equation": "||therm_cap_vs_reservoir_cost||"
         }
@@ -741,7 +741,7 @@
         "pk": 83,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 43,
+            "template_loc_tech": 19,
             "parameter": 58,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
@@ -750,7 +750,7 @@
         "pk": 84,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 43,
+            "template_loc_tech": 19,
             "parameter": 11,
             "equation": "||max_therm_ext_kwth||"
         }
@@ -759,7 +759,7 @@
         "pk": 85,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 43,
+            "template_loc_tech": 19,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -768,7 +768,7 @@
         "pk": 86,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 43,
+            "template_loc_tech": 19,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -777,7 +777,7 @@
         "pk": 87,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 44,
+            "template_loc_tech": 20,
             "parameter": 14,
             "equation": 16.6
         }
@@ -786,7 +786,7 @@
         "pk": 88,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 44,
+            "template_loc_tech": 20,
             "parameter": 11,
             "equation": "||max_elec_gen_kwe||"
         }
@@ -795,7 +795,7 @@
         "pk": 89,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 44,
+            "template_loc_tech": 20,
             "parameter": 53,
             "equation": "||elec_cap_vs_surface_cost||"
         }
@@ -804,7 +804,7 @@
         "pk": 90,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 44,
+            "template_loc_tech": 20,
             "parameter": 58,
             "equation": "||elec_cap_vs_surface_om_cost||"
         }
@@ -813,7 +813,7 @@
         "pk": 91,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 44,
+            "template_loc_tech": 20,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -822,7 +822,7 @@
         "pk": 92,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 44,
+            "template_loc_tech": 20,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -831,7 +831,7 @@
         "pk": 93,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 49,
+            "template_loc_tech": 23,
             "parameter": 18,
             "equation": 0.8
         }
@@ -840,7 +840,7 @@
         "pk": 94,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 49,
+            "template_loc_tech": 23,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -849,7 +849,7 @@
         "pk": 95,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 49,
+            "template_loc_tech": 23,
             "parameter": 53,
             "equation": 511.8
         }
@@ -858,7 +858,7 @@
         "pk": 96,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 49,
+            "template_loc_tech": 23,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -867,7 +867,7 @@
         "pk": 97,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 49,
+            "template_loc_tech": 23,
             "parameter": 58,
             "equation": 0.000853
         }
@@ -876,7 +876,7 @@
         "pk": 98,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 58,
+            "template_loc_tech": 25,
             "parameter": 24,
             "equation": "True"
         }
@@ -885,7 +885,7 @@
         "pk": 99,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 58,
+            "template_loc_tech": 25,
             "parameter": 28,
             "equation": 1
         }
@@ -894,7 +894,7 @@
         "pk": 100,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 58,
+            "template_loc_tech": 25,
             "parameter": 40,
             "equation": "energy_per_cap"
         }
@@ -903,7 +903,7 @@
         "pk": 101,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 58,
+            "template_loc_tech": 25,
             "parameter": 53,
             "equation": "||therm_cap_vs_reservoir_cost||"
         }
@@ -912,7 +912,7 @@
         "pk": 102,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 58,
+            "template_loc_tech": 25,
             "parameter": 58,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
@@ -921,7 +921,7 @@
         "pk": 103,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 58,
+            "template_loc_tech": 25,
             "parameter": 11,
             "equation": "||max_therm_ext_kwth||"
         }
@@ -930,7 +930,7 @@
         "pk": 104,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 58,
+            "template_loc_tech": 25,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -939,7 +939,7 @@
         "pk": 105,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 58,
+            "template_loc_tech": 25,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -948,7 +948,7 @@
         "pk": 106,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 59,
+            "template_loc_tech": 26,
             "parameter": 14,
             "equation": 16.6
         }
@@ -957,7 +957,7 @@
         "pk": 107,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 59,
+            "template_loc_tech": 26,
             "parameter": 11,
             "equation": "||max_elec_gen_kwe||"
         }
@@ -966,7 +966,7 @@
         "pk": 108,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 59,
+            "template_loc_tech": 26,
             "parameter": 53,
             "equation": "||elec_cap_vs_surface_cost||"
         }
@@ -975,7 +975,7 @@
         "pk": 109,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 59,
+            "template_loc_tech": 26,
             "parameter": 58,
             "equation": "||elec_cap_vs_surface_om_cost||"
         }
@@ -984,7 +984,7 @@
         "pk": 110,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 59,
+            "template_loc_tech": 26,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -993,7 +993,7 @@
         "pk": 111,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 59,
+            "template_loc_tech": 26,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -1002,7 +1002,7 @@
         "pk": 112,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 64,
+            "template_loc_tech": 29,
             "parameter": 18,
             "equation": 0.8
         }
@@ -1011,7 +1011,7 @@
         "pk": 113,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 64,
+            "template_loc_tech": 29,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -1020,7 +1020,7 @@
         "pk": 114,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 64,
+            "template_loc_tech": 29,
             "parameter": 53,
             "equation": 511.8
         }
@@ -1029,7 +1029,7 @@
         "pk": 115,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 64,
+            "template_loc_tech": 29,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -1038,7 +1038,7 @@
         "pk": 116,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 64,
+            "template_loc_tech": 29,
             "parameter": 58,
             "equation": 0.000853
         }
@@ -1047,7 +1047,7 @@
         "pk": 117,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 73,
+            "template_loc_tech": 31,
             "parameter": 40,
             "equation": "energy_per_cap"
         }
@@ -1056,7 +1056,7 @@
         "pk": 118,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 73,
+            "template_loc_tech": 31,
             "parameter": 24,
             "equation": "True"
         }
@@ -1065,7 +1065,7 @@
         "pk": 119,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 73,
+            "template_loc_tech": 31,
             "parameter": 28,
             "equation": 1
         }
@@ -1074,7 +1074,7 @@
         "pk": 120,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 73,
+            "template_loc_tech": 31,
             "parameter": 53,
             "equation": "||therm_cap_vs_reservoir_cost||"
         }
@@ -1083,7 +1083,7 @@
         "pk": 121,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 73,
+            "template_loc_tech": 31,
             "parameter": 58,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
@@ -1092,7 +1092,7 @@
         "pk": 122,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 73,
+            "template_loc_tech": 31,
             "parameter": 11,
             "equation": "||max_therm_ext_kwth||"
         }
@@ -1101,7 +1101,7 @@
         "pk": 123,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 73,
+            "template_loc_tech": 31,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -1110,7 +1110,7 @@
         "pk": 124,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 73,
+            "template_loc_tech": 31,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -1119,7 +1119,7 @@
         "pk": 125,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 74,
+            "template_loc_tech": 32,
             "parameter": 11,
             "equation": "||max_elec_gen_kwe||"
         }
@@ -1128,7 +1128,7 @@
         "pk": 126,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 74,
+            "template_loc_tech": 32,
             "parameter": 53,
             "equation": "||elec_cap_vs_surface_cost||"
         }
@@ -1137,7 +1137,7 @@
         "pk": 127,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 74,
+            "template_loc_tech": 32,
             "parameter": 58,
             "equation": "||elec_cap_vs_surface_om_cost||"
         }
@@ -1146,7 +1146,7 @@
         "pk": 128,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 74,
+            "template_loc_tech": 32,
             "parameter": 18,
             "equation": "||elec_prod_to_therm_ext_ratio||"
         }
@@ -1155,7 +1155,7 @@
         "pk": 129,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 74,
+            "template_loc_tech": 32,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -1164,7 +1164,7 @@
         "pk": 130,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 74,
+            "template_loc_tech": 32,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -1173,7 +1173,7 @@
         "pk": 131,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 78,
+            "template_loc_tech": 33,
             "parameter": 40,
             "equation": "energy_per_cap"
         }
@@ -1182,7 +1182,7 @@
         "pk": 132,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 78,
+            "template_loc_tech": 33,
             "parameter": 24,
             "equation": "True"
         }
@@ -1191,7 +1191,7 @@
         "pk": 133,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 78,
+            "template_loc_tech": 33,
             "parameter": 28,
             "equation": 1
         }
@@ -1200,7 +1200,7 @@
         "pk": 134,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 78,
+            "template_loc_tech": 33,
             "parameter": 53,
             "equation": "||therm_cap_vs_reservoir_cost||"
         }
@@ -1209,7 +1209,7 @@
         "pk": 135,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 78,
+            "template_loc_tech": 33,
             "parameter": 58,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
@@ -1218,7 +1218,7 @@
         "pk": 136,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 78,
+            "template_loc_tech": 33,
             "parameter": 11,
             "equation": "||max_therm_ext_kwth||"
         }
@@ -1227,7 +1227,7 @@
         "pk": 137,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 78,
+            "template_loc_tech": 33,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -1236,7 +1236,7 @@
         "pk": 138,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 78,
+            "template_loc_tech": 33,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -1245,7 +1245,7 @@
         "pk": 139,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 79,
+            "template_loc_tech": 34,
             "parameter": 11,
             "equation": "||max_elec_gen_kwe||"
         }
@@ -1254,7 +1254,7 @@
         "pk": 140,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 79,
+            "template_loc_tech": 34,
             "parameter": 53,
             "equation": "||elec_cap_vs_surface_cost||"
         }
@@ -1263,7 +1263,7 @@
         "pk": 141,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 79,
+            "template_loc_tech": 34,
             "parameter": 58,
             "equation": "||elec_cap_vs_surface_om_cost||"
         }
@@ -1272,7 +1272,7 @@
         "pk": 142,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 79,
+            "template_loc_tech": 34,
             "parameter": 18,
             "equation": "||elec_prod_to_therm_ext_ratio||"
         }
@@ -1281,7 +1281,7 @@
         "pk": 143,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 79,
+            "template_loc_tech": 34,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -1290,7 +1290,7 @@
         "pk": 144,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 79,
+            "template_loc_tech": 34,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -1299,7 +1299,7 @@
         "pk": 145,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 83,
+            "template_loc_tech": 35,
             "parameter": 40,
             "equation": "energy_per_cap"
         }
@@ -1308,7 +1308,7 @@
         "pk": 146,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 83,
+            "template_loc_tech": 35,
             "parameter": 24,
             "equation": "True"
         }
@@ -1317,7 +1317,7 @@
         "pk": 147,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 83,
+            "template_loc_tech": 35,
             "parameter": 28,
             "equation": 1
         }
@@ -1326,7 +1326,7 @@
         "pk": 148,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 83,
+            "template_loc_tech": 35,
             "parameter": 53,
             "equation": "||therm_cap_vs_reservoir_cost||"
         }
@@ -1335,7 +1335,7 @@
         "pk": 149,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 83,
+            "template_loc_tech": 35,
             "parameter": 58,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
@@ -1344,7 +1344,7 @@
         "pk": 150,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 83,
+            "template_loc_tech": 35,
             "parameter": 11,
             "equation": "||max_therm_ext_kwth||"
         }
@@ -1353,7 +1353,7 @@
         "pk": 151,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 83,
+            "template_loc_tech": 35,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -1362,7 +1362,7 @@
         "pk": 152,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 83,
+            "template_loc_tech": 35,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -1371,7 +1371,7 @@
         "pk": 153,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 84,
+            "template_loc_tech": 36,
             "parameter": 11,
             "equation": "||max_elec_gen_kwe||"
         }
@@ -1380,7 +1380,7 @@
         "pk": 154,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 84,
+            "template_loc_tech": 36,
             "parameter": 53,
             "equation": "||elec_cap_vs_surface_cost||"
         }
@@ -1389,7 +1389,7 @@
         "pk": 155,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 84,
+            "template_loc_tech": 36,
             "parameter": 58,
             "equation": "||elec_cap_vs_surface_om_cost||"
         }
@@ -1398,7 +1398,7 @@
         "pk": 156,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 84,
+            "template_loc_tech": 36,
             "parameter": 18,
             "equation": "||elec_prod_to_therm_ext_ratio||"
         }
@@ -1407,7 +1407,7 @@
         "pk": 157,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 84,
+            "template_loc_tech": 36,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -1416,7 +1416,7 @@
         "pk": 158,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 84,
+            "template_loc_tech": 36,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -1425,7 +1425,7 @@
         "pk": 159,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 88,
+            "template_loc_tech": 37,
             "parameter": 40,
             "equation": "energy_per_cap"
         }
@@ -1434,7 +1434,7 @@
         "pk": 160,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 88,
+            "template_loc_tech": 37,
             "parameter": 24,
             "equation": "True"
         }
@@ -1443,7 +1443,7 @@
         "pk": 161,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 88,
+            "template_loc_tech": 37,
             "parameter": 28,
             "equation": 1
         }
@@ -1452,7 +1452,7 @@
         "pk": 162,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 88,
+            "template_loc_tech": 37,
             "parameter": 53,
             "equation": "||therm_cap_vs_reservoir_cost||"
         }
@@ -1461,7 +1461,7 @@
         "pk": 163,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 88,
+            "template_loc_tech": 37,
             "parameter": 58,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
@@ -1470,7 +1470,7 @@
         "pk": 164,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 88,
+            "template_loc_tech": 37,
             "parameter": 11,
             "equation": "||max_therm_ext_kwth||"
         }
@@ -1479,7 +1479,7 @@
         "pk": 165,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 88,
+            "template_loc_tech": 37,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -1488,7 +1488,7 @@
         "pk": 166,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 88,
+            "template_loc_tech": 37,
             "parameter": 57,
             "equation": "||interest_rate||"
         }
@@ -1497,7 +1497,7 @@
         "pk": 167,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 89,
+            "template_loc_tech": 38,
             "parameter": 11,
             "equation": "||max_elec_gen_kwe||"
         }
@@ -1506,7 +1506,7 @@
         "pk": 168,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 89,
+            "template_loc_tech": 38,
             "parameter": 53,
             "equation": "||elec_cap_vs_surface_cost||"
         }
@@ -1515,7 +1515,7 @@
         "pk": 169,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 89,
+            "template_loc_tech": 38,
             "parameter": 58,
             "equation": "||elec_cap_vs_surface_om_cost||"
         }
@@ -1524,7 +1524,7 @@
         "pk": 170,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 89,
+            "template_loc_tech": 38,
             "parameter": 18,
             "equation": "||elec_prod_to_therm_ext_ratio||"
         }
@@ -1533,7 +1533,7 @@
         "pk": 171,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 89,
+            "template_loc_tech": 38,
             "parameter": 25,
             "equation": "||lifetime||"
         }
@@ -1542,7 +1542,7 @@
         "pk": 172,
         "model": "template.template_type_loc_tech_param",
         "fields": {
-            "template_loc_tech": 89,
+            "template_loc_tech": 38,
             "parameter": 57,
             "equation": "||interest_rate||"
         }

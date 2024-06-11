@@ -33,7 +33,9 @@
 		<select id="collaborator_id" class="collaborator-dropdown-search form-control" placeholder="{% trans 'Select a user' %}..." data-placeholder="Select a user..." style="width:100%" required>
 			<option value="" disabled selected>{% trans "Select a user" %}...</option>
 			{% for user in users %}
-		  	<option value='{{ user.id }}' data-id='{{ user.id }}' data-name='<i class="fas fa-user"></i>&nbsp;&nbsp;{{ user.first_name }} {{ user.last_name }}'>{{ user.first_name }} {{ user.last_name }}</option>
+		  	<option value='{{ user.id }}' data-id='{{ user.id }}' data-name='<i class="fas fa-user"></i>&nbsp;&nbsp;{{ user.first_name }} {{ user.last_name }} - {{user.user_profile.organization}}'>
+          {{ user.first_name }} {{ user.last_name }} - {{ user.user_profile.organization }}
+        </option>
 		  	{% endfor %}
 		</select>
 		<br><br>
@@ -69,11 +71,18 @@
 	<div class="col-10 centered">
 		<table class="table table-hover table-sm" style="background-color: #f3f3f3; white-space: nowrap;">
 		{% for user_model in user_models %}
-			<tr class="tbl-header colab-row" data-uuid="{{ user_model.model.uuid }}">
-				<th colspan=4><b>{% if user_model.model.public is True %}<i class="fa fa-globe"></i>&nbsp;&nbsp;&nbsp;{% endif %}{{ user_model.model }}:</b></th>
+			{% if forloop.first %}
+			<tr>
+				<th>Model</th>
+				<th>User Role</th>
+				<th>Name</th>
+				<th>Organization</th>
+				<th>Permissions</th>
 			</tr>
+			{% endif %}
 			{% for collaborator in user_model.model.collaborators %}
 			<tr class="colab-row" data-uuid="{{ user_model.model.uuid }}">
+				<td>{{user_model.model}}</td>
 				<td>{% if collaborator.user.is_staff %}<span style="color:green;">{% trans "Administrator" %}</span>{% endif %}</td>
 				<td>{{ collaborator.user.first_name }} {{ collaborator.user.last_name }}</td>
 				<td>{{ collaborator.user.user_profile.organization }}</td>

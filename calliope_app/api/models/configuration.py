@@ -327,7 +327,6 @@ class Model_User(models.Model):
         ordering = ['user__user_profile__organization']
     objects = EngageManager()
     objects_all = models.Manager()
-
     model = models.ForeignKey(Model, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     can_edit = models.BooleanField(default=False)
@@ -1567,6 +1566,8 @@ class ParamsManager():
         queryset = Parameter.objects.filter(tags__contains=[tag])
         categories = [param.id for param in queryset]
         return categories
+    
+
 class Carrier(models.Model):
     class Meta:
         db_table = "carrier"

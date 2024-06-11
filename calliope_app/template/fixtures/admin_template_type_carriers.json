@@ -34,7 +34,7 @@
         "model": "template.template_type_carrier",
         "fields": {
             "template_type": 4,
-            "name": "Demand MMBTU",
+            "name": "MMBTU",
             "rate_unit": "MMBTU/h",
             "quantity_unit": "MMBTU"
         }
@@ -74,7 +74,7 @@
         "model": "template.template_type_carrier",
         "fields": {
             "template_type": 2,
-            "name": "Demand MMBTU",
+            "name": "MMBTU",
             "rate_unit": "MMBTU/h",
             "quantity_unit": "MMBTU"
         }
@@ -214,7 +214,7 @@
         "model": "template.template_type_carrier",
         "fields": {
             "template_type": 7,
-            "name": "Demand MMBTU",
+            "name": "MMBTU",
             "rate_unit": "MMBTU/h",
             "quantity_unit": "MMBTU"
         }
@@ -234,7 +234,7 @@
         "model": "template.template_type_carrier",
         "fields": {
             "template_type": 7,
-            "name": "Demand Ton",
+            "name": "Ton",
             "rate_unit": "TOR",
             "quantity_unit": "TOR/h"
         }
@@ -274,7 +274,7 @@
         "model": "template.template_type_carrier",
         "fields": {
             "template_type": 8,
-            "name": "Demand MMBTU",
+            "name": "MMBTU",
             "rate_unit": "MMBTU/h",
             "quantity_unit": "MMBTU"
         }
@@ -294,7 +294,7 @@
         "model": "template.template_type_carrier",
         "fields": {
             "template_type": 8,
-            "name": "Demand Ton",
+            "name": "Ton",
             "rate_unit": "TOR",
             "quantity_unit": "TOR/h"
         }

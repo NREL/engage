@@ -1,13 +1,13 @@
 Optimization Solvers
 ====================
 
-GLPK
+CBC
 ----
-Engage uses a free and open-source solver `GLPK <https://www.gnu.org/software/glpk/>`_
+Engage uses a free and open-source solver `CBC <https://www.coin-or.org/>`_
 for development purpose, and it is already built into the docker image.
 
-GLPK supports the GNU MathProg modeling language - subset of the AMPL language, and include
-a variety of components, for detailed information, please refer to https://www.gnu.org/software/glpk/.
+CBC supports the GNU MathProg modeling language - subset of the AMPL language, and include
+a variety of components, for detailed information, please refer to https://www.coin-or.org/.
 
 However, it takes too much time and memory for solving large Calliope models.
 
@@ -32,14 +32,9 @@ However we didn't provide in docker environment for development purpose, if you 
 HiGHS
 ------
 
-In the deployed Engage application at NREL, it integrates high-performance open-source solver `HiGHS <https://highs.dev/>`_
-to solve Calliope models with fast speed and large memory in compute node.
-
-HiGHS
-------
-
-NREL Engage deployment also integrates the commercial solver `FICO XPRESS <https://www.fico.com/en/products/fico-xpress-optimization>`_
-to solve Calliope models with high performance and large compute resources.
+In the deployed Engage application at NREL, it uses high-performance solver `HiGHS <https://highs.dev/>`_
+to solve Calliope models with fast speed and large memory in compute node. It's open-source, for more information,
+please refer to its official documentation `https://highs.dev/#docs <https://highs.dev/#docs>`_
 
 More Choice
 -----------

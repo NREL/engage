@@ -64,11 +64,6 @@ $( document ).ready(function() {
         save_modal_scenario_settings();
 	});
 
-
-    $('#scenario_description, #scenario_name').on('change keyup paste', function () {
-        $('#master-save').removeClass('hide');
-     });
-
 	$('#master-new').on('click', function() {
 		var model_uuid = $('#header').data('model_uuid');
 		window.location = '/' + model_uuid + '/add_scenarios/';
@@ -91,9 +86,7 @@ $( document ).ready(function() {
             $('#new_group_constraint_btn').attr("disabled", true);
         }
     });
-
 	get_scenario_configuration();
-
 });
 
 function save_scenario_settings() {
@@ -149,7 +142,7 @@ function get_scenario_configuration() {
 	$('.viz-spinner').show();
 	var model_uuid = $('#header').data('model_uuid'),
 		scenario_id = $("#scenario option:selected").data('id');
-	
+
 	if (scenario_id != undefined) {
 		$.ajax({
 			url: '/' + LANGUAGE_CODE + '/component/scenario/',
@@ -161,6 +154,7 @@ function get_scenario_configuration() {
 			success: function (data) {
 				active_lt_ids = data['active_lt_ids'];
 				loc_techs = data['loc_techs'];
+        $('#scenario_details').html(data['scenario_details']);
 				$('#scenario_settings').html(data['scenario_settings']);
 				activate_scenario_settings();
 
@@ -219,7 +213,7 @@ function get_scenario_configuration() {
 				$('#scenario-delete').on('click', function() {
 					var model_uuid = $('#header').data('model_uuid'),
                     // Here is tto change
-                    
+
 						scenario_id = $("#scenario option:selected").data('id');
 					var confirmation = confirm('This will remove all configurations and runs for this scenario.\nAre you sure you want to delete?');
 					if (confirmation) {
@@ -239,7 +233,7 @@ function get_scenario_configuration() {
 						});
 					};
 				});
-                
+
 			}
 		});
 	} else {
@@ -252,6 +246,7 @@ function get_scenario_configuration() {
 function updateDialogObject() {
     Object.keys(dialogObj).forEach(constraint => {
         let constraintId = safeHTMLId(constraint);
+
         var techsInput = $("#" + constraintId + "_techs").val();
         if (techsInput && techsInput.length > 0) {
             dialogObj[constraint].techs = techsInput;
@@ -272,7 +267,7 @@ function updateDialogObject() {
         } else {
             delete dialogObj[constraint].techs_rhs;
         }
-        
+
         // Locations
         var locsInput = $("#" + constraintId + "_locs").val();
         if (locsInput && locsInput.length > 0) {
@@ -295,10 +290,16 @@ function updateDialogObject() {
             delete dialogObj[constraint].locs_rhs;
         }
 
-        //add constraints
+        // Add constraints
         Object.keys(dialogObj[constraint]).forEach(fieldKey => {
             if (fieldKey !== "locs" && fieldKey !== "techs" && fieldKey !== "techs_lhs" && fieldKey !== "techs_rhs" && fieldKey !== "locs_lhs" && fieldKey !== "locs_rhs") {
-                let value = $("#" + constraintId + fieldKey + "-val").val() ? $("#" + constraintId + fieldKey + "-val").val() : "";
+                let value = $("#" + constraintId + fieldKey + "-val").val();
+                if (value) {
+                    value = parseFloat(value, 10);
+                } else {
+                    value = 0;
+                }
+
                 if (constraints[fieldKey] !== "none") {
                     let key = $("#" + constraintId + fieldKey + "-key").val() ? $("#" + constraintId + fieldKey + "-key").val() : "";
                     dialogObj[constraint][fieldKey] = {};
@@ -315,7 +316,7 @@ function updateDialogObject() {
 
 function getModelCarriers() {
     var model_uuid = $('#header').data('model_uuid');
-    
+
     $.ajax({
         url: '/' + LANGUAGE_CODE + '/component/group_constraint_options/',
         async: false,
@@ -334,12 +335,12 @@ function getModelCarriers() {
 function updateDialogGroupConstraints(initialLoad) {
     $('#dialog-inputs').empty();
     if (dialogObj.length > 0) {
-        $('#dialog-inputs').append( "<h3><b>Constraint Groups</b></h3>");
+        $('#dialog-inputs').append("<h3><b>Constraint Groups</b></h3>");
     }
     Object.keys(dialogObj).forEach(constraint => {
         let constraintId = safeHTMLId(constraint);
         $('#dialog-inputs').append( "<div id='" + constraintId + "' style='padding-top:1.5em'></div>");
-        $("#" + constraintId).append( "<div class='cateogry-expander'><a><h5 class='constraint-name'><div style='float: right;'><i class='fas fa-caret-down'></i><i class='fas fa-caret-up hide'></i>" + constraint 
+        $("#" + constraintId).append( "<div class='cateogry-expander'><a><h5 class='constraint-name'><div style='float: right;'><i class='fas fa-caret-down'></i><i class='fas fa-caret-up hide'></i>" + constraint
         + "</div></h5></a></div>");
         $("#" + constraintId).append( "<div id='" + constraintId + "-content" + "' class=''>");
         let constraintContent = "#" + constraintId + "-content";
@@ -347,30 +348,42 @@ function updateDialogGroupConstraints(initialLoad) {
 
         //Display techs and locs first
         dialogObj[constraint].techs = dialogObj[constraint].techs ? dialogObj[constraint].techs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_techs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter technologies.'><b>" + djangoTranslateTechnologies + "</b></label><br>" + 
+        $(constraintContent).append("<div id='" + constraintId + "_techs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter technologies.'><b>" + djangoTranslateTechnologies + "</b></label><br>" +
         "<select id='" + constraintId + "_techs' name='" + djangoTranslateTechnologies + "' multiple searchable></select></div>");
         for (var t in technologies) {
-            $('#' + constraintId + '_techs').append('<option value="'+ technologies[t].name + '" '+ (dialogObj[constraint].techs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
+            if (technologies[t].tag){
+                $('#' + constraintId + '_techs').append('<option value="'+ technologies[t].name + "-" + technologies[t].tag +  '" '+ (dialogObj[constraint].techs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + " [" + technologies[t].pretty_tag + ']</option>');
+            } else {
+                $('#' + constraintId + '_techs').append('<option value="'+ technologies[t].name +  '" '+ (dialogObj[constraint].techs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
+            }
         }
         $("#" + constraintId + "_techs").change(function () {
             updateDialogObject();
         });
 
         dialogObj[constraint].techs_lhs = dialogObj[constraint].techs_lhs ? dialogObj[constraint].techs_lhs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_techs_lhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter left hand-side technologies.'><b>" + djangoTranslateTechnologies + djangoTranslateLeftHand + "</b></label><br>" + 
+        $(constraintContent).append("<div id='" + constraintId + "_techs_lhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter left hand-side technologies.'><b>" + djangoTranslateTechnologies + ' ' + djangoTranslateLeftHand + "</b></label><br>" +
         "<select id='" + constraintId + "_techs_lhs' name='" + djangoTranslateTechnologies + ' ' + djangoTranslateLeftHand + "' multiple searchable></select></div>");
         for (var t in technologies) {
-            $('#' + constraintId + '_techs_lhs').append('<option value="'+ technologies[t].name + '" '+ (dialogObj[constraint].techs_lhs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
+            if (technologies[t].tag){
+                $('#' + constraintId + '_techs_lhs').append('<option value="'+ technologies[t].name + "-" + technologies[t].tag +  '" '+ (dialogObj[constraint].techs_lhs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + " [" + technologies[t].pretty_tag + ']</option>');
+            } else {
+                $('#' + constraintId + '_techs_lhs').append('<option value="'+ technologies[t].name +  '" '+ (dialogObj[constraint].techs_lhs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
+            }
         }
         $("#" + constraintId + "_techs_lhs").change(function () {
             updateDialogObject();
         });
 
         dialogObj[constraint].techs_rhs = dialogObj[constraint].techs_rhs ? dialogObj[constraint].techs_rhs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_techs_rhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter right hand-side technologies.'><b>" + djangoTranslateTechnologies + djangoTranslateRightHand + "</b></label><br>" + 
+        $(constraintContent).append("<div id='" + constraintId + "_techs_rhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter right hand-side technologies.'><b>" + djangoTranslateTechnologies + ' ' + djangoTranslateRightHand + "</b></label><br>" +
         "<select id='" + constraintId + "_techs_rhs' name='" + djangoTranslateTechnologies + ' ' + djangoTranslateRightHand + "' multiple searchable></select></div>");
         for (var t in technologies) {
-            $('#' + constraintId + '_techs_rhs').append('<option value="'+ technologies[t].name + '" '+ (dialogObj[constraint].techs_rhs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
+            if (technologies[t].tag){
+                $('#' + constraintId + '_techs_rhs').append('<option value="'+ technologies[t].name + "-" + technologies[t].tag  + '" '+ (dialogObj[constraint].techs_rhs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + " [" + technologies[t].pretty_tag + ']</option>');
+            } else {
+                $('#' + constraintId + '_techs_rhs').append('<option value="'+ technologies[t].name + '" '+ (dialogObj[constraint].techs_rhs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
+            }
         }
         $("#" + constraintId + "_techs_rhs").change(function () {
             updateDialogObject();
@@ -381,7 +394,7 @@ function updateDialogGroupConstraints(initialLoad) {
         }
 
         dialogObj[constraint].locs = dialogObj[constraint].locs ? dialogObj[constraint].locs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_locs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter locations.'><b>" + djangoTranslateLocations + "</b></label><br>" + 
+        $(constraintContent).append("<div id='" + constraintId + "_locs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter locations.'><b>" + djangoTranslateLocations + "</b></label><br>" +
         "<select id='" + constraintId + "_locs' name='" + djangoTranslateLocations + "' multiple searchable></select></div>");
         for (var l in locations) {
             $('#' + constraintId + '_locs').append('<option value="'+ locations[l].name + '" '+ (dialogObj[constraint].locs.includes(locations[l].name) ? ' selected' : '') +'>' + locations[l].pretty_name + '</option>');
@@ -391,7 +404,7 @@ function updateDialogGroupConstraints(initialLoad) {
         });
 
         dialogObj[constraint].locs_lhs = dialogObj[constraint].locs_lhs ? dialogObj[constraint].locs_lhs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_locs_lhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter left hand-side locations.'><b>" + djangoTranslateLocations + ' ' + djangoTranslateLeftHand + "</b></label><br>" + 
+        $(constraintContent).append("<div id='" + constraintId + "_locs_lhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter left hand-side locations.'><b>" + djangoTranslateLocations + ' ' + djangoTranslateLeftHand + "</b></label><br>" +
         "<select id='" + constraintId + "_locs_lhs' name='" + djangoTranslateLocations + ' ' + djangoTranslateLeftHand + "' multiple searchable></select></div>");
         for (var l in locations) {
             $('#' + constraintId + '_locs_lhs').append('<option value="'+ locations[l].name + '" '+ (dialogObj[constraint].locs_lhs.includes(locations[l].name) ? ' selected' : '') +'>' + locations[l].pretty_name + '</option>');
@@ -401,7 +414,7 @@ function updateDialogGroupConstraints(initialLoad) {
         });
 
         dialogObj[constraint].locs_rhs = dialogObj[constraint].locs_rhs ? dialogObj[constraint].locs_rhs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_locs_rhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter right hand-side locations.'><b>" + djangoTranslateLocations + ' ' + djangoTranslateRightHand + "</b></label><br>" + 
+        $(constraintContent).append("<div id='" + constraintId + "_locs_rhs_container'><label class='amsify-label' data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter right hand-side locations.'><b>" + djangoTranslateLocations + ' ' + djangoTranslateRightHand + "</b></label><br>" +
         "<select id='" + constraintId + "_locs_rhs' name='" + djangoTranslateLocations + ' ' + djangoTranslateRightHand + "' multiple searchable></select></div>");
         for (var l in locations) {
             $('#' + constraintId + '_locs_rhs').append('<option value="'+ locations[l].name + '" '+ (dialogObj[constraint].locs_rhs.includes(locations[l].name) ? ' selected' : '') +'>' + locations[l].pretty_name + '</option>');
@@ -426,7 +439,7 @@ function updateDialogGroupConstraints(initialLoad) {
 
         if (!(dialogObj[constraint].techs_rhs && dialogObj[constraint].techs_lhs && dialogObj[constraint].techs)) {
             $("#" + constraintId + "_toggle_techs").click(function(){
-                $("#" + constraintId + "_techs_container").toggle();                    
+                $("#" + constraintId + "_techs_container").toggle();
                 $("#" + constraintId + "_techs_lhs_container").toggle();
                 $("#" + constraintId + "_techs_rhs_container").toggle();
             });
@@ -435,11 +448,11 @@ function updateDialogGroupConstraints(initialLoad) {
         if (!dialogObj[constraint].locs_rhs && !dialogObj[constraint].locs_lhs) {
             $("#" + constraintId + "_locs_lhs_container").hide();
             $("#" + constraintId + "_locs_rhs_container").hide();
-        } 
+        }
 
         if (!(dialogObj[constraint].locs_rhs && dialogObj[constraint].locs_lhs && dialogObj[constraint].locs)) {
             $("#" + constraintId + "_toggle_locs").click(function(){
-                $("#" + constraintId + "_locs_container").toggle();                    
+                $("#" + constraintId + "_locs_container").toggle();
                 $("#" + constraintId + "_locs_lhs_container").toggle();
                 $("#" + constraintId + "_locs_rhs_container").toggle();
             });
@@ -508,7 +521,7 @@ function updateConstraintTypes(constraint, constraintId, constraintContent) {
                 });
 
                 $(constraintFields).append( "<label><b>" + djangoTranslateValue + " </b></label>");
-                $(constraintFields).append( "<input id='" + constraintId + fieldKey + "-val' name='dialogObj[constraint][fieldKey].value' class='form-control smol' placeholder='' value='" + val + "'></input><br><br>" );
+                $(constraintFields).append("<input type='number' id='" + constraintId + fieldKey + "-val' name='dialogObj[constraint][" + fieldKey + "].value' class='form-control smol' placeholder='' value='" + val + "' step='1'></input><br><br>");
             } else {
                 $(constraintFields).append( "<label><b>" + djangoTranslateValue + "</b></label>");
                 $(constraintFields).append( "<input id='" + constraintId + fieldKey + "-val' name='dialogObj[constraint][fieldKey]' class='form-control smol' placeholder='' value='" + dialogObj[constraint][fieldKey] + "'></input><br><br>" );
@@ -567,7 +580,7 @@ function setGroupConstraintClassLogic() {
             $(this).find('.fa-caret-up').addClass('hide');
             $(this).find('.fa-caret-down').removeClass('hide');
         }
-    }); 
+    });
 }
 
 function activate_scenario_settings() {
@@ -649,7 +662,7 @@ function activate_scenario_settings() {
                                 newTechs += ","
                             }
                         }
-                    } 
+                    }
                     dialogObj[constraint].techs = newTechs;
                 }
                 if (fieldKey === "techs_lhs") {
@@ -661,7 +674,7 @@ function activate_scenario_settings() {
                                 newTechs += ","
                             }
                         }
-                    } 
+                    }
                     dialogObj[constraint].techs_lhs = newTechs;
                 }
                 if (fieldKey === "techs_rhs") {
@@ -673,7 +686,7 @@ function activate_scenario_settings() {
                                 newTechs += ","
                             }
                         }
-                    } 
+                    }
                     dialogObj[constraint].techs_rhs = newTechs;
                 }
 
@@ -724,13 +737,13 @@ function activate_scenario_settings() {
         $('#tabs li a:not(:first)').addClass('inactive');
         $('.tab-container').hide();
         $('.tab-container:first').show();
-            
+
         $('#tabs li a').click(function(){
             var t = $(this).attr('id');
-            if($(this).hasClass('inactive')){ 
-                $('#tabs li a').addClass('inactive');           
+            if($(this).hasClass('inactive')){
+                $('#tabs li a').addClass('inactive');
                 $(this).removeClass('inactive');
-                
+
                 $('.tab-container').hide();
                 $('#'+ t + 'C').fadeIn('slow');
             }
