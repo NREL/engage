@@ -340,8 +340,10 @@ function updateDialogGroupConstraints(initialLoad) {
     Object.keys(dialogObj).forEach(constraint => {
         let constraintId = safeHTMLId(constraint);
         $('#dialog-inputs').append( "<div id='" + constraintId + "' style='padding-top:1.5em'></div>");
-        $("#" + constraintId).append( "<div class='cateogry-expander'><a><h5 class='constraint-name'><div style='float: right;'><i class='fas fa-caret-down'></i><i class='fas fa-caret-up hide'></i>" + constraint
-        + "</div></h5></a></div>");
+        $("#" + constraintId).append(
+            "<div class='category-expander'><a><h5 class='constraint-name'><div style='float: right;'><i class='fas fa-caret-up arrow'></i>" + constraint
+            + "</div></h5></a></div>"
+        );
         $("#" + constraintId).append( "<div id='" + constraintId + "-content" + "' class=''>");
         let constraintContent = "#" + constraintId + "-content";
         $(constraintContent).append( "<button id='delete_group_constraint_btn_" + constraintId + "' type='button' class='btn btn-sm btn-outline-danger group-constraint-delete' title='Delete constraint'><i class='fas fa-trash'></i></button>");
@@ -471,15 +473,14 @@ function updateDialogGroupConstraints(initialLoad) {
     });
 
     if (initialLoad) {
-        var rows = $('.cateogry-expander').next();
+        var rows = $('.category-expander').next();
         rows.addClass('hide');
-        $('.cateogry-expander').addClass('hiding_rows');
-        $('.cateogry-expander').find('.fa-caret-up').addClass('hide');
-        $('.cateogry-expander').find('.fa-caret-down').removeClass('hide');
+        $('.category-expander').addClass('hiding_rows');
+        $('.category-expander').find('.fa-caret-up').addClass('hide');
+        $('.category-expander').find('.fa-caret-down').removeClass('hide');
     }
 
     setGroupConstraintClassLogic();
-
 }
 
 function updateConstraintTypes(constraint, constraintId, constraintContent) {
@@ -566,20 +567,12 @@ function safeHTMLId(id) {
 }
 
 function setGroupConstraintClassLogic() {
-    $('.cateogry-expander').unbind();
-    $('.cateogry-expander').on('click', function(){
+    $('.category-expander').unbind();
+    $('.category-expander').on('click', function(){
         var rows = $(this).next();
-        if ($(this).hasClass('hiding_rows')) {
-            rows.removeClass('hide');
-            $(this).removeClass('hiding_rows');
-            $(this).find('.fa-caret-up').removeClass('hide');
-            $(this).find('.fa-caret-down').addClass('hide');
-        } else {
-            rows.addClass('hide');
-            $(this).addClass('hiding_rows');
-            $(this).find('.fa-caret-up').addClass('hide');
-            $(this).find('.fa-caret-down').removeClass('hide');
-        }
+        $(this).find('.arrow').toggleClass('fa-caret-up fa-caret-down');
+        rows.toggleClass('hide');
+        $(this).toggleClass('hiding_rows');
     });
 }
 
