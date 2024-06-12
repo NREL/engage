@@ -431,7 +431,7 @@
       "user_visibility": "True",
       "can_evolve": "False",
       "name": "solver",
-      "default_value": "amplxpress",
+      "default_value": "appsi_highs",
       "choices": "[\"glpk\",\"appsi_highs\",\"amplxpress\",\"xpress_direct\"]",
       "tab": "runs"
     }
