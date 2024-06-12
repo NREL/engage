@@ -11,7 +11,7 @@ django_ratelimit>=4.1.0
 flower>=2.0.1
 
 # NREL packages
-nrel-pysam>==5.1.0
+nrel-pysam>=5.1.0
 # Geophires installed in Dockerfile
 # git+https://github.com/NREL/GEOPHIRES-X.git#egg=geophires-x
 
