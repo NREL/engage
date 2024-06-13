@@ -332,11 +332,14 @@ function updateDialogGroupConstraints(initialLoad) {
     if (dialogObj.length > 0) {
         $('#dialog-inputs').append( "<h3><b>Constraint Groups</b></h3>");
     }
+    console.log("dialogObj " + JSON.stringify(dialogObj));
     Object.keys(dialogObj).forEach(constraint => {
         let constraintId = safeHTMLId(constraint);
         $('#dialog-inputs').append( "<div id='" + constraintId + "' style='padding-top:1.5em'></div>");
+        console.log("Constraint Name " + constraint);
         $("#" + constraintId).append( "<div class='cateogry-expander'><a><h5 class='constraint-name'><div style='float: right;'><i class='fas fa-caret-down'></i><i class='fas fa-caret-up' style='display: none;'></i>" + constraint
         + "</div></h5></a></div>");
+
         $("#" + constraintId).append( "<div id='" + constraintId + "-content" + "' class=''>");
         let constraintContent = "#" + constraintId + "-content";
         $(constraintContent).append( "<button id='delete_group_constraint_btn_" + constraintId + "' type='button' class='btn btn-sm btn-outline-danger group-constraint-delete' title='Delete constraint'><i class='fas fa-trash'></i></button>");
@@ -454,15 +457,14 @@ function updateDialogGroupConstraints(initialLoad) {
     });
 
     if (initialLoad) {
-        var rows = $('.cateogry-expander').next();
+        var rows = $('#' + constraintId).find('.cateogry-expander').next();
         rows.addClass('hide');
-        $('.cateogry-expander').addClass('hiding_rows');
-        $('.cateogry-expander').find('.fa-caret-up').addClass('hide');
-        $('.cateogry-expander').find('.fa-caret-down').removeClass('hide');
+        $('#' + constraintId).find('.cateogry-expander').addClass('hiding_rows');
+        $('#' + constraintId).find('.cateogry-expander').find('.fa-caret-down').addClass('hide');
+        $('#' + constraintId).find('.cateogry-expander').find('.fa-caret-up').removeClass('hide');
+    } else {
+        setGroupConstraintClassLogic();
     }
-
-    setGroupConstraintClassLogic();
-
 }
 
 function updateConstraintTypes(constraint, constraintId, constraintContent) {
