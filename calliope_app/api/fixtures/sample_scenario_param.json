@@ -34,13 +34,24 @@
     "model": "api.scenario_param",
     "fields": {
       "scenario_id": "1",
+      "run_parameter_id": "23",
+      "value": "glpk",
+      "model_id": "1"
+    }
+  },
+
+  {
+    "pk": 5,
+    "model": "api.scenario_param",
+    "fields": {
+      "scenario_id": "1",
       "run_parameter_id": "14",
       "value": "true",
       "model_id": "1"
     }
   },
   {
-    "pk": 5,
+    "pk": 6,
     "model": "api.scenario_param",
     "fields": {
       "scenario_id": "1",
@@ -50,7 +61,7 @@
     }
   },
   {
-    "pk": 6,
+    "pk": 7,
     "model": "api.scenario_param",
     "fields": {
       "scenario_id": "1",
@@ -60,7 +71,7 @@
     }
   },
   {
-    "pk": 7,
+    "pk": 8,
     "model": "api.scenario_param",
     "fields": {
       "scenario_id": "1",
