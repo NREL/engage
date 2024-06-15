@@ -681,14 +681,18 @@ class Timeseries_Meta(models.Model):
                                   columns=['time', 'value'])
         timeseries = timeseries.set_index('time')
         timeseries.index.name = 'datetime'
+        meta = cls.objects.create(model=model, name=name, start_date=start_date, end_date=end_date,
+                original_timestamp_col=0, original_value_col=1)
 
-        meta = cls.objects.create(model=model, name=name,
-                                  start_date=start_date, end_date=end_date)
         try:
             directory = "{}/timeseries".format(settings.DATA_STORAGE)
             os.makedirs(directory, exist_ok=True)
             fname = "{}/{}.csv".format(directory, meta.file_uuid)
             timeseries.to_csv(fname)
+            task_file = fname.split('/')[-1]
+            meta.original_filename = task_file
+            meta.upload_task = CeleryTask.objects.get(task_id=task_file.split('.')[0])
+            meta.save(update_fields=['original_filename','upload_task'])
             return True
 
         except Exception:
