@@ -691,8 +691,7 @@ class Timeseries_Meta(models.Model):
             timeseries.to_csv(fname)
             task_file = fname.split('/')[-1]
             meta.original_filename = task_file
-            meta.upload_task = CeleryTask.objects.get(task_id=task_file.split('.')[0])
-            meta.save(update_fields=['original_filename','upload_task'])
+            meta.save(update_fields=['original_filename'])
             return True
 
         except Exception:
