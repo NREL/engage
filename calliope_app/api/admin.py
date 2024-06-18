@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from api.models.engage import Help_Guide, RequestRateLimit
 from api.models.calliope import Abstract_Tech, Abstract_Tech_Param, \
-    Parameter, Run_Parameter
+    Parameter, Group_Constraint, Run_Parameter
 from api.models.configuration import Model, Model_User, Model_Comment, \
     Location, Technology, Tech_Param, Model_Favorite, User_File, \
     Loc_Tech, Loc_Tech_Param, Timeseries_Meta, Scenario, \
@@ -26,12 +26,14 @@ class User_Profile_Admin(admin.ModelAdmin):
 
 
 class Help_Guide_Admin(admin.ModelAdmin):
-    # fields = []
     list_display = ['key', 'safe_html']
 
+class Group_Constraint_Admin(admin.ModelAdmin):
+    list_filter = ['id']
+    list_display = ['id', 'name', 'pretty_name',
+                    'description', 'where', 'equations', 'slices']
 
 class Parameter_Admin(admin.ModelAdmin):
-    # fields = []
     list_display = ['id', 'root', 'category', 'name', 'pretty_name',
                     'description', 'timeseries_enabled', 'units', 'choices',
                     'is_systemwide', 'is_essential', 'is_carrier','tags']
@@ -154,8 +156,8 @@ class RequestRateLimit_Admin(admin.ModelAdmin):
     list_filter = ['month', 'year']
     list_display = ['id','year', 'month', 'total', 'user_requests']
 
-
 admin.site.register(Help_Guide, Help_Guide_Admin)
+admin.site.register(Group_Constraint, Group_Constraint_Admin)
 admin.site.register(Parameter, Parameter_Admin)
 admin.site.register(Abstract_Tech, Abstract_Tech_Admin)
 admin.site.register(Abstract_Tech_Param, Abstract_Tech_Param_Admin)

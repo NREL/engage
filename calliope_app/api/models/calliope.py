@@ -1,6 +1,20 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
+class Group_Constraint(models.Model):
+    class Meta:
+        db_table = "group_constraint"
+        verbose_name_plural = "[Admin] Group Constraints"
+
+    name = models.CharField(max_length=200) # Constraint name in calloipe 
+    pretty_name = models.CharField(max_length=200) 
+    description = models.TextField(blank=True, null=True)
+    where = models.JSONField(blank=True, null=True) # (type: json or text tbd)
+    equations = models.JSONField(blank=True, null=True)  # (type: json or text tbd)
+    slices = models.JSONField(blank=True, null=True)
+
+    def __str__(self):
+        return '%s' % (self.pretty_name)
 
 class Parameter(models.Model):
     class Meta:
