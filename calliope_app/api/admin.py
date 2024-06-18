@@ -36,7 +36,7 @@ class Group_Constraint_Admin(admin.ModelAdmin):
 class Parameter_Admin(admin.ModelAdmin):
     list_display = ['id', 'root', 'category', 'name', 'pretty_name',
                     'description', 'timeseries_enabled', 'units', 'choices',
-                    'is_systemwide', 'is_essential', 'is_carrier','tags']
+                    'is_systemwide', 'is_essential', 'is_carrier','tags','index','dim']
     list_editable = ['units']
 
 
@@ -78,7 +78,7 @@ class User_File_Admin(admin.ModelAdmin):
 class Run_Parameter_Admin(admin.ModelAdmin):
     list_display = ['id', 'root', 'name', 'pretty_name', 'description',
                     'user_visibility', 'can_evolve',
-                    'default_value', 'choices']
+                    'default_value', 'choices','index','dim']
 
 
 class Location_Admin(admin.ModelAdmin):
