@@ -95,7 +95,7 @@ class Technology_Admin(admin.ModelAdmin):
 
 class Tech_Param_Admin(admin.ModelAdmin):
     list_filter = ['model']
-    list_display = ['id', 'technology', 'year', 'parameter', 'value',
+    list_display = ['id', 'technology', 'build_year', 'build_year_offset', 'parameter', 'value',
                     'raw_value', 'timeseries', 'timeseries_meta', 'model',
                     'created', 'updated']
 
@@ -108,7 +108,7 @@ class Loc_Tech_Admin(admin.ModelAdmin):
 
 class Loc_Tech_Param_Admin(admin.ModelAdmin):
     list_filter = ['model']
-    list_display = ['id', 'loc_tech', 'year', 'parameter', 'value',
+    list_display = ['id', 'loc_tech', 'build_year', 'build_year_offset', 'parameter', 'value',
                     'raw_value', 'timeseries', 'timeseries_meta', 'model',
                     'created', 'updated']
 
