@@ -9,7 +9,7 @@ class Group_Constraint(models.Model):
     name = models.CharField(max_length=200) # Constraint name in calloipe 
     pretty_name = models.CharField(max_length=200) 
     description = models.TextField(blank=True, null=True)
-    where = models.JSONField(blank=True, null=True) # (type: json or text tbd)
+    where = models.CharField(max_length=500)
     equations = models.JSONField(blank=True, null=True)  # (type: json or text tbd)
     slices = models.JSONField(blank=True, null=True)
 
