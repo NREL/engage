@@ -472,14 +472,14 @@ function updateDialogGroupConstraints(initialLoad) {
     });
 
     if (initialLoad) {
-        var rows = $('#' + constraintId).find('.cateogry-expander').next();
+        var rows = $('.cateogry-expander').next();
         rows.addClass('hide');
-        $('#' + constraintId).find('.cateogry-expander').addClass('hiding_rows');
-        $('#' + constraintId).find('.cateogry-expander').find('.fa-caret-down').addClass('hide');
-        $('#' + constraintId).find('.cateogry-expander').find('.fa-caret-up').removeClass('hide');
-    } else {
-        setGroupConstraintClassLogic();
+        $('.cateogry-expander').addClass('hiding_rows');
+        $('.cateogry-expander').find('.fa-caret-down').addClass('hide');
+        $('.cateogry-expander').find('.fa-caret-up').removeClass('hide');
     }
+    setGroupConstraintClassLogic();
+    
 }
 
 function updateConstraintTypes(constraint, constraintId, constraintContent) {
