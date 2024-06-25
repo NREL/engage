@@ -220,7 +220,7 @@ def solve_model(
         TempfileManager.tempdir = save_logs  # Sets log output dir
 
     # NOTE: pop warmstart for appsi_highs solver as well.
-    if "warmstart" in solve_kwargs.keys() and solver in ["glpk", "cbc", "appsi_highs"]:
+    if "warmstart" in solve_kwargs.keys() and solver in ["cbc", "appsi_highs"]:
         if solve_kwargs.pop("warmstart") is True:
             exceptions.warn(
                 "The chosen solver, {}, does not suport warmstart, which may "
