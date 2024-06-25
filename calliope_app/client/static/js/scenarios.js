@@ -340,8 +340,9 @@ function updateDialogGroupConstraints(initialLoad) {
     Object.keys(dialogObj).forEach(constraint => {
         let constraintId = safeHTMLId(constraint);
         $('#dialog-inputs').append( "<div id='" + constraintId + "' style='padding-top:1.5em'></div>");
-        $("#" + constraintId).append( "<div class='cateogry-expander'><a><h5 class='constraint-name'><div style='float: right;'><i class='fas fa-caret-down'></i><i class='fas fa-caret-up hide'></i>" + constraint
+        $("#" + constraintId).append( "<div class='cateogry-expander'><a><h5 class='constraint-name'><div style='float: right;'><i class='fas fa-caret-down'></i><i class='fas fa-caret-up' style='display: none;'></i>" + constraint
         + "</div></h5></a></div>");
+
         $("#" + constraintId).append( "<div id='" + constraintId + "-content" + "' class=''>");
         let constraintContent = "#" + constraintId + "-content";
         $(constraintContent).append( "<button id='delete_group_constraint_btn_" + constraintId + "' type='button' class='btn btn-sm btn-outline-danger group-constraint-delete' title='Delete constraint'><i class='fas fa-trash'></i></button>");
@@ -474,12 +475,11 @@ function updateDialogGroupConstraints(initialLoad) {
         var rows = $('.cateogry-expander').next();
         rows.addClass('hide');
         $('.cateogry-expander').addClass('hiding_rows');
-        $('.cateogry-expander').find('.fa-caret-up').addClass('hide');
-        $('.cateogry-expander').find('.fa-caret-down').removeClass('hide');
+        $('.cateogry-expander').find('.fa-caret-down').addClass('hide');
+        $('.cateogry-expander').find('.fa-caret-up').removeClass('hide');
     }
-
     setGroupConstraintClassLogic();
-
+    
 }
 
 function updateConstraintTypes(constraint, constraintId, constraintContent) {
@@ -572,13 +572,13 @@ function setGroupConstraintClassLogic() {
         if ($(this).hasClass('hiding_rows')) {
             rows.removeClass('hide');
             $(this).removeClass('hiding_rows');
-            $(this).find('.fa-caret-up').removeClass('hide');
-            $(this).find('.fa-caret-down').addClass('hide');
+            $(this).find('.fa-caret-up').css('display', 'none');
+            $(this).find('.fa-caret-down').css('display', 'inline');
         } else {
             rows.addClass('hide');
             $(this).addClass('hiding_rows');
-            $(this).find('.fa-caret-up').addClass('hide');
-            $(this).find('.fa-caret-down').removeClass('hide');
+            $(this).find('.fa-caret-up').css('display', 'inline');
+            $(this).find('.fa-caret-down').css('display', 'none');
         }
     });
 }

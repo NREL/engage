@@ -1,13 +1,13 @@
 Optimization Solvers
 ====================
 
-GLPK
+CBC
 ----
-Engage uses a free and open-source solver `GLPK <https://www.gnu.org/software/glpk/>`_
+Engage uses a free and open-source solver `CBC <https://www.coin-or.org/>`_
 for development purpose, and it is already built into the docker image.
 
-GLPK supports the GNU MathProg modeling language - subset of the AMPL language, and include
-a variety of components, for detailed information, please refer to https://www.gnu.org/software/glpk/.
+CBC supports the GNU MathProg modeling language - subset of the AMPL language, and include
+a variety of components, for detailed information, please refer to https://www.coin-or.org/.
 
 However, it takes too much time and memory for solving large Calliope models.
 
