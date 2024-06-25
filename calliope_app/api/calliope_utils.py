@@ -4,17 +4,20 @@ interfacing with Calliope.
 """
 
 import os
-import yaml
+# import yaml
+# from yaml import YAML
 import shutil
 from calliope import Model as CalliopeModel
 import pandas as pd
 import json
 import copy
 import calendar
+from ruamel.yaml import YAML
 
 from api.models.configuration import Scenario_Param, Scenario_Loc_Tech, \
     Location, Tech_Param, Loc_Tech_Param, Loc_Tech, Scenario, Carrier
 
+yaml = YAML(typ='safe', pure=True)
 
 def get_model_yaml_set(scenario_id, year):
     """ Function pulls model parameters from Database for YAML """
@@ -470,11 +473,12 @@ def _yaml_outputs(model_path, outputs_dir):
         yaml.dump(model, open(os.path.join(outputs_dir,'model_results.yaml'),'w+'), default_flow_style=False)
 
 def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
-    old_model = yaml.safe_load(open(old_results+'/model_results.yaml'))
+    # yaml = YAML(typ='safe', pure=True)
+    old_model = yaml.load(open(old_results+'/model_results.yaml'))
 
-    new_techs = yaml.safe_load(open(new_inputs+'/techs.yaml','r'))
-    new_loctechs = yaml.safe_load(open(new_inputs+'/locations.yaml','r'))
-    new_model = yaml.safe_load(open(new_inputs+'/model.yaml','r'))
+    new_techs = yaml.load(open(new_inputs+'/techs.yaml','r'))
+    new_loctechs = yaml.load(open(new_inputs+'/locations.yaml','r'))
+    new_model = yaml.load(open(new_inputs+'/model.yaml','r'))
 
     built_tech_names = []
     built_techs = {}

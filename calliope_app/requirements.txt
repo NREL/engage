@@ -1,17 +1,21 @@
 django_ratelimit==4.1.0
+numpy == 1.26
+ruamel.yaml==0.18.6
+# django-fast-ratelimit==9.0.1
+
 git+https://github.com/NREL/GEOPHIRES-X.git#egg=geophires-x
-boto3==1.24.37
+boto3==1.34.124
 celery[redis]==5.3.0
-django==3.2.25
-django-crispy-forms==1.14.0
-django-environ>=0.4.5
-django-modeltranslation==0.18.12
+django==4.2
+django-crispy-forms==2.1
+django-environ==0.11.2
+django-modeltranslation==0.19.3
 # flower>=1.1.0  # contains vulnerabilities not fixed yet
-nrel-pysam==2.1.5.dev3
-pint==0.21
-psycopg2-binary==2.9.3
-pyyaml==6.0
-requests>=2.21.0
+nrel-pysam==5.1
+pint==0.24
+psycopg2-binary==2.9.9
+pyyaml==6.0.1
+requests>=2.32.3
 
 pyutilib>=6.0.0
 # amqp==2.6.1
@@ -22,12 +26,11 @@ pyutilib>=6.0.0
 ipdb >= 0.11
 jinja2 >= 2.10
 natsort >= 5
-netcdf4 >= 1.2.2
-numpy >= 1.23.1
-pandas >= 1.3, <1.4
-plotly >= 5.9.0
+netcdf4 >= 1.4.2
+pandas == 2.2
+plotly >= 5.22.0
 pyomo == 6.7.0
-ruamel.yaml == 0.16.0
-scikit-learn >= 1.1.1
+ruamel.yaml == 0.18.6
+scikit-learn >= 1.5.0
 xarray >= 2022.6.0
-highspy >= 1.5.3
+highspy >= 1.7.1
