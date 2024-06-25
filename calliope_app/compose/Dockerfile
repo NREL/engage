@@ -25,25 +25,10 @@ RUN apt-get update -y --fix-missing \
     coinor-cbc \
     && rm -rf /var/lib/apt/lists/*
 
-# build GLPK 4.65 solver
-WORKDIR /solvers
-RUN wget --no-check-certificate https://ftp.gnu.org/gnu/glpk/glpk-4.65.tar.gz
-RUN tar -zxf glpk-4.65.tar.gz
-WORKDIR /solvers/glpk-4.65
-RUN ./configure \
-	&& make \
-	&& make check \
-	&& make install \
-	&& make distclean \
-	&& ldconfig \
-    # Cleanup
-	&& rm -rf /solvers/glpk-4.65.tar.gz \
-	&& apt-get clean
-
 # install python packages
 WORKDIR /www
 COPY requirements.txt requirements-dev.txt /www/
-RUN apt-get update && apt-get install -y git 
+RUN apt-get update && apt-get install -y git
 RUN pip install --upgrade pip
 RUN pip install https://github.com/NREL/GEOPHIRES-X/archive/main.zip
 RUN pip install -r requirements.txt
