@@ -35,10 +35,11 @@
     "fields": {
       "scenario_id": "1",
       "run_parameter_id": "23",
-      "value": "glpk",
+      "value": "cbc",
       "model_id": "1"
     }
   },
+
   {
     "pk": 5,
     "model": "api.scenario_param",

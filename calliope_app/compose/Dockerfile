@@ -18,7 +18,11 @@ RUN apt-get update -y --fix-missing \
     libncurses5-dev \
     gettext \
     postgresql-client \
-    wget \
+    gfortran \
+    libblas-dev \
+    liblapack-dev \
+    libmetis-dev \
+    coinor-cbc \
     && rm -rf /var/lib/apt/lists/*
 
 # build GLPK 4.65 solver
