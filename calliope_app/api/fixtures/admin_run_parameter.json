@@ -432,7 +432,7 @@
       "can_evolve": "False",
       "name": "solver",
       "default_value": "appsi_highs",
-      "choices": "[\"cbc\",\"appsi_highs\",\"amplxpress\",\"xpress_direct\"]"
+      "choices": "[\"cbc\",\"appsi_highs\",\"amplxpress\",\"xpress_direct\"]",
       "tab": "runs"
     }
   },
