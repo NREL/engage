@@ -11,7 +11,7 @@ release, please observe the release notes below.
 Release Notes:
 
 * Support Calliope version 0.6.8.
-* Support solvers - GLPK and HiGHS.
+* Support solvers - CBC and HiGHS.
 * Model user sign on and authentication.
 * Visualized Calliope model configuration, build and run.
 * Calliope model build collaboratively among multiple users.
