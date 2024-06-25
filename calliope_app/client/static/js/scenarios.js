@@ -1,4 +1,4 @@
-var bulk_confirmation = false,
+ƒvar bulk_confirmation = false,
     dialogInputId = null,
     dialogInputValue = null,
     dialogObj = {},
@@ -337,11 +337,9 @@ function updateDialogGroupConstraints(initialLoad) {
     if (dialogObj.length > 0) {
         $('#dialog-inputs').append("<h3><b>Constraint Groups</b></h3>");
     }
-    console.log("dialogObj " + JSON.stringify(dialogObj));
     Object.keys(dialogObj).forEach(constraint => {
         let constraintId = safeHTMLId(constraint);
         $('#dialog-inputs').append( "<div id='" + constraintId + "' style='padding-top:1.5em'></div>");
-        console.log("Constraint Name " + constraint);
         $("#" + constraintId).append( "<div class='cateogry-expander'><a><h5 class='constraint-name'><div style='float: right;'><i class='fas fa-caret-down'></i><i class='fas fa-caret-up' style='display: none;'></i>" + constraint
         + "</div></h5></a></div>");
 
