@@ -1,4 +1,4 @@
-ƒvar bulk_confirmation = false,
+var bulk_confirmation = false,
     dialogInputId = null,
     dialogInputValue = null,
     dialogObj = {},
