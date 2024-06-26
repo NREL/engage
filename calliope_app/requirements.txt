@@ -3,10 +3,10 @@ boto3>=1.34.124
 
 # Django & Celery
 celery[redis]>=5.4.0
-django==3.2.25
-django-crispy-forms==1.14.0
+django==4.2.13
+django-crispy-forms==2.2
 django-environ>=0.11.2
-django-modeltranslation==0.18.12
+django-modeltranslation==0.19.4
 django_ratelimit>=4.1.0
 flower>=2.0.1
 
@@ -37,7 +37,7 @@ jsonschema >= 4, < 5
 natsort >= 8, < 9
 netcdf4 >= 1.2, < 1.7
 numpy >= 1, < 2
-pandas >= 2.1.3, < 2.2
+pandas >= 2.2.2
 pyomo >= 6.7, < 7
 pyparsing >= 3.0, < 3.1
 ruamel.yaml >= 0.17, < 0.18
