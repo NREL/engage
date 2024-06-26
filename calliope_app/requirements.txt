@@ -1,16 +1,16 @@
+pyyaml==6.0.1
 django_ratelimit==4.1.0
 git+https://github.com/NREL/GEOPHIRES-X.git#egg=geophires-x
 boto3==1.24.37
 celery[redis]==5.3.0
-django==3.2.25
+django==4.2.12
 django-crispy-forms==1.14.0
 django-environ>=0.4.5
 django-modeltranslation==0.18.12
 # flower>=1.1.0  # contains vulnerabilities not fixed yet
-nrel-pysam==2.1.5.dev3
+NREL-PySAM==5.1.0
 pint==0.21
 psycopg2-binary==2.9.3
-pyyaml==6.0
 requests>=2.21.0
 
 pyutilib>=6.0.0
@@ -24,7 +24,7 @@ jinja2 >= 2.10
 natsort >= 5
 netcdf4 >= 1.2.2
 numpy >= 1.23.1
-pandas >= 1.3, <1.4
+pandas == 2.2.2 #1.3, <1.4
 plotly >= 5.9.0
 pyomo == 6.7.0
 ruamel.yaml == 0.16.0

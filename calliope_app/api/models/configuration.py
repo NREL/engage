@@ -129,6 +129,7 @@ class Model(models.Model):
     @classmethod
     def by_uuid(cls, model_uuid):
         """ Get a requested model by its UUID """
+        logger.info(f"Model UUID {model_uuid}")
         model = cls.objects.filter(uuid=model_uuid).first()
         if not model:
             raise ModelNotExistException("Model is None.")
