@@ -131,7 +131,7 @@ def map_viz_view(request, model_uuid, run_id):
 
     subset_time = run.subset_time  # 2005-01-01 to 2005-01-07
     run_min_date, run_max_date = re.match(
-        "^(\d{4}-\d{2}-\d{2}) to (\d{4}-\d{2}-\d{2})$", subset_time).groups()
+        r"^(\d{4}-\d{2}-\d{2}) to (\d{4}-\d{2}-\d{2})$", subset_time).groups()
     context = {
         "timezones": common_timezones,
         "model": model,
