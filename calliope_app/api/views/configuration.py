@@ -11,6 +11,7 @@ from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
 from django.http import HttpResponse, FileResponse
 from django.contrib.auth.models import User
+
 from django.core.exceptions import ValidationError
 from django.utils.html import escape
 from PySAM import Windpower
@@ -1407,13 +1408,12 @@ def remove_flags(request):
     return HttpResponse(json.dumps(payload), content_type="application/json")
  
 @csrf_protect
-@ratelimit(key='ip', rate='10/m', block=False)
-@ratelimit(key='ip', rate='1000/d', block=False)
-def get_map_box_token(request):
+@ratelimit(key='user', rate='10/m', block=False)
+@ratelimit(key='user', rate='1000/d', block=False)
+def get_mapbox_token(request):
     was_limited = getattr(request, 'limited', False)
     if was_limited:
         return HttpResponse({"token": ""}, status=429)
-
     year, month = date.today().year, date.today().month
     user_key = str(request.user) 
     limit, created = RequestRateLimit.objects.get_or_create(

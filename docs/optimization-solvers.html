@@ -33,12 +33,12 @@
             
   <section id="optimization-solvers">
 <h1>Optimization Solvers<a class="headerlink" href="#optimization-solvers" title="Permalink to this heading">¶</a></h1>
-<section id="glpk">
-<h2>GLPK<a class="headerlink" href="#glpk" title="Permalink to this heading">¶</a></h2>
-<p>Engage uses a free and open-source solver <a class="reference external" href="https://www.gnu.org/software/glpk/">GLPK</a>
+<section id="cbc">
+<h2>CBC<a class="headerlink" href="#cbc" title="Permalink to this heading">¶</a></h2>
+<p>Engage uses a free and open-source solver <a class="reference external" href="https://www.coin-or.org/">CBC</a>
 for development purpose, and it is already built into the docker image.</p>
-<p>GLPK supports the GNU MathProg modeling language - subset of the AMPL language, and include
-a variety of components, for detailed information, please refer to <a class="reference external" href="https://www.gnu.org/software/glpk/">https://www.gnu.org/software/glpk/</a>.</p>
+<p>CBC supports the GNU MathProg modeling language - subset of the AMPL language, and include
+a variety of components, for detailed information, please refer to <a class="reference external" href="https://www.coin-or.org/">https://www.coin-or.org/</a>.</p>
 <p>However, it takes too much time and memory for solving large Calliope models.</p>
 </section>
 <section id="scip">
@@ -95,7 +95,7 @@ for more information about problem solving speed with different solvers.</p>
 <li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developer-guide.html">Developer Guide</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Optimization Solvers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#glpk">GLPK</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cbc">CBC</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#scip">SCIP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#highs">HiGHS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#more-choice">More Choice</a></li>

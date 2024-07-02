@@ -4,13 +4,19 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from api.models.engage import Help_Guide, ComputeEnvironment
+from api.models.configuration import Model, Scenario_Param
+import re
+from pytz import common_timezones
+import logging 
 import requests
 from api.models.engage import Help_Guide, ComputeEnvironment
 from api.models.configuration import Model
 import re
 from pytz import common_timezones
-from api.views.configuration import get_map_box_token
+from api.views.configuration import get_mapbox_token
 
+logger = logging.getLogger(__name__)
 
 def runs_view(request, model_uuid):
     """
@@ -24,7 +30,7 @@ def runs_view(request, model_uuid):
     Example:
     http://0.0.0.0:8000/<model_uuid>/run
     """
-    token_response = get_map_box_token(request)
+    token_response = get_mapbox_token(request)
     if token_response.status_code == 200:
         response = json.loads(token_response.content.decode('utf-8'))
         token = response.get("token") 
@@ -72,7 +78,9 @@ def add_runs_view(request, model_uuid, scenario_id):
 
     model = Model.by_uuid(model_uuid)
     can_edit = model.handle_view_access(request.user)
-
+    parameters = Scenario_Param.objects.filter(
+        model_id=model.id, scenario_id=scenario_id, 
+        run_parameter__user_visibility=True, run_parameter__tab="runs")
     try:
         default_environment = ComputeEnvironment.objects.get(name__iexact="default")
     except ComputeEnvironment.DoesNotExist:
@@ -97,6 +105,7 @@ def add_runs_view(request, model_uuid, scenario_id):
         "scenario": model.scenarios.get(id=scenario_id),
         "can_edit": can_edit,
         "help_content": Help_Guide.get_safe_html('add_run'),
+        "parameters": parameters
     }
 
     return render(request, "add_run.html", context)
@@ -105,7 +114,7 @@ def add_runs_view(request, model_uuid, scenario_id):
 def map_viz_view(request, model_uuid, run_id):
     """ Example:
     http://0.0.0.0:8000/<model_uuid>/<run_id>/map_viz """
-    token_response = get_map_box_token(request)
+    token_response = get_mapbox_token(request)
     if token_response.status_code == 200:
         response = json.loads(token_response.content.decode('utf-8'))
         token = response.get("token") 
