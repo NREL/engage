@@ -14,9 +14,14 @@ import calendar
 
 from api.models.configuration import Scenario_Param, Scenario_Loc_Tech, \
     Location, Tech_Param, Loc_Tech_Param, Loc_Tech, Scenario, Carrier
+from api.models.outputs import Run
+import logging
 
 
-def get_model_yaml_set(scenario_id, year):
+logger = logging.getLogger(__name__)
+
+
+def get_model_yaml_set(run, scenario_id, year):
     """ Function pulls model parameters from Database for YAML """
     params = Scenario_Param.objects.filter(scenario_id=scenario_id,
                                            year__lte=year).order_by('-year')
@@ -38,6 +43,13 @@ def get_model_yaml_set(scenario_id, year):
             key_list = unique_param.split('.')
             dictify(model_yaml_set,key_list,param.value)
     dictify(model_yaml_set,['import'],'["techs.yaml","locations.yaml"]')
+    logger.info(f"Run information: {run.id}, {run}")
+    for param in run.run_options:
+        logger.info(param)
+        unique_param = param["root"] + '.' + param["name"]
+        key_list = unique_param.split('.')
+        dictify(model_yaml_set,key_list,param["value"])
+
     return model_yaml_set
 
 

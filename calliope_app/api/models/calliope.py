@@ -92,6 +92,7 @@ class Run_Parameter(models.Model):
         null=True,
     )
     dim = models.CharField(max_length=500, blank=True, null=True)
+    tab = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return '%s (%s)' % (self.pretty_name, self.name)

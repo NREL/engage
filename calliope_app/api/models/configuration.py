@@ -681,14 +681,17 @@ class Timeseries_Meta(models.Model):
                                   columns=['time', 'value'])
         timeseries = timeseries.set_index('time')
         timeseries.index.name = 'datetime'
+        meta = cls.objects.create(model=model, name=name, start_date=start_date, end_date=end_date,
+                original_timestamp_col=0, original_value_col=1)
 
-        meta = cls.objects.create(model=model, name=name,
-                                  start_date=start_date, end_date=end_date)
         try:
             directory = "{}/timeseries".format(settings.DATA_STORAGE)
             os.makedirs(directory, exist_ok=True)
             fname = "{}/{}.csv".format(directory, meta.file_uuid)
             timeseries.to_csv(fname)
+            task_file = fname.split('/')[-1]
+            meta.original_filename = task_file
+            meta.save(update_fields=['original_filename'])
             return True
 
         except Exception:
@@ -1310,7 +1313,7 @@ class Scenario_Param(models.Model):
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
-
+    
     @classmethod
     def update(cls, scenario, form_data):
         """ Update the Scenario parameters stored in Scenario_Param """

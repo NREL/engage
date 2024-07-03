@@ -77,9 +77,8 @@ class User_File_Admin(admin.ModelAdmin):
 
 class Run_Parameter_Admin(admin.ModelAdmin):
     list_display = ['id', 'root', 'name', 'pretty_name', 'description',
-                    'user_visibility', 'can_evolve',
-                    'default_value', 'choices','index','dim']
-
+                    'user_visibility', 'can_evolve', 'default_value',
+                    'choices', 'index', 'dim', 'tab']
 
 class Location_Admin(admin.ModelAdmin):
     list_filter = ['model']
@@ -146,7 +145,7 @@ class Run_Admin(admin.ModelAdmin):
                     'inputs_path', 'logs_path', 'outputs_path', 'outputs_key',
                     'plots_path', 'model', 'build_task', 'run_task',
                     'deprecated', 'published','cluster','manual',
-                    'calliope_066_upgraded', 'calliope_066_errors']
+                    'calliope_066_upgraded', 'calliope_066_errors', 'run_options']
 
 class Carrier_Admin(admin.ModelAdmin):
     list_filter = ['model']

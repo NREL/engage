@@ -18,24 +18,13 @@ RUN apt-get update -y --fix-missing \
     libncurses5-dev \
     gettext \
     postgresql-client \
-    wget \
+    gfortran \
+    libblas-dev \
+    liblapack-dev \
+    libmetis-dev \
+    coinor-cbc \
     git \
     && rm -rf /var/lib/apt/lists/*
-
-# build GLPK 4.65 solver
-WORKDIR /solvers
-RUN wget --no-check-certificate https://ftp.gnu.org/gnu/glpk/glpk-4.65.tar.gz
-RUN tar -zxf glpk-4.65.tar.gz
-WORKDIR /solvers/glpk-4.65
-RUN ./configure \
-	&& make \
-	&& make check \
-	&& make install \
-	&& make distclean \
-	&& ldconfig \
-    # Cleanup
-	&& rm -rf /solvers/glpk-4.65.tar.gz \
-	&& apt-get clean
 
 # Install python packages
 WORKDIR /www
