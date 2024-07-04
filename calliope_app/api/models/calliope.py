@@ -7,10 +7,12 @@ class Group_Constraint(models.Model):
         verbose_name_plural = "[Admin] Group Constraints"
 
     name = models.CharField(max_length=200) # Constraint name in calloipe 
-    pretty_name = models.CharField(max_length=200) 
+    pretty_name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
-    where = models.CharField(max_length=500)
-    equations = models.JSONField(blank=True, null=True)  # (type: json or text tbd)
+    where = models.CharField(max_length=2000, blank=True, null=True)
+    for_each = models.JSONField(blank=True, null=True)
+    sub_expression = models.JSONField(blank=True, null=True)
+    equations = models.JSONField(blank=True, null=True)
     slices = models.JSONField(blank=True, null=True)
 
     def __str__(self):
@@ -41,7 +43,11 @@ class Parameter(models.Model):
         blank=True,
         null=True,
     )
-    dim = models.CharField(max_length=500, blank=True, null=True)
+    dim = ArrayField(
+        models.CharField(max_length=200),
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
         return '%s' % (self.pretty_name)
