@@ -3,7 +3,7 @@ from notification.tasks import send_mapbox_usage_email
 
 
 class Command(BaseCommand):
-    help = 'Read NREL AD and sync people to Lex'
+    help = 'Query Mapbox usage and send email'
 
     def handle(self, *args, **kwargs):
         """Report Mapbox usage information"""
