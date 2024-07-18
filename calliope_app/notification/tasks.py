@@ -26,7 +26,7 @@ def send_mapbox_usage_email():
 
     subject=f'Engage Mapbox Usage [{month}, {now.year}]'
     from_email = settings.AWS_SES_FROM_EMAIL
-    recipient_list = [from_email]
+    recipient_list = ["engage@nrel.gov"]
     recipient_list.extend([admin.email for admin in User.objects.filter(is_superuser=True)])
 
     text_content = f"""
