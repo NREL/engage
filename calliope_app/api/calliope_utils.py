@@ -21,7 +21,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def get_model_yaml_set(run, scenario_id, year):
+def get_model_yaml_set(run, scenario_id, year, node_params_source, tech_params_source):
     """ Function pulls model parameters from Database for YAML """
     params = Scenario_Param.objects.filter(scenario_id=scenario_id,
                                            year__lte=year).order_by('-year')
@@ -43,13 +43,28 @@ def get_model_yaml_set(run, scenario_id, year):
             key_list = unique_param.split('.')
             dictify(model_yaml_set,key_list,param.value)
     dictify(model_yaml_set,['import'],'["techs.yaml","locations.yaml"]')
-    logger.info(f"Run information: {run.id}, {run}")
     for param in run.run_options:
         logger.info(param)
         unique_param = param["root"] + '.' + param["name"]
         key_list = unique_param.split('.')
         dictify(model_yaml_set,key_list,param["value"])
 
+    if node_params_source or tech_params_source:
+        model_yaml_set["data_sources"] = {}
+        if node_params_source:
+            model_yaml_set["data_sources"]["Node_Timeseries"] = {
+                "source": node_params_source,
+                "rows": "timeseries",
+                "columns": ["techs", "nodes", "parameters"]
+            }
+        if tech_params_source:
+            model_yaml_set["data_sources"]["Tech_Timeseries"] = {
+                "source": tech_params_source,
+                "rows": "timeseries",
+                "columns": ["techs", "parameters"]
+            }
+
+    
     return model_yaml_set
 
 
@@ -241,7 +256,7 @@ def run_clustered(model_path, idx, logger):
     _set_clustering(model_path, on=True)
     _set_subset_time(model_path)
     _set_capacities(model_path)
-    model = CalliopeModel(config=model_path, model_definition="hello_world")
+    model = CalliopeModel(config=model_path)
     model.run()
     _write_outputs(model, model_path)
     if model.results.termination_condition != 'optimal':
@@ -260,7 +275,6 @@ def run_clustered(model_path, idx, logger):
             _set_clustering(model_path, on=False)
             _set_subset_time(model_path, st, et)
             _set_capacities(model_path, demand_techs, capacity, storage, units)
-            logger.info(f"Model Path: {model_path}")
             model = CalliopeModel(config=model_path)
             model.run()
             _write_outputs(model, model_path, _pad(month))

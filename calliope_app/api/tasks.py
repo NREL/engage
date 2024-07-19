@@ -229,24 +229,10 @@ def build_model_yaml(run, scenario_id, start_date, inputs_path, node_params_sour
         year = date_parse(start_date).year
 
     # model.yaml
-    model_yaml_set = get_model_yaml_set(run, scenario_id, year)
+    model_yaml_set = get_model_yaml_set(run, scenario_id, year, node_params_source, tech_params_source)
 
     scenario_id = int(scenario_id)
-    # File name, or false, If not, not to include...
-    model_yaml = {
-        "data_sources": {
-            "Node_Timeseries": {
-                "source": node_params_source,
-                "rows": "timeseries",
-                "columns": ["techs", "nodes", "parameters"]
-            },
-            "Tech_Timeseries": {
-                "source": tech_params_source,
-                "rows": "timeseries",
-                "columns": ["techs", "parameters"]
-            }
-        }
-    }
+
     with open(os.path.join(inputs_path, "model.yaml"), 'w') as outfile:
         yaml.dump(model_yaml_set, outfile, default_flow_style=False)
     # techs.yaml
@@ -264,7 +250,6 @@ def build_model_yaml(run, scenario_id, start_date, inputs_path, node_params_sour
     carriers_yaml_set = get_carriers_yaml_set(scenario_id)
     with open(os.path.join(inputs_path, "carriers.yaml"), 'w') as outfile:
         yaml.dump(carriers_yaml_set, outfile, default_flow_style=False)
-        yaml.dump(model_yaml, outfile, default_flow_style=False)
 
 
 def build_model_csv(model, scenario, start_date, end_date, inputs_path, timesteps):
@@ -286,30 +271,15 @@ def build_model_csv(model, scenario, start_date, end_date, inputs_path, timestep
             input_fname = "{}/{}.csv".format(directory, timeseries_meta.file_uuid)
             timeseries = get_timeseries_data(input_fname, start_date, end_date, timesteps)
             logger.info(f"{timeseries, type(timeseries)}")
-            
-            # if 'datetime' not in timeseries.columns:
-            #     timeseries['datetime'] = pd.date_range(start=start_date, end=end_date, freq=timesteps)
-
-            # timeseries = timeseries.rename(columns={'value': (technology_name, parameter_name)})
-            # timeseries = timeseries.rename(columns={'datetime': ("tech", "parameter")})
-            # timeseries.columns = pd.MultiIndex.from_tuples(timeseries.columns)
-            # tech_df = tech_df.merge(timeseries, how='inner', on=[("tech", "parameter")])
-        
             tech_df[technology_name,parameter_name] = timeseries['value']
  
-    tech_df.columns = pd.MultiIndex.from_tuples(tech_df.columns)
-    logger.info(tech_df)
-    logger.info(tech_df.columns)
     tech_csv = None
     if not tech_df.empty:
         tech_df.to_csv(f"{inputs_path}/tech_timeseries.csv")
         tech_csv = "tech_timeseries.csv"
 
-
     loc_tech_df = pd.DataFrame(index=pd.date_range(start=start_date, end=end_date, freq=timesteps), columns=pd.MultiIndex(levels=[[],[], []],codes=[[],[],[]]))
-    # loc_tech_df[("tech", "node", "parameter")] = pd.date_range(start=start_date, end=end_date, freq=timesteps)
-    # loc_tech_df.columns = pd.MultiIndex.from_tuples([("tech", "node", "parameter")])
-    loc_tech_df
+
     for ts in list(loc_tech_ts):
         timeseries_meta_id = ts.timeseries_meta_id
         parameter_name = ts.parameter.name
@@ -321,16 +291,7 @@ def build_model_csv(model, scenario, start_date, end_date, inputs_path, timestep
             directory = "{}/timeseries".format(settings.DATA_STORAGE)
             input_fname = "{}/{}.csv".format(directory, timeseries_meta.file_uuid)
             timeseries = get_timeseries_data(input_fname, start_date, end_date, timesteps)
-            # if 'datetime' not in timeseries.columns:
-            #     timeseries['datetime'] = pd.date_range(start=start_date, end=end_date, freq=timesteps)
-            
-            # timeseries = timeseries.rename(columns={'value': (technology_name, location_1_name, parameter_name)})
-            # timeseries = timeseries.rename(columns={'datetime': ("tech", "node", "parameter")})
-            
-            # timeseries.columns = pd.MultiIndex.from_tuples(timeseries.columns)
-            # loc_tech_df = loc_tech_df.merge(timeseries, how='inner', on=[("tech", "node", "parameter")])
-    loc_tech_df.columns = pd.MultiIndex.from_tuples(loc_tech_df.columns)
-    logger.info(loc_tech_df)
+            loc_tech_df[technology_name, location_1_name, parameter_name] = timeseries['value']
 
     node_csv = None
     if not loc_tech_df.empty:
