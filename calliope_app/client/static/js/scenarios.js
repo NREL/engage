@@ -254,16 +254,16 @@ function updateDialogObject() {
             delete dialogObj[constraint].techs;
         }
 
-        techsInput = $("#" + constraintId + "_techs_lhs").val();
+        var techsInputLhs = $("#" + constraintId + "_techs_lhs").val();
         if (techsInput && techsInput.length > 0) {
-            dialogObj[constraint].techs_lhs = techsInput;
+            dialogObj[constraint].techs_lhs = techsInputLhs;
         } else {
             delete dialogObj[constraint].techs_lhs;
         }
 
-        techsInput = $("#" + constraintId + "_techs_rhs").val();
+        var techsInputRhs = $("#" + constraintId + "_techs_rhs").val();
         if (techsInput && techsInput.length > 0) {
-            dialogObj[constraint].techs_rhs = techsInput;
+            dialogObj[constraint].techs_rhs = techsInputRhs;
         } else {
             delete dialogObj[constraint].techs_rhs;
         }
@@ -276,16 +276,16 @@ function updateDialogObject() {
             delete dialogObj[constraint].locs;
         }
 
-        locsInput = $("#" + constraintId + "_locs_lhs").val();
+        var locsInputLhs = $("#" + constraintId + "_locs_lhs").val();
         if (locsInput && locsInput.length > 0) {
-            dialogObj[constraint].locs_lhs = locsInput;
+            dialogObj[constraint].locs_lhs = locsInputLhs;
         } else {
             delete dialogObj[constraint].locs_lhs;
         }
 
-        locsInput = $("#" + constraintId + "_locs_rhs").val();
+        var locsInputRhs = $("#" + constraintId + "_locs_rhs").val();
         if (locsInput && locsInput.length > 0) {
-            dialogObj[constraint].locs_rhs = locsInput;
+            dialogObj[constraint].locs_rhs = locsInputRhs;
         } else {
             delete dialogObj[constraint].locs_rhs;
         }
