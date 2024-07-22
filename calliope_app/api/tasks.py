@@ -215,7 +215,6 @@ def build_model(inputs_path, run_id, model_uuid, scenario_id,
     # model and scenario instances
     model = Model.objects.get(uuid=model_uuid)
     scenario = Scenario.objects.get(id=scenario_id)
-    logger.info(f"Inputs Path {inputs_path}")
     node_params_source, tech_params_source = build_model_csv(model, scenario, start_date, end_date, inputs_path, run.timestep) # returns node_param.csv location and tech_param location...
     build_model_yaml(run, scenario_id, start_date, inputs_path, node_params_source, tech_params_source)
 
