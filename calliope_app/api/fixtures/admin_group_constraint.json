@@ -1,0 +1,14 @@
+[
+  {
+    "pk": 1,
+    "model": "api.group_constraint",
+    "fields": {
+        "name": "test_constraint",
+        "pretty_name": "Test Constraint",
+        "description": "Test Constraint Description",
+        "where": "storage_cap_max",
+        "equations": {"expression": "sum(flow_out[carriers=electricity, techs=$tech_ref]) <= flow_in[carriers=heat] * 0.6"},
+        "slices": {"tech_ref": "- expression: lookup_techs"}
+    }
+  }
+]

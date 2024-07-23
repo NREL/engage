@@ -1,6 +1,22 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
+class Group_Constraint(models.Model):
+    class Meta:
+        db_table = "group_constraint"
+        verbose_name_plural = "[Admin] Group Constraints"
+
+    name = models.CharField(max_length=200) # Constraint name in calloipe 
+    pretty_name = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
+    where = models.CharField(max_length=2000, blank=True, null=True)
+    for_each = models.JSONField(blank=True, null=True)
+    sub_expression = models.JSONField(blank=True, null=True)
+    equations = models.JSONField(blank=True, null=True)
+    slices = models.JSONField(blank=True, null=True)
+
+    def __str__(self):
+        return '%s' % (self.pretty_name)
 
 class Parameter(models.Model):
     class Meta:
@@ -22,6 +38,16 @@ class Parameter(models.Model):
     is_essential = models.BooleanField(default=False)
     is_carrier = models.BooleanField(default=False)
     tags = ArrayField(models.CharField(max_length=20, blank=True),blank=True,null=True)
+    index = ArrayField(
+        models.CharField(max_length=200),
+        blank=True,
+        null=True,
+    )
+    dim = ArrayField(
+        models.CharField(max_length=200),
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
         return '%s' % (self.pretty_name)
@@ -66,6 +92,12 @@ class Run_Parameter(models.Model):
     can_evolve = models.BooleanField(default=False)
     default_value = models.CharField(max_length=200)
     choices = ArrayField(models.CharField(max_length=20), blank=True, null=True)
+    index = ArrayField(
+        models.CharField(max_length=200),
+        blank=True,
+        null=True,
+    )
+    dim = models.CharField(max_length=500, blank=True, null=True)
     tab = models.TextField(blank=True, null=True)
 
     def __str__(self):
