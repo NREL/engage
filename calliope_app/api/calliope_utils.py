@@ -21,7 +21,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def get_model_yaml_set(run, scenario_id, year):
+def get_model_yaml_set(run, scenario_id, year, node_params_source, tech_params_source):
     """ Function pulls model parameters from Database for YAML """
     params = Scenario_Param.objects.filter(scenario_id=scenario_id,
                                            year__lte=year).order_by('-year')
@@ -43,13 +43,28 @@ def get_model_yaml_set(run, scenario_id, year):
             key_list = unique_param.split('.')
             dictify(model_yaml_set,key_list,param.value)
     dictify(model_yaml_set,['import'],'["techs.yaml","locations.yaml"]')
-    logger.info(f"Run information: {run.id}, {run}")
     for param in run.run_options:
         logger.info(param)
         unique_param = param["root"] + '.' + param["name"]
         key_list = unique_param.split('.')
         dictify(model_yaml_set,key_list,param["value"])
 
+    if node_params_source or tech_params_source:
+        model_yaml_set["data_sources"] = {}
+        if node_params_source:
+            model_yaml_set["data_sources"]["Node_Timeseries"] = {
+                "source": node_params_source,
+                "rows": "timeseries",
+                "columns": ["techs", "nodes", "parameters"]
+            }
+        if tech_params_source:
+            model_yaml_set["data_sources"]["Tech_Timeseries"] = {
+                "source": tech_params_source,
+                "rows": "timeseries",
+                "columns": ["techs", "parameters"]
+            }
+
+    
     return model_yaml_set
 
 
@@ -164,7 +179,7 @@ def get_loc_techs_yaml_set(scenario_id, year):
                     value = float(param.value) / 100
                 else:
                     value = param.value
-                    
+
                 param_list = [parent_type, location, 'techs',
                               param.loc_tech.technology.calliope_name]+\
                               unique_param.split('.')
@@ -173,7 +188,7 @@ def get_loc_techs_yaml_set(scenario_id, year):
 
 def get_carriers_yaml_set(scenario_id):
     model = Scenario.objects.get(id=scenario_id).model
-    
+
     carriers_yaml_set = {}
     for carrier in model.carriers.all():
         carriers_yaml_set[carrier.name] = {'rate':carrier.rate_unit,'quantity':carrier.quantity_unit}
@@ -182,6 +197,7 @@ def get_carriers_yaml_set(scenario_id):
             carriers_yaml_set[carrier] = {'rate':'kW','quantity':'kWh'}
 
     return carriers_yaml_set
+
 
 # This function takes a target dict and adds a new entry from an array of nested dict keys
 # The final value in the array is the entry value and the rest of the list is the nested keys

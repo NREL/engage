@@ -28,6 +28,7 @@ from api.utils import load_timeseries_from_csv, get_model_logger, zip_folder
 from api.calliope_utils import get_model_yaml_set, get_location_meta_yaml_set,\
                         get_techs_yaml_set, get_loc_techs_yaml_set,get_carriers_yaml_set,\
                         run_basic, run_clustered, apply_gradient
+from api.calliope_utils import run_basic, run_clustered, apply_gradient
 from batch.managers import AWSBatchJobManager 
 from taskmeta.models import CeleryTask, BatchTask, batch_task_status
 
@@ -206,6 +207,7 @@ def build_model(inputs_path, run_id, model_uuid, scenario_id,
     :param kwargs:
     :return:
     """
+    logger.info("MODEL STARTING TO BUILD")
     run = Run.objects.get(id=run_id)
     run.status = task_status.BUILDING
     run.save()
@@ -213,14 +215,12 @@ def build_model(inputs_path, run_id, model_uuid, scenario_id,
     # model and scenario instances
     model = Model.objects.get(uuid=model_uuid)
     scenario = Scenario.objects.get(id=scenario_id)
-
-    build_model_yaml(run, scenario_id, start_date, inputs_path)
-    build_model_csv(model, scenario, start_date, end_date, inputs_path, run.timestep)
+    node_params_source, tech_params_source = build_model_csv(model, scenario, start_date, end_date, inputs_path, run.timestep) # returns node_param.csv location and tech_param location...
+    build_model_yaml(run, scenario_id, start_date, inputs_path, node_params_source, tech_params_source)
 
     return inputs_path
 
-def build_model_yaml(run, scenario_id, start_date, inputs_path):
-
+def build_model_yaml(run, scenario_id, start_date, inputs_path, node_params_source, tech_params_source):
     scenario_id = int(scenario_id)
     if isinstance(start_date, datetime):
         year = start_date.year
@@ -228,10 +228,12 @@ def build_model_yaml(run, scenario_id, start_date, inputs_path):
         year = date_parse(start_date).year
 
     # model.yaml
-    model_yaml_set = get_model_yaml_set(run, scenario_id, year)
+    model_yaml_set = get_model_yaml_set(run, scenario_id, year, node_params_source, tech_params_source)
+
+    scenario_id = int(scenario_id)
+
     with open(os.path.join(inputs_path, "model.yaml"), 'w') as outfile:
         yaml.dump(model_yaml_set, outfile, default_flow_style=False)
-
     # techs.yaml
     techs_yaml_set = get_techs_yaml_set(scenario_id, year)
     with open(os.path.join(inputs_path, "techs.yaml"), 'w') as outfile:
@@ -250,50 +252,51 @@ def build_model_yaml(run, scenario_id, start_date, inputs_path):
 
 
 def build_model_csv(model, scenario, start_date, end_date, inputs_path, timesteps):
-    # timeseries: *.csv
-    loc_techs = Scenario_Loc_Tech.objects.filter(
-        model=model, scenario=scenario)
-    tech_ids = list(set(
-        loc_techs.values_list("loc_tech__technology_id", flat=True)))
+    loc_techs = Scenario_Loc_Tech.objects.filter(model=model, scenario=scenario)
+    tech_ids = list(set(loc_techs.values_list("loc_tech__technology_id", flat=True)))
     loc_tech_ids = list(set(loc_techs.values_list("loc_tech_id", flat=True)))
+    tech_ts = Tech_Param.objects.filter(model=model, timeseries=True, technology_id__in=tech_ids)
+    loc_tech_ts = Loc_Tech_Param.objects.filter(model=model, timeseries=True, loc_tech_id__in=loc_tech_ids)
+    tech_df = pd.DataFrame(index=pd.date_range(start=start_date, end=end_date, freq=timesteps), columns=pd.MultiIndex(levels=[[],[]],codes=[[],[]]))
 
-    tech_ts = Tech_Param.objects.filter(
-        model=model, timeseries=True, technology_id__in=tech_ids)
-    loc_tech_ts = Loc_Tech_Param.objects.filter(
-        model=model, timeseries=True, loc_tech_id__in=loc_tech_ids)
-
-    for ts in list(tech_ts) + list(loc_tech_ts):
+    for ts in list(tech_ts):
         timeseries_meta_id = ts.timeseries_meta_id
         parameter_name = ts.parameter.name
-        parameter_root = ts.parameter.root.replace('.','-')
-        if ts in loc_tech_ts:
-            location_1_name = ts.loc_tech.location_1.name
-            technology_name = ts.loc_tech.technology.calliope_name
-            if not ts.loc_tech.location_2:
-                filename = os.path.join(
-                    inputs_path, "{}--{}--{}-{}.csv".format(
-                        location_1_name, technology_name,
-                        parameter_root, parameter_name))
-            else:
-                location_2_name = ts.loc_tech.location_2.name
-                filename = os.path.join(inputs_path,
-                                        "{},{}--{}--{}-{}.csv".format(
-                                            location_1_name, location_2_name,
-                                            technology_name, parameter_root,
-                                            parameter_name))
-        elif ts in tech_ts:
-            technology_name = ts.technology.calliope_name
-            filename = os.path.join(
-                inputs_path, "{}--{}-{}.csv".format(
-                    technology_name, parameter_root, parameter_name))
-        timeseries_meta = Timeseries_Meta.objects.filter(
-            id=timeseries_meta_id).first()
+        technology_name = ts.technology.calliope_name
+        timeseries_meta = Timeseries_Meta.objects.filter(id=timeseries_meta_id).first()
+
         if timeseries_meta is not None:
             directory = "{}/timeseries".format(settings.DATA_STORAGE)
-            input_fname = "{}/{}.csv".format(
-                directory, timeseries_meta.file_uuid)
+            input_fname = "{}/{}.csv".format(directory, timeseries_meta.file_uuid)
             timeseries = get_timeseries_data(input_fname, start_date, end_date, timesteps)
-            timeseries.to_csv(filename)
+            logger.info(f"{timeseries, type(timeseries)}")
+            tech_df[technology_name,parameter_name] = timeseries['value']
+ 
+    tech_csv = None
+    if not tech_df.empty:
+        tech_df.to_csv(f"{inputs_path}/tech_timeseries.csv")
+        tech_csv = "tech_timeseries.csv"
+
+    loc_tech_df = pd.DataFrame(index=pd.date_range(start=start_date, end=end_date, freq=timesteps), columns=pd.MultiIndex(levels=[[],[], []],codes=[[],[],[]]))
+
+    for ts in list(loc_tech_ts):
+        timeseries_meta_id = ts.timeseries_meta_id
+        parameter_name = ts.parameter.name
+        location_1_name = ts.loc_tech.location_1.name
+        technology_name = ts.loc_tech.technology.calliope_name
+        timeseries_meta = Timeseries_Meta.objects.filter(id=timeseries_meta_id).first()
+
+        if timeseries_meta is not None:
+            directory = "{}/timeseries".format(settings.DATA_STORAGE)
+            input_fname = "{}/{}.csv".format(directory, timeseries_meta.file_uuid)
+            timeseries = get_timeseries_data(input_fname, start_date, end_date, timesteps)
+            loc_tech_df[technology_name, location_1_name, parameter_name] = timeseries['value']
+
+    node_csv = None
+    if not loc_tech_df.empty:
+        loc_tech_df.to_csv(f"{inputs_path}/node_timeseries.csv")
+        node_csv = "node_timeseries.csv"
+    return tech_csv, node_csv
 
 
 def get_timeseries_data(filename, start_date, end_date, timesteps):
