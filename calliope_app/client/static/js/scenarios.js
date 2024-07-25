@@ -573,13 +573,13 @@ function setGroupConstraintClassLogic() {
         if ($(this).hasClass('hiding_rows')) {
             rows.removeClass('hide');
             $(this).removeClass('hiding_rows');
-            $(this).find('.fa-caret-up').css('display', 'none');
-            $(this).find('.fa-caret-down').css('display', 'inline');
+            $(this).find('.fa-caret-up').css('display', 'inline');
+            $(this).find('.fa-caret-down').css('display', 'none');
         } else {
             rows.addClass('hide');
             $(this).addClass('hiding_rows');
-            $(this).find('.fa-caret-up').css('display', 'inline');
-            $(this).find('.fa-caret-down').css('display', 'none');
+            $(this).find('.fa-caret-up').css('display', 'none');
+            $(this).find('.fa-caret-down').css('display', 'inline');
         }
     });
 }
