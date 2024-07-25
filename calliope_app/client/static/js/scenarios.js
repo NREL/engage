@@ -358,7 +358,7 @@ function updateDialogGroupConstraints(initialLoad) {
                 $('#' + constraintId + '_techs').append('<option value="'+ technologies[t].name +  '" '+ (dialogObj[constraint].techs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
             }
         }
-        $("#" + constraintId + "_techs").change(function () {
+        $("#" + constraintId + "_techs").on('change', function () {
             updateDialogObject();
         });
 
@@ -372,7 +372,7 @@ function updateDialogGroupConstraints(initialLoad) {
                 $('#' + constraintId + '_techs_lhs').append('<option value="'+ technologies[t].name +  '" '+ (dialogObj[constraint].techs_lhs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
             }
         }
-        $("#" + constraintId + "_techs_lhs").change(function () {
+        $("#" + constraintId + "_techs_lhs").on('change', function () {
             updateDialogObject();
         });
 
@@ -386,7 +386,7 @@ function updateDialogGroupConstraints(initialLoad) {
                 $('#' + constraintId + '_techs_rhs').append('<option value="'+ technologies[t].name + '" '+ (dialogObj[constraint].techs_rhs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
             }
         }
-        $("#" + constraintId + "_techs_rhs").change(function () {
+        $("#" + constraintId + "_techs_rhs").on('change', function () {
             updateDialogObject();
         });
 
@@ -400,7 +400,7 @@ function updateDialogGroupConstraints(initialLoad) {
         for (var l in locations) {
             $('#' + constraintId + '_locs').append('<option value="'+ locations[l].name + '" '+ (dialogObj[constraint].locs.includes(locations[l].name) ? ' selected' : '') +'>' + locations[l].pretty_name + '</option>');
         }
-        $("#" + constraintId + "_locs").change(function () {
+        $("#" + constraintId + "_locs").on('change', function () {
             updateDialogObject();
         });
 
@@ -410,7 +410,7 @@ function updateDialogGroupConstraints(initialLoad) {
         for (var l in locations) {
             $('#' + constraintId + '_locs_lhs').append('<option value="'+ locations[l].name + '" '+ (dialogObj[constraint].locs_lhs.includes(locations[l].name) ? ' selected' : '') +'>' + locations[l].pretty_name + '</option>');
         }
-        $("#" + constraintId + "_locs_lhs").change(function () {
+        $("#" + constraintId + "_locs_lhs").on('change', function () {
             updateDialogObject();
         });
 
@@ -420,7 +420,7 @@ function updateDialogGroupConstraints(initialLoad) {
         for (var l in locations) {
             $('#' + constraintId + '_locs_rhs').append('<option value="'+ locations[l].name + '" '+ (dialogObj[constraint].locs_rhs.includes(locations[l].name) ? ' selected' : '') +'>' + locations[l].pretty_name + '</option>');
         }
-        $("#" + constraintId + "_locs_rhs").change(function () {
+        $("#" + constraintId + "_locs_rhs").on('change', function () {
             updateDialogObject();
         });
 
@@ -516,7 +516,7 @@ function updateConstraintTypes(constraint, constraintId, constraintContent) {
                     }
                 }
 
-                $("#" + constraintId + fieldKey + "-key").change(function () {
+                $("#" + constraintId + fieldKey + "-key").on('change', function () {
                     updateDialogObject();
                 });
 
@@ -526,7 +526,7 @@ function updateConstraintTypes(constraint, constraintId, constraintContent) {
                 $(constraintFields).append( "<label><b>" + djangoTranslateValue + "</b></label>");
                 $(constraintFields).append( "<input id='" + constraintId + fieldKey + "-val' name='dialogObj[constraint][fieldKey]' class='form-control smol' placeholder='' value='" + dialogObj[constraint][fieldKey] + "'></input><br><br>" );
             }
-            $("#" + constraintId + fieldKey + "-val").change(function () {
+            $("#" + constraintId + fieldKey + "-val").on('change', function () {
                 updateDialogObject();
             });
         }
@@ -551,7 +551,7 @@ function updateConstraintTypes(constraint, constraintId, constraintContent) {
         updateDialogGroupConstraints();
     });
 
-    $("#new-constraint-dropdown-" + constraintId).change(function () {
+    $("#new-constraint-dropdown-" + constraintId).on('change', function(e) {
         let con = this.id.replace("new-constraint-dropdown-", "");
         if (this.value && this.value.length > 0 ) {
             $("#new_constraint_btn_" + con).removeAttr("disabled");
@@ -559,6 +559,7 @@ function updateConstraintTypes(constraint, constraintId, constraintContent) {
             $('#new_constraint_btn_' + con).attr("disabled", true);
         }
     });
+
 }
 
 function safeHTMLId(id) {
