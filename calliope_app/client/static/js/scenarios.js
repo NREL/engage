@@ -353,7 +353,7 @@ function updateDialogGroupConstraints(initialLoad) {
         "<select id='" + constraintId + "_techs' name='" + djangoTranslateTechnologies + "' multiple searchable></select></div>");
         for (var t in technologies) {
             if (technologies[t].tag){
-                $('#' + constraintId + '_techs').append('<option value="'+ technologies[t].name + "-" + technologies[t].tag +  '" '+ (dialogObj[constraint].techs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + " [" + technologies[t].pretty_tag + ']</option>');
+                $('#' + constraintId + '_techs').append('<option value="'+ technologies[t].name + "-" + technologies[t].tag +  '" '+ (dialogObj[constraint].techs.includes(technologies[t].name + '-' + technologies[t].tag) ? ' selected' : '') +'>' + technologies[t].pretty_name + " [" + technologies[t].pretty_tag + ']</option>');
             } else {
                 $('#' + constraintId + '_techs').append('<option value="'+ technologies[t].name +  '" '+ (dialogObj[constraint].techs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
             }
@@ -367,7 +367,7 @@ function updateDialogGroupConstraints(initialLoad) {
         "<select id='" + constraintId + "_techs_lhs' name='" + djangoTranslateTechnologies + ' ' + djangoTranslateLeftHand + "' multiple searchable></select></div>");
         for (var t in technologies) {
             if (technologies[t].tag){
-                $('#' + constraintId + '_techs_lhs').append('<option value="'+ technologies[t].name + "-" + technologies[t].tag +  '" '+ (dialogObj[constraint].techs_lhs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + " [" + technologies[t].pretty_tag + ']</option>');
+                $('#' + constraintId + '_techs_lhs').append('<option value="'+ technologies[t].name + "-" + technologies[t].tag +  '" '+ (dialogObj[constraint].techs_lhs.includes(technologies[t].name + '-' + technologies[t].tag) ? ' selected' : '') +'>' + technologies[t].pretty_name + " [" + technologies[t].pretty_tag + ']</option>');
             } else {
                 $('#' + constraintId + '_techs_lhs').append('<option value="'+ technologies[t].name +  '" '+ (dialogObj[constraint].techs_lhs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
             }
@@ -381,7 +381,7 @@ function updateDialogGroupConstraints(initialLoad) {
         "<select id='" + constraintId + "_techs_rhs' name='" + djangoTranslateTechnologies + ' ' + djangoTranslateRightHand + "' multiple searchable></select></div>");
         for (var t in technologies) {
             if (technologies[t].tag){
-                $('#' + constraintId + '_techs_rhs').append('<option value="'+ technologies[t].name + "-" + technologies[t].tag  + '" '+ (dialogObj[constraint].techs_rhs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + " [" + technologies[t].pretty_tag + ']</option>');
+                $('#' + constraintId + '_techs_rhs').append('<option value="'+ technologies[t].name + "-" + technologies[t].tag  + '" '+ (dialogObj[constraint].techs_rhs.includes(technologies[t].name  + '-' + technologies[t].tag) ? ' selected' : '') +'>' + technologies[t].pretty_name + " [" + technologies[t].pretty_tag + ']</option>');
             } else {
                 $('#' + constraintId + '_techs_rhs').append('<option value="'+ technologies[t].name + '" '+ (dialogObj[constraint].techs_rhs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
             }
