@@ -255,14 +255,14 @@ function updateDialogObject() {
         }
 
         var techsInputLhs = $("#" + constraintId + "_techs_lhs").val();
-        if (techsInput && techsInput.length > 0) {
+        if (techsInputLhs && techsInputLhs.length > 0) {
             dialogObj[constraint].techs_lhs = techsInputLhs;
         } else {
             delete dialogObj[constraint].techs_lhs;
         }
 
         var techsInputRhs = $("#" + constraintId + "_techs_rhs").val();
-        if (techsInput && techsInput.length > 0) {
+        if (techsInputRhs && techsInputRhs.length > 0) {
             dialogObj[constraint].techs_rhs = techsInputRhs;
         } else {
             delete dialogObj[constraint].techs_rhs;
@@ -277,14 +277,14 @@ function updateDialogObject() {
         }
 
         var locsInputLhs = $("#" + constraintId + "_locs_lhs").val();
-        if (locsInput && locsInput.length > 0) {
+        if (locsInputLhs && locsInputLhs.length > 0) {
             dialogObj[constraint].locs_lhs = locsInputLhs;
         } else {
             delete dialogObj[constraint].locs_lhs;
         }
 
         var locsInputRhs = $("#" + constraintId + "_locs_rhs").val();
-        if (locsInput && locsInput.length > 0) {
+        if (locsInputRhs && locsInputRhs.length > 0) {
             dialogObj[constraint].locs_rhs = locsInputRhs;
         } else {
             delete dialogObj[constraint].locs_rhs;
@@ -429,8 +429,12 @@ function updateDialogGroupConstraints(initialLoad) {
         }
         updateConstraintTypes(constraint, constraintId, constraintContent);
 
-        $('#' + constraintId + '_locs, #' + constraintId + '_locs_lhs, #' + constraintId + '_locs_rhs, #' + constraintId + '_techs, #' + constraintId + '_techs_lhs, #' + constraintId + '_techs_rhs').amsifySelect({
-            type : 'amsify',
+        // Initialize Selects for each dropdown
+        $('#' + constraintId + '_locs, #' + constraintId + '_locs_lhs, #' + constraintId + '_locs_rhs, #' + constraintId + '_techs, #' + constraintId + '_techs_lhs, #' + constraintId + '_techs_rhs').multiselect({
+            includeSelectAllOption: false,
+            enableFiltering: true,
+            enableCaseInsensitiveFiltering: true,
+            buttonWidth: '550px'
         });
 
         if (!dialogObj[constraint].techs_rhs && !dialogObj[constraint].techs_lhs) {
@@ -636,7 +640,7 @@ function activate_scenario_settings() {
 
     // Constraint Group Modal
 	$('.scenario-constraints-dialog-btn').on('click', function() {
-
+        
         // display dialog
 		$('#pvwatts_form').hide();
         $('#wtk_form').hide();
@@ -651,89 +655,12 @@ function activate_scenario_settings() {
         dialogInputValue = dialogInputValue.replace(/'/g, '"');
         dialogObj = parseJSON(dialogInputValue, {});
 
-        Object.keys(dialogObj).forEach(constraint => {
-            Object.keys(dialogObj[constraint]).forEach(fieldKey => {
-                // Technologies
-                if (fieldKey === "techs") {
-                    var newTechs = "";
-                    if (dialogObj[constraint].techs && dialogObj[constraint].techs.length > 0) {
-                        for (var tech in dialogObj[constraint].techs) {
-                            newTechs += dialogObj[constraint].techs[tech];
-                            if (Number(tech) !== dialogObj[constraint].techs.length-1) {
-                                newTechs += ","
-                            }
-                        }
-                    }
-                    dialogObj[constraint].techs = newTechs;
-                }
-                if (fieldKey === "techs_lhs") {
-                    var newTechs = "";
-                    if (dialogObj[constraint].techs_lhs && dialogObj[constraint].techs_lhs.length > 0) {
-                        for (var tech in dialogObj[constraint].techs_lhs) {
-                            newTechs += dialogObj[constraint].techs_lhs[tech];
-                            if (Number(tech) !== dialogObj[constraint].techs_lhs.length-1) {
-                                newTechs += ","
-                            }
-                        }
-                    }
-                    dialogObj[constraint].techs_lhs = newTechs;
-                }
-                if (fieldKey === "techs_rhs") {
-                    var newTechs = "";
-                    if (dialogObj[constraint].techs_rhs && dialogObj[constraint].techs_rhs.length > 0) {
-                        for (var tech in dialogObj[constraint].techs_rhs) {
-                            newTechs += dialogObj[constraint].techs_rhs[tech];
-                            if (Number(tech) !== dialogObj[constraint].techs_rhs.length-1) {
-                                newTechs += ","
-                            }
-                        }
-                    }
-                    dialogObj[constraint].techs_rhs = newTechs;
-                }
-
-                // Locations
-                if (fieldKey === "locs") {
-                    var newLocs = "";
-                    if (dialogObj[constraint].locs && dialogObj[constraint].locs.length > 0) {
-                        for (var loc in dialogObj[constraint].locs) {
-                            newLocs += dialogObj[constraint].locs[loc];
-                            if (Number(loc) !== dialogObj[constraint].locs.length-1) {
-                                newLocs += ","
-                            }
-                        }
-                    }
-                    dialogObj[constraint].locs = newLocs;
-                }
-                if (fieldKey === "locs_lhs") {
-                    var newLocs = "";
-                    if (dialogObj[constraint].locs_lhs && dialogObj[constraint].locs_lhs.length > 0) {
-                        for (var loc in dialogObj[constraint].locs_lhs) {
-                            newLocs += dialogObj[constraint].locs_lhs[loc];
-                            if (Number(loc) !== dialogObj[constraint].locs_lhs.length-1) {
-                                newLocs += ","
-                            }
-                        }
-                    }
-                    dialogObj[constraint].locs_lhs = newLocs;
-                }
-                if (fieldKey === "locs_rhs") {
-                    var newLocs = "";
-                    if (dialogObj[constraint].locs_rhs && dialogObj[constraint].locs_rhs.length > 0) {
-                        for (var loc in dialogObj[constraint].locs_rhs) {
-                            newLocs += dialogObj[constraint].locs_rhs[loc];
-                            if (Number(loc) !== dialogObj[constraint].locs_rhs.length-1) {
-                                newLocs += ","
-                            }
-                        }
-                    }
-                    dialogObj[constraint].locs_rhs = newLocs;
-                }
-            });
-
+        processDialogObj(dialogObj).then(() => {
+            getModelCarriers();
+            updateDialogGroupConstraints(true);
+        }).catch(error => {
+            console.error("Error processing dialogObj:", error);
         });
-
-        getModelCarriers();
-        updateDialogGroupConstraints(true);
 
         $('#tabs li a:not(:first)').addClass('inactive');
         $('.tab-container').hide();
@@ -756,6 +683,95 @@ function activate_scenario_settings() {
         });
 
 	});
+
+    function processDialogObj(dialogObj) {
+        return new Promise((resolve, reject) => {
+            try {
+                Object.keys(dialogObj).forEach(constraint => {
+                    Object.keys(dialogObj[constraint]).forEach(fieldKey => {
+                        // Technologies
+                        if (fieldKey === "techs") {
+                            var newTechs = "";
+                            if (dialogObj[constraint].techs && dialogObj[constraint].techs.length > 0) {
+                                for (var tech in dialogObj[constraint].techs) {
+                                    newTechs += dialogObj[constraint].techs[tech];
+                                    if (Number(tech) !== dialogObj[constraint].techs.length - 1) {
+                                        newTechs += ",";
+                                    }
+                                }
+                            }
+                            dialogObj[constraint].techs = newTechs;
+                        }
+                        if (fieldKey === "techs_lhs") {
+                            var newTechs = "";
+                            if (dialogObj[constraint].techs_lhs && dialogObj[constraint].techs_lhs.length > 0) {
+                                for (var tech in dialogObj[constraint].techs_lhs) {
+                                    newTechs += dialogObj[constraint].techs_lhs[tech];
+                                    if (Number(tech) !== dialogObj[constraint].techs_lhs.length - 1) {
+                                        newTechs += ",";
+                                    }
+                                }
+                            }
+                            dialogObj[constraint].techs_lhs = newTechs;
+                        }
+                        if (fieldKey === "techs_rhs") {
+                            var newTechs = "";
+                            if (dialogObj[constraint].techs_rhs && dialogObj[constraint].techs_rhs.length > 0) {
+                                for (var tech in dialogObj[constraint].techs_rhs) {
+                                    newTechs += dialogObj[constraint].techs_rhs[tech];
+                                    if (Number(tech) !== dialogObj[constraint].techs_rhs.length - 1) {
+                                        newTechs += ",";
+                                    }
+                                }
+                            }
+                            dialogObj[constraint].techs_rhs = newTechs;
+                        }
+    
+                        // Locations
+                        if (fieldKey === "locs") {
+                            var newLocs = "";
+                            if (dialogObj[constraint].locs && dialogObj[constraint].locs.length > 0) {
+                                for (var loc in dialogObj[constraint].locs) {
+                                    newLocs += dialogObj[constraint].locs[loc];
+                                    if (Number(loc) !== dialogObj[constraint].locs.length - 1) {
+                                        newLocs += ",";
+                                    }
+                                }
+                            }
+                            dialogObj[constraint].locs = newLocs;
+                        }
+                        if (fieldKey === "locs_lhs") {
+                            var newLocs = "";
+                            if (dialogObj[constraint].locs_lhs && dialogObj[constraint].locs_lhs.length > 0) {
+                                for (var loc in dialogObj[constraint].locs_lhs) {
+                                    newLocs += dialogObj[constraint].locs_lhs[loc];
+                                    if (Number(loc) !== dialogObj[constraint].locs_lhs.length - 1) {
+                                        newLocs += ",";
+                                    }
+                                }
+                            }
+                            dialogObj[constraint].locs_lhs = newLocs;
+                        }
+                        if (fieldKey === "locs_rhs") {
+                            var newLocs = "";
+                            if (dialogObj[constraint].locs_rhs && dialogObj[constraint].locs_rhs.length > 0) {
+                                for (var loc in dialogObj[constraint].locs_rhs) {
+                                    newLocs += dialogObj[constraint].locs_rhs[loc];
+                                    if (Number(loc) !== dialogObj[constraint].locs_rhs.length - 1) {
+                                        newLocs += ",";
+                                    }
+                                }
+                            }
+                            dialogObj[constraint].locs_rhs = newLocs;
+                        }
+                    });
+                });
+                resolve();
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
 
     $('#settings_import_data').on('click', function() {
         updateDialogObject();
