@@ -279,7 +279,7 @@ class Run(models.Model):
             if location:
                 ctx = ctx[ctx['locs'] == location]
             if etx is not None:
-                merged = pd.merge(ctx, etx, on='locs', how='left', suffix=('_ctx', '_etx'))
+                merged = pd.merge(ctx, etx, on='locs', how='left', suffixes=('_ctx', '_etx'))
                 merged.fillna(0, inplace=True)
                 ctx['values'] = merged["values_ctx"] + merged["values_etx"]
             ctx = ctx.groupby('techs').sum()
