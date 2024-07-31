@@ -279,11 +279,15 @@ class Run(models.Model):
             if location:
                 ctx = ctx[ctx['locs'] == location]
             if etx is not None:
-                merged = pd.merge(ctx, etx, on='locs', how='left', suffixes=('_ctx', '_etx'))
+                ctx_g = ctx.groupby('techs').sum(["values"])
+                etx_g = etx.groupby('techs').sum(["values"])
+                merged = pd.merge(ctx_g, etx_g, on='techs', how='left', suffixes=('_ctx_g', '_etx_g'))
                 merged.fillna(0, inplace=True)
-                ctx['values'] = merged["values_ctx"] + merged["values_etx"]
-            ctx = ctx.groupby('techs').sum()
-            ctx = ctx['values'].to_dict()
+                merged['values'] = merged["values_ctx_g"] + merged["values_etx_g"]
+                ctx = merged['values'].to_dict()
+            else:
+                ctx = ctx.groupby('techs').sum()
+                ctx = ctx['values'].to_dict()
         else:
             ctx = {}
 
