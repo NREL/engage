@@ -4,7 +4,8 @@
     "model": "api.loc_tech_param",
     "fields": {
       "loc_tech_id": "1",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "28",
       "value": "1",
       "timeseries": "True",
@@ -17,7 +18,8 @@
     "model": "api.loc_tech_param",
     "fields": {
       "loc_tech_id": "2",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "11",
       "value": "30000",
       "timeseries": "False",
@@ -29,7 +31,8 @@
     "model": "api.loc_tech_param",
     "fields": {
       "loc_tech_id": "3",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "28",
       "value": "2",
       "timeseries": "True",
@@ -42,7 +45,8 @@
     "model": "api.loc_tech_param",
     "fields": {
       "loc_tech_id": "8",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "11",
       "value": "10000",
       "timeseries": "False",
@@ -54,7 +58,8 @@
     "model": "api.loc_tech_param",
     "fields": {
       "loc_tech_id": "5",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "28",
       "value": "3",
       "timeseries": "True",
@@ -67,7 +72,8 @@
     "model": "api.loc_tech_param",
     "fields": {
       "loc_tech_id": "6",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "28",
       "value": "4",
       "timeseries": "True",
@@ -80,7 +86,8 @@
     "model": "api.loc_tech_param",
     "fields": {
       "loc_tech_id": "7",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "28",
       "value": "5",
       "timeseries": "True",

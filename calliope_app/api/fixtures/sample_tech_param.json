@@ -4,7 +4,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "1",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "2",
       "value": "Combined cycle gas turbine",
       "timeseries": "False",
@@ -16,7 +17,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "1",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "3",
       "value": "#E37A72",
       "timeseries": "False",
@@ -28,7 +30,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "1",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "1",
       "value": "supply",
       "timeseries": "False",
@@ -40,7 +43,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "1",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "4",
       "value": "Power",
       "timeseries": "False",
@@ -52,7 +56,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "1",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "28",
       "value": "inf",
       "timeseries": "False",
@@ -64,7 +69,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "1",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "18",
       "value": "50",
       "timeseries": "False",
@@ -76,7 +82,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "1",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "12",
       "value": "100000",
       "timeseries": "False",
@@ -88,7 +95,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "1",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "21",
       "value": "80",
       "timeseries": "False",
@@ -100,7 +108,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "1",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "25",
       "value": "25",
       "timeseries": "False",
@@ -112,7 +121,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "1",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "57",
       "value": "10",
       "timeseries": "False",
@@ -124,7 +134,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "1",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "53",
       "value": "750",
       "timeseries": "False",
@@ -136,7 +147,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "1",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "60",
       "value": "0.02",
       "timeseries": "False",
@@ -148,7 +160,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "2",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "2",
       "value": "Concentrating solar power",
       "timeseries": "False",
@@ -160,7 +173,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "2",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "3",
       "value": "#F9CF22",
       "timeseries": "False",
@@ -172,7 +186,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "2",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "1",
       "value": "supply_plus",
       "timeseries": "False",
@@ -184,7 +199,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "2",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "4",
       "value": "Power",
       "timeseries": "False",
@@ -196,7 +212,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "2",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "42",
       "value": "614033",
       "timeseries": "False",
@@ -208,7 +225,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "2",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "8",
       "value": "100",
       "timeseries": "False",
@@ -220,7 +238,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "2",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "46",
       "value": "0.2",
       "timeseries": "False",
@@ -232,7 +251,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "2",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "40",
       "value": "energy_per_area",
       "timeseries": "False",
@@ -244,7 +264,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "2",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "18",
       "value": "40",
       "timeseries": "False",
@@ -256,7 +277,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "2",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "27",
       "value": "90",
       "timeseries": "False",
@@ -268,7 +290,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "2",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "30",
       "value": "inf",
       "timeseries": "False",
@@ -280,7 +303,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "2",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "11",
       "value": "10000",
       "timeseries": "False",
@@ -292,7 +316,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "2",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "25",
       "value": "25",
       "timeseries": "False",
@@ -304,7 +329,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "2",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "57",
       "value": "10",
       "timeseries": "False",
@@ -316,7 +342,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "2",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "65",
       "value": "50",
       "timeseries": "False",
@@ -328,7 +355,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "2",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "63",
       "value": "200",
       "timeseries": "False",
@@ -340,7 +368,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "2",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "64",
       "value": "200",
       "timeseries": "False",
@@ -352,7 +381,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "2",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "53",
       "value": "1000",
       "timeseries": "False",
@@ -364,7 +394,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "2",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "61",
       "value": "0.2",
       "timeseries": "False",
@@ -376,7 +407,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "3",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "2",
       "value": "Battery storage",
       "timeseries": "False",
@@ -388,7 +420,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "3",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "3",
       "value": "#3B61E3",
       "timeseries": "False",
@@ -400,7 +433,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "3",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "1",
       "value": "storage",
       "timeseries": "False",
@@ -412,7 +446,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "3",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "4",
       "value": "Power",
       "timeseries": "False",
@@ -424,7 +459,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "3",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "11",
       "value": "1000",
       "timeseries": "False",
@@ -436,7 +472,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "3",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "42",
       "value": "inf",
       "timeseries": "False",
@@ -448,7 +485,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "3",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "8",
       "value": "400",
       "timeseries": "False",
@@ -460,7 +498,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "3",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "18",
       "value": "95",
       "timeseries": "False",
@@ -472,7 +511,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "3",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "46",
       "value": "0",
       "timeseries": "False",
@@ -484,7 +524,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "3",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "25",
       "value": "25",
       "timeseries": "False",
@@ -496,7 +537,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "3",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "57",
       "value": "10",
       "timeseries": "False",
@@ -508,7 +550,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "3",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "65",
       "value": "200",
       "timeseries": "False",
@@ -520,7 +563,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "4",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "2",
       "value": "Power demand",
       "timeseries": "False",
@@ -532,7 +576,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "4",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "3",
       "value": "#072486",
       "timeseries": "False",
@@ -544,7 +589,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "4",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "1",
       "value": "demand",
       "timeseries": "False",
@@ -556,7 +602,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "4",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "4",
       "value": "Power",
       "timeseries": "False",
@@ -568,7 +615,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "5",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "2",
       "value": "AC power transmission",
       "timeseries": "False",
@@ -580,7 +628,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "5",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "3",
       "value": "#8465A9",
       "timeseries": "False",
@@ -592,7 +641,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "5",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "1",
       "value": "transmission",
       "timeseries": "False",
@@ -604,7 +654,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "5",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "4",
       "value": "Power",
       "timeseries": "False",
@@ -616,7 +667,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "5",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "18",
       "value": "85",
       "timeseries": "False",
@@ -628,7 +680,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "5",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "25",
       "value": "25",
       "timeseries": "False",
@@ -640,7 +693,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "5",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "57",
       "value": "10",
       "timeseries": "False",
@@ -652,7 +706,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "5",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "53",
       "value": "200",
       "timeseries": "False",
@@ -664,7 +719,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "5",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "61",
       "value": "0.2",
       "timeseries": "False",
@@ -676,7 +732,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "6",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "2",
       "value": "Local power transmission",
       "timeseries": "False",
@@ -688,7 +745,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "6",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "3",
       "value": "#6783E3",
       "timeseries": "False",
@@ -700,7 +758,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "6",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "1",
       "value": "transmission",
       "timeseries": "False",
@@ -712,7 +771,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "6",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "4",
       "value": "Power",
       "timeseries": "False",
@@ -724,7 +784,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "6",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "11",
       "value": "inf",
       "timeseries": "False",
@@ -736,7 +797,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "6",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "18",
       "value": "100",
       "timeseries": "False",
@@ -748,7 +810,8 @@
     "model": "api.tech_param",
     "fields": {
       "technology_id": "6",
-      "year": "0",
+      "build_year": "0",
+      "build_year_offset":"0",
       "parameter_id": "61",
       "value": "0",
       "timeseries": "False",

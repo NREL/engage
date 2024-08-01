@@ -21,7 +21,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def get_model_yaml_set(run, scenario_id, year, node_params_source, tech_params_source):
+def get_model_yaml_set(run, scenario_id, year, tech_params_source, node_params_source):
     """ Function pulls model parameters from Database for YAML """
     params = Scenario_Param.objects.filter(scenario_id=scenario_id,
                                            year__lte=year).order_by('-year')
@@ -51,19 +51,18 @@ def get_model_yaml_set(run, scenario_id, year, node_params_source, tech_params_s
 
     if node_params_source or tech_params_source:
         model_yaml_set["data_sources"] = {}
-        if node_params_source:
-            model_yaml_set["data_sources"]["Node_Timeseries"] = {
-                "source": node_params_source,
-                "rows": "timeseries",
-                "columns": ["techs", "nodes", "parameters"]
-            }
         if tech_params_source:
             model_yaml_set["data_sources"]["Tech_Timeseries"] = {
                 "source": tech_params_source,
                 "rows": "timeseries",
                 "columns": ["techs", "parameters"]
             }
-
+        if node_params_source:
+            model_yaml_set["data_sources"]["Node_Timeseries"] = {
+                "source": node_params_source,
+                "rows": "timeseries",
+                "columns": ["techs", "nodes", "parameters"]
+            }
     
     return model_yaml_set
 
@@ -86,14 +85,13 @@ def get_location_meta_yaml_set(scenario_id, existing = None):
     # Loop over Parameters
     for loc in locations:
         # Coordinates
-        coordinates = '{{"lat": {}, "lon": {}}}'.format(loc.latitude,
-                                                        loc.longitude)
-        param_list = ['locations', loc.name, 'coordinates']
-        dictify(location_coord_yaml_set,param_list,coordinates)
+        param_list = ['nodes', loc.name]
+        dictify(location_coord_yaml_set,param_list+['latitude'],loc.latitude)
+        dictify(location_coord_yaml_set,param_list+['longitude'],loc.longitude)
         # Available Area
         if loc.available_area is None:
             continue
-        param_list = ['locations', loc.name,
+        param_list = ['nodes', loc.name,
                       'available_area']
         dictify(location_coord_yaml_set,param_list,loc.available_area)
     return location_coord_yaml_set
@@ -105,7 +103,7 @@ def get_techs_yaml_set(scenario_id, year):
     tech_ids = list(loc_techs.values_list('loc_tech__technology',
                                           flat=True).distinct())
     parameters = Tech_Param.objects.filter(technology_id__in=tech_ids,
-                                           year__lte=year).order_by('-year')
+                                           build_year__lte=year).order_by('-build_year')
     # Initialize the Return list
     techs_yaml_set = {}
     # Loop over Technologies
@@ -115,20 +113,29 @@ def get_techs_yaml_set(scenario_id, year):
         unique_params = []
         # Loop over Parameters
         for param in params:
-            unique_param = param.parameter.root+'.'+param.parameter.name
+            param_keys = param.parameter.root.split('.')+[param.parameter.name]
+
+            if param.technology.abstract_tech.name == 'transmission':
+                parent_type = 'tech_groups'
+            else:
+                parent_type = 'techs'
+            if param.parameter.index and param.parameter.dim:
+                unique_param = param.parameter.root+'.'+param.parameter.name+str(param.parameter.index)+str(param.parameter.dim)
+            else:
+                unique_param = param.parameter.root+'.'+param.parameter.name
+                
             if unique_param not in unique_params:
                 # If parameter hasn't been set, add to Return List
                 unique_params.append(unique_param)
                 if param.timeseries:
-                    value = "file={}--{}.csv:value".format(
-                                    param.technology.calliope_name, unique_param.replace('.','-'))
+                    continue
                 elif '%' in param.parameter.units:  # Calliope in decimal format
                     value = float(param.value) / 100
                 else:
                     value = param.value
-                param_list = ['techs', param.technology.calliope_name]+\
-                              unique_param.split('.')
-                dictify(techs_yaml_set,param_list,value)
+                param_list = [parent_type, param.technology.calliope_name]+param_keys
+                
+                dictify(techs_yaml_set,param_list,value,param.parameter.index,param.parameter.dim)
     return techs_yaml_set
 
 
@@ -139,7 +146,7 @@ def get_loc_techs_yaml_set(scenario_id, year):
     loc_tech_ids = list(loc_techs.values_list('loc_tech_id',
                                               flat=True).distinct())
     parameters = Loc_Tech_Param.objects.filter(
-        loc_tech_id__in=loc_tech_ids, year__lte=year).order_by('-year')
+        loc_tech_id__in=loc_tech_ids, build_year__lte=year).order_by('-build_year')
     # Initialize the Return list
     loc_techs_yaml_set = {}
     # Loop over Technologies
@@ -148,42 +155,51 @@ def get_loc_techs_yaml_set(scenario_id, year):
         params = parameters.filter(loc_tech=loc_tech)
         parent = loc_tech.technology.abstract_tech.name
 
+        technology = loc_tech.technology.calliope_name
         if parent == 'transmission':
             parent_type = 'links'
             location = \
-                loc_tech.location_1.name + ',' + \
-                loc_tech.location_2.name
+                loc_tech.location_1.name + '_' + \
+                loc_tech.location_2.name + '_' + \
+                loc_tech.technology.calliope_name
+            param_list = [parent_type, location]
+            dictify(loc_techs_yaml_set,param_list+['from'],loc_tech.location_1.name)
+            dictify(loc_techs_yaml_set,param_list+['to'],loc_tech.location_2.name)
+            dictify(loc_techs_yaml_set,param_list+['inherit'],technology)
         else:
-            parent_type = 'locations'
+            parent_type = 'nodes'
             location = loc_tech.location_1.name
-        technology = loc_tech.technology.calliope_name
 
-        if len(params) == 0:
-            param_list = [parent_type, location, 'techs',
-                          technology]
-            dictify(loc_techs_yaml_set,param_list,'')
-            continue
+            if len(params) == 0:            
+                param_list = [parent_type, location, 'techs',
+                            technology]
+                dictify(loc_techs_yaml_set,param_list,'')
+                continue
 
         # Tracks which parameters have already been set (prioritized by year)
         unique_params = []
         # Loop over Parameters
         for param in params:
+            param_keys = param.parameter.root.split('.')+[param.parameter.name]
+            if param.parameter.index and param.parameter.dim:
+                unique_param = param.parameter.root+'.'+param.parameter.name+str(param.parameter.index)+str(param.parameter.dim)
+            else:
+                unique_param = param.parameter.root+'.'+param.parameter.name
             unique_param = param.parameter.root+'.'+param.parameter.name
             if unique_param not in unique_params:
-                # If parameter hasn't been set, add to Return List
-                unique_params.append(unique_param)
                 if param.timeseries:
-                    value = "file={}--{}--{}.csv:value".format(
-                                    location, technology, unique_param.replace('.','-'))
+                    continue
                 elif '%' in param.parameter.units:  # Calliope in decimal format
                     value = float(param.value) / 100
                 else:
                     value = param.value
 
-                param_list = [parent_type, location, 'techs',
-                              param.loc_tech.technology.calliope_name]+\
-                              unique_param.split('.')
-                dictify(loc_techs_yaml_set,param_list,value)
+                if parent_type == 'links':
+                    param_list = [parent_type, location]+param_keys
+                else:
+                    param_list = [parent_type, location, 'techs',
+                                param.loc_tech.technology.calliope_name]+param_keys
+                dictify(loc_techs_yaml_set,param_list,value,param.parameter.index,param.parameter.dim)
     return loc_techs_yaml_set
 
 def get_carriers_yaml_set(scenario_id):
@@ -199,7 +215,7 @@ def get_carriers_yaml_set(scenario_id):
     return carriers_yaml_set
 
 
-# This function takes a target dict and adds a new entry from an array of nested dict keys
+'''# This function takes a target dict and adds a new entry from an array of nested dict keys
 # The final value in the array is the entry value and the rest of the list is the nested keys
 # Creates any missing keys in the nested list
 def dictify(target, keys, value):
@@ -232,7 +248,66 @@ def dictify(target, keys, value):
             try:
                 target[keys[-1]] = float(value)
             except ValueError:
-                target[keys[-1]] = value
+                target[keys[-1]] = value'''
+
+# This function takes a target dict and adds a new entry from an array of nested dict keys
+# The final value in the array is the entry value and the rest of the list is the nested keys
+# Creates any missing keys in the nested list
+# This version of the function uses index and dimension values to create/add to a Calliope indexed parameter (introduced in v0.7)
+# Multiple Engage parameter records can be added to the same indexed parameter in the YAML
+def dictify(target, keys, value, index=None, dim=None):
+    # Build the nested dict structure (if neccessary) by adding any
+    # nested keys in the list before the final key/value pair
+    # Strip out/skip any entries with an empty key
+    keys = [k for k in keys if k != '']
+    if len(keys) > 1:
+        for key in keys[:-1]:
+            if key not in target.keys():
+                target[key] = {}
+            target = target[key]
+
+    # Handle blank, T/F, float, and JSON string values
+    # As of Calliope 0.6.8 all "False" values should be set to none/null
+    if value == "":
+            value = None
+    elif value == 'True':
+            value = True
+    elif value == 'False':
+            value = False
+    else:
+        # Try converting string to JSON object or float before saving as flat string
+        try:
+            string = value.replace(", ", ",")
+            for char in ['\'', '“', '”', '‘', '’']:
+                string = string.replace(char, '\"')
+            value = json.loads(string)
+        except Exception:
+            try:
+                value = float(value)
+            except ValueError:
+                value = value
+
+    if index and dim:
+        if len(index) == 1:
+            index = index[0]
+        if len(dim) == 1:
+            dim = dim[0]
+
+        if keys[-1] not in target:
+            target[keys[-1]] = {}
+        if 'data' not in target[keys[-1]]:
+            target[keys[-1]]['data'] = []
+            target[keys[-1]]['index'] = []
+            target[keys[-1]]['dims'] = [dim]
+
+        if [dim] != target[keys[-1]]['dims']:
+            raise ValueError('Error with indexed parameter: {}. Dimensions do not match. {} vs {}'.format(keys[-1],[dim],target[keys[-1]]['dims']))
+        
+        target[keys[-1]]['data'] += [value]
+        target[keys[-1]]['index'] += [index]
+    else:
+        target[keys[-1]] = value
+    
 
 def stringify(param_list):
     param_list = [str(x) for x in param_list]
