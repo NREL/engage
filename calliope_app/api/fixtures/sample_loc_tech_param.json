@@ -4,7 +4,7 @@
     "model": "api.loc_tech_param",
     "fields": {
       "loc_tech_id": "1",
-      "build_year": "0",
+      "year": "0",
       "build_year_offset":"0",
       "parameter_id": "28",
       "value": "1",
@@ -18,7 +18,7 @@
     "model": "api.loc_tech_param",
     "fields": {
       "loc_tech_id": "2",
-      "build_year": "0",
+      "year": "0",
       "build_year_offset":"0",
       "parameter_id": "11",
       "value": "30000",
@@ -31,7 +31,7 @@
     "model": "api.loc_tech_param",
     "fields": {
       "loc_tech_id": "3",
-      "build_year": "0",
+      "year": "0",
       "build_year_offset":"0",
       "parameter_id": "28",
       "value": "2",
@@ -45,7 +45,7 @@
     "model": "api.loc_tech_param",
     "fields": {
       "loc_tech_id": "8",
-      "build_year": "0",
+      "year": "0",
       "build_year_offset":"0",
       "parameter_id": "11",
       "value": "10000",
@@ -58,7 +58,7 @@
     "model": "api.loc_tech_param",
     "fields": {
       "loc_tech_id": "5",
-      "build_year": "0",
+      "year": "0",
       "build_year_offset":"0",
       "parameter_id": "28",
       "value": "3",
@@ -72,7 +72,7 @@
     "model": "api.loc_tech_param",
     "fields": {
       "loc_tech_id": "6",
-      "build_year": "0",
+      "year": "0",
       "build_year_offset":"0",
       "parameter_id": "28",
       "value": "4",
@@ -86,7 +86,7 @@
     "model": "api.loc_tech_param",
     "fields": {
       "loc_tech_id": "7",
-      "build_year": "0",
+      "year": "0",
       "build_year_offset":"0",
       "parameter_id": "28",
       "value": "5",
