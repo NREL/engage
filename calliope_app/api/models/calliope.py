@@ -38,16 +38,8 @@ class Parameter(models.Model):
     is_essential = models.BooleanField(default=False)
     is_carrier = models.BooleanField(default=False)
     tags = ArrayField(models.CharField(max_length=20, blank=True),blank=True,null=True)
-    index = ArrayField(
-        models.CharField(max_length=200),
-        blank=True,
-        null=True,
-    )
-    dim = ArrayField(
-        models.CharField(max_length=200),
-        blank=True,
-        null=True,
-    )
+    index = ArrayField(models.CharField(max_length=200, blank=True),blank=True,null=True)
+    dim = ArrayField(models.CharField(max_length=200, blank=True),blank=True,null=True)
 
     def __str__(self):
         return '%s' % (self.pretty_name)
