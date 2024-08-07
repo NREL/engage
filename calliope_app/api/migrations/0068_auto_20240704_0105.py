@@ -29,16 +29,6 @@ class Migration(migrations.Migration):
                 'db_table': 'group_constraint',
             },
         ),
-        migrations.RenameField(
-            model_name='loc_tech_param',
-            old_name='year',
-            new_name='build_year',
-        ),
-        migrations.RenameField(
-            model_name='tech_param',
-            old_name='year',
-            new_name='build_year',
-        ),
         migrations.AddField(
             model_name='loc_tech_param',
             name='build_year_offset',

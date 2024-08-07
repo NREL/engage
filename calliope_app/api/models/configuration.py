@@ -845,7 +845,7 @@ class Tech_Param(models.Model):
     objects_all = models.Manager()
 
     technology = models.ForeignKey(Technology, on_delete=models.CASCADE)
-    build_year  = models.IntegerField(default=0)
+    year  = models.IntegerField(default=0)
     build_year_offset = models.IntegerField(default=0, null=True)
     parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE)
     value = models.CharField(max_length=200, blank=True, null=True)
@@ -1090,7 +1090,7 @@ class Loc_Tech_Param(models.Model):
     objects_all = models.Manager()
 
     loc_tech = models.ForeignKey(Loc_Tech, on_delete=models.CASCADE)
-    build_year = models.IntegerField(default=0)
+    year = models.IntegerField(default=0)
     build_year_offset = models.IntegerField(default=0, null=True)
     parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE)
     value = models.CharField(max_length=200, blank=True, null=True)
