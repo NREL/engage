@@ -310,6 +310,12 @@ button.multiselect.dropdown-toggle {
     border: 1px solid #ced4da;
 }
 
+.multiselect-container.dropdown-menu.show { 
+    overflow-y: scroll;
+    max-height: 250px;
+    min-width: 525px;
+}
+
 .nav-dropdown, .select2, .select2-selection {
 	background-color: #ccd0d6 !important;
   font-size: 1.2em;
