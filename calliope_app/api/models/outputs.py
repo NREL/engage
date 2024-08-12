@@ -272,18 +272,25 @@ class Run(models.Model):
         if not df.empty:
             df = df.groupby('techs').sum()
         df = df['values'].to_dict()
+
         # Process Max Bounds Context (ctx)
         if ctx is not None:
             ctx = ctx.replace(np.inf, np.nan).dropna()
             if location:
                 ctx = ctx[ctx['locs'] == location]
             if etx is not None:
-                etx = etx[etx['techs'].isin(ctx['techs'])]
-                ctx['values'] = ctx['values'].add(etx['values'],fill_value=0)
-            ctx = ctx.groupby('techs').sum()
-            ctx = ctx['values'].to_dict()
+                ctx_g = ctx.groupby('techs').sum(["values"])
+                etx_g = etx.groupby('techs').sum(["values"])
+                merged = pd.merge(ctx_g, etx_g, on='techs', how='left', suffixes=('_ctx_g', '_etx_g'))
+                merged.fillna(0, inplace=True)
+                merged['values'] = merged["values_ctx_g"] + merged["values_etx_g"]
+                ctx = merged['values'].to_dict()
+            else:
+                ctx = ctx.groupby('techs').sum()
+                ctx = ctx['values'].to_dict()
         else:
             ctx = {}
+
         # Viz Layers
         layers = [{'key': key,
                    'name': meta['names'][key] if key in meta['names'] else key,
