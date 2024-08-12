@@ -2,10 +2,18 @@ import pandas as pd
 import json
 
 # Load the Excel file into a DataFrame
-df = pd.read_excel('C7_Admin_Parameters_Fixture_Update.xlsx')
+df = pd.read_excel('C:/Users/jmorris4/Downloads/C7_Admin_Parameters.xlsx')
+
+# Load the abstract techs
+with open('calliope_app/api/fixtures/admin_abstract_tech.json', 'r', encoding='utf-8') as file:
+    abstract_techs_data = json.load(file)
 
 # Initialize the list to hold the parameter objects
 parameter_objects = []
+
+# Initialize the list to hold the tech parameter objects
+admin_tech_param_objects = []
+admin_tech_param_index = 1
 
 # Iterate through each row in the DataFrame
 for index, row in df.iterrows():
@@ -31,17 +39,37 @@ for index, row in df.iterrows():
             "choices": row['choices'] if pd.notna(row['choices']) else "[]",
             "tags": row['tags'] if pd.notna(row['tags']) else "[]",
             "index": json.dumps(row['index'].split(',')) if pd.notna(row['index']) else "[]",
-            "dim": json.dumps(row['dims'].split(',')) if pd.notna(row['dims']) else "[]"
+            "dim": json.dumps(row['dim'].split(',')) if pd.notna(row['dim']) else "[]"
         },
         "model": row['model']
     }
     parameter_objects.append(param)
 
+    for t in json.loads(row['abstract_techs']):
+        
+        print(param['fields']['name'],t)
+        abstract_tech_param = {
+            'pk': admin_tech_param_index,
+            'model': 'api.abstract_tech_param',
+            'fields': {
+                "abstract_tech_id": str([at['pk'] for at in abstract_techs_data if at['fields']['name'] == t][0]),
+                "parameter_id": str(param['pk']),
+                "default_value": ""
+            }
+        }
+        admin_tech_param_objects.append(abstract_tech_param)
+        admin_tech_param_index+=1
+        print(abstract_tech_param)
+
 # Convert the list of parameter objects to JSON
 json_data = json.dumps(parameter_objects, indent=2, ensure_ascii=False)
 
 # Save the JSON data to a file
-with open('parameters_converted.json', 'w') as file:
+with open('calliope_app/api/fixtures/admin_parameter.json', 'w', encoding='utf-8') as file:
     file.write(json_data)
+
+# Save the JSON data to a file
+with open('calliope_app/api/fixtures/admin_abstract_tech_param.json', 'w', encoding='utf-8') as file:
+    file.write(json.dumps(admin_tech_param_objects, indent=2, ensure_ascii=False))
 
 print("Conversion complete. The data has been saved to 'parameters_converted.json'.")
