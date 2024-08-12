@@ -27,7 +27,7 @@ th.sticky {
   margin-top: 150px;
   padding: 20px;
   border: 1px solid #888;
-  width: 800px;
+  width: 1000px;
 }
 #splitter {
   height: 15px;
@@ -303,6 +303,17 @@ select {
   height: 1.8em !important;
   line-height: 1em !important;
   padding: 0 !important;
+}
+
+button.multiselect.dropdown-toggle {
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
+
+.multiselect-container.dropdown-menu.show { 
+    overflow-y: scroll;
+    max-height: 250px;
+    min-width: 525px;
 }
 
 .nav-dropdown, .select2, .select2-selection {
