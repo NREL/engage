@@ -103,7 +103,7 @@ def get_techs_yaml_set(scenario_id, year):
     tech_ids = list(loc_techs.values_list('loc_tech__technology',
                                           flat=True).distinct())
     parameters = Tech_Param.objects.filter(technology_id__in=tech_ids,
-                                           year__lte=year).order_by('-year')
+                                           year__lte=year, timeseries=False).order_by('-year')
     # Initialize the Return list
     techs_yaml_set = {}
     # Loop over Technologies
@@ -127,9 +127,7 @@ def get_techs_yaml_set(scenario_id, year):
             if unique_param not in unique_params:
                 # If parameter hasn't been set, add to Return List
                 unique_params.append(unique_param)
-                if param.timeseries:
-                    continue
-                elif '%' in param.parameter.units:  # Calliope in decimal format
+                if '%' in param.parameter.units:  # Calliope in decimal format
                     value = float(param.value) / 100
                 else:
                     value = param.value
@@ -146,7 +144,7 @@ def get_loc_techs_yaml_set(scenario_id, year):
     loc_tech_ids = list(loc_techs.values_list('loc_tech_id',
                                               flat=True).distinct())
     parameters = Loc_Tech_Param.objects.filter(
-        loc_tech_id__in=loc_tech_ids, year__lte=year).order_by('-year')
+        loc_tech_id__in=loc_tech_ids, year__lte=year, timeseries=False).order_by('-year')
     # Initialize the Return list
     loc_techs_yaml_set = {}
     # Loop over Technologies
@@ -187,9 +185,7 @@ def get_loc_techs_yaml_set(scenario_id, year):
                 unique_param = param.parameter.root+'.'+param.parameter.name
             unique_param = param.parameter.root+'.'+param.parameter.name
             if unique_param not in unique_params:
-                if param.timeseries:
-                    continue
-                elif '%' in param.parameter.units:  # Calliope in decimal format
+                if '%' in param.parameter.units:  # Calliope in decimal format
                     value = float(param.value) / 100
                 else:
                     value = param.value

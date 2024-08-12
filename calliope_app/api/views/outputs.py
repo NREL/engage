@@ -789,13 +789,13 @@ def upload_techs(request):
                 Tech_Param.objects.create(
                         model_id=model.id,
                         technology_id=technology.id,
-                        parameter_id=1,
+                        parameter_id=Parameter.objects.filter(name='base_tech').first().id,
                         value=row['abstract_tech'],
                     )
                 Tech_Param.objects.create(
                         model_id=model.id,
                         technology_id=technology.id,
-                        parameter_id=2,
+                        parameter_id=Parameter.objects.filter(name='name').first().id,
                         value=row['pretty_name'],
                     )
                 update_dict = {'edit':{'parameter':{},'timeseries':{}},'add':{},'essentials':{}}

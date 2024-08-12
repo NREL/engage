@@ -2,9 +2,14 @@ import json
 import pandas as pd
 
 # Load the JSON data from a file
-with open('params.json', 'r') as file:
+with open('calliope_app/api/fixtures/admin_parameter.json', 'r', encoding='utf-8') as file:
     data = json.load(file)
 
+with open('calliope_app/api/fixtures/admin_abstract_tech_param.json','r', encoding='utf-8') as file:
+    tech_params_data = json.load(file)
+
+with open('calliope_app/api/fixtures/admin_abstract_tech.json', 'r', encoding='utf-8') as file:
+    abstract_techs_data = json.load(file)
 # Extract the list of parameter objects
 parameter_objects = data
 
@@ -35,12 +40,16 @@ for param in parameter_objects:
         'is_carrier': fields['is_carrier'],
         'choices': fields['choices'],
         'tags': fields['tags'],
-        'model': param['model']
+        'model': param['model'],
+        #'index': fields['index'],
+        #'dim': fields['dim'],
+        'abstract_techs': json.dumps([t['fields']['name'] for t in abstract_techs_data if str(t['pk']) in [tp['fields']['abstract_tech_id'] for tp in tech_params_data if tp['fields']['parameter_id'] == str(param['pk'])]])
     }
     rows.append(row)
 
 # Create a DataFrame from the list of rows
 df = pd.DataFrame(rows)
+print(df[['pk','name','abstract_techs']])
 
 # Save the DataFrame to an Excel file
-df.to_excel('parameters.xlsx', index=False)
+df.to_excel('calliope_app/scripts/fixtures/parameters.xlsx', index=False)
