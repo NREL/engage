@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.http import JsonResponse, HttpResponse
 from api.utils import initialize_units, convert_units_no_pipe, recursive_escape
 from django.utils.html import escape
-from api.models.configuration import Model, Model_User, Location, Model_Comment, Technology, Abstract_Tech, Loc_Tech, Tech_Param, Loc_Tech_Param, ParamsManager, Carrier
+from api.models.configuration import Model, Model_User, Location, Model_Comment, Technology, Abstract_Tech, Loc_Tech, Tech_Param, Loc_Tech_Param, ParamsManager, Carrier, Parameter
 from template.models import Template, Template_Variable, Template_Type, Template_Type_Variable, Template_Type_Loc, Template_Type_Tech, Template_Type_Loc_Tech, Template_Type_Loc_Tech_Param, Template_Type_Tech_Param, Template_Type_Carrier
 from django.db.models import Q
 
@@ -394,7 +394,7 @@ def get_or_create_template_technologies(template_type_techs, model, template_typ
             Tech_Param.objects.create(
                 model=model,
                 technology=new_tech,
-                parameter_id=1,
+                parameter_id=Parameter.objects.filter(name='base_tech').first().id,
                 value=abstract_tech.name,
             )
 
