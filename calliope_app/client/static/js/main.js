@@ -6,6 +6,8 @@ var marker_clicked = false,
 	markers = [],
 	placeholder_text;
 
+calliope_version="7.0.0"
+
 $(function() {
 		$(".alert-info,.alert-success").fadeTo(3000, 500).slideUp(500, function() {
 			$(this).slideUp(500);
@@ -1325,6 +1327,13 @@ function getCookie(cname) {
     }
     return "";
 }
+
+const isCalliopeVersionSeven = (version) => {
+    const targetVersion = '7.0.0';
+    const [major, minor, patch] = version.split('.').map(Number);
+    const [targetMajor, targetMinor, targetPatch] = targetVersion.split('.').map(Number);
+    return major === targetMajor;
+};
 
 function formatNumber(x, commas) {
 
