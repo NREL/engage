@@ -1562,8 +1562,8 @@ class ParamsManager():
     @classmethod
     def cost_classes(cls):
         queryset = Parameter.objects.filter(category__contains="Emissions")
-        categories = {param.category: param.root for param in queryset}
-        categories['Costs'] = 'costs.monetary'
+        categories = {param.category: param.index[0] for param in queryset if len(param.index) > 0}
+        categories['Costs'] = 'monetary'
         return categories
     
     @classmethod

@@ -134,7 +134,7 @@
 					<td class="centered">
 						{% if run.deprecated %}
 						<button class="run-version-old btn btn-outline-danger" data-dates="{{ run.subset_time }}" cluster="{{ run.cluster|lower }}" manual="{{ run.manual|lower }}" run_env="{{ run.compute_environment.name }}"
-								timestep="{{run.timestep}}" style="width: 100%;">{% trans "OUT OF DATE" %}</button>
+								timestep="{{run.timestep}}" run_options="{{run.run_options}}" style="width: 100%;">{% trans "OUT OF DATE" %}</button>
 						{% else %}
 						<button class="run-version btn btn-outline-success" style="width: 100%;" disabled>{% trans "UP TO DATE" %}</button>
 						{% endif %}

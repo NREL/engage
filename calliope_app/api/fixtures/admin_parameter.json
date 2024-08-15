@@ -71,6 +71,32 @@
       "is_essential": "True",
       "is_carrier": "True",
       "choices": "[]",
+      "tags": "[\"carrier\", \"essential\", \"carrier_in\", \"required_carrier\", \"units_in\",\"units_out\"]",
+      "index": "[]",
+      "dim": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 132,
+    "fields": {
+      "category": "Essentials",
+      "category_fr": "Les essentiels",
+      "category_es": "Esenciales",
+      "pretty_name": "Input Carrier",
+      "pretty_name_fr": "Vecteur d'entrée",
+      "pretty_name_es": "Portador de entrada",
+      "description": "[Required] Input energy carrier (electricity, heat, gas, etc.)",
+      "description_fr": "[Obligatoire] Vecteur d'énergie d'entrée (électricité, chaleur, gaz,etc.)",
+      "description_es": "[Obligatorio] Portador de energía de entrada (electricidad, calor, gas, etc.)",
+      "root": "",
+      "name": "carrier_in",
+      "timeseries_enabled": "False",
+      "is_systemwide": "False",
+      "units": "",
+      "is_essential": "True",
+      "is_carrier": "True",
+      "choices": "[]",
       "tags": "[\"carrier\", \"essential\", \"carrier_in\", \"required_carrier\", \"units_in\"]",
       "index": "[]",
       "dim": "[]"
@@ -105,6 +131,32 @@
   },
   {
     "pk": 5,
+    "fields": {
+      "category": "Essentials",
+      "category_fr": "Les essentiels",
+      "category_es": "Esenciales",
+      "pretty_name": "Output Carrier",
+      "pretty_name_fr": "Vecteur de sortie",
+      "pretty_name_es": "Portador de salida",
+      "description": "[Required] Output energy carrier (electricity, heat, gas, etc.)",
+      "description_fr": "[Obligatoire] Vecteur d'énergie d'entrée (électricité, chaleur, gaz,etc.)",
+      "description_es": "[Obligatorio] Portador de energía de salida (electricidad, calor, gas, etc.)",
+      "root": "",
+      "name": "carrier_out",
+      "timeseries_enabled": "False",
+      "is_systemwide": "False",
+      "units": "",
+      "is_essential": "True",
+      "is_carrier": "True",
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\", \"carrier_out\", \"required_carrier\", \"units_out\",\"units_in\"]",
+      "index": "[]",
+      "dim": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 133,
     "fields": {
       "category": "Essentials",
       "category_fr": "Les essentiels",

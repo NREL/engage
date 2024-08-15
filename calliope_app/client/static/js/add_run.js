@@ -24,13 +24,12 @@ $(document).ready(function () {
 			years = $('#years').val(),
 			notes = $('#notes').val();
 
-		var parameters = {};
+		var run_options = {};
 		$('#run_parameters .parameter-row').each(function() {
 			var paramId = $(this).data('param-id');
 			var value = $(this).find('.run-parameter-value').val();
-			parameters[paramId] = value;
+			run_options[paramId] = value;
 		});
-		console.log(parameters);
 	
 
 		// fix timezone issues
@@ -69,7 +68,7 @@ $(document).ready(function () {
 					'run_env': run_env,
 					'years': years,
 					'notes': notes,
-					'parameters': JSON.stringify(parameters)
+					'run_options': JSON.stringify(run_options)
 				},
 				dataType: 'json',
 				success: function (data) {

@@ -269,7 +269,6 @@ def build_model_csv(model, scenario, start_date, end_date, inputs_path, timestep
             directory = "{}/timeseries".format(settings.DATA_STORAGE)
             input_fname = "{}/{}.csv".format(directory, timeseries_meta.file_uuid)
             timeseries = get_timeseries_data(input_fname, start_date, end_date, timesteps)
-            logger.info(f"{timeseries, type(timeseries)}")
             tech_df[technology_name,parameter_name] = timeseries['value']
  
     tech_csv = None
@@ -512,7 +511,7 @@ class CalliopeModelRunTask(Task):
         run = Run.objects.get(id=retval["run_id"])
         run.logs_path = retval["save_logs"]
         run.outputs_path = retval["save_outputs"]
-        results = os.path.join(run.outputs_path, 'results_carrier_prod.csv')
+        results = os.path.join(run.outputs_path, 'results_flow_out.csv')
         if os.path.exists(results):
             run.status = task_status.SUCCESS
         else:
