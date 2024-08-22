@@ -5,7 +5,7 @@ var bulk_confirmation = false,
     disable_new_constraint = true,
 	map_mode = 'scenarios',
     carriers = null,
-    // Re-factor to dictionary
+    admin_group_constraints = null,
     constraints = {
         "demand_share_min":"carriers", "demand_share_max":"carriers", "demand_share_equals":"carriers",
         "demand_share_per_timestep_min":"carriers", "demand_share_per_timestep_max":"carriers", "demand_share_per_timestep_equals":"carriers",
@@ -79,15 +79,29 @@ $( document ).ready(function() {
 		window.location = '/' + model_uuid + '/scenarios/';
 	});
 
-    $("#new_group_constraint_name").on("input", function(){
+    $("#new_group_constraint_name").on("input", function() {
+        handleInputOrDropdownChange();
+    });
+
+	get_scenario_configuration();
+});
+
+function handleInputOrDropdownChange() {
+    if (isCalliopeVersionSeven(calliope_version)) {
+        if ($('#new_group_constraint_name').val() && $('#new_group_constraint_name').val().trim().length > 0 &&
+        $('#new_group_constraint_dropdown').val()) {
+            $('#new_group_constraint_btn').removeAttr("disabled");
+        } else {
+            $('#new_group_constraint_btn').attr("disabled", true);
+        }
+    } else {
         if ($('#new_group_constraint_name').val() && $('#new_group_constraint_name').val().trim().length > 0 ) {
             $('#new_group_constraint_btn').removeAttr("disabled");
         } else {
             $('#new_group_constraint_btn').attr("disabled", true);
         }
-    });
-	get_scenario_configuration();
-});
+    }
+}
 
 function save_scenario_settings() {
 
@@ -314,31 +328,16 @@ function updateDialogObject() {
     });
 }
 
-function getModelCarriers() {
-    var model_uuid = $('#header').data('model_uuid');
-
-    $.ajax({
-        url: '/' + LANGUAGE_CODE + '/component/group_constraint_options/',
-        async: false,
-        data: {
-            'model_uuid': model_uuid,
-        },
-        dataType: 'json',
-        success: function (data) {
-            carriers = data.carriers ? data.carriers.map(obj => obj.name) : [];
-            locations = data.locations;
-            technologies = data.technologies;
-        }
-    });
-}
-
 function updateDialogGroupConstraints(initialLoad) {
     $('#dialog-inputs').empty();
     if (dialogObj.length > 0) {
         $('#dialog-inputs').append("<h3><b>Constraint Groups</b></h3>");
     }
+
     Object.keys(dialogObj).forEach(constraint => {
         let constraintId = safeHTMLId(constraint);
+        let adminGroupConstraint = admin_group_constraints.find(obj => obj.id === dialogObj[constraint].id);
+
         $('#dialog-inputs').append( "<div id='" + constraintId + "' style='padding-top:1.5em'></div>");
         $("#" + constraintId).append( "<div class='cateogry-expander'><a><h5 class='constraint-name'><div style='float: right;'><i class='fas fa-caret-down'></i><i class='fas fa-caret-up' style='display: none;'></i>" + constraint
         + "</div></h5></a></div>");
@@ -347,133 +346,28 @@ function updateDialogGroupConstraints(initialLoad) {
         let constraintContent = "#" + constraintId + "-content";
         $(constraintContent).append( "<button id='delete_group_constraint_btn_" + constraintId + "' type='button' class='btn btn-sm btn-outline-danger group-constraint-delete' title='Delete constraint'><i class='fas fa-trash'></i></button>");
 
-        //Display techs and locs first
-        dialogObj[constraint].techs = dialogObj[constraint].techs ? dialogObj[constraint].techs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_techs_container'><label data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter technologies.'><b>" + djangoTranslateTechnologies + "</b></label><br>" +
-        "<select id='" + constraintId + "_techs' name='" + djangoTranslateTechnologies + "' multiple searchable></select></div>");
-        for (var t in technologies) {
-            if (technologies[t].tag){
-                $('#' + constraintId + '_techs').append('<option value="'+ technologies[t].name + "-" + technologies[t].tag +  '" '+ (dialogObj[constraint].techs.includes(technologies[t].name + '-' + technologies[t].tag) ? ' selected' : '') +'>' + technologies[t].pretty_name + " [" + technologies[t].pretty_tag + ']</option>');
-            } else {
-                $('#' + constraintId + '_techs').append('<option value="'+ technologies[t].name +  '" '+ (dialogObj[constraint].techs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
-            }
-        }
-        $("#" + constraintId + "_techs").on('change', function () {
-            updateDialogObject();
-        });
+        renderGroupConstraintTechsAndLocs(constraint, constraintId, constraintContent, adminGroupConstraint);
 
-        dialogObj[constraint].techs_lhs = dialogObj[constraint].techs_lhs ? dialogObj[constraint].techs_lhs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_techs_lhs_container'><label data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter left hand-side technologies.'><b>" + djangoTranslateTechnologies + ' ' + djangoTranslateLeftHand + "</b></label><br>" +
-        "<select id='" + constraintId + "_techs_lhs' name='" + djangoTranslateTechnologies + ' ' + djangoTranslateLeftHand + "' multiple searchable></select></div>");
-        for (var t in technologies) {
-            if (technologies[t].tag){
-                $('#' + constraintId + '_techs_lhs').append('<option value="'+ technologies[t].name + "-" + technologies[t].tag +  '" '+ (dialogObj[constraint].techs_lhs.includes(technologies[t].name + '-' + technologies[t].tag) ? ' selected' : '') +'>' + technologies[t].pretty_name + " [" + technologies[t].pretty_tag + ']</option>');
-            } else {
-                $('#' + constraintId + '_techs_lhs').append('<option value="'+ technologies[t].name +  '" '+ (dialogObj[constraint].techs_lhs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
-            }
-        }
-        $("#" + constraintId + "_techs_lhs").on('change', function () {
-            updateDialogObject();
-        });
-
-        dialogObj[constraint].techs_rhs = dialogObj[constraint].techs_rhs ? dialogObj[constraint].techs_rhs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_techs_rhs_container'><label data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter right hand-side technologies.'><b>" + djangoTranslateTechnologies + ' ' + djangoTranslateRightHand + "</b></label><br>" +
-        "<select id='" + constraintId + "_techs_rhs' name='" + djangoTranslateTechnologies + ' ' + djangoTranslateRightHand + "' multiple searchable></select></div>");
-        for (var t in technologies) {
-            if (technologies[t].tag){
-                $('#' + constraintId + '_techs_rhs').append('<option value="'+ technologies[t].name + "-" + technologies[t].tag  + '" '+ (dialogObj[constraint].techs_rhs.includes(technologies[t].name  + '-' + technologies[t].tag) ? ' selected' : '') +'>' + technologies[t].pretty_name + " [" + technologies[t].pretty_tag + ']</option>');
-            } else {
-                $('#' + constraintId + '_techs_rhs').append('<option value="'+ technologies[t].name + '" '+ (dialogObj[constraint].techs_rhs.includes(technologies[t].name) ? ' selected' : '') +'>' + technologies[t].pretty_name + '</option>');
-            }
-        }
-        $("#" + constraintId + "_techs_rhs").on('change', function () {
-            updateDialogObject();
-        });
-
-        if (!(dialogObj[constraint].techs_rhs && dialogObj[constraint].techs_lhs && dialogObj[constraint].techs)) {
-            $(constraintContent).append('<br><span>' + djangoTranslateShowLeftRight + ' ' + djangoTranslateTechnologies + ' </span><label class="switch"><input id="' + constraintId + "_toggle_techs" + '" type="checkbox"><span class="slider round"></span></label><br>');
+        if (isCalliopeVersionSeven(calliope_version)) {
+            renderSubExpressions(constraint, constraintId, constraintContent, adminGroupConstraint);
         }
 
-        dialogObj[constraint].locs = dialogObj[constraint].locs ? dialogObj[constraint].locs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_locs_container'><label data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter locations.'><b>" + djangoTranslateLocations + "</b></label><br>" +
-        "<select id='" + constraintId + "_locs' name='" + djangoTranslateLocations + "' multiple searchable></select></div>");
-        for (var l in locations) {
-            $('#' + constraintId + '_locs').append('<option value="'+ locations[l].name + '" '+ (dialogObj[constraint].locs.includes(locations[l].name) ? ' selected' : '') +'>' + locations[l].pretty_name + '</option>');
-        }
-        $("#" + constraintId + "_locs").on('change', function () {
-            updateDialogObject();
-        });
-
-        dialogObj[constraint].locs_lhs = dialogObj[constraint].locs_lhs ? dialogObj[constraint].locs_lhs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_locs_lhs_container'><label data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter left hand-side locations.'><b>" + djangoTranslateLocations + ' ' + djangoTranslateLeftHand + "</b></label><br>" +
-        "<select id='" + constraintId + "_locs_lhs' name='" + djangoTranslateLocations + ' ' + djangoTranslateLeftHand + "' multiple searchable></select></div>");
-        for (var l in locations) {
-            $('#' + constraintId + '_locs_lhs').append('<option value="'+ locations[l].name + '" '+ (dialogObj[constraint].locs_lhs.includes(locations[l].name) ? ' selected' : '') +'>' + locations[l].pretty_name + '</option>');
-        }
-        $("#" + constraintId + "_locs_lhs").on('change', function () {
-            updateDialogObject();
-        });
-
-        dialogObj[constraint].locs_rhs = dialogObj[constraint].locs_rhs ? dialogObj[constraint].locs_rhs : "";
-        $(constraintContent).append("<div id='" + constraintId + "_locs_rhs_container'><label data-toggle='tooltip' data-placement='bottom' data-original-title='Optionally enter right hand-side locations.'><b>" + djangoTranslateLocations + ' ' + djangoTranslateRightHand + "</b></label><br>" +
-        "<select id='" + constraintId + "_locs_rhs' name='" + djangoTranslateLocations + ' ' + djangoTranslateRightHand + "' multiple searchable></select></div>");
-        for (var l in locations) {
-            $('#' + constraintId + '_locs_rhs').append('<option value="'+ locations[l].name + '" '+ (dialogObj[constraint].locs_rhs.includes(locations[l].name) ? ' selected' : '') +'>' + locations[l].pretty_name + '</option>');
-        }
-        $("#" + constraintId + "_locs_rhs").on('change', function () {
-            updateDialogObject();
-        });
-
-        if (!(dialogObj[constraint].locs_rhs && dialogObj[constraint].locs_lhs && dialogObj[constraint].locs)) {
-            $(constraintContent).append('<br><span>' + djangoTranslateShowLeftRight + ' ' + djangoTranslateLocations + ' </span><label class="switch"><input id="' + constraintId + "_toggle_locs" + '" type="checkbox"><span class="slider round"></span></label><br>');
-        }
-        updateConstraintTypes(constraint, constraintId, constraintContent);
-
-        // Initialize Selects for each dropdown
-        $('#' + constraintId + '_locs, #' + constraintId + '_locs_lhs, #' + constraintId + '_locs_rhs, #' + constraintId + '_techs, #' + constraintId + '_techs_lhs, #' + constraintId + '_techs_rhs').multiselect({
-            includeSelectAllOption: false,
-            enableFiltering: true,
-            enableCaseInsensitiveFiltering: true,
-            buttonWidth: '550px'
-        });
-
-        if (!dialogObj[constraint].techs_rhs && !dialogObj[constraint].techs_lhs) {
-            $("#" + constraintId + "_techs_lhs_container").hide();
-            $("#" + constraintId + "_techs_rhs_container").hide();
-        }
-
-        if (!(dialogObj[constraint].techs_rhs && dialogObj[constraint].techs_lhs && dialogObj[constraint].techs)) {
-            $("#" + constraintId + "_toggle_techs").click(function(){
-                $("#" + constraintId + "_techs_container").toggle();
-                $("#" + constraintId + "_techs_lhs_container").toggle();
-                $("#" + constraintId + "_techs_rhs_container").toggle();
+        if (!isCalliopeVersionSeven(calliope_version) ) {
+            updateConstraintTypes(constraint, constraintId, constraintContent);
+        
+            $("#delete_group_constraint_btn_" + constraintId).on('click', function() {
+                let con = this.id.replace("delete_group_constraint_btn_", "");
+                delete dialogObj[con];
+                updateDialogGroupConstraints();
             });
         }
-
-        if (!dialogObj[constraint].locs_rhs && !dialogObj[constraint].locs_lhs) {
-            $("#" + constraintId + "_locs_lhs_container").hide();
-            $("#" + constraintId + "_locs_rhs_container").hide();
-        }
-
-        if (!(dialogObj[constraint].locs_rhs && dialogObj[constraint].locs_lhs && dialogObj[constraint].locs)) {
-            $("#" + constraintId + "_toggle_locs").click(function(){
-                $("#" + constraintId + "_locs_container").toggle();
-                $("#" + constraintId + "_locs_lhs_container").toggle();
-                $("#" + constraintId + "_locs_rhs_container").toggle();
-            });
-        }
-
-        $("#delete_group_constraint_btn_" + constraintId).on('click', function() {
-            let con = this.id.replace("delete_group_constraint_btn_", "");
-            delete dialogObj[con];
-            updateDialogGroupConstraints();
-        });
 
         $(constraintContent).append( "<hr>" );
         $(document).ready(function() {
             $('[data-toggle="tooltip"]').tooltip();
         });
     });
+    
 
     if (initialLoad) {
         var rows = $('.cateogry-expander').next();
@@ -484,6 +378,223 @@ function updateDialogGroupConstraints(initialLoad) {
     }
     setGroupConstraintClassLogic();
     
+}
+
+function renderSubExpressions(constraint, constraintId, constraintContent, adminGroupConstraint) {
+    Object.entries(adminGroupConstraint.sub_expression).forEach(([key, value]) => {
+        if (value.show) {
+            $(constraintContent).append(`<label><b>${key}</b></label>`);
+            const input = $(`<input type='number' id='${constraintId}${key}-val' name='dialogObj.slices[${key}]' class='form-control smol' placeholder='' value='${dialogObj[constraint].sub_expression[key][0]?.expression || ""}' step='1'></input><br><br>`);
+            $(constraintContent).append(input);
+
+            input.on('input', function() {
+                dialogObj[constraint].sub_expression[key][0].expression = $(this).val();
+            });
+        }
+    });
+}
+
+function renderGroupConstraintTechsAndLocs(constraint, constraintId, constraintContent, adminGroupConstraint) {
+
+    if (isCalliopeVersionSeven(calliope_version)) {
+        Object.entries(dialogObj[constraint].slices).forEach(([key, value]) => {
+            if (!['locs', 'techs', 'locs_lhs', 'locs_rhs', 'techs_lhs', 'techs_rhs'].includes(key) || isCalliopeVersionSeven(calliope_version)) {
+                let sliceDim = adminGroupConstraint.slices[key].dim;
+                let sliceOptions = [];
+                if (sliceDim == "techs") {
+                    sliceOptions = technologies;
+                } else if (sliceDim == "locs") {
+                    sliceOptions = locations;
+                } else if (sliceDim == "carriers") {
+                    sliceOptions = carriers;
+                } else if (sliceDim == "costs") {
+                    sliceOptions = ["co2", "ch4", "co2e", "n2o", "monetary"];
+                }
+                createDropdown(
+                    `${constraintId}_${key}`,
+                    key,
+                    sliceOptions,
+                    dialogObj[constraint].slices[key][0]?.expression,
+                    constraintContent,
+                    (sliceDim == "techs" || sliceDim == "locs")
+                );
+            }
+        });
+    }
+
+    if (!isCalliopeVersionSeven(calliope_version)) {
+        // Initialize techs dropdown
+        dialogObj[constraint].techs = dialogObj[constraint].techs || "";
+        if (!isCalliopeVersionSeven(calliope_version) || (dialogObj[constraint].slices?.techs && dialogObj[constraint].slices?.techs[0]?.expression)) {
+            createDropdown(
+                `${constraintId}_techs`,
+                djangoTranslateTechnologies,
+                technologies,
+                isCalliopeVersionSeven(calliope_version) ? dialogObj[constraint].slices.techs[0]?.expression : dialogObj[constraint].techs,
+                constraintContent,
+                true
+            );
+        }
+
+        // Initialize techs_lhs dropdown
+        dialogObj[constraint].techs_lhs = dialogObj[constraint].techs_lhs || "";
+        if (!isCalliopeVersionSeven(calliope_version) || (dialogObj[constraint].slices?.techs_lhs && dialogObj[constraint].slices?.techs_lhs[0]?.expression)) {
+            createDropdown(
+                `${constraintId}_techs_lhs`,
+                `${djangoTranslateTechnologies} ${djangoTranslateLeftHand}`,
+                technologies,
+                isCalliopeVersionSeven(calliope_version) ? dialogObj[constraint].slices.techs_lhs[0].expression : dialogObj[constraint].techs_lhs,
+                constraintContent,
+                true
+            );
+        }
+
+        // Initialize techs_rhs dropdown
+        dialogObj[constraint].techs_rhs = dialogObj[constraint].techs_rhs || "";
+        if (!isCalliopeVersionSeven(calliope_version) || (dialogObj[constraint].slices?.techs_rhs && dialogObj[constraint].slices?.techs_rhs[0]?.expression)) {
+            createDropdown(
+                `${constraintId}_techs_rhs`,
+                `${djangoTranslateTechnologies} ${djangoTranslateRightHand}`,
+                technologies,
+                isCalliopeVersionSeven(calliope_version) ? dialogObj[constraint].slices.techs_rhs[0].expression : dialogObj[constraint].techs_rhs,
+                constraintContent,
+                true
+            );
+        }
+
+        // Show or hide techs dropdowns based on conditions
+        if (!(dialogObj[constraint].techs_rhs && dialogObj[constraint].techs_lhs && dialogObj[constraint].techs)) {
+            $(constraintContent).append(`<br><span>${djangoTranslateShowLeftRight} ${djangoTranslateTechnologies} </span>
+                <label class="switch">
+                    <input id="${constraintId}_toggle_techs" type="checkbox"><span class="slider round"></span>
+                </label><br>`
+            );
+            $(`#${constraintId}_toggle_techs`).click(function() {
+                $(`#${constraintId}_techs_container`).toggle();
+                $(`#${constraintId}_techs_lhs_container`).toggle();
+                $(`#${constraintId}_techs_rhs_container`).toggle();
+            });
+        }
+
+        // Initialize locs dropdown
+        dialogObj[constraint].locs = dialogObj[constraint].locs || "";
+        if (!isCalliopeVersionSeven(calliope_version) || (dialogObj[constraint].slices?.locs && dialogObj[constraint].slices?.locs[0]?.expression)) {
+            createDropdown(
+                `${constraintId}_locs`,
+                djangoTranslateLocations,
+                locations,
+                isCalliopeVersionSeven(calliope_version) ? dialogObj[constraint].slices.locs[0].expression : dialogObj[constraint].loc,
+                constraintContent,
+                true
+            );
+        }
+
+        // Initialize locs_lhs dropdown
+        dialogObj[constraint].locs_lhs = dialogObj[constraint].locs_lhs || "";
+        if (!isCalliopeVersionSeven(calliope_version) || (dialogObj[constraint].slices?.locs_lhs && dialogObj[constraint].slices?.locs_lhs[0]?.expression)) {
+            createDropdown(
+                `${constraintId}_locs_lhs`,
+                `${djangoTranslateLocations} ${djangoTranslateLeftHand}`,
+                locations,
+                isCalliopeVersionSeven(calliope_version) ? dialogObj[constraint].slices.locs_lhs[0].expression : dialogObj[constraint].locs_lhs,
+                constraintContent,
+                true
+            );
+        }
+
+        // Initialize locs_rhs dropdown
+        dialogObj[constraint].locs_rhs = dialogObj[constraint].locs_rhs || "";
+        if (!isCalliopeVersionSeven(calliope_version) || (dialogObj[constraint].slices?.locs_rhs && dialogObj[constraint].slices?.locs_rhs[0]?.expression)) {
+            createDropdown(
+                `${constraintId}_locs_rhs`,
+                `${djangoTranslateLocations} ${djangoTranslateRightHand}`,
+                locations,
+                isCalliopeVersionSeven(calliope_version) ? dialogObj[constraint].slices.locs_rhs[0].expression : dialogObj[constraint].locs_rhs,
+                constraintContent,
+                true
+            );
+        }
+
+        // Show or hide locs dropdowns based on conditions specified
+        if (!(dialogObj[constraint].locs_rhs && dialogObj[constraint].locs_lhs && dialogObj[constraint].locs)) {
+            $(constraintContent).append(`<br><span>${djangoTranslateShowLeftRight} ${djangoTranslateLocations} </span>
+                <label class="switch">
+                    <input id="${constraintId}_toggle_locs" type="checkbox"><span class="slider round"></span>
+                </label><br>`
+            );
+            $(`#${constraintId}_toggle_locs`).click(function() {
+                $(`#${constraintId}_locs_container`).toggle();
+                $(`#${constraintId}_locs_lhs_container`).toggle();
+                $(`#${constraintId}_locs_rhs_container`).toggle();
+            });
+        }
+
+        // Initial visibility for techs dropdowns
+        if (!dialogObj[constraint].techs_rhs && !dialogObj[constraint].techs_lhs) {
+            $(`#${constraintId}_techs_lhs_container`).hide();
+            $(`#${constraintId}_techs_rhs_container`).hide();
+        }
+
+        // Initial visibility for locs dropdowns
+        if (!dialogObj[constraint].locs_rhs && !dialogObj[constraint].locs_lhs) {
+            $(`#${constraintId}_locs_lhs_container`).hide();
+            $(`#${constraintId}_locs_rhs_container`).hide();
+        }
+    }
+    
+}
+
+function createDropdown(id, label, options, selectedValues, constraintContent, isMultiSelect) {
+    let dropdownHtml = `
+        <div id="${id}_container" class="input-wrapper single">
+            <label data-toggle="tooltip" data-placement="bottom" data-original-title="Optionally enter ${label}."><b>${label}</b></label><br>
+            <select id="${id}" name="${label}"></select>
+        </div>
+    `;
+
+    if (isMultiSelect) { 
+        dropdownHtml = `
+            <div id="${id}_container" class="input-wrapper">
+                <label data-toggle="tooltip" data-placement="bottom" data-original-title="Optionally enter ${label}."><b>${label}</b></label><br>
+                <select id="${id}" name="${label}" multiple searchable></select>
+            </div>
+        `;
+    }
+
+    if (!isMultiSelect) { 
+        $(`#${id}`).append(`<option value=""></option>`);
+    }
+
+    $(constraintContent).append(dropdownHtml);
+
+    options.forEach(option => {
+        optionValue = option;
+        optionText = option;
+
+        if (isMultiSelect) { 
+            optionValue = option.tag ? `${option.name}-${option.tag}` : option.name;
+            optionText = option.tag ? `${option.pretty_name} [${option.pretty_tag}]` : option.pretty_name;
+        } 
+        isSelected = selectedValues.includes(optionValue) ? ' selected' : '';
+        
+        $(`#${id}`).append(`<option value="${optionValue}"${isSelected}>${optionText}</option>`);
+    });
+
+    if (!isCalliopeVersionSeven(calliope_version)) {
+        $(`#${id}`).on('change', function () {
+            updateDialogObject();
+        });
+    }
+
+    if (isMultiSelect) { 
+        $(`#${id}`).multiselect({
+            includeSelectAllOption: false,
+            enableFiltering: true,
+            enableCaseInsensitiveFiltering: true,
+            buttonWidth: '550px'
+        });
+    }
+
 }
 
 function updateConstraintTypes(constraint, constraintId, constraintContent) {
@@ -653,10 +764,34 @@ function activate_scenario_settings() {
         dialogInputId = this.name.slice(6);
         dialogInputValue = dialogInputId ? $('textarea[name="edit' + dialogInputId + '"]').text() : console.log("Dialog input id not found!");
         dialogInputValue = dialogInputValue.replace(/'/g, '"');
-        dialogObj = parseJSON(dialogInputValue, {});
+        dialogObj = parseJSON(dialogInputValue, {}); 
 
         processDialogObj(dialogObj).then(() => {
             getModelCarriers();
+            if (isCalliopeVersionSeven(calliope_version)) {
+                getAdminGroupConstraints();
+                $('#new_group_constraint_btn').val('+ Group Constraint');
+                $('#new_group_constraint_name').attr('placeholder', 'Group Constraint Name');
+                var dropdownHtml = `
+                    <div class="constraint-key-value">
+                        <label><b>Group Constraint</b></label>
+                        <select class="form-control smol" id="new_group_constraint_dropdown">
+                        </select>
+                    </div>
+                    <br>
+                `;
+
+                $('#name-input').after(dropdownHtml);
+
+                $('#new_group_constraint_dropdown').append('<option selected value=""></option>');
+                for (var gc in admin_group_constraints) {
+                    $('#new_group_constraint_dropdown').append('<option value="' + admin_group_constraints[gc].id + '">' + admin_group_constraints[gc].pretty_name + '</option>');
+                }
+
+                $("#new_group_constraint_dropdown").on("change", function() {
+                    handleInputOrDropdownChange();
+                });
+            }
             updateDialogGroupConstraints(true);
         }).catch(error => {
             console.error("Error processing dialogObj:", error);
@@ -685,92 +820,102 @@ function activate_scenario_settings() {
 	});
 
     function processDialogObj(dialogObj) {
-        return new Promise((resolve, reject) => {
-            try {
-                Object.keys(dialogObj).forEach(constraint => {
-                    Object.keys(dialogObj[constraint]).forEach(fieldKey => {
-                        // Technologies
-                        if (fieldKey === "techs") {
-                            var newTechs = "";
-                            if (dialogObj[constraint].techs && dialogObj[constraint].techs.length > 0) {
-                                for (var tech in dialogObj[constraint].techs) {
-                                    newTechs += dialogObj[constraint].techs[tech];
-                                    if (Number(tech) !== dialogObj[constraint].techs.length - 1) {
-                                        newTechs += ",";
+        if (isCalliopeVersionSeven(calliope_version) ) {
+            //Take example of final product and convert to json format
+            Object.keys(dialogObj).forEach(constraint => {
+                // Change "[]" to a reall array for each slice expression
+
+                // Split name||id to just name with an id subobject
+            });
+            return Promise.resolve({});
+        } else {    
+            return new Promise((resolve, reject) => {
+                try {
+                    Object.keys(dialogObj).forEach(constraint => {
+                        Object.keys(dialogObj[constraint]).forEach(fieldKey => {
+                            // Technologies
+                            if (fieldKey === "techs") {
+                                var newTechs = "";
+                                if (dialogObj[constraint].techs && dialogObj[constraint].techs.length > 0) {
+                                    for (var tech in dialogObj[constraint].techs) {
+                                        newTechs += dialogObj[constraint].techs[tech];
+                                        if (Number(tech) !== dialogObj[constraint].techs.length - 1) {
+                                            newTechs += ",";
+                                        }
                                     }
                                 }
+                                dialogObj[constraint].techs = newTechs;
                             }
-                            dialogObj[constraint].techs = newTechs;
-                        }
-                        if (fieldKey === "techs_lhs") {
-                            var newTechs = "";
-                            if (dialogObj[constraint].techs_lhs && dialogObj[constraint].techs_lhs.length > 0) {
-                                for (var tech in dialogObj[constraint].techs_lhs) {
-                                    newTechs += dialogObj[constraint].techs_lhs[tech];
-                                    if (Number(tech) !== dialogObj[constraint].techs_lhs.length - 1) {
-                                        newTechs += ",";
+                            if (fieldKey === "techs_lhs") {
+                                var newTechs = "";
+                                if (dialogObj[constraint].techs_lhs && dialogObj[constraint].techs_lhs.length > 0) {
+                                    for (var tech in dialogObj[constraint].techs_lhs) {
+                                        newTechs += dialogObj[constraint].techs_lhs[tech];
+                                        if (Number(tech) !== dialogObj[constraint].techs_lhs.length - 1) {
+                                            newTechs += ",";
+                                        }
                                     }
                                 }
+                                dialogObj[constraint].techs_lhs = newTechs;
                             }
-                            dialogObj[constraint].techs_lhs = newTechs;
-                        }
-                        if (fieldKey === "techs_rhs") {
-                            var newTechs = "";
-                            if (dialogObj[constraint].techs_rhs && dialogObj[constraint].techs_rhs.length > 0) {
-                                for (var tech in dialogObj[constraint].techs_rhs) {
-                                    newTechs += dialogObj[constraint].techs_rhs[tech];
-                                    if (Number(tech) !== dialogObj[constraint].techs_rhs.length - 1) {
-                                        newTechs += ",";
+                            if (fieldKey === "techs_rhs") {
+                                var newTechs = "";
+                                if (dialogObj[constraint].techs_rhs && dialogObj[constraint].techs_rhs.length > 0) {
+                                    for (var tech in dialogObj[constraint].techs_rhs) {
+                                        newTechs += dialogObj[constraint].techs_rhs[tech];
+                                        if (Number(tech) !== dialogObj[constraint].techs_rhs.length - 1) {
+                                            newTechs += ",";
+                                        }
                                     }
                                 }
+                                dialogObj[constraint].techs_rhs = newTechs;
                             }
-                            dialogObj[constraint].techs_rhs = newTechs;
-                        }
-    
-                        // Locations
-                        if (fieldKey === "locs") {
-                            var newLocs = "";
-                            if (dialogObj[constraint].locs && dialogObj[constraint].locs.length > 0) {
-                                for (var loc in dialogObj[constraint].locs) {
-                                    newLocs += dialogObj[constraint].locs[loc];
-                                    if (Number(loc) !== dialogObj[constraint].locs.length - 1) {
-                                        newLocs += ",";
+        
+                            // Locations
+                            if (fieldKey === "locs") {
+                                var newLocs = "";
+                                if (dialogObj[constraint].locs && dialogObj[constraint].locs.length > 0) {
+                                    for (var loc in dialogObj[constraint].locs) {
+                                        newLocs += dialogObj[constraint].locs[loc];
+                                        if (Number(loc) !== dialogObj[constraint].locs.length - 1) {
+                                            newLocs += ",";
+                                        }
                                     }
                                 }
+                                dialogObj[constraint].locs = newLocs;
                             }
-                            dialogObj[constraint].locs = newLocs;
-                        }
-                        if (fieldKey === "locs_lhs") {
-                            var newLocs = "";
-                            if (dialogObj[constraint].locs_lhs && dialogObj[constraint].locs_lhs.length > 0) {
-                                for (var loc in dialogObj[constraint].locs_lhs) {
-                                    newLocs += dialogObj[constraint].locs_lhs[loc];
-                                    if (Number(loc) !== dialogObj[constraint].locs_lhs.length - 1) {
-                                        newLocs += ",";
+                            if (fieldKey === "locs_lhs") {
+                                var newLocs = "";
+                                if (dialogObj[constraint].locs_lhs && dialogObj[constraint].locs_lhs.length > 0) {
+                                    for (var loc in dialogObj[constraint].locs_lhs) {
+                                        newLocs += dialogObj[constraint].locs_lhs[loc];
+                                        if (Number(loc) !== dialogObj[constraint].locs_lhs.length - 1) {
+                                            newLocs += ",";
+                                        }
                                     }
                                 }
+                                dialogObj[constraint].locs_lhs = newLocs;
                             }
-                            dialogObj[constraint].locs_lhs = newLocs;
-                        }
-                        if (fieldKey === "locs_rhs") {
-                            var newLocs = "";
-                            if (dialogObj[constraint].locs_rhs && dialogObj[constraint].locs_rhs.length > 0) {
-                                for (var loc in dialogObj[constraint].locs_rhs) {
-                                    newLocs += dialogObj[constraint].locs_rhs[loc];
-                                    if (Number(loc) !== dialogObj[constraint].locs_rhs.length - 1) {
-                                        newLocs += ",";
+                            if (fieldKey === "locs_rhs") {
+                                var newLocs = "";
+                                if (dialogObj[constraint].locs_rhs && dialogObj[constraint].locs_rhs.length > 0) {
+                                    for (var loc in dialogObj[constraint].locs_rhs) {
+                                        newLocs += dialogObj[constraint].locs_rhs[loc];
+                                        if (Number(loc) !== dialogObj[constraint].locs_rhs.length - 1) {
+                                            newLocs += ",";
+                                        }
                                     }
                                 }
+                                dialogObj[constraint].locs_rhs = newLocs;
                             }
-                            dialogObj[constraint].locs_rhs = newLocs;
-                        }
+                        });
                     });
-                });
-                resolve();
-            } catch (error) {
-                reject(error);
-            }
-        });
+                    resolve();
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        }
     }
 
     $('#settings_import_data').on('click', function() {
@@ -803,13 +948,75 @@ function activate_scenario_settings() {
         $('#data-source-modal').hide();
     });
 
+
     $('#new_group_constraint_btn').on('click', function() {
         var newGroupConstraint = $('#new_group_constraint_name').val().trim();
+
         if (newGroupConstraint.length > 0) {
             dialogObj[newGroupConstraint] = {};
+
+            if (isCalliopeVersionSeven(calliope_version)) {
+                if (!$('#new_group_constraint_dropdown').val() || $('#new_group_constraint_dropdown').val().length <= 0) {
+                    return;
+                }
+                let groupConstraintId = $('#new_group_constraint_dropdown').val();
+                let adminGroupConstraint = admin_group_constraints.find(obj => obj.id === Number(groupConstraintId));
+
+                // Construct object correctly 
+                dialogObj[newGroupConstraint].id = adminGroupConstraint.id;
+                dialogObj[newGroupConstraint].where = adminGroupConstraint.where;
+                dialogObj[newGroupConstraint].description = adminGroupConstraint.description;
+                dialogObj[newGroupConstraint].equations = adminGroupConstraint.equations;
+                dialogObj[newGroupConstraint].slices = dialogObj[newGroupConstraint].slices ? dialogObj[newGroupConstraint].slices : {};
+                Object.entries(adminGroupConstraint.slices).forEach(([key, value]) => {
+                    dialogObj[newGroupConstraint].slices[key] = value.yaml;
+                });
+                dialogObj[newGroupConstraint].sub_expression = dialogObj[newGroupConstraint].sub_expression ? dialogObj[newGroupConstraint].sub_expression : {};
+                Object.entries(adminGroupConstraint.sub_expression).forEach(([key, value]) => {
+                    if (value.show) {
+                        dialogObj[newGroupConstraint].sub_expression[key] = value.yaml;
+                    }
+                });
+                dialogObj[newGroupConstraint].for_each = adminGroupConstraint.for_each;
+   
+                $('#new_group_constraint_dropdown').val("");
+            }
+
             $('#new_group_constraint_name').val("");
-            updateDialogGroupConstraints();
             $('#new_group_constraint_btn').attr("disabled", true);
+            updateDialogGroupConstraints();
+        }
+
+    });
+}
+
+function getAdminGroupConstraints() {
+    $.ajax({
+        url: '/' + LANGUAGE_CODE + '/admin/group_constraints/',
+        async: false,
+        data: {
+        },
+        dataType: 'json',
+        success: function (data) {
+            admin_group_constraints = data.admin_group_constraints ? data.admin_group_constraints : [];
+        }
+    });
+}
+
+function getModelCarriers() {
+    var model_uuid = $('#header').data('model_uuid');
+
+    $.ajax({
+        url: '/' + LANGUAGE_CODE + '/component/group_constraint_options/',
+        async: false,
+        data: {
+            'model_uuid': model_uuid,
+        },
+        dataType: 'json',
+        success: function (data) {
+            carriers = data.carriers ? data.carriers.map(obj => obj.name) : [];
+            locations = data.locations;
+            technologies = data.technologies;
         }
     });
 }
@@ -849,3 +1056,5 @@ function toggle_scenario_loc_tech(loc_tech_ids, add) {
 		});
 	};
 }
+
+

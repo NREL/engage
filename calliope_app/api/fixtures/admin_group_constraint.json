@@ -82,7 +82,7 @@
           "value_1": {
             "yaml": [
               {
-                "expression": []
+                "expression": ""
               }
             ],
             "show": true
@@ -90,7 +90,7 @@
           "value_2": {
             "yaml": [
               {
-                "expression": []
+                "expression": ""
               }
             ],
             "show": true
