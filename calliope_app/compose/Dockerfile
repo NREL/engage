@@ -42,7 +42,7 @@ RUN pip install -r requirements-dev.txt
 RUN pip install git+https://github.com/NREL/GEOPHIRES-X.git#egg=geophires-x
 
 # Install Calliope v0.7
-RUN pip install git+https://github.com/calliope-project/calliope.git@v0.7.0.dev3
+RUN pip install git+https://github.com/jgu2/calliope.git@readd-links-yaml
 
 # Uninstall git
 RUN apt remove git -y && apt autoremove -y

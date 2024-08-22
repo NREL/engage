@@ -317,7 +317,8 @@ function activate_runs() {
 				'cluster': $(this).attr('cluster'),
 				'manual': $(this).attr('manual'),
 				'run_env': $(this).attr('run_env'),
-				'timestep': $(this).attr('timestep')
+				'timestep': $(this).attr('timestep'),
+				'run_options': $(this).attr('run_options')
 			},
 			dataType: 'json',
 			success: function (data) {

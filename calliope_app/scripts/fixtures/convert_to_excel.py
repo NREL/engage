@@ -41,8 +41,8 @@ for param in parameter_objects:
         'choices': fields['choices'],
         'tags': fields['tags'],
         'model': param['model'],
-        #'index': fields['index'],
-        #'dim': fields['dim'],
+        'index': fields['index'],
+        'dim': fields['dim'],
         'abstract_techs': json.dumps([t['fields']['name'] for t in abstract_techs_data if str(t['pk']) in [tp['fields']['abstract_tech_id'] for tp in tech_params_data if tp['fields']['parameter_id'] == str(param['pk'])]])
     }
     rows.append(row)

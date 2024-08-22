@@ -2,7 +2,7 @@ import pandas as pd
 import json
 
 # Load the Excel file into a DataFrame
-df = pd.read_excel('C:/Users/jmorris4/Downloads/C7_Admin_Parameters.xlsx')
+df = pd.read_excel('calliope_app/scripts/fixtures/parameters.xlsx')
 
 # Load the abstract techs
 with open('calliope_app/api/fixtures/admin_abstract_tech.json', 'r', encoding='utf-8') as file:
@@ -18,7 +18,7 @@ admin_tech_param_index = 1
 # Iterate through each row in the DataFrame
 for index, row in df.iterrows():
     param = {
-        "pk": index + 1, # or row['pk']
+        "pk": row['pk'],
         "fields": {
             "category": "" if pd.isna(row['category']) else row['category'],
             "category_fr": "" if pd.isna(row['category_fr']) else row['category_fr'],
@@ -38,8 +38,8 @@ for index, row in df.iterrows():
             "is_carrier": "True" if row['is_carrier'] == 1.0 else "False",
             "choices": row['choices'] if pd.notna(row['choices']) else "[]",
             "tags": row['tags'] if pd.notna(row['tags']) else "[]",
-            "index": json.dumps(row['index'].split(',')) if pd.notna(row['index']) else "[]",
-            "dim": json.dumps(row['dim'].split(',')) if pd.notna(row['dim']) else "[]"
+            "index": row['index'] if pd.notna(row['index']) else "[]",
+            "dim": row['dim'] if pd.notna(row['dim']) else "[]"
         },
         "model": row['model']
     }

@@ -13,7 +13,7 @@ import copy
 import calendar
 
 from api.models.configuration import Scenario_Param, Scenario_Loc_Tech, \
-    Location, Tech_Param, Loc_Tech_Param, Loc_Tech, Scenario, Carrier
+    Location, Tech_Param, Loc_Tech_Param, Loc_Tech, Scenario, Carrier, Run_Parameter
 from api.models.outputs import Run
 import logging
 
@@ -43,24 +43,24 @@ def get_model_yaml_set(run, scenario_id, year, tech_params_source, node_params_s
             key_list = unique_param.split('.')
             dictify(model_yaml_set,key_list,param.value)
     dictify(model_yaml_set,['import'],'["techs.yaml","locations.yaml"]')
-    for param in run.run_options:
-        logger.info(param)
-        unique_param = param["root"] + '.' + param["name"]
+    for id in run.run_options.keys():
+        run_parameter = Run_Parameter.objects.get(pk=int(id))
+        unique_param = run_parameter.root + '.' + run_parameter.name
         key_list = unique_param.split('.')
-        dictify(model_yaml_set,key_list,param["value"])
+        dictify(model_yaml_set,key_list,run.run_options[id])
 
     if node_params_source or tech_params_source:
         model_yaml_set["data_sources"] = {}
         if tech_params_source:
             model_yaml_set["data_sources"]["Tech_Timeseries"] = {
                 "source": tech_params_source,
-                "rows": "timeseries",
+                "rows": "timesteps",
                 "columns": ["techs", "parameters"]
             }
         if node_params_source:
             model_yaml_set["data_sources"]["Node_Timeseries"] = {
                 "source": node_params_source,
-                "rows": "timeseries",
+                "rows": "timesteps",
                 "columns": ["techs", "nodes", "parameters"]
             }
     
@@ -88,6 +88,8 @@ def get_location_meta_yaml_set(scenario_id, existing = None):
         param_list = ['nodes', loc.name]
         dictify(location_coord_yaml_set,param_list+['latitude'],loc.latitude)
         dictify(location_coord_yaml_set,param_list+['longitude'],loc.longitude)
+        if 'techs' not in location_coord_yaml_set['nodes'][loc.name]:
+            dictify(location_coord_yaml_set,param_list+['techs'],'')
         # Available Area
         if loc.available_area is None:
             continue
@@ -168,7 +170,7 @@ def get_loc_techs_yaml_set(scenario_id, year):
             parent_type = 'nodes'
             location = loc_tech.location_1.name
 
-            if len(params) == 0:            
+            if len(params) == 0:         
                 param_list = [parent_type, location, 'techs',
                             technology]
                 dictify(loc_techs_yaml_set,param_list,'')
@@ -313,10 +315,10 @@ def stringify(param_list):
 def run_basic(model_path, logger):
     """ Basic Run """
     logger.info('--- Run Basic')
-    model = CalliopeModel(config=model_path)
+    model = CalliopeModel(model_definition=model_path)
     logger.info(model.info())
-    logger.info(model._model_data.coords.get("techs_non_transmission", []))
-    model.run()
+    model.build()
+    model.solve()
     _write_outputs(model, model_path)
     return model.results.termination_condition
 
@@ -327,7 +329,7 @@ def run_clustered(model_path, idx, logger):
     _set_clustering(model_path, on=True)
     _set_subset_time(model_path)
     _set_capacities(model_path)
-    model = CalliopeModel(config=model_path)
+    model = CalliopeModel(model_definition=model_path)
     model.run()
     _write_outputs(model, model_path)
     if model.results.termination_condition != 'optimal':
@@ -519,9 +521,9 @@ def _write_outputs(model, model_path, ts_only_suffix=None):
                 pass
         shutil.rmtree(os.path.join(base_path, folder))
     if final_outputs:
-        _yaml_outputs(model_path,final_outputs)
+        _yaml_outputs(os.path.dirname(model_path),final_outputs)
     else:
-        _yaml_outputs(model_path,save_outputs)
+        _yaml_outputs(os.path.dirname(model_path),save_outputs)
 
 def _yaml_outputs(inputs_dir, outputs_dir):
     results_var = {'flow_cap':'results_flow_cap.csv','storage_cap':'results_storage_cap.csv'}
@@ -555,8 +557,9 @@ def _yaml_outputs(inputs_dir, outputs_dir):
                 model['links'][l] = {}
             if 'results' not in model['links'][l]:
                 model['links'][l]['results'] = {}
-            model['links'][l]['results'][v+'_equals'] = float(r_df.loc[(r_df['nodes'] == l1) &
-                                                                (r_df['techs'] == t)][v].values[0])
+            if len(r_df.loc[(r_df['nodes'] == l1) & (r_df['techs'] == l)][v]) != 0:
+                model['links'][l]['results'][v+'_equals'] = float(r_df.loc[(r_df['nodes'] == l1) &
+                                                                (r_df['techs'] == l)][v].values[0])
     if has_outputs:
         yaml.dump(model, open(os.path.join(outputs_dir,'model_results.yaml'),'w+'), default_flow_style=False)
 

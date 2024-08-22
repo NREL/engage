@@ -41,6 +41,9 @@ def run_dashboard(request):
 
     runs = model.runs.filter(scenario_id=scenario_id)
 
+    for run in runs:
+        run.run_options = json.dumps(run.run_options)
+        
     # Check for any publication updates
     for run in runs.filter(published=None):
         Cambium.push_run(run)

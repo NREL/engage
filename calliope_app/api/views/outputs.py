@@ -61,8 +61,8 @@ def build(request):
     Example:
     GET: /api/build/
     """
-    parameters = request.GET.get('parameters', None)
-    parameters = json.loads(parameters)
+    run_options = request.GET.get('run_options', None)
+    run_options = json.loads(run_options)
 
     # Input parameters
     model_uuid = request.GET.get("model_uuid", None)
@@ -127,7 +127,8 @@ def build(request):
                 timestep=timestep,
                 compute_environment=compute_environment,
                 group=groupname,
-                description=notes
+                description=notes,
+                run_options=run_options
             )
 
             # Generate File Path
@@ -156,11 +157,6 @@ def build(request):
                 )
             inputs_path = inputs_path.lower().replace(" ", "-")
             os.makedirs(inputs_path, exist_ok=True)
-            
-            run.run_options = []
-            for id in parameters.keys():
-                run_parameter= Run_Parameter.objects.get(pk=int(id))
-                run.run_options.append({'root':run_parameter.root,'name':run_parameter.name,'value':parameters[id]})
            
             # Celery task        
             async_result = build_model.apply_async(
