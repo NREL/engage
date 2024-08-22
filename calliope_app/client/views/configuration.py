@@ -8,7 +8,7 @@ from django.db.models import Q
 from django_ratelimit.decorators import ratelimit
 from django.http import JsonResponse
 from api.models.engage import Help_Guide
-from api.models.calliope import Parameter, Abstract_Tech
+from api.models.calliope import Parameter, Abstract_Tech, Group_Constraint
 from api.models.configuration import Model, User_File, \
     Technology, Loc_Tech, Timeseries_Meta, Model_User, \
     Model_Comment, Carrier, Tech_Param, Loc_Tech_Param
@@ -255,6 +255,24 @@ def loc_techs_view(request, model_uuid):
 
 
 # ------ Scenarios
+
+def admin_group_constraints(request):
+    """
+    Group Constraints admin lookup table
+
+    Parameters:
+    none
+
+    Returns: HttpResponse
+
+    Example:
+    http://0.0.0.0:8000/admin/group_constraints
+    """
+    response = {
+        "admin_group_constraints": list(Group_Constraint.objects.values()),
+    }
+
+    return JsonResponse(response, safe=False)
 
 
 def scenarios_view(request, model_uuid):
