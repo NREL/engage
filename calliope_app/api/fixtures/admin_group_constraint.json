@@ -16,9 +16,7 @@
           "techs_lhs": {
             "yaml": [
               {
-                "expression": [
-                  "||VALUE||"
-                ]
+                "expression": []
               }
             ],
             "dim": "techs"
@@ -26,9 +24,7 @@
           "techs_rhs": {
             "yaml": [
               {
-                "expression": [
-                  "||VALUE||"
-                ]
+                "expression": []
               }
             ],
             "dim": "techs"
@@ -36,9 +32,7 @@
           "locs_lhs": {
             "yaml": [
               {
-                "expression": [
-                  "||VALUE||"
-                ]
+                "expression": []
               }
             ],
             "dim": "locs"
@@ -46,9 +40,7 @@
           "locs_rhs": {
             "yaml": [
               {
-                "expression": [
-                  "||VALUE||"
-                ]
+                "expression": []
               }
             ],
             "dim": "locs"
@@ -56,9 +48,7 @@
           "carriers_lhs": {
             "yaml": [
               {
-                "expression": [
-                  "||VALUE||"
-                ]
+                "expression": []
               }
             ],
             "dim": "carriers"
@@ -66,9 +56,7 @@
           "carriers_rhs": {
             "yaml": [
               {
-                "expression": [
-                  "||VALUE||"
-                ]
+                "expression": []
               }
             ],
             "dim": "carriers"
@@ -76,9 +64,7 @@
           "costs": {
             "yaml": [
               {
-                "expression": [
-                  "||VALUE||"
-                ]
+                "expression": []
               }
             ],
             "dim": "costs"
@@ -91,23 +77,23 @@
                 "expression": "sum(flow_out[||techs_rhs||||carriers_rhs||]) * $value_1"
               }
             ],
-            "value": false
+            "show": false
           },
           "value_1": {
             "yaml": [
               {
-                "expression": "||VALUE||"
+                "expression": []
               }
             ],
-            "value": true
+            "show": true
           },
           "value_2": {
             "yaml": [
               {
-                "expression": "||VALUE||"
+                "expression": []
               }
             ],
-            "value": true
+            "show": true
           }
         }
       }
