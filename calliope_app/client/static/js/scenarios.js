@@ -6,6 +6,7 @@ var bulk_confirmation = false,
 	map_mode = 'scenarios',
     carriers = null,
     admin_group_constraints = null,
+    initialDialogOpen = true,
     constraints = {
         "demand_share_min":"carriers", "demand_share_max":"carriers", "demand_share_equals":"carriers",
         "demand_share_per_timestep_min":"carriers", "demand_share_per_timestep_max":"carriers", "demand_share_per_timestep_equals":"carriers",
@@ -257,75 +258,110 @@ function get_scenario_configuration() {
 	};
 };
 
-function updateDialogObject() {
+function convertToJSON() {
+    let tempDialogObj = structuredClone(dialogObj);
     Object.keys(dialogObj).forEach(constraint => {
         let constraintId = safeHTMLId(constraint);
 
-        var techsInput = $("#" + constraintId + "_techs").val();
-        if (techsInput && techsInput.length > 0) {
-            dialogObj[constraint].techs = techsInput;
-        } else {
-            delete dialogObj[constraint].techs;
-        }
+        if (isCalliopeVersionSeven(calliope_version)) {
+            let groupConstraintId = constraint.split("||")[0];
+            let adminGroupConstraint = admin_group_constraints.find(obj => obj.id === Number(groupConstraintId));
+            let tempEquations = adminGroupConstraint.equations[0].expression;
 
-        var techsInputLhs = $("#" + constraintId + "_techs_lhs").val();
-        if (techsInputLhs && techsInputLhs.length > 0) {
-            dialogObj[constraint].techs_lhs = techsInputLhs;
-        } else {
-            delete dialogObj[constraint].techs_lhs;
-        }
+            // Remove values not inputted 
+            Object.entries(tempDialogObj[constraint].sub_expression).forEach(([key, value]) => {
+                if (tempDialogObj[constraint].sub_expression[key][0].expression == [] || tempDialogObj[constraint].sub_expression[key][0].expression == "") {
+                    delete tempDialogObj[constraint].sub_expression[key];
+                } 
+            });
 
-        var techsInputRhs = $("#" + constraintId + "_techs_rhs").val();
-        if (techsInputRhs && techsInputRhs.length > 0) {
-            dialogObj[constraint].techs_rhs = techsInputRhs;
-        } else {
-            delete dialogObj[constraint].techs_rhs;
-        }
-
-        // Locations
-        var locsInput = $("#" + constraintId + "_locs").val();
-        if (locsInput && locsInput.length > 0) {
-            dialogObj[constraint].locs = locsInput;
-        } else {
-            delete dialogObj[constraint].locs;
-        }
-
-        var locsInputLhs = $("#" + constraintId + "_locs_lhs").val();
-        if (locsInputLhs && locsInputLhs.length > 0) {
-            dialogObj[constraint].locs_lhs = locsInputLhs;
-        } else {
-            delete dialogObj[constraint].locs_lhs;
-        }
-
-        var locsInputRhs = $("#" + constraintId + "_locs_rhs").val();
-        if (locsInputRhs && locsInputRhs.length > 0) {
-            dialogObj[constraint].locs_rhs = locsInputRhs;
-        } else {
-            delete dialogObj[constraint].locs_rhs;
-        }
-
-        // Add constraints
-        Object.keys(dialogObj[constraint]).forEach(fieldKey => {
-            if (fieldKey !== "locs" && fieldKey !== "techs" && fieldKey !== "techs_lhs" && fieldKey !== "techs_rhs" && fieldKey !== "locs_lhs" && fieldKey !== "locs_rhs") {
-                let value = $("#" + constraintId + fieldKey + "-val").val();
-                if (value) {
-                    value = parseFloat(value, 10);
-                } else {
-                    value = 0;
+            Object.entries(tempDialogObj[constraint].slices).forEach(([key, value]) => {
+                if (tempDialogObj[constraint].slices[key][0].expression == [] || tempDialogObj[constraint].slices[key][0].expression == "") {
+                    delete tempDialogObj[constraint].slices[key];
+                    let toDelete = `||${key}||`
+                    tempEquations = tempEquations.replace(toDelete, "");
                 }
+            });
 
-                if (constraints[fieldKey] !== "none") {
-                    let key = $("#" + constraintId + fieldKey + "-key").val() ? $("#" + constraintId + fieldKey + "-key").val() : "";
-                    dialogObj[constraint][fieldKey] = {};
-                    if (key) {
-                        dialogObj[constraint][fieldKey][key] = value;
-                    }
-                } else {
-                    dialogObj[constraint][fieldKey] = value;
-                }
+            // Throw error if values are not filled out and at least one dropdown?
+
+            // Update equation
+            tempEquations = tempEquations.replaceAll("||||", ",");
+            tempEquations = tempEquations.replaceAll("||", "");
+            tempEquations = tempEquations.replace("[]", "");
+            tempDialogObj[constraint].equations[0].expression = tempEquations;
+
+            delete tempDialogObj[constraint].id;
+        } else {
+            var techsInput = $("#" + constraintId + "_techs").val();
+            if (techsInput && techsInput.length > 0) {
+                dialogObj[constraint].techs = techsInput;
+            } else {
+                delete dialogObj[constraint].techs;
             }
-        });
+
+            var techsInputLhs = $("#" + constraintId + "_techs_lhs").val();
+            if (techsInputLhs && techsInputLhs.length > 0) {
+                dialogObj[constraint].techs_lhs = techsInputLhs;
+            } else {
+                delete dialogObj[constraint].techs_lhs;
+            }
+
+            var techsInputRhs = $("#" + constraintId + "_techs_rhs").val();
+            if (techsInputRhs && techsInputRhs.length > 0) {
+                dialogObj[constraint].techs_rhs = techsInputRhs;
+            } else {
+                delete dialogObj[constraint].techs_rhs;
+            }
+
+            // Locations
+            var locsInput = $("#" + constraintId + "_locs").val();
+            if (locsInput && locsInput.length > 0) {
+                dialogObj[constraint].locs = locsInput;
+            } else {
+                delete dialogObj[constraint].locs;
+            }
+
+            var locsInputLhs = $("#" + constraintId + "_locs_lhs").val();
+            if (locsInputLhs && locsInputLhs.length > 0) {
+                dialogObj[constraint].locs_lhs = locsInputLhs;
+            } else {
+                delete dialogObj[constraint].locs_lhs;
+            }
+
+            var locsInputRhs = $("#" + constraintId + "_locs_rhs").val();
+            if (locsInputRhs && locsInputRhs.length > 0) {
+                dialogObj[constraint].locs_rhs = locsInputRhs;
+            } else {
+                delete dialogObj[constraint].locs_rhs;
+            }
+
+            // Add constraints
+            Object.keys(dialogObj[constraint]).forEach(fieldKey => {
+                if (fieldKey !== "locs" && fieldKey !== "techs" && fieldKey !== "techs_lhs" && fieldKey !== "techs_rhs" && fieldKey !== "locs_lhs" && fieldKey !== "locs_rhs") {
+                    let value = $("#" + constraintId + fieldKey + "-val").val();
+                    if (value) {
+                        value = parseFloat(value, 10);
+                    } else {
+                        value = 0;
+                    }
+
+                    if (constraints[fieldKey] !== "none") {
+                        let key = $("#" + constraintId + fieldKey + "-key").val() ? $("#" + constraintId + fieldKey + "-key").val() : "";
+                        dialogObj[constraint][fieldKey] = {};
+                        if (key) {
+                            dialogObj[constraint][fieldKey][key] = value;
+                        }
+                    } else {
+                        dialogObj[constraint][fieldKey] = value;
+                    }
+                }
+            });
+        }
     });
+
+    return isCalliopeVersionSeven(calliope_version) ? tempDialogObj : dialogObj;
+
 }
 
 function updateDialogGroupConstraints(initialLoad) {
@@ -335,31 +371,37 @@ function updateDialogGroupConstraints(initialLoad) {
     }
 
     Object.keys(dialogObj).forEach(constraint => {
+        let groupConstraintPrettyName = constraint.split("||")[1] ? constraint.split("||")[1] : "Error: Misformatted string";
         let constraintId = safeHTMLId(constraint);
-        let adminGroupConstraint = admin_group_constraints.find(obj => obj.id === dialogObj[constraint].id);
-
+        let adminGroupConstraint = admin_group_constraints.find(obj => obj.id === Number(dialogObj[constraint].id));
         $('#dialog-inputs').append( "<div id='" + constraintId + "' style='padding-top:1.5em'></div>");
-        $("#" + constraintId).append( "<div class='cateogry-expander'><a><h5 class='constraint-name'><div style='float: right;'><i class='fas fa-caret-down'></i><i class='fas fa-caret-up' style='display: none;'></i>" + constraint
+        $("#" + constraintId).append( "<div class='cateogry-expander'><a><h5 class='constraint-name'><div style='float: right;'><i class='fas fa-caret-down'></i><i class='fas fa-caret-up' style='display: none;'></i>" + groupConstraintPrettyName
         + "</div></h5></a></div>");
 
-        $("#" + constraintId).append( "<div id='" + constraintId + "-content" + "' class=''>");
+        $(`#${constraintId}`).append(`<div id="${constraintId}-content" name="${constraint}" class=""></div>`);
         let constraintContent = "#" + constraintId + "-content";
-        $(constraintContent).append( "<button id='delete_group_constraint_btn_" + constraintId + "' type='button' class='btn btn-sm btn-outline-danger group-constraint-delete' title='Delete constraint'><i class='fas fa-trash'></i></button>");
+        $(constraintContent).append(`
+            <button id="delete_group_constraint_btn_${constraintId}" 
+                    name="${constraint}" 
+                    type="button" 
+                    class="btn btn-sm btn-outline-danger group-constraint-delete" 
+                    title="Delete constraint">
+                <i class="fas fa-trash"></i>
+            </button>
+        `);
+        $("#delete_group_constraint_btn_" + constraintId).on('click', function() {
+            delete dialogObj[$(this).attr('name')];
+            updateDialogGroupConstraints();
+        });
 
-        renderGroupConstraintTechsAndLocs(constraint, constraintId, constraintContent, adminGroupConstraint);
+        renderGroupConstraintDropdowns(constraint, constraintId, constraintContent, adminGroupConstraint);
 
         if (isCalliopeVersionSeven(calliope_version)) {
             renderSubExpressions(constraint, constraintId, constraintContent, adminGroupConstraint);
         }
-
+        
         if (!isCalliopeVersionSeven(calliope_version) ) {
             updateConstraintTypes(constraint, constraintId, constraintContent);
-        
-            $("#delete_group_constraint_btn_" + constraintId).on('click', function() {
-                let con = this.id.replace("delete_group_constraint_btn_", "");
-                delete dialogObj[con];
-                updateDialogGroupConstraints();
-            });
         }
 
         $(constraintContent).append( "<hr>" );
@@ -384,21 +426,21 @@ function renderSubExpressions(constraint, constraintId, constraintContent, admin
     Object.entries(adminGroupConstraint.sub_expression).forEach(([key, value]) => {
         if (value.show) {
             $(constraintContent).append(`<label><b>${key}</b></label>`);
-            const input = $(`<input type='number' id='${constraintId}${key}-val' name='dialogObj.slices[${key}]' class='form-control smol' placeholder='' value='${dialogObj[constraint].sub_expression[key][0]?.expression || ""}' step='1'></input><br><br>`);
+            const input = $(`<input type='number' id='${constraintId}${key}-val' name='${constraint}' data-key=${key} class='form-control smol' placeholder='' value='${dialogObj[constraint].sub_expression[key][0]?.expression || ""}' step='1'></input><br><br>`);
             $(constraintContent).append(input);
 
-            input.on('input', function() {
-                dialogObj[constraint].sub_expression[key][0].expression = $(this).val();
+            $(`#${constraintId}${key}-val`).on('input', function() {
+                dialogObj[$(this).attr('name')].sub_expression[$(this).attr('data-key')][0].expression = $(this).val();
             });
         }
     });
 }
 
-function renderGroupConstraintTechsAndLocs(constraint, constraintId, constraintContent, adminGroupConstraint) {
+function renderGroupConstraintDropdowns(constraint, constraintId, constraintContent, adminGroupConstraint) {
 
     if (isCalliopeVersionSeven(calliope_version)) {
         Object.entries(dialogObj[constraint].slices).forEach(([key, value]) => {
-            if (!['locs', 'techs', 'locs_lhs', 'locs_rhs', 'techs_lhs', 'techs_rhs'].includes(key) || isCalliopeVersionSeven(calliope_version)) {
+            if (isCalliopeVersionSeven(calliope_version)) {
                 let sliceDim = adminGroupConstraint.slices[key].dim;
                 let sliceOptions = [];
                 if (sliceDim == "techs") {
@@ -412,55 +454,54 @@ function renderGroupConstraintTechsAndLocs(constraint, constraintId, constraintC
                 }
                 createDropdown(
                     `${constraintId}_${key}`,
+                    constraint,
                     key,
                     sliceOptions,
                     dialogObj[constraint].slices[key][0]?.expression,
                     constraintContent,
-                    (sliceDim == "techs" || sliceDim == "locs")
+                    Array.isArray(dialogObj[constraint].slices[key][0]?.expression)
                 );
             }
         });
-    }
+    } else {
+        // Calliope 6
 
-    if (!isCalliopeVersionSeven(calliope_version)) {
         // Initialize techs dropdown
         dialogObj[constraint].techs = dialogObj[constraint].techs || "";
-        if (!isCalliopeVersionSeven(calliope_version) || (dialogObj[constraint].slices?.techs && dialogObj[constraint].slices?.techs[0]?.expression)) {
-            createDropdown(
-                `${constraintId}_techs`,
-                djangoTranslateTechnologies,
-                technologies,
-                isCalliopeVersionSeven(calliope_version) ? dialogObj[constraint].slices.techs[0]?.expression : dialogObj[constraint].techs,
-                constraintContent,
-                true
-            );
-        }
+        createDropdown(
+            `${constraintId}_techs`,
+            constraint,
+            djangoTranslateTechnologies,
+            technologies,
+            dialogObj[constraint].techs,
+            constraintContent,
+            true
+        );
 
         // Initialize techs_lhs dropdown
         dialogObj[constraint].techs_lhs = dialogObj[constraint].techs_lhs || "";
-        if (!isCalliopeVersionSeven(calliope_version) || (dialogObj[constraint].slices?.techs_lhs && dialogObj[constraint].slices?.techs_lhs[0]?.expression)) {
-            createDropdown(
-                `${constraintId}_techs_lhs`,
-                `${djangoTranslateTechnologies} ${djangoTranslateLeftHand}`,
-                technologies,
-                isCalliopeVersionSeven(calliope_version) ? dialogObj[constraint].slices.techs_lhs[0].expression : dialogObj[constraint].techs_lhs,
-                constraintContent,
-                true
-            );
-        }
-
+        createDropdown(
+            `${constraintId}_techs_lhs`,
+            constraint,
+            `${djangoTranslateTechnologies} ${djangoTranslateLeftHand}`,
+            technologies,
+            dialogObj[constraint].techs_lhs,
+            constraintContent,
+            true
+        );
+        
         // Initialize techs_rhs dropdown
         dialogObj[constraint].techs_rhs = dialogObj[constraint].techs_rhs || "";
-        if (!isCalliopeVersionSeven(calliope_version) || (dialogObj[constraint].slices?.techs_rhs && dialogObj[constraint].slices?.techs_rhs[0]?.expression)) {
-            createDropdown(
-                `${constraintId}_techs_rhs`,
-                `${djangoTranslateTechnologies} ${djangoTranslateRightHand}`,
-                technologies,
-                isCalliopeVersionSeven(calliope_version) ? dialogObj[constraint].slices.techs_rhs[0].expression : dialogObj[constraint].techs_rhs,
-                constraintContent,
-                true
-            );
-        }
+        createDropdown(
+            `${constraintId}_techs_rhs`,
+            constraint,
+            `${djangoTranslateTechnologies} ${djangoTranslateRightHand}`,
+            technologies,
+            dialogObj[constraint].techs_rhs,
+            constraintContent,
+            true
+        );
+        
 
         // Show or hide techs dropdowns based on conditions
         if (!(dialogObj[constraint].techs_rhs && dialogObj[constraint].techs_lhs && dialogObj[constraint].techs)) {
@@ -478,42 +519,42 @@ function renderGroupConstraintTechsAndLocs(constraint, constraintId, constraintC
 
         // Initialize locs dropdown
         dialogObj[constraint].locs = dialogObj[constraint].locs || "";
-        if (!isCalliopeVersionSeven(calliope_version) || (dialogObj[constraint].slices?.locs && dialogObj[constraint].slices?.locs[0]?.expression)) {
-            createDropdown(
-                `${constraintId}_locs`,
-                djangoTranslateLocations,
-                locations,
-                isCalliopeVersionSeven(calliope_version) ? dialogObj[constraint].slices.locs[0].expression : dialogObj[constraint].loc,
-                constraintContent,
-                true
-            );
-        }
+        createDropdown(
+            `${constraintId}_locs`,
+            constraint,
+            djangoTranslateLocations,
+            locations,
+            dialogObj[constraint].loc,
+            constraintContent,
+            true
+        );
+        
 
         // Initialize locs_lhs dropdown
         dialogObj[constraint].locs_lhs = dialogObj[constraint].locs_lhs || "";
-        if (!isCalliopeVersionSeven(calliope_version) || (dialogObj[constraint].slices?.locs_lhs && dialogObj[constraint].slices?.locs_lhs[0]?.expression)) {
-            createDropdown(
-                `${constraintId}_locs_lhs`,
-                `${djangoTranslateLocations} ${djangoTranslateLeftHand}`,
-                locations,
-                isCalliopeVersionSeven(calliope_version) ? dialogObj[constraint].slices.locs_lhs[0].expression : dialogObj[constraint].locs_lhs,
-                constraintContent,
-                true
-            );
-        }
-
+        createDropdown(
+            `${constraintId}_locs_lhs`,
+            constraint,
+            `${djangoTranslateLocations} ${djangoTranslateLeftHand}`,
+            locations,
+            dialogObj[constraint].locs_lhs,
+            constraintContent,
+            true
+        );
+        
+        
         // Initialize locs_rhs dropdown
         dialogObj[constraint].locs_rhs = dialogObj[constraint].locs_rhs || "";
-        if (!isCalliopeVersionSeven(calliope_version) || (dialogObj[constraint].slices?.locs_rhs && dialogObj[constraint].slices?.locs_rhs[0]?.expression)) {
-            createDropdown(
-                `${constraintId}_locs_rhs`,
-                `${djangoTranslateLocations} ${djangoTranslateRightHand}`,
-                locations,
-                isCalliopeVersionSeven(calliope_version) ? dialogObj[constraint].slices.locs_rhs[0].expression : dialogObj[constraint].locs_rhs,
-                constraintContent,
-                true
-            );
-        }
+        createDropdown(
+            `${constraintId}_locs_rhs`,
+            constraint,
+            `${djangoTranslateLocations} ${djangoTranslateRightHand}`,
+            locations,
+            dialogObj[constraint].locs_rhs,
+            constraintContent,
+            true
+        );
+        
 
         // Show or hide locs dropdowns based on conditions specified
         if (!(dialogObj[constraint].locs_rhs && dialogObj[constraint].locs_lhs && dialogObj[constraint].locs)) {
@@ -544,11 +585,11 @@ function renderGroupConstraintTechsAndLocs(constraint, constraintId, constraintC
     
 }
 
-function createDropdown(id, label, options, selectedValues, constraintContent, isMultiSelect) {
+function createDropdown(id, constraint, label, options, selectedValues, constraintContent, isMultiSelect) {
     let dropdownHtml = `
         <div id="${id}_container" class="input-wrapper single">
             <label data-toggle="tooltip" data-placement="bottom" data-original-title="Optionally enter ${label}."><b>${label}</b></label><br>
-            <select id="${id}" name="${label}"></select>
+            <select id="${id}" name="${constraint}"></select>
         </div>
     `;
 
@@ -556,13 +597,13 @@ function createDropdown(id, label, options, selectedValues, constraintContent, i
         dropdownHtml = `
             <div id="${id}_container" class="input-wrapper">
                 <label data-toggle="tooltip" data-placement="bottom" data-original-title="Optionally enter ${label}."><b>${label}</b></label><br>
-                <select id="${id}" name="${label}" multiple searchable></select>
+                <select id="${id}" name="${constraint}" data-label="${label}" multiple searchable></select>
             </div>
         `;
     }
 
     if (!isMultiSelect) { 
-        $(`#${id}`).append(`<option value=""></option>`);
+        $(`#${id}`).append(selectedValues && selectedValues.length > 0 ? `<option value=""></option>` : `<option selected value=""></option>`);
     }
 
     $(constraintContent).append(dropdownHtml);
@@ -582,7 +623,11 @@ function createDropdown(id, label, options, selectedValues, constraintContent, i
 
     if (!isCalliopeVersionSeven(calliope_version)) {
         $(`#${id}`).on('change', function () {
-            updateDialogObject();
+            convertToJSON();
+        });
+    } else {
+        $(`#${id}`).on('change', function () {
+           dialogObj[$(this).attr('name')].slices[$(this).attr('data-label')][0].expression = $(this).val();
         });
     }
 
@@ -632,7 +677,7 @@ function updateConstraintTypes(constraint, constraintId, constraintContent) {
                 }
 
                 $("#" + constraintId + fieldKey + "-key").on('change', function () {
-                    updateDialogObject();
+                    convertToJSON();
                 });
 
                 $(constraintFields).append( "<label><b>" + djangoTranslateValue + " </b></label>");
@@ -642,7 +687,7 @@ function updateConstraintTypes(constraint, constraintId, constraintContent) {
                 $(constraintFields).append( "<input id='" + constraintId + fieldKey + "-val' name='dialogObj[constraint][fieldKey]' class='form-control smol' placeholder='' value='" + dialogObj[constraint][fieldKey] + "'></input><br><br>" );
             }
             $("#" + constraintId + fieldKey + "-val").on('change', function () {
-                updateDialogObject();
+                convertToJSON();
             });
         }
     });
@@ -770,23 +815,27 @@ function activate_scenario_settings() {
             getModelCarriers();
             if (isCalliopeVersionSeven(calliope_version)) {
                 getAdminGroupConstraints();
-                $('#new_group_constraint_btn').val('+ Group Constraint');
-                $('#new_group_constraint_name').attr('placeholder', 'Group Constraint Name');
-                var dropdownHtml = `
-                    <div class="constraint-key-value">
-                        <label><b>Group Constraint</b></label>
-                        <select class="form-control smol" id="new_group_constraint_dropdown">
-                        </select>
-                    </div>
-                    <br>
-                `;
+            
+                if (initialDialogOpen) {
+                    $('#new_group_constraint_btn').val('+ Group Constraint');
+                    $('#new_group_constraint_name').attr('placeholder', 'Group Constraint Name');
+                    var dropdownHtml = `
+                        <div class="constraint-key-value">
+                            <label><b>Group Constraint</b></label>
+                            <select class="form-control smol" id="new_group_constraint_dropdown">
+                            </select>
+                        </div>
+                        <br>
+                    `;
 
-                $('#name-input').after(dropdownHtml);
+                    $('#name-input').after(dropdownHtml);
 
-                $('#new_group_constraint_dropdown').append('<option selected value=""></option>');
-                for (var gc in admin_group_constraints) {
-                    $('#new_group_constraint_dropdown').append('<option value="' + admin_group_constraints[gc].id + '">' + admin_group_constraints[gc].pretty_name + '</option>');
+                    $('#new_group_constraint_dropdown').append('<option selected value=""></option>');
+                    for (var gc in admin_group_constraints) {
+                        $('#new_group_constraint_dropdown').append('<option value="' + admin_group_constraints[gc].id + '">' + admin_group_constraints[gc].pretty_name + '</option>');
+                    }
                 }
+                initialDialogOpen = false;
 
                 $("#new_group_constraint_dropdown").on("change", function() {
                     handleInputOrDropdownChange();
@@ -813,8 +862,8 @@ function activate_scenario_settings() {
         });
 
         $('#tab2').click(function(){
-            updateDialogObject();
-            $('#JSONPreview').text(JSON.stringify(dialogObj, undefined, 2));
+            let tempDialogObj = convertToJSON();
+            $('#JSONPreview').text(JSON.stringify(tempDialogObj, undefined, 2));
         });
 
 	});
@@ -919,8 +968,8 @@ function activate_scenario_settings() {
     }
 
     $('#settings_import_data').on('click', function() {
-        updateDialogObject();
-        $('textarea[name="edit' + dialogInputId + '"]').text(JSON.stringify(dialogObj, undefined, 2));
+        let tempDialogObj = convertToJSON();
+        $('textarea[name="edit' + dialogInputId + '"]').text(JSON.stringify(tempDialogObj, undefined, 2));
         $('#scenario_constraints_json_form').hide();
         $('#modal_scenario_settings').show();
 	});
@@ -952,32 +1001,42 @@ function activate_scenario_settings() {
     $('#new_group_constraint_btn').on('click', function() {
         var newGroupConstraint = $('#new_group_constraint_name').val().trim();
 
+        let groupConstraintId;
+        if (isCalliopeVersionSeven(calliope_version)) {
+            if (!$('#new_group_constraint_dropdown').val() || $('#new_group_constraint_dropdown').val().length <= 0) {
+                return;
+            }
+            groupConstraintId = $('#new_group_constraint_dropdown').val();
+            newGroupConstraint = groupConstraintId + '||' + newGroupConstraint
+        }
+
         if (newGroupConstraint.length > 0) {
             dialogObj[newGroupConstraint] = {};
 
             if (isCalliopeVersionSeven(calliope_version)) {
-                if (!$('#new_group_constraint_dropdown').val() || $('#new_group_constraint_dropdown').val().length <= 0) {
-                    return;
-                }
-                let groupConstraintId = $('#new_group_constraint_dropdown').val();
                 let adminGroupConstraint = admin_group_constraints.find(obj => obj.id === Number(groupConstraintId));
 
-                // Construct object correctly 
-                dialogObj[newGroupConstraint].id = adminGroupConstraint.id;
-                dialogObj[newGroupConstraint].where = adminGroupConstraint.where;
+                // Construct object
+                dialogObj[newGroupConstraint].id = groupConstraintId;
+
+                if (adminGroupConstraint.where) {
+                    dialogObj[newGroupConstraint].where = adminGroupConstraint.where;
+                }
                 dialogObj[newGroupConstraint].description = adminGroupConstraint.description;
-                dialogObj[newGroupConstraint].equations = adminGroupConstraint.equations;
+                dialogObj[newGroupConstraint].equations = structuredClone(adminGroupConstraint.equations);
                 dialogObj[newGroupConstraint].slices = dialogObj[newGroupConstraint].slices ? dialogObj[newGroupConstraint].slices : {};
                 Object.entries(adminGroupConstraint.slices).forEach(([key, value]) => {
-                    dialogObj[newGroupConstraint].slices[key] = value.yaml;
+                    dialogObj[newGroupConstraint].slices[key] = structuredClone(value.yaml);
                 });
                 dialogObj[newGroupConstraint].sub_expression = dialogObj[newGroupConstraint].sub_expression ? dialogObj[newGroupConstraint].sub_expression : {};
                 Object.entries(adminGroupConstraint.sub_expression).forEach(([key, value]) => {
                     if (value.show) {
-                        dialogObj[newGroupConstraint].sub_expression[key] = value.yaml;
+                        dialogObj[newGroupConstraint].sub_expression[key] = structuredClone(value.yaml);
                     }
                 });
-                dialogObj[newGroupConstraint].for_each = adminGroupConstraint.for_each;
+                if (adminGroupConstraint.for_each) {
+                    dialogObj[newGroupConstraint].for_each = structuredClone(adminGroupConstraint.for_each);
+                }
    
                 $('#new_group_constraint_dropdown').val("");
             }
