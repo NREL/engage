@@ -270,16 +270,22 @@ function convertToJSON() {
 
             // Remove values not inputted 
             Object.entries(tempDialogObj[constraint].sub_expression).forEach(([key, value]) => {
-                if (tempDialogObj[constraint].sub_expression[key][0].expression == [] || tempDialogObj[constraint].sub_expression[key][0].expression == "") {
+                let tempSubExpression = tempDialogObj[constraint].sub_expression[key][0].expression;
+                if (tempSubExpression == [] || tempSubExpression == "") {
                     delete tempDialogObj[constraint].sub_expression[key];
-                } 
+                } else {
+                    tempDialogObj[constraint].sub_expression[key][0].expression = Number(tempSubExpression);
+                }
             });
 
             Object.entries(tempDialogObj[constraint].slices).forEach(([key, value]) => {
-                if (tempDialogObj[constraint].slices[key][0].expression == [] || tempDialogObj[constraint].slices[key][0].expression == "") {
+                let tempSlice = tempDialogObj[constraint].slices[key][0].expression;
+                if (tempSlice == [] || tempSlice == "") {
                     delete tempDialogObj[constraint].slices[key];
                     let toDelete = `||${key}||`
                     tempEquations = tempEquations.replace(toDelete, "");
+                } else {
+                    tempDialogObj[constraint].slices[key][0].expression = `[${tempSlice.toString()}]`; 
                 }
             });
 
