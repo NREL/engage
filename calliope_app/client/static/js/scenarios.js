@@ -377,9 +377,10 @@ function updateDialogGroupConstraints(initialLoad) {
     }
 
     Object.keys(dialogObj).forEach(constraint => {
-        let groupConstraintPrettyName = constraint.split("||")[1] ? constraint.split("||")[1] : "Error: Misformatted string";
+        let groupConstraintPrettyName = isCalliopeVersionSeven(calliope_version) && constraint.split("||")[1] ? constraint.split("||")[1] : constraint;
         let constraintId = safeHTMLId(constraint);
-        let adminGroupConstraint = admin_group_constraints.find(obj => obj.id === Number(dialogObj[constraint].id));
+        let adminGroupConstraint = isCalliopeVersionSeven(calliope_version) ? admin_group_constraints.find(obj => obj.id === Number(dialogObj[constraint].id)) : null;
+
         $('#dialog-inputs').append( "<div id='" + constraintId + "' style='padding-top:1.5em'></div>");
         $("#" + constraintId).append( "<div class='cateogry-expander'><a><h5 class='constraint-name'><div style='float: right;'><i class='fas fa-caret-down'></i><i class='fas fa-caret-up' style='display: none;'></i>" + groupConstraintPrettyName
         + "</div></h5></a></div>");
@@ -471,97 +472,78 @@ function renderGroupConstraintDropdowns(constraint, constraintId, constraintCont
         });
     } else {
         // Calliope 6
+        // Define dropdown configurations in an array of objects
+        const dropdownConfigs = [
+            {
+                suffix: 'techs',
+                label: djangoTranslateTechnologies,
+                dataSource: technologies,
+                selectionKey: 'techs'
+            },
+            {
+                suffix: 'techs_lhs',
+                label: `${djangoTranslateTechnologies} ${djangoTranslateLeftHand}`,
+                dataSource: technologies,
+                selectionKey: 'techs_lhs'
+            },
+            {
+                suffix: 'techs_rhs',
+                label: `${djangoTranslateTechnologies} ${djangoTranslateRightHand}`,
+                dataSource: technologies,
+                selectionKey: 'techs_rhs'
+            },
+            {
+                suffix: 'locs',
+                label: djangoTranslateLocations,
+                dataSource: locations,
+                selectionKey: 'locs'
+            },
+            {
+                suffix: 'locs_lhs',
+                label: `${djangoTranslateLocations} ${djangoTranslateLeftHand}`,
+                dataSource: locations,
+                selectionKey: 'locs_lhs'
+            },
+            {
+                suffix: 'locs_rhs',
+                label: `${djangoTranslateLocations} ${djangoTranslateRightHand}`,
+                dataSource: locations,
+                selectionKey: 'locs_rhs'
+            }
+        ];
 
-        // Initialize techs dropdown
-        dialogObj[constraint].techs = dialogObj[constraint].techs || "";
-        createDropdown(
-            `${constraintId}_techs`,
-            constraint,
-            djangoTranslateTechnologies,
-            technologies,
-            dialogObj[constraint].techs,
-            constraintContent,
-            true
-        );
+        dropdownConfigs.forEach(config => {
+            if (config.selectionKey == 'locs') {
+                // Show or hide techs dropdowns based on conditions
+                if (!(dialogObj[constraint].techs_rhs && dialogObj[constraint].techs_lhs && dialogObj[constraint].techs)) {
+                    $(constraintContent).append(`<br><span>${djangoTranslateShowLeftRight} ${djangoTranslateTechnologies} </span>
+                        <label class="switch">
+                            <input id="${constraintId}_toggle_techs" type="checkbox"><span class="slider round"></span>
+                        </label><br>`
+                    );
+                    $(`#${constraintId}_toggle_techs`).click(function() {
+                        $(`#${constraintId}_techs_container`).toggle();
+                        $(`#${constraintId}_techs_lhs_container`).toggle();
+                        $(`#${constraintId}_techs_rhs_container`).toggle();
+                    });
+                }
+            }
 
-        // Initialize techs_lhs dropdown
-        dialogObj[constraint].techs_lhs = dialogObj[constraint].techs_lhs || "";
-        createDropdown(
-            `${constraintId}_techs_lhs`,
-            constraint,
-            `${djangoTranslateTechnologies} ${djangoTranslateLeftHand}`,
-            technologies,
-            dialogObj[constraint].techs_lhs,
-            constraintContent,
-            true
-        );
-        
-        // Initialize techs_rhs dropdown
-        dialogObj[constraint].techs_rhs = dialogObj[constraint].techs_rhs || "";
-        createDropdown(
-            `${constraintId}_techs_rhs`,
-            constraint,
-            `${djangoTranslateTechnologies} ${djangoTranslateRightHand}`,
-            technologies,
-            dialogObj[constraint].techs_rhs,
-            constraintContent,
-            true
-        );
-        
+            // Initialize the selection property in dialogObj if it doesn't exist
+            dialogObj[constraint][config.selectionKey] = dialogObj[constraint][config.selectionKey] || "";
 
-        // Show or hide techs dropdowns based on conditions
-        if (!(dialogObj[constraint].techs_rhs && dialogObj[constraint].techs_lhs && dialogObj[constraint].techs)) {
-            $(constraintContent).append(`<br><span>${djangoTranslateShowLeftRight} ${djangoTranslateTechnologies} </span>
-                <label class="switch">
-                    <input id="${constraintId}_toggle_techs" type="checkbox"><span class="slider round"></span>
-                </label><br>`
+
+            createDropdown(
+                `${constraintId}_${config.suffix}`,
+                constraint,
+                config.label,
+                config.dataSource,
+                dialogObj[constraint][config.selectionKey],
+                constraintContent,
+                true
             );
-            $(`#${constraintId}_toggle_techs`).click(function() {
-                $(`#${constraintId}_techs_container`).toggle();
-                $(`#${constraintId}_techs_lhs_container`).toggle();
-                $(`#${constraintId}_techs_rhs_container`).toggle();
-            });
-        }
-
-        // Initialize locs dropdown
-        dialogObj[constraint].locs = dialogObj[constraint].locs || "";
-        createDropdown(
-            `${constraintId}_locs`,
-            constraint,
-            djangoTranslateLocations,
-            locations,
-            dialogObj[constraint].loc,
-            constraintContent,
-            true
-        );
+        });
         
-
-        // Initialize locs_lhs dropdown
-        dialogObj[constraint].locs_lhs = dialogObj[constraint].locs_lhs || "";
-        createDropdown(
-            `${constraintId}_locs_lhs`,
-            constraint,
-            `${djangoTranslateLocations} ${djangoTranslateLeftHand}`,
-            locations,
-            dialogObj[constraint].locs_lhs,
-            constraintContent,
-            true
-        );
-        
-        
-        // Initialize locs_rhs dropdown
-        dialogObj[constraint].locs_rhs = dialogObj[constraint].locs_rhs || "";
-        createDropdown(
-            `${constraintId}_locs_rhs`,
-            constraint,
-            `${djangoTranslateLocations} ${djangoTranslateRightHand}`,
-            locations,
-            dialogObj[constraint].locs_rhs,
-            constraintContent,
-            true
-        );
-        
-
         // Show or hide locs dropdowns based on conditions specified
         if (!(dialogObj[constraint].locs_rhs && dialogObj[constraint].locs_lhs && dialogObj[constraint].locs)) {
             $(constraintContent).append(`<br><span>${djangoTranslateShowLeftRight} ${djangoTranslateLocations} </span>
