@@ -589,7 +589,7 @@ function createDropdown(id, constraint, label, options, selectedValues, constrai
     let dropdownHtml = `
         <div id="${id}_container" class="input-wrapper single">
             <label data-toggle="tooltip" data-placement="bottom" data-original-title="Optionally enter ${label}."><b>${label}</b></label><br>
-            <select id="${id}" name="${constraint}"></select>
+            <select id="${id}" name="${constraint}" data-label="${label}"></select>
         </div>
     `;
 
