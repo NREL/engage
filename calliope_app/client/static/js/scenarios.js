@@ -493,7 +493,7 @@ function renderGroupConstraintDropdowns(constraint, constraintId, constraintCont
         dropdownConfigs.forEach(config => {
             if (config.key == 'locs') {
                 // Show or hide techs dropdowns based on conditions
-                if (!(dialogObj[constraint].techs_rhs && dialogObj[constraint].techs_lhs && dialogObj[constraint].techs)) {
+                if (!((dialogObj[constraint].techs_rhs || dialogObj[constraint].techs_lhs) && dialogObj[constraint].techs)) {
                     $(constraintContent).append(`<br><span>${djangoTranslateShowLeftRight} ${djangoTranslateTechnologies} </span>
                         <label class="switch">
                             <input id="${constraintId}_toggle_techs" type="checkbox"><span class="slider round"></span>
@@ -523,7 +523,7 @@ function renderGroupConstraintDropdowns(constraint, constraintId, constraintCont
         });
         
         // Show or hide locs dropdowns based on conditions specified
-        if (!(dialogObj[constraint].locs_rhs && dialogObj[constraint].locs_lhs && dialogObj[constraint].locs)) {
+        if (!(dialogObj[constraint].locs_rhs || dialogObj[constraint].locs_lhs) || !dialogObj[constraint].locs) {
             $(constraintContent).append(`<br><span>${djangoTranslateShowLeftRight} ${djangoTranslateLocations} </span>
                 <label class="switch">
                     <input id="${constraintId}_toggle_locs" type="checkbox"><span class="slider round"></span>
@@ -540,12 +540,18 @@ function renderGroupConstraintDropdowns(constraint, constraintId, constraintCont
         if (!dialogObj[constraint].techs_rhs && !dialogObj[constraint].techs_lhs) {
             $(`#${constraintId}_techs_lhs_container`).hide();
             $(`#${constraintId}_techs_rhs_container`).hide();
+        } else if (!dialogObj[constraint].techs) {
+            $(`#${constraintId}_techs_container`).hide();
+            $(`#${constraintId}_toggle_techs`).prop('checked', true);
         }
 
         // Initial visibility for locs dropdowns
         if (!dialogObj[constraint].locs_rhs && !dialogObj[constraint].locs_lhs) {
             $(`#${constraintId}_locs_lhs_container`).hide();
             $(`#${constraintId}_locs_rhs_container`).hide();
+        } else if (!dialogObj[constraint].locs) {
+            $(`#${constraintId}_locs_container`).hide();
+            $(`#${constraintId}_toggle_locs`).prop('checked', true);
         }
     }
     
