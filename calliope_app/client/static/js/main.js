@@ -6,7 +6,7 @@ var marker_clicked = false,
 	markers = [],
 	placeholder_text;
 
-calliope_version="7.0.0"
+calliope_version="0.7.0"
 
 $(function() {
 		$(".alert-info,.alert-success").fadeTo(3000, 500).slideUp(500, function() {
@@ -1329,10 +1329,10 @@ function getCookie(cname) {
 }
 
 const isCalliopeVersionSeven = (version) => {
-    const targetVersion = '7.0.0';
+    const targetVersion = '0.7.0';
     const [major, minor, patch] = version.split('.').map(Number);
     const [targetMajor, targetMinor, targetPatch] = targetVersion.split('.').map(Number);
-    return major === targetMajor;
+    return major === targetMajor && minor === targetMinor;
 };
 
 function formatNumber(x, commas) {
