@@ -255,7 +255,7 @@ def loc_techs_view(request, model_uuid):
 
 
 # ------ Scenarios
-
+@login_required
 def admin_group_constraints(request):
     """
     Group Constraints admin lookup table
