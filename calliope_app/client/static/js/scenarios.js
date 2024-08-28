@@ -442,7 +442,7 @@ function renderGroupConstraintDropdowns(constraint, constraintId, constraintCont
                 } else if (sliceDim == "carriers") {
                     sliceOptions = carriers;
                 } else if (sliceDim == "costs") {
-                    sliceOptions = ["co2", "ch4", "co2e", "n2o", "monetary"];
+                    sliceOptions = [{name: "co2"}, {name: "ch4"}, {name: "co2e"}, {name: "n2o"}, {name: "monetary"}];
                 }
                 createDropdown(
                     key,
@@ -584,7 +584,7 @@ function createDropdown(key, constraint, label, options, selectedValues, constra
 
         if (isMultiSelect) { 
             optionValue = option.tag ? `${option.name}-${option.tag}` : option.name;
-            optionText = option.tag ? `${option.pretty_name} [${option.pretty_tag}]` : option.pretty_name;
+            optionText = option.tag ? `${option.pretty_name} [${option.pretty_tag}]` : (option.pretty_name ? option.pretty_name : option.name);
         } 
         isSelected = selectedValues.includes(optionValue) ? ' selected' : '';
         
@@ -637,7 +637,7 @@ function renderConstraintTypes(constraint, constraintId, constraintContent) {
                 const key = Object.keys(dialogObj[constraint][fieldKey]).length !== 0 ? Object.keys(dialogObj[constraint][fieldKey])[0] : "";
                 const val = key ? dialogObj[constraint][fieldKey][Object.keys(dialogObj[constraint][fieldKey])[0]] : "";
                 $(constraintFields).append( "<label><b>" + djangoTranslateKey + "</b></label>");
-                let dropdownArray = constraints[fieldKey] == 'carriers' ? carriers : ["co2", "ch4", "co2e", "n2o", "monetary"];
+                let dropdownArray = constraints[fieldKey] == 'carriers' ? carriers.map(obj => obj.name) : ["co2", "ch4", "co2e", "n2o", "monetary"];
                 if (key.length > 0 && dropdownArray.indexOf(key) === -1) {
                     dropdownArray.push(key);
                 }
@@ -859,13 +859,14 @@ function activate_scenario_settings() {
                         tempDialogObj[constraint].description = adminGroupConstraint.description;
                         tempDialogObj[constraint].equations = structuredClone(adminGroupConstraint.equations);
             
-                        // Change "[]" to a real array for each slice expression if it exists
+                        // Change "[VALUE]" to a real array for each slice expression if it exists
                         Object.entries(adminGroupConstraint.slices).forEach(([key, value]) => {
                             if (!tempDialogObj[constraint].slices[key]) {
                                 tempDialogObj[constraint].slices[key] = structuredClone(value.yaml);
+                                tempDialogObj[constraint].slices[key][0].expression = [];
                             } else {
                                 let tempSlice = tempDialogObj[constraint].slices[key][0].expression;
-                                tempDialogObj[constraint].slices[key][0].expression = Array.isArray(value.yaml[0].expression) ? tempSlice.slice(1, -1).split(',') : tempSlice.slice(1, -1);
+                                tempDialogObj[constraint].slices[key][0].expression = value.yaml[0].expression == "[VALUE]" ? tempSlice.slice(1, -1).split(',') : tempSlice.slice(1, -1);
                             }
                         });
 
@@ -873,6 +874,7 @@ function activate_scenario_settings() {
                             if (value.show) {
                                 if (!tempDialogObj[constraint].sub_expression[key]) {
                                     tempDialogObj[constraint].sub_expression[key] = structuredClone(value.yaml);
+                                    tempDialogObj[constraint].sub_expression[key][0].expression = value.yaml[0].expression == "[VALUE]" ? [] : "";
                                 } else {
                                     let tempSubExpression = tempDialogObj[constraint].sub_expression[key][0].expression;
                                     tempDialogObj[constraint].sub_expression[key][0].expression = Number(tempSubExpression);
@@ -1041,11 +1043,13 @@ function activate_scenario_settings() {
                 dialogObj[newGroupConstraint].slices = dialogObj[newGroupConstraint].slices ? dialogObj[newGroupConstraint].slices : {};
                 Object.entries(adminGroupConstraint.slices).forEach(([key, value]) => {
                     dialogObj[newGroupConstraint].slices[key] = structuredClone(value.yaml);
+                    dialogObj[newGroupConstraint].slices[key][0].expression = [];
                 });
                 dialogObj[newGroupConstraint].sub_expression = dialogObj[newGroupConstraint].sub_expression ? dialogObj[newGroupConstraint].sub_expression : {};
                 Object.entries(adminGroupConstraint.sub_expression).forEach(([key, value]) => {
                     if (value.show) {
                         dialogObj[newGroupConstraint].sub_expression[key] = structuredClone(value.yaml);
+                        dialogObj[newGroupConstraint].sub_expression[key][0].expression = "";
                     }
                 });
                 if (adminGroupConstraint.for_each) {
@@ -1092,7 +1096,7 @@ function getModelCarriers() {
             },
             dataType: 'json',
             success: function (data) {
-                carriers = data.carriers ? data.carriers.map(obj => obj.name) : [];
+                carriers = data.carriers;
                 locations = data.locations;
                 technologies = data.technologies;
                 resolve(); 

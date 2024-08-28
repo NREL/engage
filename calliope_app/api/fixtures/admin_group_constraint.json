@@ -16,7 +16,7 @@
           "techs_lhs": {
             "yaml": [
               {
-                "expression": []
+                "expression": "[VALUE]"
               }
             ],
             "dim": "techs"
@@ -24,7 +24,7 @@
           "techs_rhs": {
             "yaml": [
               {
-                "expression": []
+                "expression": "[VALUE]"
               }
             ],
             "dim": "techs"
@@ -32,7 +32,7 @@
           "locs_lhs": {
             "yaml": [
               {
-                "expression": []
+                "expression": "[VALUE]"
               }
             ],
             "dim": "locs"
@@ -40,7 +40,7 @@
           "locs_rhs": {
             "yaml": [
               {
-                "expression": []
+                "expression": "[VALUE]"
               }
             ],
             "dim": "locs"
@@ -48,7 +48,7 @@
           "carriers_lhs": {
             "yaml": [
               {
-                "expression": ""
+                "expression": "[VALUE]"
               }
             ],
             "dim": "carriers"
@@ -56,7 +56,7 @@
           "carriers_rhs": {
             "yaml": [
               {
-                "expression": ""
+                "expression": "[VALUE]"
               }
             ],
             "dim": "carriers"
@@ -64,7 +64,7 @@
           "costs": {
             "yaml": [
               {
-                "expression": ""
+                "expression": "[VALUE]"
               }
             ],
             "dim": "costs"
@@ -82,7 +82,7 @@
           "value_1": {
             "yaml": [
               {
-                "expression": ""
+                "expression": "VALUE"
               }
             ],
             "show": true
@@ -90,7 +90,7 @@
           "value_2": {
             "yaml": [
               {
-                "expression": ""
+                "expression": "VALUE"
               }
             ],
             "show": true
