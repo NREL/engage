@@ -1,6 +1,6 @@
 from django.contrib.auth import views as auth_views
 from django.conf import settings
-from django.conf.urls import url
+from django.urls import re_path
 from django.urls import path
 
 from account import views
@@ -26,8 +26,8 @@ urlpatterns = [
         views.set_timezone,
         name='set_timezone'
     ),
-    
-    url(
+
+    re_path(
         r'^password_reset/$',
         auth_views.PasswordResetView.as_view(
             template_name='registration/pw_reset_form.html',
@@ -37,14 +37,14 @@ urlpatterns = [
         ),
         name='password_reset'
     ),
-    url(
+    re_path(
         r'^password_reset/done/$',
         auth_views.PasswordResetDoneView.as_view(
             template_name='registration/pw_reset_done.html'
         ),
         name='password_reset_done'
     ),
-    url(
+    re_path(
         r'^reset/\
         (?P<uidb64>[0-9A-Za-z_\-]+)/\
         (?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,40})/$',
@@ -53,7 +53,7 @@ urlpatterns = [
         ),
         name='password_reset_confirm'
     ),
-    url(
+    re_path(
         r'^reset/done/$',
         auth_views.PasswordResetCompleteView.as_view(
             template_name='registration/pw_reset_complete.html'
