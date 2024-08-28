@@ -360,20 +360,21 @@ function renderDialogGroupConstraints(initialLoad) {
         let constraintId = safeHTMLId(constraint);
         let adminGroupConstraint = isCalliopeVersionSeven(calliope_version) ? admin_group_constraints.find(obj => obj.id === Number(dialogObj[constraint].id)) : null;
 
-        $('#dialog-inputs').append( "<div id='" + constraintId + "' style='padding-top:1.5em'></div>");
-        $("#" + constraintId).append( "<div class='cateogry-expander'><a><h5 class='constraint-name'><div style='float: right;'><i class='fas fa-caret-down'></i><i class='fas fa-caret-up' style='display: none;'></i>" + groupConstraintPrettyName
-        + "</div></h5></a></div>");
+        $('#dialog-inputs').append(`<div id='${constraintId}' style='padding-top:1.5em'></div>`);
+        $(`#${constraintId}`).append(`<div class='cateogry-expander'><a><h5 class='constraint-name'><div style='float: right;'><i class='fas fa-caret-down'></i><i class='fas fa-caret-up' style='display: none;'></i>${groupConstraintPrettyName}</div></h5></a></div>`);
+        $(`#${constraintId}`).append(`<div id="${constraintId}-content" name="${constraint}" class="col-md-12"></div>`);
+        let constraintContent = `#${constraintId}-content`;
+        $(constraintContent).append(`<div id="${constraintId}-header" class="col-md-12 row"></div>`);
+        $(`#${constraintId}-header`).append(`<div class="col-md-10"><br><span class="group-constraint-desc">${adminGroupConstraint.description}</span></div>`);
 
-        $(`#${constraintId}`).append(`<div id="${constraintId}-content" name="${constraint}" class=""></div>`);
-        let constraintContent = "#" + constraintId + "-content";
-        $(constraintContent).append(`
-            <button id="delete_group_constraint_btn_${constraintId}" 
+        $(`#${constraintId}-header`).append(`
+            <div class="col-md-2"><button id="delete_group_constraint_btn_${constraintId}" 
                     name="${constraint}" 
                     type="button" 
                     class="btn btn-sm btn-outline-danger group-constraint-delete" 
                     title="Delete constraint">
                 <i class="fas fa-trash"></i>
-            </button>
+            </button></div>
         `);
         $("#delete_group_constraint_btn_" + constraintId).on('click', function() {
             delete dialogObj[$(this).attr('name')];
