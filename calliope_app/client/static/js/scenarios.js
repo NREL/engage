@@ -268,16 +268,6 @@ function convertToJSON() {
             let adminGroupConstraint = admin_group_constraints.find(obj => obj.id === Number(groupConstraintId));
             let tempEquations = adminGroupConstraint.equations[0].expression;
 
-            // Remove values not inputted 
-            Object.entries(tempDialogObj[constraint].sub_expression).forEach(([key, value]) => {
-                let tempSubExpression = tempDialogObj[constraint].sub_expression[key][0].expression;
-                if (tempSubExpression == [] || tempSubExpression == "") {
-                    delete tempDialogObj[constraint].sub_expression[key];
-                } else {
-                    tempDialogObj[constraint].sub_expression[key][0].expression = Number(tempSubExpression) ? Number(tempSubExpression) : 0;
-                }
-            });
-
             Object.entries(tempDialogObj[constraint].slices).forEach(([key, value]) => {
                 let tempSlice = tempDialogObj[constraint].slices[key][0].expression;
                 if (tempSlice == [] || tempSlice == "") {
@@ -289,12 +279,36 @@ function convertToJSON() {
                 }
             });
 
-            // Throw error if values are not filled out and at least one dropdown?
+            Object.entries(adminGroupConstraint.sub_expression).forEach(([key, value]) => {
+                if (adminGroupConstraint.sub_expression[key].show) {
+                    let tempSubExpression = tempDialogObj[constraint]?.sub_expression[key][0]?.expression;
+                    if (tempSubExpression == [] || tempSubExpression == "") {
+                        delete tempDialogObj[constraint].sub_expression[key];
+                    } else {
+                        tempDialogObj[constraint].sub_expression[key][0].expression = Number(tempSubExpression) ? Number(tempSubExpression) : 0;
+                    }
+                } else {
+                    tempDialogObj[constraint].sub_expression[key] = structuredClone(adminGroupConstraint.sub_expression[key].yaml);
+                } 
+                if (tempDialogObj[constraint].sub_expression[key]) {
+                    let tempSubExpression = tempDialogObj[constraint]?.sub_expression[key][0]?.expression;
+
+                    const sliceKeys = tempSubExpression.split("[")[1].split("]")[0].split("||").filter(key => key !== "");
+
+                    sliceKeys.forEach((sliceKey) => {
+                        if (!(sliceKey in tempDialogObj[constraint].slices)) {
+                            let toDelete = `||${sliceKey}||`;
+                            tempSubExpression = tempSubExpression.replace(toDelete, "");
+                        }
+                    });
+
+                    tempSubExpression = tempSubExpression.replaceAll("||||", ",").replaceAll("||", "").replace("[]", "");
+                    tempDialogObj[constraint].sub_expression[key][0].expression = tempSubExpression;
+                }
+            });
 
             // Update equation
-            tempEquations = tempEquations.replaceAll("||||", ",");
-            tempEquations = tempEquations.replaceAll("||", "");
-            tempEquations = tempEquations.replace("[]", "");
+            tempEquations = tempEquations.replaceAll("||||", ",").replaceAll("||", "").replace("[]", "");
             tempDialogObj[constraint].equations[0].expression = tempEquations;
 
             delete tempDialogObj[constraint].id;
