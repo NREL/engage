@@ -424,8 +424,20 @@ function renderDialogGroupConstraints(initialLoad) {
 function renderSubExpressions(constraint, constraintId, constraintContent, adminGroupConstraint) {
     Object.entries(adminGroupConstraint.sub_expression).forEach(([key, value]) => {
         if (value.show) {
-            $(constraintContent).append(`<label><b>${key}</b></label>`);
-            const input = $(`<input type='number' id='${constraintId}${key}-val' name='${constraint}' data-key=${key} class='form-control smol' placeholder='' value='${dialogObj[constraint].sub_expression[key][0]?.expression || ""}' step='1'></input><br><br>`);
+            $(constraintContent).append(`${value.required ? "<span class='req-input'>* </span>" : ""}<label><b>${key}</b></label>`);
+            const input = $(`
+                <input 
+                    type='number' 
+                    id='${constraintId}${key}-val' 
+                    name='${constraint}' 
+                    data-key=${key} 
+                    class='form-control smol' 
+                    value='${dialogObj[constraint].sub_expression[key][0]?.expression || ""}' 
+                    step='1'
+                >
+                </input>
+                <br><br>
+            `);
             $(constraintContent).append(input);
 
             $(`#${constraintId}${key}-val`).on('input', function() {

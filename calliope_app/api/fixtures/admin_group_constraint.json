@@ -85,7 +85,8 @@
                 "expression": "VALUE"
               }
             ],
-            "show": true
+            "show": true,
+            "required": true
           },
           "value_2": {
             "yaml": [
@@ -93,8 +94,83 @@
                 "expression": "VALUE"
               }
             ],
-            "show": true
+            "show": true,
+            "required": true
           }
+        }
+      }
+    },
+    {
+        "pk": 2,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "demand_share_min",
+          "pretty_name": "Demand Share Min",
+          "description": "Minimum share of carrier demand met from a set of technologies across a set of locations, on average over the entire model period.",
+          "equations": [
+              {
+                "expression": "sum(flow_out_non_transmission_techs[||locs_lhs||||techs_rhs||||techs_lhs||||techs_rhs||||carriers_lhs||||carriers_rhs||], over=[nodes, techs, timesteps, carriers]) <= $value_1"
+              }
+          ],
+          "slices": {
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
         }
       }
     }
