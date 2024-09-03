@@ -1,14 +1,177 @@
 [
-  {
-    "pk": 1,
-    "model": "api.group_constraint",
-    "fields": {
-        "name": "test_constraint",
-        "pretty_name": "Test Constraint",
-        "description": "Test Constraint Description",
-        "where": "storage_cap_max",
-        "equations": {"expression": "sum(flow_out[carriers=electricity, techs=$tech_ref]) <= flow_in[carriers=heat] * 0.6"},
-        "slices": {"tech_ref": "- expression: lookup_techs"}
+    {
+      "pk": 1,
+      "model": "api.group_constraint",
+      "fields": {
+        "name": "flow_max_share",
+        "pretty_name": "Flow Max Share",
+        "description": "Limit total combined technology annual energy production across all possible deployment sites.",
+        "where": "flow_max_share",
+        "equations": [
+            {
+              "expression": "sum(flow_out_non_transmission_techs[||techs_lhs||||carriers_lhs||], over=[nodes, techs, timesteps, carriers]) <= $total_carrier_flow_out"
+            }
+        ],
+        "slices": {
+          "techs_lhs": {
+            "yaml": [
+              {
+                "expression": "[VALUE]"
+              }
+            ],
+            "dim": "techs"
+          },
+          "techs_rhs": {
+            "yaml": [
+              {
+                "expression": "[VALUE]"
+              }
+            ],
+            "dim": "techs"
+          },
+          "locs_lhs": {
+            "yaml": [
+              {
+                "expression": "[VALUE]"
+              }
+            ],
+            "dim": "locs"
+          },
+          "locs_rhs": {
+            "yaml": [
+              {
+                "expression": "[VALUE]"
+              }
+            ],
+            "dim": "locs"
+          },
+          "carriers_lhs": {
+            "yaml": [
+              {
+                "expression": "[VALUE]"
+              }
+            ],
+            "dim": "carriers"
+          },
+          "carriers_rhs": {
+            "yaml": [
+              {
+                "expression": "[VALUE]"
+              }
+            ],
+            "dim": "carriers"
+          },
+          "costs": {
+            "yaml": [
+              {
+                "expression": "[VALUE]"
+              }
+            ],
+            "dim": "costs"
+          }
+        },
+        "sub_expression": {
+          "total_carrier_flow_out": {
+            "yaml": [
+              {
+                "expression": "sum(flow_out[||techs_rhs||||carriers_rhs||]) * $value_1"
+              }
+            ],
+            "show": false
+          },
+          "value_1": {
+            "yaml": [
+              {
+                "expression": "VALUE"
+              }
+            ],
+            "show": true,
+            "required": true
+          },
+          "value_2": {
+            "yaml": [
+              {
+                "expression": "VALUE"
+              }
+            ],
+            "show": true,
+            "required": true
+          }
+        }
+      }
+    },
+    {
+        "pk": 2,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "demand_share_min",
+          "pretty_name": "Demand Share Min",
+          "description": "Minimum share of carrier demand met from a set of technologies across a set of locations, on average over the entire model period.",
+          "equations": [
+              {
+                "expression": "sum(flow_out_non_transmission_techs[||locs_lhs||||techs_rhs||||techs_lhs||||techs_rhs||||carriers_lhs||||carriers_rhs||], over=[nodes, techs, timesteps, carriers]) <= $value_1"
+              }
+          ],
+          "slices": {
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+        }
+      }
     }
-  }
 ]

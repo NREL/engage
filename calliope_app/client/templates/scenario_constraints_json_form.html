@@ -27,7 +27,7 @@
     float: right
 }
 .group-constraint-delete {
-    margin-top: 10px;
+    margin-top: 20px;
     float: right
 }
 .constraint-key-value {
@@ -120,6 +120,10 @@ a {
     margin: 0px -15px;
 }
 
+.group-constraint-desc {
+    padding: 15px 5px 5px 5px;
+}
+
 #dialog-inputs .switch {
     margin-top: 10px;
 }
@@ -129,9 +133,16 @@ a {
 #dialog-inputs input:checked + .slider {
     background-color: #0a9e02;
 }
+.input-wrapper {
+    margin: 10px;
+}
+.req-input {
+    color: red;
+}
+
 </style>
 
-<form id="scenario_constraints_json_form" method="post" tabindex="-1" role="dialog"  onsubmit="return false;" aria-hidden="true">
+<form id="scenario_constraints_json_form" method="post" tabindex="-1" role="dialog"  onsubmit="return false;">
     <div class="modal-header">
         <h5 class="modal-title" id="scenarioSettingsModalTitle">{% trans "Constraint Group" %}</h5>
         <button type="button" class="close group-constraints-close" data-dismiss="modal" aria-label="Close" id="group-constraints-close">
@@ -148,9 +159,11 @@ a {
     </ul>
     <div class="tab-container" id="tab1C">
         <div class="form-group">
-            <p style="font-size:.8em">{% trans "Enter a custom name." %}</p>
-            <label><b>{% trans "Name" %}</b></label>
-            <input type="text" class="form-control smol" id="new_group_constraint_name" name="" placeholder="{% trans 'New Constraint Group Name' %}">
+            <p style="font-size:.8em">{% trans "Enter a custom name:" %}</p>
+            <div id="name-input" class="constraint-key-value">
+                <label><b>{% trans "Name" %}</b></label>
+                <input type="text" class="form-control smol" id="new_group_constraint_name" name="" placeholder="{% trans 'New Constraint Group Name' %}">
+            </div>
             <br>
             <input disabled id="new_group_constraint_btn" type="submit" class="btn btn-sm btn-success" name="" value="{% trans '+ Constraint Group' %}">
         </div>
