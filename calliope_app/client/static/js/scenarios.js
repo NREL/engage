@@ -281,17 +281,17 @@ function convertToJSON() {
 
             Object.entries(adminGroupConstraint.sub_expression).forEach(([key, value]) => {
                 if (adminGroupConstraint.sub_expression[key].show) {
-                    let tempSubExpression = tempDialogObj[constraint]?.sub_expression[key][0]?.expression;
+                    let tempSubExpression = tempDialogObj[constraint]?.sub_expressions[key][0]?.expression;
                     if (tempSubExpression == [] || tempSubExpression == "") {
-                        delete tempDialogObj[constraint].sub_expression[key];
+                        delete tempDialogObj[constraint].sub_expressions[key];
                     } else {
-                        tempDialogObj[constraint].sub_expression[key][0].expression = Number(tempSubExpression) ? Number(tempSubExpression) : 0;
+                        tempDialogObj[constraint].sub_expressions[key][0].expression = Number(tempSubExpression) ? Number(tempSubExpression) : 0;
                     }
                 } else {
-                    tempDialogObj[constraint].sub_expression[key] = structuredClone(adminGroupConstraint.sub_expression[key].yaml);
+                    tempDialogObj[constraint].sub_expressions[key] = structuredClone(adminGroupConstraint.sub_expression[key].yaml);
                 } 
-                if (tempDialogObj[constraint].sub_expression[key]) {
-                    let tempSubExpression = tempDialogObj[constraint]?.sub_expression[key][0]?.expression;
+                if (tempDialogObj[constraint].sub_expressions[key]) {
+                    let tempSubExpression = tempDialogObj[constraint]?.sub_expressions[key][0]?.expression;
 
                     const sliceKeys = tempSubExpression.split("[")[1].split("]")[0].split("||").filter(key => key !== "");
 
@@ -303,7 +303,7 @@ function convertToJSON() {
                     });
 
                     tempSubExpression = tempSubExpression.replaceAll("||||", ",").replaceAll("||", "").replace("[]", "");
-                    tempDialogObj[constraint].sub_expression[key][0].expression = tempSubExpression;
+                    tempDialogObj[constraint].sub_expressions[key][0].expression = tempSubExpression;
                 }
             });
 
@@ -432,7 +432,7 @@ function renderSubExpressions(constraint, constraintId, constraintContent, admin
                     name='${constraint}' 
                     data-key=${key} 
                     class='form-control smol' 
-                    value='${dialogObj[constraint].sub_expression[key][0]?.expression || ""}' 
+                    value='${dialogObj[constraint].sub_expressions[key][0]?.expression || ""}' 
                     step='1'
                 >
                 </input>
@@ -441,7 +441,7 @@ function renderSubExpressions(constraint, constraintId, constraintContent, admin
             $(constraintContent).append(input);
 
             $(`#${constraintId}${key}-val`).on('input', function() {
-                dialogObj[$(this).attr('name')].sub_expression[$(this).attr('data-key')][0].expression = $(this).val();
+                dialogObj[$(this).attr('name')].sub_expressions[$(this).attr('data-key')][0].expression = $(this).val();
             });
         }
     });
@@ -898,12 +898,12 @@ function activate_scenario_settings() {
 
                         Object.entries(adminGroupConstraint.sub_expression).forEach(([key, value]) => {
                             if (value.show) {
-                                if (!tempDialogObj[constraint].sub_expression[key]) {
-                                    tempDialogObj[constraint].sub_expression[key] = structuredClone(value.yaml);
-                                    tempDialogObj[constraint].sub_expression[key][0].expression = value.yaml[0].expression == "[VALUE]" ? [] : "";
+                                if (!tempDialogObj[constraint].sub_expressions[key]) {
+                                    tempDialogObj[constraint].sub_expressions[key] = structuredClone(value.yaml);
+                                    tempDialogObj[constraint].sub_expressions[key][0].expression = value.yaml[0].expression == "[VALUE]" ? [] : "";
                                 } else {
-                                    let tempSubExpression = tempDialogObj[constraint].sub_expression[key][0].expression;
-                                    tempDialogObj[constraint].sub_expression[key][0].expression = Number(tempSubExpression);
+                                    let tempSubExpression = tempDialogObj[constraint].sub_expressions[key][0].expression;
+                                    tempDialogObj[constraint].sub_expressions[key][0].expression = Number(tempSubExpression);
                                 }
                             }
                         });
@@ -1071,11 +1071,11 @@ function activate_scenario_settings() {
                     dialogObj[newGroupConstraint].slices[key] = structuredClone(value.yaml);
                     dialogObj[newGroupConstraint].slices[key][0].expression = [];
                 });
-                dialogObj[newGroupConstraint].sub_expression = dialogObj[newGroupConstraint].sub_expression ? dialogObj[newGroupConstraint].sub_expression : {};
+                dialogObj[newGroupConstraint].sub_expressions = dialogObj[newGroupConstraint].sub_expressions ? dialogObj[newGroupConstraint].sub_expressions : {};
                 Object.entries(adminGroupConstraint.sub_expression).forEach(([key, value]) => {
                     if (value.show) {
-                        dialogObj[newGroupConstraint].sub_expression[key] = structuredClone(value.yaml);
-                        dialogObj[newGroupConstraint].sub_expression[key][0].expression = "";
+                        dialogObj[newGroupConstraint].sub_expressions[key] = structuredClone(value.yaml);
+                        dialogObj[newGroupConstraint].sub_expressions[key][0].expression = "";
                     }
                 });
                 if (adminGroupConstraint.for_each) {
