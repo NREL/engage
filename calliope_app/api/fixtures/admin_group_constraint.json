@@ -107,12 +107,21 @@
           "name": "demand_share_min",
           "pretty_name": "Demand Share Min",
           "description": "Minimum share of carrier demand met from a set of technologies across a set of locations, on average over the entire model period.",
+          "where": "",
           "equations": [
-              {
-                "expression": "sum(flow_out_non_transmission_techs[||locs_lhs||||techs_rhs||||techs_lhs||||techs_rhs||||carriers_lhs||||carriers_rhs||], over=[nodes, techs, timesteps, carriers]) <= $value_1"
-              }
+            {
+              "expression": ""
+            }
           ],
           "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
             "techs_lhs": {
               "yaml": [
                 {
@@ -128,6 +137,14 @@
                 }
               ],
               "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
             },
             "locs_lhs": {
               "yaml": [
@@ -171,7 +188,3565 @@
               ],
               "show": true
             }
+          }
+        }
+      },
+      {
+        "pk": 3,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "demand_share_max",
+          "pretty_name": "Demand Share Max",
+          "description": "Maximum share of carrier demand met from a set of technologies across a set of locations, on average over the entire model period.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 4,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "demand_share_equals",
+          "pretty_name": "Demand Share Equals",
+          "description": "Share of carrier demand met from a set of technologies across a set of locations, on average over the entire model period.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 5,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "demand_share_per_timestep_min",
+          "pretty_name": "Demand Share Per Timestep Min",
+          "description": "Minimum share of carrier demand met from a set of technologies across a set of locations, in each individual timestep.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 6,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "demand_share_per_timestep_max",
+          "pretty_name": "Demand Share Per Timestep Max",
+          "description": "Maximum share of carrier demand met from a set of technologies across a set of locations, in each individual timestep.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 7,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "demand_share_per_timestep_equals",
+          "pretty_name": "Demand Share Per Timestep Equals",
+          "description": "Share of carrier demand met from a set of technologies across a set of locations, in each individual timestep.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 8,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "demand_share_per_timestep_decision",
+          "pretty_name": "Demand Share Per Timestep Decision",
+          "description": "Turns the per-timestep share of carrier demand met from a set of technologies across a set of locations into a model decision variable.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 9,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "flow_prod_share_min",
+          "pretty_name": "Flow Prod Share Min",
+          "description": "Minimum share of carrier production met from a set of technologies across a set of locations, on average over the entire model period.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 10,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "flow_prod_share_max",
+          "pretty_name": "Flow Prod Share Max",
+          "description": "Maximum share of carrier production met from a set of technologies across a set of locations, on average over the entire model period.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 11,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "flow_prod_share_equals",
+          "pretty_name": "Flow Prod Share Equals",
+          "description": "Share of carrier production met from a set of technologies across a set of locations, on average over the entire model period.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 12,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "flow_prod_share_per_timestep_min",
+          "pretty_name": "Flow Prod Share Per Timestep Min",
+          "description": "Minimum share of carrier production met from a set of technologies across a set of locations, in each individual timestep.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 13,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "flow_prod_share_per_timestep_max",
+          "pretty_name": "Flow Prod Share Per Timestep Max",
+          "description": "Maximum share of carrier production met from a set of technologies across a set of locations, in each individual timestep.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 14,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "flow_prod_share_per_timestep_equals",
+          "pretty_name": "Flow Prod Share Per Timestep Equals",
+          "description": "Share of carrier production met from a set of technologies across a set of locations, in each individual timestep.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 15,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "net_import_share_min",
+          "pretty_name": "Net Import Share Min",
+          "description": "Minimum share of demand met from transmission technologies into a set of locations, on average over the entire model period. All transmission technologies of the chosen carrier are added automatically and technologies must thus not be defined explicitly.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 16,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "net_import_share_max",
+          "pretty_name": "Net Import Share Max",
+          "description": "Maximum share of demand met from transmission technologies into a set of locations, on average over the entire model period. All transmission technologies of the chosen carrier are added automatically and technologies must thus not be defined explicitly.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 17,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "net_import_share_equals",
+          "pretty_name": "Net Import Share Equals",
+          "description": "Share of demand met from transmission technologies into a set of locations, on average over the entire model. All transmission technologies of the chosen carrier are added automatically and technologies must thus not be defined explicitly. period.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 18,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "flow_prod_min",
+          "pretty_name": "Flow Prod Min",
+          "description": "Minimum absolute sum of supplied energy (flow_prod) over all timesteps for a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 19,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "flow_prod_max",
+          "pretty_name": "Flow Prod Max",
+          "description": "Maximum absolute sum of supplied energy (flow_prod) over all timesteps for a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 20,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "flow_prod_equals",
+          "pretty_name": "Flow Prod Equals",
+          "description": "Exact absolute sum of supplied energy (flow_prod) over all timesteps for a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 21,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "flow_con_min",
+          "pretty_name": "Flow Con Min",
+          "description": "Minimum sum of consumed energy (flow_con) over all timesteps for a set of conversion/demand technologies across a set of locations. Values are negative and are relative to zero, i.e. a minimum value of -1 means that consumed energy must be < -1",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 22,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "flow_con_max",
+          "pretty_name": "Flow Con Max",
+          "description": "Maximum sum of consumed energy (flow_con) over all timesteps for a set of conversion/demand technologies across a set of locations. Values are negative and are relative to zero, i.e. a maximum value of -1 means that consumed energy must be > -1",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 23,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "flow_con_equals",
+          "pretty_name": "Flow Con Equals",
+          "description": "Exact sum of consumed energy (flow_con) over all timesteps for a set of conversion/demand technologies across a set of locations. Values are negative.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "carriers_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            },
+            "carriers_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "carriers"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 24,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "cost_max",
+          "pretty_name": "Cost Max",
+          "description": "Maximum total cost from a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "costs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "costs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 25,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "cost_min",
+          "pretty_name": "Cost Min",
+          "description": "Minimum total cost from a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "costs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "costs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 26,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "cost_equals",
+          "pretty_name": "Cost Equals",
+          "description": "Total cost from a set of technologies across a set of locations must equal given value.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "costs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "costs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 27,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "cost_var_max",
+          "pretty_name": "Cost Var Max",
+          "description": "Maximum variable cost from a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "costs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "costs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 28,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "cost_var_min",
+          "pretty_name": "Cost Var Min",
+          "description": "Minimum variable cost from a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "costs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "costs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 29,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "cost_var_equals",
+          "pretty_name": "Cost Var Equals",
+          "description": "Variable cost from a set of technologies across a set of locations must equal given value.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "costs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "costs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 30,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "cost_investment_max",
+          "pretty_name": "Cost Investment Max",
+          "description": "Maximum investment cost from a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "costs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "costs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 31,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "cost_investment_min",
+          "pretty_name": "Cost Investment Min",
+          "description": "Minimum investment cost from a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "costs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "costs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 32,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "cost_investment_equals",
+          "pretty_name": "Cost Investment Equals",
+          "description": "Investment cost from a set of technologies across a set of locations must equal given value.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "costs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "costs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 33,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "energy_cap_share_min",
+          "pretty_name": "Energy Cap Share Min",
+          "description": "Minimum share of installed capacity from a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 34,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "energy_cap_share_max",
+          "pretty_name": "Energy Cap Share Max",
+          "description": "Maximum share of installed capacity from a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 35,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "energy_cap_share_equals",
+          "pretty_name": "Energy Cap Share Equals",
+          "description": "Exact share of installed capacity from a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 36,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "energy_cap_min",
+          "pretty_name": "Energy Cap Min",
+          "description": "Minimum installed capacity from a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 37,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "energy_cap_max",
+          "pretty_name": "Energy Cap Max",
+          "description": "Maximum installed capacity from a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 38,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "energy_cap_equals",
+          "pretty_name": "Energy Cap Equals",
+          "description": "Exact installed capacity from a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 39,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "resource_area_min",
+          "pretty_name": "Resource Area Min",
+          "description": "Minimum resource area used by a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 40,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "resource_area_max",
+          "pretty_name": "Resource Area Max",
+          "description": "Maximum resource area used by a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 41,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "resource_area_equals",
+          "pretty_name": "Resource Area Equals",
+          "description": "Exact resource area used by a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 42,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "storage_cap_min",
+          "pretty_name": "Storage Cap Min",
+          "description": "Minimum installed storage capacity from a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 43,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "storage_cap_max",
+          "pretty_name": "Storage Cap Max",
+          "description": "Maximum installed storage capacity from a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
+        }
+      },
+      {
+        "pk": 44,
+        "model": "api.group_constraint",
+        "fields": {
+          "name": "storage_cap_equals",
+          "pretty_name": "Storage Cap Equals",
+          "description": "Exact installed storage capacity from a set of technologies across a set of locations.",
+          "where": "",
+          "equations": [
+            {
+              "expression": ""
+            }
+          ],
+          "slices": {
+            "techs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "techs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "techs"
+            },
+            "locs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_lhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            },
+            "locs_rhs": {
+              "yaml": [
+                {
+                  "expression": "[VALUE]"
+                }
+              ],
+              "dim": "locs"
+            }
+          },
+          "sub_expression": {
+            "value_1": {
+              "yaml": [
+                {
+                  "expression": "VALUE"
+                }
+              ],
+              "show": true
+            }
+          }
         }
       }
-    }
 ]
