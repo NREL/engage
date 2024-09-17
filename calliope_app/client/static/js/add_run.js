@@ -30,8 +30,6 @@ $(document).ready(function () {
 			var value = $(this).find('.run-parameter-value').val();
 			parameters[paramId] = value;
 		});
-		console.log(parameters);
-	
 
 		// fix timezone issues
 		sd = new Date(sd.getTime() + sd.getTimezoneOffset() * 60000);
@@ -91,7 +89,32 @@ $(document).ready(function () {
 		}
 	});
 
+  var env_name = $(this).val();
+  set_solvers(env_name);
+
+  $("#run-environment").change(function () {
+    var env_name = $(this).val();
+    set_solvers(env_name);
+  });
+
 });
+
+
+function set_solvers(env_name) {
+  $.ajax({
+    url: '/' + LANGUAGE_CODE + '/api/solvers/',
+    data: {
+      'env_name': env_name,
+    },
+    success: function(data) {
+      var solvers = $('#run-solvers');
+      solvers.empty();
+      $.each(data, function(key, value) {
+        solvers.append($('<option></option>').attr('value', key).text(value));
+      });
+    }
+  });
+}
 
 
 function add_run_precheck() {
@@ -111,6 +134,7 @@ function add_run_precheck() {
 		}
 	});
 };
+
 
 function activate_tiles() {
 	$('.selection_tile').on('click', function () {

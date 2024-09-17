@@ -102,6 +102,10 @@ class User_Profile(models.Model):
         return True
 
 
+def default_solvers():
+    return {"appsi_highs": "HiGHS", "cbc": "CBC"}
+
+
 class ComputeEnvironment(models.Model):
 
     ENV_TYPES = [
@@ -114,11 +118,11 @@ class ComputeEnvironment(models.Model):
     full_name = models.CharField(max_length=120)
     is_default = models.BooleanField(default=False)
     type = models.CharField(max_length=60, choices=ENV_TYPES)
-    solver = models.CharField(max_length=60, null=True, blank=True)
     ncpu = models.PositiveSmallIntegerField(null=True, blank=True)
     memory = models.PositiveSmallIntegerField(null=True, blank=True)
     cmd = models.TextField(blank=True, null=True)
     users = models.ManyToManyField(User, related_name="compute_environments", blank=True)
+    solvers = models.JSONField(default=default_solvers)
 
     class Meta:
         db_table = "compute_environments"
