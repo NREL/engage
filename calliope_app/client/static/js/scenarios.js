@@ -285,7 +285,7 @@ function convertToJSON() {
                     if (tempSubExpressions == [] || tempSubExpressions == "") {
                         delete tempDialogObj[constraint].sub_expressions[key];
                     } else {
-                        tempDialogObj[constraint].sub_expressions[key][0].expression = Number(tempSubExpressions) ? Number(tempSubExpressions) : 0;
+                        tempDialogObj[constraint].sub_expressions[key][0].expression = parseFloat(tempSubExpressions) ? parseFloat(tempSubExpressions) : 0;
                     }
                 } else {
                     tempDialogObj[constraint].sub_expressions[key] = structuredClone(adminGroupConstraint.sub_expression[key].yaml);
@@ -303,7 +303,9 @@ function convertToJSON() {
                             }
                         });
                     }
+                    
                     tempSubExpressions = tempSubExpressions.toString().replaceAll("||||", ",").replaceAll("||", "").replace("[]", "");
+                    tempSubExpressions = !isNaN(parseFloat(tempSubExpressions)) ?  parseFloat(tempSubExpressions) : tempSubExpressions;
                     tempDialogObj[constraint].sub_expressions[key][0].expression = tempSubExpressions;
                 }
             });
@@ -344,7 +346,7 @@ function convertToJSON() {
             Object.keys(dialogObj[constraint]).forEach(fieldKey => {
                 if (fieldKey !== "locs" && fieldKey !== "techs" && fieldKey !== "techs_lhs" && fieldKey !== "techs_rhs" && fieldKey !== "locs_lhs" && fieldKey !== "locs_rhs") {
                     let value = $("#" + constraintId + fieldKey + "-val").val();
-                    value = value ? Number(value) : 0;
+                    value = value ? parseFloat(value) : 0;
 
                     if (constraints[fieldKey] !== "none") {
                         let key = $("#" + constraintId + fieldKey + "-key").val() ? $("#" + constraintId + fieldKey + "-key").val() : "";
@@ -429,12 +431,12 @@ function renderSubExpressions(constraint, constraintId, constraintContent, admin
             const input = $(`
                 <input 
                     type='number' 
+                    step='any'
                     id='${constraintId}${key}-val' 
                     name='${constraint}' 
                     data-key=${key} 
                     class='form-control smol' 
                     value='${dialogObj[constraint].sub_expressions[key][0]?.expression || ""}' 
-                    step='1'
                 >
                 </input>
                 <br><br>
@@ -904,7 +906,7 @@ function activate_scenario_settings() {
                                     tempDialogObj[constraint].sub_expressions[key][0].expression = value.yaml[0].expression == "[VALUE]" ? [] : "";
                                 } else {
                                     let tempSubExpression = tempDialogObj[constraint].sub_expressions[key][0].expression;
-                                    tempDialogObj[constraint].sub_expressions[key][0].expression = Number(tempSubExpression);
+                                    tempDialogObj[constraint].sub_expressions[key][0].expression = parseFloat(tempSubExpression);
                                 }
                             }
                         });
