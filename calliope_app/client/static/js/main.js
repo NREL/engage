@@ -47,7 +47,12 @@ function activate_table() {
         
         // Reset the formatting of row
         row.find('.parameter-reset').addClass('hide')
-        row.find('.parameter-delete, .parameter-value-delete').removeClass('hide')
+        $('.parameter-delete').on('click', function() {
+			var row = $(this).parents('tr');
+			// Deletion logic here
+		});
+		
+		
         row.removeClass('table-warning');
         $(this).removeClass('invalid-value');
 
@@ -113,21 +118,27 @@ function activate_table() {
 	$('.parameter-delete').on('click', function() {
 		var row = $(this).parents('tr'),
 			param_id = row.data('param_id'),
-			rows = $('tr[data-param_id='+param_id+']');
+			rows = $('tr[data-param_id=' + param_id + ']');
+		
 		if (row.hasClass('table-danger')) {
-			rows.find('.check_delete').prop("checked", false)
+			// Unmark for deletion
+			rows.find('.check_delete').prop("checked", false);
 			rows.removeClass('table-danger');
+			rows.addClass('table-warning');  // Add warning class to indicate unsaved change
 			rows.find('.parameter-value, .parameter-year').prop('disabled', false);
 			change_timeseries_color(param_id, true);
 		} else {
-			rows.find('.check_delete').prop("checked", true)
+			// Mark for deletion
+			rows.find('.check_delete').prop("checked", true);
 			rows.addClass('table-danger');
-			rows.find('.parameter-value, .parameter-year').prop('disabled', true)
+			rows.addClass('table-warning');  // Add warning class to indicate unsaved change
+			rows.find('.parameter-value, .parameter-year').prop('disabled', true);
 			change_timeseries_color(param_id, false);
 		}
+		
 		check_unsaved();
 	});
-	$('.parameter-value-delete').unbind();
+		$('.parameter-value-delete').unbind();
 	$('.parameter-value-delete').on('click', function() {
 		var row = $(this).parents('tr');
 		if (row.hasClass('table-danger')) {

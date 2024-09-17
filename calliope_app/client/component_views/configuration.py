@@ -13,7 +13,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.utils.timezone import make_aware
 
 from api.models.configuration import Scenario_Param, Scenario, Scenario_Loc_Tech, \
-    Timeseries_Meta, ParamsManager, Model, User_File, Carrier, Tech_Param
+    Timeseries_Meta, ParamsManager, Model, User_File, Carrier, Tech_Param, Loc_Tech_Param
 from api.utils import get_cols_from_csv
 
 
@@ -158,7 +158,9 @@ def all_tech_params(request):
 
     for param in parameters:
         param['raw_units'] = param['units']
-
+        tech_param = Loc_Tech_Param.objects.filter(id=param['id']).first()
+        build_year_offset = tech_param.build_year_offset if tech_param else None
+        param['build_year_offset'] = build_year_offset
     timeseries = Timeseries_Meta.objects.filter(model=model, failure=False,
                                                 is_uploading=False)
 
@@ -273,7 +275,6 @@ def all_loc_tech_params(request):
     parameters = ParamsManager.all_loc_tech_params(loc_tech)
     timeseries = Timeseries_Meta.objects.filter(model=model, failure=False,
                                                 is_uploading=False)
-
     units_in_ids= ParamsManager.get_tagged_params('units_in')
     units_out_ids= ParamsManager.get_tagged_params('units_out')
 
@@ -294,9 +295,13 @@ def all_loc_tech_params(request):
 
     for param in parameters:
         param['raw_units'] = param['units']
-
+        loc_tech_param = Loc_Tech_Param.objects.filter(id=param['id']).first()
+        build_year_offset = loc_tech_param.build_year_offset if loc_tech_param else None
+        param['build_year_offset'] = build_year_offset
+    print(parameters)
     emissions = ParamsManager.emission_categories()
     # Parameters Table
+    print(loc_tech)
     context = {
         "emissions": emissions,
         "loc_tech": loc_tech,

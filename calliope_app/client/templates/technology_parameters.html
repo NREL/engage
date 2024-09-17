@@ -159,6 +159,7 @@
 				<tr class="param_row param_row_min param_row_{{ param.parameter_id }} {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% elif param.parameter_category in emissions %}table-info{% else %}table-primary{% endif %}{% else %}table-default{% endif %}" data-param_id={{ param.parameter_id }}>
 					<td colspan=3 style="background-color: white;"></td>
 					<!-- Year -->
+					<!-- {{ param }} -->
 					<td class="">
 						<input {% if not can_edit %}disabled{% endif %} type="number" class="dynamic_year_input form-control parameter-year parameter-year-existing" value="{{ param.year }}" data-value="{{ param.year }}" {% if param.level == level %}name="edit[parameter_instance][{{ param.id }}][year]"{% else %}name="add[{{ param.parameter_id }}][year][]"{% endif %}>
 					</td>
@@ -166,15 +167,14 @@
 						<input {% if not can_edit %}disabled{% endif %} 
 							   type="number" 
 							   class="dynamic_build_year_offset_input form-control parameter-build-year-offset parameter-build-year-offset-existing" 
-							   value="{{ param.build_year_offset }}" 
-							   data-value="{{ param.build_year_offset }}" 
+							   value="{{ param.build_year_offset|default_if_none:'' }}" 
+							   data-value="{{ param.build_year_offset|default_if_none:'' }}" 
 							   {% if param.level == level %}
-								   name="edit[parameter_instance][{{ param.id }}][build_year_offset]"
+								 name="edit[parameter_instance][{{ param.id }}][build_year_offset]"
 							   {% else %}
-								   name="add[{{ param.parameter_id }}][build_year_offset][]"
+								 name="add[{{ param.parameter_id }}][build_year_offset][]"
 							   {% endif %}>
-					</td>
-															<!-- Value -->
+					  </td>
 					<td class="centered">
 						{% if param.choices or param.parameter_is_carrier %}
 						<select {% if not can_edit %}disabled{% endif %} class="dynamic_value_input form-control parameter-value parameter-value-existing" {% if param.level == level %}name="edit[parameter_instance][{{ param.id }}][value]"{% else %}name="add[{{ param.parameter_id }}][value][]"{% endif %} data-value="{{ param.value }}">
