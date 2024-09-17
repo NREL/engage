@@ -43,8 +43,29 @@ def solvers(request):
     env_name = request.GET.get("env_name", None)
     if not env_name:
         env_name = "default"
-    env = ComputeEnvironment.objects.get(name=env_name)
-    payload = env.solvers
+
+    flag = True
+    try:
+        env = ComputeEnvironment.objects.get(name=env_name)
+    except Cambium.Environment.DoesNotExist:
+        flag = False
+
+    if (not flag) or (not env.solvers) or (not isinstance(env.solvers, list)):
+        payload = [
+            {
+                "name": "appsi_highs",
+                "pretty_name": "HiGHS",
+                "order": 1
+            },
+            {
+                "name": "cbc",
+                "pretty_name": "CBC",
+                "order": 2
+            }
+        ]
+    else:
+        payload = sorted(env.solvers, key=lambda x: x["order"])
+
     return HttpResponse(json.dumps(payload), content_type="application/json")
 
 

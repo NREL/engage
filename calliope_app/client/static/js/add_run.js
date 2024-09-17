@@ -109,7 +109,9 @@ function set_solvers(env_name) {
     success: function(data) {
       var solvers = $('#run-solvers');
       solvers.empty();
-      $.each(data, function(key, value) {
+      $.each(data, function(index, item) {
+        var key = item.name;
+        var value = item.pretty_name;
         solvers.append($('<option></option>').attr('value', key).text(value));
       });
     }

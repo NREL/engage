@@ -103,7 +103,18 @@ class User_Profile(models.Model):
 
 
 def default_solvers():
-    return {"appsi_highs": "HiGHS", "cbc": "CBC"}
+    return [
+        {
+            "name": "appsi_highs",
+            "pretty_name": "HiGHS",
+            "order": 1
+        },
+        {
+            "name": "cbc",
+            "pretty_name": "CBC",
+            "order": 2
+        }
+    ]
 
 
 class ComputeEnvironment(models.Model):
