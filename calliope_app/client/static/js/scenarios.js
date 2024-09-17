@@ -292,23 +292,23 @@ function convertToJSON() {
                 } 
                 if (tempDialogObj[constraint].sub_expression[key]) {
                     let tempSubExpression = tempDialogObj[constraint]?.sub_expression[key][0]?.expression;
+                    if (["[","]","||"].every((item)=>tempSubExpression.toString().includes(item))){
+                        const sliceKeys = tempSubExpression.toString().split("[")[1].split("]")[0].split("||").filter(key => key !== "");
 
-                    const sliceKeys = tempSubExpression.split("[")[1].split("]")[0].split("||").filter(key => key !== "");
-
-                    sliceKeys.forEach((sliceKey) => {
-                        if (!(sliceKey in tempDialogObj[constraint].slices)) {
-                            let toDelete = `||${sliceKey}||`;
-                            tempSubExpression = tempSubExpression.replace(toDelete, "");
-                        }
-                    });
-
-                    tempSubExpression = tempSubExpression.replaceAll("||||", ",").replaceAll("||", "").replace("[]", "");
+                        sliceKeys.forEach((sliceKey) => {
+                            if (!(sliceKey in tempDialogObj[constraint].slices)) {
+                                let toDelete = `||${sliceKey}||`;
+                                tempSubExpression = tempSubExpression.replace(toDelete, "");
+                            }
+                        });
+                    }
+                    tempSubExpression = tempSubExpression.toString().replaceAll("||||", ",").replaceAll("||", "").replace("[]", "");
                     tempDialogObj[constraint].sub_expression[key][0].expression = tempSubExpression;
                 }
             });
 
             // Update equation
-            tempEquations = tempEquations.replaceAll("||||", ",").replaceAll("||", "").replace("[]", "");
+            tempEquations = tempEquations.toString().replaceAll("||||", ",").replaceAll("||", "").replace("[]", "");
             tempDialogObj[constraint].equations[0].expression = tempEquations;
 
             delete tempDialogObj[constraint].id;
