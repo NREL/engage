@@ -76,7 +76,7 @@
 							<input {% if not can_edit %}disabled{% endif %} style="display: none" class="check_delete" type="checkbox" name="delete[{{ param.id }}]">
 						</td>
 						<!-- Scenarios settings run parameter ids hardcoded for modals id = 25 is the group constraints modal --> 
-						{% if param.run_parameter.id == 25 %}
+						{% if param.run_parameter.name == "group_constriants" %}
 							<td> 
 								<button {% if not can_edit %}disabled{% endif %} type="button" class="scenario-constraints-dialog-btn btn btn-sm" style="margin-top:7px;" name="dialog[value][{{ param.id }}]"><i class="fas fa-edit"></i></button>
 							</td>
