@@ -140,6 +140,7 @@
 					<td class="centered"><i class="fa fa-info-circle"></i></td>
 					<td colspan=2>{% trans "This parameter is configured to evolve over multiple years" %}.</td>
 					<td><b>{% trans "Year" %}:</b></td>
+					<td><b>{% trans "Build Offset Year" %}:</b></td>
 					<td><b>{% trans "Value" %}:</b></td>
 					<td colspan=3></td>
 				</tr>
@@ -161,7 +162,19 @@
 					<td class="">
 						<input {% if not can_edit %}disabled{% endif %} type="number" class="dynamic_year_input form-control parameter-year parameter-year-existing" value="{{ param.year }}" data-value="{{ param.year }}" {% if param.level == level %}name="edit[parameter_instance][{{ param.id }}][year]"{% else %}name="add[{{ param.parameter_id }}][year][]"{% endif %}>
 					</td>
-					<!-- Value -->
+					<td class="">
+						<input {% if not can_edit %}disabled{% endif %} 
+							   type="number" 
+							   class="dynamic_build_year_offset_input form-control parameter-build-year-offset parameter-build-year-offset-existing" 
+							   value="{{ param.build_year_offset }}" 
+							   data-value="{{ param.build_year_offset }}" 
+							   {% if param.level == level %}
+								   name="edit[parameter_instance][{{ param.id }}][build_year_offset]"
+							   {% else %}
+								   name="add[{{ param.parameter_id }}][build_year_offset][]"
+							   {% endif %}>
+					</td>
+															<!-- Value -->
 					<td class="centered">
 						{% if param.choices or param.parameter_is_carrier %}
 						<select {% if not can_edit %}disabled{% endif %} class="dynamic_value_input form-control parameter-value parameter-value-existing" {% if param.level == level %}name="edit[parameter_instance][{{ param.id }}][value]"{% else %}name="add[{{ param.parameter_id }}][value][]"{% endif %} data-value="{{ param.value }}">
@@ -207,6 +220,12 @@
 					<td colspan=3 style="background-color: white;"></td>
 					<td class="centered">
 						<input {% if not can_edit %}disabled{% endif %} type="number" class="form-control parameter-year parameter-year-new" placeholder="YYYY" name="add[{{ param.parameter_id }}][year][]">
+					</td>
+					<td class="centered">
+						<input {% if not can_edit %}disabled{% endif %} 
+							   type="number" 
+							   class="form-control parameter-build-year-offset parameter-build-year-offset-new" 
+							   name="add[{{ param.parameter_id }}][build_year_offset][]">
 					</td>
 					<td class="centered">
 						{% if param.choices or param.parameter_is_carrier %}

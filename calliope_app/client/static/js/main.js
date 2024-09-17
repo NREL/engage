@@ -13,67 +13,76 @@ $(function() {
 			$(this).slideUp(500);
 		});
 });
-
 function activate_table() {
+    $('.parameter-value.float-value').each(function() {
+        autocomplete_units(this);
+    });
 
-	$('.parameter-value.float-value').each(function() {
-		autocomplete_units(this);
-	});
+    // Detection of unsaved changes
+    $('.parameter-value-new, .parameter-value-existing, .parameter-year-existing, .parameter-build-year-offset-existing').unbind();
+    $('.parameter-value-new, .parameter-value-existing, .parameter-year-existing, .parameter-build-year-offset-existing').on('focusout', function() {
+        if ($(this).val() == '') { $(this).val( $(this).data('value') ) };
+    });
+    $('.parameter-value-new, .parameter-value-existing, .parameter-year-existing, .parameter-build-year-offset-existing').on('change keyup paste', function() {
+        var row = $(this).parents('tr'),
+            year = row.find('.parameter-year').val(),
+            old_year = row.find('.parameter-year').data('value'),
+            build_year_offset = row.find('.parameter-build-year-offset').val(),
+            old_build_year_offset = row.find('.parameter-build-year-offset').data('value'),
+            value = row.find('.parameter-value').val(),
+            old_value = row.find('.parameter-value').data('value'),
+            param_id = $(this).parents('tr').data('param_id'),
+            ts_id = row.find('.parameter-value.timeseries').val();
+        
+        // Convert to number if possible
+        if (+value) { value = +value };
+        if (+old_value) { old_value = +old_value };
+        if (+build_year_offset) { build_year_offset = +build_year_offset };
+        if (+old_build_year_offset) { old_build_year_offset = +old_build_year_offset };
+        
+        // If it is a timeseries: render the charts
+        if (ts_id) {
+            activate_charts(param_id, ts_id)
+        };
+        
+        // Reset the formatting of row
+        row.find('.parameter-reset').addClass('hide')
+        row.find('.parameter-delete, .parameter-value-delete').removeClass('hide')
+        row.removeClass('table-warning');
+        $(this).removeClass('invalid-value');
 
-	// Detection of unsaved changes
-	$('.parameter-value-new, .parameter-value-existing, .parameter-year-existing').unbind();
-	$('.parameter-value-new, .parameter-value-existing, .parameter-year-existing').on('focusout', function() {
-		if ($(this).val() == '') { $(this).val( $(this).data('value') ) };
-	});
-	$('.parameter-value-new, .parameter-value-existing, .parameter-year-existing').on('change keyup paste', function() {
-		var row = $(this).parents('tr'),
-			year = row.find('.parameter-year').val(),
-			old_year = row.find('.parameter-year').data('value'),
-			value = row.find('.parameter-value').val(),
-			old_value = row.find('.parameter-value').data('value'),
-			param_id = $(this).parents('tr').data('param_id'),
-			ts_id = row.find('.parameter-value.timeseries').val();
-		// Convert to number if possible
-		if (+value) { value = +value };
-		if (+old_value) { old_value = +old_value };
-		// If it is a timeseries: render the charts
-		if (ts_id) {
-			activate_charts(param_id, ts_id)
-		};
-		// Reset the formatting of row
-		row.find('.parameter-reset').addClass('hide')
-		row.find('.parameter-delete, .parameter-value-delete').removeClass('hide')
-		row.removeClass('table-warning');
-		$(this).removeClass('invalid-value');
+        // Update Row based on Input
+        var update_val = (value != '') && (value != old_value),
+            update_year = (year != '') && (year != old_year),
+            update_build_year_offset = (build_year_offset != '') && (build_year_offset != old_build_year_offset);
+        
+        if (update_val && ($(this).hasClass('float-value') == true)) {
+            var units = row.find('.parameter-units').attr('data-value'),
+                val = convert_units(value, units);
+            if (typeof(val) == 'number') {
+                $(this).attr('data-target_value', formatNumber(val, false));
+                row.find('.parameter-target-value').html(formatNumber(val, true));
+                row.find('.parameter-reset').removeClass('hide')
+                row.find('.parameter-delete, .parameter-value-delete').addClass('hide')
+                row.addClass('table-warning');
+            } else {
+                $(this).addClass('invalid-value');
+                row.find('.parameter-target-value').html(row.find('.parameter-target-value').data('value'));
+            }
+        } else if (update_val || update_year || update_build_year_offset) {
+            row.find('.parameter-reset').removeClass('hide')
+            row.find('.parameter-delete, .parameter-value-delete').addClass('hide')
+            row.addClass('table-warning');
+        } else {
+            row.find('.parameter-target-value').html(row.find('.parameter-target-value').data('value'));
+        }
+        check_unsaved();
+    });
 
-		// Update Row based on Input
-		var update_val = (value != '') & (value != old_value),
-			update_year = (year != '') & (year != old_year);
-		if (update_val & ($(this).hasClass('float-value') == true)) {
-			var units = row.find('.parameter-units').attr('data-value'),
-				val = convert_units(value, units);
-			if (typeof(val) == 'number') {
-				$(this).attr('data-target_value', formatNumber(val, false));
-				row.find('.parameter-target-value').html(formatNumber(val, true));
-				row.find('.parameter-reset').removeClass('hide')
-				row.find('.parameter-delete, .parameter-value-delete').addClass('hide')
-				row.addClass('table-warning');
-			} else {
-				$(this).addClass('invalid-value');
-				row.find('.parameter-target-value').html(row.find('.parameter-target-value').data('value'));
-			}
-		} else if (update_val || update_year) {
-			row.find('.parameter-reset').removeClass('hide')
-			row.find('.parameter-delete, .parameter-value-delete').addClass('hide')
-			row.addClass('table-warning');
-		} else {
-			row.find('.parameter-target-value').html(row.find('.parameter-target-value').data('value'));
-		}
-		check_unsaved();
-	});
 	// Paste multiple values
-	activate_paste('.dynamic_value_input');
-	activate_paste('.dynamic_year_input');
+    activate_paste('.dynamic_value_input');
+    activate_paste('.dynamic_year_input');
+    activate_paste('.dynamic_build_year_offset_input');
 
 	// Reset parameter to saved value in database
 	$('.parameter-reset').unbind();
@@ -168,9 +177,10 @@ function activate_table() {
 	});
 
 	// Allow 'return' key to tab through input cells
-	activate_return('.static_inputs');
-	activate_return('.dynamic_year_input');
-	activate_return('.dynamic_value_input');
+    activate_return('.static_inputs');
+    activate_return('.dynamic_year_input');
+    activate_return('.dynamic_build_year_offset_input');
+    activate_return('.dynamic_value_input');
 
 	// Show and Hide the parameter rows
 	$('.param_row_toggle').unbind();
@@ -1143,6 +1153,7 @@ function reconvert_all(load_flg){
 }
 
 function activate_paste(class_name) {
+	console.log(class_name);
 	$(class_name).bind('paste', null, function(e) {
 		var values = e.originalEvent.clipboardData.getData('Text').split(/\s+/),
 			$txt = $(this),
@@ -1206,6 +1217,8 @@ function add_row($this) {
 	row.find('.param_row_toggle').find('.view_rows').addClass('hide');
 	var add_row = $('.add_param_row_'+param_id).last().clone();
 	add_row.find('.parameter-value-new').addClass('dynamic_value_input');
+	add_row.find('.parameter-build-year-offset-new').addClass('dynamic_build_year_offset_input');
+
 	add_row.find('.parameter-year-new').addClass('dynamic_year_input');
 	add_row.removeClass('add_param_row_min').addClass('table-warning');
 	add_row.insertBefore($('.add_param_row_'+param_id).last());

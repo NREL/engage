@@ -830,11 +830,30 @@ class Technology(models.Model):
 
     def update(self, form_data):
         """ Update the Technology parameters stored in Tech_Param """
+        print("Update Data", form_data)
         METHODS = ['essentials', 'add', 'edit', 'delete']
         for method in METHODS:
             if method in form_data.keys():
                 data = form_data[method]
-                getattr(Tech_Param, '_' + method)(self, data)
+                if method == 'essentials':
+                    self._update_essentials(data)
+                elif method == 'add':
+                    self._add_parameters(data)
+                elif method == 'edit':
+                    if 'parameter_instance' in data:
+                        for param_id, param_data in data['parameter_instance'].items():
+                            tech_param = Tech_Param.objects.get(id=param_id, technology=self)
+                            if 'build_year_offset' in param_data:
+                                tech_param.build_year_offset = param_data['build_year_offset']
+                            if 'year' in param_data:
+                                tech_param.year = param_data['year']
+                            if 'value' in param_data:
+                                tech_param.value = param_data['value']
+                            tech_param.save()
+                    else:
+                        self._edit_parameters(data)
+                elif method == 'delete':
+                    self._delete_parameters(data)
 
 
 class Tech_Param(models.Model):
