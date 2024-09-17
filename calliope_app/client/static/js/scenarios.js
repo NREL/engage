@@ -281,34 +281,35 @@ function convertToJSON() {
 
             Object.entries(adminGroupConstraint.sub_expression).forEach(([key, value]) => {
                 if (adminGroupConstraint.sub_expression[key].show) {
-                    let tempSubExpression = tempDialogObj[constraint]?.sub_expressions[key][0]?.expression;
-                    if (tempSubExpression == [] || tempSubExpression == "") {
+                    let tempSubExpressions = tempDialogObj[constraint]?.sub_expressions[key][0]?.expression;
+                    if (tempSubExpressions == [] || tempSubExpressions == "") {
                         delete tempDialogObj[constraint].sub_expressions[key];
                     } else {
-                        tempDialogObj[constraint].sub_expressions[key][0].expression = Number(tempSubExpression) ? Number(tempSubExpression) : 0;
+                        tempDialogObj[constraint].sub_expressions[key][0].expression = Number(tempSubExpressions) ? Number(tempSubExpressions) : 0;
                     }
                 } else {
                     tempDialogObj[constraint].sub_expressions[key] = structuredClone(adminGroupConstraint.sub_expression[key].yaml);
                 } 
+
                 if (tempDialogObj[constraint].sub_expressions[key]) {
-                    let tempSubExpression = tempDialogObj[constraint]?.sub_expressions[key][0]?.expression;
+                    let tempSubExpressions = tempDialogObj[constraint]?.sub_expressions[key][0]?.expression;
+                    if (["[","]","||"].every((item)=>tempSubExpressions.toString().includes(item))){
+                        const sliceKeys = tempSubExpressions.toString().split("[")[1].split("]")[0].split("||").filter(key => key !== "");
 
-                    const sliceKeys = tempSubExpression.split("[")[1].split("]")[0].split("||").filter(key => key !== "");
-
-                    sliceKeys.forEach((sliceKey) => {
-                        if (!(sliceKey in tempDialogObj[constraint].slices)) {
-                            let toDelete = `||${sliceKey}||`;
-                            tempSubExpression = tempSubExpression.replace(toDelete, "");
-                        }
-                    });
-
-                    tempSubExpression = tempSubExpression.replaceAll("||||", ",").replaceAll("||", "").replace("[]", "");
-                    tempDialogObj[constraint].sub_expressions[key][0].expression = tempSubExpression;
+                        sliceKeys.forEach((sliceKey) => {
+                            if (!(sliceKey in tempDialogObj[constraint].slices)) {
+                                let toDelete = `||${sliceKey}||`;
+                                tempSubExpressions = tempSubExpressions.replace(toDelete, "");
+                            }
+                        });
+                    }
+                    tempSubExpressions = tempSubExpressions.toString().replaceAll("||||", ",").replaceAll("||", "").replace("[]", "");
+                    tempDialogObj[constraint].sub_expressions[key][0].expression = tempSubExpressions;
                 }
             });
 
             // Update equation
-            tempEquations = tempEquations.replaceAll("||||", ",").replaceAll("||", "").replace("[]", "");
+            tempEquations = tempEquations.toString().replaceAll("||||", ",").replaceAll("||", "").replace("[]", "");
             tempDialogObj[constraint].equations[0].expression = tempEquations;
 
             delete tempDialogObj[constraint].id;
