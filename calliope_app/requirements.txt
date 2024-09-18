@@ -3,7 +3,8 @@ boto3>=1.34.124
 
 # Django & Celery
 celery[redis]>=5.4.0
-django==3.2.25
+django_ratelimit==4.1.0
+django==4.2.15
 django-crispy-forms==1.14.0
 django-environ>=0.11.2
 django-modeltranslation==0.18.12
