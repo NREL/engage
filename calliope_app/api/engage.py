@@ -6,6 +6,28 @@ from django.core.mail.backends.base import BaseEmailBackend
 from django.core.mail.message import sanitize_address
 
 
+ENGAGE_SOLVERS = [
+    {
+        "name": "appsi_highs",
+        "pretty_name": "HiGHS",
+        "order": 1,
+        "is_active": True
+    },
+    {
+        "name": "cbc",
+        "pretty_name": "CBC",
+        "order": 2,
+        "is_active": True
+    },
+    {
+        "name": "amplxpress",
+        "pretty_name": "Xpress",
+        "order": 3,
+        "is_active": False
+    }
+]
+
+
 def aws_ses_configured():
     """
     Check the configuration of AWS SES settings

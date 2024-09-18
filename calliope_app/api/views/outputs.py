@@ -31,6 +31,7 @@ from api.models.configuration import (
 )
 
 from api.models.engage import ComputeEnvironment
+from api.engage import ENGAGE_SOLVERS
 from api.utils import zip_folder, initialize_units, convert_units, noconv_units
 from batch.managers import AWSBatchJobManager
 from taskmeta.models import CeleryTask, BatchTask, batch_task_status
@@ -47,24 +48,21 @@ def solvers(request):
     flag = True
     try:
         env = ComputeEnvironment.objects.get(name=env_name)
-    except Cambium.Environment.DoesNotExist:
+    except ComputeEnvironment.DoesNotExist:
         flag = False
 
     if (not flag) or (not env.solvers) or (not isinstance(env.solvers, list)):
-        payload = [
-            {
-                "name": "appsi_highs",
-                "pretty_name": "HiGHS",
-                "order": 1
-            },
-            {
-                "name": "cbc",
-                "pretty_name": "CBC",
-                "order": 2
-            }
-        ]
+        solvers = ENGAGE_SOLVERS
     else:
-        payload = sorted(env.solvers, key=lambda x: x["order"])
+        solvers = env.solvers
+
+    candidates = []
+    for solver in solvers:
+        is_active = solver.get("is_active", "false")
+        if is_active == "true":
+            candidates.append(solver)
+
+    payload = sorted(candidates, key=lambda x: x["order"])
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
 

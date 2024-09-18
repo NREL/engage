@@ -9,6 +9,8 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.html import mark_safe
 
+from api.engage import ENGAGE_SOLVERS
+
 logger = logging.getLogger(__name__)
 
 
@@ -103,18 +105,7 @@ class User_Profile(models.Model):
 
 
 def default_solvers():
-    return [
-        {
-            "name": "appsi_highs",
-            "pretty_name": "HiGHS",
-            "order": 1
-        },
-        {
-            "name": "cbc",
-            "pretty_name": "CBC",
-            "order": 2
-        }
-    ]
+    return ENGAGE_SOLVERS
 
 
 class ComputeEnvironment(models.Model):
