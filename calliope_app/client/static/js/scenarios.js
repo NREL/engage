@@ -275,6 +275,7 @@ function convertToJSON() {
                     let toDelete = `||${key}||`
                     tempEquations = tempEquations.replace(toDelete, "");
                 } else {
+                    
                     tempDialogObj[constraint].slices[key][0].expression = `[${tempSlice.toString()}]`; 
                 }
             });
@@ -303,15 +304,53 @@ function convertToJSON() {
                             }
                         });
                     }
-                    
-                    tempSubExpressions = tempSubExpressions.toString().replaceAll("||||", ",").replaceAll("||", "").replace("[]", "");
+
+                    // Group slices by dim
+                    let subExpressionSlices = tempSubExpressions.toString().split('||');
+                    let subExpressionSlicesByDim = {};
+                    subExpressionSlices.filter(k => k !== '').forEach((k, index) => {
+                        let dim = adminGroupConstraint.slices[k]?.dim;
+                        if (dim) { 
+                            if (subExpressionSlicesByDim?.[dim]) {
+                                subExpressionSlicesByDim[dim].push(k);
+                            } else {
+                                subExpressionSlicesByDim[dim] = [k];
+                            }
+                        }
+                    });
+                    let slicesString = '';
+                    for (let dim in subExpressionSlicesByDim) {
+                        slicesString += subExpressionSlicesByDim[dim].length > 1 ? `${dim}=[${subExpressionSlicesByDim[dim].join(',')}],` : `${dim}=${subExpressionSlicesByDim[dim][0]},`;
+                    }
+
+                    slicesString = "[" + slicesString.slice(0, -1) + "]";  // Remove the trailing comma
+                    tempSubExpressions = tempSubExpressions.toString().replace(/\[\|\|(.*?)\|\|\]/, slicesString).replace("[]", "");
+
                     tempSubExpressions = !isNaN(parseFloat(tempSubExpressions)) ?  parseFloat(tempSubExpressions) : tempSubExpressions;
                     tempDialogObj[constraint].sub_expressions[key][0].expression = tempSubExpressions;
                 }
             });
 
-            // Update equation
-            tempEquations = tempEquations.toString().replaceAll("||||", ",").replaceAll("||", "").replace("[]", "");
+            // Group slices by dim
+            let equationSlices = tempEquations.split('||');
+            let equationSlicesByDim = {};
+            equationSlices.filter(k => k !== '').forEach((k, index) => {
+                let dim = adminGroupConstraint.slices[k]?.dim;
+                if (dim) { 
+                    if (equationSlicesByDim?.[dim]) {
+                        equationSlicesByDim[dim].push(k);
+                    } else {
+                        equationSlicesByDim[dim] = [k];
+                    }
+                }
+            });
+            let slicesString = '';
+            for (let dim in equationSlicesByDim) {
+                slicesString += equationSlicesByDim[dim].length > 1 ? `${dim}=[${equationSlicesByDim[dim].join(',')}],` : `${dim}=${equationSlicesByDim[dim][0]},`;
+            }
+
+            slicesString = "[" + slicesString.slice(0, -1) + "]";  // Remove the trailing comma
+            tempEquations = tempEquations.replace(/\[\|\|(.*?)\|\|\]/, slicesString).replace("[]", "");
             tempDialogObj[constraint].equations[0].expression = tempEquations;
 
             delete tempDialogObj[constraint].id;
