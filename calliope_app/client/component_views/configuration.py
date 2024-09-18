@@ -158,9 +158,6 @@ def all_tech_params(request):
 
     for param in parameters:
         param['raw_units'] = param['units']
-        tech_param = Tech_Param.objects.filter(id=param['id']).first()
-        build_year_offset = tech_param.build_year_offset if tech_param else None
-        param['build_year_offset'] = build_year_offset
     timeseries = Timeseries_Meta.objects.filter(model=model, failure=False,
                                                 is_uploading=False)
 

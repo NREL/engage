@@ -586,6 +586,35 @@ def delete_technology(request):
     return HttpResponse(json.dumps(payload), content_type="application/json")
 
 
+def format_comment(full_name, data):
+    actions = []
+
+    # Process 'add' actions
+    if 'add' in data:
+        for key, value in data['add'].items():
+            years = value['year']
+            build_year_offsets = value['build_year_offset']
+            values = value['value']
+            for year, offset, val in zip(years, build_year_offsets, values):
+                formatted_val = val.replace("||", " or ")
+                actions.append(f"Added technology with build_year_offset {offset}, value {formatted_val}, year {year}")
+    if 'edit' in data:
+        if 'parameter_instance' in data['edit']:
+            edit_count = len(data['edit']['parameter_instance'])
+            if edit_count > 0:
+                actions.append(f"Edited {edit_count} parameter instance{'s' if edit_count > 1 else ''}")
+    if 'delete' in data:
+        if 'parameter_instance' in data['delete']:
+            delete_count = len(data['delete']['parameter_instance'])
+            if delete_count > 0:
+                actions.append(f"Deleted {delete_count} parameter instance{'s' if delete_count > 1 else ''}")
+    result = f"{full_name} performed the following actions:\n"
+    for action in actions:
+        result += f"* {action}\n"
+
+    return result.strip()
+
+
 @csrf_protect
 def update_tech_params(request):
     """
@@ -607,19 +636,15 @@ def update_tech_params(request):
     technology_id = escape(request.POST["technology_id"])
     form_data = json.loads(request.POST["form_data"])
     escaped_form_data = recursive_escape(form_data)
-
+    print("Escaped form data", escaped_form_data)
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
 
     technology = model.technologies.filter(id=technology_id)
-
     if len(technology) > 0:
         technology.first().update(escaped_form_data)
-        # Log Activity
-        comment = "{} updated the technology: {}.".format(
-            request.user.get_full_name(),
-            technology.first().pretty_name,
-        )
+        comment = format_comment(request.user.get_full_name(), escaped_form_data)
+        # Change this: from what params to this... Move to _add request.user
         Model_Comment.objects.create(model=model, comment=comment, type="edit")
         model.notify_collaborators(request.user)
         model.deprecate_runs(technology_id=technology_id)
@@ -862,6 +887,8 @@ def update_loc_tech_params(request):
     if len(loc_tech) > 0:
         loc_tech.first().update(form_data)
         # Log Activity
+        comment = format_comment(request.user.get_full_name(), form_data)
+        print(comment)
         comment = "{} updated the node: {} ({}) @ {}.".format(
             request.user.get_full_name(),
             loc_tech.first().technology.pretty_name,

@@ -984,7 +984,6 @@ class Tech_Param(models.Model):
                     timeseries=True)
         if 'parameter_instance' in data:
             instance_items = data['parameter_instance'].items()
-            print("instance_items ", instance_items)
             for key, value_dict in instance_items:
                 parameter_instance = cls.objects.filter(
                     model_id=technology.model_id,
@@ -1125,7 +1124,6 @@ class Loc_Tech_Param(models.Model):
                         clean_value, raw_value = value.split('||')
                     else:
                         clean_value = raw_value = value
-                    
                     new_objects.append(cls(
                         model_id=loc_tech.model.id,
                         loc_tech=loc_tech,
@@ -1444,7 +1442,7 @@ class ParamsManager():
 
         if level in ['1_tech', '2_loc_tech']:
             values += ["year", "timeseries", "timeseries_meta_id",
-                       "raw_value", "value"]
+                       "raw_value", "value", "build_year_offset"]
 
         # System-Wide Handling
         if systemwide is False:
@@ -1460,6 +1458,7 @@ class ParamsManager():
                 'id': param["id"] if 'id' in param.keys() else 0,
                 'level': level,
                 'year': param["year"] if 'year' in param.keys() else 0,
+                'build_year_offset': param["build_year_offset"] if "build_year_offset" in param.keys() else 0,
                 'technology_id': technology.id,
                 'parameter_root': param["parameter__root"],
                 'parameter_category': param[parameter__category],
