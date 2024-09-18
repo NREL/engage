@@ -831,7 +831,6 @@ class Technology(models.Model):
     def update(self, form_data):
         """ Update the Technology parameters stored in Tech_Param """
         METHODS = ['essentials', 'add', 'edit', 'delete']
-        print(form_data)
         for method in METHODS:
             if method in form_data.keys():
                 data = form_data[method]                

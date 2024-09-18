@@ -636,7 +636,6 @@ def update_tech_params(request):
     technology_id = escape(request.POST["technology_id"])
     form_data = json.loads(request.POST["form_data"])
     escaped_form_data = recursive_escape(form_data)
-    print("Escaped form data", escaped_form_data)
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
 
@@ -888,7 +887,6 @@ def update_loc_tech_params(request):
         loc_tech.first().update(form_data)
         # Log Activity
         comment = format_comment(request.user.get_full_name(), form_data)
-        print(comment)
         comment = "{} updated the node: {} ({}) @ {}.".format(
             request.user.get_full_name(),
             loc_tech.first().technology.pretty_name,
