@@ -305,16 +305,15 @@ function convertToJSON() {
                         });
                     }
 
-                    let slicesString = groupSlicesByDim(tempSubExpressions, adminGroupConstraint); 
-                    tempSubExpressions = tempSubExpressions.toString().replace(/\[\|\|(.*?)\|\|\]/, slicesString).replace("[]", "");
+                    if (isNaN(parseFloat(tempSubExpressions))) {
+                        tempSubExpressions = groupSlicesByDim(tempSubExpressions.toString(), adminGroupConstraint);
+                    }
 
-                    tempSubExpressions = !isNaN(parseFloat(tempSubExpressions)) ?  parseFloat(tempSubExpressions) : tempSubExpressions;
                     tempDialogObj[constraint].sub_expressions[key][0].expression = tempSubExpressions;
                 }
             });
 
-            let slicesString = groupSlicesByDim(tempEquations, adminGroupConstraint); 
-            tempEquations = tempEquations.replace(/\[\|\|(.*?)\|\|\]/, slicesString).replace("[]", "");
+            tempEquations = groupSlicesByDim(tempEquations, adminGroupConstraint);
             tempDialogObj[constraint].equations[0].expression = tempEquations;
 
             delete tempDialogObj[constraint].id;
@@ -370,32 +369,16 @@ function convertToJSON() {
 }
 
 function groupSlicesByDim(equationOrSubExpression, adminGroupConstraint) {
-    // Split tempSubExpressions by '||' and initialize an empty object for grouping by dimensions
-    let tempSlices = equationOrSubExpression.toString().split('||');
-    let slicesByDim = {};
-    
-    // Filter and group slices by dimension
-    tempSlices.filter(k => k !== '').forEach((k, index) => {
-        let dim = adminGroupConstraint.slices[k]?.dim;
-
-        // if the split value is an actual slice
-        if (dim) { 
-            if (slicesByDim[dim]) {
-                slicesByDim[dim].push(k);
-            } else {
-                slicesByDim[dim] = [k];
-            }
+    equationOrSubExpression = equationOrSubExpression.replace(/\|\|(\w+)\|\|/g, (match, p1) => {
+        let dim = adminGroupConstraint.slices[p1]?.dim;
+        if (dim) {
+            return `||${dim}=${match}`;
         }
     });
-    
-    let slicesString = '';
-    for (let dim in slicesByDim) {
-        slicesString += slicesByDim[dim].length > 1 ? 
-            `${dim}=[${slicesByDim[dim].join(',')}],` : 
-            `${dim}=${slicesByDim[dim][0]},`;
-    }
 
-    return "[" + slicesString.slice(0, -1) + "]";
+    equationOrSubExpression = equationOrSubExpression.replaceAll("||||", ",").replaceAll("||", "").replaceAll("[]", "");
+
+    return equationOrSubExpression;
 }
 
 
