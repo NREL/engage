@@ -827,14 +827,14 @@ class Technology(models.Model):
             tech_param.save()
         new_tech.update_calliope_pretty_name()
         return new_tech
-    
 
     def update(self, form_data):
         """ Update the Technology parameters stored in Tech_Param """
         METHODS = ['essentials', 'add', 'edit', 'delete']
+        print(form_data)
         for method in METHODS:
             if method in form_data.keys():
-                data = form_data[method]
+                data = form_data[method]                
                 getattr(Tech_Param, '_' + method)(self, data)
 
 
@@ -935,11 +935,11 @@ class Tech_Param(models.Model):
     def _add(cls, technology, data):
         """ Add a new parameter to a technology """
         for key, value_dict in data.items():
-            if all(field in value_dict for field in ['year', 'value', 'build_year_offset']):
+            if (('year' in value_dict) & ('value' in value_dict)):
                 years = value_dict['year']
                 values = value_dict['value']
                 build_year_offsets = value_dict['build_year_offset']
-                num_records = min(len(years), len(values), len(build_year_offsets))
+                num_records = np.min([len(years), len(values)])
                 new_objects = []
                 for i in range(num_records):
                     vals = str(values[i]).split('||')
@@ -950,30 +950,55 @@ class Tech_Param(models.Model):
                         build_year_offset=build_year_offsets[i],
                         parameter_id=key,
                         value=ParamsManager.clean_str_val(vals[0]),
-                        raw_value=vals[1] if len(vals) > 1 else vals[0]
-                    ))
+                        raw_value=vals[1] if len(vals) > 1 else vals[0]))
                 cls.objects.bulk_create(new_objects)
+
     @classmethod
     def _edit(cls, technology, data):
+        """ Edit a technology's parameters """
+        if 'parameter' in data:
+            for key, value in data['parameter'].items():
+                vals = str(value).split('||')
+                cls.objects.filter(
+                    model_id=technology.model_id,
+                    technology_id=technology.id,
+                    parameter_id=key).hard_delete()
+                cls.objects.create(
+                    model_id=technology.model_id,
+                    technology_id=technology.id,
+                    parameter_id=key,
+                    value=ParamsManager.clean_str_val(vals[0]),
+                    raw_value=vals[1] if len(vals) > 1 else vals[0])
+        if 'timeseries' in data:
+            for key, value in data['timeseries'].items():
+                cls.objects.filter(
+                    model_id=technology.model_id,
+                    technology_id=technology.id,
+                    parameter_id=key).hard_delete()
+                cls.objects.create(
+                    model_id=technology.model_id,
+                    technology_id=technology.id,
+                    parameter_id=key,
+                    value=ParamsManager.clean_str_val(value),
+                    timeseries_meta_id=value,
+                    timeseries=True)
         if 'parameter_instance' in data:
-            for param_id, param_data in data['parameter_instance'].items():
-                tech_param = cls.objects.filter(id=param_id, technology=technology).first()
-                if tech_param:
-                    if 'build_year_offset' in param_data:
-                        tech_param.build_year_offset = param_data['build_year_offset']
-                    if 'year' in param_data:
-                        tech_param.year = param_data['year']
-                    if 'value' in param_data:
-                        value = param_data['value']
-                        if '||' in value:
-                            parts = value.split('||')
-                            tech_param.value = parts[0].strip()
-                            tech_param.raw_value = parts[1].strip() if len(parts) > 1 else parts[0].strip()
-                        else:
-                            tech_param.value = value
-                            tech_param.raw_value = value
-                    tech_param.save()
-    
+            instance_items = data['parameter_instance'].items()
+            print("instance_items ", instance_items)
+            for key, value_dict in instance_items:
+                parameter_instance = cls.objects.filter(
+                    model_id=technology.model_id,
+                    id=key)
+                if 'value' in value_dict:
+                    vals = str(value_dict['value']).split('||')
+                    parameter_instance.update(
+                        value=ParamsManager.clean_str_val(vals[0]),
+                        raw_value=vals[1] if len(vals) > 1 else vals[0])
+                if 'year' in value_dict:
+                    parameter_instance.update(year=value_dict['year'])
+                if 'build_year_offset' in value_dict:
+                    parameter_instance.update(build_year_offset=value_dict['build_year_offset'])
+
     @classmethod
     def _delete(cls, technology, data):
         """ Delete a technology's parameters """
@@ -1118,8 +1143,7 @@ class Loc_Tech_Param(models.Model):
                 loc_tech_param = cls.objects.filter(id=param_id, loc_tech=loc_tech).first()
                 if loc_tech_param:
                     if 'build_year_offset' in param_data:
-                        build_year_offset = param_data['build_year_offset']
-                        loc_tech_param.build_year_offset = int(build_year_offset) if build_year_offset != '' else None
+                        loc_tech_param.build_year_offset = param_data['build_year_offset']
                     if 'year' in param_data:
                         loc_tech_param.year = param_data['year']
                     if 'value' in param_data:
@@ -1150,7 +1174,6 @@ class Loc_Tech_Param(models.Model):
     def _delete(cls, loc_tech, data):
         param_ids = data.get('parameter_instance', [])
         for param_id in param_ids:
-            print(f"Deleting Loc_Tech_Param with id: {param_id}")
             cls.objects.filter(id=param_id, loc_tech=loc_tech).delete()
 
 

@@ -159,7 +159,6 @@
 				<tr class="param_row param_row_min param_row_{{ param.parameter_id }} {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% elif param.parameter_category in emissions %}table-info{% else %}table-primary{% endif %}{% else %}table-default{% endif %}" data-param_id={{ param.parameter_id }}>
 					<td colspan=3 style="background-color: white;"></td>
 					<!-- Year -->
-					<!-- {{ param }} -->
 					<td class="">
 						<input {% if not can_edit %}disabled{% endif %} type="number" class="dynamic_year_input form-control parameter-year parameter-year-existing" value="{{ param.year }}" data-value="{{ param.year }}" {% if param.level == level %}name="edit[parameter_instance][{{ param.id }}][year]"{% else %}name="add[{{ param.parameter_id }}][year][]"{% endif %}>
 					</td>
