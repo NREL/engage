@@ -21,7 +21,7 @@ class JSONEditorWidget(forms.Textarea):
                 background: #79aec8 !important;
             }}
         </style>
-        <div id="jsoneditor-{editor_id}" style="width: 100%; height: 400px;"></div>
+        <div id="jsoneditor-{editor_id}" style="width: 100%; height: 600px;"></div>
         <script>
             (function() {{
                 var container = document.getElementById("jsoneditor-{editor_id}");
