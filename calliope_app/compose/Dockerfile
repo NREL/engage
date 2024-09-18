@@ -32,7 +32,7 @@ COPY requirements.txt requirements-dev.txt /www/
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt && pip install -r requirements-dev.txt
 # Install calliope without dependencies, as already installed in requirements
-RUN pip install calliope==0.6.8 --no-deps && pip install flower>=1.1.0
+RUN pip install calliope==0.6.8 --no-deps
 
 # Uninstall git
 RUN apt remove git -y && apt autoremove -y
