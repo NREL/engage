@@ -305,25 +305,7 @@ function convertToJSON() {
                         });
                     }
 
-                    // Group slices by dim
-                    let subExpressionSlices = tempSubExpressions.toString().split('||');
-                    let subExpressionSlicesByDim = {};
-                    subExpressionSlices.filter(k => k !== '').forEach((k, index) => {
-                        let dim = adminGroupConstraint.slices[k]?.dim;
-                        if (dim) { 
-                            if (subExpressionSlicesByDim?.[dim]) {
-                                subExpressionSlicesByDim[dim].push(k);
-                            } else {
-                                subExpressionSlicesByDim[dim] = [k];
-                            }
-                        }
-                    });
-                    let slicesString = '';
-                    for (let dim in subExpressionSlicesByDim) {
-                        slicesString += subExpressionSlicesByDim[dim].length > 1 ? `${dim}=[${subExpressionSlicesByDim[dim].join(',')}],` : `${dim}=${subExpressionSlicesByDim[dim][0]},`;
-                    }
-
-                    slicesString = "[" + slicesString.slice(0, -1) + "]";  // Remove the trailing comma
+                    let slicesString = groupSlicesByDim(tempSubExpressions, adminGroupConstraint); 
                     tempSubExpressions = tempSubExpressions.toString().replace(/\[\|\|(.*?)\|\|\]/, slicesString).replace("[]", "");
 
                     tempSubExpressions = !isNaN(parseFloat(tempSubExpressions)) ?  parseFloat(tempSubExpressions) : tempSubExpressions;
@@ -331,25 +313,7 @@ function convertToJSON() {
                 }
             });
 
-            // Group slices by dim
-            let equationSlices = tempEquations.split('||');
-            let equationSlicesByDim = {};
-            equationSlices.filter(k => k !== '').forEach((k, index) => {
-                let dim = adminGroupConstraint.slices[k]?.dim;
-                if (dim) { 
-                    if (equationSlicesByDim?.[dim]) {
-                        equationSlicesByDim[dim].push(k);
-                    } else {
-                        equationSlicesByDim[dim] = [k];
-                    }
-                }
-            });
-            let slicesString = '';
-            for (let dim in equationSlicesByDim) {
-                slicesString += equationSlicesByDim[dim].length > 1 ? `${dim}=[${equationSlicesByDim[dim].join(',')}],` : `${dim}=${equationSlicesByDim[dim][0]},`;
-            }
-
-            slicesString = "[" + slicesString.slice(0, -1) + "]";  // Remove the trailing comma
+            let slicesString = groupSlicesByDim(tempEquations, adminGroupConstraint); 
             tempEquations = tempEquations.replace(/\[\|\|(.*?)\|\|\]/, slicesString).replace("[]", "");
             tempDialogObj[constraint].equations[0].expression = tempEquations;
 
@@ -404,6 +368,36 @@ function convertToJSON() {
     return isCalliopeVersionSeven(calliope_version) ? tempDialogObj : dialogObj;
 
 }
+
+function groupSlicesByDim(equationOrSubExpression, adminGroupConstraint) {
+    // Split tempSubExpressions by '||' and initialize an empty object for grouping by dimensions
+    let tempSlices = equationOrSubExpression.toString().split('||');
+    let slicesByDim = {};
+    
+    // Filter and group slices by dimension
+    tempSlices.filter(k => k !== '').forEach((k, index) => {
+        let dim = adminGroupConstraint.slices[k]?.dim;
+
+        // if the split value is an actual slice
+        if (dim) { 
+            if (slicesByDim[dim]) {
+                slicesByDim[dim].push(k);
+            } else {
+                slicesByDim[dim] = [k];
+            }
+        }
+    });
+    
+    let slicesString = '';
+    for (let dim in slicesByDim) {
+        slicesString += slicesByDim[dim].length > 1 ? 
+            `${dim}=[${slicesByDim[dim].join(',')}],` : 
+            `${dim}=${slicesByDim[dim][0]},`;
+    }
+
+    return "[" + slicesString.slice(0, -1) + "]";
+}
+
 
 function renderDialogGroupConstraints(initialLoad) {
     $('#dialog-inputs').empty();
