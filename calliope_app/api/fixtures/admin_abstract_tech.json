@@ -14,21 +14,21 @@
       "icon": "<i class=\"fas fa-bolt\"></i>"
     }
   },
-//   {
-//     "pk": 2,
-//     "model": "api.abstract_tech",
-//     "fields": {
-//       "pretty_name": "Supply + Storage",
-//       "pretty_name_fr": "Supply + Storage",
-//       "pretty_name_es": "Supply + Storage",
-//       "description": "Supplies energy to a carrier, has a positive resource. Additional possible constraints, including efficiencies and storage, distinguish this from\u00ac\u2020supply.",
-//       "description_fr": "Fournir de l'\u00e9nergie \u00e0 un transporteur, a une ressource positive. D'autres contraintes possibles, y compris l'efficacit\u00e9 et le stockage, distinguent cela de l'approvisionnement.",
-//       "description_es": "Suministra energía a un portador, tiene un recurso positivo. Posibles restricciones adicionales, incluyendo eficiencias y almacenamiento, distinguen esto del suministro.",
-//       "name": "supply_plus",
-//       "image": "images/technologies/supply_plus.svg",
-//       "icon": "<i class=\"fas fa-battery-three-quarters\"></i> <i class=\"fas fa-bolt\"></i>"
-//     }
-//   },
+  {
+    "pk": 2,
+    "model": "api.abstract_tech",
+    "fields": {
+      "pretty_name": "Supply + Storage",
+      "pretty_name_fr": "Supply + Storage",
+      "pretty_name_es": "Supply + Storage",
+      "description": "Supplies energy to a carrier, has a positive resource. Additional possible constraints, including efficiencies and storage, distinguish this from\u00ac\u2020supply.",
+      "description_fr": "Fournir de l'\u00e9nergie \u00e0 un transporteur, a une ressource positive. D'autres contraintes possibles, y compris l'efficacit\u00e9 et le stockage, distinguent cela de l'approvisionnement.",
+      "description_es": "Suministra energía a un portador, tiene un recurso positivo. Posibles restricciones adicionales, incluyendo eficiencias y almacenamiento, distinguen esto del suministro.",
+      "name": "supply_plus",
+      "image": "images/technologies/supply_plus.svg",
+      "icon": "<i class=\"fas fa-battery-three-quarters\"></i> <i class=\"fas fa-bolt\"></i>"
+    }
+  },
   {
     "pk": 3,
     "model": "api.abstract_tech",
@@ -89,19 +89,19 @@
       "icon": "<i class=\"fa-solid fa-shuffle\"></i>"
     }
   },
-//   {
-//     "pk": 7,
-//     "model": "api.abstract_tech",
-//     "fields": {
-//       "pretty_name": "Conversion Plus",
-//       "pretty_name_fr": "Conversion Plus",
-//       "pretty_name_es": "Conversion Plus",
-//       "description": "Converts energy from one carrier to another.",
-//       "description_fr": "Convertit l'\u00e9nergie d'un transporteur \u00e0 un autre.",
-//       "description_es": "Convierte energía de un portador a otro.",
-//       "name": "conversion_plus",
-//       "image": "images/technologies/conversion_plus.svg",
-//       "icon": "<i class=\"fa-solid fa-shuffle\"></i> <i class=\"fas fa-plus\"></i>"
-//     }
-//   }
+  {
+    "pk": 7,
+    "model": "api.abstract_tech",
+    "fields": {
+      "pretty_name": "Conversion Plus",
+      "pretty_name_fr": "Conversion Plus",
+      "pretty_name_es": "Conversion Plus",
+      "description": "Converts energy from one carrier to another.",
+      "description_fr": "Convertit l'\u00e9nergie d'un transporteur \u00e0 un autre.",
+      "description_es": "Convierte energía de un portador a otro.",
+      "name": "conversion_plus",
+      "image": "images/technologies/conversion_plus.svg",
+      "icon": "<i class=\"fa-solid fa-shuffle\"></i> <i class=\"fas fa-plus\"></i>"
+    }
+  }
 ]
