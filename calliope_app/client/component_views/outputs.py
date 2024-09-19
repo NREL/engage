@@ -222,15 +222,16 @@ def map_outputs(request):
         files = ["inputs_colors",
                  "inputs_names",
                  "inputs_inheritance",
-                 "inputs_loc_coordinates",
+                 "inputs_loc_latitude",
+                 "inputs_loc_longitude",
                  "results_energy_cap"]
         for file in files:
             with open(os.path.join(run.outputs_path, file + ".csv")) as f:
                 response[file] = f.read()
 
         # Variable
-        files = ["results_carrier_con",
-                 "results_carrier_prod"]
+        files = ["results_flow_in",
+                 "results_flow_out"]
         month = None
         if run.get_months():
             month = start_date.month
