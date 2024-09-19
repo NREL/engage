@@ -4,6 +4,7 @@
 {% load i18n %}
 
 {% block head %}
+<div style="overflow-y: scroll; max-height: calc(100%);">
 <title>Engage | {{ model.name }} | Nodes</title>
 <script type="text/javascript" src="{% static 'js/loc_techs.js' %}"></script>
 <style>
@@ -24,8 +25,9 @@
 </div>
 <form id="form_data" style="height:100%" method="post" action="" accept-charset="utf-8">
 	<div class="row" id="tech_essentials"></div>
-	<div class="row" id="tech_parameters" style="overflow-y: scroll; max-height: calc(100% - 495px);"></div>
+	<div class="row" id="tech_parameters"></div>
 </form>
 
 {% include "templates_modal.html" %}
+</div>
 {% endblock %}
