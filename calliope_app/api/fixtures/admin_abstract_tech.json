@@ -10,7 +10,7 @@
       "description_fr": "Fournir de l'\u00e9nergie \u00e0 un transporteur, a une ressource positive.",
       "description_es": "Suministra energía a un portador, tiene un recurso positivo.",
       "name": "supply",
-      "image": "data/images/supply_C6.svg",
+      "image": "images/technologies/supply_C6.svg",
       "icon": "<i class=\"fas fa-bolt\"></i>"
     }
   },
