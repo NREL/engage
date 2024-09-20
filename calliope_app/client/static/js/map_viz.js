@@ -374,15 +374,17 @@ function load_data() {
                 
                 // load coordinates
                 var lats = [], lons = [];
-                var [headers, lines] = parse_data(data, 'inputs_loc_coordinates');
-                lines.map(function(d) {
-                    assign(coordinates, [d[headers.locs], d[headers.coordinates]], +d[headers.loc_coordinates]);
-                    if (d[headers.coordinates] == 'lat') {
-                        lats.push(+d[headers.loc_coordinates])
-                    };
-                    if (d[headers.coordinates] == 'lon') {
-                        lons.push(+d[headers.loc_coordinates])
-                    };
+
+                var [latHeaders, latLines] = parse_data(data, 'inputs_latitude');
+                latLines.map(function(d) {
+                    assign(coordinates, [d[latHeaders.locs], 'lat'], +d[latHeaders.loc_coordinates]);
+                    lats.push(+d[latHeaders.loc_coordinates]);
+                });
+
+                var [lonHeaders, lonLines] = parse_data(data, 'inputs_longitude');
+                lonLines.map(function(d) {
+                    assign(coordinates, [d[lonHeaders.locs], 'lon'], +d[lonHeaders.loc_coordinates]);
+                    lons.push(+d[lonHeaders.loc_coordinates]);
                 });
                 lat_buffer = (Math.max.apply(Math, lats) - Math.min.apply(Math, lats)) / buffer_divisor;
                 lon_buffer = (Math.max.apply(Math, lons) - Math.min.apply(Math, lons)) / buffer_divisor;
@@ -396,28 +398,28 @@ function load_data() {
                 }
                 
                 // load capacities
-                var [headers, lines] = parse_data(data, 'results_energy_cap');
+                var [headers, lines] = parse_data(data, 'results_flow_cap');
                 lines.map(function(d) {
                     if (techs.includes(d[headers.techs])) {
                         nodes.push({
-                            'loc': d[headers.locs],
+                            'loc': d[headers.nodes],
                             'tech': d[headers.techs],
-                            'capacity': +d[headers.energy_cap]
+                            'capacity': +d[headers.flow_cap]
                         });
-                        locations[d[headers.locs]].push(d[headers.techs]);
-                        assign(capacities, [d[headers.locs], d[headers.techs]], +d[headers.energy_cap]);
+                        locations[d[headers.nodes]].push(d[headers.techs]);
+                        assign(capacities, [d[headers.nodes], d[headers.techs]], +d[headers.flow_cap]);
                     } else {
                         links.push({
-                            'loc1': d[headers.locs],
+                            'loc1': d[headers.nodes],
                             'loc2': d[headers.techs].split(':')[1],
                             'tech': d[headers.techs].split(':')[0],
-                            'capacity': +d[headers.energy_cap]
+                            'capacity': +d[headers.flow_cap]
                         });
                         
                         // Cache # of links from each node:
-                        link_counts[d[headers.locs]] ++;
+                        link_counts[d[headers.nodes]] ++;
                         
-                        assign(trans_capacities, [d[headers.locs], d[headers.techs].split(':')[0], d[headers.techs].split(':')[1]], +d[headers.energy_cap]);
+                        assign(trans_capacities, [d[headers.nodes], d[headers.techs].split(':')[0], d[headers.techs].split(':')[1]], +d[headers.flow_cap]);
                     };
                 });
 
@@ -430,7 +432,7 @@ function load_data() {
             }
 
             // load consumption
-            var [headers, lines] = parse_data(data, 'results_carrier_con');
+            var [headers, lines] = parse_data(data, 'results_flow_in');
             lines.map(function(d) {
                 if (techs.includes(d[headers.techs])) {
                     if (!carriers.includes(d[headers.carriers])) {
@@ -441,21 +443,21 @@ function load_data() {
                         production[d[headers.timesteps]] = []
                     }
                     production[d[headers.timesteps]].push({
-                        'loc': d[headers.locs],
+                        'loc': d[headers.nodes],
                         'tech': d[headers.techs],
                         'carrier': d[headers.carriers],
-                        'production': +d[headers.carrier_con]
+                        'production': +d[headers.flow_in]
                     });
                 } else {
                     if (trans_production[d[headers.timesteps]] == undefined) {
                         trans_production[d[headers.timesteps]] = []
                     };
                     trans_production[d[headers.timesteps]].push({
-                        'loc1': d[headers.locs],
+                        'loc1': d[headers.nodes],
                         'loc2': d[headers.techs].split(':')[1],
                         'tech': d[headers.techs].split(':')[0],
                         'carrier': d[headers.carriers],
-                        'production': -d[headers.carrier_con]
+                        'production': -d[headers.flow_in]
                     });
                 }
             });
@@ -463,27 +465,27 @@ function load_data() {
             // load production
             max_prod = 0;
             var max_prods = {};
-            var [headers, lines] = parse_data(data, 'results_carrier_prod');
+            var [headers, lines] = parse_data(data, 'results_flow_out');
             lines.map(function(d) {
                 if (!carriers.includes(d[headers.carriers])) {
                     carriers.push(d[headers.carriers])
                 }
                 if (techs.includes(d[headers.techs])) {
-                    max_prods[d[headers.timesteps]] = (max_prods[d[headers.timesteps]] || 0) + +d[headers.carrier_prod];
+                    max_prods[d[headers.timesteps]] = (max_prods[d[headers.timesteps]] || 0) + +d[headers.flow_out];
                     production[d[headers.timesteps]].push({
-                        'loc': d[headers.locs],
+                        'loc': d[headers.nodes],
                         'tech': d[headers.techs],
                         'carrier': d[headers.carriers],
-                        'production': +d[headers.carrier_prod]
+                        'production': +d[headers.flow_out]
                     });
                 } else {
                     // NOTE: USING CONSUMPTION DATA INSTEAD (ABOVE)
                     // trans_production[d[headers.timesteps]].push({
-                    //     'loc1': d[headers.locs],
+                    //     'loc1': d[headers.nodes],
                     //     'loc2': d[headers.techs].split(':')[1],
                     //     'tech': d[headers.techs].split(':')[0],
                     //     'carrier': d[headers.carriers],
-                    //     'production': +d[headers.carrier_prod]
+                    //     'production': +d[headers.flow_out]
                     // });
                 };
             });
