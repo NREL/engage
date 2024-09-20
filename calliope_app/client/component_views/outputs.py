@@ -219,12 +219,12 @@ def map_outputs(request):
                               "post a valid 'model_uuid' and 'run_id'"
     else:
         # Static
-        files = ["inputs_colors",
-                 "inputs_names",
+        files = ["inputs_color",
+                 "inputs_name",
                  "inputs_inheritance",
                  "inputs_loc_latitude",
                  "inputs_loc_longitude",
-                 "results_energy_cap"]
+                 "results_flow_cap"]
         for file in files:
             with open(os.path.join(run.outputs_path, file + ".csv")) as f:
                 response[file] = f.read()

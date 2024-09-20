@@ -349,14 +349,14 @@ function load_data() {
             if (data_loaded == false) {
 
                 // load colors & techs
-                var [headers, lines] = parse_data(data, 'inputs_colors');
+                var [headers, lines] = parse_data(data, 'inputs_color');
                 lines.map(function(d) {
                     colors[d[headers.techs]] = d[headers.colors];
                     techs.push(d[headers.techs]);
                 });
                 
                 // load names
-                var [headers, lines] = parse_data(data, 'inputs_names');
+                var [headers, lines] = parse_data(data, 'inputs_name');
                 lines.map(function(d) {
                     names[d[headers.techs]] = d[headers.names];
                 });
