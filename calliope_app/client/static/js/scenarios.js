@@ -305,9 +305,7 @@ function convertToJSON() {
                         });
                     }
 
-                    if (isNaN(parseFloat(tempSubExpressions))) {
-                        tempSubExpressions = groupSlicesByDim(tempSubExpressions.toString(), adminGroupConstraint);
-                    }
+                    tempSubExpressions = groupSlicesByDim(tempSubExpressions.toString(), adminGroupConstraint);
 
                     tempDialogObj[constraint].sub_expressions[key][0].expression = tempSubExpressions;
                 }
