@@ -382,7 +382,12 @@ textarea {
 }
 
 /* Tables */
-
+#tech_parameters {
+    overflow-x: scroll;
+}
+#param_table {
+    margin-bottom: 0px;
+}
 .tbl-header {
 	font-size: 24px;
 	background-color: #c1c1c1;
