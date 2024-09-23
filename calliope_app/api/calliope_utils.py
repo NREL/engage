@@ -31,6 +31,8 @@ def get_model_yaml_set(run, scenario_id, year, tech_params_source, node_params_s
     unique_params = []
     # Loop over Parameters
     for param in params:
+        if param.run_parameter.root in ['constraints','global_expressions']:
+            continue
         unique_param = param.run_parameter.root+'.'+param.run_parameter.name
 
         # NOTE: deprecated run parameter in the database
@@ -43,6 +45,7 @@ def get_model_yaml_set(run, scenario_id, year, tech_params_source, node_params_s
             key_list = unique_param.split('.')
             dictify(model_yaml_set,key_list,param.value)
     dictify(model_yaml_set,['import'],'["techs.yaml","locations.yaml"]')
+    dictify(model_yaml_set,['config','init','add_math'],'["custom_math.yaml"]')
     for id in run.run_options.keys():
         run_parameter = Run_Parameter.objects.get(pk=int(id))
         unique_param = run_parameter.root + '.' + run_parameter.name
@@ -66,6 +69,26 @@ def get_model_yaml_set(run, scenario_id, year, tech_params_source, node_params_s
     
     return model_yaml_set
 
+def get_custom_math_yaml_set(run, scenario_id, year):
+    """ Function pulls model parameters from Database for YAML """
+    params = Scenario_Param.objects.filter(scenario_id=scenario_id,
+                                           year__lte=year,run_parameter__root__in=['constraints','global_expressions']).order_by('-year')
+
+    # Initialize the Return list
+    custom_math_yaml_set = {}
+    # Tracks which parameters have already been set (prioritized by year)
+    unique_params = []
+    # Loop over Parameters
+    for param in params:
+        unique_param = param.run_parameter.root
+
+        if unique_param not in unique_params:
+            # If parameter hasn't been set, add to Return List
+            unique_params.append(unique_param)
+            key_list = unique_param.split('.')
+            dictify(custom_math_yaml_set,key_list,param.value)
+
+    return custom_math_yaml_set
 
 def get_location_meta_yaml_set(scenario_id, existing = None):
     """ Function pulls model locations from Database for YAML """
@@ -315,7 +338,7 @@ def stringify(param_list):
 def run_basic(model_path, logger):
     """ Basic Run """
     logger.info('--- Run Basic')
-    model = CalliopeModel(model_definition=model_path)
+    model = CalliopeModel(model_path)
     logger.info(model.info())
     model.build()
     model.solve()
@@ -724,15 +747,13 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year):
 
             new_techs[level][t+'_'+str(old_year)] = tech_b
 
-            '''if new_model['group_constraints']:
-                group_constraints = new_model['group_constraints'].copy()
+            if new_model['constraints']:
+                group_constraints = new_model['constraints'].copy()
                 for g,c in group_constraints.items():
-                    if t in c.get('techs',[]) and t+'_'+str(old_year) not in c.get('techs',[]):
-                        new_model['group_constraints'][g]['techs'].append(t+'_'+str(old_year))
-                    if t in c.get('techs_lhs',[]) and t+'_'+str(old_year) not in c.get('techs',[]):
-                        new_model['group_constraints'][g]['techs_lhs'].append(t+'_'+str(old_year))
-                    if t in c.get('techs_rhs',[]) and t+'_'+str(old_year) not in c.get('techs',[]):
-                        new_model['group_constraints'][g]['techs_rhs'].append(t+'_'+str(old_year))'''
+                    for s,sc in c.get('slices',{}).itemes():
+                        for i,se in enumerate(sc):
+                            if t in se and t+'_'+str(old_year) not in se:
+                                new_model['constraints']['slices'][i] += [t+'_'+str(old_year)]
 
     if os.path.exists(os.path.join(old_inputs,'node_params.csv')):
         node_ts_df_old = pd.read_csv(os.path.join(old_inputs,'node_params.csv'),header=[0,1,2],index_col=[0])

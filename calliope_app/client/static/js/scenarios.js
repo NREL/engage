@@ -372,7 +372,7 @@ function groupSlicesByDim(equationOrSubExpression, adminGroupConstraint) {
     equationOrSubExpression = equationOrSubExpression.replace(/\|\|(\w+)\|\|/g, (match, p1) => {
         let dim = adminGroupConstraint.slices[p1]?.dim;
         if (dim) {
-            return `||${dim}=${match}`;
+            return `||${dim}=$${match}`;
         }
     });
 
