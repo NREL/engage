@@ -255,14 +255,14 @@ body {
 #subheader {
   z-index: 1002;
   position: sticky;
-  top:60px;
+  top:97px;
   width:100%;
   white-space: nowrap;
 }
 #subheader2 {
   z-index: 1001;
   position: sticky;
-  top:85px;
+  top:123px;
   white-space: nowrap;
 }
 .config-navigation {
