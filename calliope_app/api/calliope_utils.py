@@ -586,12 +586,14 @@ def _yaml_outputs(inputs_dir, outputs_dir):
     if has_outputs:
         yaml.dump(model, open(os.path.join(outputs_dir,'model_results.yaml'),'w+'), default_flow_style=False)
 
-def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year):
+def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
     old_model = yaml.safe_load(open(old_results+'/model_results.yaml'))
+    #old_constraints = yaml.safe_load(open(old_inputs+'/custom_math.yaml'))
 
     new_techs = yaml.safe_load(open(new_inputs+'/techs.yaml','r'))
     new_loctechs = yaml.safe_load(open(new_inputs+'/locations.yaml','r'))
     new_model = yaml.safe_load(open(new_inputs+'/model.yaml','r'))
+    new_constraints = yaml.safe_load(open(new_inputs+'/custom_math.yaml'))
 
     built_techs = {'techs':{},'tech_groups':{}}
     built_loc_techs = {}
@@ -622,7 +624,8 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year):
                             loc_tech_b['flow_cap_min'] = loc_tech['results']['flow_cap_equals']
                             loc_tech_b['flow_cap_max'] = loc_tech['results']['flow_cap_equals']
                         if 'storage_cap_equals' in loc_tech['results']:
-                            loc_tech_b['storage_cap_equals'] = loc_tech['results']['storage_cap_equals']
+                            loc_tech_b['storage_cap_min'] = loc_tech['results']['storage_cap_equals']
+                            loc_tech_b['storage_cap_max'] = loc_tech['results']['storage_cap_equals']
                         [loc_tech_b.pop(c) for c in ['cost_flow_cap','cost_interest_rate','cost_storage_cap'] if c in loc_tech_b]
                         loc_tech_b.pop('results')
 
@@ -688,8 +691,9 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year):
                     loc_tech_b['flow_cap_min'] = loc_tech['results']['flow_cap_equals']
                     loc_tech_b['flow_cap_max'] = loc_tech['results']['flow_cap_equals']
                 if 'storage_cap_equals' in loc_tech['results']:
-                    loc_tech_b['storage_cap_equals'] = loc_tech['results']['storage_cap_equals']
-                [loc_tech_b.pop(c) for c in ['cost_flow_cap','cost_interest_rate','cost_storage_cap'] if c in loc_tech_b]
+                    loc_tech_b['storage_cap_min'] = loc_tech['results']['storage_cap_equals']
+                    loc_tech_b['storage_cap_max'] = loc_tech['results']['storage_cap_equals']
+                #[loc_tech_b.pop(c) for c in ['cost_flow_cap','cost_interest_rate','cost_storage_cap'] if c in loc_tech_b]
                 loc_tech_b.pop('results')
 
                 if new_loc_tech:
@@ -741,32 +745,32 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year):
                 new_techs[level][t]['flow_cap_max_systemwide'] = max([new_techs[level][t]['flow_cap_max_systemwide']-built_techs[level][t],0])
             
             [tech_b.pop(c) for c in ['flow_cap_max', 'storage_cap_max'] if c in tech_b]
-            [tech_b.pop(c) for c in ['cost_flow_cap','cost_interest_rate','cost_storage_cap'] if c in tech_b]
+            #[tech_b.pop(c) for c in ['cost_flow_cap','cost_interest_rate','cost_storage_cap'] if c in tech_b]
             
             tech_b['name'] += ' '+str(old_year)
 
             new_techs[level][t+'_'+str(old_year)] = tech_b
 
-            if new_model['constraints']:
-                group_constraints = new_model['constraints'].copy()
+            if new_constraints['constraints']:
+                group_constraints = new_constraints['constraints'].copy()
                 for g,c in group_constraints.items():
-                    for s,sc in c.get('slices',{}).itemes():
+                    for s,sc in c.get('slices',{}).items():
                         for i,se in enumerate(sc):
-                            if t in se and t+'_'+str(old_year) not in se:
-                                new_model['constraints']['slices'][i] += [t+'_'+str(old_year)]
+                            if t in se['expression'] and t+'_'+str(old_year) not in se['expression']:
+                                new_constraints['constraints'][g]['slices'][s][i]['expression'] = se['expression'].replace(t,t+','+t+'_'+str(old_year))
 
-    if os.path.exists(os.path.join(old_inputs,'node_params.csv')):
-        node_ts_df_old = pd.read_csv(os.path.join(old_inputs,'node_params.csv'),header=[0,1,2],index_col=[0])
-        keep_cols = [c[0]+c[1] not in built_loc_techs for c in node_ts_df_old.columns]
-        node_ts_df_old.columns = pd.MultiIndex.from_tuples([(c[0],c[1]+'_'+str(old_year),c[2]) for c in node_ts_df_old.columns])
+    if os.path.exists(os.path.join(old_inputs,'node_timeseries.csv')):
+        node_ts_df_old = pd.read_csv(os.path.join(old_inputs,'node_timeseries.csv'),header=[0,1,2],index_col=[0])
+        keep_cols = [c[1]+c[0] in built_loc_techs for c in node_ts_df_old.columns]
+        node_ts_df_old.columns = pd.MultiIndex.from_tuples([(c[1],c[0]+'_'+str(old_year),c[2]) for c in node_ts_df_old.columns])
         node_ts_df_old = node_ts_df_old.loc[:,keep_cols]
         node_ts_df_old['ts','ts','ts'] = pd.to_datetime(node_ts_df_old.index)
         if not calendar.isleap(new_year):
-            feb_29_mask = (node_ts_df_old['ts'].dt.month == 2) & (node_ts_df_old['ts'].dt.day == 29)
+            feb_29_mask = (node_ts_df_old['ts','ts','ts'].dt.month == 2) & (node_ts_df_old['ts','ts','ts'].dt.day == 29)
             node_ts_df_old = node_ts_df_old[~feb_29_mask]
-            node_ts_df_old.index = node_ts_df_old['ts'].apply(lambda x: x.replace(year=new_year))
+            node_ts_df_old.index = node_ts_df_old['ts','ts','ts'].apply(lambda x: x.replace(year=new_year))
         elif not calendar.isleap(old_year):
-            node_ts_df_old.index = node_ts_df_old['ts'].apply(lambda x: x.replace(year=new_year))
+            node_ts_df_old.index = node_ts_df_old['ts','ts','ts'].apply(lambda x: x.replace(year=new_year))
 
             # Leap Year Handling (Fill w/ Feb 28th)
             feb_28_mask = (node_ts_df_old.index.month == 2) & (node_ts_df_old.index.day == 28)
@@ -778,20 +782,20 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year):
 
         node_ts_df_old.drop(columns=['ts','ts','ts'],inplace=True)
     
-        if os.path.exists(os.path.join(new_inputs,'node_params.csv')):
-            node_ts_df_new = pd.read_csv(os.path.join(new_inputs,'node_params.csv'),header=[0,1],index_col=[0])
+        if os.path.exists(os.path.join(new_inputs,'node_timeseries.csv')):
+            node_ts_df_new = pd.read_csv(os.path.join(new_inputs,'node_timeseries.csv'),header=[0,1,2],index_col=[0])
             node_ts_df_new.index = pd.to_datetime(node_ts_df_new.index)
             node_ts_df_new = pd.concat([node_ts_df_new,node_ts_df_old],axis=1)
         else:
-            new_model['data_sources']['Node_Timeseries'] = {'source': 'node_params.csv', 'rows': 'timesteps',
-                                                                'columns': ['nodes', 'techs', 'parameters']}
+            new_model['data_sources']['Node_Timeseries'] = {'source': 'node_timeseries.csv', 'rows': 'timesteps',
+                                                                'columns': ['techs', 'nodes', 'parameters']}
             node_ts_df_new = node_ts_df_old
         node_ts_df_new.index.name = None
-        node_ts_df_new.to_csv(os.path.join(new_inputs,'node_params.csv'))
+        node_ts_df_new.to_csv(os.path.join(new_inputs,'node_timeseries.csv'))
 
-    if os.path.exists(os.path.join(old_inputs,'tech_params.csv')):
-        tech_ts_df_old = pd.read_csv(os.path.join(old_inputs,'tech_params.csv'),header=[0,1],index_col=[0])
-        keep_cols = [c[0] in built_techs for c in tech_ts_df_old.columns]
+    if os.path.exists(os.path.join(old_inputs,'tech_timeseries.csv')):
+        tech_ts_df_old = pd.read_csv(os.path.join(old_inputs,'tech_timeseries.csv'),header=[0,1],index_col=[0])
+        keep_cols = [(c[0] in built_techs.get('techs',{}) or c[0] in built_techs.get('tech_groups',{})) for c in tech_ts_df_old.columns]
         tech_ts_df_old.columns = pd.MultiIndex.from_tuples([(c[0]+'_'+str(old_year),c[1]) for c in tech_ts_df_old.columns])
         tech_ts_df_old = tech_ts_df_old.loc[:,keep_cols]
         tech_ts_df_old['ts','ts'] = pd.to_datetime(tech_ts_df_old.index)
@@ -812,16 +816,16 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year):
 
         tech_ts_df_old.drop(columns=['ts','ts'],inplace=True)
     
-        if os.path.exists(os.path.join(new_inputs,'tech_params.csv')):
-            tech_ts_df_new = pd.read_csv(os.path.join(new_inputs,'tech_params.csv'),header=[0,1],index_col=[0])
+        if os.path.exists(os.path.join(new_inputs,'tech_timeseries.csv')):
+            tech_ts_df_new = pd.read_csv(os.path.join(new_inputs,'tech_timeseries.csv'),header=[0,1],index_col=[0])
             tech_ts_df_new.index = pd.to_datetime(tech_ts_df_old.index)
             tech_ts_df_new = pd.concat([tech_ts_df_new,tech_ts_df_old],axis=1)
         else:
-            new_model['data_sources']['Tech_Timeseries'] = {'source': 'tech_params.csv', 'rows': 'timesteps',
+            new_model['data_sources']['Tech_Timeseries'] = {'source': 'tech_timeseries.csv', 'rows': 'timesteps',
                                                                 'columns': ['techs', 'parameters']}
             tech_ts_df_new = tech_ts_df_old
         tech_ts_df_new.index.name = None
-        tech_ts_df_new.to_csv(os.path.join(new_inputs,'tech_params.csv'))
+        tech_ts_df_new.to_csv(os.path.join(new_inputs,'tech_timeseries.csv'))
 
     with open(new_inputs+'/techs.yaml','w') as outfile:
         yaml.dump(new_techs,outfile,default_flow_style=False)
@@ -831,3 +835,6 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year):
 
     with open(new_inputs+'/model.yaml', 'w') as outfile:
         yaml.dump(new_model,outfile,default_flow_style=False)
+
+    with open(new_inputs+'/custom_math.yaml', 'w') as outfile:
+        yaml.dump(new_constraints,outfile,default_flow_style=False)
