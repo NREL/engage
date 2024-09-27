@@ -34,6 +34,7 @@ urlpatterns = [
     path('component/scenario/',
          configuration_component_views.scenario,
          name='scenario'),
+
     # Outputs Component Views
     path('component/run_dashboard/',
          outputs_component_views.run_dashboard,
@@ -88,6 +89,12 @@ urlpatterns = [
     path('<model_uuid>/model_flags/',
          configuration_views.model_flags_view,
          name='model_flags'),
+
+    # Admin tables
+    path('admin/group_constraints/',
+         configuration_views.admin_group_constraints,
+         name='group_constraints'),
+
     # Outputs Views
     path('<model_uuid>/runs/',
          outputs_views.runs_view,
@@ -98,6 +105,7 @@ urlpatterns = [
     path('<model_uuid>/<run_id>/map_viz/',
          outputs_views.map_viz_view,
          name='map_viz'),
+
     # Engage Views
     path('share/',
          engage_views.share_view,

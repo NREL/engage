@@ -1,4 +1,3 @@
-git+https://github.com/NREL/GEOPHIRES-X.git#egg=geophires-x
 mock==4.0.3
 pylint==2.14.5
 pylint-django==2.5.3

@@ -27,11 +27,12 @@ from django.utils.text import slugify
 
 from api.models.outputs import Run, Cambium
 from api.tasks import run_model, task_status, build_model,upload_ts
-from api.models.calliope import Abstract_Tech, Abstract_Tech_Param, Parameter
+from api.models.calliope import Abstract_Tech, Abstract_Tech_Param, Parameter, Run_Parameter
 from api.models.configuration import (
     Model, ParamsManager, User_File, Location, Technology,
     Tech_Param, Loc_Tech, Loc_Tech_Param, Timeseries_Meta, Carrier, Scenario_Param
 )
+
 from api.models.engage import ComputeEnvironment
 from api.utils import zip_folder, initialize_units, convert_units, noconv_units
 from batch.managers import AWSBatchJobManager
@@ -60,6 +61,8 @@ def build(request):
     Example:
     GET: /api/build/
     """
+    run_options = request.GET.get('run_options', None)
+    run_options = json.loads(run_options)
 
     # Input parameters
     model_uuid = request.GET.get("model_uuid", None)
@@ -82,6 +85,7 @@ def build(request):
 
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
+
 
     try:
         start_date = datetime.strptime(start_date, "%Y-%m-%d")
@@ -106,6 +110,7 @@ def build(request):
                 years = [start_date.year]+years
             groupname = 'Group-'+timestamp
         for year in sorted(years):
+
             start_date = start_date.replace(year=year)
             end_date = end_date.replace(year=year)
             subset_time = str(start_date.date()) + " to " + str(end_date.date())
@@ -122,7 +127,8 @@ def build(request):
                 timestep=timestep,
                 compute_environment=compute_environment,
                 group=groupname,
-                description=notes
+                description=notes,
+                run_options=run_options
             )
 
             # Generate File Path
@@ -151,8 +157,8 @@ def build(request):
                 )
             inputs_path = inputs_path.lower().replace(" ", "-")
             os.makedirs(inputs_path, exist_ok=True)
-
-            # Celery task
+           
+            # Celery task        
             async_result = build_model.apply_async(
                 kwargs={
                     "inputs_path": inputs_path,
@@ -163,9 +169,11 @@ def build(request):
                     "end_date": end_date,
                 }
             )
+
             build_task = CeleryTask.objects.get(task_id=async_result.id)
             run.build_task = build_task
             run.save()
+
             logger.info("Model run %s starts to build in celery worker.", run.id)
 
         payload = {
@@ -185,7 +193,6 @@ def build(request):
                 str(e)
             ),
         }
-
     return HttpResponse(json.dumps(payload, indent=4), content_type="application/json")
 
 
@@ -778,13 +785,13 @@ def upload_techs(request):
                 Tech_Param.objects.create(
                         model_id=model.id,
                         technology_id=technology.id,
-                        parameter_id=1,
+                        parameter_id=Parameter.objects.filter(name='base_tech').first().id,
                         value=row['abstract_tech'],
                     )
                 Tech_Param.objects.create(
                         model_id=model.id,
                         technology_id=technology.id,
-                        parameter_id=2,
+                        parameter_id=Parameter.objects.filter(name='name').first().id,
                         value=row['pretty_name'],
                     )
                 update_dict = {'edit':{'parameter':{},'timeseries':{}},'add':{},'essentials':{}}

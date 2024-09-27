@@ -48,6 +48,7 @@ class Run(models.Model):
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
+    run_options = models.JSONField(default=None, null=True)
     compute_environment = models.ForeignKey(
         ComputeEnvironment,
         blank=True,
@@ -99,27 +100,27 @@ class Run(models.Model):
     def get_meta(self):
         meta = {}
         # Names
-        names = self.read_output('inputs_names.csv')
-        meta['names'] = names.set_index('techs')['names'].to_dict()
+        names = self.read_output('inputs_name.csv')
+        meta['names'] = names.set_index('techs')['name'].to_dict()
         # Colors
-        colors = self.read_output('inputs_colors.csv')
-        meta['colors'] = colors.set_index('techs')['colors'].to_dict()
+        colors = self.read_output('inputs_color.csv')
+        meta['colors'] = colors.set_index('techs')['color'].to_dict()
         # Locations
-        locations = self.read_output('inputs_loc_coordinates.csv')
-        meta['locations'] = sorted(locations['locs'].unique())
+        locations = self.read_output('inputs_latitude.csv')
+        meta['locations'] = sorted(locations['nodes'].unique())
+        parents = self.read_output('inputs_base_tech.csv')
+        parents = parents.groupby('base_tech')['techs'].apply(list)
         # Remotes (Transmission Technologies)
-        remotes = self.read_output('inputs_lookup_remotes.csv')
-        remotes = remotes['techs'].unique()
-        meta['remotes'] = list(remotes)
-        meta['transmissions'] = list(set([t.split(':')[0] for t in remotes]))
+        #remotes = self.read_output('inputs_lookup_remotes.csv')
+        #remotes = remotes['techs'].unique()
+        #meta['remotes'] = list(remotes)
+        meta['transmissions'] = parents['transmission']
         # Demands
-        parents = self.read_output('inputs_inheritance.csv')
-        parents = parents.groupby('inheritance')['techs'].apply(list)['demand']
-        meta['demands'] = parents
+        meta['demands'] = ['demand']
         # Months
         meta['months'] = self.get_months()
         # Carriers
-        c1 = self.read_output('inputs_lookup_loc_techs_conversion.csv')
+        '''c1 = self.read_output('inputs_lookup_loc_techs_conversion.csv')
         if c1 is not None:
             c1 = c1[['carrier_tiers', 'lookup_loc_techs_conversion']]
         else:
@@ -153,12 +154,14 @@ class Run(models.Model):
         # Split into Location, Technology, Carrier
         c[['locs', 'techs', 'carrier']] = c['ltc'].str.split('::', expand=True)
         # Filter
-        c.loc[c['techs'].isin(meta['demands']), 'production'] = False
+        c.loc[c['techs'].isin(meta['demands']), 'production'] = False'''
         # Response
-        meta['carriers_in'] = c[c['production'] == False].groupby(
-            'carrier')['techs'].apply(lambda x: list(set(x))).to_dict()
-        meta['carriers_out'] = c[c['production'] == True].groupby(
-            'carrier')['techs'].apply(lambda x: list(set(x))).to_dict()
+        carriers_in = self.read_output('inputs_carrier_in.csv')
+        meta['carriers_in'] = carriers_in.loc[carriers_in['carrier_in'] == 1.0].groupby(
+            'carriers')['techs'].apply(lambda x: list(set(x))).to_dict()
+        carriers_out = self.read_output('inputs_carrier_out.csv')
+        meta['carriers_out'] = carriers_out.loc[carriers_out['carrier_out'] == 1.0].groupby(
+            'carriers')['techs'].apply(lambda x: list(set(x))).to_dict()
         # Get a list of all carriers (sorted by # technologies)
         carriers = {**meta['carriers_in'], **meta['carriers_out']}
         carriers = [(key, len(values)) for key, values in carriers.items()]
@@ -195,7 +198,7 @@ class Run(models.Model):
         for metric in METRICS:
             data = {}
             if metric in cost_classes.keys():
-                cost_class = (metric,cost_classes[metric].split('.')[1])
+                cost_class = (metric,cost_classes[metric])
             else:
                 cost_class = None
             # Filters
@@ -232,15 +235,12 @@ class Run(models.Model):
             # Storage Capacity
             df = self.read_output('results_storage_cap.csv')
             if df is None:
-                df = pd.DataFrame(columns=['locs', 'techs', 'values'])
+                df = pd.DataFrame(columns=['nodes', 'techs', 'values'])
             else:
                 df['values'] = df['storage_cap']
             ctx = self.read_output('inputs_storage_cap_max.csv')
             if ctx is not None:
                 ctx['values'] = ctx['storage_cap_max']
-                etx = self.read_output('inputs_storage_cap_equals.csv')
-                if etx is not None:
-                    etx['values'] = etx['storage_cap_equals']
 
         elif cost_class:
             LABELS[cost_class[0]] = cost_class[1]
@@ -251,38 +251,35 @@ class Run(models.Model):
             ctx = None
         else:
             # Energy Capacity
-            df = self.read_output('results_energy_cap.csv')
-            df['values'] = df['energy_cap']
-            ctx = self.read_output('inputs_energy_cap_max.csv')
+            df = self.read_output('results_flow_cap.csv')
+            df['values'] = df['flow_cap']
+            ctx = self.read_output('inputs_flow_cap_max.csv')
             if ctx is not None:
-                ctx['values'] = ctx['energy_cap_max']
-                etx = self.read_output('inputs_energy_cap_equals.csv')
-                if etx is not None:
-                    etx['values'] = etx['energy_cap_equals']
+                ctx['values'] = ctx['flow_cap_max']
 
         # Process Values
-        df = df[~df['techs'].isin(meta['remotes'])]
+        df = df[~df['techs'].isin(meta['transmissions'])]
         df = df[~df['techs'].isin(meta['demands'])]
         df = df[df['techs'].isin(soft_filter)]
         df = df[df['techs'].isin(hard_filter)]
-        locations = list(df['locs'].unique())
+        locations = list(df['nodes'].unique())
         if location:
-            df = df[df['locs'] == location]
+            df = df[df['nodes'] == location]
         if not df.empty:
             df = df.groupby('techs').sum()
         df = df['values'].to_dict()
+
         # Process Max Bounds Context (ctx)
+        # TODO: Handle tech-level only results (need to multiply by number of nodes if all params are set at tech level)
         if ctx is not None:
             ctx = ctx.replace(np.inf, np.nan).dropna()
-            if location:
-                ctx = ctx[ctx['locs'] == location]
-            if etx is not None:
-                etx = etx[etx['techs'].isin(ctx['techs'])]
-                ctx['values'] = ctx['values'].add(etx['values'],fill_value=0)
+            if location and 'nodes' in ctx.columns:
+                ctx = ctx[ctx['nodes'] == location]
             ctx = ctx.groupby('techs').sum()
             ctx = ctx['values'].to_dict()
         else:
             ctx = {}
+
         # Viz Layers
         layers = [{'key': key,
                    'name': meta['names'][key] if key in meta['names'] else key,
@@ -306,7 +303,7 @@ class Run(models.Model):
             df = self.read_output('results_storage' + ext)
             if df is None:
                 df = pd.DataFrame(
-                    columns=['locs', 'techs', 'timesteps', 'values'])
+                    columns=['nodes', 'techs', 'timesteps', 'values'])
             else:
                 df['values'] = df['storage']
         elif cost_class:
@@ -314,38 +311,46 @@ class Run(models.Model):
             df = self.read_output('results_cost_var' + ext)
             if df is None:
                 df = pd.DataFrame(
-                    columns=['locs', 'techs', 'timesteps', 'values'])
+                    columns=['nodes', 'techs', 'timesteps', 'values'])
             else:
                 df = df.loc[df['costs']==cost_class[1]]
                 df['values'] = df['cost_var']
         else:
             # Production / Consumption
-            df = self.read_output('results_carrier_con' + ext)
-            df['values'] = df['carrier_con']
+            df = self.read_output('results_flow_in' + ext)
+            df['values'] = df['flow_in']*-1
             if metric == "Production":
-                df2 = self.read_output('results_carrier_prod' + ext)
-                df2['values'] = df2['carrier_prod']
-                df = df.append(df2)
+                df2 = self.read_output('results_flow_out' + ext)
+                df2['values'] = df2['flow_out']
+                df = pd.concat([df, df2], ignore_index=True)
             else:
-                df2 = self.read_output('results_carrier_export' + ext)
+                df2 = self.read_output('results_flow_export' + ext)
                 if df2 is not None:
-                    df2['values'] = -df2['carrier_export']
-                    df = df.append(df2)
+                    df2['values'] = -df2['flow_export']
+                    df = pd.concat([df, df2], ignore_index=True)
             # Unmet Demand
             df3 = self.read_output('results_unmet_demand' + ext)
             if df3 is not None:
                 df3['values'] = df3['unmet_demand']
                 df3['techs'] = 'Unmet Demand'
-                df = df.append(df3)
+                df = pd.concat([df, df3], ignore_index=True)
                 soft_filter.append('Unmet Demand')
                 meta['colors']['Unmet Demand'] = "#FF000055"
+            # Unmet Supply
+            df4 = self.read_output('results_unused_supply' + ext)
+            if df4 is not None:
+                df4['values'] = df4['unused_supply']
+                df4['techs'] = 'Unused Supply'
+                df = pd.concat([df, df4], ignore_index=True)
+                soft_filter.append('Unused Supply')
+                meta['colors']['Unused Supply'] = "#FF000055"
             df = df[df['carriers'] == carrier]
         # Filter
         df = df[df['techs'].isin(soft_filter)]
         df['techs'] = df['techs'].str.split(':').str[0]
-        locations = list(df['locs'].unique())
+        locations = list(df['nodes'].unique())
         if location:
-            df = df[df['locs'] == location]
+            df = df[df['nodes'] == location]
         else:
             df = df[~df['techs'].isin(meta['transmissions'])]
         # Process
@@ -408,8 +413,8 @@ class Run(models.Model):
             return None
 
     def get_months(self):
-        fpath = os.path.join(self.outputs_path, 'results_carrier_prod_*.csv')
-        months = sorted([m[-6:-4] for m in glob.glob(fpath)])
+        fpath = os.path.join(self.outputs_path, 'results_flow_out_*.csv')
+        months = sorted([m[-6:-4] for m in glob.glob(fpath) if m[-6:-4].isdigit()])
         return months
 
 

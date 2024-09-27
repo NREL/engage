@@ -121,7 +121,8 @@ Load parameters
       admin_run_parameter.json \
       admin_parameter.json \
       admin_abstract_tech.json \
-      admin_abstract_tech_param.json
+      admin_abstract_tech_param.json \
+      admin_group_constraint.json
 
 Load templates
 

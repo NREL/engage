@@ -11,6 +11,7 @@ from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
 from django.http import HttpResponse, FileResponse
 from django.contrib.auth.models import User
+
 from django.core.exceptions import ValidationError
 from django.utils.html import escape
 from PySAM import Windpower
@@ -18,7 +19,7 @@ from PySAM.ResourceTools import FetchResourceFiles
 from django.db import connection
 from django_ratelimit.decorators import ratelimit
 from api.models.engage import RequestRateLimit
-from api.models.calliope import Abstract_Tech, Run_Parameter
+from api.models.calliope import Abstract_Tech, Run_Parameter, Parameter
 from api.models.configuration import Location, Technology, Tech_Param, \
     Loc_Tech, Loc_Tech_Param, ParamsManager, Scenario, Scenario_Param, \
     Scenario_Loc_Tech, Timeseries_Meta, Model, Model_Comment, \
@@ -524,13 +525,13 @@ def add_technology(request):
         Tech_Param.objects.create(
             model_id=model.id,
             technology_id=technology.id,
-            parameter_id=1,
+            parameter_id=Parameter.objects.filter(name='base_tech').first().id,
             value=technology_type,
         )
         Tech_Param.objects.create(
             model_id=model.id,
             technology_id=technology.id,
-            parameter_id=2,
+            parameter_id=Parameter.objects.filter(name='name').first().id,
             value=technology_pretty_name,
         )
     # Log Activity

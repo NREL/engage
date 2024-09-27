@@ -24,6 +24,14 @@ $(document).ready(function () {
 			years = $('#years').val(),
 			notes = $('#notes').val();
 
+		var run_options = {};
+		$('#run_parameters .parameter-row').each(function() {
+			var paramId = $(this).data('param-id');
+			var value = $(this).find('.run-parameter-value').val();
+			run_options[paramId] = value;
+		});
+	
+
 		// fix timezone issues
 		sd = new Date(sd.getTime() + sd.getTimezoneOffset() * 60000);
 		ed = new Date(ed.getTime() + ed.getTimezoneOffset() * 60000);
@@ -48,17 +56,19 @@ $(document).ready(function () {
 
 			$.ajax({
 				url: '/' + LANGUAGE_CODE + '/api/build/',
+				contentType: 'application/json',  // Specify that you're sending JSON
 				data: {
-				  'model_uuid': model_uuid,
-				  'scenario_id': scenario_id,
-				  'start_date': start_date,
-				  'end_date': end_date,
-				  'cluster': cluster,
-				  'manual':manual,
-				  'timestep':timestep,
-				  'run_env': run_env,
-				  'years':years,
-				  'notes':notes
+					'model_uuid': model_uuid,
+					'scenario_id': scenario_id,
+					'start_date': start_date,
+					'end_date': end_date,
+					'cluster': cluster,
+					'manual': manual,
+					'timestep': timestep,
+					'run_env': run_env,
+					'years': years,
+					'notes': notes,
+					'run_options': JSON.stringify(run_options)
 				},
 				dataType: 'json',
 				success: function (data) {
