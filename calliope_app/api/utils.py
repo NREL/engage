@@ -223,7 +223,7 @@ def load_timeseries_from_csv(filename, t_index, v_index, has_header=False):
         chunk_df = chunk_df[pd.notnull(chunk_df)]
         chunk_df = chunk_df[pd.notnull(chunk_df)]
 
-        df = df.append(chunk_df)
+        df = pd.concat([df,chunk_df])
 
     # Clean
     df = df.set_index(t_index)
