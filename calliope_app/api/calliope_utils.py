@@ -141,7 +141,7 @@ def get_techs_yaml_set(scenario_id, year):
             param_keys = param.parameter.root.split('.')+[param.parameter.name]
 
             if param.technology.abstract_tech.name == 'transmission':
-                parent_type = 'tech_groups'
+                parent_type = 'templates'
             else:
                 parent_type = 'techs'
             if param.parameter.index and param.parameter.dim:
@@ -188,7 +188,7 @@ def get_loc_techs_yaml_set(scenario_id, year):
             param_list = [parent_type, location]
             dictify(loc_techs_yaml_set,param_list+['from'],loc_tech.location_1.name)
             dictify(loc_techs_yaml_set,param_list+['to'],loc_tech.location_2.name)
-            dictify(loc_techs_yaml_set,param_list+['inherit'],technology)
+            dictify(loc_techs_yaml_set,param_list+['template'],technology)
         else:
             parent_type = 'nodes'
             location = loc_tech.location_1.name
@@ -595,7 +595,7 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
     new_model = yaml.safe_load(open(new_inputs+'/model.yaml','r'))
     new_constraints = yaml.safe_load(open(new_inputs+'/custom_math.yaml'))
 
-    built_techs = {'techs':{},'tech_groups':{}}
+    built_techs = {'techs':{},'templates':{}}
     built_loc_techs = {}
 
     for l in old_model['nodes']:
@@ -667,11 +667,11 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                         new_loctechs['nodes'][l]['techs'][t+'_'+str(old_year)] = loc_tech_b
 
     for l in old_model['links']:
-        t = old_model['links'][l]['inherit']
-        old_tech = old_model['tech_groups'][t]
-        if t not in new_techs['tech_groups']:
+        t = old_model['links'][l]['template']
+        old_tech = old_model['templates'][t]
+        if t not in new_techs['templates']:
             continue
-        new_tech = new_techs['tech_groups'][t]
+        new_tech = new_techs['templates'][t]
         new_loc_tech = new_loctechs['links'][l]
         loc_tech = old_model['links'][l]
         if ('flow_cap_max' in loc_tech or 'storage_cap_max' in loc_tech) or\
@@ -681,10 +681,10 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                 loc_tech_b = copy.deepcopy(loc_tech)
 
                 # Record built techs and the total systemwide capacity of those techs to use with flow_cap_max_systemwide
-                if t in built_techs['tech_groups']:
-                    built_techs['tech_groups'][t] += loc_tech.get('results',{'flow_cap_equals':0}).get('flow_cap_equals',0)
+                if t in built_techs['templates']:
+                    built_techs['templates'][t] += loc_tech.get('results',{'flow_cap_equals':0}).get('flow_cap_equals',0)
                 else:
-                    built_techs['tech_groups'][t] = loc_tech.get('results',{'flow_cap_equals':0}).get('flow_cap_equals',0)
+                    built_techs['templates'][t] = loc_tech.get('results',{'flow_cap_equals':0}).get('flow_cap_equals',0)
 
                 [loc_tech_b.pop(c) for c in ['flow_cap_max', 'storage_cap_max'] if c in loc_tech_b]
                 if 'flow_cap_equals' in loc_tech['results']:
@@ -731,7 +731,7 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
 
                 built_loc_techs[l+t] = loc_tech_b
 
-                loc_tech_b['inherit'] += '_'+str(old_year)
+                loc_tech_b['template'] += '_'+str(old_year)
 
                 new_loctechs['links'][l+'_'+str(old_year)] = loc_tech_b
 
@@ -795,7 +795,7 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
 
     if os.path.exists(os.path.join(old_inputs,'tech_timeseries.csv')):
         tech_ts_df_old = pd.read_csv(os.path.join(old_inputs,'tech_timeseries.csv'),header=[0,1],index_col=[0])
-        keep_cols = [(c[0] in built_techs.get('techs',{}) or c[0] in built_techs.get('tech_groups',{})) for c in tech_ts_df_old.columns]
+        keep_cols = [(c[0] in built_techs.get('techs',{}) or c[0] in built_techs.get('templates',{})) for c in tech_ts_df_old.columns]
         tech_ts_df_old.columns = pd.MultiIndex.from_tuples([(c[0]+'_'+str(old_year),c[1]) for c in tech_ts_df_old.columns])
         tech_ts_df_old = tech_ts_df_old.loc[:,keep_cols]
         tech_ts_df_old['ts','ts'] = pd.to_datetime(tech_ts_df_old.index)
