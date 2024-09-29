@@ -25,7 +25,7 @@ from api.models.configuration import Model, Scenario, Scenario_Loc_Tech, \
     Tech_Param, Loc_Tech_Param, Timeseries_Meta, User_File
 from api.models.outputs import Run
 from api.utils import load_timeseries_from_csv, get_model_logger, zip_folder
-from api.calliope_utils import get_model_yaml_set, get_location_meta_yaml_set,\
+from api.calliope_utils import get_model_yaml_set, get_custom_math_yaml_set, get_location_meta_yaml_set,\
                         get_techs_yaml_set, get_loc_techs_yaml_set,get_carriers_yaml_set,\
                         run_basic, run_clustered, apply_gradient
 from api.calliope_utils import run_basic, run_clustered, apply_gradient
@@ -234,6 +234,12 @@ def build_model_yaml(run, scenario_id, start_date, inputs_path, node_params_sour
 
     with open(os.path.join(inputs_path, "model.yaml"), 'w') as outfile:
         yaml.dump(model_yaml_set, outfile, default_flow_style=False)
+
+    # custom_math.yaml
+    custom_math_yaml_set = get_custom_math_yaml_set(run, scenario_id, year)
+    with open(os.path.join(inputs_path, "custom_math.yaml"), 'w') as outfile:
+        yaml.dump(custom_math_yaml_set, outfile, default_flow_style=False)
+
     # techs.yaml
     techs_yaml_set = get_techs_yaml_set(scenario_id, year)
     with open(os.path.join(inputs_path, "techs.yaml"), 'w') as outfile:

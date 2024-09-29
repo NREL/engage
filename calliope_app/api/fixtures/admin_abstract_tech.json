@@ -10,7 +10,7 @@
       "description_fr": "Fournir de l'\u00e9nergie \u00e0 un transporteur, a une ressource positive.",
       "description_es": "Suministra energía a un portador, tiene un recurso positivo.",
       "name": "supply",
-      "image": "data/images/supply.png",
+      "image": "images/technologies/supply.svg",
       "icon": "<i class=\"fas fa-bolt\"></i>"
     }
   },
@@ -25,7 +25,7 @@
       "description_fr": "Fournir de l'\u00e9nergie \u00e0 un transporteur, a une ressource positive. D'autres contraintes possibles, y compris l'efficacit\u00e9 et le stockage, distinguent cela de l'approvisionnement.",
       "description_es": "Suministra energía a un portador, tiene un recurso positivo. Posibles restricciones adicionales, incluyendo eficiencias y almacenamiento, distinguen esto del suministro.",
       "name": "supply_plus",
-      "image": "data/images/supply_plus.png",
+      "image": "images/technologies/supply_plus.svg",
       "icon": "<i class=\"fas fa-battery-three-quarters\"></i> <i class=\"fas fa-bolt\"></i>"
     }
   },
@@ -40,7 +40,7 @@
       "description_fr": "Demande de l'\u00e9nergie \u00e0 un transporteur, a une ressource n\u00e9gative.",
       "description_es": "Demanda energía del portador, tiene un recurso negativo.",
       "name": "demand",
-      "image": "data/images/demand.png",
+      "image": "images/technologies/demand.svg",
       "icon": "<i class=\"far fa-building\"></i>"
     }
   },
@@ -55,7 +55,7 @@
       "description_fr": "Stocke l'\u00e9nergie.",
       "description_es": "Almacena energía.",
       "name": "storage",
-      "image": "data/images/storage.png",
+      "image": "images/technologies/storage.svg",
       "icon": "<i class=\"fas fa-battery-three-quarters\"></i>"
     }
   },
@@ -70,7 +70,7 @@
       "description_fr": "Transmet l'\u00e9nergie d'un endroit \u00e0 un autre.",
       "description_es": "Transmite energía de un lugar a otro.",
       "name": "transmission",
-      "image": "data/images/transmission.png",
+      "image": "images/technologies/transmission.svg",
       "icon": "<i class=\"fas fa-exchange-alt\"></i>"
     }
   },
@@ -85,7 +85,7 @@
       "description_fr": "Convertit l'\u00e9nergie d'un transporteur \u00e0 un autre.",
       "description_es": "Convierte energía de un portador a otro.",
       "name": "conversion",
-      "image": "data/images/conversion.png",
+      "image": "images/technologies/conversion.svg",
       "icon": "<i class=\"fa-solid fa-shuffle\"></i>"
     }
   },
@@ -100,7 +100,7 @@
       "description_fr": "Convertit l'\u00e9nergie d'un transporteur \u00e0 un autre.",
       "description_es": "Convierte energía de un portador a otro.",
       "name": "conversion_plus",
-      "image": "data/images/conversion_plus.png",
+      "image": "images/technologies/conversion_plus.svg",
       "icon": "<i class=\"fa-solid fa-shuffle\"></i> <i class=\"fas fa-plus\"></i>"
     }
   }

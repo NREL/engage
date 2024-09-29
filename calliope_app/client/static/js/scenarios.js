@@ -264,7 +264,7 @@ function convertToJSON() {
         let constraintId = safeHTMLId(constraint);
 
         if (isCalliopeVersionSeven(calliope_version)) {
-            let groupConstraintId = constraint.split("||")[0];
+            let groupConstraintId = constraint.split("||")[1];
             let adminGroupConstraint = admin_group_constraints.find(obj => obj.id === Number(groupConstraintId));
             let tempEquations = adminGroupConstraint.equations[0].expression;
 
@@ -286,7 +286,7 @@ function convertToJSON() {
                     if (tempSubExpressions == [] || tempSubExpressions == "") {
                         delete tempDialogObj[constraint].sub_expressions[key];
                     } else {
-                        tempDialogObj[constraint].sub_expressions[key][0].expression = parseFloat(tempSubExpressions) ? parseFloat(tempSubExpressions) : 0;
+                        tempDialogObj[constraint].sub_expressions[key][0].expression = tempSubExpressions ? tempSubExpressions : 0;
                     }
                 } else {
                     tempDialogObj[constraint].sub_expressions[key] = structuredClone(adminGroupConstraint.sub_expression[key].yaml);
@@ -305,7 +305,7 @@ function convertToJSON() {
                         });
                     }
 
-                    if (isNaN(parseFloat(tempSubExpressions))) {
+                    if (isNaN(tempSubExpressions)) {
                         tempSubExpressions = groupSlicesByDim(tempSubExpressions.toString(), adminGroupConstraint);
                     }
 
@@ -372,7 +372,7 @@ function groupSlicesByDim(equationOrSubExpression, adminGroupConstraint) {
     equationOrSubExpression = equationOrSubExpression.replace(/\|\|(\w+)\|\|/g, (match, p1) => {
         let dim = adminGroupConstraint.slices[p1]?.dim;
         if (dim) {
-            return `||${dim}=${match}`;
+            return `||${dim}=$${match}`;
         }
     });
 
@@ -389,7 +389,7 @@ function renderDialogGroupConstraints(initialLoad) {
     }
 
     Object.keys(dialogObj).forEach(constraint => {
-        let groupConstraintPrettyName = isCalliopeVersionSeven(calliope_version) && constraint.split("||")[1] ? constraint.split("||")[1] : constraint;
+        let groupConstraintPrettyName = isCalliopeVersionSeven(calliope_version) && constraint.split("||")[0] ? constraint.split("||")[0] : constraint;
         let constraintId = safeHTMLId(constraint);
         let adminGroupConstraint = isCalliopeVersionSeven(calliope_version) ? admin_group_constraints.find(obj => obj.id === Number(dialogObj[constraint].id)) : null;
 
@@ -446,8 +446,7 @@ function renderSubExpressions(constraint, constraintId, constraintContent, admin
             $(constraintContent).append(`${value.required ? "<span class='req-input'>* </span>" : ""}<label><b>${key}</b></label>`);
             const input = $(`
                 <input 
-                    type='number' 
-                    step='any'
+                    type='text'
                     id='${constraintId}${key}-val' 
                     name='${constraint}' 
                     data-key=${key} 
@@ -482,7 +481,7 @@ function renderGroupConstraintDropdowns(constraint, constraintId, constraintCont
                 let sliceOptions = [];
                 if (sliceDim == "techs") {
                     sliceOptions = technologies;
-                } else if (sliceDim == "locs") {
+                } else if (sliceDim == "nodes") {
                     sliceOptions = locations;
                 } else if (sliceDim == "carriers") {
                     sliceOptions = carriers;
@@ -893,7 +892,7 @@ function activate_scenario_settings() {
                     let tempDialogObj = structuredClone(dialogObj);
                     
                     Object.keys(tempDialogObj).forEach(constraint => {
-                        let groupConstraintId = constraint.split("||")[0];
+                        let groupConstraintId = constraint.split("||")[1];
                         tempDialogObj[constraint].id = Number(groupConstraintId);
                         let adminGroupConstraint = admin_group_constraints.find(obj => obj.id === Number(groupConstraintId));
                         tempDialogObj[constraint].equations[0].expression = adminGroupConstraint.equations[0].expression;    
@@ -922,7 +921,7 @@ function activate_scenario_settings() {
                                     tempDialogObj[constraint].sub_expressions[key][0].expression = value.yaml[0].expression == "[VALUE]" ? [] : "";
                                 } else {
                                     let tempSubExpression = tempDialogObj[constraint].sub_expressions[key][0].expression;
-                                    tempDialogObj[constraint].sub_expressions[key][0].expression = parseFloat(tempSubExpression);
+                                    tempDialogObj[constraint].sub_expressions[key][0].expression = tempSubExpression;
                                 }
                             }
                         });
@@ -1068,7 +1067,7 @@ function activate_scenario_settings() {
                 return;
             }
             groupConstraintId = $('#new_group_constraint_dropdown').val();
-            newGroupConstraint = groupConstraintId + '||' + newGroupConstraint
+            newGroupConstraint = newGroupConstraint + '||' + groupConstraintId
         }
 
         if (newGroupConstraint.length > 0) {
@@ -1098,7 +1097,7 @@ function activate_scenario_settings() {
                     }
                 });
                 if (adminGroupConstraint.for_each) {
-                    dialogObj[newGroupConstraint].for_each = structuredClone(adminGroupConstraint.for_each);
+                    dialogObj[newGroupConstraint].foreach = structuredClone(adminGroupConstraint.for_each);
                 }
    
                 $('#new_group_constraint_dropdown').val("");

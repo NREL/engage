@@ -82,7 +82,7 @@ class Run_Parameter(models.Model):
     description = models.TextField(blank=True, null=True)
     user_visibility = models.BooleanField()
     can_evolve = models.BooleanField(default=False)
-    default_value = models.CharField(max_length=200)
+    default_value = models.CharField(max_length=1000)
     choices = ArrayField(models.CharField(max_length=20), blank=True, null=True)
     index = ArrayField(
         models.CharField(max_length=200),

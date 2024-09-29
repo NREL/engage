@@ -190,63 +190,6 @@
     }
   },
   {
-    "pk": 17,
-    "model": "api.run_parameter",
-    "fields": {
-      "pretty_name": "Objective",
-      "pretty_name_fr": "Objectif",
-      "pretty_name_es": "Objetivo",
-      "description": "Internal objective function to use, currently only min/max cost-based optimisation is available",
-      "description_fr": "Fonction d'objectif interne \u00e0 utiliser, actuellement seule l'optimisation bas\u00e9e sur les co\u00fbts min/max est disponible",
-      "description_es": "Función objetivo interna a utilizar; actualmente sólo está disponible la optimización basada en costos mínimo/máximo",
-      "root": "run",
-      "user_visibility": "False",
-      "can_evolve": "False",
-      "name": "objective",
-      "default_value": "minmax_cost_optimization",
-      "choices": "[]"
-    }
-  },
-  {
-    "pk": 18,
-    "model": "api.run_parameter",
-    "fields": {
-      "pretty_name": "Operation horizon",
-      "pretty_name_fr": "Horizon de fonctionnement",
-      "pretty_name_es": "Horizonte de operación",
-      "description": "Setting for operation mode that specifies how far into the future the control algorithm optimises in each iteration",
-      "description_fr": "R\u00e9glage du mode de fonctionnement qui sp\u00e9cifie jusqu'o\u00f9 dans le futur l'algorithme de contr\u00f4le optimise \u00e0 chaque it\u00e9ration",
-      "description_es": "Configuración del modo de operación que especifica hasta qué punto en el futuro se optimiza el algoritmo de control en cada iteración.",
-      "root": "config.build",
-      "user_visibility": "True",
-      "can_evolve": "False",
-      "name": "operate_horizon",
-      "default_value": "48",
-      "choices": "[]",
-      "tab": "scenarios"
-    
-    }
-  },
-  {
-    "pk": 19,
-    "model": "api.run_parameter",
-    "fields": {
-      "pretty_name": "Operation window",
-      "pretty_name_fr": "Fen\u00eatre de fonctionnement",
-      "pretty_name_es": "Ventana de operación",
-      "description": "Setting for operation mode that specifies how many of the hours within horizon are actually used",
-      "description_fr": "R\u00e9glage du mode de fonctionnement qui sp\u00e9cifie combien d'heures dans l'horizon sont r\u00e9ellement utilis\u00e9es",
-      "description_es": "Configuración del modo de funcionamiento que especifica cuántas horas dentro del horizonte se utilizan realmente",
-      "root": "config.build",
-      "user_visibility": "True",
-      "can_evolve": "False",
-      "name": "operate_window",
-      "default_value": "24",
-      "choices": "[]",
-      "tab": "scenarios"
-    }
-  },
-  {
     "pk": 20,
     "model": "api.run_parameter",
     "fields": {
@@ -342,6 +285,25 @@
     }
   },
   {
+    "pk": 25,
+    "model": "api.run_parameter",
+    "fields": {
+      "pretty_name": "Group constraints",
+      "pretty_name_fr": "Contraintes de groupe",
+      "pretty_name_es": "Restricciones de grupo",
+      "description": "Optional settings for the group_constraints constraint. Configurable in JSON format: {\"renewables\": {\"techs\": [\"pv\", \"wind\"], \"locs\": [\"Region 1\"], \"demand_share_min\": {\"electricity\": 0.5}}}",
+      "description_fr": "Param\u00e8tres facultatifs pour la contrainte group_constraints. Configurable au format JSON : {\"renewables\": {\"techs\": [\"pv\", \"wind\"], \"locs\": [\"Region 1\"], \"demand_share_min\": {\"electricity\": 0.5}}}",
+      "description_es": "Configuraciones opcionales para la restricción group_constraints. Configurable en formato JSON: {\"renewables\": {\"techs\": [\"pv\", \"wind\"], \"locs\": [\"Región 1\"], \"demand_share_min\": {\"electricity\": 0.5}}}",
+      "root": "constraints",
+      "user_visibility": "True",
+      "can_evolve": "True",
+      "name": "group_constraints",
+      "default_value": "",
+      "choices": "[]",
+      "tab": "scenarios"
+    }
+  },
+  {
     "pk": 26,
     "model": "api.run_parameter",
     "fields": {
@@ -355,7 +317,26 @@
       "user_visibility": "True",
       "can_evolve": "False",
       "name": "objective_cost_weights",
-      "default_value": "{\"data\": [1,0,0,0], \"index\":[\"monetary\",\"co2\",\"ch4\",\"n2o\",\"co2e\"],\"dims\":\"costs\"}",
+      "default_value": "{\"data\": [1,0,0,0,0], \"index\":[\"monetary\",\"co2\",\"ch4\",\"n2o\",\"co2e\"],\"dims\":\"costs\"}",
+      "choices": "[]",
+      "tab": "scenarios"
+    }
+  },
+  {
+    "pk": 27,
+    "model": "api.run_parameter",
+    "fields": {
+      "pretty_name": "Global Expressions",
+      "pretty_name_fr": "Pond\u00e9rations des classes de co\u00fbts",
+      "pretty_name_es": "Ponderaciones de clases de costos",
+      "description": "A dictionary of cost classes and their weights in the objective. By default, the weights of emissions are zero, monetary's is 1.",
+      "description_fr": "Un dictionnaire des classes de co\u00fbt et leurs poids dans l'objectif. Par d\u00e9faut, les poids des \u00e9missions sont nuls, celui mon\u00e9taire est de 1.",
+      "description_es": "Un diccionario de clases de costos y sus ponderaciones en el objetivo. Por defecto, las ponderaciones de las emisiones son cero y las monetarias son 1.",
+      "root": "global_expressions",
+      "user_visibility": "False",
+      "can_evolve": "False",
+      "name": "global_expressions",
+      "default_value": "{\"flow_out_non_transmission_techs\":{\"foreach\":[\"nodes\",\"techs\",\"timesteps\",\"carriers\"],\"where\":\"flow_out\",\"equations\":[{\"where\":\"NOT base_tech=transmission\",\"expression\":\"flow_out\"}]},\"flow_in_demand_techs\":{\"foreach\":[\"nodes\",\"techs\",\"timesteps\",\"carriers\"],\"where\":\"base_tech=demand\",\"equations\":[{\"expression\":\"flow_in\"}]},\"flow_cap_demand_techs\":{\"foreach\":[\"nodes\",\"techs\",\"carriers\"],\"where\":\"base_tech=demand\",\"equations\":[{\"expression\":\"flow_cap\"}]}}",
       "choices": "[]",
       "tab": "scenarios"
     }

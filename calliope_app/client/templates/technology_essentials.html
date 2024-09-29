@@ -89,8 +89,8 @@
 	<br>
 	<h3>{{ technology.abstract_tech.icon|safe }}&nbsp;&nbsp;{{ technology.abstract_tech.pretty_name }}</h3>
 	<br>
-	{% with 'images/technologies/'|add:technology.abstract_tech.name|add:'.png' as image_static %}
-	<img width="100%" src="{% static image_static %}">
+    {% with technology.abstract_tech.image as image_static %}
+	<img width="100%" src="{% static image_static %}" alt="">
 	<br>
 	{{ technology.abstract_tech.description|safe }}
 	<br><br>
