@@ -193,7 +193,11 @@ function renderTemplateModal() {
             if (template_edit.name == template_data.template_types[i]) {
                 $("#templateType").append( "<option selected value=" + templateTypesDropdown[i].id + ">" + templateTypesDropdown[i].pretty_name + "</option>");
             } else {
-                $("#templateType").append( "<option value=" + templateTypesDropdown[i].id + ">" + templateTypesDropdown[i].pretty_name + "</option>" );
+                if ([2, 4, 7, 8].includes(templateTypesDropdown[i].id)) {
+                    $("#templateType").append( "<option disabled value=" + templateTypesDropdown[i].id + ">" + templateTypesDropdown[i].pretty_name + "</option>" );
+                } else {
+                    $("#templateType").append( "<option value=" + templateTypesDropdown[i].id + ">" + templateTypesDropdown[i].pretty_name + "</option>" ); 
+                }
             }
         }
     }
