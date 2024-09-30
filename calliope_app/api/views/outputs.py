@@ -157,8 +157,8 @@ def build(request):
                 )
             inputs_path = inputs_path.lower().replace(" ", "-")
             os.makedirs(inputs_path, exist_ok=True)
-           
-            # Celery task        
+
+            # Celery task
             async_result = build_model.apply_async(
                 kwargs={
                     "inputs_path": inputs_path,
@@ -296,7 +296,7 @@ def optimize(request):
                 r.batch_job.status = batch_task_status.FAILED
             r.batch_job.save()
             r.save()
-        
+
         if not all_complete:
             payload = {
                 "status": "BLOCKED",
@@ -340,7 +340,7 @@ def optimize(request):
                     else:
                         logger.info("Found a subsequent gradient model for year %s but it was not built.",next_run.year)
                         break
-    
+
     # Unknown environment, not supported
     else:
         raise Exception("Failed to submit job, unknown compute environment")
@@ -590,7 +590,8 @@ def upload_outputs(request):
                 os.makedirs(out_dir, exist_ok=True)
 
             fs = FileSystemStorage()
-            filename = os.path.basename(fs.save(os.path.join(out_dir,myfile.name), myfile))
+            relpath = os.path.relpath(os.path.join(out_dir, myfile.name), fs.location)
+            filename = os.path.basename(fs.save(relpath, myfile))
 
             # Default assumes CSV files were directly zipped into archive
             run.outputs_path = out_dir
