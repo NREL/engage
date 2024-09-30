@@ -6,6 +6,7 @@ import os
 import shutil
 import zipfile
 import sys
+import operator
 from re import match
 
 from datetime import datetime, timedelta
@@ -718,67 +719,76 @@ def upload_techs(request):
 
         myfile = request.FILES["myfile"]
         if os.path.splitext(myfile.name)[1].lower() == '.csv':
-            df = pd.read_csv(myfile)
+            df = pd.read_csv(myfile, header=[0,1,2,3])
+            rename_dict = {}
+            for col in df.columns:
+                rename_dict[col] = tuple(['' if 'Unnamed:' in c else c for c in col])
+            df.columns = df.columns.to_flat_index()
+            df = df.rename(columns=rename_dict)
         else:
             context['logs'].append('File format not supported. Please use a .csv.')
             return render(request, "bulkresults.html", context)
 
-        if not set(['pretty_name','abstract_tech']).issubset(set(df.columns)):
-            context['logs'].append('Missing required columns. pretty_name, abstract_tech are required.')
+        if not set([('','','','pretty_name'),('','','','base_tech')]).issubset(set(df.columns)):
+            context['logs'].append('Missing required columns. pretty_name, base_tech are required.')
             return render(request, "bulkresults.html", context)
 
-        df['name'] = df['pretty_name'].apply(lambda x: ParamsManager.simplify_name(str(x)))
-        if 'pretty_tag' in df.columns:
-            df['tag'] = df['pretty_tag'].apply(lambda x: ParamsManager.simplify_name(str(x)))
+        df[('','','','name')] = df[('','','','pretty_name')].apply(lambda x: ParamsManager.simplify_name(str(x)))
+        if ('','','','pretty_tag') in df.columns:
+            df[('','','','tag')] = df[('','','','pretty_tag')].apply(lambda x: ParamsManager.simplify_name(str(x)))
 
         ureg = initialize_units()
 
         for i,row in df.iterrows():
             try:
-                if pd.isnull(row['abstract_tech']):
-                    context['logs'].append(str(i)+'- Tech '+row['pretty_name']+': Missing abstract_tech. Skipped.')
+                if pd.isnull(row[('','','','base_tech')]):
+                    context['logs'].append(str(i)+'- Tech '+row[('','','','pretty_name')]+': Missing base_tech. Skipped.')
                     continue
-                if row['abstract_tech'] in ['conversion','conversion_plus']:
-                    if 'carrier_in' not in row.keys() or 'carrier_out' not in row.keys() or pd.isnull(row['carrier_in']) or pd.isnull(row['carrier_out']):
-                        context['logs'].append(str(i)+'- Tech '+str(row['pretty_name'])+': Conversion techs require both carrier_in and carrier_out. Skipped.')
+                if row[('','','','base_tech')] in ['storage','transmission','conversion','conversion_plus']:
+                    if ('','','','carrier_in') not in row.keys() or ('','','','carrier_out') not in row.keys() or pd.isnull(row[('','','','carrier_in')]) or pd.isnull(row[('','','','carrier_out')]):
+                        context['logs'].append(str(i)+'- Tech '+str(row[('','','','pretty_name')])+': Conversion, storage, and transmission techs require both carrier_in and carrier_out. Skipped.')
                         continue
-                else:
-                    if 'carrier' not in row.keys() or pd.isnull(row['carrier']):
-                        context['logs'].append(str(i)+'- Tech '+str(row['pretty_name'])+': Missing a carrier. Skipped.')
+                elif row[('','','','base_tech')] in ['supply']:
+                    if ('','','','carrier_out') not in row.keys() or pd.isnull(row[('','','','carrier_out')]):
+                        context['logs'].append(str(i)+'- Tech '+str(row[('','','','pretty_name')])+': Missing a carrier. Skipped.')
+                        continue
+                elif row[('','','','base_tech')] in ['demand']:
+                    if ('','','','carrier_in') not in row.keys() or pd.isnull(row[('','','','carrier_in')]):
+                        context['logs'].append(str(i)+'- Tech '+str(row[('','','','pretty_name')])+': Missing a carrier. Skipped.')
                         continue
 
-                if 'id' not in row.keys() or pd.isnull(row['id']):
-                    if pd.isnull(row['tag']):
+                if ('','','','id') not in row.keys() or pd.isnull(row[('','','','id')]):
+                    if pd.isnull(row[('','','','tag')]):
                         technology = Technology.objects.create(
                             model_id=model.id,
-                            abstract_tech_id=Abstract_Tech.objects.filter(name=row['abstract_tech']).first().id,
-                            name=row['name'],
-                            pretty_name=row['pretty_name'],
+                            abstract_tech_id=Abstract_Tech.objects.filter(name=row[('','','','base_tech')]).first().id,
+                            name=row[('','','','name')],
+                            pretty_name=row[('','','','pretty_name')],
                         )
                     else:
                         technology = Technology.objects.create(
                             model_id=model.id,
-                            abstract_tech_id=Abstract_Tech.objects.filter(name=row['abstract_tech']).first().id,
-                            name=row['name'],
-                            pretty_name=row['pretty_name'],
-                            tag=row['tag'],
-                            pretty_tag=row['pretty_tag']
+                            abstract_tech_id=Abstract_Tech.objects.filter(name=row[('','','','base_tech')]).first().id,
+                            name=row[('','','','name')],
+                            pretty_name=row[('','','','pretty_name')],
+                            tag=row[('','','','tag')],
+                            pretty_tag=row[('','','','pretty_tag')]
                         )
 
                 else:
-                    technology = Technology.objects.filter(model=model,id=row['id']).first()
+                    technology = Technology.objects.filter(model=model,id=row[('','','','id')]).first()
                     if not technology:
-                        context['logs'].append(str(i)+'- Tech '+str(row['pretty_name'])+': No tech with id '+str(row['id'])+' found to update. Skipped.')
+                        context['logs'].append(str(i)+'- Tech '+str(row[('','','','pretty_name')])+': No tech with id '+str(row[('','','','id')])+' found to update. Skipped.')
                         continue
-                    technology.abstract_tech = Abstract_Tech.objects.filter(name=row['abstract_tech']).first()
-                    technology.name = row['name']
-                    technology.pretty_name = row['pretty_name']
-                    if pd.isnull(row['tag']) or pd.isnull(row['pretty_tag']):
+                    technology.abstract_tech = Abstract_Tech.objects.filter(name=row[('','','','base_tech')]).first()
+                    technology.name = row[('','','','name')]
+                    technology.pretty_name = row[('','','','pretty_name')]
+                    if pd.isnull(row[('','','','tag')]) or pd.isnull(row[('','','','pretty_tag')]):
                         technology.tag = None
                         technology.pretty_tag = None
                     else:
-                        technology.tag = row['tag']
-                        technology.pretty_tag = row['pretty_tag']
+                        technology.tag = row[('','','','tag')]
+                        technology.pretty_tag = row[('','','','pretty_tag')]
                     technology.save()
                     Tech_Param.objects.filter(model_id=model.id,technology_id=technology.id).delete()
 
@@ -786,64 +796,78 @@ def upload_techs(request):
                         model_id=model.id,
                         technology_id=technology.id,
                         parameter_id=Parameter.objects.filter(name='base_tech').first().id,
-                        value=row['abstract_tech'],
+                        value=row[('','','','base_tech')],
                     )
                 Tech_Param.objects.create(
                         model_id=model.id,
                         technology_id=technology.id,
                         parameter_id=Parameter.objects.filter(name='name').first().id,
-                        value=row['pretty_name'],
+                        value=row[('','','','pretty_name')],
                     )
                 update_dict = {'edit':{'parameter':{},'timeseries':{}},'add':{},'essentials':{}}
                 # Grab in/out carriers and their units
                 units_in_ids= ParamsManager.get_tagged_params('units_in')
                 units_out_ids= ParamsManager.get_tagged_params('units_out')
                 units_in_names = Parameter.objects.filter(id__in=units_in_ids).values_list('name', flat=True)
-                carrier_in_name = [row[c] for c in units_in_names if c in row][0]
+                carrier_in_names = [row[c] for c in units_in_names if c in row]
                 units_out_names = Parameter.objects.filter(id__in=units_out_ids).values_list('name', flat=True)
-                carrier_out_name = [row[c] for c in units_out_names if (c in row and not pd.isnull(row[c]))][0]
+                carrier_out_names = [row[c] for c in units_out_names if (c in row and not pd.isnull(row[c]))]
 
-                carrier_in = Carrier.objects.filter(model=model,name=carrier_in_name)
-                if carrier_in:
-                    carrier_in = carrier_in.first()
-                    in_rate = carrier_in.rate_unit
-                    in_quantity = carrier_in.quantity_unit
+                if carrier_in_names:
+                    carrier_in = Carrier.objects.filter(model=model,name=carrier_in_names[0])
+                    if carrier_in:
+                        carrier_in = carrier_in.first()
+                        in_rate = carrier_in.rate_unit
+                        in_quantity = carrier_in.quantity_unit
+                    else:
+                        in_rate = 'kW'
+                        in_quantity = 'kWh'
                 else:
                     in_rate = 'kW'
                     in_quantity = 'kWh'
-                carrier_out = Carrier.objects.filter(model=model,name=carrier_out_name)
-                if carrier_out:
-                    carrier_out = carrier_out.first()
-                    out_rate = carrier_out.rate_unit
-                    out_quantity = carrier_out.quantity_unit
+                        
+                if carrier_out_names:
+                    carrier_out = Carrier.objects.filter(model=model,name=carrier_out_names[0])
+                    if carrier_out:
+                        carrier_out = carrier_out.first()
+                        out_rate = carrier_out.rate_unit
+                        out_quantity = carrier_out.quantity_unit
+                    else:
+                        out_rate = 'kW'
+                        out_quantity = 'kWh'
                 else:
                     out_rate = 'kW'
                     out_quantity = 'kWh'
-                for f,v in row.iteritems():
+                        
+                for f,v in row.items():
                     if pd.isnull(v):
                         continue
-                    pyear = f.rsplit('_',1)
-                    if len(pyear) > 1 and match('[0-9]{4}',pyear[1]):
-                        proot = pyear[0].rsplit('.',1)
-                        if len(proot) > 1:
-                            p = Parameter.objects.filter(root=proot[0],name=proot[1]).first()
-                        else:
-                            p = Parameter.objects.filter(name=pyear[0]).first()
-                        if p is None:
-                            p = Parameter.objects.filter(name=f).first()
-                            if p is None:
-                                continue
-                        else:
-                            pyear = pyear[1]
-                    else:
+                    pyear = f[2]
+                    if not match('[0-9]{4}',pyear):
                         pyear = None
-                        proot = f.rsplit('.',1)
-                        if len(proot) > 1:
-                            p = Parameter.objects.filter(root=proot[0],name=proot[1]).first()
-                        else:
-                            p = Parameter.objects.filter(name=f).first()
-                        if p is None:
-                            continue
+
+                    params = list(Abstract_Tech_Param.objects.filter(abstract_tech_id=Abstract_Tech.objects.filter(name=row[('','','','base_tech')]).first().id).values_list('parameter',flat=True))
+
+                    param_Q = {}
+                    pname = f[3].rsplit('.',1)
+                    pindex = f[1]
+                    pdims = f[0]
+                    if len(pname) > 1:
+                        param_Q['root'] = pname[0]
+                        param_Q['name'] = pname[1]
+                    else: 
+                        param_Q['name'] = pname[0]
+
+                    if pindex:
+                        param_Q['index'] = json.loads(pindex)
+                    if pdims:
+                        param_Q['dim'] = json.loads(pdims)
+
+                    param_Q['id__in'] = params
+                    
+                    p = Parameter.objects.filter(**param_Q).first()
+                    if p is None:
+                        continue
                     # Essential params
                     if p.is_essential:
                         update_dict['essentials'][p.pk] = v
@@ -857,7 +881,7 @@ def upload_techs(request):
 
                         file = User_File.objects.filter(model=model, filename='user_files/'+filename)
                         if not file:
-                            context['logs'].append(str(i)+'- Tech '+str(row['pretty_name'])+': Column '+f+' missing file "' + filename+ '" for timeseries. Parameter skipped.')
+                            context['logs'].append(str(i)+'- Tech '+str(row[('','','','pretty_name')])+': Column '+f[3]+' missing file "' + filename+ '" for timeseries. Parameter skipped.')
                             continue
 
                         existing = Timeseries_Meta.objects.filter(model=model,
@@ -924,7 +948,7 @@ def upload_techs(request):
                                 else:
                                     update_dict['edit']['parameter'][p.pk] = convert_units(ureg,v,p_units)
                             except Exception as e:
-                                context['logs'].append(str(i)+'- Tech '+str(row['pretty_name'])+': Column '+f+' '+str(e)+'. Error converting units. Parameter skipped.')
+                                context['logs'].append(str(i)+'- Tech '+str(row[('','','','pretty_name')])+': Column '+f[3]+' '+str(e)+'. Error converting units. Parameter skipped.')
                                 continue
                 technology.update(update_dict)
             except Exception as e:
@@ -969,37 +993,44 @@ def upload_loctechs(request):
 
         myfile = request.FILES["myfile"]
         if os.path.splitext(myfile.name)[1].lower() == '.csv':
-            df = pd.read_csv(myfile)
+            df = pd.read_csv(myfile, header=[0,1,2,3])
+            rename_dict = {}
+            for col in df.columns:
+                rename_dict[col] = tuple(['' if 'Unnamed:' in c else c for c in col])
+            df.columns = df.columns.to_flat_index()
+            df = df.rename(columns=rename_dict)
         else:
             context['logs'].append('File format not supported. Please use a .csv.')
             return render(request, 'bulkresults.html', context)
 
-        if not set(['technology','location_1']).issubset(set(df.columns)):
+        if not set([('','','',k) for k in ['technology','location_1']]).issubset(set(df.columns)):
             context['logs'].append("Missing required columns. technology, location_1 are required.")
             return render(request, 'bulkresults.html', context)
-        df['tech'] = df['technology'].apply(lambda x: ParamsManager.simplify_name(str(x)))
-        if 'pretty_tag' in df.columns:
-            df['tag'] = df['pretty_tag'].apply(lambda x: ParamsManager.simplify_name(str(x)))
-        elif 'tag' in df.columns:
-            df['tag'] = df['tag'].apply(lambda x: ParamsManager.simplify_name(str(x)))
-        if 'tag' not in df.columns:
-            df['tag'] = None
-        df['loc'] = df['location_1'].apply(lambda x: ParamsManager.simplify_name(str(x)))
+        df[('','','','tech')] = df[('','','','technology')].apply(lambda x: ParamsManager.simplify_name(str(x)))
+        if ('','','','pretty_tag') in df.columns:
+            df[('','','','tag')] = df[('','','','pretty_tag')].apply(lambda x: ParamsManager.simplify_name(str(x)))
+        elif ('','','','tag') in df.columns:
+            df[('','','','tag')] = df[('','','','tag')].apply(lambda x: ParamsManager.simplify_name(str(x)))
+        if ('','','','tag') not in df.columns:
+            df[('','','','tag')] = None
+        df[('','','','loc')] = df[('','','','location_1')].apply(lambda x: ParamsManager.simplify_name(str(x)))
 
         ureg = initialize_units()
 
         for i,row in df.iterrows():
             try:
-                if pd.isnull(row['tag']):
-                    row['tag'] = None
-                technology = Technology.objects.filter(model_id=model.id,pretty_name=row['technology'],tag=row['tag']).first()
+                tech_Q = {'model_id':model.id, 'pretty_name':row[('','','','technology')]}
+                if not pd.isnull(row[('','','','tag')]) and not row[('','','','tag')] == 'nan':
+                    tech_Q['tag'] = row[('','','','tag')]
+                technology = Technology.objects.filter(**tech_Q).first()
                 if technology == None:
-                    technology = Technology.objects.filter(model_id=model.id,name=row['technology'],tag=row['tag']).first()
+                    tech_Q['name'] = tech_Q.pop('pretty_name')
+                    technology = Technology.objects.filter(tech_Q).first()
                     if technology == None:
-                        if pd.isnull(row['tag']):
-                            context['logs'].append(str(i)+'- Tech '+str(row['technology'])+' missing. Skipped.')
+                        if pd.isnull(row[('','','','tag')]):
+                            context['logs'].append(str(i)+'- Tech '+str(row[('','','','technology')])+' missing. Skipped.')
                         else:
-                            context['logs'].append(str(i)+'- Tech '+str(row['technology'])+'-'+str(row['tag'])+' missing. Skipped.')
+                            context['logs'].append(str(i)+'- Tech '+str(row[('','','','technology')])+'-'+str(row[('','','','tag')])+' missing. Skipped.')
                         continue
 
                 # Grab in/out carriers and their units
@@ -1008,37 +1039,46 @@ def upload_loctechs(request):
                 carrier_in_param = Tech_Param.objects.filter(technology=technology, parameter_id__in=units_in_ids).first()
                 carrier_out_param = Tech_Param.objects.filter(technology=technology, parameter_id__in=units_out_ids).first()
 
-                carrier_in = Carrier.objects.filter(model=model,name=carrier_in_param.value)
-                if carrier_in:
-                    carrier_in = carrier_in.first()
-                    in_rate = carrier_in.rate_unit
-                    in_quantity = carrier_in.quantity_unit
+                if carrier_in_param:
+                    carrier_in = Carrier.objects.filter(model=model,name=carrier_in_param.value)
+                    if carrier_in:
+                        carrier_in = carrier_in.first()
+                        in_rate = carrier_in.rate_unit
+                        in_quantity = carrier_in.quantity_unit
+                    else:
+                        in_rate = 'kW'
+                        in_quantity = 'kWh'
                 else:
                     in_rate = 'kW'
                     in_quantity = 'kWh'
-                carrier_out = Carrier.objects.filter(model=model,name=carrier_out_param.value)
-                if carrier_out:
-                    carrier_out = carrier_out.first()
-                    out_rate = carrier_out.rate_unit
-                    out_quantity = carrier_out.quantity_unit
+
+                if carrier_out_param:
+                    carrier_out = Carrier.objects.filter(model=model,name=carrier_out_param.value)
+                    if carrier_out:
+                        carrier_out = carrier_out.first()
+                        out_rate = carrier_out.rate_unit
+                        out_quantity = carrier_out.quantity_unit
+                    else:
+                        out_rate = 'kW'
+                        out_quantity = 'kWh'
                 else:
                     out_rate = 'kW'
                     out_quantity = 'kWh'
 
-                location = Location.objects.filter(model_id=model.id,pretty_name=row['location_1']).first()
+                location = Location.objects.filter(model_id=model.id,pretty_name=row[('','','','location_1')]).first()
                 if location==None:
-                    location = Location.objects.filter(model_id=model.id,name=row['location_1']).first()
+                    location = Location.objects.filter(model_id=model.id,name=row[('','','','location_1')]).first()
                     if location==None:
-                        context['logs'].append(str(i)+'- Location '+str(row['location_1'])+' missing. Skipped.')
+                        context['logs'].append(str(i)+'- Location '+str(row[('','','','location_1')])+' missing. Skipped.')
                         continue
                 if Abstract_Tech.objects.filter(id=technology.abstract_tech_id).first().name == 'transmission':
-                    location_2 = Location.objects.filter(model_id=model.id,pretty_name=row['location_2']).first()
+                    location_2 = Location.objects.filter(model_id=model.id,pretty_name=row[('','','','location_2')]).first()
                     if location_2==None:
-                        location_2 = Location.objects.filter(model_id=model.id,name=row['location_2']).first()
+                        location_2 = Location.objects.filter(model_id=model.id,name=row[('','','','location_2')]).first()
                         if location_2==None:
-                            context['logs'].append(str(i)+'- Location 2 '+str(row['location_2'])+' missing. Skipped.')
+                            context['logs'].append(str(i)+'- Location 2 '+str(row[('','','','location_2')])+' missing. Skipped.')
                             continue
-                    if 'id' not in row.keys() or pd.isnull(row['id']):
+                    if 'id' not in row.keys() or pd.isnull(row[('','','','id')]):
                         loctech = Loc_Tech.objects.create(
                             model_id=model.id,
                             technology=technology,
@@ -1046,9 +1086,9 @@ def upload_loctechs(request):
                             location_2=location_2,
                         )
                     else:
-                        loctech = Loc_Tech.objects.filter(model=model,id=row['id']).first()
+                        loctech = Loc_Tech.objects.filter(model=model,id=row[('','','','id')]).first()
                         if not loctech:
-                            context['logs'].append(str(i)+'- Tech '+str(row['technology'])+': No tech with id '+str(row['id'])+' found to update. Skipped.')
+                            context['logs'].append(str(i)+'- Tech '+str(row[('','','','technology')])+': No tech with id '+str(row[('','','','id')])+' found to update. Skipped.')
                             continue
                         loctech.technology = technology
                         loctech.location_1 = location
@@ -1056,16 +1096,16 @@ def upload_loctechs(request):
                         loctech.save()
                         Loc_Tech_Param.objects.filter(model_id=model.id,loc_tech_id=loctech.id).delete()
                 else:
-                    if 'id' not in row.keys() or pd.isnull(row['id']):
+                    if ('','','','id') not in row.keys() or pd.isnull(row[('','','','id')]):
                         loctech = Loc_Tech.objects.create(
                             model_id=model.id,
                             technology=technology,
                             location_1=location,
                         )
                     else:
-                        loctech = Loc_Tech.objects.filter(model=model,id=row['id']).first()
+                        loctech = Loc_Tech.objects.filter(model=model,id=row[('','','','id')]).first()
                         if not loctech:
-                            context['logs'].append(str(i)+'- Tech '+str(row['technology'])+': No tech with id '+str(row['id'])+' found to update. Skipped.')
+                            context['logs'].append(str(i)+'- Tech '+str(row[('','','','technology')])+': No tech with id '+str(row[('','','','id')])+' found to update. Skipped.')
                             continue
                         loctech.technology = technology
                         loctech.location_1 = location
@@ -1073,31 +1113,32 @@ def upload_loctechs(request):
                         Loc_Tech_Param.objects.filter(model_id=model.id,loc_tech_id=loctech.id).delete()
 
                 update_dict = {'edit':{'parameter':{},'timeseries':{}},'add':{},'essentials':{}}
-                for f,v in row.iteritems():
+                for f,v in row.items():
                     if pd.isnull(v):
                         continue
-                    pyear = f.rsplit('_',1)
-                    if len(pyear) > 1 and match('[0-9]{4}',pyear[1]):
-                        proot = pyear[0].rsplit('.',1)
-                        if len(proot) > 1:
-                            p = Parameter.objects.filter(root=proot[0],name=proot[1]).first()
-                        else:
-                            p = Parameter.objects.filter(name=pyear[0]).first()
-                        if p is None:
-                            p = Parameter.objects.filter(name=f).first()
-                            if p is None:
-                                continue
-                        else:
-                            pyear = pyear[1]
-                    else:
+
+                    pyear = f[2]
+                    if not match('[0-9]{4}',pyear):
                         pyear = None
-                        proot = f.rsplit('.',1)
-                        if len(proot) > 1:
-                            p = Parameter.objects.filter(root=proot[0],name=proot[1]).first()
-                        else:
-                            p = Parameter.objects.filter(name=f).first()
-                        if p is None:
-                            continue
+
+                    param_Q = {}
+                    pname = f[3].rsplit('.',1)
+                    pindex = f[1]
+                    pdims = f[0]
+                    if len(pname) > 1:
+                        param_Q['root'] = pname[0]
+                        param_Q['name'] = pname[1]
+                    else: 
+                        param_Q['name'] = pname[0]
+
+                    if pindex:
+                        param_Q['index'] = json.loads(pindex)
+                    if pdims:
+                        param_Q['dim'] = json.loads(pdims)
+                    
+                    p = Parameter.objects.filter(**param_Q).first()
+                    if p is None:
+                        continue
                     # Essential params
                     if p.is_essential:
                         update_dict['essentials'][p.pk] = v
@@ -1111,7 +1152,7 @@ def upload_loctechs(request):
 
                         file = User_File.objects.filter(model=model, filename='user_files/'+filename)
                         if not file:
-                            context['logs'].append(str(i)+'- Tech '+str(row['technology'])+': Column '+f+' missing file "' + filename+ '" for timeseries. Parameter skipped.')
+                            context['logs'].append(str(i)+'- Tech '+str(row[('','','','technology')])+': Column '+f[3]+' missing file "' + filename + '" for timeseries. Parameter skipped.')
                             continue
 
                         existing = Timeseries_Meta.objects.filter(model=model,
@@ -1150,7 +1191,7 @@ def upload_loctechs(request):
                         existing = Timeseries_Meta.objects.filter(model=model,
                                                 name=tsname).first()
                         if not existing:
-                            context['logs'].append(str(i)+'- Tech '+str(row['technology'])+': Column '+f+' missing timeseries "' + tsname + '". Parameter skipped.')
+                            context['logs'].append(str(i)+'- Tech '+str(row[('','','','technology')])+': Column '+f[3]+' missing timeseries "' + tsname + '". Parameter skipped.')
                             continue
                         update_dict['edit']['timeseries'][p.pk] = existing.id
                     else:
@@ -1187,7 +1228,7 @@ def upload_loctechs(request):
                                 else:
                                     update_dict['edit']['parameter'][p.pk] = convert_units(ureg,v,p_units)
                             except Exception as e:
-                                context['logs'].append(str(i)+'- Tech '+str(row['technology'])+': Column '+f+' '+str(e)+'. Error converting units. Parameter skipped.')
+                                context['logs'].append(str(i)+'- Tech '+str(row[('','','','technology')])+': Column '+f[3]+' '+str(e)+'. Error converting units. Parameter skipped.')
                                 continue
                 loctech.update(update_dict)
             except Exception as e:
@@ -1239,51 +1280,51 @@ def bulk_downloads(request):
     # Build technology file
     if 'technologies' in request.GET['file_list']:
         techs = Technology.objects.filter(model=model)
-        tech_ids = list(techs.values_list('id',
-                                          flat=True).distinct())
-        param_list = list(Abstract_Tech_Param.objects.all().values_list('parameter__name', flat=True).distinct())
+        tech_ids = list(techs.values_list('id', flat=True).distinct())
+        param_list = [(json.dumps(k[1]),json.dumps(k[0]),'',k[2]) for k in list(Abstract_Tech_Param.objects.all().values_list('parameter__index','parameter__dim','parameter__name').distinct())]
         parameters = Tech_Param.objects.filter(technology_id__in=tech_ids).order_by('-year')
-        tech_list = ['id','name','pretty_name','abstract_tech','tag','pretty_tag','calliope_name','description']
-        techs_df = pd.DataFrame()
+        tech_list = [('','','',k) for k in ['id','name','pretty_name','base_tech','tag','pretty_tag','calliope_name','description']]
+        techs_l = []
         for t in techs:
-            tech_dict = t.__dict__
-            tech_dict['calliope_name'] = t.calliope_name
+            tech_dict = {('','','',tp):k for tp,k in t.__dict__.items()}
+            tech_dict[('','','','calliope_name')] = t.calliope_name
             for p in parameters.filter(technology_id=t.id):
-                newcol = False
                 pname = p.parameter.name
-                if 'costs' in p.parameter.root:
-                    try:
-                        param_list.remove(pname)
-                    except ValueError:
-                        pass
+                if p.parameter.root:
                     pname = p.parameter.root+'.'+pname
-                    newcol = True
                 if p.year:
-                    pname+='_'+str(p.year)
-                    if pname not in param_list:
-                        newcol = True
-                if newcol and pname not in param_list:
-                    param_list.append(pname)
+                    pyear = p.year
+                else:
+                    pyear = ''
+                if p.parameter.index:
+                    pindex = json.dumps(p.parameter.index)
+                else:
+                    pindex = ''
+                if p.parameter.dim:
+                    pdims = json.dumps(p.parameter.dim)
+                else:
+                    pdims = ''
+                pcols = (pdims,pindex,pyear,pname)
+                if pcols not in param_list:
+                    param_list.append(pcols)
                 if p.timeseries:
                     if p.timeseries_meta is not None:
-                        tech_dict[pname] = 'file='+p.timeseries_meta.original_filename+':'+str(p.timeseries_meta.original_timestamp_col)+':'+str(p.timeseries_meta.original_value_col)
+                        tech_dict[pcols] = 'file='+p.timeseries_meta.original_filename+':'+str(p.timeseries_meta.original_timestamp_col)+':'+str(p.timeseries_meta.original_value_col)
                     else:
                         pass
                 elif p.raw_value:
-                    tech_dict[pname] = p.raw_value
+                    tech_dict[pcols] = p.raw_value
                 else:
-                    tech_dict[pname] = p.value
-            [tech_dict.pop(k) for k in ['abstract_tech_id','_state','model_id','created','updated','deleted']]
-            techs_df = techs_df.append(tech_dict, ignore_index=True)
-        techs_df = techs_df.rename(columns={'parent':'abstract_tech'})
-        # The double for loop keeps the tech fields on the left if there are no records while still allowing for empty paramters
-        # to be added on the right after any filled parameters
-        for p in list(set(tech_list)-set(techs_df.columns)):
-            techs_df[p] = None
-        param_list.sort()
-        techs_df = techs_df.reindex(columns=[f for f in tech_list+param_list if f in techs_df.columns])
-        for p in list(set(param_list)-set(techs_df.columns)):
-            techs_df[p] = None
+                    tech_dict[pcols] = p.value
+            [tech_dict.pop(('','','',k)) for k in ['abstract_tech_id','_state','model_id','created','updated','deleted']]
+            techs_l += [tech_dict]
+        techs_df = pd.DataFrame(techs_l)
+        techs_df.columns = pd.MultiIndex.from_tuples(techs_df.columns)
+        #techs_df = techs_df.rename(columns={('','','','parent'):('','','','abstract_tech')})
+        # Filtering out the existing columns to include first in the reindex keeps filled in data on the left
+        param_list = list((set(param_list)|set(tech_list))-set(techs_df.columns))
+        param_list.sort(key=operator.itemgetter(3))
+        techs_df = techs_df.reindex(columns=[f for f in [('dim','index','year','parameter')]+list(techs_df.columns)+param_list],fill_value=None)
         techs_buff = io.StringIO()
         techs_df.to_csv(techs_buff,index=False)
         file_buffs['techs.csv'] = (techs_buff)
@@ -1291,58 +1332,58 @@ def bulk_downloads(request):
     # Build loc_techs/nodes file
     if 'loc_techs' in request.GET['file_list']:
         loc_techs = Loc_Tech.objects.filter(model=model)
-        loc_tech_ids = list(loc_techs.values_list('id',
-                                          flat=True).distinct())
-        param_list = list(Abstract_Tech_Param.objects.all().values_list('parameter__name', flat=True).distinct())
+        loc_tech_ids = list(loc_techs.values_list('id', flat=True).distinct())
+        param_list = [(json.dumps(k[1]),json.dumps(k[0]),'',k[2]) for k in list(Abstract_Tech_Param.objects.all().values_list('parameter__index','parameter__dim','parameter__name').distinct())]
         parameters = Loc_Tech_Param.objects.filter(loc_tech_id__in=loc_tech_ids).order_by('-year')
-        loc_tech_list = ['id','location_1','location_2','technology','tag','calliope_name']
-        loc_techs_df = pd.DataFrame()
+        loc_tech_list = [('','','',k) for k in ['id','location_1','location_2','technology','tag','calliope_name']]
+        loc_techs_l = []
         for l in loc_techs:
-            loc_tech_dict = l.__dict__
-            loc_tech_dict['location_1'] = l.location_1.pretty_name
+            loc_tech_dict = {('','','',tp):k for tp,k in l.__dict__.items()}
+            loc_tech_dict[('','','','location_1')] = l.location_1.pretty_name
             if l.location_2:
-                loc_tech_dict['location_2'] = l.location_2.pretty_name
-            loc_tech_dict['technology'] = l.technology.pretty_name
-            loc_tech_dict['tag'] = l.technology.pretty_tag
-            loc_tech_dict['calliope_name'] = l.technology.calliope_name
+                loc_tech_dict[('','','','location_2')] = l.location_2.pretty_name
+            loc_tech_dict[('','','','technology')] = l.technology.pretty_name
+            loc_tech_dict[('','','','tag')] = l.technology.pretty_tag
+            loc_tech_dict[('','','','calliope_name')] = l.technology.calliope_name
             for p in parameters.filter(loc_tech_id=l.id):
-                newcol = False
                 pname = p.parameter.name
-                if 'costs' in p.parameter.root:
-                    try:
-                        param_list.remove(pname)
-                    except ValueError:
-                        pass
+                if p.parameter.root:
                     pname = p.parameter.root+'.'+pname
-                    newcol = True
                 if p.year:
-                    pname+='_'+str(p.year)
-                    if pname not in param_list:
-                        newcol = True
-                if newcol and pname not in param_list:
-                    param_list.append(pname)
+                    pyear = p.year
+                else:
+                    pyear = ''
+                if p.parameter.index:
+                    pindex = json.dumps(p.parameter.index)
+                else:
+                    pindex = ''
+                if p.parameter.dim:
+                    pdims = json.dumps(p.parameter.dim)
+                else:
+                    pdims = ''
+                pcols = (pdims,pindex,pyear,pname)
+                if pcols not in param_list:
+                    param_list.append(pcols)
                 if p.timeseries:
                     if p.timeseries_meta is not None:
                         if p.timeseries_meta.original_filename:
-                            loc_tech_dict[pname] = 'file='+p.timeseries_meta.original_filename+':'+str(p.timeseries_meta.original_timestamp_col)+':'+str(p.timeseries_meta.original_value_col)
+                            loc_tech_dict[pcols] = 'file='+p.timeseries_meta.original_filename+':'+str(p.timeseries_meta.original_timestamp_col)+':'+str(p.timeseries_meta.original_value_col)
                         else:
-                            loc_tech_dict[pname] = 'ts='+p.timeseries_meta.name
+                            loc_tech_dict[pcols] = 'ts='+p.timeseries_meta.name
                     else:
                         pass
                 elif p.raw_value:
-                    loc_tech_dict[pname] = p.raw_value
+                    loc_tech_dict[pcols] = p.raw_value
                 else:
-                    loc_tech_dict[pname] = p.value
-            [loc_tech_dict.pop(k) for k in ['_state','model_id','created','updated','deleted']]
-            loc_techs_df = loc_techs_df.append(loc_tech_dict, ignore_index=True)
-        # The double for loop keeps the loc_tech fields on the left if there are no records while still allowing for empty paramters
-        # to be added on the right after any filled parameters
-        for p in list(set(loc_tech_list)-set(loc_techs_df.columns)):
-            loc_techs_df[p] = None
-        param_list.sort()
-        loc_techs_df = loc_techs_df.reindex(columns=[f for f in loc_tech_list+param_list if f in loc_techs_df.columns])
-        for p in list(set(param_list)-set(loc_techs_df.columns)):
-            loc_techs_df[p] = None
+                    loc_tech_dict[pcols] = p.value
+            [loc_tech_dict.pop(('','','',k)) for k in ['_state','model_id','created','updated','deleted','location_1_id','location_2_id','technology_id']]
+            loc_techs_l += [loc_tech_dict]
+        loc_techs_df = pd.DataFrame(loc_techs_l)
+        loc_techs_df.columns = pd.MultiIndex.from_tuples(loc_techs_df.columns)
+        # Filtering out the existing columns to include first in the reindex keeps filled in data on the left
+        param_list = list((set(param_list)|set(loc_tech_list))-set(loc_techs_df.columns))
+        param_list.sort(key=operator.itemgetter(3))
+        loc_techs_df = loc_techs_df.reindex(columns=[f for f in [('dim','index','year','parameter')]+list(loc_techs_df.columns)+param_list],fill_value=None)
         loc_techs_buff = io.StringIO()
         loc_techs_df.to_csv(loc_techs_buff,index=False)
         file_buffs['loc_techs.csv'] = (loc_techs_buff)
