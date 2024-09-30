@@ -176,7 +176,7 @@
       "year": "0",
       "build_year_offset":"0",
       "parameter_id": "124",
-      "value": "supply_plus",
+      "value": "supply",
       "timeseries": "False",
       "model_id": "1"
     }
