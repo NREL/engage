@@ -15,7 +15,7 @@
     "pk": 2,
     "model": "api.technology",
     "fields": {
-      "abstract_tech_id": "2",
+      "abstract_tech_id": "1",
       "name": "concentrating_solar_power",
       "pretty_name": "Concentrating Solar Power (CSP)",
       "tag": "capacity_expansion",
