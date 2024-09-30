@@ -29,7 +29,11 @@
 				</div>
 			</div>
 			{% for abstract in abstract_techs %}
+			{% if abstract.name == "conversion_plus" or abstract.name == "supply_plus" %}
+			<div class="row" style="border:solid black 2px;height:350px; pointer-events: none;">
+			{% else %}
 			<div class="row" style="border:solid black 2px;height:350px;">
+			{% endif %}
 				<div class="col-6 centered" style="height:100%;overflow-y: scroll">
 					<br>
 					<h3>{{ abstract.icon|safe }}&nbsp;&nbsp;{{ abstract.pretty_name }}</h3>
