@@ -274,12 +274,6 @@ def all_loc_tech_params(request):
     timeseries = Timeseries_Meta.objects.filter(model=model, failure=False,
                                                 is_uploading=False)
 
-    units_in_ids= ParamsManager.get_tagged_params('units_in')
-    units_out_ids= ParamsManager.get_tagged_params('units_out')
-
-    carrier_in = Tech_Param.objects.filter(technology=loc_tech.technology, parameter__id__in=units_in_ids).first().value
-    carrier_out = Tech_Param.objects.filter(technology=loc_tech.technology, parameter__id__in=units_out_ids).first().value
-
     carriers = {}
     for carrier in model.carriers.all():
         carriers[carrier.name] = {'rate':carrier.rate_unit,'quantity':carrier.quantity_unit}
@@ -288,8 +282,21 @@ def all_loc_tech_params(request):
         if carrier not in carriers.keys():
             carriers[carrier] = {'rate':'kW','quantity':'kWh'}
 
-    carrier_in = carriers[carrier_in]
-    carrier_out = carriers[carrier_out]
+    units_in_ids= ParamsManager.get_tagged_params('units_in')
+    units_out_ids= ParamsManager.get_tagged_params('units_out')
+
+    carrier_in = Tech_Param.objects.filter(technology=loc_tech.technology, parameter__id__in=units_in_ids)
+    if carrier_in:
+        carrier_in = carriers[carrier_in.first().value]
+    else:
+        carrier_in = {'rate':'None','quantity':'None'}
+
+    carrier_out = Tech_Param.objects.filter(technology=loc_tech.technology, parameter__id__in=units_out_ids)
+    if carrier_out:
+        carrier_out = carriers[carrier_out.first().value]
+    else:
+        carrier_out = {'rate':'None','quantity':'None'}
+
     carriers = [{'name':c,'rate':v['rate'],'quantity':v['quantity']} for c,v in carriers.items()]
 
     for param in parameters:

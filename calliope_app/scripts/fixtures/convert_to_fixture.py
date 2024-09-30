@@ -48,6 +48,8 @@ for index, row in df.iterrows():
     for t in json.loads(row['abstract_techs']):
         
         print(param['fields']['name'],t)
+        if t == 'supply_plus':
+            continue
         abstract_tech_param = {
             'pk': admin_tech_param_index,
             'model': 'api.abstract_tech_param',

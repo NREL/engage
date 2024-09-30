@@ -563,7 +563,7 @@ def _yaml_outputs(inputs_dir, outputs_dir):
         r_df = pd.read_csv(os.path.join(outputs_dir,results_var[v]))
 
         for l in model['nodes'].keys():
-            if 'techs' in model['nodes'][l].keys():
+            if 'techs' in model['nodes'][l].keys() and model['nodes'][l]['techs']:
                 for t in model['nodes'][l]['techs'].keys():
                     if v == 'storage_cap' and model['techs'][t]['base_tech'] not in ['storage','supply_plus']:
                         continue
