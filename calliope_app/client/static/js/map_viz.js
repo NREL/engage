@@ -71,7 +71,7 @@ var total_radius = 40,
     colors = {},
     names = {},
     parents = {},
-    tech_groups = {},
+    base_techs = {},
     locations = {},
     coordinates = {},
     max_lat = 0,
@@ -351,24 +351,24 @@ function load_data() {
                 // load colors & techs
                 var [headers, lines] = parse_data(data, 'inputs_color');
                 lines.map(function(d) {
-                    colors[d[headers.techs]] = d[headers.colors];
+                    colors[d[headers.techs]] = d[headers.color];
                     techs.push(d[headers.techs]);
                 });
                 
                 // load names
                 var [headers, lines] = parse_data(data, 'inputs_name');
                 lines.map(function(d) {
-                    names[d[headers.techs]] = d[headers.names];
+                    names[d[headers.techs]] = d[headers.name];
                 });
                 
                 // load parents & groups
-                var [headers, lines] = parse_data(data, 'inputs_inheritance');
+                var [headers, lines] = parse_data(data, 'inputs_base_tech');
                 lines.map(function(d) {
-                    parents[d[headers.techs]] = d[headers.inheritance];
-                    if (Object.keys(tech_groups).indexOf(d[headers.inheritance]) == -1) {
-                        tech_groups[d[headers.inheritance]] = [d[headers.techs]];
+                    parents[d[headers.techs]] = d[headers.base_tech];
+                    if (Object.keys(base_techs).indexOf(d[headers.base_tech]) == -1) {
+                        base_techs[d[headers.base_tech]] = [d[headers.techs]];
                     } else {
-                        tech_groups[d[headers.inheritance]].push(d[headers.techs]);
+                        base_techs[d[headers.base_tech]].push(d[headers.techs]);
                     }
                 });
                 
@@ -377,15 +377,16 @@ function load_data() {
 
                 var [latHeaders, latLines] = parse_data(data, 'inputs_latitude');
                 latLines.map(function(d) {
-                    assign(coordinates, [d[latHeaders.locs], 'lat'], +d[latHeaders.loc_coordinates]);
-                    lats.push(+d[latHeaders.loc_coordinates]);
+                    assign(coordinates, [d[latHeaders.nodes], 'latitude'], +d[latHeaders.latitude]);
+                    lats.push(+d[latHeaders.latitude]);
                 });
 
                 var [lonHeaders, lonLines] = parse_data(data, 'inputs_longitude');
                 lonLines.map(function(d) {
-                    assign(coordinates, [d[lonHeaders.locs], 'lon'], +d[lonHeaders.loc_coordinates]);
-                    lons.push(+d[lonHeaders.loc_coordinates]);
+                    assign(coordinates, [d[lonHeaders.nodes], 'longitude'], +d[lonHeaders.longitude]);
+                    lons.push(+d[lonHeaders.longitude]);
                 });
+                
                 lat_buffer = (Math.max.apply(Math, lats) - Math.min.apply(Math, lats)) / buffer_divisor;
                 lon_buffer = (Math.max.apply(Math, lons) - Math.min.apply(Math, lons)) / buffer_divisor;
                 max_lat = Math.max.apply(Math, lats) + lat_buffer;
@@ -400,7 +401,7 @@ function load_data() {
                 // load capacities
                 var [headers, lines] = parse_data(data, 'results_flow_cap');
                 lines.map(function(d) {
-                    if (techs.includes(d[headers.techs])) {
+                    if (!d[headers.nodes2]) {
                         nodes.push({
                             'loc': d[headers.nodes],
                             'tech': d[headers.techs],
@@ -411,8 +412,8 @@ function load_data() {
                     } else {
                         links.push({
                             'loc1': d[headers.nodes],
-                            'loc2': d[headers.techs].split(':')[1],
-                            'tech': d[headers.techs].split(':')[0],
+                            'loc2': d[headers.nodes2],
+                            'tech': d[headers.techs],
                             'capacity': +d[headers.flow_cap]
                         });
                         
@@ -422,7 +423,6 @@ function load_data() {
                         assign(trans_capacities, [d[headers.nodes], d[headers.techs].split(':')[0], d[headers.techs].split(':')[1]], +d[headers.flow_cap]);
                     };
                 });
-
             } else {
                 // Clear variables for new timeseries data
                 carriers = []
@@ -434,7 +434,7 @@ function load_data() {
             // load consumption
             var [headers, lines] = parse_data(data, 'results_flow_in');
             lines.map(function(d) {
-                if (techs.includes(d[headers.techs])) {
+                if (!d[headers.nodes2]) {
                     if (!carriers.includes(d[headers.carriers])) {
                         carriers.push(d[headers.carriers])
                     }
@@ -454,8 +454,8 @@ function load_data() {
                     };
                     trans_production[d[headers.timesteps]].push({
                         'loc1': d[headers.nodes],
-                        'loc2': d[headers.techs].split(':')[1],
-                        'tech': d[headers.techs].split(':')[0],
+                        'loc2': d[headers.nodes2],
+                        'tech': d[headers.techs],
                         'carrier': d[headers.carriers],
                         'production': -d[headers.flow_in]
                     });
@@ -470,7 +470,7 @@ function load_data() {
                 if (!carriers.includes(d[headers.carriers])) {
                     carriers.push(d[headers.carriers])
                 }
-                if (techs.includes(d[headers.techs])) {
+                if (!d[headers.nodes2]) {
                     max_prods[d[headers.timesteps]] = (max_prods[d[headers.timesteps]] || 0) + +d[headers.flow_out];
                     production[d[headers.timesteps]].push({
                         'loc': d[headers.nodes],
@@ -717,7 +717,7 @@ function initiate_viz() {
         }
     }
     
-    Object.keys(tech_groups).sort().forEach(function(g) {
+    Object.keys(base_techs).sort().forEach(function(g) {
         var group = div_legend.append("div")
             .attr("class", "group row")
             .style("margin-bottom", "30px");
@@ -734,7 +734,7 @@ function initiate_viz() {
                 abstract_techs[g].icon + " &nbsp;" + abstract_techs[g].pretty_name
             );
         
-        tech_groups[g].sort().forEach(function(tech) {
+            base_techs[g].sort().forEach(function(tech) {
             var gd = group.append("div")
                 .attr("class", "tech col-12")
                 .style("text-align", "left");

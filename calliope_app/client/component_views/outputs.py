@@ -221,14 +221,23 @@ def map_outputs(request):
         # Static
         files = ["inputs_color",
                  "inputs_name",
-                 "inputs_inheritance",
-                 "inputs_loc_latitude",
-                 "inputs_loc_longitude",
-                 "results_flow_cap"]
+                 "inputs_base_tech",
+                 "inputs_latitude",
+                 "inputs_longitude"]
         for file in files:
             with open(os.path.join(run.outputs_path, file + ".csv")) as f:
                 response[file] = f.read()
 
+        base_techs = pd.read_csv(os.path.join(run.outputs_path, "inputs_base_tech.csv"), header=0).groupby('base_tech')['techs'].apply(list).to_dict()
+        
+        df_flow_cap = pd.read_csv(os.path.join(run.outputs_path, "results_flow_cap.csv"), header=0)
+        df_flow_cap['nodes2'] = df_flow_cap.apply(lambda x: next(iter(df_flow_cap.loc[(df_flow_cap['techs'].isin(base_techs['transmission'])) 
+                                            & (df_flow_cap['techs']==x['techs']) & (df_flow_cap['nodes'] != x['nodes'])]['nodes']),None), axis=1)
+        
+        s = io.StringIO()
+        df_flow_cap.to_csv(s, index=False)
+        response["results_flow_cap"] = s.getvalue()
+        
         # Variable
         files = ["results_flow_in",
                  "results_flow_out"]
@@ -240,6 +249,8 @@ def map_outputs(request):
         for file in files:
             df = pd.read_csv(os.path.join(run.outputs_path, file + ext),
                              header=0)
+            df['nodes2'] = df.apply(lambda x: next(iter(df.loc[(df['techs'].isin(base_techs['transmission'])) 
+                                            & (df['techs']==x['techs']) & (df['nodes'] != x['nodes'])]['nodes']),None), axis=1)
             df.set_index('timesteps', inplace=True, drop=False)
             df.index = pd.to_datetime(df.index)
             df = df[(df.index >= start_date) & (df.index < end_date)]
