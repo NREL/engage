@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Optimization Solvers &#8212; Engage 0.1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b3523f8e" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=2389946f"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=01f34227"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Language Translation" href="language-translation.html" />
@@ -18,8 +18,9 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -32,9 +33,9 @@
           <div class="body" role="main">
             
   <section id="optimization-solvers">
-<h1>Optimization Solvers<a class="headerlink" href="#optimization-solvers" title="Permalink to this heading">¶</a></h1>
+<h1>Optimization Solvers<a class="headerlink" href="#optimization-solvers" title="Link to this heading">¶</a></h1>
 <section id="cbc">
-<h2>CBC<a class="headerlink" href="#cbc" title="Permalink to this heading">¶</a></h2>
+<h2>CBC<a class="headerlink" href="#cbc" title="Link to this heading">¶</a></h2>
 <p>Engage uses a free and open-source solver <a class="reference external" href="https://www.coin-or.org/">CBC</a>
 for development purpose, and it is already built into the docker image.</p>
 <p>CBC supports the GNU MathProg modeling language - subset of the AMPL language, and include
@@ -42,7 +43,7 @@ a variety of components, for detailed information, please refer to <a class="ref
 <p>However, it takes too much time and memory for solving large Calliope models.</p>
 </section>
 <section id="scip">
-<h2>SCIP<a class="headerlink" href="#scip" title="Permalink to this heading">¶</a></h2>
+<h2>SCIP<a class="headerlink" href="#scip" title="Link to this heading">¶</a></h2>
 <p><a class="reference external" href="https://scip.zib.de/">SCIP</a> is currently one of the fastest non-commercial solvers for mixed integer programming (MIP)
 and mixed integer nonlinear programming (MINLP). It is also a framework for constraint integer
 programming and branch-cut-and-price. It allows for total control of the solution process and
@@ -57,13 +58,13 @@ $<span class="w"> </span>cp<span class="w"> </span>~/scipoptsuite-5.0.0/scip/int
 </div>
 </section>
 <section id="highs">
-<h2>HiGHS<a class="headerlink" href="#highs" title="Permalink to this heading">¶</a></h2>
+<h2>HiGHS<a class="headerlink" href="#highs" title="Link to this heading">¶</a></h2>
 <p>In the deployed Engage application at NREL, it uses high-performance solver <a class="reference external" href="https://highs.dev/">HiGHS</a>
 to solve Calliope models with fast speed and large memory in compute node. It’s open-source, for more information,
 please refer to its official documentation <a class="reference external" href="https://highs.dev/#docs">https://highs.dev/#docs</a></p>
 </section>
 <section id="more-choice">
-<h2>More Choice<a class="headerlink" href="#more-choice" title="Permalink to this heading">¶</a></h2>
+<h2>More Choice<a class="headerlink" href="#more-choice" title="Link to this heading">¶</a></h2>
 <p>In behind, Calliope interfaces to <a class="reference external" href="http://www.pyomo.org/">Pyomo</a>  - a Python-based, open-source optimization modeling language with
 a diverse set of optimization capabilities. With the <a class="reference external" href="https://calliope.readthedocs.io/en/v0.6.8/api/api.html#api-backend-interface">API interface</a>
 provided by Calliope, you can specify the customized solver options.</p>
@@ -107,6 +108,10 @@ for more information about problem solving speed with different solvers.</p>
 <li class="toctree-l1"><a class="reference internal" href="release-notes.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Docs:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="engage-user-guide.html">Contributing to Engage</a></li>
+</ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
@@ -117,7 +122,7 @@ for more information about problem solving speed with different solvers.</p>
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
@@ -125,7 +130,7 @@ for more information about problem solving speed with different solvers.</p>
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
@@ -140,11 +145,11 @@ for more information about problem solving speed with different solvers.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020, Alliance for Sustainable Energy, LLC.
+      &#169;2024, Alliance for Sustainable Energy, LLC.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="_sources/optimization-solvers.rst.txt"

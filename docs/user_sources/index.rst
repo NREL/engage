@@ -20,7 +20,11 @@ Please visit the NREL hosted webtool at https://engage.nrel.gov/.
    :maxdepth: 2
    :caption: Contents:
 
-   engage-guide
+   how-to-use-this-guide
+   what-is-engage
+   engage-quickstart
+   engage-components-and-workflow
+   appendices
 
 
 
@@ -29,4 +33,3 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`
