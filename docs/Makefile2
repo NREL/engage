@@ -20,5 +20,5 @@ help:
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 docs:
-	@make html
-	@cp -r _buildtwo/html/. ./user_documentation/
+	@make -f Makefile2 html
+	@cp -r _buildtwo/html/. ./documentation/
