@@ -37,4 +37,4 @@ Get Started
 --------------
 Engage has a learning curve, but is adaptable to emergent applications after basic mastery of its components and inputs. Get started by clicking on one of the sample model links on the Engage Landing Page or, after registering and logging in, on the Models Page. These allow you to dive into Engage and explore small models expressive of a range of Engage capabilities. These models are view-only until you register (which takes less than a minute). After registering, you can both create your own models and create fully editable copies of these example models so that you may explore the effects of changes and edits to the models. Use the “Help” link in the Engage toolbar and the tooltips that appear with mouse-over throughout Engage for information on how to use Engage.
 
-We hope you enjoy and are empowered by Engage. Please reach out to us with reports of issues, feature requests, and questions at [engage@nrel.gov](mailto:engage@nrel.gov).
+We hope you enjoy and are empowered by Engage. Please reach out to us with reports of issues, feature requests, and questions at engage@nrel.gov.
