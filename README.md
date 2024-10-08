@@ -21,3 +21,13 @@ and the developer guide to contribute to Enage project.
 ## License
 BSD 3-Clause License
 https://github.com/NREL/engage/blob/master/LICENSE
+
+## Documentation
+In /engage/docs:
+Update user documentation:
+- make -f Makefile2 docs
+
+Update developer documentation:
+- make -f Makefile docs
+
+Ignore the warning about the static directory. To get a preview of the documentation copy the file path and past it into the browser. Once the documentation is ready merge it into the gh-pages branch. To change the settings for sphinx update the conf.py file. To update the navbar layout of the page look at the index.rst file.
