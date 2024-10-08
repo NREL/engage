@@ -116,7 +116,7 @@ class Run(models.Model):
         #meta['remotes'] = list(remotes)
         meta['transmissions'] = parents['transmission']
         # Demands
-        meta['demands'] = ['demand']
+        meta['demands'] = parents['demand']
         # Months
         meta['months'] = self.get_months()
         # Carriers

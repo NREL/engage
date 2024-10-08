@@ -5,7 +5,7 @@
 # Note: '-start' and '-end' is used in tutorial documentation only
 
 # supply_power_plus-start
-tech_groups:
+templates:
     supply_power_plus:
         essentials:
             parent: supply_plus

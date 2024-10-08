@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Developer Guide &#8212; Engage 0.1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b3523f8e" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=2389946f"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=01f34227"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Optimization Solvers" href="optimization-solvers.html" />
@@ -18,8 +18,9 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -32,12 +33,12 @@
           <div class="body" role="main">
             
   <section id="developer-guide">
-<h1>Developer Guide<a class="headerlink" href="#developer-guide" title="Permalink to this heading">¶</a></h1>
+<h1>Developer Guide<a class="headerlink" href="#developer-guide" title="Link to this heading">¶</a></h1>
 <section id="how-engage-works">
-<h2>How Engage Works<a class="headerlink" href="#how-engage-works" title="Permalink to this heading">¶</a></h2>
+<h2>How Engage Works<a class="headerlink" href="#how-engage-works" title="Link to this heading">¶</a></h2>
 </section>
 <section id="architecture-diagram">
-<h2>Architecture Diagram<a class="headerlink" href="#architecture-diagram" title="Permalink to this heading">¶</a></h2>
+<h2>Architecture Diagram<a class="headerlink" href="#architecture-diagram" title="Link to this heading">¶</a></h2>
 <p>This Engage web application is built on top of Django, PostgreSQL, Celery and Redis. The diagram below shows
 the architecture.</p>
 <img alt="_images/engage-architecture.png" src="_images/engage-architecture.png" />
@@ -46,7 +47,7 @@ running Engage models outside the HTTP request-response cycle. In Celery cluster
 short-running task worker and long-running task worker.</p>
 </section>
 <section id="database-schema">
-<h2>Database Schema<a class="headerlink" href="#database-schema" title="Permalink to this heading">¶</a></h2>
+<h2>Database Schema<a class="headerlink" href="#database-schema" title="Link to this heading">¶</a></h2>
 <p>The chart below shows the database schema.</p>
 <img alt="_images/Database_Schema.png" src="_images/Database_Schema.png" />
 <p>Here also provides download of the schema in pdf and pptx formats,</p>
@@ -56,7 +57,7 @@ short-running task worker and long-running task worker.</p>
 </ul>
 </section>
 <section id="django-apps">
-<h2>Django Apps<a class="headerlink" href="#django-apps" title="Permalink to this heading">¶</a></h2>
+<h2>Django Apps<a class="headerlink" href="#django-apps" title="Link to this heading">¶</a></h2>
 <p>Django <cite>app</cite> describes a Python package that provides some set of features. There are three apps created
 in this Engage web application.</p>
 <ul class="simple">
@@ -67,7 +68,7 @@ in this Engage web application.</p>
 <p>Please refer to the source code for details.</p>
 </section>
 <section id="unit-test">
-<h2>Unit Test<a class="headerlink" href="#unit-test" title="Permalink to this heading">¶</a></h2>
+<h2>Unit Test<a class="headerlink" href="#unit-test" title="Link to this heading">¶</a></h2>
 <p>Django provides a test framework that builds on the Python standard <cite>unittest</cite> library, with a small hierarchy.
 Based on API methods and tools privided by Django test framework, this application develops unit tests for
 HTTP-level request handling, model queries, and template rendering, etc.</p>
@@ -80,11 +81,11 @@ $<span class="w"> </span>python<span class="w"> </span>manage.py<span class="w">
 <p>It is essential of making sure that your code is safe to release after making changes, and cost-effective to maintain.</p>
 </section>
 <section id="django-celery">
-<h2>Django Celery<a class="headerlink" href="#django-celery" title="Permalink to this heading">¶</a></h2>
+<h2>Django Celery<a class="headerlink" href="#django-celery" title="Link to this heading">¶</a></h2>
 <p>Celery, a popular distributed task queue, is applied in this project and used for running Engage models.
 The Celery worker is running in a separate container.</p>
 <section id="celery-tasks">
-<h3>Celery Tasks<a class="headerlink" href="#celery-tasks" title="Permalink to this heading">¶</a></h3>
+<h3>Celery Tasks<a class="headerlink" href="#celery-tasks" title="Link to this heading">¶</a></h3>
 <p>Currently, there are 3 types of Celery task in this project,</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">upload_ts</span></code>: Create and upload user’s timeseries csv file, where <code class="docutils literal notranslate"><span class="pre">SoftTimeLimit=3540</span></code>, <code class="docutils literal notranslate"><span class="pre">TimeLimit=3600</span></code> seconds.</p></li>
@@ -99,7 +100,7 @@ The Celery worker is running in a separate container.</p>
 </ul>
 </section>
 <section id="celery-flower">
-<h3>Celery Flower<a class="headerlink" href="#celery-flower" title="Permalink to this heading">¶</a></h3>
+<h3>Celery Flower<a class="headerlink" href="#celery-flower" title="Link to this heading">¶</a></h3>
 <p><a class="reference external" href="http://flower.readthedocs.io/en/latest/index.html">Flower</a> is a web based tool for monitoring and administrating Celery workers.
 The link below is the address of Flower dashboard for dev.</p>
 <p><a class="reference external" href="http://0.0.0.0:5555">http://0.0.0.0:5555</a></p>
@@ -116,7 +117,7 @@ The link below is the address of Flower dashboard for dev.</p>
 </section>
 </section>
 <section id="email-notification">
-<h2>Email Notification<a class="headerlink" href="#email-notification" title="Permalink to this heading">¶</a></h2>
+<h2>Email Notification<a class="headerlink" href="#email-notification" title="Link to this heading">¶</a></h2>
 <p>This web application supports AWS SES and sends email notification to user after Engage model got a long run (longer than 20 mins).</p>
 <p>To enable this feature, please set the following environment variables:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">AWS_ACCESS_KEY_ID</span><span class="o">=</span>
@@ -129,24 +130,24 @@ The link below is the address of Flower dashboard for dev.</p>
 <p>Please notice that, this feature is optional, and has no effect to model run if not AWS SES setup.</p>
 </section>
 <section id="timeseries-data">
-<h2>Timeseries Data<a class="headerlink" href="#timeseries-data" title="Permalink to this heading">¶</a></h2>
+<h2>Timeseries Data<a class="headerlink" href="#timeseries-data" title="Link to this heading">¶</a></h2>
 <p>You may need sample timeseries data for development, please checkout them here -
 <a class="reference external" href="https://github.com/NREL/engage/docs/resources/calliope-063/sampe-timeseries-data/">sample timeseries data</a>.</p>
 </section>
 <section id="calliope-references">
-<h2>Calliope References<a class="headerlink" href="#calliope-references" title="Permalink to this heading">¶</a></h2>
+<h2>Calliope References<a class="headerlink" href="#calliope-references" title="Link to this heading">¶</a></h2>
 <section id="official-documentation">
-<h3>Official Documentation<a class="headerlink" href="#official-documentation" title="Permalink to this heading">¶</a></h3>
-<p>This web application is built on top of <code class="docutils literal notranslate"><span class="pre">Calliope</span> <span class="pre">-</span> <span class="pre">v0.7.0</span></code> for now, the official documentation is linked here
-<a class="reference external" href="https://calliope.readthedocs.io/en/v0.7.0.dev4/">https://calliope.readthedocs.io/</a>.</p>
+<h3>Official Documentation<a class="headerlink" href="#official-documentation" title="Link to this heading">¶</a></h3>
+<p>This web application is built on top of <code class="docutils literal notranslate"><span class="pre">Calliope</span> <span class="pre">-</span> <span class="pre">v0.7.</span></code> for now, the official documentation is linked here
+<a class="reference external" href="https://calliope.readthedocs.io/en/v0.7.0.dev4/">https://calliope.readthedocs.io/en/v0.7.0.dev4/</a>.</p>
 </section>
 <section id="example-models">
-<h3>Example Models<a class="headerlink" href="#example-models" title="Permalink to this heading">¶</a></h3>
+<h3>Example Models<a class="headerlink" href="#example-models" title="Link to this heading">¶</a></h3>
 <p>The example models at national and urban scale can be find here -
 <a class="reference external" href="https://github.com/NREL/engage/docs/resources/calliope-063/example_models/">example models</a>.</p>
 </section>
 <section id="commandlines">
-<h3>Commandlines<a class="headerlink" href="#commandlines" title="Permalink to this heading">¶</a></h3>
+<h3>Commandlines<a class="headerlink" href="#commandlines" title="Link to this heading">¶</a></h3>
 <p>The followings are some commands related to Calliope calls.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate Sample Model Files</span>
 $<span class="w"> </span>calliope<span class="w"> </span>new<span class="w"> </span>urban_scale<span class="w"> </span>--template<span class="o">=</span>urban_scale
@@ -157,7 +158,7 @@ $<span class="w"> </span>calliope<span class="w"> </span>run<span class="w"> </s
 </div>
 </section>
 <section id="python-apis">
-<h3>Python APIs<a class="headerlink" href="#python-apis" title="Permalink to this heading">¶</a></h3>
+<h3>Python APIs<a class="headerlink" href="#python-apis" title="Link to this heading">¶</a></h3>
 <p>Here are examples of Calliope calls via IPython.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="c1"># Model Run</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">calliope</span>
@@ -168,11 +169,11 @@ $<span class="w"> </span>calliope<span class="w"> </span>run<span class="w"> </s
 </div>
 </section>
 <section id="citation">
-<h3>Citation<a class="headerlink" href="#citation" title="Permalink to this heading">¶</a></h3>
+<h3>Citation<a class="headerlink" href="#citation" title="Link to this heading">¶</a></h3>
 <p><cite>Stefan Pfenninger (2017). Dealing with multiple decades of hourly wind and PV time series in energy models: a comparison of methods to reduce time resolution and the planning implications of inter-annual variability. Applied Energy. doi: 10.1016/j.apenergy.2017.03.051</cite></p>
 </section>
 <section id="more-calliope">
-<h3>More Calliope<a class="headerlink" href="#more-calliope" title="Permalink to this heading">¶</a></h3>
+<h3>More Calliope<a class="headerlink" href="#more-calliope" title="Link to this heading">¶</a></h3>
 <p>The decision variables are listed here:</p>
 <img alt="_images/decision-variables.png" src="_images/decision-variables.png" />
 </section>
@@ -218,6 +219,10 @@ $<span class="w"> </span>calliope<span class="w"> </span>run<span class="w"> </s
 <li class="toctree-l1"><a class="reference internal" href="release-notes.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Docs:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="engage-user-guide.html">Contributing to Engage</a></li>
+</ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
@@ -228,7 +233,7 @@ $<span class="w"> </span>calliope<span class="w"> </span>run<span class="w"> </s
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
@@ -236,7 +241,7 @@ $<span class="w"> </span>calliope<span class="w"> </span>run<span class="w"> </s
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
@@ -251,11 +256,11 @@ $<span class="w"> </span>calliope<span class="w"> </span>run<span class="w"> </s
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020, Alliance for Sustainable Energy, LLC.
+      &#169;2024, Alliance for Sustainable Energy, LLC.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="_sources/developer-guide.rst.txt"

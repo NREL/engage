@@ -29,7 +29,6 @@ Please visit the NREL hosted webtool at https://engage.nrel.gov/.
    release-notes
    license
 
-
 Indices and tables
 ==================
 
