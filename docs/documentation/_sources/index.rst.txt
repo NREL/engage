@@ -24,9 +24,7 @@ Please visit the NREL hosted webtool at https://engage.nrel.gov/.
    what-is-engage
    engage-quickstart
    engage-components-and-workflow
-   appendices
-
-
+   appendices-page
 
 Indices and tables
 ==================
