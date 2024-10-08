@@ -1,3 +1,4 @@
+from pytz import common_timezones
 from django import forms
 from django.contrib.auth import password_validation, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -127,3 +128,63 @@ class UserAuthenticationForm(AuthenticationForm):
             code="invalid_login",
             params={"username": "email"},
         )
+
+class UserSettingsChangeForm(forms.ModelForm):
+    username = forms.CharField(
+        label=_("Username"),
+        max_length=150,
+        required=True
+    )
+    organization = forms.CharField(
+        label=_("Organization"),
+        max_length=255,
+        required=False,
+    )
+    timezone = forms.ChoiceField(
+        label=_("Time Zone"),
+        choices=[(tz, tz) for tz in common_timezones],
+        required=True,
+    )
+
+    class Meta:
+        model = User_Profile
+        fields = ('organization', 'timezone')
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+        # Handle the case where User_Profile may not exist
+        try:
+            user_profile = user.user_profile
+        except User_Profile.DoesNotExist:
+            user_profile = User_Profile(user=user)
+            user_profile.save()
+
+        # Pre-fill the form fields with the current data
+        self.fields['username'].initial = user.username
+        self.fields['organization'].initial = user_profile.organization
+        # self.fields['timezone'].initial = user_profile.timezone
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        if username != self.user.username:
+            if User.objects.filter(username=username).exists():
+                raise ValidationError(_("A user with that username already exists."))
+        return username
+
+    def save(self, commit=True):
+        # Update the User model
+        self.user.username = self.cleaned_data['username']
+        self.user.save()
+
+        # Update the User_Profile model
+        try:
+            profile = self.user.user_profile
+        except User_Profile.DoesNotExist:
+            profile = User_Profile(user=self.user)
+
+        profile.organization = self.cleaned_data['organization']
+        profile.timezone = self.cleaned_data['timezone']
+        if commit:
+            profile.save()
+        return self.user
