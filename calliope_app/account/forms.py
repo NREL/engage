@@ -1,10 +1,10 @@
+from pytz import common_timezones
 from django import forms
 from django.contrib.auth import password_validation, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-
 from api.models.engage import User_Profile
 from account.validators import email_validator, unicode_email_validator, unicode_chars_validator
 
@@ -127,3 +127,64 @@ class UserAuthenticationForm(AuthenticationForm):
             code="invalid_login",
             params={"username": "email"},
         )
+    
+
+class UserSettingsChangeForm(forms.Form):
+    first_name = forms.CharField(
+        label=_("First Name"),
+        max_length=30,
+        required=True
+    )
+    last_name = forms.CharField(
+        label=_("Last Name"),
+        max_length=30,
+        required=True
+    )
+    organization = forms.CharField(
+        label=_("Organization"),
+        max_length=255,
+        required=False,
+    )
+    timezone = forms.ChoiceField(
+        label=_("Time Zone"),
+        choices=[(tz, tz) for tz in common_timezones],
+        required=True,
+    )
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+
+        # Pre-fill data from User model
+        self.fields['first_name'].initial = user.first_name
+        self.fields['last_name'].initial = user.last_name
+
+        # Pre-fill data from User_Profile model, if it exists
+        try:
+            user_profile = user.user_profile
+            self.fields['organization'].initial = user_profile.organization
+            self.fields['timezone'].initial = user_profile.timezone
+        except User_Profile.DoesNotExist:
+            self.fields['organization'].initial = ''
+            self.fields['timezone'].initial = ''
+
+    def save(self, commit=True):
+        # Update the User model's first and last name
+        user = self.user
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        if commit:
+            user.save()
+
+        # Update the User_Profile model
+        try:
+            profile = user.user_profile
+        except User_Profile.DoesNotExist:
+            profile = User_Profile(user=user)
+
+        profile.organization = self.cleaned_data['organization']
+        profile.timezone = self.cleaned_data['timezone']
+        if commit:
+            profile.save()
+        
+        return user

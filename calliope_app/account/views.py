@@ -11,7 +11,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_protect
 
-from account.forms import UserRegistrationForm, UserAuthenticationForm
+from account.forms import UserRegistrationForm, UserAuthenticationForm, UserSettingsChangeForm
 from api.models.engage import User_Profile
 
 
@@ -123,6 +123,36 @@ def password_view(request):
     }
 
     return render(request, "password.html", context)
+
+
+@login_required
+def user_view(request):
+    """
+    View the "User Settings" page
+    Returns: HttpResponse
+    Example:
+    http://0.0.0.0:8000/settings/user/
+    """
+    user = request.user
+
+    if request.method == 'POST':
+        form = UserSettingsChangeForm(user, request.POST)
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, user)  # Important if username changed
+            messages.success(request, "Your settings were successfully updated!")
+            return redirect('/')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = UserSettingsChangeForm(user)
+
+    context = {
+        'user': user,
+        'form': form,
+    }
+
+    return render(request, "change_user.html", context)
 
 
 @csrf_protect
