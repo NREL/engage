@@ -60,7 +60,7 @@
 				</td>
 				{% endwith %}
 				<!-- Carrier -->
-				<td class="text-sm">
+				<!-- <td class="text-sm">
 					{% if carrier_ins|return_item:loc_tech.technology_id %}
 					<b>{{ carrier_ins|return_item:loc_tech.technology_id }}</b>
 					{% else %}
@@ -74,6 +74,30 @@
 						<a href="{% url 'technologies' model.uuid %}?tech_id={{ loc_tech.technology_id }}"><i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="right" title="{% trans 'Output carrier not defined' %}"></i></a>
 						{% endif %}
 					{% endif %}
+				</td> -->
+				<td class="text-sm">
+					{% with in_carrier=carrier_ins|return_item:loc_tech.technology_id %}
+						{% if in_carrier %}
+							<b>{{ in_carrier|first }}</b>
+							<small class="text-muted">(Debug: {{ in_carrier|join:", " }})</small>
+						{% else %}
+							<a href="{% url 'technologies' model.uuid %}?tech_id={{ loc_tech.technology_id }}"><i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="right" title="{% trans 'Input carrier not defined' %}"></i></a>
+						{% endif %}
+					{% endwith %}
+					{% with out_carrier=carrier_outs|return_item:loc_tech.technology_id %}
+						{% if in_carrier != out_carrier %}
+							{% if out_carrier %}
+								{% if 'supply' in out_carrier or 'demand' in out_carrier %}
+									&nbsp;to&nbsp; <b>{{ out_carrier|first }}</b>
+								{% else %}
+									&nbsp;to&nbsp; <b>{{ out_carrier|first }}</b> to <b>{{ out_carrier|last }}</b>
+								{% endif %}
+								<small class="text-muted">(Debug: {{ out_carrier|join:", " }})</small>
+							{% else %}
+								&nbsp;to&nbsp; <a href="{% url 'technologies' model.uuid %}?tech_id={{ loc_tech.technology_id }}"><i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="right" title="{% trans 'Output carrier not defined' %}"></i></a>
+							{% endif %}
+						{% endif %}
+					{% endwith %}
 				</td>
 				<!-- Technology -->
 				<td>
