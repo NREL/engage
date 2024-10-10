@@ -253,19 +253,33 @@ class Model(models.Model):
     
     def check_flags(self):
         tech_params = Tech_Param.objects.filter(technology__in=self.technologies,)
-    
-    def carrier_lookup(self, carrier_in=True):
-        names = Parameter.C_INS if carrier_in else Parameter.C_OUTS
+
+    def carrier_lookup(self, carrier_type):
+        """
+        Will remove this comment during PR peer review
+        carrier_type must either be in ["in", "out"]
+        If power demand and type is out, then we should have no carrier out. It should be None
+        If supply and carrier_type is in, then we should have no carrier in and the carrier should be None. 
+        """
+        if carrier_type not in ["in", "out"]:
+            raise ValueError("carrier_type must either be in ['in', 'out']")
+        names = Parameter.C_INS if carrier_type=="in" else Parameter.C_OUTS
         params = Tech_Param.objects.filter(
             technology__in=self.technologies, parameter__name__in=names)
-        carrier_ins = {}
+        carrier = {}
         for c in params:
-            if c.technology_id not in carrier_ins:
-                carrier_ins[c.technology_id] = c.value
+            print(carrier_type, c.technology.abstract_tech.name, c.technology_id, c.value)
+            carrier_in = c.technology.abstract_tech.name == "supply" and carrier_type == "in"
+            carrier_out = c.technology.abstract_tech.name == "demand" and carrier_type == "out"
+            if carrier_in or carrier_out:
+                carrier[c.technology_id] = [None, c.technology.abstract_tech.name]
+            elif c.technology_id not in carrier:
+                carrier[c.technology_id] = [c.value, c.technology.abstract_tech.name]
             else:
-                val = carrier_ins[c.technology_id]
-                carrier_ins[c.technology_id] = ', '.join([val, c.value])
-        return carrier_ins
+                val = carrier[c.technology_id]
+                carrier[c.technology_id] = [', '.join([val, c.value]), c.technology.abstract_tech.name]
+        print("carrier:  ", carrier, "\nParams: ", params)
+        return carrier
 
     @property
     def carriers_old(self):
