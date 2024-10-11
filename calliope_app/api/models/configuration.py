@@ -273,7 +273,18 @@ class Model(models.Model):
         return carrier_ins, carrier_outs
 
     def carrier_map(self, carrier_params, carrier_ins, carrier_outs, carrier_type):
+        """
+        loops through params:
+            - if in supply or out demand, then pass
+            - if carrier_out and supply, then set carrier_out and carrier_in to be the same. 
+            - if carrier_in and demand, then set carrier_out and carrier_in to be the same. 
+
+        """
         for c in carrier_params:
+            in_supply = carrier_type == "carrier_in" and c.technology.abstract_tech.name == "supply"
+            out_demand = carrier_type == "carrier_out" and c.technology.abstract_tech.name == "demand"
+            if in_supply or out_demand:
+                continue
             if carrier_type == "carrier_in" and c.technology.abstract_tech.name == "demand":
                 carrier_ins[c.technology_id] = c.value
                 carrier_outs[c.technology_id] = c.value
