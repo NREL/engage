@@ -30,7 +30,7 @@ $(document).ready(function () {
 			var value = $(this).find('.run-parameter-value').val();
 			run_options[paramId] = value;
 		});
-	
+
 
 		// fix timezone issues
 		sd = new Date(sd.getTime() + sd.getTimezoneOffset() * 60000);

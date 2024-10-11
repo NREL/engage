@@ -1,4 +1,3 @@
-
 FROM python:3.12-slim-bookworm as app
 
 # set environment variables
@@ -33,10 +32,6 @@ COPY requirements.txt requirements-dev.txt /www/
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN pip install -r requirements-dev.txt
-# RUN pip install -r requirements.txt && pip install -r requirements-dev.txt
-# Install calliope without dependencies, as already installed in requirements
-# RUN pip install calliope==0.6.8 --no-deps && pip install flower>=1.1.0
-
 
 # Install Geophires
 RUN pip install git+https://github.com/NREL/GEOPHIRES-X.git#egg=geophires-x

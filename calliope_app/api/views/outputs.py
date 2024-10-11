@@ -2,18 +2,15 @@ import base64
 import json
 import io
 import logging
-import os
-import shutil
-import zipfile
-import sys
 import operator
+import os
+import zipfile
 from re import match
 
 from datetime import datetime, timedelta
 from urllib.parse import urljoin
 import requests
 import pandas as pd
-import pint
 
 from celery import current_app,chain
 from django.views.decorators.csrf import csrf_protect
@@ -31,17 +28,44 @@ from api.tasks import run_model, task_status, build_model,upload_ts
 from api.models.calliope import Abstract_Tech, Abstract_Tech_Param, Parameter, Run_Parameter
 from api.models.configuration import (
     Model, ParamsManager, User_File, Location, Technology,
-    Tech_Param, Loc_Tech, Loc_Tech_Param, Timeseries_Meta, Carrier, Scenario_Param
+    Tech_Param, Loc_Tech, Loc_Tech_Param, Timeseries_Meta, Carrier
 )
 
 from api.models.engage import ComputeEnvironment
+from api.engage import ENGAGE_SOLVERS
 from api.utils import zip_folder, initialize_units, convert_units, noconv_units
 from batch.managers import AWSBatchJobManager
 from taskmeta.models import CeleryTask, BatchTask, batch_task_status
 
-from calliope_app.celery import app
-
 logger = logging.getLogger(__name__)
+
+
+@csrf_protect
+def solvers(request):
+    env_name = request.GET.get("env_name", None)
+    if not env_name:
+        env_name = "default"
+
+    flag = True
+    try:
+        env = ComputeEnvironment.objects.get(name=env_name)
+    except ComputeEnvironment.DoesNotExist:
+        flag = False
+
+    if (not flag) or (not env.solvers) or (not isinstance(env.solvers, list)):
+        solvers = ENGAGE_SOLVERS
+    else:
+        solvers = env.solvers
+
+    candidates = []
+    for solver in solvers:
+        is_active = solver.get("is_active", "false")
+        if is_active == "true":
+            candidates.append(solver)
+
+    payload = sorted(candidates, key=lambda x: x["order"])
+
+    return HttpResponse(json.dumps(payload), content_type="application/json")
 
 
 @csrf_protect
@@ -158,8 +182,13 @@ def build(request):
                 )
             inputs_path = inputs_path.lower().replace(" ", "-")
             os.makedirs(inputs_path, exist_ok=True)
-           
-            # Celery task        
+
+            # Celery task
+            run.run_options = []
+            for id in parameters.keys():
+                run_parameter= Run_Parameter.objects.get(pk=int(id))
+                run.run_options.append({'root':run_parameter.root,'name':run_parameter.name,'value':parameters[id]})
+
             async_result = build_model.apply_async(
                 kwargs={
                     "inputs_path": inputs_path,
@@ -297,7 +326,7 @@ def optimize(request):
                 r.batch_job.status = batch_task_status.FAILED
             r.batch_job.save()
             r.save()
-        
+
         if not all_complete:
             payload = {
                 "status": "BLOCKED",
@@ -341,7 +370,7 @@ def optimize(request):
                     else:
                         logger.info("Found a subsequent gradient model for year %s but it was not built.",next_run.year)
                         break
-    
+
     # Unknown environment, not supported
     else:
         raise Exception("Failed to submit job, unknown compute environment")
@@ -825,7 +854,7 @@ def upload_techs(request):
                 else:
                     in_rate = 'kW'
                     in_quantity = 'kWh'
-                        
+
                 if carrier_out_names:
                     carrier_out = Carrier.objects.filter(model=model,name=carrier_out_names[0])
                     if carrier_out:
@@ -838,7 +867,7 @@ def upload_techs(request):
                 else:
                     out_rate = 'kW'
                     out_quantity = 'kWh'
-                        
+
                 for f,v in row.items():
                     if pd.isnull(v):
                         continue
@@ -855,7 +884,7 @@ def upload_techs(request):
                     if len(pname) > 1:
                         param_Q['root'] = pname[0]
                         param_Q['name'] = pname[1]
-                    else: 
+                    else:
                         param_Q['name'] = pname[0]
 
                     if pindex:
@@ -864,7 +893,7 @@ def upload_techs(request):
                         param_Q['dim'] = json.loads(pdims)
 
                     param_Q['id__in'] = params
-                    
+
                     p = Parameter.objects.filter(**param_Q).first()
                     if p is None:
                         continue
@@ -1128,14 +1157,14 @@ def upload_loctechs(request):
                     if len(pname) > 1:
                         param_Q['root'] = pname[0]
                         param_Q['name'] = pname[1]
-                    else: 
+                    else:
                         param_Q['name'] = pname[0]
 
                     if pindex:
                         param_Q['index'] = json.loads(pindex)
                     if pdims:
                         param_Q['dim'] = json.loads(pdims)
-                    
+
                     p = Parameter.objects.filter(**param_Q).first()
                     if p is None:
                         continue
