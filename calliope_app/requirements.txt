@@ -6,7 +6,7 @@ django==4.2.16
 django-crispy-forms==1.14.0
 django-environ>=0.4.5
 django-modeltranslation==0.18.12
-# flower>=1.1.0  # contains vulnerabilities not fixed yet
+flower>=2.0.1
 nrel-pysam==2.1.5.dev3
 pint==0.21
 psycopg2-binary==2.9.3
