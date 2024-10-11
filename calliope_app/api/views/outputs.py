@@ -185,9 +185,9 @@ def build(request):
 
             # Celery task
             run.run_options = []
-            for id in parameters.keys():
+            for id in run_options.keys():
                 run_parameter= Run_Parameter.objects.get(pk=int(id))
-                run.run_options.append({'root':run_parameter.root,'name':run_parameter.name,'value':parameters[id]})
+                run.run_options.append({'root':run_parameter.root,'name':run_parameter.name,'value':run_options[id]})
 
             async_result = build_model.apply_async(
                 kwargs={
