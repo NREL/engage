@@ -276,9 +276,9 @@ class Model(models.Model):
         """
         loops through params:
             - if in supply or out demand, then pass
-            - if carrier_out and supply, then set carrier_out and carrier_in to be the same. 
-            - if carrier_in and demand, then set carrier_out and carrier_in to be the same. 
-
+            - elif carrier_out and supply, then set carrier_out and carrier_in to be the same. 
+            - elif carrier_in and demand, then set carrier_out and carrier_in to be the same. 
+            - if nothin else: then set the carrier_ins normally or carrier_outs depending on the carrier_type 
         """
         for c in carrier_params:
             in_supply = carrier_type == "carrier_in" and c.technology.abstract_tech.name == "supply"
