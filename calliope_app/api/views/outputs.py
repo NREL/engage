@@ -3,16 +3,13 @@ import json
 import io
 import logging
 import os
-import shutil
 import zipfile
-import sys
 from re import match
 
 from datetime import datetime, timedelta
 from urllib.parse import urljoin
 import requests
 import pandas as pd
-import pint
 
 from celery import current_app,chain
 from django.views.decorators.csrf import csrf_protect
@@ -30,17 +27,44 @@ from api.tasks import run_model, task_status, build_model,upload_ts
 from api.models.calliope import Abstract_Tech, Abstract_Tech_Param, Parameter, Run_Parameter
 from api.models.configuration import (
     Model, ParamsManager, User_File, Location, Technology,
-    Tech_Param, Loc_Tech, Loc_Tech_Param, Timeseries_Meta, Carrier, Scenario_Param
+    Tech_Param, Loc_Tech, Loc_Tech_Param, Timeseries_Meta, Carrier
 )
 
 from api.models.engage import ComputeEnvironment
+from api.engage import ENGAGE_SOLVERS
 from api.utils import zip_folder, initialize_units, convert_units, noconv_units
 from batch.managers import AWSBatchJobManager
 from taskmeta.models import CeleryTask, BatchTask, batch_task_status
 
-from calliope_app.celery import app
-
 logger = logging.getLogger(__name__)
+
+
+@csrf_protect
+def solvers(request):
+    env_name = request.GET.get("env_name", None)
+    if not env_name:
+        env_name = "default"
+
+    flag = True
+    try:
+        env = ComputeEnvironment.objects.get(name=env_name)
+    except ComputeEnvironment.DoesNotExist:
+        flag = False
+
+    if (not flag) or (not env.solvers) or (not isinstance(env.solvers, list)):
+        solvers = ENGAGE_SOLVERS
+    else:
+        solvers = env.solvers
+
+    candidates = []
+    for solver in solvers:
+        is_active = solver.get("is_active", "false")
+        if is_active == "true":
+            candidates.append(solver)
+
+    payload = sorted(candidates, key=lambda x: x["order"])
+
+    return HttpResponse(json.dumps(payload), content_type="application/json")
 
 
 @csrf_protect
@@ -156,13 +180,13 @@ def build(request):
                 )
             inputs_path = inputs_path.lower().replace(" ", "-")
             os.makedirs(inputs_path, exist_ok=True)
-            
+
             run.run_options = []
             for id in parameters.keys():
                 run_parameter= Run_Parameter.objects.get(pk=int(id))
                 run.run_options.append({'root':run_parameter.root,'name':run_parameter.name,'value':parameters[id]})
-           
-            # Celery task        
+
+            # Celery task
             async_result = build_model.apply_async(
                 kwargs={
                     "inputs_path": inputs_path,
@@ -300,7 +324,7 @@ def optimize(request):
                 r.batch_job.status = batch_task_status.FAILED
             r.batch_job.save()
             r.save()
-        
+
         if not all_complete:
             payload = {
                 "status": "BLOCKED",
@@ -344,7 +368,7 @@ def optimize(request):
                     else:
                         logger.info("Found a subsequent gradient model for year %s but it was not built.",next_run.year)
                         break
-    
+
     # Unknown environment, not supported
     else:
         raise Exception("Failed to submit job, unknown compute environment")

@@ -133,6 +133,8 @@ urlpatterns = [
     path('upload_outputs/',
          outputs_views.upload_outputs,
          name='upload_outputs'),
+    path('solvers/', outputs_views.solvers,
+         name="solvers"),
 
     # Bulk Data
     path('upload_locations/',

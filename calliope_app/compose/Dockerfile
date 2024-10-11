@@ -1,4 +1,4 @@
-FROM python:3.8-slim-bookworm as app
+FROM python:3.8-slim-bookworm AS app
 
 # set environment variables
 ENV LC_ALL=C.UTF-8
