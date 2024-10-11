@@ -24,13 +24,12 @@ $(document).ready(function () {
 			years = $('#years').val(),
 			notes = $('#notes').val();
 
-		var run_options = {};
+		var parameters = {};
 		$('#run_parameters .parameter-row').each(function() {
 			var paramId = $(this).data('param-id');
 			var value = $(this).find('.run-parameter-value').val();
-			run_options[paramId] = value;
+			parameters[paramId] = value;
 		});
-
 
 		// fix timezone issues
 		sd = new Date(sd.getTime() + sd.getTimezoneOffset() * 60000);
@@ -68,7 +67,7 @@ $(document).ready(function () {
 					'run_env': run_env,
 					'years': years,
 					'notes': notes,
-					'run_options': JSON.stringify(run_options)
+					'parameters': JSON.stringify(parameters)
 				},
 				dataType: 'json',
 				success: function (data) {
@@ -90,7 +89,34 @@ $(document).ready(function () {
 		}
 	});
 
+  var env_name = $(this).val();
+  set_solvers(env_name);
+
+  $("#run-environment").change(function () {
+    var env_name = $(this).val();
+    set_solvers(env_name);
+  });
+
 });
+
+
+function set_solvers(env_name) {
+  $.ajax({
+    url: '/' + LANGUAGE_CODE + '/api/solvers/',
+    data: {
+      'env_name': env_name,
+    },
+    success: function(data) {
+      var solvers = $('#run-solvers');
+      solvers.empty();
+      $.each(data, function(index, item) {
+        var key = item.name;
+        var value = item.pretty_name;
+        solvers.append($('<option></option>').attr('value', key).text(value));
+      });
+    }
+  });
+}
 
 
 function add_run_precheck() {
@@ -110,6 +136,7 @@ function add_run_precheck() {
 		}
 	});
 };
+
 
 function activate_tiles() {
 	$('.selection_tile').on('click', function () {
