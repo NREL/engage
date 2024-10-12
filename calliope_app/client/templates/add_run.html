@@ -18,9 +18,9 @@
     background-color: #192733;
     border-radius: 10px;
     padding: 10px;
-    left: 0%; 
+    left: 0%;
     margin-left: 10px; /* Offset it by 10 pixels to the right */
-    transform: translateY(10px); 
+    transform: translateY(10px);
 }
 
 .hover-text:hover .tooltip-text {
@@ -45,7 +45,7 @@
 {% endblock %}
 
 {% block config_runs %}<h5><i class="fas fa-play"></i>&nbsp;&nbsp;<b>{% trans "Runs" %}</b></h5>{% endblock %}
-{% block config_5_sync %}<i class="fas fa-sync"></i>{% endblock %} 
+{% block config_5_sync %}<i class="fas fa-sync"></i>{% endblock %}
 {% block config_5_tab %}tab-active{% endblock %}
 
 {% block content %}
@@ -58,7 +58,7 @@
 		<div class="col-9">
 			<div class="row">
 				<div class="col-12 centered"><h5><u>{% trans "Select" %}</u> {% trans "a time period" %} <b>{% trans "below" %}</b></h5><br>
-				
+
 					<h5>
 					{% trans "Start Date" %}
 					&nbsp;&nbsp;
@@ -87,22 +87,22 @@
 		<div class="col-3">
 			<h5>{% trans "Run Options" %}:</h5>
 
-			<h6>
+			<h6 style="margin-top: 20px">
 				{% trans "Enable Clustered Run:" %}
 				<input id="cluster" class="centered" type="checkbox" checked="checked">
 			</h6>
 
-			<h6>
+			<h6 style="margin-top: 20px">
 				{% trans "Enable Manual Run:" %}
 				<input id="manual" class="centered" type="checkbox">
 			</h6>
 
-			<h6>
+			<h6 style="margin-top: 20px">
 				{% trans "Run Timestep" %}<br>
-				<input id="timestep" class="centered form-box" type="text" value="1H">
+				<input id="timestep" style="text-align: left;" class="centered form-control" type="text" value="1H">
 			</h6>
-			
-			<h6>{% trans "Select Run Environment:" %}</h6>
+
+			<h6 style="margin-top: 20px">{% trans "Run Environment" %}</h6>
 			<div class="form-group" style="margin-bottom: 1px;">
 				<select id="run-environment" class="form-control form-margin" style="text-align: left;">
 					{% for env in compute_environments  %}
@@ -111,13 +111,20 @@
 				</select>
 			</div>
 
-			<h6 class="form-margin">
-				{% trans "Run Notes" %}<br>
-				<input id="notes" class="centered form-box" type="text">
-			</h6>
-
 			<div id="run_parameters" class="settings-container">
+
 				{% for param in parameters %}
+        {% if param.run_parameter.name == 'solver' %}
+        <h6 class="parameter-row {% if param.run_parameter.can_evolve %}evolving{% else %}static{% endif %}" style="margin-top: 20px" data-param-id="{{ param.run_parameter.id }}">
+					<div class="parameter-info">
+						<div class="parameter-name tooltip-hover">{% trans "Run Solver" %}</div>
+					</div>
+					<div class="parameter-value">
+						<select id="run-solvers" style="text-align: left;" class="form-control run-parameter-value">
+						</select>
+					</div>
+				</h6>
+        {% else %}
 				<h6 class="parameter-row {% if param.run_parameter.can_evolve %}evolving{% else %}static{% endif %}" data-param-id="{{ param.run_parameter.id }}">
 					<div class="parameter-info">
 						<div class="parameter-name tooltip-hover">
@@ -127,7 +134,7 @@
 					</div>
 					<div class="parameter-value">
 						{% if param.run_parameter.choices %}
-						<select {% if not can_edit %}disabled{% endif %} class="form-control run-parameter-value" name="edit[value][{{ param.id }}]">
+						<select {% if not can_edit %}disabled{% endif %} class="form-control run-parameter-value" style="text-align: left;" name="edit[value][{{ param.id }}]">
 							{% for choice in param.run_parameter.choices %}
 							<option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
 							{% endfor %}
@@ -137,8 +144,15 @@
 						{% endif %}
 					</div>
 				</h6>
+        {% endif %}
 				{% endfor %}
 			</div>
+
+			<h6 class="form-margin" style="margin-top: 20px">
+				{% trans "Run Notes" %}<br>
+				<input id="notes" class="centered form-control" style="text-align: left;" type="text">
+			</h6>
+
 		</div>
 	</div>
 	<br>

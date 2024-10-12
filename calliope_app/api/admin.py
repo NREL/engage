@@ -9,11 +9,13 @@ from api.models.configuration import Model, Model_User, Model_Comment, \
     Scenario_Loc_Tech, Scenario_Param, Job_Meta, Carrier
 from api.models.outputs import Run
 from api.models.engage import User_Profile, ComputeEnvironment
+from api.forms import ComputeEnvironmentModelForm
 
 
 class ComputeEnvironmentAdmin(admin.ModelAdmin):
+    form = ComputeEnvironmentModelForm
     filter_horizontal = ("users",)
-    list_display = ['id',  'name', 'full_name', 'is_default', 'solver', 'ncpu', 'memory', 'type', '_users']
+    list_display = ['id',  'name', 'full_name', 'is_default', 'solvers', 'ncpu', 'memory', 'type', '_users']
 
     @staticmethod
     def _users(instance):
