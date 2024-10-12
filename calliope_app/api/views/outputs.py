@@ -62,7 +62,6 @@ def solvers(request):
         is_active = solver.get("is_active", "false")
         if (is_active is True) or (is_active == "true"):
             candidates.append(solver)
-
     payload = sorted(candidates, key=lambda x: x["order"])
 
     return HttpResponse(json.dumps(payload), content_type="application/json")
