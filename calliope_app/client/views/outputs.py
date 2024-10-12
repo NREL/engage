@@ -8,7 +8,7 @@ from api.models.engage import Help_Guide, ComputeEnvironment
 from api.models.configuration import Model, Scenario_Param
 import re
 from pytz import common_timezones
-import logging 
+import logging
 import requests
 from api.models.engage import Help_Guide, ComputeEnvironment
 from api.models.configuration import Model
@@ -33,7 +33,7 @@ def runs_view(request, model_uuid):
     token_response = get_mapbox_token(request)
     if token_response.status_code == 200:
         response = json.loads(token_response.content.decode('utf-8'))
-        token = response.get("token") 
+        token = response.get("token")
     else:
         token = ""
 
@@ -79,7 +79,7 @@ def add_runs_view(request, model_uuid, scenario_id):
     model = Model.by_uuid(model_uuid)
     can_edit = model.handle_view_access(request.user)
     parameters = Scenario_Param.objects.filter(
-        model_id=model.id, scenario_id=scenario_id, 
+        model_id=model.id, scenario_id=scenario_id,
         run_parameter__user_visibility=True, run_parameter__tab="runs")
     try:
         default_environment = ComputeEnvironment.objects.get(name__iexact="default")
@@ -117,7 +117,7 @@ def map_viz_view(request, model_uuid, run_id):
     token_response = get_mapbox_token(request)
     if token_response.status_code == 200:
         response = json.loads(token_response.content.decode('utf-8'))
-        token = response.get("token") 
+        token = response.get("token")
     else:
         token = ""
 
@@ -131,7 +131,7 @@ def map_viz_view(request, model_uuid, run_id):
 
     subset_time = run.subset_time  # 2005-01-01 to 2005-01-07
     run_min_date, run_max_date = re.match(
-        "^(\d{4}-\d{2}-\d{2}) to (\d{4}-\d{2}-\d{2})$", subset_time).groups()
+        r"^(\d{4}-\d{2}-\d{2}) to (\d{4}-\d{2}-\d{2})$", subset_time).groups()
     context = {
         "timezones": common_timezones,
         "model": model,
