@@ -79,7 +79,7 @@ def share_view(request):
         id=request.user.id).order_by('last_name', 'first_name')
 
     context = {
-        "timezones": common_timezones,
+        # "timezones": common_timezones,
         "user": request.user,
         "users": users,
         "user_models": user_models,

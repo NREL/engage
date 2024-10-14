@@ -184,6 +184,7 @@
 						</button>
 						<ul class="dropdown-menu dropdown-menu-left">
 							<li>&nbsp;&nbsp;{{ user.first_name }} {{ user.last_name }}<br>&nbsp;&nbsp;<span class="text-sm">{{ user.email }}<br>&nbsp;&nbsp;{{ user.user_profile.organization }}</span><br><br></li>
+							<li><a href="/settings/user/"><h6>&nbsp;&nbsp;<i class="fa fa-user"></i>&nbsp;&nbsp;{% trans "Change User" %}</a>&nbsp;&nbsp;</h6></a></li>
 							<li><a href="/settings/password/"><h6>&nbsp;&nbsp;<i class="fa fa-key"></i>&nbsp;&nbsp;{% trans "Change Password" %}</a>&nbsp;&nbsp;</h6></a></li>
 							<li><a href="/logout/?next=/login/"><h6>&nbsp;&nbsp;<i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;{% trans "Log out" %}</a>&nbsp;&nbsp;</h6></a></li>
 						</ul>
