@@ -253,19 +253,57 @@ class Model(models.Model):
     
     def check_flags(self):
         tech_params = Tech_Param.objects.filter(technology__in=self.technologies,)
-    
-    def carrier_lookup(self, carrier_in=True):
-        names = Parameter.C_INS if carrier_in else Parameter.C_OUTS
-        params = Tech_Param.objects.filter(
-            technology__in=self.technologies, parameter__name__in=names)
-        carrier_ins = {}
-        for c in params:
-            if c.technology_id not in carrier_ins:
+
+    def carrier_lookup(self):
+        carrier_in = Tech_Param.objects.filter(
+            technology__in=self.technologies,
+            parameter__tags__contains=["carrier_in"]
+        )
+        carrier_out = Tech_Param.objects.filter(
+            technology__in=self.technologies,
+            parameter__tags__contains=["carrier_out"]
+        )
+
+        carrier_ins, carrier_outs = {}, {}
+
+        self.carrier_map(carrier_in, carrier_ins, carrier_outs, carrier_type="carrier_in")
+        self.carrier_map(carrier_out, carrier_ins, carrier_outs, carrier_type="carrier_out")
+
+        print(carrier_ins, carrier_outs)
+        return carrier_ins, carrier_outs
+
+    def carrier_map(self, carrier_params, carrier_ins, carrier_outs, carrier_type):
+        """
+        loops through params:
+            - if in supply or out demand, then pass
+            - elif carrier_out and supply, then set carrier_out and carrier_in to be the same. 
+            - elif carrier_in and demand, then set carrier_out and carrier_in to be the same. 
+            - if nothin else: then set the carrier_ins normally or carrier_outs depending on the carrier_type 
+        """
+        for c in carrier_params:
+            in_supply = carrier_type == "carrier_in" and c.technology.abstract_tech.name == "supply"
+            out_demand = carrier_type == "carrier_out" and c.technology.abstract_tech.name == "demand"
+            if in_supply or out_demand:
+                continue
+            if carrier_type == "carrier_in" and c.technology.abstract_tech.name == "demand":
+                carrier_ins[c.technology_id] = c.value
+                carrier_outs[c.technology_id] = c.value
+            elif carrier_type == "carrier_out" and c.technology.abstract_tech.name == "supply":
+                carrier_outs[c.technology_id] = c.value
                 carrier_ins[c.technology_id] = c.value
             else:
-                val = carrier_ins[c.technology_id]
-                carrier_ins[c.technology_id] = ', '.join([val, c.value])
-        return carrier_ins
+                if carrier_type == "carrier_in":
+                    if c.technology_id not in carrier_ins:
+                        carrier_ins[c.technology_id] = c.value
+                    else:
+                        val = carrier_ins[c.technology_id]
+                        carrier_ins[c.technology_id] = ', '.join([val, c.value])
+                else:  
+                    if c.technology_id not in carrier_outs:
+                        carrier_outs[c.technology_id] = c.value
+                    else:
+                        val = carrier_outs[c.technology_id]
+                        carrier_outs[c.technology_id] = ', '.join([val, c.value])
 
     @property
     def carriers_old(self):
