@@ -314,7 +314,6 @@ def scenarios_view(request, model_uuid):
         "can_edit": can_edit,
         "help_content": Help_Guide.get_safe_html('scenarios'),
     }
-
     return render(request, "scenarios.html", context)
 
 

@@ -481,11 +481,13 @@ def scenario(request):
     scenario_settings = list(render(request,
                                     'scenario_settings.html',
                                     context))[0]
+
+    carrier_ins, carrier_outs = model.carrier_lookup()
     context = {
         "model": model,
         "colors": colors,
-        "carrier_ins": model.carrier_lookup(True),
-        "carrier_outs": model.carrier_lookup(False),
+        "carrier_ins": carrier_ins,
+        "carrier_outs": carrier_outs,
         "active_lt_ids": active_lt_ids,
         "loc_techs": loc_techs,
         "scenario_id": scenario_id,
@@ -493,6 +495,7 @@ def scenario(request):
         "unique_tags": sorted(filter(None, set(unique_tags))),
         "unique_locations": sorted(filter(None, set(unique_locations))),
         "can_edit": can_edit}
+    print(f"Context: in: {context["carrier_ins"]}, out: {context["carrier_outs"]}")
     scenario_configuration = list(render(request,
                                          'scenario_configuration.html',
                                          context))[0]
