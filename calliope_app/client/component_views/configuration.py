@@ -481,8 +481,7 @@ def scenario(request):
     scenario_settings = list(render(request,
                                     'scenario_settings.html',
                                     context))[0]
-    # carrier_ins = model.carrier_lookup(carrier_type="carrier_in")
-    # carrier_outs = model.carrier_lookup(carrier_type="carrier_out")
+
     carrier_ins, carrier_outs = model.carrier_lookup()
     context = {
         "model": model,
