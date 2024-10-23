@@ -13,7 +13,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.utils.timezone import make_aware
 
 from api.models.configuration import Scenario_Param, Scenario, Scenario_Loc_Tech, \
-    Timeseries_Meta, ParamsManager, Model, User_File, Carrier, Tech_Param
+    Timeseries_Meta, ParamsManager, Model, User_File, Carrier, Tech_Param, Loc_Tech_Param
 from api.utils import get_cols_from_csv
 
 
@@ -158,7 +158,6 @@ def all_tech_params(request):
 
     for param in parameters:
         param['raw_units'] = param['units']
-
     timeseries = Timeseries_Meta.objects.filter(model=model, failure=False,
                                                 is_uploading=False)
 
