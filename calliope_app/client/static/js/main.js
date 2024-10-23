@@ -1164,7 +1164,6 @@ function reconvert_all(load_flg){
 }
 
 function activate_paste(class_name) {
-	console.log(class_name);
 	$(class_name).bind('paste', null, function(e) {
 		var values = e.originalEvent.clipboardData.getData('Text').split(/\s+/),
 			$txt = $(this),
