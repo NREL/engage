@@ -176,7 +176,7 @@ def all_tech_params(request):
                                   context))[0]
 
     emissions = ParamsManager.emission_categories()
-
+    print(f"Parameters: {parameters}")
     # Parameters Table
     context = {
         "technology": technology,

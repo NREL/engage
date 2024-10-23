@@ -3425,7 +3425,7 @@
       "is_essential": "True",
       "is_carrier": "True",
       "choices": "[]",
-      "tags": "[\"carrier\", \"essential\", \"carrier_in\", \"required_carrier\", \"units_in\"]",
+      "tags": "[\"carrier\", \"essential\", \"carrier_in\", \"required_carrier\", \"units_in\", \"carrier_multiselect\"]",
       "index": "[]",
       "dim": "[]"
     },
@@ -3451,7 +3451,7 @@
       "is_essential": "True",
       "is_carrier": "True",
       "choices": "[]",
-      "tags": "[\"carrier\", \"essential\", \"carrier_out\", \"required_carrier\", \"units_out\"]",
+      "tags": "[\"carrier\", \"essential\", \"carrier_out\", \"required_carrier\", \"units_out\", \"carrier_multiselect\"]",
       "index": "[]",
       "dim": "[]"
     },
