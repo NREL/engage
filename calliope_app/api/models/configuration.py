@@ -1426,7 +1426,7 @@ class ParamsManager():
             "parameter__name", parameter__pretty_name,
             parameter__description, "parameter__is_essential",
             "parameter__is_carrier", "parameter__units", "parameter__choices",
-            "parameter__timeseries_enabled"]
+            "parameter__timeseries_enabled", "parameter__tags"]
         
         # Get Params based on Level
         if level == '0_abstract':
@@ -1482,7 +1482,9 @@ class ParamsManager():
                 'timeseries_enabled': param["parameter__timeseries_enabled"],
                 'timeseries': param["timeseries"] if 'timeseries' in param.keys() else False,
                 'timeseries_meta_id': param["timeseries_meta_id"] if 'timeseries_meta_id' in param.keys() else 0,
-                'value': param["value"] if "value" in param.keys() else param["default_value"]}
+                'value': param["value"] if "value" in param.keys() else param["default_value"],
+                'tags': param["parameter__tags"]
+                }
             data.append(param_dict)
 
         return data, list(set(new_excl_ids))

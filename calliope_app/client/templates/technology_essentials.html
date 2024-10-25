@@ -76,8 +76,21 @@
 			{% endif %}
 		{% endfor %}
 		</div>
-
+		<div class="col-12">
+		{% for carrier_id in carrier_multiselect_ids %}
+			{% if carrier_id not in cplus_carrier_ids %}
+				{% with essentials|return_item:carrier_id as carrier %}
+				{% with True as required %}
+				{% if carrier %}
+					{% include 'carrier_form_complex.html' %}
+				{% endif %}
+				{% endwith %}
+				{% endwith %}
+			{% endif %}
+		{% endfor %}
+		</div>
 	</div>
+
 	<div class="row">
 		<div class="col-12">
 			<b>{% trans "Description" %}:</b><br>
