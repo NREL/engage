@@ -18,7 +18,7 @@ from django.utils.timezone import make_aware
 import pint
 
 
-CALLIOPE = 18
+CALLIOPE = 50
 logging.addLevelName(CALLIOPE, "CALLIOPE")
 logger = logging.getLogger("calliope")
 
@@ -714,7 +714,7 @@ def convert_units_no_pipe(ureg,val,target):
     else:
         conv_v = ur_v.to(target.replace('%',' percent ').replace('$',' dollar ')).magnitude
         return str(conv_v), str(val)
-    
+
 noconv_units = ['<sub>ABC</sub>','<sup>T</sup>/<sub>F</sub>','&#8593;','']
 
 
