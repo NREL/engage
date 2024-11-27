@@ -4,7 +4,7 @@
 {% load i18n %}
 
 {% load return_item %}
-<div class="col-6" style="border:solid 1px;height:350px;overflow-y:scroll">
+<div class="col-6" style="border:solid 1px;height:350px;overflow-y:scroll;">
 	<div class="row">
 		<div class="col-2 centered">
 			<br>
@@ -85,12 +85,12 @@
 		</div>
 	</div>
 </div>
-<div class="col-6 centered" style="border:solid 1px;height:350px;overflow-y:scroll;">
+<div class="col-6 centered" style="border:solid 1px;height:350px;overflow-y:scroll;overflow-x:hidden;">
 	<br>
 	<h3>{{ technology.abstract_tech.icon|safe }}&nbsp;&nbsp;{{ technology.abstract_tech.pretty_name }}</h3>
 	<br>
     {% with technology.abstract_tech.image as image_static %}
-	<img width="100%" src="{% static image_static %}" alt="">
+	<img width="95%" src="{% static image_static %}" alt="">
 	<br>
 	{{ technology.abstract_tech.description|safe }}
 	<br><br>
