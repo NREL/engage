@@ -4,3 +4,4 @@ pylint-django==2.5.3
 backtrace==0.2.1
 sphinx==5.1.0
 django-debug-toolbar==3.5.0
+standard-imghdr
