@@ -40,7 +40,13 @@
 		<!-- Carriers -->
 		<!-- Required Carriers (Simple) -->
 		{% for carrier_id in required_carrier_ids %}
-			{% if carrier_id not in cplus_carrier_ids %}
+			{% if carrier_id in carrier_multiselect %}
+				{% with essentials|return_item:carrier_id as carrier %}
+				{% if carrier %}
+					{% include 'carrier_form_multiselect.html' %}
+				{% endif %}
+				{% endwith %}
+			{% else %}
 				{% with essentials|return_item:carrier_id as carrier %}
 				{% if carrier %}
 					{% include 'carrier_form_simple.html' %}
@@ -89,8 +95,8 @@
 	<br>
 	<h3>{{ technology.abstract_tech.icon|safe }}&nbsp;&nbsp;{{ technology.abstract_tech.pretty_name }}</h3>
 	<br>
-    {% with technology.abstract_tech.image as image_static %}
-	<img width="100%" src="{% static image_static %}" alt="">
+	{% with 'images/technologies/'|add:technology.abstract_tech.name|add:'.png' as image_static %}
+	<img width="100%" src="{% static image_static %}">
 	<br>
 	{{ technology.abstract_tech.description|safe }}
 	<br><br>

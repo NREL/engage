@@ -157,7 +157,6 @@ function get_scenario_configuration() {
 	$('.viz-spinner').show();
 	var model_uuid = $('#header').data('model_uuid'),
 		scenario_id = $("#scenario option:selected").data('id');
-
 	if (scenario_id != undefined) {
 		$.ajax({
 			url: '/' + LANGUAGE_CODE + '/component/scenario/',
@@ -172,7 +171,6 @@ function get_scenario_configuration() {
         $('#scenario_details').html(data['scenario_details']);
 				$('#scenario_settings').html(data['scenario_settings']);
 				activate_scenario_settings();
-
 				activate_table();
 				$('#scenario_configuration').html(data['scenario_configuration']);
 				$('#scenario_configuration').data('scenario_id', data['scenario_id']);

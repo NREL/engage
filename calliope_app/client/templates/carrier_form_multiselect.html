@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<script
+  type="text/javascript"
+  src="{% static 'js/carrier_form_multiselect.js' %}"
+></script>
+<html lang="en">
+  <div
+    class="col-5"
+    data-toggle="tooltip"
+    data-placement="left"
+    title="{{ carrier.description }}"
+  >
+    {% if not carrier.value.0 %}<i class="fas fa-exclamation-triangle"></i
+    >&nbsp;{% endif %}
+    <b>{{ carrier.name }}:</b>
+  </div>
+
+  <div class="col-7">
+    <div class="dropdown">
+      <button
+        class="btn border border-dark rounded-0 tech_carrier {% if carrier_id in units_in_ids %}units_in_selector{% endif %} {% if carrier_id in units_out_ids %}units_out_selector{% endif %} {% if not carrier.value.0 %}table-danger{% endif %}"
+        type="button"
+        id="carrier-{{ carrier_id }}"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+        style="width: 100%; text-align: left; border-width: 1px !important"
+        {%
+        if
+        not
+        can_edit
+        %}disabled{%
+        endif
+        %}
+        data-value="{{ carrier.value.0 }}"
+      >
+        Select carriers
+      </button>
+      <ul
+        class="dropdown-menu dropdown-menu p-2"
+        style="width: 100%"
+        aria-labelledby="carrier-{{ carrier_id }}"
+      >
+        {% for choice in carriers %} {% if not choice.name|first == '[' %}
+        <li>
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              name="essentials[{{ carrier_id }}][]"
+              value="{{ choice.name }}"
+              id="carrier_{{ carrier_id }}_{{ forloop.counter0 }}"
+              data-rate="{{ choice.rate }}"
+              data-quantity="{{ choice.quantity }}"
+            />
+            <label
+              class="form-check-label dropdown-item"
+              for="carrier_{{ carrier_id }}_{{ forloop.counter0 }}"
+              style="
+                user-select: none;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+              "
+            >
+              {{ choice.name }} [{{ choice.rate }}, {{ choice.quantity }}]
+            </label>
+          </div>
+        </li>
+        {% endif %} {% endfor %}
+        <li><hr class="dropdown-divider" /></li>
+      </ul>
+    </div>
+  </div>
+</html>
