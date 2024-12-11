@@ -140,6 +140,11 @@ class UserSettingsChangeForm(forms.Form):
         max_length=30,
         required=True
     )
+    username = forms.CharField(
+        label=_("Email"),
+        max_length=30,
+        required=True
+    )
     organization = forms.CharField(
         label=_("Organization"),
         max_length=255,
@@ -158,6 +163,7 @@ class UserSettingsChangeForm(forms.Form):
         # Pre-fill data from User model
         self.fields['first_name'].initial = user.first_name
         self.fields['last_name'].initial = user.last_name
+        self.fields['username'].initial = user.username
 
         # Pre-fill data from User_Profile model, if it exists
         try:
@@ -169,22 +175,17 @@ class UserSettingsChangeForm(forms.Form):
             self.fields['timezone'].initial = ''
 
     def save(self, commit=True):
-        # Update the User model's first and last name
-        user = self.user
+        user = User.objects.get(pk=self.user.pk)
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
+        user.username = self.cleaned_data['username'].lower()
         if commit:
-            user.save()
-
-        # Update the User_Profile model
-        try:
-            profile = user.user_profile
-        except User_Profile.DoesNotExist:
-            profile = User_Profile(user=user)
-
+            user.save()        
+        profile = User_Profile.objects.get(user=user)
+        profile.user = user  
         profile.organization = self.cleaned_data['organization']
         profile.timezone = self.cleaned_data['timezone']
+
         if commit:
-            profile.save()
-        
+            profile.save()        
         return user

@@ -134,6 +134,7 @@ def user_view(request):
     http://0.0.0.0:8000/settings/user/
     """
     user = request.user
+    print(user)
 
     if request.method == 'POST':
         form = UserSettingsChangeForm(user, request.POST)
