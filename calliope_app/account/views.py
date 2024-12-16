@@ -1,5 +1,4 @@
 import json
-# from ..client.views import common_timezones
 
 from django.conf import settings
 from django.contrib import messages
