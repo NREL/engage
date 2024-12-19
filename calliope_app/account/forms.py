@@ -5,7 +5,6 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-
 from api.models.engage import User_Profile
 from account.validators import email_validator, unicode_email_validator, unicode_chars_validator
 
@@ -128,11 +127,22 @@ class UserAuthenticationForm(AuthenticationForm):
             code="invalid_login",
             params={"username": "email"},
         )
+    
 
-class UserSettingsChangeForm(forms.ModelForm):
+class UserSettingsChangeForm(forms.Form):
+    first_name = forms.CharField(
+        label=_("First Name"),
+        max_length=30,
+        required=True
+    )
+    last_name = forms.CharField(
+        label=_("Last Name"),
+        max_length=30,
+        required=True
+    )
     username = forms.CharField(
-        label=_("Username"),
-        max_length=150,
+        label=_("Email"),
+        max_length=30,
         required=True
     )
     organization = forms.CharField(
@@ -146,45 +156,36 @@ class UserSettingsChangeForm(forms.ModelForm):
         required=True,
     )
 
-    class Meta:
-        model = User_Profile
-        fields = ('organization', 'timezone')
-
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.user = user
-        # Handle the case where User_Profile may not exist
+
+        # Pre-fill data from User model
+        self.fields['first_name'].initial = user.first_name
+        self.fields['last_name'].initial = user.last_name
+        self.fields['username'].initial = user.username
+
+        # Pre-fill data from User_Profile model, if it exists
         try:
             user_profile = user.user_profile
+            self.fields['organization'].initial = user_profile.organization
+            self.fields['timezone'].initial = user_profile.timezone
         except User_Profile.DoesNotExist:
-            user_profile = User_Profile(user=user)
-            user_profile.save()
-
-        # Pre-fill the form fields with the current data
-        self.fields['username'].initial = user.username
-        self.fields['organization'].initial = user_profile.organization
-        # self.fields['timezone'].initial = user_profile.timezone
-
-    def clean_username(self):
-        username = self.cleaned_data['username']
-        if username != self.user.username:
-            if User.objects.filter(username=username).exists():
-                raise ValidationError(_("A user with that username already exists."))
-        return username
+            self.fields['organization'].initial = ''
+            self.fields['timezone'].initial = ''
 
     def save(self, commit=True):
-        # Update the User model
-        self.user.username = self.cleaned_data['username']
-        self.user.save()
-
-        # Update the User_Profile model
-        try:
-            profile = self.user.user_profile
-        except User_Profile.DoesNotExist:
-            profile = User_Profile(user=self.user)
-
+        user = User.objects.get(pk=self.user.pk)
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        user.username = self.cleaned_data['username'].lower()
+        if commit:
+            user.save()        
+        profile = User_Profile.objects.get(user=user)
+        profile.user = user  
         profile.organization = self.cleaned_data['organization']
         profile.timezone = self.cleaned_data['timezone']
+
         if commit:
-            profile.save()
-        return self.user
+            profile.save()        
+        return user
