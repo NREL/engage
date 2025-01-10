@@ -7,7 +7,7 @@ django-crispy-forms==1.14.0
 django-environ>=0.4.5
 django-modeltranslation==0.18.12
 flower>=2.0.1
-nrel-pysam==2.1.5.dev3
+nrel-pysam==2.2.0
 pint==0.21
 psycopg2-binary==2.9.3
 pyyaml==6.0
