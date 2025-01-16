@@ -106,14 +106,16 @@ function activate_table() {
 			param_id = row.data('param_id'),
 			rows = $('tr[data-param_id='+param_id+']');
 		if (row.hasClass('table-danger')) {
-			rows.find('.check_delete').prop("checked", false)
+			rows.find('.check_delete').prop("checked", false);
 			rows.removeClass('table-danger');
-			rows.find('.parameter-value, .parameter-year').prop('disabled', false);
+			rows.find('.parameter-value, .parameter-year, .parameter-extra').prop('disabled', false);
+			rows.find('.parameter-delete-extra').prop('disabled', true);
 			change_timeseries_color(param_id, true);
 		} else {
-			rows.find('.check_delete').prop("checked", true)
+			rows.find('.check_delete').prop("checked", true);
 			rows.addClass('table-danger');
-			rows.find('.parameter-value, .parameter-year').prop('disabled', true)
+			rows.find('.parameter-value, .parameter-year, .parameter-extra').prop('disabled', true);
+			rows.find('.parameter-delete-extra').prop('disabled', false);
 			change_timeseries_color(param_id, false);
 		}
 		check_unsaved();
@@ -122,14 +124,14 @@ function activate_table() {
 	$('.parameter-value-delete').on('click', function() {
 		var row = $(this).parents('tr');
 		if (row.hasClass('table-danger')) {
-			row.find('.check_delete').prop("checked", false)
+			row.find('.check_delete').prop("checked", false);
 			row.removeClass('table-danger');
-			row.find('.parameter-value, .parameter-year').prop('disabled', false);
+			row.find('.parameter-value, .parameter-year, .parameter-extra').prop('disabled', false);
 		} else {
-			row.find('.check_delete').prop("checked", true)
+			row.find('.check_delete').prop("checked", true);
 			row.addClass('table-danger');
-			row.find('.parameter-value, .parameter-year').prop('disabled', true)
-		};
+			row.find('.parameter-value, .parameter-year, .parameter-extra').prop('disabled', true);
+		}
 		check_unsaved();
 	});
 
@@ -139,7 +141,9 @@ function activate_table() {
 		if (confirmation) {
 			var model_uuid = $('#header').data('model_uuid'),
 				row = $(this).parents('tr'),
-				param_id = row.data('param_id'),
+				param_id = row.find('[name="edit[parameter_instance][][parameter_id]"]').first().data('value'),
+				param_index = row.find('[name="edit[parameter_instance][][index]"]').first().data('value'),
+				param_dim = row.find('[name="edit[parameter_instance][][dim]"]').first().data('value'),
 				technology_id = $("#technology option:selected").data('id'),
 				loc_tech_id = $('tr.loc_tech_row.table-primary').data('loc_tech_id');
 			$.ajax({
@@ -149,6 +153,8 @@ function activate_table() {
 				  'param_id': +param_id,
 				  'technology_id': +technology_id,
 				  'loc_tech_id': +loc_tech_id,
+				  'index': param_index,
+				  'dim': param_dim
 				},
 				dataType: 'json',
 				success: function (data) {
@@ -199,7 +205,7 @@ function activate_table() {
 
 	$('.tbl-header').unbind();
 	$('.tbl-header').on('click', function(){
-		var rows = $(this).nextUntil('.tbl-header');
+		var rows = $(this).nextUntil('.tbl-header').not('.dup_default');
 		if ($(this).hasClass('hiding_rows')) {
 			rows.removeClass('hide');
 			$(this).removeClass('hiding_rows');
@@ -275,6 +281,17 @@ function get_tech_parameters() {
 				$('#tech_parameters').html(data['html_parameters']);
 				$('#tech_parameters').data('favorites', data['favorites']);
 				$('#tech_essentials').data('technology_id', data['technology_id']);
+				$(".multiselect_value").each(function(){
+					dup_tag = $(this).val();
+					index = $(this).attr('index');
+					dim = $(this).attr('dim');
+					dup_parameter_rows(dup_tag,index,dim);
+					if (dup_tag == 'multi_carrier_out'){
+						dup_row_units(dup_tag,index,$(this).attr('rate_unit'),$(this).attr('quantity_unit'),false);
+					} else if (dup_tag == 'multi_carrier_in'){
+						dup_row_units(dup_tag,index,$(this).attr('rate_unit'),$(this).attr('quantity_unit'),true);
+					}
+				});
 				activate_tech_delete();
 				activate_table();
 				activate_favorites();
@@ -415,6 +432,20 @@ function get_loc_tech_parameters() {
 			success: function (data) {
 				$('#tech_parameters').html(data['html_parameters']);
 				$('#tech_parameters').data('favorites', data['favorites']);
+
+				// Populate any duplicate rows for the values set at the tech level (carriers, ect.)
+				$(".multiselect_value").each(function(){
+					dup_tag = $(this).val();
+					index = $(this).attr('index');
+					dim = $(this).attr('dim');
+
+					dup_parameter_rows(dup_tag,index,dim);
+					if ($(this).val() == 'multi_carrier_out'){
+						dup_row_units(dup_tag,index,$(this).attr('rate_unit'),$(this).attr('quantity_unit'),false);
+					} else if ($(this).val() == 'multi_carrier_in'){
+						dup_row_units(dup_tag,index,$(this).attr('rate_unit'),$(this).attr('quantity_unit'),true);
+					}
+				});
 				activate_table();
 				activate_favorites();
 				collapse_parameter_library();
@@ -1186,22 +1217,23 @@ function activate_return(class_name) {
 
 function add_row($this) {
 	var row = $this.parents('tr'),
-		param_id = row.data('param_id');
+		param_id = row.attr('data-param_id');
 	row.addClass('param_header');
 	$('.param_row_'+param_id).removeClass('param_row_min');
 	var p_row = $('.param_row_'+param_id),
-	p_value = p_row.find('.parameter-value-existing').data('value'),
-	units = p_row.find('.parameter-units').data('value'),
+	p_value = p_row.find('.parameter-value-existing').attr('data-value'),
+	units = p_row.find('.parameter-units').attr('data-value'),
 	val = convert_units(p_value, units);
 	if (typeof(val) == 'number') {
 		p_row.find('.parameter-value-existing').attr('data-target_value',val);
 	} else {
 		p_row.find('.parameter-value-existing').addClass('invalid-value');
-		p_row.find('.parameter-target-value').html(row.find('.parameter-target-value').data('value'));
+		p_row.find('.parameter-target-value').html(row.find('.parameter-target-value').attr('data-value'));
 	}
+	p_row.find('.parameter-extra').prop('disabled', false);
 	head_value_cell = row.find('.head_value');
 	head_value_cell.removeClass('head_value').addClass('param_row_toggle');
-	head_value_cell.find('.static_inputs').remove();
+	head_value_cell.find('.static_inputs, .parameter-extra').remove();
 	row.find('.param_row_toggle').find('.hide_rows').removeClass('hide');
 	row.find('.param_row_toggle').find('.view_rows').addClass('hide');
 	var add_row = $('.add_param_row_'+param_id).last().clone();
@@ -1211,6 +1243,7 @@ function add_row($this) {
 	add_row.insertBefore($('.add_param_row_'+param_id).last());
 	add_row.find('.parameter-target-value').html('');
 	add_row.find('.parameter-target-value').attr('data-value', '');
+	add_row.find('.parameter-extra').prop('disabled', false);
 	activate_table();
 	check_unsaved();
 	return add_row;
@@ -1295,6 +1328,50 @@ function validate_params() {
 		};
 	});
 	return validated;
+}
+
+function dup_parameter_rows(dup_tag,index,dim){
+	default_dup_rows = $('tr.dup_default[data-dup-tag="'+dup_tag+'"]');
+	first_default_row = default_dup_rows.first();
+	default_dup_rows.each(function(){
+		existing_dup_rows = $('tr[data-index="'+index+'"][data-dup-tag="'+dup_tag+'"][data-param_id="'+$(this).data('param_id')+index+'"]'); 
+		if (!((existing_dup_rows.length > 0))){
+			var add_row = $(this).clone();
+			var param_id = add_row.data('param_id');
+			add_row.removeClass('dup_default hide param_row_'+param_id).addClass('param_row_'+param_id+index);
+			if (add_row.hasClass('add_param_row_'+param_id)){
+			add_row.removeClass('add_param_row_'+param_id).addClass('add_param_row_'+param_id+index)
+			}
+			add_row.find($('[data-param_id='+param_id+']')).each(function(){
+				$(this).attr('data-param_id') = param_id+index
+			});
+			add_row.attr('data-index', index);
+			add_row.attr('data-param_id', add_row.attr('data-param_id')+index);
+			add_row.insertBefore(first_default_row);
+			add_row.find('.parameter-target-value').html('');
+			add_row.find('.parameter-index').attr('data-value', index);
+			add_row.find('.parameter-index').val(index);
+			add_row.find('.parameter-dim').attr('data-value', dim);
+			add_row.find('.parameter-dim').val(dim);
+			add_row.find('.parameter-label').html(add_row.find('.parameter-label').first().html()+' '+dim+': '+index);
+			
+		}
+	});
+	activate_table();
+	check_unsaved();
+}
+function dup_row_units(dup_tag, index, rate_unit, quantity_unit, carrier_in_f) {
+	existing_dup_rows = $('tr[data-index="'+index+'"][data-dup-tag="'+dup_tag+'"]');
+	existing_dup_rows.find('.parameter-units').each(function () {
+		if (carrier_in_f) {
+			units = $(this).attr('raw-value').replace('[[in_rate]]',rate_unit).replace('[[in_quantity]]',quantity_unit);
+		} else {
+			units = $(this).attr('raw-value').replace('[[out_rate]]',rate_unit).replace('[[out_quantity]]',quantity_unit);
+		}
+		$(this).attr('raw-value', units);
+		$(this).html(units);
+		$(this).attr('data-value', units);
+	});
 }
 
 function placeholder_blinker() {

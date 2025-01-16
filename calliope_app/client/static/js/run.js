@@ -312,13 +312,14 @@ function activate_runs() {
 			data: {
 				'model_uuid': $('#header').data('model_uuid'),
 				'scenario_id': $("#scenario option:selected").data('id'),
+				'old_run_id': $(this).attr('data-run_id'),
 				'start_date': $(this).attr('data-dates').split(' to ')[0],
 				'end_date': $(this).attr('data-dates').split(' to ')[1],
-				'cluster': $(this).attr('cluster'),
-				'manual': $(this).attr('manual'),
-				'run_env': $(this).attr('run_env'),
-				'timestep': $(this).attr('timestep'),
-				'run_options': $(this).attr('run_options')
+				//'cluster': $(this).attr('cluster'),
+				//'manual': $(this).attr('manual'),
+				//'run_env': $(this).attr('run_env'),
+				//'timestep': $(this).attr('timestep'),
+				//'run_options': $(this).attr('run_options')
 			},
 			dataType: 'json',
 			success: function (data) {

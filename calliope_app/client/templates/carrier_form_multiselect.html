@@ -11,15 +11,15 @@
     data-placement="left"
     title="{{ carrier.description }}"
   >
-    {% if not carrier.value.0 %}<i class="fas fa-exclamation-triangle"></i
-    >&nbsp;{% endif %}
+    {% if not carrier.value.0 and required %}<i class="fas fa-exclamation-triangle"></i>&nbsp;{% endif %}
     <b>{{ carrier.name }}:</b>
   </div>
 
   <div class="col-7">
-    <div class="dropdown">
+    <div class="dropdown {% if carrier_id in units_in_ids %}units_in_selector{% endif %} {% if carrier_id in units_out_ids %}units_out_selector{% endif %}">
       <button
-        class="btn border border-dark rounded-0 tech_carrier {% if carrier_id in units_in_ids %}units_in_selector{% endif %} {% if carrier_id in units_out_ids %}units_out_selector{% endif %} {% if not carrier.value.0 %}table-danger{% endif %}"
+        class="btn border border-dark rounded-0 carrier_multi param_multiselect {% if not carrier.value.0 and required %}table-danger{% endif %}{% if carrier.dup_tag %} {{carrier.dup_tag}}{% endif %}"
+        {% if carrier.dup_tag %}data-dup-tag={{carrier.dup_tag}}{% endif %}
         type="button"
         id="carrier-{{ carrier_id }}"
         data-bs-toggle="dropdown"
@@ -32,9 +32,9 @@
         %}disabled{%
         endif
         %}
-        data-value="{{ carrier.value.0 }}"
+        data-value="{{ carrier.value }}"
       >
-        Select carriers
+      {{ carrier.value }}
       </button>
       <ul
         class="dropdown-menu dropdown-menu p-2"
@@ -50,8 +50,8 @@
               name="essentials[{{ carrier_id }}][]"
               value="{{ choice.name }}"
               id="carrier_{{ carrier_id }}_{{ forloop.counter0 }}"
-              data-rate="{{ choice.rate }}"
-              data-quantity="{{ choice.quantity }}"
+              rate_unit="{{ choice.rate }}"
+              quantity_unit="{{ choice.quantity }}"
             />
             <label
               class="form-check-label dropdown-item"

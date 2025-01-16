@@ -85,18 +85,34 @@ def build(request):
     Example:
     GET: /api/build/
     """
-    run_options = request.GET.get('run_options', None)
-    run_options = json.loads(run_options)
 
     # Input parameters
     model_uuid = request.GET.get("model_uuid", None)
     scenario_id = request.GET.get("scenario_id", None)
-    start_date = request.GET.get("start_date", None)
-    end_date = request.GET.get("end_date", None)
-    cluster = (request.GET.get("cluster", 'true') == 'true')
-    manual = (request.GET.get("manual", 'false') == 'true')
-    run_env = request.GET.get("run_env", None)
-    timestep = request.GET.get("timestep", '1H')
+    old_run_id = request.GET.get("old_run_id",False)
+    if old_run_id:
+        old_run = Run.objects.get(id=old_run_id)
+        start_date = request.GET.get("start_date", None)
+        end_date = request.GET.get("end_date", None)
+        cluster = old_run.cluster
+        manual = old_run.manual
+        run_env = old_run.compute_environment.name
+        timestep = old_run.timestep
+        run_options = old_run.run_options
+    else:
+        run_options_raw = request.GET.get('run_options', None)
+        run_options_raw = json.loads(run_options_raw)
+        # Celery task
+        run_options = []
+        for run_option in run_options_raw.keys():
+            run_parameter= Run_Parameter.objects.get(pk=int(run_option))
+            run_options.append({'root':run_parameter.root,'name':run_parameter.name,'value':run_options_raw[run_option]})
+        start_date = request.GET.get("start_date", None)
+        end_date = request.GET.get("end_date", None)
+        cluster = (request.GET.get("cluster", 'true') == 'true')
+        manual = (request.GET.get("manual", 'false') == 'true')
+        run_env = request.GET.get("run_env", None)
+        timestep = request.GET.get("timestep", '1H')
     notes = request.GET.get("notes","")
     years = [int(y) for y in request.GET.get("years",'').split(',') if y.strip() != '']
     try:
@@ -181,12 +197,6 @@ def build(request):
                 )
             inputs_path = inputs_path.lower().replace(" ", "-")
             os.makedirs(inputs_path, exist_ok=True)
-
-            # Celery task
-            run.run_options = []
-            for id in run_options.keys():
-                run_parameter= Run_Parameter.objects.get(pk=int(id))
-                run.run_options.append({'root':run_parameter.root,'name':run_parameter.name,'value':run_options[id]})
 
             async_result = build_model.apply_async(
                 kwargs={

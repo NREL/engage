@@ -2,6 +2,58 @@
   {
     "pk": 1,
     "fields": {
+      "category": "Essentials",
+      "category_fr": "Les essentiels",
+      "category_es": "Esenciales",
+      "pretty_name": "Input Carrier",
+      "pretty_name_fr": "Vecteur d'entrée",
+      "pretty_name_es": "Portador de entrada",
+      "description": "[Required] Input energy carrier (electricity, heat, gas, etc.)",
+      "description_fr": "[Obligatoire] Vecteur d'énergie d'entrée (électricité, chaleur, gaz,etc.)",
+      "description_es": "[Obligatorio] Portador de energía de entrada (electricidad, calor, gas, etc.)",
+      "root": "",
+      "name": "carrier_in",
+      "timeseries_enabled": "False",
+      "is_systemwide": "False",
+      "units": "",
+      "is_essential": "True",
+      "is_carrier": "True",
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\", \"carrier_in\", \"required_carrier\", \"units_in\"]",
+      "index": "[]",
+      "dim": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 2,
+    "fields": {
+      "category": "Essentials",
+      "category_fr": "Les essentiels",
+      "category_es": "Esenciales",
+      "pretty_name": "Output Carrier",
+      "pretty_name_fr": "Vecteur de sortie",
+      "pretty_name_es": "Portador de salida",
+      "description": "[Required] Output energy carrier (electricity, heat, gas, etc.)",
+      "description_fr": "[Obligatoire] Vecteur d'énergie d'entrée (électricité, chaleur, gaz,etc.)",
+      "description_es": "[Obligatorio] Portador de energía de salida (electricidad, calor, gas, etc.)",
+      "root": "",
+      "name": "carrier_out",
+      "timeseries_enabled": "False",
+      "is_systemwide": "False",
+      "units": "",
+      "is_essential": "True",
+      "is_carrier": "True",
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\", \"carrier_out\", \"required_carrier\", \"units_out\"]",
+      "index": "[]",
+      "dim": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 3,
+    "fields": {
       "category": "Constraints: Technology",
       "category_fr": "Contraintes: Technologie",
       "category_es": "Limitaciones: Tecnología",
@@ -26,33 +78,7 @@
     "model": "api.parameter"
   },
   {
-    "pk": 2,
-    "fields": {
-      "category": "Essentials",
-      "category_fr": "Les essentiels",
-      "category_es": "Esenciales",
-      "pretty_name": "Input Carrier Group",
-      "pretty_name_fr": "Groupe de vecteurs d'entrée",
-      "pretty_name_es": "Grupo de portadores de entrada",
-      "description": "[Required] Input carrier group that can accommodate any number of carriers (electricity, heat, gas, etc.)",
-      "description_fr": "[Obligatoire] Groupe de vecteurs d'entrée pouvant accueillir n'importe quel nombre de vecteurs (électricité, chaleur, gaz, etc.)",
-      "description_es": "[Obligatorio] Grupo de portadores de entrada que puede acomodar cualquier número de portadores (electricidad, calefacción, gas, etc.)",
-      "root": "",
-      "name": "carrier_in",
-      "timeseries_enabled": "False",
-      "is_systemwide": "False",
-      "units": "",
-      "is_essential": "True",
-      "is_carrier": "True",
-      "choices": "[]",
-      "tags": "[\"carrier\", \"essential\", \"carrier_in\", \"required_carrier\", \"cplus_carrier\"]",
-      "index": "[]",
-      "dim": "[]"
-    },
-    "model": "api.parameter"
-  },
-  {
-    "pk": 3,
+    "pk": 4,
     "fields": {
       "category": "Constraints: Technology",
       "category_fr": "Contraintes: Technologie",
@@ -72,32 +98,6 @@
       "is_carrier": "False",
       "choices": "[]",
       "tags": "[\"systemwide\"]",
-      "index": "[]",
-      "dim": "[]"
-    },
-    "model": "api.parameter"
-  },
-  {
-    "pk": 4,
-    "fields": {
-      "category": "Essentials",
-      "category_fr": "Les essentiels",
-      "category_es": "Esenciales",
-      "pretty_name": "Output Carrier Group",
-      "pretty_name_fr": "Groupe de vecteurs d'entrée",
-      "pretty_name_es": "Grupo de portadores de salida",
-      "description": "[Required] Output carrier group that may accommodate any number of carriers (electricity, heat, gas, etc.)",
-      "description_fr": "[Obligatoire] un  groupe de vecteurs d'entrée pouvant accueillir n'importe quel nombre de vecteurs (électricité, chaleur, gaz, etc.)",
-      "description_es": "[Obligatorio] Grupo de portadores de salida que puede acomodar cualquier número de portadores (electricidad, calefacción, gas, etc.)",
-      "root": "",
-      "name": "carrier_out",
-      "timeseries_enabled": "False",
-      "is_systemwide": "False",
-      "units": "",
-      "is_essential": "True",
-      "is_carrier": "True",
-      "choices": "[]",
-      "tags": "[\"carrier\", \"essential\", \"carrier_out\", \"required_carrier\", \"cplus_carrier\"]",
       "index": "[]",
       "dim": "[]"
     },
@@ -3408,58 +3408,6 @@
   {
     "pk": 132,
     "fields": {
-      "category": "Essentials",
-      "category_fr": "Les essentiels",
-      "category_es": "Esenciales",
-      "pretty_name": "Input Carrier",
-      "pretty_name_fr": "Vecteur d'entrée",
-      "pretty_name_es": "Portador de entrada",
-      "description": "[Required] Input energy carrier (electricity, heat, gas, etc.)",
-      "description_fr": "[Obligatoire] Vecteur d'énergie d'entrée (électricité, chaleur, gaz,etc.)",
-      "description_es": "[Obligatorio] Portador de energía de entrada (electricidad, calor, gas, etc.)",
-      "root": "",
-      "name": "carrier_in",
-      "timeseries_enabled": "False",
-      "is_systemwide": "False",
-      "units": "",
-      "is_essential": "True",
-      "is_carrier": "True",
-      "choices": "[]",
-      "tags": "[\"carrier\", \"essential\", \"carrier_in\", \"required_carrier\", \"units_in\", \"carrier_multiselect\"]",
-      "index": "[]",
-      "dim": "[]"
-    },
-    "model": "api.parameter"
-  },
-  {
-    "pk": 133,
-    "fields": {
-      "category": "Essentials",
-      "category_fr": "Les essentiels",
-      "category_es": "Esenciales",
-      "pretty_name": "Output Carrier",
-      "pretty_name_fr": "Vecteur de sortie",
-      "pretty_name_es": "Portador de salida",
-      "description": "[Required] Output energy carrier (electricity, heat, gas, etc.)",
-      "description_fr": "[Obligatoire] Vecteur d'énergie d'entrée (électricité, chaleur, gaz,etc.)",
-      "description_es": "[Obligatorio] Portador de energía de salida (electricidad, calor, gas, etc.)",
-      "root": "",
-      "name": "carrier_out",
-      "timeseries_enabled": "False",
-      "is_systemwide": "False",
-      "units": "",
-      "is_essential": "True",
-      "is_carrier": "True",
-      "choices": "[]",
-      "tags": "[\"carrier\", \"essential\", \"carrier_out\", \"required_carrier\", \"units_out\", \"carrier_multiselect\"]",
-      "index": "[]",
-      "dim": "[]"
-    },
-    "model": "api.parameter"
-  },
-  {
-    "pk": 134,
-    "fields": {
       "category": "Constraints: Storage",
       "category_fr": "Contraintes: Stockage",
       "category_es": "Restricciones: Almacenamiento",
@@ -3484,7 +3432,7 @@
     "model": "api.parameter"
   },
   {
-    "pk": 135,
+    "pk": 133,
     "fields": {
       "category": "Constraints: Units",
       "category_fr": "Contraintes: Unités",
@@ -3510,7 +3458,7 @@
     "model": "api.parameter"
   },
   {
-    "pk": 136,
+    "pk": 134,
     "fields": {
       "category": "Constraints: Technology",
       "category_fr": "Contraintes: Technologie",
@@ -3536,7 +3484,7 @@
     "model": "api.parameter"
   },
   {
-    "pk": 137,
+    "pk": 135,
     "fields": {
       "category": "Constraints: Technology",
       "category_fr": "Contraintes: Technologie",
@@ -3562,7 +3510,7 @@
     "model": "api.parameter"
   },
   {
-    "pk": 138,
+    "pk": 136,
     "fields": {
       "category": "Constraints: Technology",
       "category_fr": "Contraintes: Technologie",
@@ -3588,7 +3536,7 @@
     "model": "api.parameter"
   },
   {
-    "pk": 139,
+    "pk": 137,
     "fields": {
       "category": "Constraints: Technology",
       "category_fr": "Contraintes: Technologie",
@@ -3614,7 +3562,7 @@
     "model": "api.parameter"
   },
   {
-    "pk": 140,
+    "pk": 138,
     "fields": {
       "category": "Constraints: Technology",
       "category_fr": "Contraintes: Technologie",
@@ -3640,7 +3588,7 @@
     "model": "api.parameter"
   },
   {
-    "pk": 141,
+    "pk": 139,
     "fields": {
       "category": "Constraints: Technology",
       "category_fr": "Contraintes: Technologie",
@@ -3666,7 +3614,7 @@
     "model": "api.parameter"
   },
   {
-    "pk": 142,
+    "pk": 140,
     "fields": {
       "category": "Constraints: Technology",
       "category_fr": "Contraintes: Technologie",
@@ -3692,7 +3640,7 @@
     "model": "api.parameter"
   },
   {
-    "pk": 143,
+    "pk": 141,
     "fields": {
       "category": "Constraints: Technology",
       "category_fr": "Contraintes: Technologie",
@@ -3718,7 +3666,7 @@
     "model": "api.parameter"
   },
   {
-    "pk": 144,
+    "pk": 142,
     "fields": {
       "category": "Constraints: Sink",
       "category_fr": "Contraintes: Ressource",
@@ -3744,7 +3692,7 @@
     "model": "api.parameter"
   },
   {
-    "pk": 145,
+    "pk": 143,
     "fields": {
       "category": "Constraints: Sink",
       "category_fr": "Contraintes: Ressource",
@@ -3770,7 +3718,7 @@
     "model": "api.parameter"
   },
   {
-    "pk": 146,
+    "pk": 144,
     "fields": {
       "category": "Constraints: Sink",
       "category_fr": "Contraintes: Ressource",
@@ -3796,7 +3744,7 @@
     "model": "api.parameter"
   },
   {
-    "pk": 147,
+    "pk": 145,
     "fields": {
       "category": "Constraints: Sink",
       "category_fr": "Contraintes: Ressource",
@@ -3818,6 +3766,578 @@
       "tags": "[]",
       "index": "[]",
       "dim": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 146,
+    "fields": {
+      "category": "Essentials",
+      "category_fr": "Les essentiels",
+      "category_es": "Esenciales",
+      "pretty_name": "Primary input carrier",
+      "pretty_name_fr": "Vecteur d'entrée primaire",
+      "pretty_name_es": "Portadora de entrada primaria",
+      "description": "Calliope: essentials.primary_carrier_in<br><br>The primary input carrier can be assigned to any carrier in any input carrier group (1, 2, or 3) and is the carrier to which consumption costs are assigned.",
+      "description_fr": "Calliope: essentials.primary_carrier_in<br><br>Le vecteur d'entrée principal peut être attribué à n'importe quel vecteur de n'importe quel groupe de vecteur d'entrée (1, 2 ou 3) et est le vecteur auquel les coûts de consommation sont attribués.",
+      "description_es": "Calliope: essentials.primary_carrier_in<br><br> El operador de entrada principal se puede asignar a cualquier operador de cualquier grupo de operadores de entrada (1, 2 o 3) y es el operador al que se asignan los costos de consumo.",
+      "root": "",
+      "name": "primary_carrier_in",
+      "timeseries_enabled": "False",
+      "is_systemwide": "False",
+      "units": "",
+      "is_essential": "True",
+      "is_carrier": "True",
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\", \"required_carrier\", \"units_in\"]",
+      "index": "[]",
+      "dim": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 147,
+    "fields": {
+      "category": "Essentials",
+      "category_fr": "Les essentiels",
+      "category_es": "Esenciales",
+      "pretty_name": "Input Carriers",
+      "pretty_name_fr": "Vecteur d'entrée",
+      "pretty_name_es": "Portador de entrada",
+      "description": "[Required] Input energy carrier (electricity, heat, gas, etc.)",
+      "description_fr": "[Obligatoire] Vecteur d'énergie d'entrée (électricité, chaleur, gaz,etc.)",
+      "description_es": "[Obligatorio] Portador de energía de entrada (electricidad, calor, gas, etc.)",
+      "root": "",
+      "name": "carrier_in",
+      "timeseries_enabled": "False",
+      "is_systemwide": "False",
+      "units": "",
+      "is_essential": "True",
+      "is_carrier": "True",
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\",  \"required_carrier\", \"carrier_multiselect\",\"multiselect\",\"multi_carrier_in\"]",
+      "index": "[]",
+      "dim": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 148,
+    "fields": {
+      "category": "Essentials",
+      "category_fr": "Les essentiels",
+      "category_es": "Esenciales",
+      "pretty_name": "Primary output carrier",
+      "pretty_name_fr": "Vecteur de sortie primaire",
+      "pretty_name_es": "Portador de salida primaria",
+      "description": "Calliope: essentials.primary_carrier_in<br><br>The primary output carrier can be assigned to any carrier in any output carrier group (1, 2, or 3) and is the carrier to which production costs are assigned, so that production cost for the subject node is calculated based on the quantity produced of that carrier.",
+      "description_fr": "Calliope: essentials.primary_carrier_in<br><br>Le vecteur de sortie primaire peut être affecté à n'importe quel vecteur dans n'importe quel groupe de vecteurs de sortie (1, 2 ou 3) et est le vecteur auquel les coûts de production sont affectés, de sorte que le coût de production pour le nœud en question est calculé sur la base de la quantité produite de ce vecteur.",
+      "description_es": "Calliope: essentials.primary_carrier_in<br><br> El portador de salida principal se puede asignar a cualquier portador en cualquier grupo de portadores de salida (1, 2 o 3) y es el portador al que se asignan los costos de producción, de modo que el costo de producción para el nodo en cuestión se calcula en función de la cantidad producida de ese portador.",
+      "root": "",
+      "name": "primary_carrier_out",
+      "timeseries_enabled": "False",
+      "is_systemwide": "False",
+      "units": "",
+      "is_essential": "True",
+      "is_carrier": "True",
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\", \"required_carrier\", \"units_out\"]",
+      "index": "[]",
+      "dim": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 149,
+    "fields": {
+      "category": "Essentials",
+      "category_fr": "Les essentiels",
+      "category_es": "Esenciales",
+      "pretty_name": "Output Carriers",
+      "pretty_name_fr": "Vecteur de sortie",
+      "pretty_name_es": "Portador de salida",
+      "description": "[Required] Output energy carrier (electricity, heat, gas, etc.)",
+      "description_fr": "[Obligatoire] Vecteur d'énergie d'entrée (électricité, chaleur, gaz,etc.)",
+      "description_es": "[Obligatorio] Portador de energía de salida (electricidad, calor, gas, etc.)",
+      "root": "",
+      "name": "carrier_out",
+      "timeseries_enabled": "False",
+      "is_systemwide": "False",
+      "units": "",
+      "is_essential": "True",
+      "is_carrier": "True",
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\",  \"required_carrier\", \"carrier_multiselect\",\"multiselect\",\"multi_carrier_out\"]",
+      "index": "[]",
+      "dim": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 150,
+    "fields": {
+      "category": "Essentials",
+      "category_fr": "Les essentiels",
+      "category_es": "Esenciales",
+      "pretty_name": "Input Carrier Group 1",
+      "pretty_name_fr": "Groupe de vecteurs d'entrée",
+      "pretty_name_es": "Grupo de portadores de entrada",
+      "description": "[Required] Input carrier group that can accommodate any number of carriers (electricity, heat, gas, etc.)",
+      "description_fr": "[Obligatoire] Groupe de vecteurs d'entrée pouvant accueillir n'importe quel nombre de vecteurs (électricité, chaleur, gaz, etc.)",
+      "description_es": "[Obligatorio] Grupo de portadores de entrada que puede acomodar cualquier número de portadores (electricidad, calefacción, gas, etc.)",
+      "root": "",
+      "name": "carrier_in_group_1",
+      "timeseries_enabled": "False",
+      "is_systemwide": "False",
+      "units": "",
+      "is_essential": "True",
+      "is_carrier": "True",
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\",  \"required_carrier\", \"carrier_multiselect\",\"multiselect\",\"multi_index\"]",
+      "index": "[]",
+      "dim": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 151,
+    "fields": {
+      "category": "Essentials",
+      "category_fr": "Les essentiels",
+      "category_es": "Esenciales",
+      "pretty_name": "Output Carrier Group 1",
+      "pretty_name_fr": "Groupe de vecteurs d'entrée",
+      "pretty_name_es": "Grupo de portadores de salida",
+      "description": "[Required] Output carrier group that may accommodate any number of carriers (electricity, heat, gas, etc.)",
+      "description_fr": "[Obligatoire] un  groupe de vecteurs d'entrée pouvant accueillir n'importe quel nombre de vecteurs (électricité, chaleur, gaz, etc.)",
+      "description_es": "[Obligatorio] Grupo de portadores de salida que puede acomodar cualquier número de portadores (electricidad, calefacción, gas, etc.)",
+      "root": "",
+      "name": "carrier_out_group_1",
+      "timeseries_enabled": "False",
+      "is_systemwide": "False",
+      "units": "",
+      "is_essential": "True",
+      "is_carrier": "True",
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\",  \"required_carrier\", \"carrier_multiselect\",\"multiselect\",\"multi_index\"]",
+      "index": "[]",
+      "dim": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 152,
+    "fields": {
+      "category": "Essentials",
+      "category_fr": "Les essentiels",
+      "category_es": "Esenciales",
+      "pretty_name": "Input Carrier Group 2",
+      "pretty_name_fr": "Groupe 2 de vecteurs d'entrée",
+      "pretty_name_es": "Grupo 2 de portadores de entrada",
+      "description": "Input carrier group that can accommodate any number of carriers (electricity, heat, gas, etc.)",
+      "description_fr": "[Obligatoire] Groupe de vecteurs d'entrée pouvant accueillir n'importe quel nombre de vecteurs (électricité, chaleur, gaz, etc.)",
+      "description_es": "[Obligatorio] Grupo de portadores de entrada que puede acomodar cualquier número de portadores (electricidad, calefacción, gas, etc.)",
+      "root": "",
+      "name": "carrier_in_group_2",
+      "timeseries_enabled": "False",
+      "is_systemwide": "False",
+      "units": "",
+      "is_essential": "True",
+      "is_carrier": "True",
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\", \"carrier_multiselect\",\"multiselect\", \"multi_index\", \"cplus_carrier\"]",
+      "index": "[]",
+      "dim": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 153,
+    "fields": {
+      "category": "Essentials",
+      "category_fr": "Les essentiels",
+      "category_es": "Esenciales",
+      "pretty_name": "Output Carrier Group 2",
+      "pretty_name_fr": "Groupe 2 de vecteurs d'entrée",
+      "pretty_name_es": "Grupo 2 de portadores de salida",
+      "description": "Output carrier group that may accommodate any number of carriers (electricity, heat, gas, etc.)",
+      "description_fr": "[Obligatoire] un  groupe de vecteurs d'entrée pouvant accueillir n'importe quel nombre de vecteurs (électricité, chaleur, gaz, etc.)",
+      "description_es": "[Obligatorio] Grupo de portadores de salida que puede acomodar cualquier número de portadores (electricidad, calefacción, gas, etc.)",
+      "root": "",
+      "name": "carrier_out_group_2",
+      "timeseries_enabled": "False",
+      "is_systemwide": "False",
+      "units": "",
+      "is_essential": "True",
+      "is_carrier": "True",
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\",  \"carrier_multiselect\",\"multiselect\", \"multi_index\", \"cplus_carrier\"]",
+      "index": "[]",
+      "dim": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 154,
+    "fields": {
+      "category": "Essentials",
+      "category_fr": "Les essentiels",
+      "category_es": "Esenciales",
+      "pretty_name": "Input Carrier Group 3",
+      "pretty_name_fr": "Groupe 3 de vecteurs d'entrée",
+      "pretty_name_es": "Grupo 3 de portadores de entrada",
+      "description": "Input carrier group that can accommodate any number of carriers (electricity, heat, gas, etc.)",
+      "description_fr": "[Obligatoire] Groupe de vecteurs d'entrée pouvant accueillir n'importe quel nombre de vecteurs (électricité, chaleur, gaz, etc.)",
+      "description_es": "[Obligatorio] Grupo de portadores de entrada que puede acomodar cualquier número de portadores (electricidad, calefacción, gas, etc.)",
+      "root": "",
+      "name": "carrier_in_group_3",
+      "timeseries_enabled": "False",
+      "is_systemwide": "False",
+      "units": "",
+      "is_essential": "True",
+      "is_carrier": "True",
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\", \"carrier_multiselect\",\"multiselect\", \"multi_index\", \"cplus_carrier\"]",
+      "index": "[]",
+      "dim": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 155,
+    "fields": {
+      "category": "Essentials",
+      "category_fr": "Les essentiels",
+      "category_es": "Esenciales",
+      "pretty_name": "Output Carrier Group 3",
+      "pretty_name_fr": "Groupe 3 de vecteurs d'entrée",
+      "pretty_name_es": "Grupo 3 de portadores de salida",
+      "description": "Output carrier group that may accommodate any number of carriers (electricity, heat, gas, etc.)",
+      "description_fr": "[Obligatoire] un  groupe de vecteurs d'entrée pouvant accueillir n'importe quel nombre de vecteurs (électricité, chaleur, gaz, etc.)",
+      "description_es": "[Obligatorio] Grupo de portadores de salida que puede acomodar cualquier número de portadores (electricidad, calefacción, gas, etc.)",
+      "root": "",
+      "name": "carrier_out_group_3",
+      "timeseries_enabled": "False",
+      "is_systemwide": "False",
+      "units": "",
+      "is_essential": "True",
+      "is_carrier": "True",
+      "choices": "[]",
+      "tags": "[\"carrier\", \"essential\",  \"carrier_multiselect\",\"multiselect\", \"multi_index\", \"cplus_carrier\"]",
+      "index": "[]",
+      "dim": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 156,
+    "fields": {
+      "category": "Constraints: Technology",
+      "category_fr": "Contraintes: Technologie",
+      "category_es": "Limitaciones: tecnología",
+      "pretty_name": "Output conversion efficiency",
+      "pretty_name_fr": "Efficacité de conversion",
+      "pretty_name_es": "Eficiencia de conversión.",
+      "description": "Calliope: energy_eff | conversion efficiency (static, or from file as timeseries), from resource/storage/carrier_in (tech dependent) to carrier_out.<br><br>For supply, supply+, efficiency of conversion from resource to production carrier.<br><br>For conversion, efficiency of conversion from consumption carrier (carrier_con) to production carriers (carrier_prod).<br><br>For conversion+, a factor that, in combination with the carrier ratios for the carrier_in carriers and the carrier_out carriers, determines number of units of carrier_out per unit of carrier_in. See Calliope documentation of Advanced Constraints -> conversion plus.",
+      "description_fr": "Calliope: energy_eff / efficacité de conversion (statique, ou à partir d'un fichier en tant que série temporelle), de resource / stockage / carrier_in (dépendant de la technologie) au carrier_out.<br><br>Pour l'approvisionnement, l'approvisionnement+, l'efficacité de la conversion de la ressource en vecteur de production.<br><br>Pour la conversion, l'efficacité de la conversion du vecteur de consommation (carrier_con) aux vecteurs de production (carrier_prod).<br><br>Pour la conversion+, un facteur qui, en combinaison avec les rapports de vecteurs pour les vecteurs carrier_in et les vecteurs carrier_out, détermine le nombre d'unités de carrier_out par unité de carrier_in. Voir la documentation Calliope des contraintes avancées - > conversion plus.",
+      "description_es": "Calliope: energía_eff | eficiencia de conversión (estática o de archivo como serie temporal), desde recurso/almacenamiento/entrada_portador (dependiente de la tecnología) hasta salida_portador.<br><br> Para suministro, suministro+, eficiencia de conversión de recurso a portador de producción.<br><br> Para la conversión, eficiencia de conversión de portador de consumo (carrier_con) a portadores de producción (carrier_prod).<br><br> Para conversión+, un factor que, en combinación con las proporciones de portadores para las portadores de entrada y de salida, determina el número de unidades de salida por unidad de entrada. Consulte la documentación de Calliope sobre Restricciones avanzadas -> conversión plus.",
+      "root": "",
+      "name": "flow_out_eff",
+      "timeseries_enabled": "True",
+      "is_systemwide": "False",
+      "units": "[[out_rate]]/[[in_rate]]",
+      "is_essential": "False",
+      "is_carrier": "False",
+      "choices": "[]",
+      "tags": "[\"duplicate\",\"multi_carrier_out\"]",
+      "index": "[]",
+      "dim": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 157,
+    "fields": {
+      "category": "Constraints: Technology",
+      "category_fr": "Contraintes: Technologie",
+      "category_es": "Limitaciones: tecnología",
+      "pretty_name": "Input conversion efficiency",
+      "pretty_name_fr": "Efficacité de conversion",
+      "pretty_name_es": "Eficiencia de conversión.",
+      "description": "Calliope: energy_eff | conversion efficiency (static, or from file as timeseries), from resource/storage/carrier_in (tech dependent) to carrier_out.<br><br>For supply, supply+, efficiency of conversion from resource to production carrier.<br><br>For conversion, efficiency of conversion from consumption carrier (carrier_con) to production carriers (carrier_prod).<br><br>For conversion+, a factor that, in combination with the carrier ratios for the carrier_in carriers and the carrier_out carriers, determines number of units of carrier_out per unit of carrier_in. See Calliope documentation of Advanced Constraints -> conversion plus.",
+      "description_fr": "Calliope: energy_eff / efficacité de conversion (statique, ou à partir d'un fichier en tant que série temporelle), de resource / stockage / carrier_in (dépendant de la technologie) au carrier_out.<br><br>Pour l'approvisionnement, l'approvisionnement+, l'efficacité de la conversion de la ressource en vecteur de production.<br><br>Pour la conversion, l'efficacité de la conversion du vecteur de consommation (carrier_con) aux vecteurs de production (carrier_prod).<br><br>Pour la conversion+, un facteur qui, en combinaison avec les rapports de vecteurs pour les vecteurs carrier_in et les vecteurs carrier_out, détermine le nombre d'unités de carrier_out par unité de carrier_in. Voir la documentation Calliope des contraintes avancées - > conversion plus.",
+      "description_es": "Calliope: energía_eff | eficiencia de conversión (estática o de archivo como serie temporal), desde recurso/almacenamiento/entrada_portador (dependiente de la tecnología) hasta salida_portador.<br><br> Para suministro, suministro+, eficiencia de conversión de recurso a portador de producción.<br><br> Para la conversión, eficiencia de conversión de portador de consumo (carrier_con) a portadores de producción (carrier_prod).<br><br> Para conversión+, un factor que, en combinación con las proporciones de portadores para las portadores de entrada y de salida, determina el número de unidades de salida por unidad de entrada. Consulte la documentación de Calliope sobre Restricciones avanzadas -> conversión plus.",
+      "root": "",
+      "name": "flow_in_eff",
+      "timeseries_enabled": "True",
+      "is_systemwide": "False",
+      "units": "[[out_rate]]/[[in_rate]]",
+      "is_essential": "False",
+      "is_carrier": "False",
+      "choices": "[]",
+      "tags": "[\"duplicate\",\"multi_carrier_in\"]",
+      "index": "[]",
+      "dim": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 158,
+    "fields": {
+      "category": "Costs: Monetary",
+      "category_fr": "Coûts: Monétaires",
+      "category_es": "Costos: Monetarios",
+      "pretty_name": "Carrier consumption cost",
+      "pretty_name_fr": "Coût de consommation du vecteur",
+      "pretty_name_es": "Costo de consumo del portador",
+      "description": "Calliope: costs.om_con | Applied to carrier consumption of a technology",
+      "description_fr": "Calliope: costs.om_con | Appliqué à la consommation du vecteur d'une technologie",
+      "description_es": "Calliope: costs.om_con | Aplicado al consumo del portador de una tecnología.",
+      "root": "",
+      "name": "cost_flow_in",
+      "timeseries_enabled": "True",
+      "is_systemwide": "False",
+      "units": "$/[[in_quantity]]",
+      "is_essential": "False",
+      "is_carrier": "False",
+      "choices": "[]",
+      "tags": "[\"duplicate\",\"multi_carrier_in\"]",
+      "index": "[\"monetary\"]",
+      "dim": "[\"costs\"]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 159,
+    "fields": {
+      "category": "Costs: Monetary",
+      "category_fr": "Coûts: Monétaires",
+      "category_es": "Costos: Monetarios",
+      "pretty_name": "Carrier production cost",
+      "pretty_name_fr": "Coût de production du vecteur",
+      "pretty_name_es": "Costo de producción del portador",
+      "description": "Calliope: costs.monetary.om_prod Applied to carrier production of a technology<br><br>Cost applied per unit of carrier produced.",
+      "description_fr": "Calliope: costs.monetary.om_prod Appliqué à la production d'un vecteur d'une technologie<br><br>Coût appliqué par unité de vecteur produit.",
+      "description_es": "Calliope: cost.monetary.om_prod Aplicado a la producción del portador de una tecnología.<br><br> Costo aplicado por unidad producida del portador.",
+      "root": "",
+      "name": "cost_flow_out",
+      "timeseries_enabled": "True",
+      "is_systemwide": "False",
+      "units": "$/[[out_quantity]]",
+      "is_essential": "False",
+      "is_carrier": "False",
+      "choices": "[]",
+      "tags": "[\"duplicate\",\"multi_carrier_out\"]",
+      "index": "[\"monetary\"]",
+      "dim": "[\"costs\"]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 160,
+    "fields": {
+      "category": "Emissions: CO2",
+      "category_fr": "Émissions: CO2",
+      "category_es": "Emisiones: CO2",
+      "pretty_name": "Qty. per unit consumption",
+      "pretty_name_fr": "Quantité consommation par unité",
+      "pretty_name_es": "Cantidad por unidad de consumo",
+      "description": "Calliope: costs.CO2.om_con<br><br>Emissions per unit energy content of resource or consumption consumed. May be useful for pre-conversion, e.g., pre-combustion emissions associated with fuel.",
+      "description_fr": "Émissions par unité de contenu énergétique de la ressource ou de la consommation consommée. Peut être utile pour la pré-conversion, par exemple, les émissions de précombustion associées au carburant.",
+      "description_es": "Emisiones por unidad de contenido energético del recurso o consumo consumido. Puede ser útil para la preconversión, por ejemplo, las emisiones previas a la combustión asociadas con el combustible.",
+      "root": "",
+      "name": "cost_flow_in",
+      "timeseries_enabled": "True",
+      "is_systemwide": "False",
+      "units": "kg/[[in_quantity]]",
+      "is_essential": "False",
+      "is_carrier": "False",
+      "choices": "[]",
+      "tags": "[\"duplicate\",\"multi_carrier_in\"]",
+      "index": "[\"co2\"]",
+      "dim": "[\"costs\"]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 161,
+    "fields": {
+      "category": "Emissions: CO2",
+      "category_fr": "Émissions: CO2",
+      "category_es": "Emisiones: CO2",
+      "pretty_name": "Qty. per unit production",
+      "pretty_name_fr": "Quantité par unité de production",
+      "pretty_name_es": "Cantidad por unidad de producción",
+      "description": "Calliope: costs.CO2.om_prod | Applied to carrier production of a technology<br><br>Emissions per unit of carrier produced.",
+      "description_fr": "Calliope: costs.CO2.om_prod | Applied to carrier production of a technology<br><br>Emissions per unit of carrier produced.",
+      "description_es": "Calliope: costs.CO2.om_prod | Applied to carrier production of a technology<br><br>Emissions per unit of carrier produced.",
+      "root": "",
+      "name": "cost_flow_out",
+      "timeseries_enabled": "True",
+      "is_systemwide": "False",
+      "units": "kg/[[out_quantity]]",
+      "is_essential": "False",
+      "is_carrier": "False",
+      "choices": "[]",
+      "tags": "[\"duplicate\",\"multi_carrier_out\"]",
+      "index": "[\"co2\"]",
+      "dim": "[\"costs\"]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 162,
+    "fields": {
+      "category": "Emissions: CH4",
+      "category_fr": "Émissions: CH4",
+      "category_es": "Emisiones: CH4",
+      "pretty_name": "Qty. per unit consumption",
+      "pretty_name_fr": "Quantité consommation par unité",
+      "pretty_name_es": "Cantidad por unidad de consumo",
+      "description": "Calliope: costs.CH4.om_con | Applied to carrier consumption of a technology<br><br>Equivalent emissions per unit resource or carrier consumed. May be useful for pre-conversion, e.g., pre-combustion emissions associated with fuel.",
+      "description_fr": "Calliope: costs.CH4.om_con | Appliqué à la consommation du vecteur d'une technologie<br><br>Émissions équivalentes par unité de ressource ou de vecteur consommé. Peut être utile pour la pré-conversion, par exemple, les émissions de précombustion associées au carburant.",
+      "description_es": "Calliope: costs.CH4.om_con | Aplicado al consumo del portador de una tecnología.<br><br> Emisiones equivalentes por unidad de recurso o portador consumido. Puede ser útil para la preconversión, por ejemplo, las emisiones previas a la combustión asociadas con el combustible.",
+      "root": "",
+      "name": "cost_flow_in",
+      "timeseries_enabled": "True",
+      "is_systemwide": "False",
+      "units": "kg/[[in_quantity]]",
+      "is_essential": "False",
+      "is_carrier": "False",
+      "choices": "[]",
+      "tags": "[\"duplicate\",\"multi_carrier_in\"]",
+      "index": "[\"ch4\"]",
+      "dim": "[\"costs\"]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 163,
+    "fields": {
+      "category": "Emissions: CH4",
+      "category_fr": "Émissions: CH4",
+      "category_es": "Emisiones: CH4",
+      "pretty_name": "Qty. per unit production",
+      "pretty_name_fr": "Quantité par unité de production",
+      "pretty_name_es": "Cantidad por unidad de producción",
+      "description": "Calliope: costs.CH4.om_prod | Applied to carrier production of a technology<br><br>Equivalent emissions per unit carrier produced.",
+      "description_fr": "Calliope: costs.CH4.om_prod | Appliqué à la production du vecteur d'une technologie<br><br>Émissions équivalentes par unité de vecteur produit.",
+      "description_es": "Calliope: costs.CH4.om_prod | Aplicado a la producción del portador de una tecnología.<br><br> Emisiones equivalentes por unidad producida del portador.",
+      "root": "",
+      "name": "cost_flow_out",
+      "timeseries_enabled": "True",
+      "is_systemwide": "False",
+      "units": "kg/[[out_quantity]]",
+      "is_essential": "False",
+      "is_carrier": "False",
+      "choices": "[]",
+      "tags": "[\"duplicate\",\"multi_carrier_out\"]",
+      "index": "[\"ch4\"]",
+      "dim": "[\"costs\"]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 164,
+    "fields": {
+      "category": "Emissions: N2O",
+      "category_fr": "Émissions: N2O",
+      "category_es": "Emisiones: N2O",
+      "pretty_name": "Qty. per unit consumption",
+      "pretty_name_fr": "Quantité consommation par unité",
+      "pretty_name_es": "Cantidad por unidad de consumo",
+      "description": "Calliope: costs.N2O.om_con | Applied to carrier consumption of a technology<br><br>Emissions per unit resource or carrier consumed. May be useful for pre-conversion, e.g., pre-combustion emissions associated with fuel.",
+      "description_fr": "Calliope: costs.N2O.om_con | Appliqué à la consommation du vecteur d'une technologie<br><br>Émissions par unité de ressource ou vecteur consommé. Peut être utile pour la pré-conversion, par exemple, les émissions de précombustion associées au carburant.",
+      "description_es": "Calliope: costs.N2O.om_con | Aplicado al consumo del portador de una tecnología.<br><br> Emisiones por unidad de recurso o portador consumido. Puede ser útil para la preconversión, por ejemplo, las emisiones previas a la combustión asociadas con el combustible.",
+      "root": "",
+      "name": "cost_flow_in",
+      "timeseries_enabled": "True",
+      "is_systemwide": "False",
+      "units": "kg/[[in_quantity]]",
+      "is_essential": "False",
+      "is_carrier": "False",
+      "choices": "[]",
+      "tags": "[\"duplicate\",\"multi_carrier_in\"]",
+      "index": "[\"n2o\"]",
+      "dim": "[\"costs\"]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 165,
+    "fields": {
+      "category": "Emissions: N2O",
+      "category_fr": "Émissions: N2O",
+      "category_es": "Emisiones: N2O",
+      "pretty_name": "Qty. per unit production",
+      "pretty_name_fr": "Quantité par unité de production",
+      "pretty_name_es": "Cantidad por unidad de producción",
+      "description": "Calliope: costs.N2O.om_prod | Applied to carrier production of a technology<br><br>Emissions per unit carrier produced.",
+      "description_fr": "Calliope: costs.N2O.om_prod | Appliqué à la production du vecteur d'une technologie<br><br>Émissions par unité du vecteur produit.",
+      "description_es": "Calliope: costs.N2O.om_prod | Aplicado a la producción del portador de una tecnología.<br><br> Emisiones por unidad producida del portador.",
+      "root": "",
+      "name": "cost_flow_out",
+      "timeseries_enabled": "True",
+      "is_systemwide": "False",
+      "units": "kg/[[out_quantity]]",
+      "is_essential": "False",
+      "is_carrier": "False",
+      "choices": "[]",
+      "tags": "[\"duplicate\",\"multi_carrier_out\"]",
+      "index": "[\"n2o\"]",
+      "dim": "[\"costs\"]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 166,
+    "fields": {
+      "category": "Emissions: CO2e",
+      "category_fr": "Émissions: CO2e",
+      "category_es": "Emisiones: CO2e",
+      "pretty_name": "Qty. per unit consumption",
+      "pretty_name_fr": "Quantité consommation par unité",
+      "pretty_name_es": "Cantidad por unidad de consumo",
+      "description": "Calliope: costs.CO2e.om_con | Applied to carrier consumption of a technology<br><br>Equivalent emissions per unit resource or carrier consumed. May be useful for pre-conversion, e.g., pre-combustion emissions associated with fuel.",
+      "description_fr": "Calliope: costs.CO2e.om_con | Appliqué à la consommation du vecteur d'une technologie<br><br>Émissions équivalentes par unité de ressource ou de vecteur consommé. Peut être utile pour la pré-conversion, par exemple, les émissions de précombustion associées au carburant.",
+      "description_es": "Calliope: costs.CO2e.om_con | Aplicado al consumo del portador de una tecnología.<br><br> Emisiones equivalentes por unidad de recurso o portador consumido. Puede ser útil para la preconversión, por ejemplo, las emisiones previas a la combustión asociadas con el combustible.",
+      "root": "",
+      "name": "cost_flow_in",
+      "timeseries_enabled": "True",
+      "is_systemwide": "False",
+      "units": "kg/[[in_quantity]]",
+      "is_essential": "False",
+      "is_carrier": "False",
+      "choices": "[]",
+      "tags": "[\"duplicate\",\"multi_carrier_in\"]",
+      "index": "[\"co2e\"]",
+      "dim": "[\"costs\"]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 167,
+    "fields": {
+      "category": "Emissions: CO2e",
+      "category_fr": "Émissions: CO2e",
+      "category_es": "Emisiones: CO2e",
+      "pretty_name": "Qty. per unit production",
+      "pretty_name_fr": "Quantité par unité de production",
+      "pretty_name_es": "Cantidad por unidad de producción",
+      "description": "Calliope: costs.CO2e.om_prod | Applied to carrier production of a technology<br><br>Equivalent emissions per unit carrier produced.",
+      "description_fr": "Calliope: costs.CO2e.om_con | Appliqué à la consommation du vecteur d'une technologie<br><br>Émissions équivalentes par unité de vecteur produit.",
+      "description_es": "Calliope: costs.CO2e.om_prod | Aplicado a la producción del portador de una tecnología.<br><br> Emisiones equivalentes por unidad producida del portador.",
+      "root": "",
+      "name": "cost_flow_out",
+      "timeseries_enabled": "True",
+      "is_systemwide": "False",
+      "units": "kg/[[in_quantity]]",
+      "is_essential": "False",
+      "is_carrier": "False",
+      "choices": "[]",
+      "tags": "[\"duplicate\",\"multi_carrier_out\"]",
+      "index": "[\"co2e\"]",
+      "dim": "[\"costs\"]"
     },
     "model": "api.parameter"
   }

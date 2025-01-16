@@ -99,7 +99,7 @@
       "description": "Converts energy from one carrier to another.",
       "description_fr": "Convertit l'\u00e9nergie d'un transporteur \u00e0 un autre.",
       "description_es": "Convierte energía de un portador a otro.",
-      "name": "conversion_plus",
+      "name": "conversion",
       "image": "images/technologies/conversion_plus.svg",
       "icon": "<i class=\"fa-solid fa-shuffle\"></i> <i class=\"fas fa-plus\"></i>"
     }

@@ -165,7 +165,7 @@ def list_to_yaml(table_list, filename):
                     current_level[part] = {}
                 current_level = current_level[part]
     with open(filename, 'w') as outfile:
-        yaml.dump(d, outfile, default_flow_style=False)
+        yaml.dump(d, outfile, default_flow_style=None)
         return True
 
 

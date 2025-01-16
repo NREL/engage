@@ -217,7 +217,6 @@ def build_model(inputs_path, run_id, model_uuid, scenario_id,
     scenario = Scenario.objects.get(id=scenario_id)
     node_params_source, tech_params_source = build_model_csv(model, scenario, start_date, end_date, inputs_path, run.timestep) # returns node_param.csv location and tech_param location...
     build_model_yaml(run, scenario_id, start_date, inputs_path, node_params_source, tech_params_source)
-
     return inputs_path
 
 def build_model_yaml(run, scenario_id, start_date, inputs_path, node_params_source, tech_params_source):
@@ -233,28 +232,28 @@ def build_model_yaml(run, scenario_id, start_date, inputs_path, node_params_sour
     scenario_id = int(scenario_id)
 
     with open(os.path.join(inputs_path, "model.yaml"), 'w') as outfile:
-        yaml.dump(model_yaml_set, outfile, default_flow_style=False)
+        yaml.dump(model_yaml_set, outfile, default_flow_style=None)
 
     # custom_math.yaml
     custom_math_yaml_set = get_custom_math_yaml_set(run, scenario_id, year)
     with open(os.path.join(inputs_path, "custom_math.yaml"), 'w') as outfile:
-        yaml.dump(custom_math_yaml_set, outfile, default_flow_style=False)
+        yaml.dump(custom_math_yaml_set, outfile, default_flow_style=None)
 
     # techs.yaml
     techs_yaml_set = get_techs_yaml_set(scenario_id, year)
     with open(os.path.join(inputs_path, "techs.yaml"), 'w') as outfile:
-        yaml.dump(techs_yaml_set, outfile, default_flow_style=False)
+        yaml.dump(techs_yaml_set, outfile, default_flow_style=None)
 
     # locations.yaml
     loc_techs_yaml_set = get_loc_techs_yaml_set(scenario_id, year)
     location_yaml_set = get_location_meta_yaml_set(scenario_id, loc_techs_yaml_set)
     with open(os.path.join(inputs_path, "locations.yaml"), 'w') as outfile:
-        yaml.dump(location_yaml_set, outfile, default_flow_style=False)
+        yaml.dump(location_yaml_set, outfile, default_flow_style=None)
 
     # carriers.yaml
     carriers_yaml_set = get_carriers_yaml_set(scenario_id)
     with open(os.path.join(inputs_path, "carriers.yaml"), 'w') as outfile:
-        yaml.dump(carriers_yaml_set, outfile, default_flow_style=False)
+        yaml.dump(carriers_yaml_set, outfile, default_flow_style=None)
 
 
 def build_model_csv(model, scenario, start_date, end_date, inputs_path, timesteps):

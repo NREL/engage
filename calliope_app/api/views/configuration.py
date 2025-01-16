@@ -607,7 +607,7 @@ def update_tech_params(request):
     technology_id = escape(request.POST["technology_id"])
     form_data = json.loads(request.POST["form_data"])
     escaped_form_data = recursive_escape(form_data)
-
+    
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
 
@@ -690,33 +690,67 @@ def convert_to_timeseries(request):
     except Exception as e:
         loc_tech_id = None
         print("Technology only: {}".format(e))
+    
+    if 'index' in request.GET:
+        index = request.GET["index"]
+        dim = request.GET["dim"]
 
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
 
     if loc_tech_id:
-        Loc_Tech_Param.objects.filter(
-            model_id=model.id, parameter_id=param_id, loc_tech_id=loc_tech_id
-        ).hard_delete()
-        Loc_Tech_Param.objects.create(
-            model_id=model.id,
-            parameter_id=param_id,
-            loc_tech_id=loc_tech_id,
-            value=0,
-            timeseries=True,
-        )
+        if 'index' in request.GET:
+            Loc_Tech_Param.objects.filter(
+                model_id=model.id, parameter_id=param_id, loc_tech_id=loc_tech_id,
+                index=[index], dim=[dim]
+            ).hard_delete()
+            Loc_Tech_Param.objects.create(
+                model_id=model.id,
+                parameter_id=param_id,
+                loc_tech_id=loc_tech_id,
+                value=0,
+                timeseries=True,
+                index=[index],
+                dim=[dim]
+            )
+        else:
+            Loc_Tech_Param.objects.filter(
+                model_id=model.id, parameter_id=param_id, loc_tech_id=loc_tech_id,
+            ).hard_delete()
+            Loc_Tech_Param.objects.create(
+                model_id=model.id,
+                parameter_id=param_id,
+                loc_tech_id=loc_tech_id,
+                value=0,
+                timeseries=True,
+            )
         payload = {"message": "added timeseries to node"}
     else:
-        Tech_Param.objects.filter(model_id=model.id,
-                                  parameter_id=param_id,
-                                  technology_id=technology_id).hard_delete()
-        Tech_Param.objects.create(
-            model_id=model.id,
-            parameter_id=param_id,
-            technology_id=technology_id,
-            value=0,
-            timeseries=True,
-        )
+        if 'index' in request.GET:
+            Tech_Param.objects.filter(model_id=model.id,
+                                    parameter_id=param_id,
+                                    technology_id=technology_id,
+                                    index=[index], dim=[dim]).hard_delete()
+            Tech_Param.objects.create(
+                model_id=model.id,
+                parameter_id=param_id,
+                technology_id=technology_id,
+                value=0,
+                timeseries=True,
+                index=[index],
+                dim=[dim]
+            )
+        else:
+            Tech_Param.objects.filter(model_id=model.id,
+                                    parameter_id=param_id,
+                                    technology_id=technology_id).hard_delete()
+            Tech_Param.objects.create(
+                model_id=model.id,
+                parameter_id=param_id,
+                technology_id=technology_id,
+                value=0,
+                timeseries=True,
+            )
         payload = {"message": "added timeseries to technology"}
 
     return HttpResponse(json.dumps(payload), content_type="application/json")

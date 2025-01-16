@@ -327,16 +327,35 @@
     "model": "api.run_parameter",
     "fields": {
       "pretty_name": "Global Expressions",
-      "pretty_name_fr": "Pond\u00e9rations des classes de co\u00fbts",
-      "pretty_name_es": "Ponderaciones de clases de costos",
-      "description": "A dictionary of cost classes and their weights in the objective. By default, the weights of emissions are zero, monetary's is 1.",
-      "description_fr": "Un dictionnaire des classes de co\u00fbt et leurs poids dans l'objectif. Par d\u00e9faut, les poids des \u00e9missions sont nuls, celui mon\u00e9taire est de 1.",
-      "description_es": "Un diccionario de clases de costos y sus ponderaciones en el objetivo. Por defecto, las ponderaciones de las emisiones son cero y las monetarias son 1.",
+      "pretty_name_fr": "",
+      "pretty_name_es": "",
+      "description": "Default custom Engage global expressions",
+      "description_fr": "",
+      "description_es": "",
       "root": "global_expressions",
       "user_visibility": "False",
       "can_evolve": "False",
       "name": "global_expressions",
       "default_value": "{\"flow_out_non_transmission_techs\":{\"foreach\":[\"nodes\",\"techs\",\"timesteps\",\"carriers\"],\"where\":\"flow_out\",\"equations\":[{\"where\":\"NOT base_tech=transmission\",\"expression\":\"flow_out\"}]},\"flow_in_demand_techs\":{\"foreach\":[\"nodes\",\"techs\",\"timesteps\",\"carriers\"],\"where\":\"base_tech=demand\",\"equations\":[{\"expression\":\"flow_in\"}]},\"flow_cap_demand_techs\":{\"foreach\":[\"nodes\",\"techs\",\"carriers\"],\"where\":\"base_tech=demand\",\"equations\":[{\"expression\":\"flow_cap\"}]}}",
+      "choices": "[]",
+      "tab": "scenarios"
+    }
+  },
+  {
+    "pk": 28,
+    "model": "api.run_parameter",
+    "fields": {
+      "pretty_name": "Custom Constraints",
+      "pretty_name_fr": "",
+      "pretty_name_es": "",
+      "description": "Default custom Engage constraints",
+      "description_fr": "Un dictionnaire des classes de co\u00fbt et leurs poids dans l'objectif. Par d\u00e9faut, les poids des \u00e9missions sont nuls, celui mon\u00e9taire est de 1.",
+      "description_es": "Un diccionario de clases de costos y sus ponderaciones en el objetivo. Por defecto, las ponderaciones de las emisiones son cero y las monetarias son 1.",
+      "root": "constraints",
+      "user_visibility": "False",
+      "can_evolve": "False",
+      "name": "constraints",
+      "default_value": "{\"balance_conversion\":{\"description\":\"Recreate v0.6 conversion plus functionality. Override balance_conversion to tie just in_group_1 and out_group_1 together.\",\"foreach\":[\"nodes\",\"techs\",\"timesteps\"],\"equations\":[{\"where\":\"NOT any(carrier_in_group_1, over=carriers) AND NOT any(carrier_out_group_1, over=carriers) AND NOT include_storage=true\",\"expression\":\"sum(flow_out_inc_eff, over=carriers) == sum(flow_in_inc_eff, over=carriers)\"},{\"where\":\"any(carrier_in_group_1, over=carriers) AND any(carrier_out_group_1, over=carriers) AND NOT include_storage=true\",\"expression\":\"sum(flow_in_inc_eff * default_if_empty(carrier_in_group_1, 0), over=carriers) == sum(flow_out_inc_eff * default_if_empty(carrier_out_group_1, 0), over=carriers)\"}]},\"balance_in_group_2\":{\"description\":\"Recreate v0.6 conversion plus functionality. Tie in_group_1 and in_group_2 together.\",\"foreach\":[\"nodes\",\"techs\",\"timesteps\"],\"equations\":[{\"where\":\"any(carrier_in_group_1, over=carriers) AND any(carrier_in_group_2, over=carriers) AND NOT include_storage=true\",\"expression\":\"sum(flow_in_inc_eff * default_if_empty(carrier_in_group_1, 0), over=carriers) == sum(flow_in_inc_eff * default_if_empty(carrier_in_group_2, 0), over=carriers)\"}]},\"balance_out_group_2\":{\"description\":\"Recreate v0.6 conversion plus functionality. Tie iout_group_1 and in_group_2 together.\",\"foreach\":[\"nodes\",\"techs\",\"timesteps\"],\"equations\":[{\"where\":\"any(carrier_out_group_1, over=carriers) AND any(carrier_out_group_2, over=carriers) AND NOT include_storage=true\",\"expression\":\"sum(flow_out_inc_eff * default_if_empty(carrier_out_group_1, 0), over=carriers) == sum(flow_out_inc_eff * default_if_empty(carrier_out_group_2, 0), over=carriers)\"}]},\"balance_in_group_3\":{\"description\":\"Recreate v0.6 conversion plus functionality. Tie in_group_1 and in_group_3 together.\",\"foreach\":[\"nodes\",\"techs\",\"timesteps\"],\"equations\":[{\"where\":\"any(carrier_in_group_1, over=carriers) AND any(carrier_in_group_3, over=carriers) AND NOT include_storage=true\",\"expression\":\"sum(flow_in_inc_eff * default_if_empty(carrier_in_group_1, 0), over=carriers) == sum(flow_in_inc_eff * default_if_empty(carrier_in_group_3, 0), over=carriers)\"}]},\"balance_out_group_3\":{\"description\":\"Recreate v0.6 conversion plus functionality. Tie iout_group_1 and in_group_3 together.\",\"foreach\":[\"nodes\",\"techs\",\"timesteps\"],\"equations\":[{\"where\":\"any(carrier_out_group_1, over=carriers) AND any(carrier_out_group_3, over=carriers) AND NOT include_storage=true\",\"expression\":\"sum(flow_out_inc_eff * default_if_empty(carrier_out_group_1, 0), over=carriers) == sum(flow_out_inc_eff * default_if_empty(carrier_out_group_3, 0), over=carriers)\"}]}}",
       "choices": "[]",
       "tab": "scenarios"
     }
