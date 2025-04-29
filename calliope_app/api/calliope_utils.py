@@ -493,11 +493,11 @@ def _yaml_outputs(model_path, outputs_dir):
         yaml.dump(model, open(os.path.join(outputs_dir,'model_results.yaml'),'w+'), default_flow_style=False)
 
 def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
-    old_model = yaml.safe_load(open(old_results+'/model_results.yaml'))
+    old_model = yaml.safe_load(open(os.path.join(old_results,'model_results.yaml')))
 
-    new_techs = yaml.safe_load(open(new_inputs+'/techs.yaml','r'))
-    new_loctechs = yaml.safe_load(open(new_inputs+'/locations.yaml','r'))
-    new_model = yaml.safe_load(open(new_inputs+'/model.yaml','r'))
+    new_techs = yaml.safe_load(open(os.path.join(new_inputs,'techs.yaml','r')))
+    new_loctechs = yaml.safe_load(open(os.path.join(new_inputs,'locations.yaml','r')))
+    new_model = yaml.safe_load(open(os.path.join(new_inputs,'model.yaml','r')))
 
     built_tech_names = {}
     built_techs = {}
@@ -584,12 +584,15 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                                             ts_df['Unnamed: 0'] = pd.to_datetime(ts_df['Unnamed: 0'])
                                             freq = pd.infer_freq(ts_df['Unnamed: 0'])
                                             if not calendar.isleap(new_year):
-                                                feb_29_mask = (ts_df['Unnamed: 0'].month == 2) & (ts_df['Unnamed: 0'].index.day == 29)
+                                                feb_29_mask = (ts_df['Unnamed: 0'].dt.month == 2) & (ts_df['Unnamed: 0'].dt.day == 29)
                                                 ts_df = ts_df[~feb_29_mask]
-                                                ts_df['Unnamed: 0'] = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                                                ts_df.index = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                                                ts_df.drop(columns=['Unnamed: 0'], inplace=True)
                                             elif not calendar.isleap(old_year):
-                                                ts_df['Unnamed: 0'] = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
-                                                ts_df.index = ts_df['Unnamed: 0']
+                                                ts_df.index = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                                                ts_df.drop(columns=['Unnamed: 0'], inplace=True)
+                                                idx = pd.date_range(ts_df.index.min(),ts_df.index.max(),freq=freq)
+                                                ts_df = ts_df.reindex(idx, fill_value=0)
 
                                                 # Leap Year Handling (Fill w/ Feb 28th)
                                                 feb_28_mask = (ts_df.index.month == 2) & (ts_df.index.day == 28)
@@ -598,8 +601,11 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                                                 feb_29 = ts_df.loc[feb_29_mask, 'value'].values
                                                 if ((len(feb_29) > 0) & (len(feb_28) > 0)):
                                                     ts_df.loc[feb_29_mask, 'value'] = feb_28
-                                                ts_df['Unnamed: 0'] = ts_df.index
-                                            ts_df.to_csv(new_inputs+filename+'-'+str(old_year)+'.csv',index=False)
+                                            else:
+                                                ts_df.index = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                                                ts_df.drop(columns=['Unnamed: 0'], inplace=True)
+                                            ts_df.index.name = None
+                                            ts_df.to_csv(os.path.join(new_inputs,filename+'-'+str(old_year)+'.csv'),index=True)
                                             loc_tech_b[x][y] = 'file='+filename+'-'+str(old_year)+'.csv:value'
                                     except TypeError:
                                         continue
@@ -683,11 +689,11 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                 if t in c.get('techs_rhs',[]) and t+'_'+str(old_year) not in c.get('techs',[]):
                     new_model['group_constraints'][g]['techs_rhs'].append(t+'_'+str(old_year))
 
-    with open(new_inputs+'/techs.yaml','w') as outfile:
+    with open(os.path.join(new_inputs,'techs.yaml','w')) as outfile:
         yaml.dump(new_techs,outfile,default_flow_style=False)
 
-    with open(new_inputs+'/locations.yaml','w') as outfile:
+    with open(os.path.join(new_inputs,'locations.yaml','w')) as outfile:
         yaml.dump(new_loctechs,outfile,default_flow_style=False)
 
-    with open(new_inputs+'/model.yaml', 'w') as outfile:
+    with open(os.path.join(new_inputs,'model.yaml', 'w')) as outfile:
         yaml.dump(new_model,outfile,default_flow_style=False)
