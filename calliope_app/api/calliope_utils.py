@@ -452,9 +452,9 @@ def _yaml_outputs(model_path, outputs_dir):
     results_var = {'energy_cap':'results_energy_cap.csv','storage_cap':'results_storage_cap.csv'}
     inputs_dir = os.path.join(base_path, 'inputs')
 
-    model = yaml.load(open(os.path.join(inputs_dir,'model.yaml')), Loader=yaml.FullLoader)
-    model.update(yaml.load(open(os.path.join(inputs_dir,'locations.yaml')), Loader=yaml.FullLoader))
-    model.update(yaml.load(open(os.path.join(inputs_dir,'techs.yaml')), Loader=yaml.FullLoader))
+    model = yaml.safe_load(open(os.path.join(inputs_dir,'model.yaml'),'r'))
+    model.update(yaml.load(open(os.path.join(inputs_dir,'locations.yaml'),'r')))
+    model.update(yaml.load(open(os.path.join(inputs_dir,'techs.yaml'),'r')))
 
     has_outputs = False
     for v in results_var.keys():
@@ -493,11 +493,11 @@ def _yaml_outputs(model_path, outputs_dir):
         yaml.dump(model, open(os.path.join(outputs_dir,'model_results.yaml'),'w+'), default_flow_style=False)
 
 def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
-    old_model = yaml.safe_load(open(os.path.join(old_results,'model_results.yaml')))
+    old_model = yaml.safe_load(open(os.path.join(old_results,'model_results.yaml'),'r'))
 
-    new_techs = yaml.safe_load(open(os.path.join(new_inputs,'techs.yaml','r')))
-    new_loctechs = yaml.safe_load(open(os.path.join(new_inputs,'locations.yaml','r')))
-    new_model = yaml.safe_load(open(os.path.join(new_inputs,'model.yaml','r')))
+    new_techs = yaml.safe_load(open(os.path.join(new_inputs,'techs.yaml'),'r'))
+    new_loctechs = yaml.safe_load(open(os.path.join(new_inputs,'locations.yaml'),'r'))
+    new_model = yaml.safe_load(open(os.path.join(new_inputs,'model.yaml'),'r'))
 
     built_tech_names = {}
     built_techs = {}
@@ -689,11 +689,11 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                 if t in c.get('techs_rhs',[]) and t+'_'+str(old_year) not in c.get('techs',[]):
                     new_model['group_constraints'][g]['techs_rhs'].append(t+'_'+str(old_year))
 
-    with open(os.path.join(new_inputs,'techs.yaml','w')) as outfile:
+    with open(os.path.join(new_inputs,'techs.yaml'),'w') as outfile:
         yaml.dump(new_techs,outfile,default_flow_style=False)
 
-    with open(os.path.join(new_inputs,'locations.yaml','w')) as outfile:
+    with open(os.path.join(new_inputs,'locations.yaml'),'w') as outfile:
         yaml.dump(new_loctechs,outfile,default_flow_style=False)
 
-    with open(os.path.join(new_inputs,'model.yaml', 'w')) as outfile:
+    with open(os.path.join(new_inputs,'model.yaml'), 'w') as outfile:
         yaml.dump(new_model,outfile,default_flow_style=False)
