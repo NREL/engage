@@ -283,7 +283,7 @@ def run_clustered(model_path, idx, logger):
 def _set_clustering(model_path, on=False, k=14):
     # Read
     with open(model_path) as file:
-        model_yaml = yaml.load(file, Loader=yaml.FullLoader)
+        model_yaml = yaml.safe_load(file)
     # Update
     if on is True:
         time = {}
@@ -303,7 +303,7 @@ def _set_clustering(model_path, on=False, k=14):
 def _set_subset_time(model_path, start_time=None, end_time=None):
     # Read
     with open(model_path) as file:
-        model_yaml = yaml.load(file, Loader=yaml.FullLoader)
+        model_yaml = yaml.safe_load(file)
     # Update
     if start_time is not None:
         subset_time = [start_time, end_time]
@@ -320,7 +320,7 @@ def _set_capacities(model_path, ignore_techs=[],
     # ---- UPDATE MODEL REFERENCE
     # Read
     with open(model_path) as file:
-        model_yaml = yaml.load(file, Loader=yaml.FullLoader)
+        model_yaml = yaml.safe_load(file)
     # Update Model Settings
     if capacity is None:
         model_yaml['import'] = ['techs.yaml', 'locations.yaml']
@@ -335,7 +335,7 @@ def _set_capacities(model_path, ignore_techs=[],
     # Read
     locations_path = model_path.replace('model.yaml', 'locations.yaml')
     with open(locations_path) as file:
-        locations_yaml = yaml.load(file, Loader=yaml.FullLoader)
+        locations_yaml = yaml.safe_load(file)
     # Update Locations Settings
     for loc, loc_data in locations_yaml['locations'].items():
         if 'techs' not in loc_data:
@@ -453,8 +453,8 @@ def _yaml_outputs(model_path, outputs_dir):
     inputs_dir = os.path.join(base_path, 'inputs')
 
     model = yaml.safe_load(open(os.path.join(inputs_dir,'model.yaml'),'r'))
-    model.update(yaml.load(open(os.path.join(inputs_dir,'locations.yaml'),'r')))
-    model.update(yaml.load(open(os.path.join(inputs_dir,'techs.yaml'),'r')))
+    model.update(yaml.safe_load(open(os.path.join(inputs_dir,'locations.yaml'),'r')))
+    model.update(yaml.safe_load(open(os.path.join(inputs_dir,'techs.yaml'),'r')))
 
     has_outputs = False
     for v in results_var.keys():
