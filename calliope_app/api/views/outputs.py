@@ -1357,7 +1357,8 @@ def bulk_downloads(request):
             [tech_dict.pop(('','','',k)) for k in ['abstract_tech_id','_state','model_id','created','updated','deleted']]
             techs_l += [tech_dict]
         techs_df = pd.DataFrame(techs_l)
-        techs_df.columns = pd.MultiIndex.from_tuples(techs_df.columns)
+        if not techs_df.empty:
+            techs_df.columns = pd.MultiIndex.from_tuples(techs_df.columns)
         #techs_df = techs_df.rename(columns={('','','','parent'):('','','','abstract_tech')})
         # Filtering out the existing columns to include first in the reindex keeps filled in data on the left
         param_list = list((set(param_list)|set(tech_list))-set(techs_df.columns))
@@ -1417,7 +1418,8 @@ def bulk_downloads(request):
             [loc_tech_dict.pop(('','','',k)) for k in ['_state','model_id','created','updated','deleted','location_1_id','location_2_id','technology_id']]
             loc_techs_l += [loc_tech_dict]
         loc_techs_df = pd.DataFrame(loc_techs_l)
-        loc_techs_df.columns = pd.MultiIndex.from_tuples(loc_techs_df.columns)
+        if not loc_techs_df.empty:
+            loc_techs_df.columns = pd.MultiIndex.from_tuples(loc_techs_df.columns)
         # Filtering out the existing columns to include first in the reindex keeps filled in data on the left
         param_list = list((set(param_list)|set(loc_tech_list))-set(loc_techs_df.columns))
         param_list.sort(key=operator.itemgetter(3))
