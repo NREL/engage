@@ -1,0 +1,158 @@
+{% load i18n %}
+{% load add_commas %}
+{% load return_item %}
+{% load update_units %}
+
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}  
+<!-- Parameter Master Row -->
+<tr class="{% if next_param.parameter_id == param.parameter_id %}param_header{% endif %} {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% elif param.parameter_category in emissions %}table-info{% else %}table-primary{% endif %}{% else %}table-default{% endif %} {% if param.dup_tag %} {{param.dup_tag}}" data-dup-tag={{param.dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %}>
+    <!-- Favorite Buttons -->
+    {% if param.parameter_category == "Costs: Monetary" %}
+    <td class="table-success centered"><i {% if not can_edit %}disabled{% endif %} class="fas fa-star" data-toggle="tooltip" data-placement="right" title="{% trans 'Mark parameter as favorite' %}"></i></td>
+    <td style="width:250px;" class="table-success">&nbsp;<i class="fas fa-dollar-sign"></i>&nbsp;&nbsp;&nbsp;{{ param.parameter_category }}</td>
+    {% elif param.parameter_category in emissions %}
+    <td class="table-info centered"><i {% if not can_edit %}disabled{% endif %} class="fas fa-star" data-toggle="tooltip" data-placement="right" title="{% trans 'Mark parameter as favorite' %}"></i></td>
+    <td style="width:250px;" class="table-info">&nbsp;<i class="fa-solid fa-smog fa-2xs"></i>&nbsp;&nbsp;&nbsp;{{ param.parameter_category }}</td>
+    {% else %}
+    <td class="table-primary centered"><i {% if not can_edit %}disabled{% endif %} class="fas fa-star" data-toggle="tooltip" data-placement="right" title="{% trans 'Mark parameter as favorite' %}"></i></td>
+    <td style="width:250px;" class="table-primary"><i class="fas fa-link"></i>&nbsp;&nbsp;{{ param.parameter_category }}</td>
+    {% endif %}
+    <!-- Parameter Names -->
+    <td style="cursor:help;width:450px;" data-toggle="tooltip" data-html="true" data-placement="bottom" title="{{ param.parameter_root }}.{{ param.parameter_name }}: {{ param.parameter_description }}">
+        &nbsp;&nbsp;
+        <span class="text-sm"></span><b class="parameter-label">{{ param.parameter_pretty_name }} {% if dim %}{{ dim.0 }}:{% endif %} {% if index %}{{ index.0 }}{% endif %}</b>
+    </td>
+    <!-- Parameter Timeseries Indicator -->
+    <td style="width:200px;" class="centered">
+        {% if param.timeseries_enabled %}
+        <button type="button" {% if not can_edit %}{% if param.timeseries == False %}disabled{% endif %}{% endif %} class="btn {% if param.timeseries == True %}btn-info param_row_toggle{% else %}btn-outline-info convert-to-timeseries{% endif %}" style="width:100%" data-toggle="tooltip" data-placement="right" title="{% if param.timeseries == True %}Show timeseries{% else %}Convert to timeseries{% endif %}">
+            <i class="fas fa-chart-line parameter-year"></i>
+            &nbsp;&nbsp;{% trans "Timeseries" %}
+        </button>
+        {% endif %}
+    </td>
+    <!-- Parameter Value (or Expand) -->
+    {% if param.timeseries == True %}
+    <td class="centered" data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %}>
+        {% if index %}
+        <input type="hidden" class="parameter-extra" name="edit[timeseries][][index]" data-value="{{index.0}}" value="{{index.0}}">
+        <input type="hidden" class="parameter-extra" name="edit[timeseries][][dim]" data-value="{{dim.0}}" value="{{dim.0}}">
+        {% else %}
+        <input type="hidden" class="parameter-extra" name="edit[timeseries][][index]">
+        <input type="hidden" class="parameter-extra" name="edit[timeseries][][dim]">
+        {% endif %}
+        {% if param.id and param.level == level %}
+        <input type="hidden" class="parameter-extra" name="edit[timeseries][][id]" data-value="{{param.id}}" value="{{param.id}}">
+        {% else %}
+        <input type="hidden" class="parameter-extra" name="edit[timeseries][][id]">
+        {% endif %}
+        <input type="hidden" class="parameter-extra" name="edit[timeseries][][parameter_id]" data-value="{{param.parameter_id}}" value="{{param.parameter_id}}">
+        <select {% if not can_edit %}disabled{% endif %} data-ts_id="{{ param.timeseries_meta_id }}" class="form-control parameter-value parameter-value-existing timeseries" name="edit[timeseries][][value]" data-value="{{ param.timeseries_meta_id }}">
+            <option disabled selected value> -- select a timeseries -- </option>
+            {% for ts in timeseries %}
+            <option value="{{ ts.id }}" {% if ts.id == param.timeseries_meta_id|add:"0" %}selected{% endif %}>{{ ts }}</option>
+            {% endfor %}
+        </select>
+    </td>
+    {% elif next_param.parameter_id != param.parameter_id and param.year == 0 or next_param.index != index and param.year == 0 %}
+    <td class="head_value centered" style="position:relative;" data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %}>
+        <!-- Adding context for parameter saving refactor -->
+        {% if index %}
+        <input type="hidden" class="parameter-extra parameter-index" name="edit[parameter_instance][][index]" data-value="{{index.0}}" value="{{index.0}}">
+        <input type="hidden" class="parameter-extra parameter-dim" name="edit[parameter_instance][][dim]" data-value="{{dim.0}}" value="{{dim.0}}">
+        {% else %}
+        <input type="hidden" class="parameter-extra parameter-index" name="edit[parameter_instance][][index]">
+        <input type="hidden" class="parameter-extra parameter-dim" name="edit[parameter_instance][][dim]">
+        {% endif %}
+        {% if param.id and param.level == level %}
+        <input type="hidden" class="parameter-extra" name="edit[parameter_instance][][id]" data-value="{{param.id}}" value="{{param.id}}">
+        {% else %}
+        <input type="hidden" class="parameter-extra" name="edit[parameter_instance][][id]">
+        {% endif %}
+        <input type="hidden" class="parameter-extra" name="edit[parameter_instance][][parameter_id]" data-value="{{param.parameter_id}}" value="{{param.parameter_id}}">
+        {% if param.choices or param.parameter_is_carrier %}
+        <select {% if not can_edit %}disabled{% endif %} class="static_inputs form-control parameter-value parameter-value-existing" name="edit[parameter_instance][][value]" data-value="{{ param.value }}">
+            {% if param.choices %}
+                {% for choice in param.choices %}
+                <option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
+                {% endfor %}
+            {% else %}
+                {% if not param.value %}
+                <option selected></option>
+                {% endif %}
+                {% for c in carriers %}
+			    {% with carriers|return_item:c as choice %}
+                <option value="{{ choice.name }}" {% if choice.name == param.value %}selected{% endif %}>{{ choice.name }}</option>
+                {% endwith %}{% endfor %}
+            {% endif %}
+        </select>
+        {% else %}
+        <input {% if not can_edit %}disabled{% endif %} type="text" class="static_inputs form-control parameter-value parameter-value-existing {% if param.units == '<sub>ABC</sub>' %}text-value{% else %}float-value{% endif %}" value="{{ param.placeholder|add_commas }}" data-value="{{ param.placeholder|add_commas }}" name="edit[parameter_instance][][value]">
+        {% endif %}
+        <div class="view_rows hide"><i class="fas fa-bars"></i>&nbsp;&nbsp;{% trans "Show" %}</div>
+        <div class="hide_rows hide"><i class="fas fa-bars"></i>&nbsp;&nbsp;{% trans "Hide" %}</div>
+    </td>
+    {% else %}
+    <td class="param_row_toggle centered" data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %}>
+        <div class="view_rows"><i class="fas fa-bars"></i>&nbsp;&nbsp;{% trans "Show" %}</div>
+        <div class="hide_rows hide"><i class="fas fa-bars"></i>&nbsp;&nbsp;{% trans "Hide" %}</div>
+    </td>
+    {% endif %}
+    <!-- Parameter Values -->
+    {% if next_param.parameter_id != param.parameter_id or next_param.index != index %}
+        {% if param.timeseries == False and not param.choices and not param.parameter_is_carrier and param.year == 0 %}
+        <td class="parameter-target-value" style="text-align:right;" data-value="{{ param.value|add_commas }}">
+            {{ param.value|add_commas }}
+        </td>
+        {% else %}
+        <td></td>
+        {% endif %}
+    {% else %}
+    <td></td>
+    {% endif %}
+    <!-- Parameter Units -->
+    {% if param.parameter_id in carrier_out_duplicate %}
+    {% with carriers|return_item:index.0 as carrier %}
+    <td style="width:80px;" class="text-sm parameter-units" data-value="{{ param.units }}" raw-value="{{ param.raw_units|update_units_out:carrier }}" out_carrier="{{ index.0 }}">{{ param.units|safe }}</td>
+    {% endwith %}
+    {% elif param.parameter_id in carrier_in_duplicate %}
+    {% with carriers|return_item:index.0 as carrier %}
+    <td style="width:80px;" class="text-sm parameter-units" data-value="{{ param.units }}" raw-value="{{ param.raw_units|update_units_in:carrier }}" in_carrier="{{ index.0 }}">{{ param.units|safe }}</td>
+    {% endwith %}
+    {% else %}
+    <td style="width:80px;" class="text-sm parameter-units" data-value="{{ param.units }}" raw-value="{{ param.raw_units }}">{{ param.units|safe }}</td>
+    {% endif %}
+    <!-- Parameter Edit Buttons -->
+    <td style="width:100px;" class="centered">
+        <button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default btn-sm transparent parameter-reset hide"><i class="fas fa-undo"></i></button>
+        {% if param.level == level %}
+            <button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default transparent parameter-delete"><i class="fas fa-times"></i></button>
+            {% if param.id %}
+            <input type="hidden" disabled class="parameter-delete-extra" name="delete[parameter_instance][][id]" data-value="{{param.id}}" value="{{param.id}}">
+            {% else %}
+            <input type="hidden" disabled class="parameter-delete-extra" name="delete[parameter_instance][][id]">
+            {% endif %}
+            <input {% if not can_edit %}disabled{% endif %} style="display: none" class="check_delete" type="checkbox" name="delete[parameter_instance][][delete]">
+        {% else %}
+        <span class="text-sm">{% trans "Default" %}</span>
+        {% endif %}
+    </td>
+    {% if param.timeseries == False %}
+    <td style="width:80px;" style="background-color: white" data-toggle="tooltip" data-placement="left" title="{% trans 'Evolve this parameter by year' %}">
+        <button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default btn-sm transparent parameter-value-add"><i class="fas fa-plus"></i> {% trans "Row" %}</button>
+    </td>
+    {% else %}
+    <td style="background-color: white"></td>
+    {% endif %}
+</tr>
+{% if param.timeseries != True %}
+<tr class="param_row param_row_min param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}{% if param.dup_tag %} {% if not index %}dup_default hide {% endif %} {{param.dup_tag}}" data-dup-tag={{param.dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %}>
+    <td class="centered"><i class="fa fa-info-circle"></i></td>
+    <td colspan=2>{% trans "This parameter is configured to evolve over multiple years" %}.</td>
+    <td><b>{% trans "Year" %}:</b></td>
+    <td><b>{% trans "Value" %}:</b></td>
+    <td colspan=3></td>
+</tr>
+{% endif %}

@@ -764,7 +764,7 @@ class Technology(models.Model):
     def calliope_name(self):
         """ Get the calliope appropriate name for the given technology """
         if self.tag:
-            return '{}-{}'.format(self.name, self.tag)
+            return '{}_{}'.format(self.name, self.tag)
         else:
             return '{}'.format(self.name)
 
@@ -821,6 +821,19 @@ class Technology(models.Model):
                 value=self.calliope_pretty_name)
         else:
             tech_param.update(value=self.calliope_pretty_name)
+
+        tag_param = Tech_Param.objects.filter(
+            model_id=self.model_id,
+            technology_id=self.id,
+            parameter__name='tag')
+        if len(tag_param) == 0:
+            Tech_Param.objects.create(
+                model_id=self.model_id,
+                technology_id=self.id,
+                parameter=Parameter.objects.get(name='tag'),
+                value=self.pretty_tag)
+        else:
+            tag_param.update(value=self.pretty_tag)
 
     def duplicate(self, model_id, pretty_name):
         """ Duplicate and return a new technology instance """
@@ -1641,7 +1654,6 @@ class ParamsManager():
         essential_params = p_df.loc[essentials_ids]
         carrier_ratios = essential_params[essential_params.parameter_id == 7]
         for _, row in essential_params.iterrows():
-            #print(row)
             ratios_val = None
             val = row.value
             if row.parameter_is_carrier:

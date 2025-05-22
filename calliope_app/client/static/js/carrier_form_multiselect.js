@@ -62,7 +62,7 @@ $(document).ready(function () {
         button.addClass("table-warning");
         check_unsaved();
 
-        if (button.data('dup-tag')){
+        /*if (button.data('dup-tag')){
           carrier = this.value;
           existing_dup_rows = $('tr[data-index="'+carrier+'"][data-dup-tag="'+button.data('dup-tag')+'"]');
           if ((existing_dup_rows.length > 0) && ($(this).is(':checked'))){
@@ -84,7 +84,7 @@ $(document).ready(function () {
 					} else if (button.data('dup-tag') == 'multi_carrier_in'){
 						dup_row_units(button.data('dup-tag'),carrier,$(this).attr('rate_unit'),$(this).attr('quantity_unit'),true);
 					}
-        }
+        }*/
 
         if ($(this).val() == "-- New Carrier --") {
           $("#carriersModal").dialog();

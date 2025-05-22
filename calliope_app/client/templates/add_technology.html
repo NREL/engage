@@ -48,13 +48,13 @@
 				<div class="col-6 centered" style="height:100%;overflow-y: scroll">
 					<!-- Start from Scratch -->
 					<br>{% trans "Build from" %} <b>{% trans "scratch" %}</b>:
-					<div class="selection_tile" data-abstract_tech="{{ abstract.name }}"><h5><b>{{ abstract.pretty_name }}</b></h5>{% trans "Abstract" %}</div>
+					<div class="selection_tile" data-abstract_tech="{{ abstract.pretty_name }}"><h5><b>{{ abstract.pretty_name }}</b></h5>{% trans "Abstract" %}</div>
 					<!-- Build from Existing -->
 					{% if my_techs %}
 					<br>{% trans "Build from" %} <b>{% trans "existing" %}</b>:
 					{% for tech in my_techs %}
 					{% if tech.abstract_tech == abstract %}
-					<div class="selection_tile" data-abstract_tech="{{ tech.abstract_tech.name }}" data-technology_id="{{ tech.id }}"><b>{{ tech.pretty_name }}</b>{% if tech.pretty_tag %} - {{ tech.pretty_tag }}{% endif %}<br>{{ tech.model.name }}</div>
+					<div class="selection_tile" data-abstract_tech="{{ tech.abstract_tech.pretty_name }}" data-technology_id="{{ tech.id }}"><b>{{ tech.pretty_name }}</b>{% if tech.pretty_tag %} - {{ tech.pretty_tag }}{% endif %}<br>{{ tech.model.name }}</div>
 					{% endif %}
 					{% endfor %}
 					{% endif %}
@@ -63,7 +63,7 @@
 					<br>{% trans "Build from" %} <b>{% trans "publicly available" %}</b>:
 					{% for tech in public_techs %}
 					{% if tech.abstract_tech == abstract %}
-					<div class="selection_tile" data-abstract_tech="{{ tech.abstract_tech.name }}" data-technology_id="{{ tech.id }}"><b>{{ tech.pretty_name }}</b>{% if tech.pretty_tag %} - {{ tech.pretty_tag }}{% endif %}<br>{{ tech.model.name }}</div>
+					<div class="selection_tile" data-abstract_tech="{{ tech.abstract_tech.pretty_name }}" data-technology_id="{{ tech.id }}"><b>{{ tech.pretty_name }}</b>{% if tech.pretty_tag %} - {{ tech.pretty_tag }}{% endif %}<br>{{ tech.model.name }}</div>
 					{% endif %}
 					{% endfor %}
 					{% endif %}

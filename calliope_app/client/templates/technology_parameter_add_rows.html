@@ -1,0 +1,53 @@
+{% load i18n %}
+{% load add_commas %}
+{% load return_item %}
+
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<tr class="param_row add_param_row_min param_row_min add_param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}{% if param.dup_tag %} {% if not index %}dup_default hide {% endif %} {{param.dup_tag}}" data-dup-tag={{param.dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %}>
+<td colspan=3 style="background-color: white;"></td>
+<td class="centered">
+    <input disabled type="number" class="form-control parameter-year parameter-year-new" placeholder="YYYY" name="edit[parameter_instance][][year]">
+</td>
+<td class="centered">
+    <!-- Adding context for parameter saving refactor -->
+    {% if index %}
+    <input type="hidden" disabled class="parameter-extra parameter-index" name="edit[parameter_instance][][index]" data-value="{{index.0}}" value="{{index.0}}" disabled>
+    <input type="hidden" disabled class="parameter-extra parameter-dim" name="edit[parameter_instance][][dim]" data-value="{{dim.0}}" value="{{dim.0}}" disabled>
+    {% else %}
+    <input type="hidden" disabled class="parameter-extra parameter-index" name="edit[parameter_instance][][index]" disabled>
+    <input type="hidden" disabled class="parameter-extra parameter-dim" name="edit[parameter_instance][][dim]" disabled>
+    {% endif %}
+    <input type="hidden" disabled class="parameter-extra" name="edit[parameter_instance][][id]" disabled>
+    <input type="hidden" disabled class="parameter-extra" name="edit[parameter_instance][][parameter_id]" data-value="{{param.parameter_id}}" value="{{param.parameter_id}}" disabled>
+    {% if param.choices or param.parameter_is_carrier %}
+    <select disabled class="form-control parameter-value parameter-value-new" name="edit[parameter_instance][][value]">
+        <option selected disabled value=""></option>
+        {% if param.choices %}
+            {% for choice in param.choices %}
+            <option value="{{ choice }}">{{ choice }}</option>
+            {% endfor %}
+        {% else %}
+            <option selected></option>
+            {% for c in carriers %}
+			{% with carriers|return_item:c as choice %}
+            <option value="{{ choice.name }}">{{ choice.name }}</option>
+            {% endwith %} {% endfor %}
+        {% endif %}
+    </select>
+    {% else %}
+    <input disabled type="text" class="form-control parameter-value parameter-value-new {% if param.units == '<sub>ABC</sub>' %}text-value{% else %}float-value{% endif %}" name="edit[parameter_instance][][value]">
+    {% endif %}
+</td>
+{% if param.timeseries == False and not param.choices and not param.parameter_is_carrier %}
+<td class="parameter-target-value" style="text-align:right;"></td>
+{% else %}
+<td></td>
+{% endif %}
+<td class="text-sm parameter-units" data-value="{{ param.units }}" raw-value="{{ param.raw_units }}">{{ param.units|safe }}</td>
+<td class="centered">
+    <button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default transparent parameter-value-remove" title="{% trans 'Remove a row' %}"><i class="fas fa-minus"></i></button>
+</td>
+<td style="background-color: white"></td>
+</tr>

@@ -253,6 +253,7 @@ function param_row_toggle(param_id, expand_only) {
 	var row = $('tr[data-param_id='+param_id+']');
 	if (expand_only || $('.param_row_'+param_id).hasClass('param_row_min')) {
 		$('.param_row_'+param_id).removeClass('param_row_min');
+		$('.param_row_'+param_id).find('.parameter-value-existing, .parameter-extra').prop('disabled', false);
 		row.find('.view_rows').addClass('hide');
 		row.find('.hide_rows').removeClass('hide');
 		activate_charts(param_id, row.find('.parameter-value-existing.timeseries').val());
@@ -1225,9 +1226,9 @@ function add_row($this) {
 	units = p_row.find('.parameter-units').attr('data-value'),
 	val = convert_units(p_value, units);
 	if (typeof(val) == 'number') {
-		p_row.find('.parameter-value-existing').attr('data-target_value',val);
+		p_row.find('.parameter-value-existing').attr('data-target_value',val).prop('disabled', false);
 	} else {
-		p_row.find('.parameter-value-existing').addClass('invalid-value');
+		p_row.find('.parameter-value-existing').addClass('invalid-value').prop('disabled', false);
 		p_row.find('.parameter-target-value').html(row.find('.parameter-target-value').attr('data-value'));
 	}
 	p_row.find('.parameter-extra').prop('disabled', false);
@@ -1237,8 +1238,8 @@ function add_row($this) {
 	row.find('.param_row_toggle').find('.hide_rows').removeClass('hide');
 	row.find('.param_row_toggle').find('.view_rows').addClass('hide');
 	var add_row = $('.add_param_row_'+param_id).last().clone();
-	add_row.find('.parameter-value-new').addClass('dynamic_value_input');
-	add_row.find('.parameter-year-new').addClass('dynamic_year_input');
+	add_row.find('.parameter-value-new').addClass('dynamic_value_input').prop('disabled', false);
+	add_row.find('.parameter-year-new').addClass('dynamic_year_input').prop('disabled', false);
 	add_row.removeClass('add_param_row_min').addClass('table-warning');
 	add_row.insertBefore($('.add_param_row_'+param_id).last());
 	add_row.find('.parameter-target-value').html('');

@@ -54,7 +54,7 @@ for index, row in df.iterrows():
             'pk': admin_tech_param_index,
             'model': 'api.abstract_tech_param',
             'fields': {
-                "abstract_tech_id": str([at['pk'] for at in abstract_techs_data if at['fields']['name'] == t][0]),
+                "abstract_tech_id": str([at['pk'] for at in abstract_techs_data if at['fields']['pretty_name'] == t][0]),
                 "parameter_id": str(param['pk']),
                 "default_value": ""
             }

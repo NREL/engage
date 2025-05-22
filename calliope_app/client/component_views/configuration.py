@@ -162,13 +162,19 @@ def all_tech_params(request):
         if dup_tag:
             for val in json.loads(param['value'].replace("'",'"')):
                 if 'carrier' in param['parameter__tags']:
-                    multiselect_values += [{'dup_tag':dup_tag,'index':val,'dim':'carriers','rate':carriers[val]['rate'],
+                    multiselect_values += [{'dup_tag':dup_tag,'index':[val],'dim':['carriers'],'rate':carriers[val]['rate'],
                                                  'quantity':carriers[val]['quantity']}]
 
-    carriers = [{'name':c,'rate':v['rate'],'quantity':v['quantity']} for c,v in carriers.items()]
-        
+    
+    existing_dupes = {}    
     for param in parameters:
         param['raw_units'] = param['units']
+        if param['index']:
+            if param['parameter_id'] not in existing_dupes.keys():
+                existing_dupes[param['parameter_id']] = []
+            existing_dupes[param['parameter_id']] += [{'dup_tag':param['dup_tag'], 'index':param['index'],'dim':['carriers'],'rate':carriers[param['index'][0]]['rate'],
+                                                 'quantity':carriers[param['index'][0]]['quantity']}]
+    carriers = {c:{'name':c,'rate':v['rate'],'quantity':v['quantity']} for c,v in carriers.items()}
 
     timeseries = Timeseries_Meta.objects.filter(model=model, failure=False,
                                                 is_uploading=False)
@@ -199,9 +205,11 @@ def all_tech_params(request):
         "can_edit": can_edit,
         "emissions": emissions,
         "carrier_multiselect": ParamsManager.get_tagged_params('carrier_multiselect'),
-        "carrier_in_duplicate": ParamsManager.get_tagged_params('carrier_in_duplicate'),
-        "carrier_out_duplicate": ParamsManager.get_tagged_params('carrier_out_duplicate'),
-        "multiselect_values": multiselect_values
+        "carrier_in_duplicate": ParamsManager.get_tagged_params('multi_carrier_in'),
+        "carrier_out_duplicate": ParamsManager.get_tagged_params('multi_carrier_out'),
+        "multiselect_values": multiselect_values,
+        "existing_dupes": existing_dupes
+        
     }
     html_parameters = list(render(request, 'technology_parameters.html', context))[0]
 

@@ -1,3 +1,4 @@
+{% load return_item %}
 <!DOCTYPE html>
 <html lang="en">
 {% load return_item %}
@@ -12,8 +13,10 @@
 	    <select {% if not can_edit %}disabled{% endif %} style="width:80%" type="text" class="tech_carrier {% if not val and required %}table-danger{% elif not val %}table-secondary{% endif %} {% if carrier_id in units_in_ids %}units_in_selector{% endif %} {% if carrier_id in units_out_ids %}units_out_selector{% endif %}" name="essentials[cplus_carrier][{{ carrier_id }}][]" data-value="{{ val }}">
 	        <option></option>
 	        <!-- <option value="-- New Carrier --">-- New Carrier --</option>-->
-	        {% for choice in carriers %}
+	        {% for c in carriers %}
+			{% with carriers|return_item:c as choice %}
 	        <option value="{{ choice.name }}" rate_unit="{{ choice.rate }}" quantity_unit="{{ choice.quantity }}" {% if choice.name == val %}selected{% endif %}>{{ choice.name }} [{{choice.rate}},{{choice.quantity}}]</option>
+			{% endwith %}
 	        {% endfor %}
 	    </select>
 		<input {% if not can_edit %}disabled{% endif %} style="width:19%" class="tech_carrier_ratio {% if not val %}table-secondary{% endif %}" type="number" min=0 name='essentials[cplus_ratio][{{ carrier_id }}][]' value="{% if carrier.ratios|return_item:val >= 0 %}{{ carrier.ratios|return_item:val }}{% else %}1.0{% endif %}">
@@ -22,9 +25,11 @@
 		    <select {% if not can_edit %}disabled{% endif %} style="width:80%" type="text" class="tech_carrier" name="essentials[cplus_carrier][{{ carrier_id }}][]">
 		        <option selected></option>
 		        <!-- <option value="-- New Carrier --">-- New Carrier --</option>-->
-		        {% for choice in carriers %}
-		        <option value="{{ choice.name }}" rate_unit="{{ choice.rate }}" quantity_unit="{{ choice.quantity }}" {% if choice.name == val %}selected{% endif %}>{{ choice.name }} [{{choice.rate}},{{choice.quantity}}]</option>
-		        {% endfor %}
+		        {% for c in carriers %}
+				{% with carriers|return_item:c as choice %}
+				<option value="{{ choice.name }}" rate_unit="{{ choice.rate }}" quantity_unit="{{ choice.quantity }}" {% if choice.name == val %}selected{% endif %}>{{ choice.name }} [{{choice.rate}},{{choice.quantity}}]</option>
+		        {% endwith%}
+				{% endfor %}
 		    </select>
 			<input {% if not can_edit %}disabled{% endif %} style="width:19%" class="tech_carrier_ratio" type="number" min=0 name='essentials[cplus_ratio][{{ carrier_id }}][]' value="1.0">
 		</div>
