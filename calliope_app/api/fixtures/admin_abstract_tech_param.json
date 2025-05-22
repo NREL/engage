@@ -1038,7 +1038,7 @@
     "pk": 116,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "156",
       "default_value": ""
     }
@@ -1047,7 +1047,7 @@
     "pk": 117,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "157",
       "default_value": ""
     }
@@ -1767,7 +1767,7 @@
     "pk": 197,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "158",
       "default_value": ""
     }
@@ -1776,7 +1776,7 @@
     "pk": 198,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "159",
       "default_value": ""
     }
@@ -2181,7 +2181,7 @@
     "pk": 243,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "162",
       "default_value": ""
     }
@@ -2190,7 +2190,7 @@
     "pk": 244,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "163",
       "default_value": ""
     }
@@ -2604,7 +2604,7 @@
     "pk": 290,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "160",
       "default_value": ""
     }
@@ -2613,7 +2613,7 @@
     "pk": 291,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "161",
       "default_value": ""
     }
@@ -3018,7 +3018,7 @@
     "pk": 336,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "166",
       "default_value": ""
     }
@@ -3027,7 +3027,7 @@
     "pk": 337,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "167",
       "default_value": ""
     }
@@ -3432,7 +3432,7 @@
     "pk": 382,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "164",
       "default_value": ""
     }
@@ -3441,7 +3441,7 @@
     "pk": 383,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "165",
       "default_value": ""
     }
@@ -3630,7 +3630,7 @@
     "pk": 404,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "146",
       "default_value": ""
     }
@@ -3639,7 +3639,7 @@
     "pk": 405,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "147",
       "default_value": ""
     }
@@ -3648,7 +3648,7 @@
     "pk": 406,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "148",
       "default_value": ""
     }
@@ -3657,7 +3657,7 @@
     "pk": 407,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "149",
       "default_value": ""
     }
@@ -3666,7 +3666,7 @@
     "pk": 408,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "150",
       "default_value": ""
     }
@@ -3675,7 +3675,7 @@
     "pk": 409,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "151",
       "default_value": ""
     }
@@ -3684,7 +3684,7 @@
     "pk": 410,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "152",
       "default_value": ""
     }
@@ -3693,7 +3693,7 @@
     "pk": 411,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "153",
       "default_value": ""
     }
@@ -3702,7 +3702,7 @@
     "pk": 412,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "154",
       "default_value": ""
     }
@@ -3711,7 +3711,7 @@
     "pk": 413,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "7",
       "parameter_id": "155",
       "default_value": ""
     }

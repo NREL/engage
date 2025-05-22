@@ -7,7 +7,6 @@ def update_units_in(str, carrier):
     """
     Update the units in a string based on the carrier.
     """
-    print(carrier)
     return str.replace("[[in_rate]]", carrier['rate']).replace("[[in_quantity]]", carrier['quantity'])
 
 register.filter('update_units_in', update_units_in)

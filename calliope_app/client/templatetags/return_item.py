@@ -5,7 +5,6 @@ register = template.Library()
 
 def return_item(l, i):
     try:
-        print(i)
         index = int(i)
     except ValueError:
         index = i
