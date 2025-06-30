@@ -508,7 +508,7 @@ def add_technology(request):
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
 
-    abstract_tech = Abstract_Tech.objects.filter(name=technology_type).first()
+    abstract_tech = Abstract_Tech.objects.filter(pretty_name=technology_type).first()
     technology_name = ParamsManager.simplify_name(technology_pretty_name)
 
     if technology_id is not None:
@@ -607,7 +607,6 @@ def update_tech_params(request):
     technology_id = escape(request.POST["technology_id"])
     form_data = json.loads(request.POST["form_data"])
     escaped_form_data = recursive_escape(form_data)
-    
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
 
@@ -689,7 +688,6 @@ def convert_to_timeseries(request):
         loc_tech_id = int(request.GET["loc_tech_id"])
     except Exception as e:
         loc_tech_id = None
-        print("Technology only: {}".format(e))
     
     if 'index' in request.GET:
         index = request.GET["index"]

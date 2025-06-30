@@ -1,4 +1,5 @@
 {% load static %}
+{% load return_item %}
 <!DOCTYPE html>
 <script
   type="text/javascript"
@@ -41,7 +42,8 @@
         style="width: 100%"
         aria-labelledby="carrier-{{ carrier_id }}"
       >
-        {% for choice in carriers %} {% if not choice.name|first == '[' %}
+        {% for c in carriers %}
+			  {% with carriers|return_item:c as choice %} {% if not choice.name|first == '[' %}
         <li>
           <div class="form-check">
             <input
@@ -67,7 +69,7 @@
             </label>
           </div>
         </li>
-        {% endif %} {% endfor %}
+        {% endif %} {% endwith %} {% endfor %}
         <li><hr class="dropdown-divider" /></li>
       </ul>
     </div>

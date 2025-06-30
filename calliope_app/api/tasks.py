@@ -215,11 +215,11 @@ def build_model(inputs_path, run_id, model_uuid, scenario_id,
     # model and scenario instances
     model = Model.objects.get(uuid=model_uuid)
     scenario = Scenario.objects.get(id=scenario_id)
-    node_params_source, tech_params_source = build_model_csv(model, scenario, start_date, end_date, inputs_path, run.timestep) # returns node_param.csv location and tech_param location...
-    build_model_yaml(run, scenario_id, start_date, inputs_path, node_params_source, tech_params_source)
+    ts_files = build_model_csv(model, scenario, start_date, end_date, inputs_path, run.timestep) # returns node_param.csv location and tech_param location...
+    build_model_yaml(run, scenario_id, start_date, inputs_path, ts_files)
     return inputs_path
 
-def build_model_yaml(run, scenario_id, start_date, inputs_path, node_params_source, tech_params_source):
+def build_model_yaml(run, scenario_id, start_date, inputs_path, ts_files):
     scenario_id = int(scenario_id)
     if isinstance(start_date, datetime):
         year = start_date.year
@@ -227,7 +227,7 @@ def build_model_yaml(run, scenario_id, start_date, inputs_path, node_params_sour
         year = date_parse(start_date).year
 
     # model.yaml
-    model_yaml_set = get_model_yaml_set(run, scenario_id, year, node_params_source, tech_params_source)
+    model_yaml_set = get_model_yaml_set(run, scenario_id, year, ts_files)
 
     scenario_id = int(scenario_id)
 
@@ -262,26 +262,37 @@ def build_model_csv(model, scenario, start_date, end_date, inputs_path, timestep
     loc_tech_ids = list(set(loc_techs.values_list("loc_tech_id", flat=True)))
     tech_ts = Tech_Param.objects.filter(model=model, timeseries=True, technology_id__in=tech_ids)
     loc_tech_ts = Loc_Tech_Param.objects.filter(model=model, timeseries=True, loc_tech_id__in=loc_tech_ids)
-    tech_df = pd.DataFrame(index=pd.date_range(start=start_date, end=end_date, freq=timesteps), columns=pd.MultiIndex(levels=[[],[]],codes=[[],[]]))
-
+    
+    ts_dfs = {}
     for ts in list(tech_ts):
         timeseries_meta_id = ts.timeseries_meta_id
         parameter_name = ts.parameter.name
         technology_name = ts.technology.calliope_name
+
+        
         timeseries_meta = Timeseries_Meta.objects.filter(id=timeseries_meta_id).first()
 
         if timeseries_meta is not None:
+            dim = []
+            index = []
+            if (ts.parameter.index and ts.parameter.dim) or (ts.index and ts.dim):
+                if not(ts.parameter.index and ts.parameter.dim):
+                    index = ts.index
+                    dim = ts.dim
+                elif not(ts.index and ts.dim):
+                    index = ts.parameter.index
+                    dim = ts.parameter.dim
+                else:
+                    index = ts.parameter.index+ts.index
+                    dim = ts.parameter.dim+ts.dim
+            dims = tuple(['techs','parameters'] + dim)
+            col = tuple([technology_name, parameter_name] + index)
+            if dims not in ts_dfs:
+                ts_dfs[dims] = pd.DataFrame(index=pd.date_range(start=start_date, end=end_date, freq=timesteps), columns=pd.MultiIndex(levels=[[] for i in range(0,len(dims))],codes=[[] for i in range(0,len(dims))]))
             directory = "{}/timeseries".format(settings.DATA_STORAGE)
             input_fname = "{}/{}.csv".format(directory, timeseries_meta.file_uuid)
             timeseries = get_timeseries_data(input_fname, start_date, end_date, timesteps)
-            tech_df[technology_name,parameter_name] = timeseries['value']
- 
-    tech_csv = None
-    if not tech_df.empty:
-        tech_df.to_csv(f"{inputs_path}/tech_timeseries.csv")
-        tech_csv = "tech_timeseries.csv"
-
-    loc_tech_df = pd.DataFrame(index=pd.date_range(start=start_date, end=end_date, freq=timesteps), columns=pd.MultiIndex(levels=[[],[], []],codes=[[],[],[]]))
+            ts_dfs[dims][col] = timeseries['value']
 
     for ts in list(loc_tech_ts):
         timeseries_meta_id = ts.timeseries_meta_id
@@ -291,16 +302,34 @@ def build_model_csv(model, scenario, start_date, end_date, inputs_path, timestep
         timeseries_meta = Timeseries_Meta.objects.filter(id=timeseries_meta_id).first()
 
         if timeseries_meta is not None:
+            dim = []
+            index = []
+            if (ts.parameter.index and ts.parameter.dim) or (ts.index and ts.dim):
+                if not(ts.parameter.index and ts.parameter.dim):
+                    index = ts.index
+                    dim = ts.dim
+                elif not(ts.index and ts.dim):
+                    index = ts.parameter.index
+                    dim = ts.parameter.dim
+                else:
+                    index = ts.parameter.index+ts.index
+                    dim = ts.parameter.dim+ts.dim
+            dims = tuple(['techs','nodes','parameters'] + dim)
+            col = tuple([technology_name, location_1_name, parameter_name] + index)
+            if dims not in ts_dfs:
+                ts_dfs[dims] = pd.DataFrame(index=pd.date_range(start=start_date, end=end_date, freq=timesteps), columns=pd.MultiIndex(levels=[[] for i in range(0,len(dims))],codes=[[] for i in range(0,len(dims))]))
             directory = "{}/timeseries".format(settings.DATA_STORAGE)
             input_fname = "{}/{}.csv".format(directory, timeseries_meta.file_uuid)
             timeseries = get_timeseries_data(input_fname, start_date, end_date, timesteps)
-            loc_tech_df[technology_name, location_1_name, parameter_name] = timeseries['value']
+            ts_dfs[dims][col] = timeseries['value']
+    
+    ts_files = {}
+    for dims,ts_file in ts_dfs.items():
+        ts_fname = "_".join(dims)+'_timeseries.csv'
+        ts_file.to_csv(os.path.join(inputs_path, ts_fname))
+        ts_files[dims] = ts_fname
 
-    node_csv = None
-    if not loc_tech_df.empty:
-        loc_tech_df.to_csv(f"{inputs_path}/node_timeseries.csv")
-        node_csv = "node_timeseries.csv"
-    return tech_csv, node_csv
+    return ts_files
 
 
 def get_timeseries_data(filename, start_date, end_date, timesteps):

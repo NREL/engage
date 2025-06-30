@@ -21,7 +21,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def get_model_yaml_set(run, scenario_id, year, tech_params_source, node_params_source):
+def get_model_yaml_set(run, scenario_id, year, ts_files):
     """ Function pulls model parameters from Database for YAML """
     params = Scenario_Param.objects.filter(scenario_id=scenario_id,
                                            year__lte=year).order_by('-year')
@@ -51,19 +51,14 @@ def get_model_yaml_set(run, scenario_id, year, tech_params_source, node_params_s
         key_list = unique_param.split('.')
         dictify(model_yaml_set,key_list,run_param['value'])
 
-    if node_params_source or tech_params_source:
+    if ts_files:
         model_yaml_set["data_sources"] = {}
-        if tech_params_source:
-            model_yaml_set["data_sources"]["Tech_Timeseries"] = {
-                "source": tech_params_source,
+        
+        for dims, fname in ts_files.items():
+            model_yaml_set["data_sources"]["_".join(dims)+"_timeseries"] = {
+                "source": fname,
                 "rows": "timesteps",
-                "columns": ["techs", "parameters"]
-            }
-        if node_params_source:
-            model_yaml_set["data_sources"]["Node_Timeseries"] = {
-                "source": node_params_source,
-                "rows": "timesteps",
-                "columns": ["techs", "nodes", "parameters"]
+                "columns": list(dims)
             }
     
     return model_yaml_set
