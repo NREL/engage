@@ -74,4 +74,4 @@ with open('calliope_app/api/fixtures/admin_parameter.json', 'w', encoding='utf-8
 with open('calliope_app/api/fixtures/admin_abstract_tech_param.json', 'w', encoding='utf-8') as file:
     file.write(json.dumps(admin_tech_param_objects, indent=2, ensure_ascii=False))
 
-print("Conversion complete. The data has been saved to 'parameters_converted.json'.")
+print("Conversion complete. The data has been saved to 'admin_parameter.json' and 'admin_abstract_tech_param.json'.")
