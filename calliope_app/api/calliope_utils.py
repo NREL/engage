@@ -197,14 +197,14 @@ def get_loc_techs_yaml_set(run, scenario_id, year):
 
         technology = loc_tech.technology.calliope_name
         if parent == 'transmission':
-            parent_type = 'links'
+            parent_type = 'techs'
             location = \
                 loc_tech.location_1.name + '_' + \
                 loc_tech.location_2.name + '_' + \
                 loc_tech.technology.calliope_name
             param_list = [parent_type, location]
-            dictify(loc_techs_yaml_set,param_list+['from'],loc_tech.location_1.name)
-            dictify(loc_techs_yaml_set,param_list+['to'],loc_tech.location_2.name)
+            dictify(loc_techs_yaml_set,param_list+['link_from'],loc_tech.location_1.name)
+            dictify(loc_techs_yaml_set,param_list+['link_to'],loc_tech.location_2.name)
             dictify(loc_techs_yaml_set,param_list+['template'],technology)
         else:
             parent_type = 'nodes'
@@ -234,7 +234,7 @@ def get_loc_techs_yaml_set(run, scenario_id, year):
                 else:
                     value = param.value
 
-                if parent_type == 'links':
+                if parent_type == 'techs':
                     param_list = [parent_type, location]+param_keys
                 else:
                     param_list = [parent_type, location, 'techs',
@@ -491,7 +491,7 @@ def _set_capacities(model_path, ignore_techs=[],
                 tech_data['constraints']['storage_cap_equals'] = float(storage[key])
             locations_yaml['locations'][loc]['techs'][tech] = tech_data
     # Update Links Settings
-    for loc, loc_data in locations_yaml['links'].items():
+    for loc, loc_data in locations_yaml['techs'].items():
         if 'techs' not in loc_data:
             continue
         for tech, tech_data in loc_data['techs'].items():
@@ -586,8 +586,22 @@ def _yaml_outputs(inputs_dir, outputs_dir):
     results_vars = ['flow_cap','storage_cap','area_use','source_cap','purchased_units']
     
     model = yaml.load(open(os.path.join(inputs_dir,'model.yaml')), Loader=yaml.FullLoader)
-    model.update(yaml.load(open(os.path.join(inputs_dir,'locations.yaml')), Loader=yaml.FullLoader))
-    model.update(yaml.load(open(os.path.join(inputs_dir,'techs.yaml')), Loader=yaml.FullLoader))
+    techs = {}
+    locations = {}
+    if os.path.exists(os.path.join(inputs_dir,'techs.yaml')):
+        techs = yaml.load(open(os.path.join(inputs_dir,'techs.yaml')), Loader=yaml.FullLoader)
+    if os.path.exists(os.path.join(inputs_dir,'locations.yaml')):
+        locations = yaml.load(open(os.path.join(inputs_dir,'locations.yaml')), Loader=yaml.FullLoader)
+    
+    keys = set(model.keys()) | set(techs.keys()) | set(locations.keys())
+    combined_model = {}
+    for key in keys:
+        if type(model.get(key,{})) is not dict:
+            combined_model[key] = model[key]
+        else:
+            combined_model[key] = {**model.get(key, {}),
+                                **techs.get(key, {}),
+                                **locations.get(key, {})}
 
     has_outputs = False
     for results_var in results_vars:
@@ -596,28 +610,29 @@ def _yaml_outputs(inputs_dir, outputs_dir):
         has_outputs = True
         r_df = pd.read_csv(os.path.join(outputs_dir,'results_'+results_var+'.csv'))
 
-        for l in model['nodes'].keys():
-            if 'techs' in model['nodes'][l].keys() and model['nodes'][l]['techs']:
-                for t in model['nodes'][l]['techs'].keys():
-                    if model['nodes'][l]['techs'][t] is None:
-                        model['nodes'][l]['techs'][t] = {}
-                    if 'results' not in model['nodes'][l]['techs'][t]:
-                        model['nodes'][l]['techs'][t]['results'] = {}
+        for l in combined_model['nodes'].keys():
+            if 'techs' in combined_model['nodes'][l].keys() and combined_model['nodes'][l]['techs']:
+                for t in combined_model['nodes'][l]['techs'].keys():
+                    if combined_model['nodes'][l]['techs'][t] is None:
+                        combined_model['nodes'][l]['techs'][t] = {}
+                    if 'results' not in combined_model['nodes'][l]['techs'][t]:
+                        combined_model['nodes'][l]['techs'][t]['results'] = {}
                     if len(r_df.loc[(r_df['nodes'] == l) & (r_df['techs'] == t)][results_var]) != 0:
-                        model['nodes'][l]['techs'][t]['results'][results_var+'_equals'] = float(r_df.loc[(r_df['nodes'] == l) &
+                        combined_model['nodes'][l]['techs'][t]['results'][results_var] = float(r_df.loc[(r_df['nodes'] == l) &
                                                                         (r_df['techs'] == t)][results_var].values[0])  
-        for l in model['links'].keys():
-            l1 = model['links'][l]['from']
-            l2 = model['links'][l]['to']
-            if model['links'][l] is None:
-                model['links'][l] = {}
-            if 'results' not in model['links'][l]:
-                model['links'][l]['results'] = {}
-            if len(r_df.loc[(r_df['nodes'] == l1) & (r_df['techs'] == l)][results_var]) != 0:
-                model['links'][l]['results'][results_var+'_equals'] = float(r_df.loc[(r_df['nodes'] == l1) &
-                                                                (r_df['techs'] == l)][results_var].values[0])
+        for l in combined_model['techs'].keys():
+            if 'link_from' in combined_model['techs'][l] and 'link_to' in combined_model['techs'][l]:
+                l1 = combined_model['techs'][l]['link_from']
+                l2 = combined_model['techs'][l]['link_to']
+                if combined_model['techs'][l] is None:
+                    combined_model['techs'][l] = {}
+                if 'results' not in combined_model['techs'][l]:
+                    combined_model['techs'][l]['results'] = {}
+                if len(r_df.loc[(r_df['nodes'] == l1) & (r_df['techs'] == l)][results_var]) != 0:
+                    combined_model['techs'][l]['results'][results_var] = float(r_df.loc[(r_df['nodes'] == l1) &
+                                                                    (r_df['techs'] == l)][results_var].values[0])
     if has_outputs:
-        yaml.dump(model, open(os.path.join(outputs_dir,'model_results.yaml'),'w+'), default_flow_style=None)
+        yaml.dump(combined_model, open(os.path.join(outputs_dir,'model_results.yaml'),'w+'), default_flow_style=None)
 
 def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
     results_vars = ['flow_cap','storage_cap','area_use','source_cap','purchased_units']
@@ -647,25 +662,22 @@ def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
                     if len(r_df.loc[(r_df['nodes'] == l) & (r_df['techs'] == t)][results_var]) != 0:
                         locations['nodes'][l]['techs'][t][results_var] = float(r_df.loc[(r_df['nodes'] == l) &
                                                                         (r_df['techs'] == t)][results_var].values[0])  
-        for t in techs['techs'].keys():
-            techs['techs'][t].pop(results_var+'_min', None)
-            techs['techs'][t].pop(results_var+'_max', None)
-        
+                        
         for lt in techs['templates'].keys():
             techs['templates'][lt].pop(results_var+'_min', None)
             techs['templates'][lt].pop(results_var+'_max', None)
             
-        for t in locations['links'].keys():
-            if 'from' in locations['links'][t] and 'to' in locations['links'][t]:
-                l1 = locations['links'][t]['from']
-                l2 = locations['links'][t]['to']
-                if locations['links'][t]:
-                    locations['links'][t].pop(results_var+'_min', None)
-                    locations['links'][t].pop(results_var+'_max', None)
-                elif locations['nodes'][t] is None:
-                    locations['nodes'][t] = {}
+        for t in locations['techs'].keys():
+            if locations['techs'][t]:
+                locations['techs'][t].pop(results_var+'_min', None)
+                locations['techs'][t].pop(results_var+'_max', None)
+            if 'link_from' in locations['techs'][t] and 'link_to' in locations['techs'][t]:
+                l1 = locations['techs'][t]['link_from']
+                l2 = locations['techs'][t]['link_to']
+                if locations['techs'][t] is None:
+                    locations['techs'][t] = {}
                 if len(r_df.loc[(r_df['nodes'] == l1) & (r_df['techs'] == t)][results_var]) != 0:
-                    locations['links'][t][results_var] = float(r_df.loc[(r_df['nodes'] == l1) &
+                    locations['techs'][t][results_var] = float(r_df.loc[(r_df['nodes'] == l1) &
                                                                     (r_df['techs'] == t)][results_var].values[0])
     yaml.dump(model, open(os.path.join(operate_dir,'model.yaml'),'w+'), default_flow_style=False)
     yaml.dump(techs, open(os.path.join(operate_dir,'techs.yaml'),'w+'), default_flow_style=False)
@@ -751,14 +763,17 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
 
                         new_loctechs['nodes'][l]['techs'][t+'_'+str(old_year)] = loc_tech_b
 
-    for l in old_model['links']:
-        t = old_model['links'][l]['template']
+    # Transmission (formerly links)
+    for l in old_model['techs']:
+        if 'link_from' not in old_model['techs'][l] or 'link_to' not in old_model['techs'][l]:
+            continue
+        t = old_model['techs'][l]['template']
         old_tech = old_model['templates'][t]
         if t not in new_techs['templates']:
             continue
         new_tech = new_techs['templates'][t]
-        new_loc_tech = new_loctechs['links'][l]
-        loc_tech = old_model['links'][l]
+        new_loc_tech = new_loctechs['techs'][l]
+        loc_tech = old_model['techs'][l]
         if ('flow_cap_max' in loc_tech or 'storage_cap_max' in loc_tech) or\
                 ('flow_cap_max' in old_tech or 'storage_cap_max' in old_tech):
             if loc_tech.get('results',{'flow_cap_equals':0}).get('flow_cap_equals',0) != 0 or\
@@ -812,13 +827,13 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                     if new_loc_tech['storage_cap_max'] < 0:
                         new_loc_tech['storage_cap_max'] = 0
 
-                new_loctechs['links'][l] = new_loc_tech
+                new_loctechs['techs'][l] = new_loc_tech
 
                 built_loc_techs[l+t] = loc_tech_b
 
                 loc_tech_b['template'] += '_'+str(old_year)
 
-                new_loctechs['links'][l+'_'+str(old_year)] = loc_tech_b
+                new_loctechs['techs'][l+'_'+str(old_year)] = loc_tech_b
 
     for level in built_techs.keys():
         for t in built_techs[level].keys():
