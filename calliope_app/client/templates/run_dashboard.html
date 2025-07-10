@@ -9,9 +9,9 @@
 			<!-- Scenarios Header Row  -->
 				<tr class="tbl-header" style="font-size:0.9em;background-color:#ececec;">
 					<td class="centered" style="padding-top:10px"><b>{% trans "Status" %}</b></td>
-					<td class="centered" style="padding-top:10px"><b>{% trans "RunEnvironment" %}</b></td>
-					<td style="font-size:1.3em"><b>{{ run.year }}</b></td>
-					<td style="padding-top:10px"><b>{% trans "Clustered" %}</b></td>
+					<td class="centered" style="padding-top:10px"><b>{% trans "Run Environment" %}</b></td>
+					<td style="padding-top:10px"><b>{{ run.year }}</b></td>
+					<td style="padding-top:10px"><b>{% trans "Mode" %}</b></td>
 					<td style="padding-top:10px"><b>{% trans "Notes" %}</b> (double-click to edit)</td>
 					<td class="centered" style="padding-top:10px"><b>{% trans "Inputs" %}</b></td>
 					<td class="centered" style="padding-top:10px"><b>{% trans "Logs" %}</b></td>
@@ -69,12 +69,12 @@
 
 					<!--Compute Environment-->
 					<td>
-						<div class="form-group text-center" style="margin-bottom: 1px;">{% if run.compute_environment %}{{run.compute_environment}}{% else %}default{% endif %}</div>
+						<div class="form-group text-sm text-center" style="margin-top: 3px; margin-bottom: 1px;">{% if run.compute_environment %}{{run.compute_environment}}{% else %}default{% endif %}</div>
 					</td>
 					
 					<!-- Subset Time -->
-					<td><div class="text-sm">{{ run.subset_time }}</div></td>
-					<td>{% if run.cluster %}<i class="fas fa-check"></i>{% endif %}</td>
+					<td><div class="text-sm" style="margin-top: 3px; margin-bottom: 1px;">{{ run.subset_time }}</div></td>
+					<td><div class="form-group text-sm" style="margin-top: 3px; margin-bottom: 1px;">{{run.mode}}</div></td>
 					<!-- Notes -->
 					<td style="width: 40%; white-space: normal;">
 						<div class="run-description" style="cursor:copy" id="{{ run.id }}">{{ run.description|default:"" }}</div>
