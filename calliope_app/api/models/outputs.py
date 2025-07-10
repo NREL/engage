@@ -32,6 +32,7 @@ class Run(models.Model):
     objects_all = models.Manager()
 
     scenario = models.ForeignKey(Scenario, on_delete=models.CASCADE)
+    mode = models.CharField(max_length=20, default='plan')
     subset_time = models.CharField(max_length=200)
     year = models.IntegerField()
     status = models.CharField(max_length=200)
@@ -56,6 +57,8 @@ class Run(models.Model):
         on_delete=models.SET_NULL
     )
     group = models.TextField(blank=True,null=True)
+    parent = models.ForeignKey(
+        "self", on_delete=models.CASCADE, blank=True, null=True)
 
     calliope_066_upgraded = models.BooleanField(default=False)
     calliope_066_errors = models.TextField(blank=True)
@@ -64,6 +67,7 @@ class Run(models.Model):
     cluster = models.BooleanField(default=True)
     manual = models.BooleanField(default=False)
     timestep = models.TextField(default='1H',blank=False)
+    build_operate_run = models.BooleanField(default=False)
 
     build_task = models.ForeignKey(
         to=CeleryTask,

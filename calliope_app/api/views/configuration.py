@@ -526,7 +526,7 @@ def add_technology(request):
             model_id=model.id,
             technology_id=technology.id,
             parameter_id=Parameter.objects.filter(name='base_tech').first().id,
-            value=technology_type,
+            value=abstract_tech.name,
         )
         Tech_Param.objects.create(
             model_id=model.id,
