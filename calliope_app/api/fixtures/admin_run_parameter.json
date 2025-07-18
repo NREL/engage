@@ -156,7 +156,7 @@
    "default_value": "True",
    "choices": "[\"True\",\"False\"]",
    "tab": "scenarios",
-   "mode": "[\"plan\", \"operate\"]"
+   "mode": "[]"
   }
  },
  {
@@ -253,7 +253,7 @@
    "user_visibility": "False",
    "can_evolve": "False",
    "name": "solver_options",
-   "default_value": "",
+   "default_value": "{}",
    "choices": "[]",
    "tab": "",
    "mode": "[\"plan\", \"operate\"]"
@@ -392,7 +392,7 @@
    "root": "config.build.operate",
    "user_visibility": "False",
    "can_evolve": "False",
-   "name": "operate",
+   "name": "window",
    "default_value": "24h",
    "choices": "[]",
    "tab": "runs",

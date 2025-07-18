@@ -45,18 +45,18 @@ def get_model_yaml_set(run, scenario_id, year, ts_files):
             key_list = unique_param.split('.')
             dictify(model_yaml_set,key_list,param.value)
     dictify(model_yaml_set,['import'],'["techs.yaml","locations.yaml"]',simplify=False)
-    dictify(model_yaml_set,['config','init','add_math'],'["custom_math.yaml"]',simplify=False)
+    dictify(model_yaml_set,['config','build','add_math'],'["custom_math.yaml"]',simplify=False)
     for run_param in run.run_options:
         unique_param = run_param['root'] + '.' + run_param['name']
         key_list = unique_param.split('.')
         dictify(model_yaml_set,key_list,run_param['value'])
 
     if ts_files:
-        model_yaml_set["data_sources"] = {}
+        model_yaml_set["data_tables"] = {}
         
         for dims, fname in ts_files.items():
-            model_yaml_set["data_sources"]["_".join(dims)+"_timeseries"] = {
-                "source": fname,
+            model_yaml_set["data_tables"]["_".join(dims)+"_timeseries"] = {
+                "data": fname,
                 "rows": "timesteps",
                 "columns": list(dims)
             }
@@ -221,13 +221,19 @@ def get_loc_techs_yaml_set(run, scenario_id, year):
         # Loop over Parameters
         for param in params:
             param_keys = param.parameter.root.split('.')+[param.parameter.name]
-            index = param.parameter.index+param.index
-            dim = param.parameter.dim+param.dim
             if (param.parameter.index and param.parameter.dim) or (param.index and param.dim):
+                if not(param.parameter.index and param.parameter.dim):
+                    index = param.index
+                    dim = param.dim
+                elif not(param.index and param.dim):
+                    index = param.parameter.index
+                    dim = param.parameter.dim
+                else:
+                    index = param.parameter.index+param.index
+                    dim = param.parameter.dim+param.dim
                 unique_param = param.parameter.root+'.'+param.parameter.name+str(index)+str(dim)
             else:
                 unique_param = param.parameter.root+'.'+param.parameter.name
-            unique_param = param.parameter.root+'.'+param.parameter.name
             if unique_param not in unique_params:
                 if '%' in param.parameter.units:  # Calliope in decimal format
                     value = float(param.value) / 100
