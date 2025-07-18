@@ -879,12 +879,15 @@ class Technology(models.Model):
         return new_tech
 
     def update(self, form_data):
+        comments = ""
         """ Update the Technology parameters stored in Tech_Param """
         METHODS = ['essentials', 'add', 'edit', 'delete']
         for method in METHODS:
             if method in form_data.keys():
                 data = form_data[method]
-                getattr(Tech_Param, '_' + method)(self, data)
+                comments += getattr(Tech_Param, '_' + method)(self, data)
+        
+        return comments
 
 
 class Tech_Param(models.Model):
@@ -914,41 +917,53 @@ class Tech_Param(models.Model):
 
     @classmethod
     def _essentials(cls, technology, data):
+        comments = ""
         """ Update a technologies essential parameters """
         for key, value in data.items():
             if key == 'tech_name':
                 if value:
+                    if value != technology.pretty_name:
+                        comments += 'Updated technology name from "{}" to "{}". '.format(
+                            technology.pretty_name, value)
                     technology.name = ParamsManager.simplify_name(value)
                     technology.pretty_name = value
             elif key == 'tech_tag':
+                if value != technology.pretty_tag:
+                    comments += 'Updated technology tag from "{}" to "{}". '.format(
+                        technology.pretty_tag, value)
                 technology.tag = ParamsManager.simplify_name(value)
                 technology.pretty_tag = value
             elif key == 'tech_description':
+                if value != technology.description:
+                    comments += 'Updated technology description.'
                 technology.description = value
             elif key == 'cplus_carrier':
                 cls._cplus_carriers(technology, value, data['cplus_ratio'])
+                comments += 'Updated Conversion Plus carriers. '
             elif key == 'cplus_ratio':
                 continue
             else:
-                cls.objects.filter(
+                old_params = cls.objects.filter(
                     model_id=technology.model_id,
                     technology_id=technology.id,
-                    parameter_id=key).hard_delete()
+                    parameter_id=key)
+                old_val = old_params.first().value if old_params else None
+                old_params.hard_delete()
                 if value:
                     if type(value) == list:
-                        cls.objects.create(
-                            model_id=technology.model_id,
-                            technology_id=technology.id,
-                            parameter_id=key,
-                            value=json.dumps(value))
+                        value = json.dumps(value)
                     else:
-                        cls.objects.create(
-                            model_id=technology.model_id,
-                            technology_id=technology.id,
-                            parameter_id=key,
-                            value=ParamsManager.clean_str_val(value))
+                        value = ParamsManager.clean_str_val(value)
+                    cls.objects.create(
+                        model_id=technology.model_id,
+                        technology_id=technology.id,
+                        parameter_id=key,
+                        value=value)
+                    if old_val != value:
+                        comments += 'Updated parameter {} value: "{}" to "{}". '.format(Parameter.objects.get(id=key).name, old_val, value)
             technology.save()
         technology.update_calliope_pretty_name()
+        return comments
 
     @classmethod
     def _cplus_carriers(cls, technology, carriers, ratios):
@@ -991,6 +1006,7 @@ class Tech_Param(models.Model):
 
     @classmethod
     def _add(cls, technology, data):
+        comments = ""
         """ Add a new parameter to a technology """
         for key, value_dict in data.items():
             if (('year' in value_dict) & ('value' in value_dict)):
@@ -1000,31 +1016,42 @@ class Tech_Param(models.Model):
                 new_objects = []
                 for i in range(num_records):
                     vals = str(values[i]).split('||')
+                    raw_value = vals[1] if len(vals) > 1 else vals[0]
                     new_objects.append(cls(
                         model_id=technology.model_id,
                         technology_id=technology.id,
                         year=years[i],
                         parameter_id=key,
                         value=ParamsManager.clean_str_val(vals[0]),
-                        raw_value=vals[1] if len(vals) > 1 else vals[0]))
-                cls.objects.bulk_create(new_objects)
+                        raw_value=raw_value))
+                    
+                    comments += 'Added new parameter instance for {} value: {}. '.format(
+                        Parameter.objects.get(id=key).name, raw_value)
+                cls.objects.bulk_create(new_objects)          
+        return comments
 
     @classmethod
     def _edit(cls, technology, data):
+        comments = ""
         """ Edit a technology's parameters """
         if 'parameter' in data:
             for key, value in data['parameter'].items():
                 vals = str(value).split('||')
-                cls.objects.filter(
+                old_params = cls.objects.filter(
                     model_id=technology.model_id,
                     technology_id=technology.id,
-                    parameter_id=key).hard_delete()
+                    parameter_id=key)
+                old_val = old_params.first().raw_value if old_params else None
+                old_params.hard_delete()
+                raw_value = vals[1] if len(vals) > 1 else vals[0]
                 cls.objects.create(
                     model_id=technology.model_id,
                     technology_id=technology.id,
                     parameter_id=key,
                     value=ParamsManager.clean_str_val(vals[0]),
-                    raw_value=vals[1] if len(vals) > 1 else vals[0])
+                    raw_value=raw_value)
+                comments += 'Updated parameter {} value: "{}" to "{}". '.format(
+                    Parameter.objects.get(id=key).name, old_val, raw_value)
         if 'timeseries' in data:
             for value_dict in data['timeseries']:
                 if 'id' in value_dict:
@@ -1036,6 +1063,7 @@ class Tech_Param(models.Model):
                             value=ParamsManager.clean_str_val(value_dict['value']),
                             timeseries_meta_id=value_dict['value'],
                             timeseries=True)
+                        comments += 'Updated timeseries parameter instance for {}. '.format(Parameter.objects.get(id=key).name)
                     if 'year' in value_dict:
                         parameter_instance.update(year=value_dict['year'])
                 else:
@@ -1057,6 +1085,7 @@ class Tech_Param(models.Model):
                             value=ParamsManager.clean_str_val(value),
                             timeseries_meta_id=value,
                             timeseries=True)
+                    comments += 'Added new timeseries parameter instance for {}. '.format(key)
         if 'parameter_instance' in data:
             for value_dict in data['parameter_instance']:
                 if 'id' in value_dict:
@@ -1068,23 +1097,31 @@ class Tech_Param(models.Model):
                             vals = [json.dumps(value_dict['value'])]
                         else:
                             vals = str(value_dict['value']).split('||')
+                        raw_value = vals[1] if len(vals) > 1 else vals[0]
+                        comments += 'Updated parameter instance of {} value: "{}" to "{}". '.format(
+                            parameter_instance.first().parameter.name, parameter_instance.first().raw_value,
+                            raw_value)
                         parameter_instance.update(
                             value=ParamsManager.clean_str_val(vals[0]),
-                            raw_value=vals[1] if len(vals) > 1 else vals[0])
+                            raw_value=raw_value)
+                        
                     if 'year' in value_dict:
+                        comments += 'Updated parameter instance of {} year: "{}" to "{}". '.format(
+                            parameter_instance.first().parameter.name, parameter_instance.first().year, value_dict['year'])
                         parameter_instance.update(year=value_dict['year'])
                 elif 'value' in value_dict:
                     if type(value_dict['value']) == list:
                         vals = [json.dumps(value_dict['value'])]
                     else:
                         vals = str(value_dict['value']).split('||')
+                    raw_value = vals[1] if len(vals) > 1 else vals[0]
                     if 'index' in value_dict:
                         cls.objects.create(
                             model_id=technology.model_id,
                             technology_id=technology.id,
                             parameter_id=value_dict['parameter_id'],
                             value=ParamsManager.clean_str_val(vals[0]),
-                            raw_value=vals[1] if len(vals) > 1 else vals[0],
+                            raw_value=raw_value,
                             year=value_dict['year'] if 'year' in value_dict else 0,
                             index=[value_dict['index']],
                             dim=[value_dict['dim']])
@@ -1094,11 +1131,15 @@ class Tech_Param(models.Model):
                             technology_id=technology.id,
                             parameter_id=value_dict['parameter_id'],
                             value=ParamsManager.clean_str_val(vals[0]),
-                            raw_value=vals[1] if len(vals) > 1 else vals[0],
+                            raw_value=raw_value,
                             year=value_dict['year'] if 'year' in value_dict else 0)
+                    comments += 'Added new parameter instance for {} value: {}. '.format(
+                        Parameter.objects.get(id=value_dict['parameter_id']).name, raw_value)
+        return comments
 
     @classmethod
     def _delete(cls, technology, data):
+        comments = ''
         """ Delete a technology's parameters """
         if 'parameter' in data:
             for key, value in data['parameter'].items():
@@ -1106,12 +1147,17 @@ class Tech_Param(models.Model):
                     model_id=technology.model_id,
                     technology_id=technology.id,
                     parameter_id=key).hard_delete()
+                comments += 'Deleted parameter {}. '.format(Parameter.objects.get(id=key).name)
         elif 'parameter_instance' in data:
             for value_dict in data['parameter_instance']:
                 if 'id' in value_dict:
-                    cls.objects.filter(
+                    params = cls.objects.filter(
                         model_id=technology.model_id,
-                        id=value_dict['id']).hard_delete()
+                        id=value_dict['id'])
+                    if params:
+                        comments += 'Deleted parameter instance of {}. '.format(params.first().parameter.name)
+                        params.hard_delete()
+        return comments
 
 
 class Location(models.Model):
@@ -1174,16 +1220,18 @@ class Loc_Tech(models.Model):
                                      self.technology.pretty_tag)
 
     def update(self, form_data):
+        comments = ''
         """ Update the Location Technology parameters
         stored in Loc_Tech_Param """
         METHODS = ['add', 'edit', 'delete']
         for method in METHODS:
             if method in form_data.keys():
                 data = form_data[method]
-                getattr(Loc_Tech_Param, '_' + method)(self, data)
+                comments += getattr(Loc_Tech_Param, '_' + method)(self, data)
         # Remove system-wide parameters
         sw = Loc_Tech_Param.objects.filter(parameter__is_systemwide=True)
         sw.hard_delete()
+        return comments
 
 
 class Loc_Tech_Param(models.Model):
@@ -1213,6 +1261,7 @@ class Loc_Tech_Param(models.Model):
 
     @classmethod
     def _add(cls, loc_tech, data):
+        comments = ''
         """ Add a new parameter to a location technology """
         for key, value_dict in data.items():
             if (('year' in value_dict) & ('value' in value_dict)):
@@ -1222,31 +1271,41 @@ class Loc_Tech_Param(models.Model):
                 new_objects = []
                 for i in range(num_records):
                     vals = str(values[i]).split('||')
+                    raw_value = vals[1] if len(vals) > 1 else vals[0]
                     new_objects.append(cls(
                         model_id=loc_tech.model_id,
                         loc_tech_id=loc_tech.id,
                         year=years[i],
                         parameter_id=key,
                         value=ParamsManager.clean_str_val(vals[0]),
-                        raw_value=vals[1] if len(vals) > 1 else vals[0]))
+                        raw_value=raw_value))
+                comments += 'Added new parameter instance for {} value: {}. '.format(
+                        Parameter.objects.get(id=key).name, raw_value)
                 cls.objects.bulk_create(new_objects)
+        return comments
 
     @classmethod
     def _edit(cls, loc_tech, data):
+        comments = ''
         """ Edit a location technology parameter """
         if 'parameter' in data:
             for key, value in data['parameter'].items():
                 vals = str(value).split('||')
-                cls.objects.filter(
+                old_params = cls.objects.filter(
                     model_id=loc_tech.model_id,
                     loc_tech_id=loc_tech.id,
-                    parameter_id=key).hard_delete()
+                    parameter_id=key)
+                old_val = old_params.first().raw_value if old_params else None
+                old_params.hard_delete()
+                raw_value = vals[1] if len(vals) > 1 else vals[0]
                 cls.objects.create(
                     model_id=loc_tech.model_id,
                     loc_tech_id=loc_tech.id,
                     parameter_id=key,
                     value=ParamsManager.clean_str_val(vals[0]),
-                    raw_value=vals[1] if len(vals) > 1 else vals[0])
+                    raw_value=raw_value)
+                comments += 'Updated parameter {} value: "{}" to "{}". '.format(
+                    Parameter.objects.get(id=key).name, old_val, raw_value)
         if 'timeseries' in data:
             for value_dict in data['timeseries']:
                 if 'id' in value_dict:
@@ -1258,6 +1317,7 @@ class Loc_Tech_Param(models.Model):
                             value=ParamsManager.clean_str_val(value_dict['value']),
                             timeseries_meta_id=value_dict['value'],
                             timeseries=True)
+                        comments += 'Updated timeseries parameter instance for {}. '.format(key)
                     if 'year' in value_dict:
                         parameter_instance.update(year=value_dict['year'])
                 else:
@@ -1279,7 +1339,8 @@ class Loc_Tech_Param(models.Model):
                             value=ParamsManager.clean_str_val(value),
                             timeseries_meta_id=value,
                             timeseries=True)
-        
+                    comments += 'Added new timeseries parameter instance for {}. '.format(key)
+
         if 'parameter_instance' in data:
             for value_dict in data['parameter_instance']:
                 if 'id' in value_dict:
@@ -1288,20 +1349,25 @@ class Loc_Tech_Param(models.Model):
                         id=value_dict['id'])
                     if 'value' in value_dict:
                         vals = str(value_dict['value']).split('||')
+                        raw_value = vals[1] if len(vals) > 1 else vals[0]
+                        comments += 'Updated parameter instance {} value: "{}" to "{}". '.format(
+                            parameter_instance.first().parameter.name, parameter_instance.first().raw_value, raw_value)
                         parameter_instance.update(
-                            value=ParamsManager.clean_str_val(vals[0]),
-                            raw_value=vals[1] if len(vals) > 1 else vals[0])
+                            value=ParamsManager.clean_str_val(vals[0]), raw_value=raw_value)
                     if 'year' in value_dict:
+                        comments += 'Updated parameter instance {} year: "{}" to "{}". '.format(
+                            parameter_instance.first().parameter.name, parameter_instance.first().year, value_dict['year'])
                         parameter_instance.update(year=value_dict['year'])
                 elif 'value' in value_dict:
                     vals = str(value_dict['value']).split('||')
+                    raw_value = vals[1] if len(vals) > 1 else vals[0]
                     if 'index' in value_dict:
                         cls.objects.create(
                             model_id=loc_tech.model_id,
                             loc_tech_id=loc_tech.id,
                             parameter_id=value_dict['parameter_id'],
                             value=ParamsManager.clean_str_val(vals[0]),
-                            raw_value=vals[1] if len(vals) > 1 else vals[0],
+                            raw_value=raw_value,
                             year=value_dict['year'] if 'year' in value_dict else 0,
                             index=[value_dict['index']],
                             dim=[value_dict['dim']])
@@ -1311,11 +1377,16 @@ class Loc_Tech_Param(models.Model):
                             loc_tech_id=loc_tech.id,
                             parameter_id=value_dict['parameter_id'],
                             value=ParamsManager.clean_str_val(vals[0]),
-                            raw_value=vals[1] if len(vals) > 1 else vals[0],
+                            raw_value=raw_value,
                             year=value_dict['year'] if 'year' in value_dict else 0)
+                    
+                    comments += 'Added new parameter instance for {} value: {}. '.format(
+                        Parameter.objects.get(id=value_dict['parameter_id']).name, raw_value)
+        return comments
 
     @classmethod
     def _delete(cls, loc_tech, data):
+        comments = ''
         """ Delete a location technology parameter """
         if 'parameter' in data:
             for key, value in data['parameter'].items():
@@ -1323,12 +1394,17 @@ class Loc_Tech_Param(models.Model):
                     model_id=loc_tech.model_id,
                     loc_tech_id=loc_tech.id,
                     parameter_id=key).hard_delete()
+                comments += 'Deleted parameter {}. '.format(Parameter.objects.get(id=key).name)
         elif 'parameter_instance' in data:
             for value_dict in data['parameter_instance']:
                 if 'id' in value_dict:
-                    cls.objects.filter(
+                    params = cls.objects.filter(
                         model_id=loc_tech.model_id,
-                        id=value_dict['id']).hard_delete()
+                        id=value_dict['id'])
+                    if params:
+                        comments += 'Deleted parameter instance of {}. '.format(params.first().parameter.name)
+                        params.hard_delete()
+        return comments
 
 
 class Scenario(models.Model):
