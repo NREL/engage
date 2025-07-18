@@ -237,7 +237,10 @@ class Run(models.Model):
                   'Costs': 'Fixed Costs'}
         if metric == 'Storage':
             # Storage Capacity
-            df = self.read_output('results_storage_cap.csv')
+            if self.mode == 'operate':
+                df = self.read_output('inputs_storage_cap.csv')
+            else:
+                df = self.read_output('results_storage_cap.csv')
             if df is None:
                 df = pd.DataFrame(columns=['nodes', 'techs', 'values'])
             else:
@@ -255,7 +258,10 @@ class Run(models.Model):
             ctx = None
         else:
             # Energy Capacity
-            df = self.read_output('results_flow_cap.csv')
+            if self.mode == 'operate':
+                df = self.read_output('inputs_flow_cap.csv')
+            else:
+                df = self.read_output('results_flow_cap.csv')
             df['values'] = df['flow_cap']
             ctx = self.read_output('inputs_flow_cap_max.csv')
             if ctx is not None:
@@ -312,13 +318,13 @@ class Run(models.Model):
                 df['values'] = df['storage']
         elif cost_class:
             # Costs
-            df = self.read_output('results_cost_var' + ext)
+            df = self.read_output('results_cost_operation_variable' + ext)
             if df is None:
                 df = pd.DataFrame(
                     columns=['nodes', 'techs', 'timesteps', 'values'])
             else:
                 df = df.loc[df['costs']==cost_class[1]]
-                df['values'] = df['cost_var']
+                df['values'] = df['cost_operation_variable']
         else:
             # Production / Consumption
             df = self.read_output('results_flow_in' + ext)
