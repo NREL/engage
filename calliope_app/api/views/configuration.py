@@ -526,7 +526,7 @@ def add_technology(request):
             model_id=model.id,
             technology_id=technology.id,
             parameter_id=Parameter.objects.filter(name='base_tech').first().id,
-            value=technology_type,
+            value=abstract_tech.name,
         )
         Tech_Param.objects.create(
             model_id=model.id,
@@ -613,11 +613,12 @@ def update_tech_params(request):
     technology = model.technologies.filter(id=technology_id)
 
     if len(technology) > 0:
-        technology.first().update(escaped_form_data)
+        comments = technology.first().update(escaped_form_data)
         # Log Activity
-        comment = "{} updated the technology: {}.".format(
+        comment = "{} updated the technology: {}. {}".format(
             request.user.get_full_name(),
             technology.first().pretty_name,
+            comments
         )
         Model_Comment.objects.create(model=model, comment=comment, type="edit")
         model.notify_collaborators(request.user)
@@ -892,13 +893,14 @@ def update_loc_tech_params(request):
     loc_tech = model.loc_techs.filter(id=loc_tech_id)
 
     if len(loc_tech) > 0:
-        loc_tech.first().update(form_data)
+        comments = loc_tech.first().update(form_data)
         # Log Activity
-        comment = "{} updated the node: {} ({}) @ {}.".format(
+        comment = "{} updated the node: {} ({}) @ {}. {}".format(
             request.user.get_full_name(),
             loc_tech.first().technology.pretty_name,
             loc_tech.first().technology.tag,
             loc_tech.first().location_1.pretty_name,
+            comments
         )
         Model_Comment.objects.create(model=model, comment=comment, type="edit")
         model.notify_collaborators(request.user)

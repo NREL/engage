@@ -15,7 +15,7 @@ $(document).ready(function () {
 			scenario_id = $("#scenario").data('scenario_id'),
 			start_date = $('#start_date').val(),
 			end_date = $('#end_date').val(),
-			cluster = $('#cluster').is(":checked"),
+			build_operate_run = $('#build_operate_run').is(":checked"),
 			manual = $('#manual').is(":checked"),
 			timestep = $('#timestep').val(),
 			sd = new Date(start_date),
@@ -61,7 +61,7 @@ $(document).ready(function () {
 					'scenario_id': scenario_id,
 					'start_date': start_date,
 					'end_date': end_date,
-					'cluster': cluster,
+					'build_operate_run': build_operate_run,
 					'manual': manual,
 					'timestep': timestep,
 					'run_env': run_env,
@@ -83,11 +83,11 @@ $(document).ready(function () {
 	});
 
 	// Automatically deactivate clustering if manual is enabled.
-	$('#manual').on('click', function () {
+	/*$('#manual').on('click', function () {
 		if ($('#manual').is(":checked")) {
 			$('#cluster').prop('checked', false);
 		}
-	});
+	});*/
 
   var env_name = $(this).val();
   set_solvers(env_name);

@@ -27,7 +27,7 @@ from api.models.outputs import Run
 from api.utils import load_timeseries_from_csv, get_model_logger, zip_folder
 from api.calliope_utils import get_model_yaml_set, get_custom_math_yaml_set, get_location_meta_yaml_set,\
                         get_techs_yaml_set, get_loc_techs_yaml_set,get_carriers_yaml_set,\
-                        run_basic, run_clustered, apply_gradient
+                        run_basic, run_clustered, apply_gradient, _operate_outputs
 from api.calliope_utils import run_basic, run_clustered, apply_gradient
 from batch.managers import AWSBatchJobManager 
 from taskmeta.models import CeleryTask, BatchTask, batch_task_status
@@ -178,7 +178,10 @@ class CalliopeModelBuildTask(Task):
         On success, mark the task status to success.
         """
         run = Run.objects.get(id=kwargs["run_id"])
-        run.status = task_status.BUILT
+        if run.parent is not None and run.mode=='operate':
+            run.status = task_status.QUEUED
+        else:
+            run.status = task_status.BUILT
         run.inputs_path = retval
         run.save()
 
@@ -215,7 +218,7 @@ def build_model(inputs_path, run_id, model_uuid, scenario_id,
     # model and scenario instances
     model = Model.objects.get(uuid=model_uuid)
     scenario = Scenario.objects.get(id=scenario_id)
-    ts_files = build_model_csv(model, scenario, start_date, end_date, inputs_path, run.timestep) # returns node_param.csv location and tech_param location...
+    ts_files = build_model_csv(model, scenario, start_date, end_date, inputs_path, run.timestep, run.mode) # returns node_param.csv location and tech_param location...
     build_model_yaml(run, scenario_id, start_date, inputs_path, ts_files)
     return inputs_path
 
@@ -240,12 +243,12 @@ def build_model_yaml(run, scenario_id, start_date, inputs_path, ts_files):
         yaml.dump(custom_math_yaml_set, outfile, default_flow_style=None)
 
     # techs.yaml
-    techs_yaml_set = get_techs_yaml_set(scenario_id, year)
+    techs_yaml_set = get_techs_yaml_set(run, scenario_id, year)
     with open(os.path.join(inputs_path, "techs.yaml"), 'w') as outfile:
         yaml.dump(techs_yaml_set, outfile, default_flow_style=None)
 
     # locations.yaml
-    loc_techs_yaml_set = get_loc_techs_yaml_set(scenario_id, year)
+    loc_techs_yaml_set = get_loc_techs_yaml_set(run, scenario_id, year)
     location_yaml_set = get_location_meta_yaml_set(scenario_id, loc_techs_yaml_set)
     with open(os.path.join(inputs_path, "locations.yaml"), 'w') as outfile:
         yaml.dump(location_yaml_set, outfile, default_flow_style=None)
@@ -256,12 +259,12 @@ def build_model_yaml(run, scenario_id, start_date, inputs_path, ts_files):
         yaml.dump(carriers_yaml_set, outfile, default_flow_style=None)
 
 
-def build_model_csv(model, scenario, start_date, end_date, inputs_path, timesteps):
+def build_model_csv(model, scenario, start_date, end_date, inputs_path, timesteps, mode):
     loc_techs = Scenario_Loc_Tech.objects.filter(model=model, scenario=scenario)
     tech_ids = list(set(loc_techs.values_list("loc_tech__technology_id", flat=True)))
     loc_tech_ids = list(set(loc_techs.values_list("loc_tech_id", flat=True)))
-    tech_ts = Tech_Param.objects.filter(model=model, timeseries=True, technology_id__in=tech_ids)
-    loc_tech_ts = Loc_Tech_Param.objects.filter(model=model, timeseries=True, loc_tech_id__in=loc_tech_ids)
+    tech_ts = Tech_Param.objects.filter(model=model, timeseries=True, technology_id__in=tech_ids, parameter__tags__contains=[mode+"_mode"])
+    loc_tech_ts = Loc_Tech_Param.objects.filter(model=model, timeseries=True, loc_tech_id__in=loc_tech_ids, parameter__tags__contains=[mode+"_mode"])
     
     ts_dfs = {}
     for ts in list(tech_ts):
@@ -622,6 +625,19 @@ def run_model(run_id, model_path, user_id, *args, **kwargs):
     # Model outputs
     base_path = os.path.dirname(os.path.dirname(model_path))
     save_outputs = os.path.join(base_path, "outputs/model_outputs")
+
+    # Check for operate mode run
+    if run.mode == 'plan':
+        run_o = Run.objects.filter(parent=run, mode='operate').first()
+        if run_o:
+            logger.info("Found an operate run for this plan run.")
+            if run_o.status == task_status.QUEUED:
+                _operate_outputs(run.inputs_path, save_outputs, run_o.inputs_path, logger)
+                logger.info("Operate run %s is ready to run in %s environment.", run_o.id, run_o.compute_environment.name)
+                run_o.status = task_status.BUILT
+                run_o.save()
+            else:
+                logger.info("Run %s is not queued, skipping update of planning output.", run_o.id)
 
     # Check for grouped/gradient runs
     if run.group != '':

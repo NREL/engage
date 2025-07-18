@@ -32,6 +32,7 @@ class Run(models.Model):
     objects_all = models.Manager()
 
     scenario = models.ForeignKey(Scenario, on_delete=models.CASCADE)
+    mode = models.CharField(max_length=20, default='plan')
     subset_time = models.CharField(max_length=200)
     year = models.IntegerField()
     status = models.CharField(max_length=200)
@@ -56,6 +57,8 @@ class Run(models.Model):
         on_delete=models.SET_NULL
     )
     group = models.TextField(blank=True,null=True)
+    parent = models.ForeignKey(
+        "self", on_delete=models.CASCADE, blank=True, null=True)
 
     calliope_066_upgraded = models.BooleanField(default=False)
     calliope_066_errors = models.TextField(blank=True)
@@ -64,6 +67,7 @@ class Run(models.Model):
     cluster = models.BooleanField(default=True)
     manual = models.BooleanField(default=False)
     timestep = models.TextField(default='1H',blank=False)
+    build_operate_run = models.BooleanField(default=False)
 
     build_task = models.ForeignKey(
         to=CeleryTask,
@@ -233,7 +237,10 @@ class Run(models.Model):
                   'Costs': 'Fixed Costs'}
         if metric == 'Storage':
             # Storage Capacity
-            df = self.read_output('results_storage_cap.csv')
+            if self.mode == 'operate':
+                df = self.read_output('inputs_storage_cap.csv')
+            else:
+                df = self.read_output('results_storage_cap.csv')
             if df is None:
                 df = pd.DataFrame(columns=['nodes', 'techs', 'values'])
             else:
@@ -251,7 +258,10 @@ class Run(models.Model):
             ctx = None
         else:
             # Energy Capacity
-            df = self.read_output('results_flow_cap.csv')
+            if self.mode == 'operate':
+                df = self.read_output('inputs_flow_cap.csv')
+            else:
+                df = self.read_output('results_flow_cap.csv')
             df['values'] = df['flow_cap']
             ctx = self.read_output('inputs_flow_cap_max.csv')
             if ctx is not None:
@@ -308,13 +318,13 @@ class Run(models.Model):
                 df['values'] = df['storage']
         elif cost_class:
             # Costs
-            df = self.read_output('results_cost_var' + ext)
+            df = self.read_output('results_cost_operation_variable' + ext)
             if df is None:
                 df = pd.DataFrame(
                     columns=['nodes', 'techs', 'timesteps', 'values'])
             else:
                 df = df.loc[df['costs']==cost_class[1]]
-                df['values'] = df['cost_var']
+                df['values'] = df['cost_operation_variable']
         else:
             # Production / Consumption
             df = self.read_output('results_flow_in' + ext)

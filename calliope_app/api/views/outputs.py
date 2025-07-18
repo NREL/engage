@@ -77,7 +77,7 @@ def build(request):
     scenario_id (int): required
     start_date (timestamp): required
     end_date (timestamp): required
-    cluster (bool): optional
+    build_operate_run (bool): optional
     manual (bool): optional
 
     Returns (json): Action Confirmation
@@ -94,7 +94,7 @@ def build(request):
         old_run = Run.objects.get(id=old_run_id)
         start_date = request.GET.get("start_date", None)
         end_date = request.GET.get("end_date", None)
-        cluster = old_run.cluster
+        build_operate_run = old_run.build_operate_run
         manual = old_run.manual
         run_env = old_run.compute_environment.name
         timestep = old_run.timestep
@@ -109,7 +109,7 @@ def build(request):
             run_options.append({'root':run_parameter.root,'name':run_parameter.name,'value':run_options_raw[run_option]})
         start_date = request.GET.get("start_date", None)
         end_date = request.GET.get("end_date", None)
-        cluster = (request.GET.get("cluster", 'true') == 'true')
+        build_operate_run = (request.GET.get("build_operate_run", 'false') == 'true')
         manual = (request.GET.get("manual", 'false') == 'true')
         run_env = request.GET.get("run_env", None)
         timestep = request.GET.get("timestep", '1H')
@@ -126,6 +126,9 @@ def build(request):
     model = Model.by_uuid(model_uuid)
     model.handle_edit_access(request.user)
 
+    for run_option in run_options:
+        if run_option['name'] == 'mode':
+            mode = run_option['value']
 
     try:
         start_date = datetime.strptime(start_date, "%Y-%m-%d")
@@ -158,11 +161,11 @@ def build(request):
             run = Run.objects.create(
                 model=model,
                 scenario=scenario,
+                mode=mode,
                 year=year,
                 subset_time=subset_time,
                 status=task_status.QUEUED,
                 inputs_path="",
-                cluster=cluster,
                 manual=manual,
                 timestep=timestep,
                 compute_environment=compute_environment,
@@ -175,7 +178,7 @@ def build(request):
             model_name = ParamsManager.simplify_name(model.name)
             scenario_name = ParamsManager.simplify_name(scenario.name)
             if groupname:
-                inputs_path = "{}/{}/{}/{}/{}/{}/{}/{}/inputs".format(
+                inputs_path = "{}/{}/{}/{}/{}/{}/{}/{}/{}/inputs".format(
                     settings.DATA_STORAGE,
                     model.uuid,
                     model_name,
@@ -184,9 +187,10 @@ def build(request):
                     year,
                     subset_time,
                     timestamp,
+                    mode,
                 )
             else:
-                inputs_path = "{}/{}/{}/{}/{}/{}/{}/inputs".format(
+                inputs_path = "{}/{}/{}/{}/{}/{}/{}/{}/inputs".format(
                     settings.DATA_STORAGE,
                     model.uuid,
                     model_name,
@@ -194,6 +198,7 @@ def build(request):
                     year,
                     subset_time,
                     timestamp,
+                    mode,
                 )
             inputs_path = inputs_path.lower().replace(" ", "-")
             os.makedirs(inputs_path, exist_ok=True)
@@ -213,6 +218,72 @@ def build(request):
             run.build_task = build_task
             run.save()
 
+            if mode == 'plan' and build_operate_run:
+
+                for run_option in run_options:
+                    if run_option['name'] == 'mode':
+                        run_option['value'] = 'operate'
+                # Create operate run instance
+                run_o = Run.objects.create(
+                    model=model,
+                    scenario=scenario,
+                    mode='operate',
+                    year=year,
+                    subset_time=subset_time,
+                    status=task_status.QUEUED,
+                    inputs_path="",
+                    manual=manual,
+                    timestep=timestep,
+                    compute_environment=compute_environment,
+                    group=groupname,
+                    description=notes,
+                    run_options=run_options,
+                    parent=run,
+                )
+
+                # Generate File Path (adjacent directory to planning run)
+                model_name = ParamsManager.simplify_name(model.name)
+                scenario_name = ParamsManager.simplify_name(scenario.name)
+                if groupname:
+                    inputs_path_o = "{}/{}/{}/{}/{}/{}/{}/{}/{}/inputs".format(
+                        settings.DATA_STORAGE,
+                        model.uuid,
+                        model_name,
+                        scenario_name,
+                        groupname,
+                        year,
+                        subset_time,
+                        timestamp,
+                        'operate',
+                    )
+                else:
+                    inputs_path_o = "{}/{}/{}/{}/{}/{}/{}/{}/inputs".format(
+                        settings.DATA_STORAGE,
+                        model.uuid,
+                        model_name,
+                        scenario_name,
+                        year,
+                        subset_time,
+                        timestamp,
+                        'operate',
+                    )
+                inputs_path_o = inputs_path_o.lower().replace(" ", "-")
+                os.makedirs(inputs_path_o, exist_ok=True)
+
+                async_result = build_model.apply_async(
+                    kwargs={
+                        "inputs_path": inputs_path_o,
+                        "run_id": run_o.id,
+                        "model_uuid": model_uuid,
+                        "scenario_id": scenario_id,
+                        "start_date": start_date,
+                        "end_date": end_date,
+                    }
+                )
+
+                build_task = CeleryTask.objects.get(task_id=async_result.id)
+                run_o.build_task = build_task
+                run_o.save()
             logger.info("Model run %s starts to build in celery worker.", run.id)
 
         payload = {

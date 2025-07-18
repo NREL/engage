@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 def get_model_yaml_set(run, scenario_id, year, ts_files):
     """ Function pulls model parameters from Database for YAML """
     params = Scenario_Param.objects.filter(scenario_id=scenario_id,
-                                           year__lte=year).order_by('-year')
+                                           year__lte=year, run_parameter__mode__contains=[run.mode]).order_by('-year')
     # Initialize the Return list
     model_yaml_set = {}
     # Tracks which parameters have already been set (prioritized by year)
@@ -45,18 +45,18 @@ def get_model_yaml_set(run, scenario_id, year, ts_files):
             key_list = unique_param.split('.')
             dictify(model_yaml_set,key_list,param.value)
     dictify(model_yaml_set,['import'],'["techs.yaml","locations.yaml"]',simplify=False)
-    dictify(model_yaml_set,['config','init','add_math'],'["custom_math.yaml"]',simplify=False)
+    dictify(model_yaml_set,['config','build','add_math'],'["custom_math.yaml"]',simplify=False)
     for run_param in run.run_options:
         unique_param = run_param['root'] + '.' + run_param['name']
         key_list = unique_param.split('.')
         dictify(model_yaml_set,key_list,run_param['value'])
 
     if ts_files:
-        model_yaml_set["data_sources"] = {}
+        model_yaml_set["data_tables"] = {}
         
         for dims, fname in ts_files.items():
-            model_yaml_set["data_sources"]["_".join(dims)+"_timeseries"] = {
-                "source": fname,
+            model_yaml_set["data_tables"]["_".join(dims)+"_timeseries"] = {
+                "data": fname,
                 "rows": "timesteps",
                 "columns": list(dims)
             }
@@ -66,7 +66,8 @@ def get_model_yaml_set(run, scenario_id, year, ts_files):
 def get_custom_math_yaml_set(run, scenario_id, year):
     """ Function pulls model parameters from Database for YAML """
     params = Scenario_Param.objects.filter(scenario_id=scenario_id,
-                                           year__lte=year,run_parameter__root__in=['constraints','global_expressions']).order_by('-year')
+                                           year__lte=year,run_parameter__root__in=['constraints','global_expressions'],
+                                           run_parameter__mode__contains=[run.mode]).order_by('-year')
 
     # Initialize the Return list
     custom_math_yaml_set = {}
@@ -116,13 +117,13 @@ def get_location_meta_yaml_set(scenario_id, existing = None):
     return location_coord_yaml_set
 
 
-def get_techs_yaml_set(scenario_id, year):
+def get_techs_yaml_set(run, scenario_id, year):
     """ Function pulls tech parameters from Database for YAML """
     loc_techs = Scenario_Loc_Tech.objects.filter(scenario_id=scenario_id)
     tech_ids = list(loc_techs.values_list('loc_tech__technology',
                                           flat=True).distinct())
     parameters = Tech_Param.objects.filter(technology_id__in=tech_ids,
-                                           year__lte=year, timeseries=False).order_by('-year')
+                                           year__lte=year, timeseries=False, parameter__tags__contains=[run.mode+"_mode"]).order_by('-year')
     # Initialize the Return list
     techs_yaml_set = {}
     # Loop over Technologies
@@ -178,7 +179,7 @@ def get_techs_yaml_set(scenario_id, year):
     return techs_yaml_set
 
 
-def get_loc_techs_yaml_set(scenario_id, year):
+def get_loc_techs_yaml_set(run, scenario_id, year):
     """ Function pulls location technology (nodes)
     parameters from Database for YAML """
     loc_techs = Scenario_Loc_Tech.objects.filter(scenario_id=scenario_id)
@@ -196,14 +197,14 @@ def get_loc_techs_yaml_set(scenario_id, year):
 
         technology = loc_tech.technology.calliope_name
         if parent == 'transmission':
-            parent_type = 'links'
+            parent_type = 'techs'
             location = \
                 loc_tech.location_1.name + '_' + \
                 loc_tech.location_2.name + '_' + \
                 loc_tech.technology.calliope_name
             param_list = [parent_type, location]
-            dictify(loc_techs_yaml_set,param_list+['from'],loc_tech.location_1.name)
-            dictify(loc_techs_yaml_set,param_list+['to'],loc_tech.location_2.name)
+            dictify(loc_techs_yaml_set,param_list+['link_from'],loc_tech.location_1.name)
+            dictify(loc_techs_yaml_set,param_list+['link_to'],loc_tech.location_2.name)
             dictify(loc_techs_yaml_set,param_list+['template'],technology)
         else:
             parent_type = 'nodes'
@@ -220,20 +221,26 @@ def get_loc_techs_yaml_set(scenario_id, year):
         # Loop over Parameters
         for param in params:
             param_keys = param.parameter.root.split('.')+[param.parameter.name]
-            index = param.parameter.index+param.index
-            dim = param.parameter.dim+param.dim
             if (param.parameter.index and param.parameter.dim) or (param.index and param.dim):
+                if not(param.parameter.index and param.parameter.dim):
+                    index = param.index
+                    dim = param.dim
+                elif not(param.index and param.dim):
+                    index = param.parameter.index
+                    dim = param.parameter.dim
+                else:
+                    index = param.parameter.index+param.index
+                    dim = param.parameter.dim+param.dim
                 unique_param = param.parameter.root+'.'+param.parameter.name+str(index)+str(dim)
             else:
                 unique_param = param.parameter.root+'.'+param.parameter.name
-            unique_param = param.parameter.root+'.'+param.parameter.name
             if unique_param not in unique_params:
                 if '%' in param.parameter.units:  # Calliope in decimal format
                     value = float(param.value) / 100
                 else:
                     value = param.value
 
-                if parent_type == 'links':
+                if parent_type == 'techs':
                     param_list = [parent_type, location]+param_keys
                 else:
                     param_list = [parent_type, location, 'techs',
@@ -490,7 +497,7 @@ def _set_capacities(model_path, ignore_techs=[],
                 tech_data['constraints']['storage_cap_equals'] = float(storage[key])
             locations_yaml['locations'][loc]['techs'][tech] = tech_data
     # Update Links Settings
-    for loc, loc_data in locations_yaml['links'].items():
+    for loc, loc_data in locations_yaml['techs'].items():
         if 'techs' not in loc_data:
             continue
         for tech, tech_data in loc_data['techs'].items():
@@ -582,42 +589,105 @@ def _write_outputs(model, model_path, ts_only_suffix=None):
         _yaml_outputs(os.path.dirname(model_path),save_outputs)
 
 def _yaml_outputs(inputs_dir, outputs_dir):
-    results_var = {'flow_cap':'results_flow_cap.csv','storage_cap':'results_storage_cap.csv'}
+    results_vars = ['flow_cap','storage_cap','area_use','source_cap','purchased_units']
     
     model = yaml.load(open(os.path.join(inputs_dir,'model.yaml')), Loader=yaml.FullLoader)
-    model.update(yaml.load(open(os.path.join(inputs_dir,'locations.yaml')), Loader=yaml.FullLoader))
-    model.update(yaml.load(open(os.path.join(inputs_dir,'techs.yaml')), Loader=yaml.FullLoader))
+    techs = {}
+    locations = {}
+    if os.path.exists(os.path.join(inputs_dir,'techs.yaml')):
+        techs = yaml.load(open(os.path.join(inputs_dir,'techs.yaml')), Loader=yaml.FullLoader)
+    if os.path.exists(os.path.join(inputs_dir,'locations.yaml')):
+        locations = yaml.load(open(os.path.join(inputs_dir,'locations.yaml')), Loader=yaml.FullLoader)
+    
+    keys = set(model.keys()) | set(techs.keys()) | set(locations.keys())
+    combined_model = {}
+    for key in keys:
+        if type(model.get(key,{})) is not dict:
+            combined_model[key] = model[key]
+        else:
+            combined_model[key] = {**model.get(key, {}),
+                                **techs.get(key, {}),
+                                **locations.get(key, {})}
 
     has_outputs = False
-    for v in results_var.keys():
-        if not os.path.exists(os.path.join(outputs_dir,results_var[v])):
+    for results_var in results_vars:
+        if not os.path.exists(os.path.join(outputs_dir,'results_'+results_var+'.csv')):
             continue
         has_outputs = True
-        r_df = pd.read_csv(os.path.join(outputs_dir,results_var[v]))
+        r_df = pd.read_csv(os.path.join(outputs_dir,'results_'+results_var+'.csv'))
 
-        for l in model['nodes'].keys():
-            if 'techs' in model['nodes'][l].keys() and model['nodes'][l]['techs']:
-                for t in model['nodes'][l]['techs'].keys():
-                    if v == 'storage_cap' and model['techs'][t]['base_tech'] not in ['storage','supply_plus']:
-                        continue
-                    if model['nodes'][l]['techs'][t] == None:
-                        model['nodes'][l]['techs'][t] = {}
-                    if 'results' not in model['nodes'][l]['techs'][t]:
-                        model['nodes'][l]['techs'][t]['results'] = {}
-                    model['nodes'][l]['techs'][t]['results'][v+'_equals'] = float(r_df.loc[(r_df['nodes'] == l) &
-                                                                        (r_df['techs'] == t)][v].values[0])  
-        for l in model['links'].keys():
-            l1 = model['links'][l]['from']
-            l2 = model['links'][l]['to']
-            if model['links'][l] == None:
-                model['links'][l] = {}
-            if 'results' not in model['links'][l]:
-                model['links'][l]['results'] = {}
-            if len(r_df.loc[(r_df['nodes'] == l1) & (r_df['techs'] == l)][v]) != 0:
-                model['links'][l]['results'][v+'_equals'] = float(r_df.loc[(r_df['nodes'] == l1) &
-                                                                (r_df['techs'] == l)][v].values[0])
+        for l in combined_model['nodes'].keys():
+            if 'techs' in combined_model['nodes'][l].keys() and combined_model['nodes'][l]['techs']:
+                for t in combined_model['nodes'][l]['techs'].keys():
+                    if combined_model['nodes'][l]['techs'][t] is None:
+                        combined_model['nodes'][l]['techs'][t] = {}
+                    if 'results' not in combined_model['nodes'][l]['techs'][t]:
+                        combined_model['nodes'][l]['techs'][t]['results'] = {}
+                    if len(r_df.loc[(r_df['nodes'] == l) & (r_df['techs'] == t)][results_var]) != 0:
+                        combined_model['nodes'][l]['techs'][t]['results'][results_var] = float(r_df.loc[(r_df['nodes'] == l) &
+                                                                        (r_df['techs'] == t)][results_var].values[0])  
+        for l in combined_model['techs'].keys():
+            if 'link_from' in combined_model['techs'][l] and 'link_to' in combined_model['techs'][l]:
+                l1 = combined_model['techs'][l]['link_from']
+                l2 = combined_model['techs'][l]['link_to']
+                if combined_model['techs'][l] is None:
+                    combined_model['techs'][l] = {}
+                if 'results' not in combined_model['techs'][l]:
+                    combined_model['techs'][l]['results'] = {}
+                if len(r_df.loc[(r_df['nodes'] == l1) & (r_df['techs'] == l)][results_var]) != 0:
+                    combined_model['techs'][l]['results'][results_var] = float(r_df.loc[(r_df['nodes'] == l1) &
+                                                                    (r_df['techs'] == l)][results_var].values[0])
     if has_outputs:
-        yaml.dump(model, open(os.path.join(outputs_dir,'model_results.yaml'),'w+'), default_flow_style=None)
+        yaml.dump(combined_model, open(os.path.join(outputs_dir,'model_results.yaml'),'w+'), default_flow_style=None)
+
+def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
+    results_vars = ['flow_cap','storage_cap','area_use','source_cap','purchased_units']
+    
+    model = yaml.load(open(os.path.join(operate_dir,'model.yaml')), Loader=yaml.FullLoader)
+    techs = {}
+    locations = {}
+    if os.path.exists(os.path.join(operate_dir,'techs.yaml')):
+        techs = yaml.load(open(os.path.join(operate_dir,'techs.yaml')), Loader=yaml.FullLoader)
+    if os.path.exists(os.path.join(operate_dir,'locations.yaml')):
+        locations = yaml.load(open(os.path.join(operate_dir,'locations.yaml')), Loader=yaml.FullLoader)
+
+    for results_var in results_vars:
+        if not os.path.exists(os.path.join(outputs_dir,'results_'+results_var+'.csv')):
+            continue
+        r_df = pd.read_csv(os.path.join(outputs_dir,'results_'+results_var+'.csv'))
+
+        
+        for l in locations['nodes'].keys():
+            if 'techs' in locations['nodes'][l].keys() and locations['nodes'][l]['techs']:
+                for t in locations['nodes'][l]['techs'].keys():
+                    if locations['nodes'][l]['techs'][t]:
+                        locations['nodes'][l]['techs'][t].pop(results_var+'_min', None)
+                        locations['nodes'][l]['techs'][t].pop(results_var+'_max', None)
+                    elif locations['nodes'][l]['techs'][t] is None:
+                        locations['nodes'][l]['techs'][t] = {}
+                    if len(r_df.loc[(r_df['nodes'] == l) & (r_df['techs'] == t)][results_var]) != 0:
+                        locations['nodes'][l]['techs'][t][results_var] = float(r_df.loc[(r_df['nodes'] == l) &
+                                                                        (r_df['techs'] == t)][results_var].values[0])  
+                        
+        for lt in techs['templates'].keys():
+            techs['templates'][lt].pop(results_var+'_min', None)
+            techs['templates'][lt].pop(results_var+'_max', None)
+            
+        for t in locations['techs'].keys():
+            if locations['techs'][t]:
+                locations['techs'][t].pop(results_var+'_min', None)
+                locations['techs'][t].pop(results_var+'_max', None)
+            if 'link_from' in locations['techs'][t] and 'link_to' in locations['techs'][t]:
+                l1 = locations['techs'][t]['link_from']
+                l2 = locations['techs'][t]['link_to']
+                if locations['techs'][t] is None:
+                    locations['techs'][t] = {}
+                if len(r_df.loc[(r_df['nodes'] == l1) & (r_df['techs'] == t)][results_var]) != 0:
+                    locations['techs'][t][results_var] = float(r_df.loc[(r_df['nodes'] == l1) &
+                                                                    (r_df['techs'] == t)][results_var].values[0])
+    yaml.dump(model, open(os.path.join(operate_dir,'model.yaml'),'w+'), default_flow_style=False)
+    yaml.dump(techs, open(os.path.join(operate_dir,'techs.yaml'),'w+'), default_flow_style=False)
+    yaml.dump(locations, open(os.path.join(operate_dir,'locations.yaml'),'w+'), default_flow_style=False)
 
 def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
     old_model = yaml.safe_load(open(old_results+'/model_results.yaml'))
@@ -699,14 +769,17 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
 
                         new_loctechs['nodes'][l]['techs'][t+'_'+str(old_year)] = loc_tech_b
 
-    for l in old_model['links']:
-        t = old_model['links'][l]['template']
+    # Transmission (formerly links)
+    for l in old_model['techs']:
+        if 'link_from' not in old_model['techs'][l] or 'link_to' not in old_model['techs'][l]:
+            continue
+        t = old_model['techs'][l]['template']
         old_tech = old_model['templates'][t]
         if t not in new_techs['templates']:
             continue
         new_tech = new_techs['templates'][t]
-        new_loc_tech = new_loctechs['links'][l]
-        loc_tech = old_model['links'][l]
+        new_loc_tech = new_loctechs['techs'][l]
+        loc_tech = old_model['techs'][l]
         if ('flow_cap_max' in loc_tech or 'storage_cap_max' in loc_tech) or\
                 ('flow_cap_max' in old_tech or 'storage_cap_max' in old_tech):
             if loc_tech.get('results',{'flow_cap_equals':0}).get('flow_cap_equals',0) != 0 or\
@@ -760,13 +833,13 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                     if new_loc_tech['storage_cap_max'] < 0:
                         new_loc_tech['storage_cap_max'] = 0
 
-                new_loctechs['links'][l] = new_loc_tech
+                new_loctechs['techs'][l] = new_loc_tech
 
                 built_loc_techs[l+t] = loc_tech_b
 
                 loc_tech_b['template'] += '_'+str(old_year)
 
-                new_loctechs['links'][l+'_'+str(old_year)] = loc_tech_b
+                new_loctechs['techs'][l+'_'+str(old_year)] = loc_tech_b
 
     for level in built_techs.keys():
         for t in built_techs[level].keys():

@@ -3805,5 +3805,122 @@
       "parameter_id": "169",
       "default_value": ""
     }
+  },
+  {
+    "pk": 424,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "170",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 425,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "170",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 426,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "170",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 427,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "170",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 428,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "170",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 429,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "171",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 430,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "3",
+      "parameter_id": "171",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 431,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "172",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 432,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "173",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 433,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "173",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 434,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "173",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 435,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "173",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 436,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "173",
+      "default_value": ""
+    }
   }
 ]

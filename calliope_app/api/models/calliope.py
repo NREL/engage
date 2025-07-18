@@ -80,6 +80,7 @@ class Run_Parameter(models.Model):
     name = models.CharField(max_length=200)
     pretty_name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
+    mode = ArrayField(models.CharField(max_length=20), blank=True, null=True)
     user_visibility = models.BooleanField()
     can_evolve = models.BooleanField(default=False)
     default_value = models.CharField(max_length=5000)
