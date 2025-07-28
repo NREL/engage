@@ -77,25 +77,25 @@
 				</td>
 				<!-- Technology -->
 				<td>
-					<a href="{% url 'technologies' model.uuid %}?tech_id={{ loc_tech.technology_id }}" style="color:#0021da"><b>{{ loc_tech.technology }}</b></a>
+					<a href="{% url 'technologies' model.uuid %}?tech_id={{ loc_tech.technology_id }}" style="color:#0021da"><b>{{ loc_tech.technology | safe }}</b></a>
 				</td>
 				<!-- Tag -->
 				<td class="text-sm">
 					{% if loc_tech.tag %}
 					<i class="fas fa-tag"></i>
 					&nbsp;&nbsp;
-					{{ loc_tech.tag }}
+					{{ loc_tech.tag |safe }}
 					{% endif %}
 				</td>
 				<!-- Location -->
 				<td>
 					<a href="{% url 'loc_techs' model.uuid %}?tech_id={{ loc_tech.technology_id }}&loc_tech_id={{ loc_tech.id }}" style="color:#0021da">
 						<i class="fas fa-map-marker-alt"></i>&nbsp;
-						{{ loc_tech.location_1 }}
+						{{ loc_tech.location_1 | safe }}
 						{% if loc_tech.location_2 %}
 						&nbsp;&nbsp;<i class="fas fa-exchange-alt"></i>&nbsp;&nbsp;
 						<i class="fas fa-map-marker-alt"></i>&nbsp;
-						{{ loc_tech.location_2 }}
+						{{ loc_tech.location_2 | safe }}
 						{% endif %}
 					</a>
 				</td>

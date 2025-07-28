@@ -247,6 +247,7 @@ def all_tech_params(request):
 
     timeseries = Timeseries_Meta.objects.filter(model=model, failure=False,
                                                 is_uploading=False)
+
     # Technology Definition
     context = {"technology": technology,
                "essentials": essentials,
@@ -456,9 +457,6 @@ def all_loc_tech_params(request):
                 'value': param["value"],
                 'placeholder': param["placeholder"]
             }]
-    
-    print(param_dict.keys())
-    print(param_dict['174NoneNone'])
 
     units_in_ids= ParamsManager.get_tagged_params('units_in')
     units_out_ids= ParamsManager.get_tagged_params('units_out')
