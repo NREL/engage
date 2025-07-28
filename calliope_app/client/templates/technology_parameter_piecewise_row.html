@@ -1,0 +1,168 @@
+{% load i18n %}
+{% load add_commas %}
+{% load return_item %}
+
+<!DOCTYPE html>
+<html lang="en">
+{% load static %} 
+<!-- Parameter Year Row -->
+<tr class="param_row param_row_min param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% elif param.parameter_category in emissions %}table-info{% else %}table-primary{% endif %}{% else %}table-default{% endif %}{% if param.dup_tag %} {% if not index %}dup_default hide {% endif %} {{param.dup_tag}}" data-dup-tag={{param.dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-year={{instance_year}} data-index={{index.0}}{% endif %} data-year={{instance_year}}>
+    <td colspan=3 style="background-color: white;"></td>
+    <!-- Year -->
+    <td class="">
+        <input {% if not can_edit %}disabled{% endif %} type="number" class="dynamic_year_input form-control parameter-year-piecewise" value="{{ instance_year}}" data-year="{{ instance_year }}" data-param_id="{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}">
+    </td>
+    <!-- Parameter Value Config Button -->
+    <td class="param_piecewise_toggle centered" data-param_id="{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}" data-year="{{instance_year}}">
+        <i class="fas fa-chart-line"></i>&nbsp;&nbsp;{% trans 'Configure Piecewise' %}</td>
+    <!-- Value -->
+    <td></td>
+    <!-- Parameter Units -->
+    <td class="text-sm parameter-units" data-value="{{ param.units }}" raw-value="{{ param.raw_units }}">{{ param.units|safe }}</td>
+    <!-- Edit Buttons -->
+    <td class="centered">
+        <button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default btn-sm transparent parameter-reset hide"><i class="fas fa-undo"></i></button>
+        {% if param.level == level %}
+            <button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default transparent parameter-value-delete"><i class="fas fa-times"></i></button>
+        {% endif %}
+    </td>
+    <td style="background-color: white"></td>
+</tr>
+<tr class="param_row param_row_min param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} piecewise_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}_{{instance_year}}{% if param.dup_tag %} {% if not index %}dup_default hide {% endif %} {{param.dup_tag}}" data-dup-tag={{param.dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %} data-year={{instance_year}}>
+    <td class="centered"><i class="fa fa-info-circle"></i></td>
+    <td colspan=2>{% trans "Left column is x values. Right column is y values." %}.</td>
+    <td><b>{% trans "Breakpoint" %}:</b></td>
+    <td><b>{% trans "X" %}:</b></td>
+    <td><b>{% trans "Y" %}:</b></td>
+    <td style="width:80px;" style="background-color: white" data-toggle="tooltip" data-placement="left" title="{% trans 'Evolve this parameter by year' %}">
+        <button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default btn-sm transparent piecewise-value-add"><i class="fas fa-plus"></i> {% trans "Row" %}</button>
+    </td>
+    <td colspan=2></td>
+</tr>
+{% for breakpoint, pair in instance.items %}
+<tr class="param_row param_row_min param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} piecewise_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}_{{instance_year}} {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% elif param.parameter_category in emissions %}table-info{% else %}table-primary{% endif %}{% else %}table-default{% endif %}{% if param.dup_tag %} {% if not index %}dup_default hide {% endif %} {{param.dup_tag}}" data-dup-tag={{param.dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %} data-year={{instance_year}}>
+    <td colspan=3 style="background-color: white;"></td>
+    <td style="background-color: white;" class="piecewise_breakpoint_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}_{{instance_year}}">{{breakpoint}}</td>
+    <!-- X value -->
+    <td class="centered">
+        <!-- Adding context for parameter saving refactor -->
+        {% if index %}
+        <input type="hidden" disabled class="parameter-extra parameter-index" name="edit[parameter_instance][][index]" data-value="{{index.0}}" value="{{index.0}}" disabled>
+        <input type="hidden" disabled class="parameter-extra parameter-dim" name="edit[parameter_instance][][dim]" data-value="{{dim.0}}" value="{{dim.0}}" disabled>
+        {% else %}
+        <input type="hidden" disabled class="parameter-extra parameter-index" name="edit[parameter_instance][][index]" disabled>
+        <input type="hidden" disabled class="parameter-extra parameter-dim" name="edit[parameter_instance][][dim]" disabled>
+        {% endif %}
+        {% if pair.x.id and param.level == level %}
+        <input type="hidden" disabled class="parameter-extra" name="edit[parameter_instance][][id]" data-value="{{pair.x.id}}" value="{{pair.x.id}}" disabled>
+        {% else %}
+        <input type="hidden" disabled class="parameter-extra" name="edit[parameter_instance][][id]" disabled>
+        {% endif %}
+        <input type="hidden" disabled class="parameter-extra" name="edit[parameter_instance][][parameter_id]" data-value="{{param.parameter_id}}" value="{{param.parameter_id}}" disabled>
+        <input type="hidden" disabled class="parameter-extra" name="edit[parameter_instance][][breakpoint]" data-value="x" value="x{{breakpoint}}" disabled>
+        <input type="hidden" disabled class="parameter-extra parameter_year_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}_{{ instance_year}}" name="edit[parameter_instance][][year]" data-value="{{instance_year}}" value="{{instance_year}}" disabled>
+        <input disabled type="text" class="dynamic_value_input form-control parameter-value parameter-value-existing parameter-value-piecewise-x float-value" value="{{ pair.x.placeholder|add_commas }}" data-value="{{ pair.x.placeholder|add_commas }}" name="edit[parameter_instance][][value]">
+        
+    </td>
+    <!-- Y value -->
+    <td class="centered">
+        <!-- Adding context for parameter saving refactor -->
+        {% if index %}
+        <input type="hidden" disabled class="parameter-extra parameter-index" name="edit[parameter_instance][][index]" data-value="{{index.0}}" value="{{index.0}}" disabled>
+        <input type="hidden" disabled class="parameter-extra parameter-dim" name="edit[parameter_instance][][dim]" data-value="{{dim.0}}" value="{{dim.0}}" disabled>
+        {% else %}
+        <input type="hidden" disabled class="parameter-extra parameter-index" name="edit[parameter_instance][][index]" disabled>
+        <input type="hidden" disabled class="parameter-extra parameter-dim" name="edit[parameter_instance][][dim]" disabled>
+        {% endif %}
+        {% if pair.y.id and param.level == level %}
+        <input type="hidden" disabled class="parameter-extra" name="edit[parameter_instance][][id]" data-value="{{pair.y.id}}" value="{{pair.y.id}}" disabled>
+        {% else %}
+        <input type="hidden" disabled class="parameter-extra" name="edit[parameter_instance][][id]" disabled>
+        {% endif %}
+        <input type="hidden" disabled class="parameter-extra" name="edit[parameter_instance][][parameter_id]" data-value="{{param.parameter_id}}" value="{{param.parameter_id}}" disabled>
+        <input type="hidden" disabled class="parameter-extra" name="edit[parameter_instance][][breakpoint]" data-value="y" value="y{{breakpoint}}" disabled>
+        <input type="hidden" disabled class="parameter-extra parameter_year_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}_{{ instance_year}}" name="edit[parameter_instance][][year]" data-value="{{instance_year}}" value="{{instance_year}}" disabled>
+        <input disabled type="text" class="dynamic_value_input form-control parameter-value parameter-value-existing parameter-value-piecewise-y float-value" value="{{ pair.y.placeholder|add_commas }}" data-value="{{ pair.y.placeholder|add_commas }}" name="edit[parameter_instance][][value]">
+    </td>
+    <!-- Parameter Units -->
+    <td class="text-sm parameter-units" data-value="{{ param.units }}" raw-value="{{ param.raw_units }}">{{ param.units|safe }}</td>
+    <!-- Edit Buttons -->
+    <td class="centered">
+        <button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default btn-sm transparent parameter-reset hide"><i class="fas fa-undo"></i></button>
+        {% if param.level == level %}
+            <button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default transparent parameter-value-delete"><i class="fas fa-times"></i></button>
+            {% if index %}
+            <input type="hidden" disabled class="parameter-delete-extra" name="delete[parameter_instance][][index]" data-value="{{index.0}}" value="{{index.0}}">
+            <input type="hidden" disabled class="parameter-delete-extra" name="delete[parameter_instance][][dim]" data-value="{{dim.0}}" value="{{dim.0}}">
+            {% else %}
+            <input type="hidden" disabled class="parameter-delete-extra parameter-index" name="delete[parameter_instance][][index]">
+            <input type="hidden" disabled class="parameter-delete-extra parameter-dim" name="delete[parameter_instance][][dim]">
+            {% endif %}
+            {% if pair.x.id %}
+            <input type="hidden" disabled class="parameter-delete-extra" name="delete[parameter_instance][][id]" data-value="{{pair.x.id}}" value="{{pair.x.id}}">
+            {% else %}
+            <input type="hidden" disabled class="parameter-delete-extra" name="delete[parameter_instance][][id]">
+            {% endif %}
+            <input {% if not can_edit %}disabled{% endif %} style="display: none" class="check_delete" type="checkbox" name="delete[parameter_instance][][delete]">
+            {% if index %}
+            <input type="hidden" disabled class="parameter-delete-extra" name="delete[parameter_instance][][index]" data-value="{{index.0}}" value="{{index.0}}">
+            <input type="hidden" disabled class="parameter-delete-extra" name="delete[parameter_instance][][dim]" data-value="{{dim.0}}" value="{{dim.0}}">
+            {% else %}
+            <input type="hidden" disabled class="parameter-delete-extra parameter-index" name="delete[parameter_instance][][index]">
+            <input type="hidden" disabled class="parameter-delete-extra parameter-dim" name="delete[parameter_instance][][dim]">
+            {% endif %}
+            {% if pair.y.id %}
+            <input type="hidden" disabled class="parameter-delete-extra" name="delete[parameter_instance][][id]" data-value="{{pair.y.id}}" value="{{pair.y.id}}">
+            {% else %}
+            <input type="hidden" disabled class="parameter-delete-extra" name="delete[parameter_instance][][id]">
+            {% endif %}
+            <input {% if not can_edit %}disabled{% endif %} style="display: none" class="check_delete" type="checkbox" name="delete[parameter_instance][][delete]">
+        {% endif %}
+    </td>
+    <td style="background-color: white"></td>
+</tr>
+{% endfor %}
+<tr class="param_row add_piecewise_row_min param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} add_piecewise_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}_{{instance_year}} piecewise_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}_{{instance_year}} {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% elif param.parameter_category in emissions %}table-info{% else %}table-primary{% endif %}{% else %}table-default{% endif %}{% if param.dup_tag %} {% if not index %}dup_default hide {% endif %} {{param.dup_tag}}" data-dup-tag={{param.dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %} data-year={{instance_year}}>
+    <td colspan=3 style="background-color: white;"></td>
+    <td style="background-color: white;" class="piecewise_breakpoint_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}_{{instance_year}}"></td>
+    <!-- X value -->
+    <td class="centered">
+        <!-- Adding context for parameter saving refactor -->
+        {% if index %}
+        <input type="hidden" disabled class="parameter-extra parameter-index" name="edit[parameter_instance][][index]" data-value="{{index.0}}" value="{{index.0}}" disabled>
+        <input type="hidden" disabled class="parameter-extra parameter-dim" name="edit[parameter_instance][][dim]" data-value="{{dim.0}}" value="{{dim.0}}" disabled>
+        {% else %}
+        <input type="hidden" disabled class="parameter-extra parameter-index" name="edit[parameter_instance][][index]" disabled>
+        <input type="hidden" disabled class="parameter-extra parameter-dim" name="edit[parameter_instance][][dim]" disabled>
+        {% endif %}
+        <input type="hidden" disabled class="parameter-extra" name="edit[parameter_instance][][id]" disabled>
+        <input type="hidden" disabled class="parameter-extra" name="edit[parameter_instance][][parameter_id]" data-value="{{param.parameter_id}}" value="{{param.parameter_id}}" disabled>
+        <input type="hidden" disabled class="parameter-extra parameter-breakpoint" name="edit[parameter_instance][][breakpoint]" data-value="x" value="x" disabled>
+        <input type="hidden" disabled class="parameter-extra parameter_year_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}_{{ instance_year}}" name="edit[parameter_instance][][year]" data-value="{{instance_year}}" value="{{instance_year}}" disabled>
+        <input disabled type="text" class="dynamic_value_input form-control parameter-value parameter-value-existing parameter-value-piecewise-x float-value" value="{{ pair.x.placeholder|add_commas }}" data-value="{{ pair.x.placeholder|add_commas }}" name="edit[parameter_instance][][value]">
+        
+    </td>
+    <!-- Y value -->
+    <td class="centered">
+        <!-- Adding context for parameter saving refactor -->
+        {% if index %}
+        <input type="hidden" disabled class="parameter-extra parameter-index" name="edit[parameter_instance][][index]" data-value="{{index.0}}" value="{{index.0}}" disabled>
+        <input type="hidden" disabled class="parameter-extra parameter-dim" name="edit[parameter_instance][][dim]" data-value="{{dim.0}}" value="{{dim.0}}" disabled>
+        {% else %}
+        <input type="hidden" disabled class="parameter-extra parameter-index" name="edit[parameter_instance][][index]" disabled>
+        <input type="hidden" disabled class="parameter-extra parameter-dim" name="edit[parameter_instance][][dim]" disabled>
+        {% endif %}
+        <input type="hidden" disabled class="parameter-extra" name="edit[parameter_instance][][id]" disabled>
+        <input type="hidden" disabled class="parameter-extra" name="edit[parameter_instance][][parameter_id]" data-value="{{param.parameter_id}}" value="{{param.parameter_id}}" disabled>
+        <input type="hidden" disabled class="parameter-extra parameter-breakpoint" name="edit[parameter_instance][][breakpoint]" data-value="y" value="y" disabled>
+        <input type="hidden" disabled class="parameter-extra parameter_year_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}_{{ instance_year}}" name="edit[parameter_instance][][year]" data-value="{{instance_year}}" value="{{instance_year}}" disabled>
+        <input disabled type="text" class="dynamic_value_input form-control parameter-value parameter-value-existing parameter-value-piecewise-y float-value" value="{{ pair.y.placeholder|add_commas }}" data-value="{{ pair.y.placeholder|add_commas }}" name="edit[parameter_instance][][value]">
+    </td>
+    <!-- Parameter Units -->
+    <td class="text-sm parameter-units" data-value="{{ param.units }}" raw-value="{{ param.raw_units }}">{{ param.units|safe }}</td>
+    <!-- Edit Buttons -->
+    <td class="centered">
+        <button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default transparent parameter-value-remove" title="{% trans 'Remove a row' %}"><i class="fas fa-minus"></i></button>
+    </td>
+    <td style="background-color: white"></td>
+</tr>

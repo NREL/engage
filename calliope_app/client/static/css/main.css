@@ -465,6 +465,9 @@ table .btn {
 .add_param_row_min * {
     display: none; 
 }
+.add_piecewise_row_min * {
+    display: none; 
+}
 
 .fa-exclamation-triangle {
 	color: red;

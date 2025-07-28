@@ -612,6 +612,9 @@ def update_tech_params(request):
 
     technology = model.technologies.filter(id=technology_id)
 
+    #print(json.dumps(escaped_form_data, indent=1))
+
+    #raise Exception
     if len(technology) > 0:
         comments = technology.first().update(escaped_form_data)
         # Log Activity

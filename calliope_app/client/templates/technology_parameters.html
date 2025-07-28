@@ -19,7 +19,9 @@
 {% endfor %}{% endif %}
 <table id="param_table" class="table table-hover table-sm" style="white-space:nowrap">
 	<tbody>
-		{% for param in parameters %}
+		{% for p in parameters %}
+			{% with parameters|return_item:p as param %}
+			
 			{% if param.level != "1_tech" %}{% if param.level != "2_loc_tech" %}
 				{% ifchanged param.parameter_category %}
 				<!-- Category Header Row  -->
@@ -43,23 +45,26 @@
 					</tr>
 				{% endifchanged %}
 			{% endif %}{% endif %}
-			{% with parameters|return_item:forloop.counter as next_param %}
 			{% if param.dup_tag and not param.index %}
 				{% for mvalue in multiselect_values %}
 					{% if mvalue.dup_tag == param.dup_tag %}
 						{% if param.parameter_id not in existing_dupes or mvalue not in existing_dupes|return_item:param.parameter_id %}
 						{% with mvalue.index as index and mvalue.dim as dim and mvalue.rate as rate and mvalue.quantity as quantity %}
+							{% for instance_year, instance in param.instances.items|slice:":1" %}
 							{% include "technology_parameter_master_row.html" %}
 							{% include "technology_parameter_year_value_row.html" %}
 							{% include "technology_parameter_add_rows.html" %}
+							{% endfor %}
 						{% endwith %}
 					{% endif %}{% endif %}
 				{% endfor %}
 			{% else %}
 				{% with param.index as index and param.dim as dim %}
-				{% ifchanged param.parameter_name param.parameter_root param.index %}
-					{% include "technology_parameter_master_row.html" %}
-				{% endifchanged %}
+				{% with param.instances|return_first_key as instance_year %}
+				{% with param.instances|return_item:instance_year as instance %}
+				<!-- Parameter Master Row -->
+				{% include "technology_parameter_master_row.html" %}
+				{% endwith %} {% endwith %}
 				<!-- Parameter Auxiliary Rows -->
 				{% if param.timeseries == True %}
 					<!-- Timeseries Visualization Row -->
@@ -68,14 +73,20 @@
 							<div id="chart-{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}" class="row centered timeseries_viz"></div>
 						</td>
 					</tr>
+				{% elif param.type == "piecewise" %}
+					{% for instance_year, instance in param.instances.items %}
+					{% include "technology_parameter_piecewise_row.html" %}
+					{% endfor %}
+					{% include "technology_parameter_piecewise_add_row.html" %}				
 				{% else %}
+					<!-- Year-value param for every param instance -->
+					{% for instance_year, instance in param.instances.items %}
 					{% include "technology_parameter_year_value_row.html" %}
-				{% endif %}
-				<!-- Parameter Add Row (Always Hidden) -->
-				{% if next_param.parameter_id != param.parameter_id or next_param.index != param.index %}
-				{% if param.timeseries == False %}
-					{% include "technology_parameter_add_rows.html" %}
-				{% endif %}
+					{% endfor %}
+					<!-- Parameter Add Row (Always Hidden) -->
+					{% if param.timeseries == False %}
+						{% include "technology_parameter_add_rows.html" %}
+					{% endif %}
 				{% endif %}
 				{% endwith %}
 			{% endif %}

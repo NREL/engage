@@ -165,15 +165,84 @@ def all_tech_params(request):
                     multiselect_values += [{'dup_tag':dup_tag,'index':[val],'dim':['carriers'],'rate':carriers[val]['rate'],
                                                  'quantity':carriers[val]['quantity']}]
 
-    
-    existing_dupes = {}    
+    existing_dupes = {}
+    # Preprocess parameters to group any piecewise or multi-year parameters to organize frontend table
+    param_dict = {}
     for param in parameters:
-        param['raw_units'] = param['units']
+        if f"{param['parameter_id']}{param['index']}{param['dim']}" not in param_dict.keys():
+            param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"] = {
+                'type':'piecewise' if 'piecewise' in param['tags'] else 'single',
+                'level': param['level'], 
+                'technology_id': param['technology_id'],
+                'parameter_root': param["parameter_root"],
+                'parameter_category': param['parameter_category'],
+                'parameter_id': param["parameter_id"],
+                'parameter_name': param["parameter_name"],
+                'parameter_pretty_name': param['parameter_pretty_name'],
+                'parameter_description': param['parameter_description'],
+                'choices': param["choices"],
+                'timeseries_enabled': param["timeseries_enabled"],
+                'timeseries': param["timeseries"],
+                'timeseries_meta_id': param["timeseries_meta_id"],
+                'tags': param["tags"],
+                'index': param["index"],
+                'dim': param["dim"],
+                'dup_tag': param["dup_tag"],
+                'raw_units': param["units"],
+                'units': param["units"],
+                'instances': {}
+            }
+        if param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"]['type'] == 'piecewise':
+            if param['level'] == '0_abstract':
+                param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"]['instances']["0"] = {
+                    "0":{"x":{
+                            'id': param['id'],
+                            'value': param["value"],
+                            'placeholder': param["placeholder"]},
+                        'y':{
+                            'id': param['id'],
+                            'value': param["value"],
+                            'placeholder': param["placeholder"]}
+                    }
+                }
+            else:
+                piecewise_dim = param['piecewise_dim'][0]
+                piecewise_index = param['piecewise_dim'][1]
+                if param["year"] not in param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"]['instances']:
+                    param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"]['instances'][param["year"]] = {}
+                if piecewise_index not in param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"]['instances'][param["year"]]:
+                    param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"]['instances'][param["year"]][piecewise_index] = {
+                        piecewise_dim: {
+                            'id': param['id'],
+                            'value': param["value"],
+                            'placeholder': param["placeholder"]
+                        }
+                    }
+                else:
+                    param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"]['instances'][param["year"]][piecewise_index][piecewise_dim] = {
+                        'id': param['id'],
+                        'value': param["value"],
+                        'placeholder': param["placeholder"]
+                    }
+        elif param["year"] not in param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"]['instances']:
+            param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"]['instances'][param["year"]] = [{
+                'id': param['id'],
+                'value': param["value"],
+                'placeholder': param["placeholder"]
+            }]
+        else:
+            param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"]['instances'][param["year"]] += [{
+                'id': param['id'],
+                'value': param["value"],
+                'placeholder': param["placeholder"]
+            }]
+       
         if param['index']:
             if param['parameter_id'] not in existing_dupes.keys():
                 existing_dupes[param['parameter_id']] = []
             existing_dupes[param['parameter_id']] += [{'dup_tag':param['dup_tag'], 'index':param['index'],'dim':['carriers'],'rate':carriers[param['index'][0]]['rate'],
                                                  'quantity':carriers[param['index'][0]]['quantity']}]
+    
     carriers = {c:{'name':c,'rate':v['rate'],'quantity':v['quantity']} for c,v in carriers.items()}
 
     timeseries = Timeseries_Meta.objects.filter(model=model, failure=False,
@@ -198,7 +267,7 @@ def all_tech_params(request):
     context = {
         "technology": technology,
         "model": model,
-        "parameters": parameters,
+        "parameters": param_dict,
         "carriers": carriers,
         "level": "1_tech",
         "timeseries": timeseries,
@@ -316,15 +385,80 @@ def all_loc_tech_params(request):
                     multiselect_values += [{'dup_tag':dup_tag,'index':[val],'dim':['carriers'],'rate':carriers[val]['rate'],
                                                  'quantity':carriers[val]['quantity']}]
 
-    
-    existing_dupes = {}    
+    existing_dupes = {}
+    # Preprocess parameters to group any piecewise or multi-year parameters to organize frontend table
+    param_dict = {}
     for param in parameters:
-        param['raw_units'] = param['units']
-        if param['index']:
-            if param['parameter_id'] not in existing_dupes.keys():
-                existing_dupes[param['parameter_id']] = []
-            existing_dupes[param['parameter_id']] += [{'dup_tag':param['dup_tag'], 'index':param['index'],'dim':['carriers'],'rate':carriers[param['index'][0]]['rate'],
-                                                 'quantity':carriers[param['index'][0]]['quantity']}]
+        if f"{param['parameter_id']}{param['index']}{param['dim']}" not in param_dict.keys():
+            param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"] = {
+                'type':'piecewise' if 'piecewise' in param['tags'] else 'single',
+                'level': param['level'], 
+                'technology_id': param['technology_id'],
+                'parameter_root': param["parameter_root"],
+                'parameter_category': param['parameter_category'],
+                'parameter_id': param["parameter_id"],
+                'parameter_name': param["parameter_name"],
+                'parameter_pretty_name': param['parameter_pretty_name'],
+                'parameter_description': param['parameter_description'],
+                'choices': param["choices"],
+                'timeseries_enabled': param["timeseries_enabled"],
+                'timeseries': param["timeseries"],
+                'timeseries_meta_id': param["timeseries_meta_id"],
+                'tags': param["tags"],
+                'index': param["index"],
+                'dim': param["dim"],
+                'dup_tag': param["dup_tag"],
+                'raw_units': param["units"],
+                'units': param["units"],
+                'instances': {}
+            }
+        if param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"]['type'] == 'piecewise':
+            if param['level'] == '0_abstract':
+                param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"]['instances']["0"] = {
+                    "0":{"x":{
+                            'id': param['id'],
+                            'value': param["value"],
+                            'placeholder': param["placeholder"]},
+                        'y':{
+                            'id': param['id'],
+                            'value': param["value"],
+                            'placeholder': param["placeholder"]}
+                    }
+                }
+            else:
+                piecewise_dim = param['piecewise_dim'][0]
+                piecewise_index = param['piecewise_dim'][1]
+                if param["year"] not in param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"]['instances']:
+                    param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"]['instances'][param["year"]] = {}
+                if piecewise_index not in param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"]['instances'][param["year"]]:
+                    param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"]['instances'][param["year"]][piecewise_index] = {
+                        piecewise_dim: {
+                            'id': param['id'],
+                            'value': param["value"],
+                            'placeholder': param["placeholder"]
+                        }
+                    }
+                else:
+                    param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"]['instances'][param["year"]][piecewise_index][piecewise_dim] = {
+                        'id': param['id'],
+                        'value': param["value"],
+                        'placeholder': param["placeholder"]
+                    }
+        elif param["year"] not in param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"]['instances']:
+            param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"]['instances'][param["year"]] = [{
+                'id': param['id'],
+                'value': param["value"],
+                'placeholder': param["placeholder"]
+            }]
+        else:
+            param_dict[f"{param['parameter_id']}{param['index']}{param['dim']}"]['instances'][param["year"]] += [{
+                'id': param['id'],
+                'value': param["value"],
+                'placeholder': param["placeholder"]
+            }]
+    
+    print(param_dict.keys())
+    print(param_dict['174NoneNone'])
 
     units_in_ids= ParamsManager.get_tagged_params('units_in')
     units_out_ids= ParamsManager.get_tagged_params('units_out')
@@ -349,7 +483,7 @@ def all_loc_tech_params(request):
         "emissions": emissions,
         "loc_tech": loc_tech,
         "model": model,
-        "parameters": parameters,
+        "parameters": param_dict,
         "carriers": carriers,
         "carrier_in": carrier_in,
         "carrier_out":carrier_out,

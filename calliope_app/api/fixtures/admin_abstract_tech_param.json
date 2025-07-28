@@ -3828,7 +3828,7 @@
     "pk": 426,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "6",
+      "abstract_tech_id": "5",
       "parameter_id": "170",
       "default_value": ""
     }
@@ -3837,7 +3837,7 @@
     "pk": 427,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "7",
+      "abstract_tech_id": "6",
       "parameter_id": "170",
       "default_value": ""
     }
@@ -3846,7 +3846,7 @@
     "pk": 428,
     "model": "api.abstract_tech_param",
     "fields": {
-      "abstract_tech_id": "5",
+      "abstract_tech_id": "7",
       "parameter_id": "170",
       "default_value": ""
     }
@@ -3920,6 +3920,24 @@
     "fields": {
       "abstract_tech_id": "7",
       "parameter_id": "173",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 437,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "174",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 438,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "174",
       "default_value": ""
     }
   }
