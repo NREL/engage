@@ -29,10 +29,17 @@ function activate_table() {
 		var row = $(this).parents('tr'),
 			year = row.find('.parameter-year').val(),
 			old_year = row.find('.parameter-year').data('value'),
-			value = row.find('.parameter-value').val(),
-			old_value = row.find('.parameter-value').data('value'),
 			param_id = $(this).parents('tr').data('param_id'),
 			ts_id = row.find('.parameter-value.timeseries').val();
+
+		if ($(this).hasClass('parameter-value-piecewise-x') | $(this).hasClass('parameter-value-piecewise-y')){
+			var value = $(this).val(),
+			old_value = $(this).data('value');
+		} else {
+			var value = row.find('.parameter-value').val(),
+			old_value = row.find('.parameter-value').data('value');
+		}
+		
 		// Convert to number if possible
 		if (+value) { value = +value };
 		if (+old_value) { old_value = +old_value };
@@ -127,10 +134,12 @@ function activate_table() {
 			row.find('.check_delete').prop("checked", false);
 			row.removeClass('table-danger');
 			row.find('.parameter-value, .parameter-year, .parameter-extra').prop('disabled', false);
+			row.find('.parameter-delete-extra').prop('disabled', true);
 		} else {
 			row.find('.check_delete').prop("checked", true);
 			row.addClass('table-danger');
 			row.find('.parameter-value, .parameter-year, .parameter-extra').prop('disabled', true);
+			row.find('.parameter-delete-extra').prop('disabled', false);
 		}
 		check_unsaved();
 	});
@@ -190,11 +199,32 @@ function activate_table() {
 		$(this).parents('tr').find('.parameter-target-value').html('');
 		add_row($(this));
 	});
+	// Show parameter rows and append another row
+	$('.piecewise-value-add').unbind();
+	$('.piecewise-value-add').on('click', function() {
+		//$(this).parents('tr').find('.parameter-target-value').html('');
+		add_piecewise_row($(this));
+	});
 	// Drop parameter row
 	$('.parameter-value-remove').unbind();
 	$('.parameter-value-remove').on('click', function() {
 		var row = $(this).parents('tr');
 		row.remove();
+		check_unsaved();
+	});
+
+	// Show and Hide the piecewise rows for a specific year
+	$('.param_piecewise_toggle').unbind();
+	$('.param_piecewise_toggle').on('click', function() {
+		var param_id = $(this).data('param_id'),
+			year = $(this).data('year');
+		piecewise_row_toggle(param_id+'_'+year, false);
+	});
+
+	// Update piecewise year when input is changed
+	$('.parameter-year-piecewise').unbind();
+	$('.parameter-year-piecewise').on('keyup', function() {
+		update_piecewise_year($(this));
 		check_unsaved();
 	});
 
@@ -223,22 +253,6 @@ function activate_table() {
 	  $('[data-toggle="tooltip"]').tooltip()
 	});
 
-	if ($('.units_in_selector').length){
-		in_sel = $('.units_in_selector').first();
-		carrier_in = {'name':in_sel.val(),'rate_unit':in_sel.find('option:selected').attr('rate_unit'),'quantity_unit':in_sel.find('option:selected').attr('quantity_unit')};
-	}else{
-		in_field = $('.units_in_field').first();
-		carrier_in = {'name':in_field.val(),'rate_unit':in_field.attr('rate_unit'),'quantity_unit':in_field.attr('quantity_unit')};
-	}
-	if ($('.units_out_selector').length){
-		out_sel = $('.units_out_selector').first();
-		carrier_out = {'name':out_sel.val(),'rate_unit':out_sel.find('option:selected').attr('rate_unit'),'quantity_unit':out_sel.find('option:selected').attr('quantity_unit')};
-	}else{
-		out_field = $('.units_out_field').first();
-		carrier_out = {'name':out_field.val(),'rate_unit':out_field.attr('rate_unit'),'quantity_unit':out_field.attr('quantity_unit')};
-	}
-	update_carriers(carrier_in,carrier_out,true);
-
 };
 
 
@@ -261,6 +275,16 @@ function param_row_toggle(param_id, expand_only) {
 		$('.param_row_'+param_id).addClass('param_row_min');
 		row.find('.view_rows').removeClass('hide');
 		row.find('.hide_rows').addClass('hide');
+	};
+};
+
+function piecewise_row_toggle(param_id, expand_only) {
+	var row = $('tr[data-param_id='+param_id+']');
+	if (expand_only || $('.piecewise_row_'+param_id).hasClass('param_row_min')) {
+		$('.piecewise_row_'+param_id).removeClass('param_row_min');
+		$('.piecewise_row_'+param_id).find('.parameter-value-existing, .parameter-extra').prop('disabled', false);
+	} else {
+		$('.piecewise_row_'+param_id).addClass('param_row_min');
 	};
 };
 
@@ -297,6 +321,21 @@ function get_tech_parameters() {
 				activate_table();
 				activate_favorites();
 				collapse_parameter_library();
+				if ($('.units_in_selector').length){
+					in_sel = $('.units_in_selector').first();
+					carrier_in = {'name':in_sel.val(),'rate_unit':in_sel.find('option:selected').attr('rate_unit'),'quantity_unit':in_sel.find('option:selected').attr('quantity_unit')};
+				}else{
+					in_field = $('.units_in_field').first();
+					carrier_in = {'name':in_field.val(),'rate_unit':in_field.attr('rate_unit'),'quantity_unit':in_field.attr('quantity_unit')};
+				}
+				if ($('.units_out_selector').length){
+					out_sel = $('.units_out_selector').first();
+					carrier_out = {'name':out_sel.val(),'rate_unit':out_sel.find('option:selected').attr('rate_unit'),'quantity_unit':out_sel.find('option:selected').attr('quantity_unit')};
+				}else{
+					out_field = $('.units_out_field').first();
+					carrier_out = {'name':out_field.val(),'rate_unit':out_field.attr('rate_unit'),'quantity_unit':out_field.attr('quantity_unit')};
+				}
+				update_carriers(carrier_in,carrier_out,true);
 				check_unsaved();
 				activate_essentials();
 			}
@@ -450,6 +489,21 @@ function get_loc_tech_parameters() {
 				activate_table();
 				activate_favorites();
 				collapse_parameter_library();
+				if ($('.units_in_selector').length){
+					in_sel = $('.units_in_selector').first();
+					carrier_in = {'name':in_sel.val(),'rate_unit':in_sel.find('option:selected').attr('rate_unit'),'quantity_unit':in_sel.find('option:selected').attr('quantity_unit')};
+				}else{
+					in_field = $('.units_in_field').first();
+					carrier_in = {'name':in_field.val(),'rate_unit':in_field.attr('rate_unit'),'quantity_unit':in_field.attr('quantity_unit')};
+				}
+				if ($('.units_out_selector').length){
+					out_sel = $('.units_out_selector').first();
+					carrier_out = {'name':out_sel.val(),'rate_unit':out_sel.find('option:selected').attr('rate_unit'),'quantity_unit':out_sel.find('option:selected').attr('quantity_unit')};
+				}else{
+					out_field = $('.units_out_field').first();
+					carrier_out = {'name':out_field.val(),'rate_unit':out_field.attr('rate_unit'),'quantity_unit':out_field.attr('quantity_unit')};
+				}
+				update_carriers(carrier_in,carrier_out,true);
 				check_unsaved();
 				retrieve_map(false, undefined, technology_id, loc_tech_id);
 			}
@@ -1143,9 +1197,13 @@ function reconvert_all(load_flg){
 	}
 	$('.parameter-value-new, .parameter-value-existing, .parameter-year-existing').each(function(){
 		var row = $(this).parents('tr'),
-			value = row.find('.parameter-value').val(),
 			ts_id = row.find('.parameter-value.timeseries').val();
-			// Convert to number if possible
+		if ($(this).hasClass('parameter-value-piecewise-x') | $(this).hasClass('parameter-value-piecewise-y')){
+			var value = $(this).val();
+		} else {
+			var value = row.find('.parameter-value').val();
+		}
+		// Convert to number if possible
 
 		if (value && $(this).hasClass('float-value') == true){
 			if (+value) { value = +value };
@@ -1221,39 +1279,137 @@ function add_row($this) {
 		param_id = row.attr('data-param_id');
 	row.addClass('param_header');
 	$('.param_row_'+param_id).removeClass('param_row_min');
-	var p_row = $('.param_row_'+param_id),
-	p_value = p_row.find('.parameter-value-existing').attr('data-value'),
-	units = p_row.find('.parameter-units').attr('data-value'),
-	val = convert_units(p_value, units);
-	if (typeof(val) == 'number') {
-		p_row.find('.parameter-value-existing').attr('data-target_value',val).prop('disabled', false);
-	} else {
-		p_row.find('.parameter-value-existing').addClass('invalid-value').prop('disabled', false);
-		p_row.find('.parameter-target-value').html(row.find('.parameter-target-value').attr('data-value'));
-	}
-	p_row.find('.parameter-extra').prop('disabled', false);
+	var p_row = $('.param_row_'+param_id)
+	p_row.find('.parameter-value-existing').each(function(){
+		p_value = $(this).val(),
+		units = p_row.find('.parameter-units').attr('data-value'),
+		val = convert_units(p_value, units);
+		if (typeof(val) == 'number') {
+			$(this).attr('data-target_value',val).prop('disabled', false);
+		} else {
+			$(this).addClass('invalid-value').prop('disabled', false);
+			p_row.find('.parameter-target-value').html(row.find('.parameter-target-value').attr('data-value'));
+		}
+	});
+	p_row.each(function(){
+		if (!$(this).hasClass('add_piecewise_row_min')) {
+			$(this).find('.parameter-extra').prop('disabled', false);
+		}
+	});
 	head_value_cell = row.find('.head_value');
 	head_value_cell.removeClass('head_value').addClass('param_row_toggle');
 	head_value_cell.find('.static_inputs, .parameter-extra').remove();
 	row.find('.param_row_toggle').find('.hide_rows').removeClass('hide');
 	row.find('.param_row_toggle').find('.view_rows').addClass('hide');
-	var add_row = $('.add_param_row_'+param_id).last().clone();
+	row.find('.param_piecewise_toggle').addClass('hide');
+	var max_year = 0;
+	$('.param_row_'+param_id).each(function() {
+		if ($(this).attr('data-year') > max_year) {
+			max_year = $(this).attr('data-year');
+		}
+	});
+	$('.add_param_row_'+param_id).each(function() {
+		row_a = $(this).clone();
+		if (!row_a.hasClass('add_piecewise_row_min')){
+			row_a.find('.parameter-value-new').addClass('dynamic_value_input').prop('disabled', false);
+			row_a.find('.parameter-year-new').addClass('dynamic_year_input').prop('disabled', false);
+			row_a.addClass('table-warning');
+			row_a.find('.parameter-target-value').html('');
+			row_a.find('.parameter-target-value').attr('data-value', '');
+			row_a.find('.parameter-extra').prop('disabled', false);
+			row_a.removeClass('param_row_'+param_id+'_year');
+			row_a.removeClass('add_piecewise_row_'+param_id+'_year');
+		}
+		if (row_a.hasClass('piecewise_row_'+param_id+'_year')) {
+			row_a.removeClass('piecewise_row_'+param_id+'_year');
+			row_a.addClass('piecewise_row_'+param_id+'_'+(max_year+1));
+			row_a.attr('data-year', (max_year+1));
+			row_a.find('.parameter_year_'+param_id+'_year').removeClass('parameter_year_'+param_id+'_year').addClass('parameter_year_'+param_id+'_'+(max_year+1));
+			row_a.find('.piecewise_breakpoint_'+param_id+'_year').removeClass('piecewise_breakpoint_'+param_id+'_year').addClass('piecewise_breakpoint_'+param_id+'_'+(max_year+1));
+		}
+		if (row_a.hasClass('add_piecewise_row_'+param_id+'_year')){
+			row_a.removeClass('add_piecewise_row_'+param_id+'_year');
+			row_a.addClass('add_piecewise_row_'+param_id+'_'+(max_year+1));
+		}
+		if (row_a.hasClass('add_param_row_header')) {
+			row_a.find('.parameter-year-piecewise, .param_piecewise_toggle').attr('data-year', (max_year+1));
+			row_a.attr('data-year', (max_year+1));
+		}
+		row_a.removeClass('add_param_row_min').removeClass('add_param_row_'+param_id).removeClass('add_param_row_header');
+		row_a.insertBefore($('.add_param_row_'+param_id+'.add_param_row_header').last());
+	});
+	activate_table();
+	check_unsaved();
+	return row_a;
+}
+
+function add_piecewise_row($this) {
+	var row = $this.parents('tr'),
+		param_id = row.attr('data-param_id')
+		param_year = row.attr('data-year');
+	row.addClass('param_header');
+	$('.piecewise_row_'+param_id).removeClass('param_row_min');
+	var p_row = $('.piecewise_row_'+param_id+'_'+param_year)
+	p_row.find('.parameter-value-existing').each(function(){
+		p_value = $(this).val(),
+		units = p_row.find('.parameter-units').attr('data-value'),
+		val = convert_units(p_value, units);
+		if (typeof(val) == 'number') {
+			$(this).attr('data-target_value',val).prop('disabled', false);
+		} else {
+			$(this).addClass('invalid-value').prop('disabled', false);
+			//p_row.find('.parameter-target-value').html(row.find('.parameter-target-value').attr('data-value'));
+		}
+	});
+	p_row.each(function(){
+		if (!$(this).hasClass('add_piecewise_row_min')) {
+			$(this).find('.parameter-extra').prop('disabled', false);
+		}
+	});
+	head_value_cell = row.find('.head_value');
+	head_value_cell.removeClass('head_value').addClass('param_row_toggle');
+	head_value_cell.find('.static_inputs, .parameter-extra').remove();
+	var add_row = $('.add_piecewise_row_'+param_id+'_'+param_year).last().clone();
 	add_row.find('.parameter-value-new').addClass('dynamic_value_input').prop('disabled', false);
 	add_row.find('.parameter-year-new').addClass('dynamic_year_input').prop('disabled', false);
-	add_row.removeClass('add_param_row_min').addClass('table-warning');
-	add_row.insertBefore($('.add_param_row_'+param_id).last());
+	add_row.removeClass('add_piecewise_row_min').addClass('table-warning');
+	add_row.insertBefore($('.add_piecewise_row_'+param_id+'_'+param_year).last());
 	add_row.find('.parameter-target-value').html('');
 	add_row.find('.parameter-target-value').attr('data-value', '');
 	add_row.find('.parameter-extra').prop('disabled', false);
+	breakpoints = $('.piecewise_breakpoint_'+param_id+'_'+param_year).map(function(i, el){
+		return $(el).text();
+	}).get();
+	breakpoint_max = Math.max(...breakpoints);
+	breakpoint_value = 0;
+	for (let breakpoint = 0; breakpoint <= breakpoint_max+1; breakpoint++){
+		if (!breakpoints.includes(String(breakpoint))){
+			breakpoint_value = String(breakpoint);
+			break;
+		} 
+	}
+	add_row.find('.piecewise_breakpoint_'+param_id+'_'+param_year).html(breakpoint_value);
+	add_row.find('.parameter-breakpoint').each(function() {
+		piecewise_dim = $(this).attr('data-value');
+		$(this).val(piecewise_dim+(breakpoint_value).toString());
+	});
 	activate_table();
 	check_unsaved();
 	return add_row;
 }
 
+function update_piecewise_year($this) {
+	console.log('Here'+$this.data('year'));
+	var param_id = $this.data('param_id'),
+		year = $this.data('year');
+	$('.parameter_year_'+param_id+'_'+year).val($this.val());
+	$('.piecewise_row_'+param_id+'_'+year).addClass('table-warning');
+}
+
 function check_unsaved() {
 	// Set warning on parameter headers if sub rows have modifications
-	$('.param_header').removeClass('table-warning')
-	$('.tbl-header').removeClass('table-warning')
+	$('.param_header:not(:has(.parameter-value-new, .parameter-value-existing, .parameter-year-existing)').removeClass('table-warning');
+	$('.tbl-header').removeClass('table-warning');
 	$('.table-warning, .table-danger').each(function() {
 		var param_id = $(this).data('param_id');
 		$('.param_header[data-param_id='+param_id+']').addClass('table-warning');

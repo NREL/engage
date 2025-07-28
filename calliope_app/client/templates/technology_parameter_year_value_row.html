@@ -10,7 +10,7 @@
     <td colspan=3 style="background-color: white;"></td>
     <!-- Year -->
     <td class="">
-        <input {% if not can_edit %}disabled{% endif %} type="number" class="dynamic_year_input form-control parameter-year parameter-year-existing" value="{{ param.year }}" data-value="{{ param.year }}" name="edit[parameter_instance][][year]">
+        <input {% if not can_edit %}disabled{% endif %} type="number" class="dynamic_year_input form-control parameter-year parameter-year-existing" value="{{ instance_year }}" data-value="{{ instance_year }}" name="edit[parameter_instance][][year]">
     </td>
     <!-- Value -->
     <td class="centered">
@@ -22,35 +22,35 @@
         <input type="hidden" disabled class="parameter-extra parameter-index" name="edit[parameter_instance][][index]" disabled>
         <input type="hidden" disabled class="parameter-extra parameter-dim" name="edit[parameter_instance][][dim]" disabled>
         {% endif %}
-        {% if param.id and param.level == level %}
-        <input type="hidden" disabled class="parameter-extra" name="edit[parameter_instance][][id]" data-value="{{param.id}}" value="{{param.id}}" disabled>
+        {% if instance.0.id and param.level == level %}
+        <input type="hidden" disabled class="parameter-extra" name="edit[parameter_instance][][id]" data-value="{{instance.0.id}}" value="{{instance.0.id}}" disabled>
         {% else %}
         <input type="hidden" disabled class="parameter-extra" name="edit[parameter_instance][][id]" disabled>
         {% endif %}
         <input type="hidden" disabled class="parameter-extra" name="edit[parameter_instance][][parameter_id]" data-value="{{param.parameter_id}}" value="{{param.parameter_id}}" disabled>
         {% if param.choices or param.parameter_is_carrier %}
-        <select {% if not can_edit %}disabled{% endif %} class="dynamic_value_input form-control parameter-value parameter-value-existing" name="edit[parameter_instance][][value]" data-value="{{ param.value }}">
+        <select {% if not can_edit %}disabled{% endif %} class="dynamic_value_input form-control parameter-value parameter-value-existing" name="edit[parameter_instance][][value]" data-value="{{ instance.0.value }}">
             {% if param.choices %}
                 {% for choice in param.choices %}
-                <option value="{{ choice }}" {% if choice == param.value %}selected{% endif %}>{{ choice }}</option>
+                <option value="{{ choice }}" {% if choice == instance.0.value %}selected{% endif %}>{{ choice }}</option>
                 {% endfor %}
             {% else %}
-                {% if not param.value %}
+                {% if not instance.0.value %}
                 <option selected></option>
                 {% endif %}
                 {% for c in carriers %}
 			    {% with carriers|return_item:c as choice %}
-                <option value="{{ choice.name }}" {% if choice.name == param.value %}selected{% endif %}>{{ choice.name }}</option>
+                <option value="{{ choice.name }}" {% if choice.name == instance.0.value %}selected{% endif %}>{{ choice.name }}</option>
                 {% endwith%} {% endfor %}
             {% endif %}
         </select>
         {% else %}
-        <input disabled type="text" class="dynamic_value_input form-control parameter-value parameter-value-existing {% if param.units == '<sub>ABC</sub>' %}text-value{% else %}float-value{% endif %}" value="{{ param.placeholder|add_commas }}" data-value="{{ param.placeholder|add_commas }}" name="edit[parameter_instance][][value]">
+        <input disabled type="text" class="dynamic_value_input form-control parameter-value parameter-value-existing {% if param.units == '<sub>ABC</sub>' %}text-value{% else %}float-value{% endif %}" value="{{ instance.0.placeholder|add_commas }}" data-value="{{ instance.0.placeholder|add_commas }}" name="edit[parameter_instance][][value]">
         {% endif %}
     </td>
     <!-- Parameter Values -->
     {% if param.timeseries == False and not param.choices and not param.parameter_is_carrier %}
-    <td class="parameter-target-value" style="text-align:right;" data-value="{{ param.value|add_commas }}">{{ param.value|add_commas }}</td>
+    <td class="parameter-target-value" style="text-align:right;" data-value="{{ instance.0.value|add_commas }}">{{ instance.0.value|add_commas }}</td>
     {% else %}
     <td></td>
     {% endif %}
@@ -68,8 +68,8 @@
             <input type="hidden" disabled class="parameter-delete-extra parameter-index" name="delete[parameter_instance][][index]">
             <input type="hidden" disabled class="parameter-delete-extra parameter-dim" name="delete[parameter_instance][][dim]">
             {% endif %}
-            {% if param.id %}
-            <input type="hidden" disabled class="parameter-delete-extra" name="delete[parameter_instance][][id]" data-value="{{param.id}}" value="{{param.id}}">
+            {% if instance.0.id %}
+            <input type="hidden" disabled class="parameter-delete-extra" name="delete[parameter_instance][][id]" data-value="{{instance.0.id}}" value="{{instance.0.id}}">
             {% else %}
             <input type="hidden" disabled class="parameter-delete-extra" name="delete[parameter_instance][][id]">
             {% endif %}

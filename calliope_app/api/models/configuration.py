@@ -911,6 +911,7 @@ class Tech_Param(models.Model):
     flags = ArrayField(models.CharField(max_length=20,blank=True),default=list)
     index = ArrayField(models.CharField(max_length=200, blank=True),blank=True,null=True)
     dim = ArrayField(models.CharField(max_length=200, blank=True),blank=True,null=True)
+    piecewise_dim = models.CharField(max_length=10, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
@@ -1124,7 +1125,8 @@ class Tech_Param(models.Model):
                             raw_value=raw_value,
                             year=value_dict['year'] if 'year' in value_dict else 0,
                             index=[value_dict['index']],
-                            dim=[value_dict['dim']])
+                            dim=[value_dict['dim']],
+                            piecewise_dim=value_dict['breakpoint'] if 'breakpoint' in value_dict else None)
                     else:
                         cls.objects.create(
                             model_id=technology.model_id,
@@ -1132,7 +1134,8 @@ class Tech_Param(models.Model):
                             parameter_id=value_dict['parameter_id'],
                             value=ParamsManager.clean_str_val(vals[0]),
                             raw_value=raw_value,
-                            year=value_dict['year'] if 'year' in value_dict else 0)
+                            year=value_dict['year'] if 'year' in value_dict else 0,
+                            piecewise_dim=value_dict['breakpoint'] if 'breakpoint' in value_dict else None)
                     comments += 'Added new parameter instance for {} value: {}. '.format(
                         Parameter.objects.get(id=value_dict['parameter_id']).name, raw_value)
         return comments
@@ -1255,6 +1258,7 @@ class Loc_Tech_Param(models.Model):
     flags = ArrayField(models.CharField(max_length=20,blank=True),default=list)
     index = ArrayField(models.CharField(max_length=200, blank=True),blank=True,null=True)
     dim = ArrayField(models.CharField(max_length=200, blank=True),blank=True,null=True)
+    piecewise_dim = models.CharField(max_length=10, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     deleted = models.DateTimeField(default=None, editable=False, null=True)
@@ -1370,7 +1374,8 @@ class Loc_Tech_Param(models.Model):
                             raw_value=raw_value,
                             year=value_dict['year'] if 'year' in value_dict else 0,
                             index=[value_dict['index']],
-                            dim=[value_dict['dim']])
+                            dim=[value_dict['dim']],
+                            piecewise_dim=value_dict['breakpoint'] if 'breakpoint' in value_dict else None)
                     else:
                         cls.objects.create(
                             model_id=loc_tech.model_id,
@@ -1378,7 +1383,8 @@ class Loc_Tech_Param(models.Model):
                             parameter_id=value_dict['parameter_id'],
                             value=ParamsManager.clean_str_val(vals[0]),
                             raw_value=raw_value,
-                            year=value_dict['year'] if 'year' in value_dict else 0)
+                            year=value_dict['year'] if 'year' in value_dict else 0,
+                            piecewise_dim=value_dict['breakpoint'] if 'breakpoint' in value_dict else None)
                     
                     comments += 'Added new parameter instance for {} value: {}. '.format(
                         Parameter.objects.get(id=value_dict['parameter_id']).name, raw_value)
@@ -1673,7 +1679,7 @@ class ParamsManager():
 
         if level in ['1_tech', '2_loc_tech']:
             values += ["id","year", "timeseries", "timeseries_meta_id",
-                       "raw_value", "value","index","dim"]
+                       "raw_value", "value","index","dim","piecewise_dim"]
 
         # System-Wide Handling
         if systemwide is False:
@@ -1708,6 +1714,7 @@ class ParamsManager():
                 'tags': param["parameter__tags"],
                 'index': param["index"] if 'index' in param.keys() else [],
                 'dim': param["dim"] if 'dim' in param.keys() else [],
+                'piecewise_dim': param['piecewise_dim'] if 'piecewise_dim' in param.keys() else '',
                 'dup_tag': ([t for t in param['parameter__tags'] if 'multi_' in t]+[False])[0] if (('duplicate' in param['parameter__tags']) or ('multiselect' in param['parameter__tags'])) else False
                 }
             data.append(param_dict)
