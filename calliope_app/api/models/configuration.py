@@ -1064,7 +1064,7 @@ class Tech_Param(models.Model):
                             value=ParamsManager.clean_str_val(value_dict['value']),
                             timeseries_meta_id=value_dict['value'],
                             timeseries=True)
-                        comments += 'Updated timeseries parameter instance for {}. '.format(Parameter.objects.get(id=key).name)
+                        comments += 'Updated timeseries parameter instance for {}. '.format(parameter_instance.first().parameter.name)
                     if 'year' in value_dict:
                         parameter_instance.update(year=value_dict['year'])
                 else:
@@ -1321,7 +1321,7 @@ class Loc_Tech_Param(models.Model):
                             value=ParamsManager.clean_str_val(value_dict['value']),
                             timeseries_meta_id=value_dict['value'],
                             timeseries=True)
-                        comments += 'Updated timeseries parameter instance for {}. '.format(key)
+                        comments += 'Updated timeseries parameter instance for {}. '.format(parameter_instance.first().parameter.name)
                     if 'year' in value_dict:
                         parameter_instance.update(year=value_dict['year'])
                 else:
