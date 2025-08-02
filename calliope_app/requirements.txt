@@ -1,6 +1,6 @@
 django_ratelimit==4.1.0
 coolprop<=6.7.0
-git+https://github.com/NREL/GEOPHIRES-X.git#egg=geophires-x
+git+https://github.com/NREL/GEOPHIRES-X.git@v3.9.8#egg=geophires-x
 boto3==1.24.37
 celery[redis]==5.3.0
 django==4.2.23
