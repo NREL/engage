@@ -233,6 +233,8 @@ def get_loc_techs_yaml_set(run, scenario_id, year):
                     dim = param.parameter.dim+param.dim
                 unique_param = param.parameter.root+'.'+param.parameter.name+str(index)+str(dim)
             else:
+                index = None
+                dim = None
                 unique_param = param.parameter.root+'.'+param.parameter.name
             if unique_param not in unique_params:
                 if '%' in param.parameter.units:  # Calliope in decimal format

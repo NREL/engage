@@ -613,13 +613,13 @@ def run_model(run_id, model_path, user_id, *args, **kwargs):
     idx = pd.date_range(start=st, end=et, freq='h')
 
     # Model run
-    if run.cluster and len(idx) > (24 * 14):
+    #if run.cluster and len(idx) > (24 * 14):
         # Cap the number of representative days to 14 (temporary solution)
-        logger.info('Running clustered optimization...')
-        condition = run_clustered(model_path, idx, logger)
-    else:
-        logger.info('Running basic optimization...')
-        condition = run_basic(model_path, logger)
+    #    logger.info('Running clustered optimization...')
+    #    condition = run_clustered(model_path, idx, logger)
+    #else:
+    logger.info('Running basic optimization...')
+    condition = run_basic(model_path, logger)
     logger.info("Backend: Model runs complete, STATUS: {}".format(condition))
 
     # Model outputs

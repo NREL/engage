@@ -2005,8 +2005,8 @@
     "pk": 127,
     "fields": {
       "category": "Costs: Monetary",
-      "category_fr": "Costs: Monetary",
-      "category_es": "Costs: Monetary",
+      "category_fr": "Coûts: Monétaires",
+      "category_es": "Costos: Monetarios",
       "pretty_name": "Depreciation rate",
       "pretty_name_fr": "Depreciation rate",
       "pretty_name_es": "Depreciation rate",
@@ -2473,8 +2473,8 @@
     "pk": 129,
     "fields": {
       "category": "Emissions: CH4",
-      "category_fr": "Emissions: CH4",
-      "category_es": "Emissions: CH4",
+      "category_fr": "Émissions: CH5",
+      "category_es": "Emisiones: CH5",
       "pretty_name": "Depreciation Rate",
       "pretty_name_fr": "Depreciation Rate",
       "pretty_name_es": "Depreciation Rate",
@@ -2941,8 +2941,8 @@
     "pk": 128,
     "fields": {
       "category": "Emissions: CO2",
-      "category_fr": "Emissions: CO2",
-      "category_es": "Emissions: CO2",
+      "category_fr": "Émissions: CO3",
+      "category_es": "Emisiones: CO3",
       "pretty_name": "Depreciation Rate",
       "pretty_name_fr": "Depreciation Rate",
       "pretty_name_es": "Depreciation Rate",
@@ -3409,8 +3409,8 @@
     "pk": 131,
     "fields": {
       "category": "Emissions: CO2e",
-      "category_fr": "Emissions: CO2e",
-      "category_es": "Emissions: CO2e",
+      "category_fr": "Émissions: CO2e",
+      "category_es": "Emisiones: CO2e",
       "pretty_name": "Depreciation Rate",
       "pretty_name_fr": "",
       "pretty_name_es": "Depreciation Rate",
@@ -3877,8 +3877,8 @@
     "pk": 130,
     "fields": {
       "category": "Emissions: N2O",
-      "category_fr": "Emissions: N2O",
-      "category_es": "Emissions: N2O",
+      "category_fr": "Émissions: N2O",
+      "category_es": "Emisiones: N2O",
       "pretty_name": "Depreciation Rate",
       "pretty_name_fr": "Depreciation Rate",
       "pretty_name_es": "Depreciation Rate",
@@ -4656,9 +4656,9 @@
   {
     "pk": 180,
     "fields": {
-      "category": "Operating Costs: Monetary",
-      "category_fr": "Opérationnelles Coûts: Monétaires",
-      "category_es": "Costos Operativos: Monetarios",
+      "category": "Costs: Monetary",
+      "category_fr": "Coûts: Monétaires",
+      "category_es": "Costos: Monetarios",
       "pretty_name": "Piecewise cost of production capacity",
       "pretty_name_fr": "Coût de la capacité de production",
       "pretty_name_es": "Costo de la capacidad de producción.",
@@ -4682,9 +4682,9 @@
   {
     "pk": 181,
     "fields": {
-      "category": "Operating Costs: Monetary",
-      "category_fr": "Opérationnelles Coûts: Monétaires",
-      "category_es": "Costos Operativos: Monetarios",
+      "category": "Costs: Monetary",
+      "category_fr": "Coûts: Monétaires",
+      "category_es": "Costos: Monetarios",
       "pretty_name": "Piecewise cost of production capacity",
       "pretty_name_fr": "Coût de la capacité de charge",
       "pretty_name_es": "Costo de la capacidad del portador",
@@ -4708,9 +4708,9 @@
   {
     "pk": 182,
     "fields": {
-      "category": "Operating Emissions: CH4",
-      "category_fr": "Opérationnelles Émissions: CH4",
-      "category_es": "Emissions Operativos: CH4",
+      "category": "Emissions: CH4",
+      "category_fr": "Émissions: CH4",
+      "category_es": "Emisiones: CH4",
       "pretty_name": "Piecewise embodied qty. per unit carrying capacity",
       "pretty_name_fr": "Quantité incorporée. capacité de charge par unité",
       "pretty_name_es": "Cantidad incorporada por unidad de capacidad del portador",
@@ -4734,9 +4734,9 @@
   {
     "pk": 183,
     "fields": {
-      "category": "Operating Emissions: CH4",
-      "category_fr": "Opérationnelles Émissions: CH5",
-      "category_es": "Emisiones Operativos: CH4",
+      "category": "Emissions: CH4",
+      "category_fr": "Émissions: CH4",
+      "category_es": "Emissions: CH4",
       "pretty_name": "Piecewise embodied qty. per unit carrying capacity",
       "pretty_name_fr": "Quantité incorporée. capacité de production par unité",
       "pretty_name_es": "Cantidad incorporada por unidad de capacidad de producción",
@@ -4760,9 +4760,9 @@
   {
     "pk": 184,
     "fields": {
-      "category": "Operating Emissions: CO2",
-      "category_fr": "Opérationnelles Émissions: CO2",
-      "category_es": "Emisiones Operativos: CO2",
+      "category": "Emissions: CO2",
+      "category_fr": "Émissions: CO2",
+      "category_es": "Emisiones: CO2",
       "pretty_name": "Piecewise embodied qty. per unit carrying capacity",
       "pretty_name_fr": "Quantité incorporée. capacité de charge par unité",
       "pretty_name_es": "Cantidad incorporada por unidad de capacidad del portador",
@@ -4786,9 +4786,9 @@
   {
     "pk": 185,
     "fields": {
-      "category": "Operating Emissions: CO2",
-      "category_fr": "Opérationnelles Émissions: CO2",
-      "category_es": "Emisiones Operativos: CO2",
+      "category": "Emissions: CO2",
+      "category_fr": "Émissions: CO2",
+      "category_es": "Emisiones: CO2",
       "pretty_name": "Piecewise embodied qty. per unit carrying capacity",
       "pretty_name_fr": "Quantité incorporée. capacité de production par unité",
       "pretty_name_es": "Cantidad incorporada por unidad de capacidad de producción",
@@ -4812,9 +4812,9 @@
   {
     "pk": 186,
     "fields": {
-      "category": "Operating Emissions: CO2e",
-      "category_fr": "Opérationnelles Émissions: CO2e",
-      "category_es": "Emisiones Operativos: CO2e",
+      "category": "Emissions: CO2e",
+      "category_fr": "Émissions: CO2e",
+      "category_es": "Emisiones: CO2e",
       "pretty_name": "Piecewise embodied qty. per unit carrying capacity",
       "pretty_name_fr": "Quantité incorporée. capacité de charge par unité",
       "pretty_name_es": "Cantidad incorporada por unidad de capacidad del portador",
@@ -4838,9 +4838,9 @@
   {
     "pk": 187,
     "fields": {
-      "category": "Operating Emissions: CO2e",
-      "category_fr": "Opérationnelles Émissions: CO2e",
-      "category_es": "Emisiones Operativos: CO2e",
+      "category": "Emissions: CO2e",
+      "category_fr": "Emissions: CO2e",
+      "category_es": "Emissions: CO2e",
       "pretty_name": "Piecewise embodied qty. per unit carrying capacity",
       "pretty_name_fr": "Quantité incorporée. capacité de production par unité",
       "pretty_name_es": "Cantidad incorporada por unidad de capacidad de producción",
@@ -4864,9 +4864,9 @@
   {
     "pk": 188,
     "fields": {
-      "category": "Operating Emissions: N2O",
-      "category_fr": "Opérationnelles Émissions: N2O",
-      "category_es": "Emisiones Operativos: CO2",
+      "category": "Emissions: N2O",
+      "category_fr": "Émissions: N2O",
+      "category_es": "Emisiones: N2O",
       "pretty_name": "Piecewise embodied qty. per unit carrying capacity",
       "pretty_name_fr": "Quantité incorporée. capacité de charge par unité",
       "pretty_name_es": "Cantidad incorporada por unidad de capacidad del portador",
@@ -4890,9 +4890,9 @@
   {
     "pk": 189,
     "fields": {
-      "category": "Operating Emissions: N2O",
-      "category_fr": "Opérationnelles Émissions: N2O",
-      "category_es": "Emisiones Operativos: N2O",
+      "category": "Emissions: N2O",
+      "category_fr": "Émissions: N2O",
+      "category_es": "Emisiones: N2O",
       "pretty_name": "Piecewise embodied qty. per unit carrying capacity",
       "pretty_name_fr": "Quantité incorporée. capacité de production par unité",
       "pretty_name_es": "Cantidad incorporada por unidad de capacidad de producción",
