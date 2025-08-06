@@ -29,8 +29,8 @@ RUN apt-get update -y --fix-missing \
 # install python packages
 WORKDIR /www
 COPY requirements.txt requirements-dev.txt /www/
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt && pip install -r requirements-dev.txt
+RUN pip install --upgrade pip && pip install -r requirements.txt && pip install -r requirements-dev.txt
+RUN pip install "git+https://github.com/NREL/GEOPHIRES-X.git@v3.8.10"
 # Install calliope without dependencies, as already installed in requirements
 RUN pip install calliope==0.6.8 --no-deps
 
