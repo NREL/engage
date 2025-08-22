@@ -866,39 +866,30 @@ def upload_techs(request):
                         continue
 
                 if ('','','','id') not in row.keys() or pd.isnull(row[('','','','id')]):
-                    if pd.isnull(row[('','','','tag')]):
-                        technology = Technology.objects.create(
-                            model_id=model.id,
-                            abstract_tech_id=Abstract_Tech.objects.filter(name=row[('','','','base_tech')]).first().id,
-                            name=row[('','','','name')],
-                            pretty_name=row[('','','','pretty_name')],
-                        )
-                    else:
-                        technology = Technology.objects.create(
-                            model_id=model.id,
-                            abstract_tech_id=Abstract_Tech.objects.filter(name=row[('','','','base_tech')]).first().id,
-                            name=row[('','','','name')],
-                            pretty_name=row[('','','','pretty_name')],
-                            tag=row[('','','','tag')],
-                            pretty_tag=row[('','','','pretty_tag')]
-                        )
-
+                    technology = Technology.objects.create(
+                        model_id=model.id,
+                        abstract_tech=Abstract_Tech.objects.filter(name=row[('','','','base_tech')]).first(),
+                    )
                 else:
                     technology = Technology.objects.filter(model=model,id=row[('','','','id')]).first()
                     if not technology:
                         context['logs'].append(str(i)+'- Tech '+str(row[('','','','pretty_name')])+': No tech with id '+str(row[('','','','id')])+' found to update. Skipped.')
                         continue
-                    technology.abstract_tech = Abstract_Tech.objects.filter(name=row[('','','','base_tech')]).first()
-                    technology.name = row[('','','','name')]
-                    technology.pretty_name = row[('','','','pretty_name')]
-                    if pd.isnull(row[('','','','tag')]) or pd.isnull(row[('','','','pretty_tag')]):
-                        technology.tag = None
-                        technology.pretty_tag = None
-                    else:
-                        technology.tag = row[('','','','tag')]
-                        technology.pretty_tag = row[('','','','pretty_tag')]
-                    technology.save()
-                    Tech_Param.objects.filter(model_id=model.id,technology_id=technology.id).delete()
+                technology.abstract_tech = Abstract_Tech.objects.filter(name=row[('','','','base_tech')]).first()
+                technology.name = row[('','','','name')]
+                technology.pretty_name = row[('','','','pretty_name')]
+                if pd.isnull(row[('','','','tag')]) or pd.isnull(row[('','','','pretty_tag')]):
+                    technology.tag = None
+                    technology.pretty_tag = None
+                else:
+                    technology.tag = row[('','','','tag')]
+                    technology.pretty_tag = row[('','','','pretty_tag')]
+
+                if ('','','','description') in row and not pd.isnull(row[('','','','description')]):
+                    technology.description = row[('','','','description')]
+
+                technology.save()
+                Tech_Param.objects.filter(model_id=model.id,technology_id=technology.id).delete()
 
                 Tech_Param.objects.create(
                         model_id=model.id,
