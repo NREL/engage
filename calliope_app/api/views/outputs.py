@@ -706,7 +706,6 @@ def upload_outputs(request):
             run.outputs_path = out_dir
             with zipfile.ZipFile(os.path.join(out_dir,filename),'r') as zip_f:
                 zip_f.extractall(out_dir)
-            #shutil.unpack_archive(filename,out_dir)
             # Loop through options for archived output directories rather than base CSVs
             # TODO: Add user input on location of output CSVs via API option
             for dir in ['outputs','model_outputs']:
@@ -1428,13 +1427,11 @@ def bulk_downloads(request):
             [tech_dict.pop(('','','',k)) for k in ['abstract_tech_id','_state','model_id','created','updated','deleted']]
             techs_l += [tech_dict]
         techs_df = pd.DataFrame(techs_l)
-        if not techs_df.empty:
-            techs_df.columns = pd.MultiIndex.from_tuples(techs_df.columns)
-        #techs_df = techs_df.rename(columns={('','','','parent'):('','','','abstract_tech')})
         # Filtering out the existing columns to include first in the reindex keeps filled in data on the left
         param_list = list((set(param_list)|set(tech_list))-set(techs_df.columns))
         param_list.sort(key=operator.itemgetter(3))
         techs_df = techs_df.reindex(columns=[f for f in [('dim','index','year','parameter')]+list(techs_df.columns)+param_list],fill_value=None)
+        techs_df.columns = pd.MultiIndex.from_tuples(techs_df.columns)
         techs_buff = io.StringIO()
         techs_df.to_csv(techs_buff,index=False)
         file_buffs['techs.csv'] = (techs_buff)
@@ -1489,12 +1486,11 @@ def bulk_downloads(request):
             [loc_tech_dict.pop(('','','',k)) for k in ['_state','model_id','created','updated','deleted','location_1_id','location_2_id','technology_id']]
             loc_techs_l += [loc_tech_dict]
         loc_techs_df = pd.DataFrame(loc_techs_l)
-        if not loc_techs_df.empty:
-            loc_techs_df.columns = pd.MultiIndex.from_tuples(loc_techs_df.columns)
         # Filtering out the existing columns to include first in the reindex keeps filled in data on the left
         param_list = list((set(param_list)|set(loc_tech_list))-set(loc_techs_df.columns))
         param_list.sort(key=operator.itemgetter(3))
         loc_techs_df = loc_techs_df.reindex(columns=[f for f in [('dim','index','year','parameter')]+list(loc_techs_df.columns)+param_list],fill_value=None)
+        loc_techs_df.columns = pd.MultiIndex.from_tuples(loc_techs_df.columns)
         loc_techs_buff = io.StringIO()
         loc_techs_df.to_csv(loc_techs_buff,index=False)
         file_buffs['loc_techs.csv'] = (loc_techs_buff)
