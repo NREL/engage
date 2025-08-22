@@ -95,10 +95,11 @@ class Technology_Admin(admin.ModelAdmin):
 
 
 class Tech_Param_Admin(admin.ModelAdmin):
-    list_filter = ['model']
+    list_filter = ['model','technology']
     list_display = ['id', 'technology', 'year', 'build_year_offset', 'parameter', 'value',
                     'raw_value', 'timeseries', 'timeseries_meta', 'model',
                     'created', 'updated']
+    search_fields = ['parameter__name', 'technology__name']
 
 
 class Loc_Tech_Admin(admin.ModelAdmin):
@@ -108,10 +109,11 @@ class Loc_Tech_Admin(admin.ModelAdmin):
 
 
 class Loc_Tech_Param_Admin(admin.ModelAdmin):
-    list_filter = ['model']
+    list_filter = ['model', 'loc_tech__technology']
     list_display = ['id', 'loc_tech', 'year', 'build_year_offset', 'parameter', 'value',
                     'raw_value', 'timeseries', 'timeseries_meta', 'model',
                     'created', 'updated']
+    search_fields = ['parameter__name', 'loc_tech__technology__name']
 
 class Job_Meta_Admin(admin.ModelAdmin):
     list_display = ['id', 'type', 'status', 'inputs', 'outputs', 'message', 'created', 'job_task']
