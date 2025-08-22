@@ -215,7 +215,6 @@ def get_loc_techs_yaml_set(run, scenario_id, year):
                             technology]
                 dictify(loc_techs_yaml_set,param_list,'')
                 continue
-
         # Tracks which parameters have already been set (prioritized by year)
         unique_params = []
         # Loop over Parameters
@@ -235,6 +234,7 @@ def get_loc_techs_yaml_set(run, scenario_id, year):
             else:
                 unique_param = param.parameter.root+'.'+param.parameter.name
             if unique_param not in unique_params:
+                unique_params.append(unique_param)
                 if '%' in param.parameter.units:  # Calliope in decimal format
                     value = float(param.value) / 100
                 else:
