@@ -4678,5 +4678,50 @@
       "parameter_id": "200",
       "default_value": ""
     }
+  },
+  {
+    "pk": 521,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "201",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 522,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "201",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 523,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "201",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 524,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "201",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 525,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "201",
+      "default_value": ""
+    }
   }
 ]
