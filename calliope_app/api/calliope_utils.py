@@ -643,7 +643,7 @@ def _yaml_outputs(inputs_dir, outputs_dir):
         yaml.dump(combined_model, open(os.path.join(outputs_dir,'model_results.yaml'),'w+'), default_flow_style=None)
 
 def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
-    results_vars = ['flow_cap','storage_cap','area_use','source_cap','purchased_units']
+    results_vars = ['flow_cap','storage_cap','purchased_units'] #'area_use','source_cap',
     
     model = yaml.load(open(os.path.join(operate_dir,'model.yaml')), Loader=yaml.FullLoader)
     techs = {}
@@ -667,7 +667,7 @@ def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
                         locations['nodes'][l]['techs'][t].pop(results_var+'_max', None)
                     elif locations['nodes'][l]['techs'][t] is None:
                         locations['nodes'][l]['techs'][t] = {}
-                    if len(r_df.loc[(r_df['nodes'] == l) & (r_df['techs'] == t)][results_var]) != 0:
+                    if len(r_df.loc[(r_df['nodes'] == l) & (r_df['techs'] == t)][results_var]) != 0 and techs['techs'][t].get('base_tech') != 'demand':
                         locations['nodes'][l]['techs'][t][results_var] = float(r_df.loc[(r_df['nodes'] == l) &
                                                                         (r_df['techs'] == t)][results_var].values[0])  
                         
