@@ -1136,7 +1136,7 @@
       "units": "<sup>T</sup>/<sub>F</sub>",
       "is_essential": "False",
       "is_carrier": "False",
-      "choices": "[\"True\",\"False\"]",
+      "choices": "[\"False\",\"True\"]",
       "tags": "[\"plan_mode\",\"operate_mode\"]",
       "index": "[]",
       "dim": "[]"
@@ -1162,7 +1162,7 @@
       "units": "<sup>T</sup>/<sub>F</sub>",
       "is_essential": "False",
       "is_carrier": "False",
-      "choices": "[\"True\",\"False\"]",
+      "choices": "[\"False\",\"True\"]",
       "tags": "[\"plan_mode\",\"operate_mode\"]",
       "index": "[]",
       "dim": "[]"
@@ -5194,6 +5194,32 @@
       "is_carrier": "True",
       "choices": "[]",
       "tags": "[\"carrier\", \"essential\", \"carrier_in\", \"required_carrier\", \"units_in\"]",
+      "index": "[]",
+      "dim": "[]"
+    },
+    "model": "api.parameter"
+  },
+  {
+    "pk": 201,
+    "fields": {
+      "category": "Constraints: Storage",
+      "category_fr": "Contraintes: Stockage",
+      "category_es": "Restricciones: Almacenamiento",
+      "pretty_name": "Cyclic storage",
+      "pretty_name_fr": "Stockage cyclique",
+      "pretty_name_es": "Almacenamiento cÃ­clico",
+      "description": "Calliope: cyclic_storage<br><br> Cyclic storage ensures that the storage state of charge are the same on the first and last timestep of the model.",
+      "description_fr": "",
+      "description_es": "",
+      "root": "",
+      "name": "cyclic_storage",
+      "timeseries_enabled": "False",
+      "is_systemwide": "False",
+      "units": "<sup>T</sup>/<sub>F</sub>",
+      "is_essential": "False",
+      "is_carrier": "False",
+      "choices": "[\"True\",\"False\"]",
+      "tags": "[\"plan_mode\",\"operate_mode\"]",
       "index": "[]",
       "dim": "[]"
     },

@@ -133,8 +133,6 @@ def get_techs_yaml_set(run, scenario_id, year):
         unique_params = []
         # Loop over Parameters
         for param in params:
-            param_keys = param.parameter.root.split('.')+[param.parameter.name]
-
             if param.technology.abstract_tech.name == 'transmission':
                 parent_type = 'templates'
             else:
@@ -149,13 +147,21 @@ def get_techs_yaml_set(run, scenario_id, year):
                 else:
                     index = param.parameter.index+param.index
                     dim = param.parameter.dim+param.dim
-                unique_param = param.parameter.root+'.'+param.parameter.name+str(index)+str(dim)
             else:
-                index = None
-                dim = None
-                unique_param = param.parameter.root+'.'+param.parameter.name
+                index = []
+                dim = []
+            # Handle piecewise parameters
+            param_name = param.parameter.name
+            if param.piecewise_dim:
+                param_name = f'{param_name}_{param.piecewise_dim[0]}'
+                dim += ['breakpoint']
+                index += [int(param.piecewise_dim[1:])]
+            unique_param = param.parameter.root+'.'+param_name+str(index)+str(dim)
+            
                 
             if unique_param not in unique_params:
+                param_keys = param.parameter.root.split('.')+[param_name]
+
                 # If parameter hasn't been set, add to Return List
                 unique_params.append(unique_param)
                 if '%' in param.parameter.units:  # Calliope in decimal format
@@ -219,7 +225,6 @@ def get_loc_techs_yaml_set(run, scenario_id, year):
         unique_params = []
         # Loop over Parameters
         for param in params:
-            param_keys = param.parameter.root.split('.')+[param.parameter.name]
             if (param.parameter.index and param.parameter.dim) or (param.index and param.dim):
                 if not(param.parameter.index and param.parameter.dim):
                     index = param.index
@@ -230,12 +235,19 @@ def get_loc_techs_yaml_set(run, scenario_id, year):
                 else:
                     index = param.parameter.index+param.index
                     dim = param.parameter.dim+param.dim
-                unique_param = param.parameter.root+'.'+param.parameter.name+str(index)+str(dim)
             else:
-                index = None
-                dim = None
-                unique_param = param.parameter.root+'.'+param.parameter.name
+                index = []
+                dim = []
+            # Handle piecewise parameters
+            param_name = param.parameter.name
+            if param.piecewise_dim:
+                param_name = f'{param_name}_{param.piecewise_dim[0]}'
+                dim += ['breakpoint']
+                index += [int(param.piecewise_dim[1:])]
+            unique_param = param.parameter.root+'.'+param_name+str(index)+str(dim)
             if unique_param not in unique_params:
+                param_keys = param.parameter.root.split('.')+[param_name]
+                
                 unique_params.append(unique_param)
                 if '%' in param.parameter.units:  # Calliope in decimal format
                     value = float(param.value) / 100
@@ -643,7 +655,7 @@ def _yaml_outputs(inputs_dir, outputs_dir):
         yaml.dump(combined_model, open(os.path.join(outputs_dir,'model_results.yaml'),'w+'), default_flow_style=None)
 
 def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
-    results_vars = ['flow_cap','storage_cap','area_use','source_cap','purchased_units']
+    results_vars = ['flow_cap','storage_cap','purchased_units'] #'area_use','source_cap',
     
     model = yaml.load(open(os.path.join(operate_dir,'model.yaml')), Loader=yaml.FullLoader)
     techs = {}
@@ -667,7 +679,7 @@ def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
                         locations['nodes'][l]['techs'][t].pop(results_var+'_max', None)
                     elif locations['nodes'][l]['techs'][t] is None:
                         locations['nodes'][l]['techs'][t] = {}
-                    if len(r_df.loc[(r_df['nodes'] == l) & (r_df['techs'] == t)][results_var]) != 0:
+                    if len(r_df.loc[(r_df['nodes'] == l) & (r_df['techs'] == t)][results_var]) != 0 and techs['techs'][t].get('base_tech') != 'demand':
                         locations['nodes'][l]['techs'][t][results_var] = float(r_df.loc[(r_df['nodes'] == l) &
                                                                         (r_df['techs'] == t)][results_var].values[0])  
                         
