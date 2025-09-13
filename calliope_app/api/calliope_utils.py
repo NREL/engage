@@ -7,6 +7,7 @@ import os
 import yaml
 import shutil
 from calliope import Model as CalliopeModel
+from calliope import read_yaml as calliope_read_yaml
 import pandas as pd
 import json
 import copy
@@ -31,7 +32,7 @@ def get_model_yaml_set(run, scenario_id, year, ts_files):
     unique_params = []
     # Loop over Parameters
     for param in params:
-        if param.run_parameter.root in ['constraints','global_expressions']:
+        if param.run_parameter.root in ['constraints','global_expressions','parameters','dimensions','lookups','variables','piecewise_constraints']:
             continue
         unique_param = param.run_parameter.root+'.'+param.run_parameter.name
 
@@ -45,7 +46,11 @@ def get_model_yaml_set(run, scenario_id, year, ts_files):
             key_list = unique_param.split('.')
             dictify(model_yaml_set,key_list,param.value)
     dictify(model_yaml_set,['import'],'["techs.yaml","locations.yaml"]',simplify=False)
-    dictify(model_yaml_set,['config','build','add_math'],'["custom_math.yaml"]',simplify=False)
+    dictify(model_yaml_set,['config','init','math_paths','custom_math'],'custom_math.yaml',simplify=False)
+    if run.mode == 'operate':
+        dictify(model_yaml_set,['config','init','extra_math'],'["milp","operate","custom_math"]',simplify=False)
+    else:
+        dictify(model_yaml_set,['config','init','extra_math'],'["milp","custom_math"]',simplify=False)
     for run_param in run.run_options:
         unique_param = run_param['root'] + '.' + run_param['name']
         key_list = unique_param.split('.')
@@ -66,7 +71,7 @@ def get_model_yaml_set(run, scenario_id, year, ts_files):
 def get_custom_math_yaml_set(run, scenario_id, year):
     """ Function pulls model parameters from Database for YAML """
     params = Scenario_Param.objects.filter(scenario_id=scenario_id,
-                                           year__lte=year,run_parameter__root__in=['constraints','global_expressions'],
+                                           year__lte=year,run_parameter__root__in=['constraints','global_expressions','parameters','dimensions','lookups','variables','piecewise_constraints'],
                                            run_parameter__mode__contains=[run.mode]).order_by('-year')
 
     # Initialize the Return list
@@ -392,12 +397,12 @@ def stringify(param_list):
 def run_basic(model_path, logger):
     """ Basic Run """
     logger.info('--- Run Basic')
-    model = CalliopeModel(model_path)
+    model = calliope_read_yaml(model_path)
     logger.info(model.info())
     model.build()
     model.solve()
     _write_outputs(model, model_path)
-    return model.results.termination_condition
+    return model.runtime.termination_condition
 
 
 def run_clustered(model_path, idx, logger):
@@ -406,11 +411,11 @@ def run_clustered(model_path, idx, logger):
     _set_clustering(model_path, on=True)
     _set_subset_time(model_path)
     _set_capacities(model_path)
-    model = CalliopeModel(model_definition=model_path)
+    model = calliope_read_yaml(model_path)
     model.run()
     _write_outputs(model, model_path)
-    if model.results.termination_condition != 'optimal':
-        return model.results.termination_condition
+    if model.runtime.termination_condition != 'optimal':
+        return model.runtime.termination_condition
     # Results
     capacity, storage, units, demand_techs = _get_cap_results(model)
     # Monthly Dispatch
@@ -425,7 +430,7 @@ def run_clustered(model_path, idx, logger):
             _set_clustering(model_path, on=False)
             _set_subset_time(model_path, st, et)
             _set_capacities(model_path, demand_techs, capacity, storage, units)
-            model = CalliopeModel(config=model_path)
+            model = calliope_read_yaml(model_path)
             model.run()
             _write_outputs(model, model_path, _pad(month))
         except Exception as e:
@@ -716,7 +721,7 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
     built_loc_techs = {}
 
     for l in old_model['nodes']:
-        if 'techs' in old_model['nodes'][l]:
+        if 'techs' in old_model['nodes'][l] and old_model['nodes'][l]['techs']:
             for t in old_model['nodes'][l]['techs']:
                 old_tech = old_model['techs'][t]
                 if t not in new_techs['techs']:

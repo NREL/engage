@@ -40,26 +40,6 @@
   }
  },
  {
-  "pk": 6,
-  "model": "api.run_parameter",
-  "fields": {
-   "pretty_name": "Subset time",
-   "pretty_name_fr": "Heure du coucher du soleil",
-   "pretty_name_es": "Tiempo de subconjunto",
-   "description": "Subset of timesteps as a two-element list giving the range, e.g. [\"2005-01-01\", \"2005-01-05\"], or a single string, e.g. \"2005-01\"",
-   "description_fr": "Sous-ensemble de pas de temps sous la forme d'une liste \u00e0 deux \u00e9l\u00e9ments donnant la plage, par ex. [\"2005-01-01\", \"2005-01-05\"], ou une seule cha\u00eene, par ex. \"2005-01\"",
-   "description_es": "Subconjunto de pasos de tiempo como una lista de dos elementos que proporciona el rango, por ejemplo, [\"2005-01-01\", \"2005-01-05\"], o una sola cadena, por ejemplo, \"2005-01\"",
-   "root": "config.init",
-   "user_visibility": "False",
-   "can_evolve": "False",
-   "name": "time_subset",
-   "default_value": "",
-   "choices": "[]",
-   "tab": "",
-   "mode": "[\"plan\", \"operate\"]"
-  }
- },
- {
   "pk": 7,
   "model": "api.run_parameter",
   "fields": {
@@ -72,8 +52,8 @@
    "root": "config.init",
    "user_visibility": "True",
    "can_evolve": "False",
-   "name": "time_resample",
-   "default_value": "",
+   "name": "resample",
+   "default_value": "{}",
    "choices": "[]",
    "tab": "runs",
    "mode": "[\"plan\", \"operate\"]"
@@ -92,7 +72,7 @@
    "root": "config.init",
    "user_visibility": "False",
    "can_evolve": "False",
-   "name": "time_format",
+   "name": "datetime_format",
    "default_value": "%Y-%m-%d %H:%M:%S",
    "choices": "[]",
    "tab": "",
@@ -129,7 +109,7 @@
    "description": "Used for unmet demand, but should be of a similar order of magnitude as the largest cost that the model could achieve. Too high and the model will not converge",
    "description_fr": "Utilis\u00e9 pour la demande non satisfaite, mais doit \u00eatre d'un ordre de grandeur similaire au co\u00fbt le plus \u00e9lev\u00e9 que le mod\u00e8le pourrait atteindre. Trop \u00e9lev\u00e9 et le mod\u00e8le ne convergera pas",
    "description_es": "Se utiliza para demanda insatisfecha, pero debe ser de un orden de magnitud similar al costo m\u00c3\u00a1s alto que el modelo podr\u00c3\u00ada lograr. Demasiado alto y el modelo no converger\u00c3\u00a1",
-   "root": "parameters",
+   "root": "data_definitions",
    "user_visibility": "True",
    "can_evolve": "False",
    "name": "bigM",
@@ -189,7 +169,7 @@
    "description": "Which mode to run the model in: \"plan\" or \"operate\"",
    "description_fr": "Dans quel mode ex\u00e9cuter le mod\u00e8le : \"planifier\" ou \"op\u00e9rer\"",
    "description_es": "En qu\u00c3\u00a9 modo ejecutar el modelo: \"planificar\" u \"operar\"",
-   "root": "config.build",
+   "root": "config.init",
    "user_visibility": "True",
    "can_evolve": "False",
    "name": "mode",
@@ -273,7 +253,7 @@
    "user_visibility": "True",
    "can_evolve": "False",
    "name": "solver",
-   "default_value": "appsi_highs",
+   "default_value": "cbc",
    "choices": "[\"cbc\",\"appsi_highs\",\"amplxpress\",\"xpress_direct\"]",
    "tab": "runs",
    "mode": "[\"plan\", \"operate\"]"
@@ -329,7 +309,7 @@
    "description": "A dictionary of cost classes and their weights in the objective. By default, the weights of emissions are zero, monetary's is 1.",
    "description_fr": "Un dictionnaire des classes de co\u00fbt et leurs poids dans l'objectif. Par d\u00e9faut, les poids des \u00e9missions sont nuls, celui mon\u00e9taire est de 1.",
    "description_es": "Un diccionario de clases de costos y sus ponderaciones en el objetivo. Por defecto, las ponderaciones de las emisiones son cero y las monetarias son 1.",
-   "root": "parameters",
+   "root": "data_definitions",
    "user_visibility": "True",
    "can_evolve": "False",
    "name": "objective_cost_weights",
@@ -343,40 +323,40 @@
   "pk": 27,
   "model": "api.run_parameter",
   "fields": {
-   "pretty_name": "Global Expressions",
+   "pretty_name": "Global Plan Expressions",
    "pretty_name_fr": "",
    "pretty_name_es": "",
-   "description": "Default custom Engage global expressions",
+   "description": "Default custom Engage global planning mode expressions",
    "description_fr": "",
    "description_es": "",
    "root": "global_expressions",
    "user_visibility": "False",
    "can_evolve": "False",
    "name": "global_expressions",
-   "default_value": "{\"flow_out_non_transmission_techs\":{\"foreach\":[\"nodes\",\"techs\",\"timesteps\",\"carriers\"],\"where\":\"flow_out\",\"equations\":[{\"where\":\"NOT base_tech=transmission\",\"expression\":\"flow_out\"}]},\"flow_in_demand_techs\":{\"foreach\":[\"nodes\",\"techs\",\"timesteps\",\"carriers\"],\"where\":\"base_tech=demand\",\"equations\":[{\"expression\":\"flow_in\"}]},\"flow_cap_demand_techs\":{\"foreach\":[\"nodes\",\"techs\",\"carriers\"],\"where\":\"base_tech=demand\",\"equations\":[{\"expression\":\"flow_cap\"}]}}",
+   "default_value": "{\"flow_cap_demand_techs\": {\"equations\": [{\"expression\": \"flow_cap\"}], \"foreach\": [\"nodes\", \"techs\", \"carriers\"], \"where\": \"base_tech==demand\"}, \"flow_in_demand_techs\": {\"equations\": [{\"expression\": \"flow_in\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\", \"carriers\"], \"where\": \"base_tech==demand\"}, \"flow_out_non_transmission_techs\": {\"equations\": [{\"expression\": \"flow_out\", \"where\": \"NOT base_tech==transmission\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\", \"carriers\"], \"where\": \"flow_out\"}, \"cost_investment_flow_cap\": {\"where\": \"(flow_cap AND (cost_flow_cap OR cost_flow_cap_per_distance)) OR piecewise_cost_investment\", \"equations\": [{\"expression\": \"$cost_sum * flow_cap\", \"where\": \"NOT piecewise_cost_investment\"}, {\"expression\": \"piecewise_cost_investment\", \"where\": \"piecewise_cost_investment\"}]}, \"cost_operation_fixed\": {\"title\": \"Total fixed operation costs\", \"description\": \"The fixed, annual operation costs of a technology, which are calculated relative to investment costs. If the modeling period is not equal to one full year, this will be scaled accordingly.\", \"default\": 0, \"unit\": \"cost\", \"foreach\": [\"nodes\", \"techs\", \"costs\"], \"where\": \"(cost_investment AND cost_om_annual_investment_fraction) OR cost_om_annual\", \"equations\": [{\"expression\": \"$annualisation_weight * (\\n  sum(cost_om_annual * flow_cap, over=carriers) +\\n  cost_investment * cost_om_annual_investment_fraction\\n)\"}], \"sub_expressions\": {\"annualisation_weight\": [{\"expression\": \"sum(timestep_resolution * timestep_weights, over=timesteps) / 8760\"}]}}}",
    "choices": "[]",
    "tab": "scenarios",
-   "mode": "[\"plan\", \"operate\"]"
+   "mode": "[\"plan\"]"
   }
  },
  {
   "pk": 28,
   "model": "api.run_parameter",
   "fields": {
-   "pretty_name": "Custom Constraints",
+   "pretty_name": "Custom Plan Constraints",
    "pretty_name_fr": "",
    "pretty_name_es": "",
-   "description": "Default custom Engage constraints",
+   "description": "Default custom Engage planning mode constraints",
    "description_fr": "Un dictionnaire des classes de co\u00fbt et leurs poids dans l'objectif. Par d\u00e9faut, les poids des \u00e9missions sont nuls, celui mon\u00e9taire est de 1.",
    "description_es": "Un diccionario de clases de costos y sus ponderaciones en el objetivo. Por defecto, las ponderaciones de las emisiones son cero y las monetarias son 1.",
    "root": "constraints",
    "user_visibility": "False",
    "can_evolve": "False",
    "name": "constraints",
-   "default_value": "{\"balance_conversion\":{\"description\":\"Recreate v0.6 conversion plus functionality. Override balance_conversion to tie just in_group_1 and out_group_1 together.\",\"foreach\":[\"nodes\",\"techs\",\"timesteps\"],\"equations\":[{\"where\":\"NOT any(carrier_in_group_1, over=carriers) AND NOT any(carrier_out_group_1, over=carriers) AND NOT include_storage=true\",\"expression\":\"sum(flow_out_inc_eff, over=carriers) == sum(flow_in_inc_eff, over=carriers)\"},{\"where\":\"any(carrier_in_group_1, over=carriers) AND any(carrier_out_group_1, over=carriers) AND NOT include_storage=true\",\"expression\":\"sum(flow_in_inc_eff * default_if_empty(carrier_in_group_1, 0), over=carriers) == sum(flow_out_inc_eff * default_if_empty(carrier_out_group_1, 0), over=carriers)\"}]},\"balance_in_group_2\":{\"description\":\"Recreate v0.6 conversion plus functionality. Tie in_group_1 and in_group_2 together.\",\"foreach\":[\"nodes\",\"techs\",\"timesteps\"],\"equations\":[{\"where\":\"any(carrier_in_group_1, over=carriers) AND any(carrier_in_group_2, over=carriers) AND NOT include_storage=true\",\"expression\":\"sum(flow_in_inc_eff * default_if_empty(carrier_in_group_1, 0), over=carriers) == sum(flow_in_inc_eff * default_if_empty(carrier_in_group_2, 0), over=carriers)\"}]},\"balance_out_group_2\":{\"description\":\"Recreate v0.6 conversion plus functionality. Tie iout_group_1 and in_group_2 together.\",\"foreach\":[\"nodes\",\"techs\",\"timesteps\"],\"equations\":[{\"where\":\"any(carrier_out_group_1, over=carriers) AND any(carrier_out_group_2, over=carriers) AND NOT include_storage=true\",\"expression\":\"sum(flow_out_inc_eff * default_if_empty(carrier_out_group_1, 0), over=carriers) == sum(flow_out_inc_eff * default_if_empty(carrier_out_group_2, 0), over=carriers)\"}]},\"balance_in_group_3\":{\"description\":\"Recreate v0.6 conversion plus functionality. Tie in_group_1 and in_group_3 together.\",\"foreach\":[\"nodes\",\"techs\",\"timesteps\"],\"equations\":[{\"where\":\"any(carrier_in_group_1, over=carriers) AND any(carrier_in_group_3, over=carriers) AND NOT include_storage=true\",\"expression\":\"sum(flow_in_inc_eff * default_if_empty(carrier_in_group_1, 0), over=carriers) == sum(flow_in_inc_eff * default_if_empty(carrier_in_group_3, 0), over=carriers)\"}]},\"balance_out_group_3\":{\"description\":\"Recreate v0.6 conversion plus functionality. Tie iout_group_1 and in_group_3 together.\",\"foreach\":[\"nodes\",\"techs\",\"timesteps\"],\"equations\":[{\"where\":\"any(carrier_out_group_1, over=carriers) AND any(carrier_out_group_3, over=carriers) AND NOT include_storage=true\",\"expression\":\"sum(flow_out_inc_eff * default_if_empty(carrier_out_group_1, 0), over=carriers) == sum(flow_out_inc_eff * default_if_empty(carrier_out_group_3, 0), over=carriers)\"}]}}",
+   "default_value": "{\"balance_conversion\": {\"description\": \"Recreate v0.6 conversion plus functionality. Override balance_conversion to tie just in_group_1 and out_group_1 together.\", \"equations\": [{\"expression\": \"sum(flow_out_inc_eff,over=carriers) == sum(flow_in_inc_eff,over=carriers)\", \"where\": \"NOT any(carrier_in_group_1,over=carriers) AND NOT any(carrier_out_group_1,over=carriers) AND NOT include_storage==true AND NOT flow_out_eff_piecewise\"}, {\"expression\": \"group_sum(flow_in_inc_eff, carrier_in_group_1, carriers) == group_sum(flow_out_inc_eff, carrier_out_group_1, carriers)\", \"where\": \"carrier_in_group_1 AND carrier_out_group_1 AND NOT include_storage==true AND NOT flow_out_eff_piecewise\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\"]}, \"balance_in_group_2\": {\"description\": \"Recreate v0.6 conversion plus functionality. Tie in_group_1 and in_group_2 together.\", \"equations\": [{\"expression\": \"group_sum(flow_in_inc_eff, carrier_in_group_1, carriers) == group_sum(flow_in_inc_eff, carrier_in_group_2, carriers)\", \"where\": \"carrier_in_group_1 AND carrier_in_group_2 AND NOT include_storage==true\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\"]}, \"balance_in_group_3\": {\"description\": \"Recreate v0.6 conversion plus functionality. Tie in_group_1 and in_group_3 together.\", \"equations\": [{\"expression\": \"group_sum(flow_in_inc_eff, carrier_in_group_1, carriers) == group_sum(flow_in_inc_eff, carrier_in_group_3, carriers)\", \"where\": \"carrier_in_group_1 AND carrier_in_group_3 AND NOT include_storage==true\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\"]}, \"balance_out_group_2\": {\"description\": \"Recreate v0.6 conversion plus functionality. Tie out_group_1 and in_group_2 together.\", \"equations\": [{\"expression\": \"group_sum(flow_out_inc_eff, carrier_out_group_1, carriers) == group_sum(flow_out_inc_eff, carrier_out_group_2, carriers)\", \"where\": \"carrier_out_group_1 AND carrier_out_group_2 AND NOT include_storage==true\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\"]}, \"balance_out_group_3\": {\"description\": \"Recreate v0.6 conversion plus functionality. Tie out_group_1 and in_group_3 together.\", \"equations\": [{\"expression\": \"group_sum(flow_out_inc_eff, carrier_out_group_1, carriers) == group_sum(flow_out_inc_eff, carrier_out_group_3, carriers)\", \"where\": \"carrier_out_group_1 AND carrier_out_group_3 AND NOT include_storage==true\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\"]}}",
    "choices": "[]",
    "tab": "scenarios",
-   "mode": "[\"plan\", \"operate\"]"
+   "mode": "[\"plan\"]"
   }
  },
  {
@@ -418,5 +398,246 @@
    "tab": "runs",
    "mode": "[\"operate\"]"
   }
+ },
+ {
+  "pk": 31,
+  "model": "api.run_parameter",
+  "fields": {
+   "pretty_name": "Custom Plan Parameters",
+   "pretty_name_fr": "",
+   "pretty_name_es": "",
+   "description": "Default custom Engage plan mode parameters",
+   "description_fr": "Un dictionnaire des classes de co\u00fbt et leurs poids dans l'objectif. Par d\u00e9faut, les poids des \u00e9missions sont nuls, celui mon\u00e9taire est de 1.",
+   "description_es": "Un diccionario de clases de costos y sus ponderaciones en el objetivo. Por defecto, las ponderaciones de las emisiones son cero y las monetarias son 1.",
+   "root": "parameters",
+   "user_visibility": "False",
+   "can_evolve": "False",
+   "name": "parameters",
+   "default_value": "{\"cost_flow_cap_piecewise_x\": {\"default\": 0, \"title\": \"Piecewise efficiency curve x values.\", \"description\": \"X breakpoint values of a SOS2 piecewise linear constraint for technology capital cost. X values are the nameplate at that breakpoint. Set as value between 0 (no capacity) and the max capacity of the tech.\", \"unit\": \"power.\"}, \"cost_flow_cap_piecewise_y\": {\"default\": 0, \"title\": \"Piecewise capital cost curve y values.\", \"description\": \"Y breakpoint values of a SOS2 piecewise linear constraint for capacity costs. Y values are the total capital cost ($) at the capacity corresponding x value. Set as the total costs (multiply by the X capacity value if you have a $/kW).\", \"unit\": \"cost.\"}}",
+   "choices": "[]",
+   "tab": "scenarios",
+   "mode": "[\"plan\"]"
+  }
+ },
+ {
+  "pk": 32,
+  "model": "api.run_parameter",
+  "fields": {
+   "pretty_name": "Custom Plan Lookups",
+   "pretty_name_fr": "",
+   "pretty_name_es": "",
+   "description": "Default custom Engage planning mode decision lookups",
+   "description_fr": "Un dictionnaire des classes de co\u00fbt et leurs poids dans l'objectif. Par d\u00e9faut, les poids des \u00e9missions sont nuls, celui mon\u00e9taire est de 1.",
+   "description_es": "Un diccionario de clases de costos y sus ponderaciones en el objetivo. Por defecto, las ponderaciones de las emisiones son cero y las monetarias son 1.",
+   "root": "lookups",
+   "user_visibility": "False",
+   "can_evolve": "False",
+   "name": "lookups",
+   "default_value": "{\"carrier_in_group_1\": {\"description\": \"First group of carrier(s) consumed by this technology. Only `conversion+`, technologies can define this parameter\", \"dtype\": \"bool\", \"pivot_values_to_dim\": \"carriers\", \"default\": false}, \"carrier_in_group_2\": {\"description\": \"Second group of carrier(s) consumed by this technology. Only `conversion+`, technologies can define this parameter\", \"dtype\": \"bool\", \"pivot_values_to_dim\": \"carriers\", \"default\": false}, \"carrier_in_group_3\": {\"description\": \"Third group of carrier(s) consumed by this technology. Only `conversion+`, technologies can define this parameter\", \"dtype\": \"bool\", \"pivot_values_to_dim\": \"carriers\", \"default\": false}, \"carrier_out_group_1\": {\"description\": \"First group of carrier(s) produced by this technology. Only `conversion+`, technologies can define this parameter\", \"dtype\": \"bool\", \"pivot_values_to_dim\": \"carriers\", \"default\": false}, \"carrier_out_group_2\": {\"description\": \"Second group of carrier(s) produced by this technology. Only `conversion+`, technologies can define this parameter\", \"dtype\": \"bool\", \"pivot_values_to_dim\": \"carriers\", \"default\": false}, \"carrier_out_group_3\": {\"description\": \"Third group of carrier(s) produced by this technology. Only `conversion+`, technologies can define this parameter\", \"dtype\": \"bool\", \"pivot_values_to_dim\": \"carriers\", \"default\": false}}",
+   "choices": "[]",
+   "tab": "scenarios",
+   "mode": "[\"plan\"]"
+  }
+ },
+ {
+  "pk": 33,
+  "model": "api.run_parameter",
+  "fields": {
+   "pretty_name": "Custom Plan Dimensions",
+   "pretty_name_fr": "",
+   "pretty_name_es": "",
+   "description": "Default custom Engage planning mode dimensions",
+   "description_fr": "Un dictionnaire des classes de co\u00fbt et leurs poids dans l'objectif. Par d\u00e9faut, les poids des \u00e9missions sont nuls, celui mon\u00e9taire est de 1.",
+   "description_es": "Un diccionario de clases de costos y sus ponderaciones en el objetivo. Por defecto, las ponderaciones de las emisiones son cero y las monetarias son 1.",
+   "root": "dimensions",
+   "user_visibility": "False",
+   "can_evolve": "False",
+   "name": "dimensions",
+   "default_value": "{\"breakpoints\": {\"title\": \"Piecewise function breakpoints\", \"dtype\": \"integer\", \"ordered\": true, \"iterator\": \"breakpoint\"}}",
+   "choices": "[]",
+   "tab": "scenarios",
+   "mode": "[\"plan\"]"
+  }
+ },
+ {
+  "pk": 34,
+  "model": "api.run_parameter",
+  "fields": {
+   "pretty_name": "Custom Plan Variables",
+   "pretty_name_fr": "",
+   "pretty_name_es": "",
+   "description": "Default custom Engage planning mode decision variables",
+   "description_fr": "Un dictionnaire des classes de co\u00fbt et leurs poids dans l'objectif. Par d\u00e9faut, les poids des \u00e9missions sont nuls, celui mon\u00e9taire est de 1.",
+   "description_es": "Un diccionario de clases de costos y sus ponderaciones en el objetivo. Por defecto, las ponderaciones de las emisiones son cero y las monetarias son 1.",
+   "root": "variables",
+   "user_visibility": "False",
+   "can_evolve": "False",
+   "name": "variables",
+   "default_value": "{\"piecewise_cost_investment\": {\"description\": \"Investment cost that changes with the size of the technology. E.g. for a piecewise linear cost curve.\", \"foreach\": [\"nodes\", \"techs\", \"carriers\", \"costs\"], \"where\": \"any(cost_flow_cap_piecewise_x,over=breakpoints) AND any(cost_flow_cap_piecewise_y,over=breakpoints)\", \"bounds\": {\"min\": 0, \"max\": Infinity}, \"default\": 0}}",
+   "choices": "[]",
+   "tab": "scenarios",
+   "mode": "[\"plan\"]"
+  }
+ },
+ {
+  "pk": 35,
+  "model": "api.run_parameter",
+  "fields": {
+   "pretty_name": "Custom Piecewise Plan Constraints",
+   "pretty_name_fr": "",
+   "pretty_name_es": "",
+   "description": "Default custom Engage planning mode piecewise linear constraints",
+   "description_fr": "Un dictionnaire des classes de co\u00fbt et leurs poids dans l'objectif. Par d\u00e9faut, les poids des \u00e9missions sont nuls, celui mon\u00e9taire est de 1.",
+   "description_es": "Un diccionario de clases de costos y sus ponderaciones en el objetivo. Por defecto, las ponderaciones de las emisiones son cero y las monetarias son 1.",
+   "root": "piecewise_constraints",
+   "user_visibility": "False",
+   "can_evolve": "False",
+   "name": "piecewise_constraints",
+   "default_value": "",
+   "choices": "[]",
+   "tab": "scenarios",
+   "mode": "[\"plan\"]"
+  }
+ },
+ {
+  "pk": 36,
+  "model": "api.run_parameter",
+  "fields": {
+   "pretty_name": "Global Operate Expressions",
+   "pretty_name_fr": "",
+   "pretty_name_es": "",
+   "description": "Default custom Engage global operate mode expressions",
+   "description_fr": "",
+   "description_es": "",
+   "root": "global_expressions",
+   "user_visibility": "False",
+   "can_evolve": "False",
+   "name": "global_expressions",
+   "default_value": "{\"flow_cap_demand_techs\": {\"equations\": [{\"expression\": \"flow_cap\"}], \"foreach\": [\"nodes\", \"techs\", \"carriers\"], \"where\": \"base_tech==demand\"}, \"flow_in_demand_techs\": {\"equations\": [{\"expression\": \"flow_in\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\", \"carriers\"], \"where\": \"base_tech==demand\"}, \"flow_out_non_transmission_techs\": {\"equations\": [{\"expression\": \"flow_out\", \"where\": \"NOT base_tech==transmission\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\", \"carriers\"], \"where\": \"flow_out\"}, \"flow_cap_generation_techs\": {\"equations\": [{\"expression\": \"flow_cap\"}], \"foreach\": [\"nodes\", \"techs\", \"carriers\"], \"where\": \"base_tech==supply OR base_tech==conversion OR base_tech==storage\"}, \"flow_in_eff_piecewise\": {\"foreach\": [\"nodes\", \"techs\", \"timesteps\"], \"where\": \"any(flow_eff_piecewise_x, over=breakpoints) AND any(flow_eff_piecewise_y, over=breakpoints) AND NOT base_tech==transmission\\n\", \"equations\": [{\"where\": \"integer_dispatch AND base_tech==supply\", \"expression\": \"source_use * source_eff / (purchased_units * flow_cap_per_unit)\"}, {\"where\": \"NOT integer_dispatch AND base_tech==supply\", \"expression\": \"source_use * source_eff / flow_cap\"}, {\"where\": \"integer_dispatch AND base_tech==conversion AND NOT carrier_in_group_1\", \"expression\": \"sum(flow_in_inc_eff / (purchased_units * flow_cap_per_unit), over=carriers)\"}, {\"where\": \"NOT integer_dispatch AND base_tech==conversion AND NOT carrier_in_group_1\", \"expression\": \"sum(flow_in_inc_eff / flow_cap, over=carriers)\"}]}, \"flow_out_eff_piecewise\": {\"foreach\": [\"nodes\", \"techs\", \"timesteps\"], \"where\": \"any(flow_eff_piecewise_x, over=breakpoints) AND any(flow_eff_piecewise_y, over=breakpoints) AND NOT base_tech==transmission\\n\", \"equations\": [{\"where\": \"integer_dispatch AND NOT base_tech==transmission\", \"expression\": \"sum(flow_out_inc_eff / (purchased_units * flow_cap_per_unit), over=carriers)\"}, {\"where\": \"NOT integer_dispatch AND NOT base_tech==transmission\", \"expression\": \"sum(flow_out_inc_eff / flow_cap, over=carriers)\"}]}, \"flow_in_eff_piecewise_transmission\": {\"foreach\": [\"techs\", \"timesteps\"], \"where\": \"any(flow_eff_piecewise_x, over=breakpoints) AND any(flow_eff_piecewise_y, over=breakpoints) AND base_tech==transmission\\n\", \"equations\": [{\"where\": \"integer_dispatch\", \"expression\": \"sum(flow_in_inc_eff / (purchased_units * flow_cap_per_unit), over=[nodes, carriers])\"}, {\"where\": \"NOT integer_dispatch\", \"expression\": \"sum(flow_in_inc_eff / flow_cap, over=[nodes, carriers])\"}]}, \"flow_out_eff_piecewise_transmission\": {\"foreach\": [\"techs\", \"timesteps\"], \"where\": \"any(flow_eff_piecewise_x, over=breakpoints) AND any(flow_eff_piecewise_y, over=breakpoints) AND base_tech==transmission\\n\", \"equations\": [{\"where\": \"integer_dispatch\", \"expression\": \"sum(flow_out_inc_eff / (purchased_units * flow_cap_per_unit), over=[nodes, carriers])\"}, {\"where\": \"NOT integer_dispatch\", \"expression\": \"sum(flow_out_inc_eff / flow_cap, over=[nodes, carriers])\"}]}, \"cost_operation_startup\": {\"description\": \"Calculate startup costs for technologies with integer dispatch.\\n\", \"foreach\": [\"nodes\", \"techs\", \"timesteps\"], \"where\": \"unit_start AND cost_startup\", \"equations\": [{\"expression\": \"default_if_empty(cost_startup, 0)  * unit_start\"}]}, \"cost_operation_shutdown\": {\"description\": \"Calculate shutdown costs for technologies with integer dispatch.\\n\", \"foreach\": [\"nodes\", \"techs\", \"timesteps\"], \"where\": \"unit_stop AND cost_shutdown\", \"equations\": [{\"expression\": \"default_if_empty(cost_shutdown, 0) * unit_stop\"}]}, \"cost_operation_variable\": {\"title\": \"Variable operating costs\", \"description\": \"The operating costs per timestep of a technology.\", \"default\": 0, \"unit\": \"cost_per_time\", \"foreach\": [\"nodes\", \"techs\", \"costs\", \"timesteps\"], \"where\": \"cost_export OR cost_flow_in OR cost_flow_out OR cost_startup OR cost_shutdown\", \"equations\": [{\"expression\": \"timestep_weights * ($cost_export + $cost_flow_out + $cost_flow_in + $cost_operation_startup + $cost_operation_shutdown)\"}], \"sub_expressions\": {\"cost_export\": [{\"where\": \"any(carrier_export, over=carriers) AND any(cost_export, over=carriers)\", \"expression\": \"sum(cost_export * flow_export, over=carriers)\"}, {\"where\": \"NOT (any(carrier_export, over=carriers) AND any(cost_export, over=carriers))\", \"expression\": \"0\"}], \"cost_flow_in\": [{\"where\": \"base_tech==supply\", \"expression\": \"cost_flow_in * source_use\"}, {\"where\": \"NOT base_tech==supply\", \"expression\": \"sum(cost_flow_in * flow_in, over=carriers)\"}], \"cost_flow_out\": [{\"expression\": \"sum(cost_flow_out * flow_out, over=carriers)\"}], \"cost_operation_startup\": [{\"where\": \"unit_start AND cost_startup\", \"expression\": \"default_if_empty(cost_startup, 0) * unit_start\"}, {\"where\": \"NOT (unit_start AND cost_startup)\", \"expression\": \"0\"}], \"cost_operation_shutdown\": [{\"where\": \"unit_stop AND cost_shutdown\", \"expression\": \"default_if_empty(cost_shutdown, 0) * unit_stop\"}, {\"where\": \"NOT (unit_stop AND cost_shutdown)\", \"expression\": \"0\"}]}}}",
+   "choices": "[]",
+   "tab": "scenarios",
+   "mode": "[\"operate\"]"
+  }
+ },
+ {
+  "pk": 37,
+  "model": "api.run_parameter",
+  "fields": {
+   "pretty_name": "Custom Operate Constraints",
+   "pretty_name_fr": "",
+   "pretty_name_es": "",
+   "description": "Default custom Engage operate mode constraints",
+   "description_fr": "Un dictionnaire des classes de co\u00fbt et leurs poids dans l'objectif. Par d\u00e9faut, les poids des \u00e9missions sont nuls, celui mon\u00e9taire est de 1.",
+   "description_es": "Un diccionario de clases de costos y sus ponderaciones en el objetivo. Por defecto, las ponderaciones de las emisiones son cero y las monetarias son 1.",
+   "root": "constraints",
+   "user_visibility": "False",
+   "can_evolve": "False",
+   "name": "constraints",
+   "default_value": "{\"balance_conversion\": {\"description\": \"Recreate v0.6 conversion plus functionality. Override balance_conversion to tie just in_group_1 and out_group_1 together.\", \"equations\": [{\"expression\": \"sum(flow_out_inc_eff,over=carriers) == sum(flow_in_inc_eff,over=carriers)\", \"where\": \"NOT any(carrier_in_group_1,over=carriers) AND NOT any(carrier_out_group_1,over=carriers) AND NOT include_storage==true AND NOT flow_out_eff_piecewise\"}, {\"expression\": \"group_sum(flow_in_inc_eff, carrier_in_group_1, carriers) == group_sum(flow_out_inc_eff, carrier_out_group_1, carriers)\", \"where\": \"carrier_in_group_1 AND carrier_out_group_1 AND NOT include_storage==true AND NOT flow_out_eff_piecewise\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\"]}, \"balance_in_group_2\": {\"description\": \"Recreate v0.6 conversion plus functionality. Tie in_group_1 and in_group_2 together.\", \"equations\": [{\"expression\": \"group_sum(flow_in_inc_eff, carrier_in_group_1, carriers) == group_sum(flow_in_inc_eff, carrier_in_group_2, carriers)\", \"where\": \"carrier_in_group_1 AND carrier_in_group_2 AND NOT include_storage==true\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\"]}, \"balance_in_group_3\": {\"description\": \"Recreate v0.6 conversion plus functionality. Tie in_group_1 and in_group_3 together.\", \"equations\": [{\"expression\": \"group_sum(flow_in_inc_eff, carrier_in_group_1, carriers) == group_sum(flow_in_inc_eff, carrier_in_group_3, carriers)\", \"where\": \"carrier_in_group_1 AND carrier_in_group_3 AND NOT include_storage==true\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\"]}, \"balance_out_group_2\": {\"description\": \"Recreate v0.6 conversion plus functionality. Tie out_group_1 and in_group_2 together.\", \"equations\": [{\"expression\": \"group_sum(flow_out_inc_eff, carrier_out_group_1, carriers) == group_sum(flow_out_inc_eff, carrier_out_group_2, carriers)\", \"where\": \"carrier_out_group_1 AND carrier_out_group_2 AND NOT include_storage==true\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\"]}, \"balance_out_group_3\": {\"description\": \"Recreate v0.6 conversion plus functionality. Tie out_group_1 and in_group_3 together.\", \"equations\": [{\"expression\": \"group_sum(flow_out_inc_eff, carrier_out_group_1, carriers) == group_sum(flow_out_inc_eff, carrier_out_group_3, carriers)\", \"where\": \"carrier_out_group_1 AND carrier_out_group_3 AND NOT include_storage==true\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\"]}, \"balance_supply_no_storage\": {\"description\": \"Fix the outflow of a `supply` technology to its consumption of the available source.\", \"foreach\": [\"nodes\", \"techs\", \"carriers\", \"timesteps\"], \"where\": \"base_tech==supply AND NOT include_storage==True\", \"equations\": [{\"where\": \"NOT flow_out_eff_piecewise\", \"expression\": \"flow_out_inc_eff == source_use * source_eff\"}]}, \"balance_transmission\": {\"description\": \"Fix the relationship between between carrier flowing into and out of a `transmission` link in each timestep.\", \"foreach\": [\"techs\", \"timesteps\"], \"where\": \"base_tech==transmission\", \"equations\": [{\"where\": \"NOT flow_in_eff_piecewise_transmission\", \"expression\": \"sum(flow_out_inc_eff, over=[nodes, carriers]) == sum(flow_in_inc_eff, over=[nodes, carriers])\"}]}, \"flow_capacity_max_purchase_milp\": {\"description\": \"Set the upper bound on a technology`s flow capacity, for any technology with integer capacity purchasing.\", \"foreach\": [\"nodes\", \"techs\", \"carriers\"], \"where\": \"purchased_units\", \"equations\": [{\"where\": \"flow_cap_max\", \"expression\": \"flow_cap <= flow_cap_max * purchased_units\"}]}, \"unit_start_stop_milp\": {\"description\": \"Use unit_start/stop to ensure operating_units behaves correctly.\\n\", \"foreach\": [\"nodes\", \"techs\", \"timesteps\", \"carriers\"], \"where\": \"integer_dispatch AND flow_cap_per_unit\", \"equations\": [{\"where\": \"timesteps > get_val_at_index(timesteps=0)\", \"expression\": \"operating_units == roll(operating_units, timesteps=1) + unit_start - unit_stop\"}]}, \"unit_toggle_max_milp\": {\"description\": \"Ensure that toggling units do not exceed purchased units.\\n\", \"foreach\": [\"nodes\", \"techs\", \"timesteps\", \"carriers\"], \"where\": \"integer_dispatch AND flow_cap_per_unit AND purchased_units\", \"equations\": [{\"expression\": \"unit_start + unit_stop <= purchased_units\"}]}}",
+   "choices": "[]",
+   "tab": "scenarios",
+   "mode": "[\"operate\"]"
+  }
+ },
+ {
+  "pk": 38,
+  "model": "api.run_parameter",
+  "fields": {
+   "pretty_name": "Custom Operate Parameters",
+   "pretty_name_fr": "",
+   "pretty_name_es": "",
+   "description": "Default custom Engage operate mode parameters",
+   "description_fr": "Un dictionnaire des classes de co\u00fbt et leurs poids dans l'objectif. Par d\u00e9faut, les poids des \u00e9missions sont nuls, celui mon\u00e9taire est de 1.",
+   "description_es": "Un diccionario de clases de costos y sus ponderaciones en el objetivo. Por defecto, las ponderaciones de las emisiones son cero y las monetarias son 1.",
+   "root": "parameters",
+   "user_visibility": "False",
+   "can_evolve": "False",
+   "name": "parameters",
+   "default_value": "{\"flow_eff_piecewise_x\": {\"default\": 1.0, \"resample_method\": \"mean\", \"title\": \"Piecewise efficiency curve x values.\", \"description\": \"X breakpoint values of a SOS2 piecewise linear constraint for technology efficiency. X values are the ratio of output flow to flow capacity. Set as value between 0 (no output) and 1 (full output).\", \"unit\": \"unitless.\"}, \"flow_eff_piecewise_y\": {\"default\": 1.0, \"resample_method\": \"mean\", \"title\": \"Piecewise efficiency curve y values.\", \"description\": \"Y breakpoint values of a SOS2 piecewise linear constraint for technology efficiency. Y values are the ratio of input flow to flow capacity at the output flow level of the corresponding x value. Set as value between 0 (no input) and 1 (input equal to capacity). Can be set greater than 1 to represent less than 100% efficiency at high output levels.\", \"unit\": \"unitless.\"}, \"cost_startup\": {\"default\": 0.0, \"resample_method\": \"mean\", \"title\": \"Unit startup cost.\", \"description\": \"Fixed cost incurred each time a unit starts up. Only valid for technologies with integer dispatch and cap_method set to `integer`.\", \"unit\": \"cost.\"}, \"cost_shutdown\": {\"default\": 0.0, \"resample_method\": \"mean\", \"title\": \"Unit shutdown cost.\", \"description\": \"Fixed cost incurred each time a unit shuts down. Only valid for technologies with integer dispatch and cap_method set to `integer`.\", \"unit\": \"cost.\"}}",
+   "choices": "[]",
+   "tab": "scenarios",
+   "mode": "[\"operate\"]"
+  }
+ },
+ {
+  "pk": 39,
+  "model": "api.run_parameter",
+  "fields": {
+   "pretty_name": "Custom Operate Lookups",
+   "pretty_name_fr": "",
+   "pretty_name_es": "",
+   "description": "Default custom Engage operate mode decision lookups",
+   "description_fr": "Un dictionnaire des classes de co\u00fbt et leurs poids dans l'objectif. Par d\u00e9faut, les poids des \u00e9missions sont nuls, celui mon\u00e9taire est de 1.",
+   "description_es": "Un diccionario de clases de costos y sus ponderaciones en el objetivo. Por defecto, las ponderaciones de las emisiones son cero y las monetarias son 1.",
+   "root": "lookups",
+   "user_visibility": "False",
+   "can_evolve": "False",
+   "name": "lookups",
+   "default_value": "{\"carrier_in_group_1\": {\"description\": \"First group of carrier(s) consumed by this technology. Only `conversion+`, technologies can define this parameter\", \"dtype\": \"bool\", \"pivot_values_to_dim\": \"carriers\", \"default\": false}, \"carrier_in_group_2\": {\"description\": \"Second group of carrier(s) consumed by this technology. Only `conversion+`, technologies can define this parameter\", \"dtype\": \"bool\", \"pivot_values_to_dim\": \"carriers\", \"default\": false}, \"carrier_in_group_3\": {\"description\": \"Third group of carrier(s) consumed by this technology. Only `conversion+`, technologies can define this parameter\", \"dtype\": \"bool\", \"pivot_values_to_dim\": \"carriers\", \"default\": false}, \"carrier_out_group_1\": {\"description\": \"First group of carrier(s) produced by this technology. Only `conversion+`, technologies can define this parameter\", \"dtype\": \"bool\", \"pivot_values_to_dim\": \"carriers\", \"default\": false}, \"carrier_out_group_2\": {\"description\": \"Second group of carrier(s) produced by this technology. Only `conversion+`, technologies can define this parameter\", \"dtype\": \"bool\", \"pivot_values_to_dim\": \"carriers\", \"default\": false}, \"carrier_out_group_3\": {\"description\": \"Third group of carrier(s) produced by this technology. Only `conversion+`, technologies can define this parameter\", \"dtype\": \"bool\", \"pivot_values_to_dim\": \"carriers\", \"default\": false}}",
+   "choices": "[]",
+   "tab": "scenarios",
+   "mode": "[\"operate\"]"
+  }
+ },
+ {
+  "pk": 40,
+  "model": "api.run_parameter",
+  "fields": {
+   "pretty_name": "Custom Operate Dimensions",
+   "pretty_name_fr": "",
+   "pretty_name_es": "",
+   "description": "Default custom Engage operate mode dimensions",
+   "description_fr": "Un dictionnaire des classes de co\u00fbt et leurs poids dans l'objectif. Par d\u00e9faut, les poids des \u00e9missions sont nuls, celui mon\u00e9taire est de 1.",
+   "description_es": "Un diccionario de clases de costos y sus ponderaciones en el objetivo. Por defecto, las ponderaciones de las emisiones son cero y las monetarias son 1.",
+   "root": "dimensions",
+   "user_visibility": "False",
+   "can_evolve": "False",
+   "name": "dimensions",
+   "default_value": "{\"breakpoints\": {\"title\": \"Piecewise function breakpoints\", \"dtype\": \"integer\", \"ordered\": true, \"iterator\": \"breakpoint\"}}",
+   "choices": "[]",
+   "tab": "scenarios",
+   "mode": "[\"operate\"]"
+  }
+ },
+ {
+  "pk": 41,
+  "model": "api.run_parameter",
+  "fields": {
+   "pretty_name": "Custom Operate Variables",
+   "pretty_name_fr": "",
+   "pretty_name_es": "",
+   "description": "Default custom Engage operate mode decision variables",
+   "description_fr": "Un dictionnaire des classes de co\u00fbt et leurs poids dans l'objectif. Par d\u00e9faut, les poids des \u00e9missions sont nuls, celui mon\u00e9taire est de 1.",
+   "description_es": "Un diccionario de clases de costos y sus ponderaciones en el objetivo. Por defecto, las ponderaciones de las emisiones son cero y las monetarias son 1.",
+   "root": "variables",
+   "user_visibility": "False",
+   "can_evolve": "False",
+   "name": "variables",
+   "default_value": "{\"unit_start\": {\"title\": \"Unit startup flag\", \"description\": \"Boolean variable that is 1 if a unit starts up at a given timestep, and 0 otherwise.\", \"default\": 0, \"unit\": \"integer\", \"foreach\": [\"nodes\", \"techs\", \"timesteps\"], \"where\": \"integer_dispatch==True AND cap_method==integer\", \"domain\": \"integer\", \"bounds\": {\"min\": 0, \"max\": Infinity}}, \"unit_stop\": {\"title\": \"Unit shutdown flag\", \"description\": \"Boolean variable that is 1 if a unit shuts down at a given timestep, and 0 otherwise.\", \"default\": 0, \"unit\": \"integer\", \"foreach\": [\"nodes\", \"techs\", \"timesteps\"], \"where\": \"integer_dispatch==True AND cap_method==integer\", \"domain\": \"integer\", \"bounds\": {\"min\": 0, \"max\": Infinity}}}",
+   "choices": "[]",
+   "tab": "scenarios",
+   "mode": "[\"operate\"]"
+  }
+ },
+ {
+  "pk": 42,
+  "model": "api.run_parameter",
+  "fields": {
+   "pretty_name": "Custom Piecewise Operate Constraints",
+   "pretty_name_fr": "",
+   "pretty_name_es": "",
+   "description": "Default custom Engage operate mode piecewise linear constraints",
+   "description_fr": "Un dictionnaire des classes de co\u00fbt et leurs poids dans l'objectif. Par d\u00e9faut, les poids des \u00e9missions sont nuls, celui mon\u00e9taire est de 1.",
+   "description_es": "Un diccionario de clases de costos y sus ponderaciones en el objetivo. Por defecto, las ponderaciones de las emisiones son cero y las monetarias son 1.",
+   "root": "piecewise_constraints",
+   "user_visibility": "False",
+   "can_evolve": "False",
+   "name": "piecewise_constraints",
+   "default_value": "{\"piecewise_efficiency_supply\": {\"description\": \"Use SOS2 to model piecewise linear output efficiency curves/heat rates of supply techs.\\n\", \"foreach\": [\"nodes\", \"techs\", \"timesteps\"], \"where\": \"base_tech==supply AND any(flow_eff_piecewise_x, over=breakpoints)\\n AND any(flow_eff_piecewise_y, over=breakpoints) AND NOT integer_dispatch\\n\", \"x_expression\": \"sum(flow_out_inc_eff / flow_cap, over=carriers)\", \"x_values\": \"flow_eff_piecewise_x\", \"y_expression\": \"source_use * source_eff / flow_cap\", \"y_values\": \"flow_eff_piecewise_y\"}, \"piecewise_efficiency_supply_units\": {\"description\": \"Use SOS2 to model piecewise linear output efficiency curves/heat rates of integer unit supply techs.\\n\", \"foreach\": [\"nodes\", \"techs\", \"timesteps\"], \"where\": \"base_tech==supply AND any(flow_eff_piecewise_x, over=breakpoints) \\n AND any(flow_eff_piecewise_y, over=breakpoints) AND integer_dispatch\\n\", \"x_expression\": \"sum(flow_out_inc_eff / (purchased_units * flow_cap_per_unit), over=carriers)\", \"x_values\": \"flow_eff_piecewise_x\", \"y_expression\": \"source_use * source_eff / (purchased_units * flow_cap_per_unit)\", \"y_values\": \"flow_eff_piecewise_y\"}, \"piecewise_efficiency_conversion\": {\"description\": \"Use SOS2 to model piecewise linear output efficiency curves of conversion techs.\\n\", \"foreach\": [\"nodes\", \"techs\", \"timesteps\"], \"where\": \"base_tech==conversion AND any(flow_eff_piecewise_x, over=breakpoints)\\n AND any(flow_eff_piecewise_y, over=breakpoints) AND NOT integer_dispatch\\n\", \"x_expression\": \"sum(flow_out_inc_eff / flow_cap, over=carriers)\", \"x_values\": \"flow_eff_piecewise_x\", \"y_expression\": \"sum(flow_in_inc_eff / flow_cap, over=carriers)\", \"y_values\": \"flow_eff_piecewise_y\"}, \"piecewise_efficiency_conversion_units\": {\"description\": \"Use SOS2 to model piecewise linear output efficiency curves/heat rates of integer unit conversion techs.\\n\", \"foreach\": [\"nodes\", \"techs\", \"timesteps\"], \"where\": \"base_tech==conversion AND any(flow_eff_piecewise_x, over=breakpoints) \\n AND any(flow_eff_piecewise_y, over=breakpoints) AND integer_dispatch\\n\", \"x_expression\": \"sum(flow_out_inc_eff / (purchased_units * flow_cap_per_unit), over=carriers)\", \"x_values\": \"flow_eff_piecewise_x\", \"y_expression\": \"sum(flow_in_inc_eff / (purchased_units * flow_cap_per_unit), over=carriers)\", \"y_values\": \"flow_eff_piecewise_y\"}, \"piecewise_efficiency_transmission\": {\"description\": \"Use SOS2 to model piecewise linear output efficiency curves of transmission techs.\\n\", \"foreach\": [\"techs\", \"timesteps\"], \"where\": \"base_tech==transmission AND any(flow_eff_piecewise_x, over=breakpoints)\\n AND any(flow_eff_piecewise_y, over=breakpoints) AND NOT integer_dispatch\\n\", \"x_expression\": \"sum(flow_out_inc_eff / flow_cap, over=[nodes, carriers])\", \"x_values\": \"flow_eff_piecewise_x\", \"y_expression\": \"sum(flow_in_inc_eff / flow_cap, over=[nodes, carriers])\", \"y_values\": \"flow_eff_piecewise_y\"}, \"piecewise_efficiency_transmission_units\": {\"description\": \"Use SOS2 to model piecewise linear output efficiency curves/heat rates of integer unit transmission techs.\\n\", \"foreach\": [\"techs\", \"timesteps\"], \"where\": \"base_tech==transmission AND any(flow_eff_piecewise_x, over=breakpoints) \\n AND any(flow_eff_piecewise_y, over=breakpoints) AND integer_dispatch\\n\", \"x_expression\": \"sum(flow_out, over=[nodes, carriers]) / (purchased_units * flow_cap_per_unit)\", \"x_values\": \"flow_eff_piecewise_x\", \"y_expression\": \"sum(flow_in, over=[nodes, carriers]) * flow_in_eff / (purchased_units * flow_cap_per_unit)\", \"y_values\": \"flow_eff_piecewise_y\"}}",
+   "choices": "[]",
+   "tab": "scenarios",
+   "mode": "[\"operate\"]"
+  }
  }
+
 ]

@@ -107,6 +107,7 @@ def build(request):
         for run_option in run_options_raw.keys():
             run_parameter= Run_Parameter.objects.get(pk=int(run_option))
             run_options.append({'root':run_parameter.root,'name':run_parameter.name,'value':run_options_raw[run_option]})
+            
         start_date = request.GET.get("start_date", None)
         end_date = request.GET.get("end_date", None)
         build_operate_run = (request.GET.get("build_operate_run", 'false') == 'true')
@@ -129,7 +130,8 @@ def build(request):
     for run_option in run_options:
         if run_option['name'] == 'mode':
             mode = run_option['value']
-
+            if mode == 'plan':
+                run_option['value'] = 'base'
     try:
         start_date = datetime.strptime(start_date, "%Y-%m-%d")
         end_date = datetime.strptime(end_date,
