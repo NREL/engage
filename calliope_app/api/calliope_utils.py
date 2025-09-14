@@ -724,6 +724,7 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,old_opera
 
         old_operate_techs = yaml.safe_load(open(old_operate_inputs+'/techs.yaml','r'))
         old_operate_loctechs = yaml.safe_load(open(old_operate_inputs+'/locations.yaml','r'))
+        old_operate_model = yaml.safe_load(open(old_operate_inputs+'/model.yaml','r'))
 
     built_techs = {'techs':{},'templates':{}}
     built_loc_techs = {}
@@ -776,7 +777,7 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,old_opera
                                 new_storage_cap_min = new_tech.get('storage_cap_min',0)
                                 new_storage_cap_max = new_tech.get('storage_cap_max',0)
 
-                            if new_loc_tech == None:
+                            if new_loc_tech is None:
                                 new_loc_tech = {}
 
                             if new_flow_cap_min > 0 and new_flow_cap_min-loc_tech['results']['flow_cap'] > 0:
@@ -857,7 +858,7 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,old_opera
                         new_storage_cap_min = new_tech.get('storage_cap_min',0)
                         new_storage_cap_max = new_tech.get('storage_cap_max',0)
 
-                    if new_loc_tech == None:
+                    if new_loc_tech is None:
                         new_loc_tech = {}
 
                     if new_flow_cap_min > 0 and new_flow_cap_min-loc_tech['results']['flow_cap'] > 0:
@@ -924,73 +925,49 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,old_opera
                                 if t in se['expression'] and t+'_'+str(old_year) not in se['expression']:
                                     new_operate_constraints['constraints'][g]['slices'][s][i]['expression'] = se['expression'].replace(t,t+','+t+'_'+str(old_year))
 
-    if os.path.exists(os.path.join(old_inputs,'techs_nodes_parameters_timeseries.csv')):
-        node_ts_df_old = pd.read_csv(os.path.join(old_inputs,'techs_nodes_parameters_timeseries.csv'),header=[0,1,2],index_col=[0])
-        keep_cols = [c[1]+c[0] in built_loc_techs for c in node_ts_df_old.columns]
-        node_ts_df_old.columns = pd.MultiIndex.from_tuples([(c[1],c[0]+'_'+str(old_year),c[2]) for c in node_ts_df_old.columns])
-        node_ts_df_old = node_ts_df_old.loc[:,keep_cols]
-        node_ts_df_old['ts','ts','ts'] = pd.to_datetime(node_ts_df_old.index)
+    for key, ts_file in old_model.get('data_tables',{}).items():
+        num_keys = len(ts_file['columns'])
+        ts_index = tuple(['ts']*num_keys)
+        ts_df_old = pd.read_csv(os.path.join(old_inputs,ts_file['data']),header=list(range(0, num_keys)),index_col=[0])
+        node_col = ts_file['columns'].index('nodes') if 'nodes' in ts_file['columns'] else None
+        tech_col = ts_file['columns'].index('techs') if 'techs' in ts_file['columns'] else None
+        if node_col is not None and tech_col is not None:
+            keep_cols = [c[tech_col]+c[node_col] in built_loc_techs for c in ts_df_old.columns]
+        elif tech_col is not None:
+            keep_cols = [(c[tech_col] in built_techs.get('techs',{}) or c[tech_col] in built_techs.get('templates',{})) for c in ts_df_old.columns]
+        ts_df_old.columns = pd.MultiIndex.from_tuples([tuple([c[x]+f'_{str(old_year)}' if x == tech_col else c[x] for x in range(0,num_keys)]) for c in ts_df_old.columns])
+        ts_df_old = ts_df_old.loc[:,keep_cols]
+        if ts_df_old.empty:
+            continue
+        ts_df_old[ts_index] = pd.to_datetime(ts_df_old.index)
         if not calendar.isleap(new_year):
-            feb_29_mask = (node_ts_df_old['ts','ts','ts'].dt.month == 2) & (node_ts_df_old['ts','ts','ts'].dt.day == 29)
-            node_ts_df_old = node_ts_df_old[~feb_29_mask]
-            node_ts_df_old.index = node_ts_df_old['ts','ts','ts'].apply(lambda x: x.replace(year=new_year))
+            feb_29_mask = (ts_df_old[ts_index].dt.month == 2) & (ts_df_old[ts_index].dt.day == 29)
+            ts_df_old = ts_df_old[~feb_29_mask]
+            ts_df_old.index = ts_df_old[ts_index].apply(lambda x: x.replace(year=new_year))
         elif not calendar.isleap(old_year):
-            node_ts_df_old.index = node_ts_df_old['ts','ts','ts'].apply(lambda x: x.replace(year=new_year))
+            ts_df_old.index = ts_df_old[ts_index].apply(lambda x: x.replace(year=new_year))
 
             # Leap Year Handling (Fill w/ Feb 28th)
-            feb_28_mask = (node_ts_df_old.index.month == 2) & (node_ts_df_old.index.day == 28)
-            feb_29_mask = (node_ts_df_old.index.month == 2) & (node_ts_df_old.index.day == 29)
-            feb_28 = node_ts_df_old.loc[feb_28_mask].values
-            feb_29 = node_ts_df_old.loc[feb_29_mask].values
+            feb_28_mask = (ts_df_old.index.month == 2) & (ts_df_old.index.day == 28)
+            feb_29_mask = (ts_df_old.index.month == 2) & (ts_df_old.index.day == 29)
+            feb_28 = ts_df_old.loc[feb_28_mask].values
+            feb_29 = ts_df_old.loc[feb_29_mask].values
             if ((len(feb_29) > 0) & (len(feb_28) > 0)):
-                node_ts_df_old.loc[feb_29_mask] = feb_28
+                ts_df_old.loc[feb_29_mask] = feb_28
 
-        node_ts_df_old.drop(columns=['ts','ts','ts'],inplace=True)
+        ts_df_old.drop(columns=[ts_index],inplace=True)
 
-        if os.path.exists(os.path.join(new_inputs,'techs_nodes_parameters_timeseries.csv')):
-            node_ts_df_new = pd.read_csv(os.path.join(new_inputs,'techs_nodes_parameters_timeseries.csv'),header=[0,1,2],index_col=[0])
-            node_ts_df_new.index = pd.to_datetime(node_ts_df_new.index)
-            node_ts_df_new = pd.concat([node_ts_df_new,node_ts_df_old],axis=1)
+        if os.path.exists(os.path.join(new_inputs,ts_file['data'])):
+            ts_df_new = pd.read_csv(os.path.join(new_inputs,ts_file['data']),header=list(range(0, num_keys)),index_col=[0])
+            ts_df_new.index = pd.to_datetime(ts_df_new.index)
+            ts_df_new = pd.concat([ts_df_new,ts_df_old],axis=1)
         else:
-            new_model['data_sources']['techs_nodes_parameters_timeseries'] = {'source': 'techs_nodes_parameters_timeseries.csv', 'rows': 'timesteps',
-                                                                'columns': ['techs', 'nodes', 'parameters']}
-            node_ts_df_new = node_ts_df_old
-        node_ts_df_new.index.name = None
-        node_ts_df_new.to_csv(os.path.join(new_inputs,'techs_nodes_parameters_timeseries.csv'))
+            new_model['data_sources'][key] = {'source': ts_file['data'], 'rows': 'timesteps',
+                                                                'columns': ts_file['columns']}
+            ts_df_new = ts_df_old
+        ts_df_new.index.name = None
+        ts_df_new.to_csv(os.path.join(new_inputs,ts_file['data']))
 
-    if os.path.exists(os.path.join(old_inputs,'techs_parameters_timeseries.csv')):
-        tech_ts_df_old = pd.read_csv(os.path.join(old_inputs,'techs_parameters_timeseries.csv'),header=[0,1],index_col=[0])
-        keep_cols = [(c[0] in built_techs.get('techs',{}) or c[0] in built_techs.get('templates',{})) for c in tech_ts_df_old.columns]
-        tech_ts_df_old.columns = pd.MultiIndex.from_tuples([(c[0]+'_'+str(old_year),c[1]) for c in tech_ts_df_old.columns])
-        tech_ts_df_old = tech_ts_df_old.loc[:,keep_cols]
-        tech_ts_df_old['ts','ts'] = pd.to_datetime(tech_ts_df_old.index)
-        if not calendar.isleap(new_year):
-            feb_29_mask = (tech_ts_df_old['ts','ts'].dt.month == 2) & (tech_ts_df_old['ts','ts'].dt.day == 29)
-            tech_ts_df_old = tech_ts_df_old[~feb_29_mask]
-            tech_ts_df_old.index = tech_ts_df_old['ts','ts'].apply(lambda x: x.replace(year=new_year))
-        elif not calendar.isleap(old_year):
-            tech_ts_df_old.index = tech_ts_df_old['ts','ts'].apply(lambda x: x.replace(year=new_year))
-
-            # Leap Year Handling (Fill w/ Feb 28th)
-            feb_28_mask = (tech_ts_df_old.index.month == 2) & (tech_ts_df_old.index.day == 28)
-            feb_29_mask = (tech_ts_df_old.index.month == 2) & (tech_ts_df_old.index.day == 29)
-            feb_28 = tech_ts_df_old.loc[feb_28_mask].values
-            feb_29 = tech_ts_df_old.loc[feb_29_mask].values
-            if ((len(feb_29) > 0) & (len(feb_28) > 0)):
-                tech_ts_df_old.loc[feb_29_mask] = feb_28
-
-        tech_ts_df_old.drop(columns=['ts','ts'],inplace=True)
-
-        if os.path.exists(os.path.join(new_inputs,'techs_parameters_timeseries.csv')):
-            tech_ts_df_new = pd.read_csv(os.path.join(new_inputs,'techs_parameters_timeseries.csv'),header=[0,1],index_col=[0])
-            tech_ts_df_new.index = pd.to_datetime(tech_ts_df_old.index)
-            tech_ts_df_new = pd.concat([tech_ts_df_new,tech_ts_df_old],axis=1)
-        else:
-            new_model['data_sources']['techs_parameters_timeseries'] = {'source': 'techs_parameters_timeseries.csv', 'rows': 'timesteps',
-                                                                'columns': ['techs', 'parameters']}
-            tech_ts_df_new = tech_ts_df_old
-        tech_ts_df_new.index.name = None
-        tech_ts_df_new.to_csv(os.path.join(new_inputs,'techs_parameters_timeseries.csv'))
 
     with open(new_inputs+'/techs.yaml','w') as outfile:
         yaml.dump(new_techs,outfile, default_flow_style=None)
@@ -1005,75 +982,49 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,old_opera
         yaml.dump(new_constraints,outfile,default_flow_style=None)
 
     if new_operate_inputs and old_operate_inputs:
-        if os.path.exists(os.path.join(old_operate_inputs,'techs_nodes_parameters_timeseries.csv')):
-            print('Here')
-            node_ts_df_old = pd.read_csv(os.path.join(old_operate_inputs,'techs_nodes_parameters_timeseries.csv'),header=[0,1,2],index_col=[0])
-            keep_cols = [c[1]+c[0] in built_loc_techs for c in node_ts_df_old.columns]
-            print(keep_cols)
-            node_ts_df_old.columns = pd.MultiIndex.from_tuples([(c[1],c[0]+'_'+str(old_year),c[2]) for c in node_ts_df_old.columns])
-            node_ts_df_old = node_ts_df_old.loc[:,keep_cols]
-            node_ts_df_old['ts','ts','ts'] = pd.to_datetime(node_ts_df_old.index)
+        for key, ts_file in old_operate_model.get('data_tables',{}).items():
+            num_keys = len(ts_file['columns'])
+            ts_index = tuple(['ts']*num_keys)
+            ts_df_old = pd.read_csv(os.path.join(old_inputs,ts_file['data']),header=list(range(0, num_keys)),index_col=[0])
+            node_col = ts_file['columns'].index('nodes') if 'nodes' in ts_file['columns'] else None
+            tech_col = ts_file['columns'].index('techs') if 'techs' in ts_file['columns'] else None
+            if node_col is not None and tech_col is not None:
+                keep_cols = [c[tech_col]+c[node_col] in built_loc_techs for c in ts_df_old.columns]
+            elif tech_col is not None:
+                keep_cols = [(c[tech_col] in built_techs.get('techs',{}) or c[tech_col] in built_techs.get('templates',{})) for c in ts_df_old.columns]
+            ts_df_old.columns = pd.MultiIndex.from_tuples([tuple([c[x]+f'_{str(old_year)}' if x == tech_col else c[x] for x in range(0,num_keys)]) for c in ts_df_old.columns])
+            ts_df_old = ts_df_old.loc[:,keep_cols]
+            if ts_df_old.empty:
+                continue
+            ts_df_old[ts_index] = pd.to_datetime(ts_df_old.index)
             if not calendar.isleap(new_year):
-                feb_29_mask = (node_ts_df_old['ts','ts','ts'].dt.month == 2) & (node_ts_df_old['ts','ts','ts'].dt.day == 29)
-                node_ts_df_old = node_ts_df_old[~feb_29_mask]
-                node_ts_df_old.index = node_ts_df_old['ts','ts','ts'].apply(lambda x: x.replace(year=new_year))
+                feb_29_mask = (ts_df_old[ts_index].dt.month == 2) & (ts_df_old[ts_index].dt.day == 29)
+                ts_df_old = ts_df_old[~feb_29_mask]
+                ts_df_old.index = ts_df_old[ts_index].apply(lambda x: x.replace(year=new_year))
             elif not calendar.isleap(old_year):
-                node_ts_df_old.index = node_ts_df_old['ts','ts','ts'].apply(lambda x: x.replace(year=new_year))
+                ts_df_old.index = ts_df_old[ts_index].apply(lambda x: x.replace(year=new_year))
 
                 # Leap Year Handling (Fill w/ Feb 28th)
-                feb_28_mask = (node_ts_df_old.index.month == 2) & (node_ts_df_old.index.day == 28)
-                feb_29_mask = (node_ts_df_old.index.month == 2) & (node_ts_df_old.index.day == 29)
-                feb_28 = node_ts_df_old.loc[feb_28_mask].values
-                feb_29 = node_ts_df_old.loc[feb_29_mask].values
+                feb_28_mask = (ts_df_old.index.month == 2) & (ts_df_old.index.day == 28)
+                feb_29_mask = (ts_df_old.index.month == 2) & (ts_df_old.index.day == 29)
+                feb_28 = ts_df_old.loc[feb_28_mask].values
+                feb_29 = ts_df_old.loc[feb_29_mask].values
                 if ((len(feb_29) > 0) & (len(feb_28) > 0)):
-                    node_ts_df_old.loc[feb_29_mask] = feb_28
+                    ts_df_old.loc[feb_29_mask] = feb_28
 
-            node_ts_df_old.drop(columns=['ts','ts','ts'],inplace=True)
+            ts_df_old.drop(columns=[ts_index],inplace=True)
 
-            if os.path.exists(os.path.join(new_operate_inputs,'techs_nodes_parameters_timeseries.csv')):
-                node_ts_df_new = pd.read_csv(os.path.join(new_operate_inputs,'techs_nodes_parameters_timeseries.csv'),header=[0,1,2],index_col=[0])
-                node_ts_df_new.index = pd.to_datetime(node_ts_df_new.index)
-                node_ts_df_new = pd.concat([node_ts_df_new,node_ts_df_old],axis=1)
+            if os.path.exists(os.path.join(new_operate_inputs,ts_file['data'])):
+                ts_df_new = pd.read_csv(os.path.join(new_inputs,ts_file['data']),header=list(range(0, num_keys)),index_col=[0])
+                ts_df_new.index = pd.to_datetime(ts_df_new.index)
+                ts_df_new = pd.concat([ts_df_new,ts_df_old],axis=1)
             else:
-                new_model['data_sources']['techs_nodes_parameters_timeseries'] = {'source': 'techs_nodes_parameters_timeseries.csv', 'rows': 'timesteps',
-                                                                    'columns': ['techs', 'nodes', 'parameters']}
-                node_ts_df_new = node_ts_df_old
-            node_ts_df_new.index.name = None
-            node_ts_df_new.to_csv(os.path.join(new_operate_inputs,'techs_nodes_parameters_timeseries.csv'))
+                new_model['data_sources'][key] = {'source': ts_file['data'], 'rows': 'timesteps',
+                                                                    'columns': ts_file['columns']}
+                ts_df_new = ts_df_old
+            ts_df_new.index.name = None
+            ts_df_new.to_csv(os.path.join(new_operate_inputs,ts_file['data']))
 
-        if os.path.exists(os.path.join(old_operate_inputs,'techs_parameters_timeseries.csv')):
-            tech_ts_df_old = pd.read_csv(os.path.join(old_operate_inputs,'techs_parameters_timeseries.csv'),header=[0,1],index_col=[0])
-            keep_cols = [(c[0] in built_techs.get('techs',{}) or c[0] in built_techs.get('templates',{})) for c in tech_ts_df_old.columns]
-            tech_ts_df_old.columns = pd.MultiIndex.from_tuples([(c[0]+'_'+str(old_year),c[1]) for c in tech_ts_df_old.columns])
-            tech_ts_df_old = tech_ts_df_old.loc[:,keep_cols]
-            tech_ts_df_old['ts','ts'] = pd.to_datetime(tech_ts_df_old.index)
-            if not calendar.isleap(new_year):
-                feb_29_mask = (tech_ts_df_old['ts','ts'].dt.month == 2) & (tech_ts_df_old['ts','ts'].dt.day == 29)
-                tech_ts_df_old = tech_ts_df_old[~feb_29_mask]
-                tech_ts_df_old.index = tech_ts_df_old['ts','ts'].apply(lambda x: x.replace(year=new_year))
-            elif not calendar.isleap(old_year):
-                tech_ts_df_old.index = tech_ts_df_old['ts','ts'].apply(lambda x: x.replace(year=new_year))
-
-                # Leap Year Handling (Fill w/ Feb 28th)
-                feb_28_mask = (tech_ts_df_old.index.month == 2) & (tech_ts_df_old.index.day == 28)
-                feb_29_mask = (tech_ts_df_old.index.month == 2) & (tech_ts_df_old.index.day == 29)
-                feb_28 = tech_ts_df_old.loc[feb_28_mask].values
-                feb_29 = tech_ts_df_old.loc[feb_29_mask].values
-                if ((len(feb_29) > 0) & (len(feb_28) > 0)):
-                    tech_ts_df_old.loc[feb_29_mask] = feb_28
-
-            tech_ts_df_old.drop(columns=['ts','ts'],inplace=True)
-
-            if os.path.exists(os.path.join(new_operate_inputs,'techs_parameters_timeseries.csv')):
-                tech_ts_df_new = pd.read_csv(os.path.join(new_operate_inputs,'techs_parameters_timeseries.csv'),header=[0,1],index_col=[0])
-                tech_ts_df_new.index = pd.to_datetime(tech_ts_df_old.index)
-                tech_ts_df_new = pd.concat([tech_ts_df_new,tech_ts_df_old],axis=1)
-            else:
-                new_model['data_sources']['techs_parameters_timeseries'] = {'source': 'techs_parameters_timeseries.csv', 'rows': 'timesteps',
-                                                                    'columns': ['techs', 'parameters']}
-                tech_ts_df_new = tech_ts_df_old
-            tech_ts_df_new.index.name = None
-            tech_ts_df_new.to_csv(os.path.join(new_operate_inputs,'techs_parameters_timeseries.csv'))
 
         with open(new_operate_inputs+'/techs.yaml','w') as outfile:
             yaml.dump(new_operate_techs,outfile, default_flow_style=None)
