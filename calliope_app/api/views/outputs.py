@@ -43,6 +43,12 @@ logger = logging.getLogger(__name__)
 
 @csrf_protect
 def solvers(request):
+    """
+    Get a list of availible solvers.
+
+    Example:
+    GET: /api/solvers/
+    """
     env_name = request.GET.get("env_name", None)
     if not env_name:
         env_name = "default"
