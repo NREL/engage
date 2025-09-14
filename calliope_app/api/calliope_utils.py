@@ -513,7 +513,7 @@ def _set_capacities(model_path, ignore_techs=[],
             elif key in capacity:
                 tech_data['constraints']['energy_cap_equals'] = float(capacity[key])
             if key in storage:
-                tech_data['constraints']['storage_cap_equals'] = float(storage[key])
+                tech_data['constraints']['storage_cap'] = float(storage[key])
             locations_yaml['locations'][loc]['techs'][tech] = tech_data
     # Update Links Settings
     for loc, loc_data in locations_yaml['techs'].items():
@@ -708,14 +708,22 @@ def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
     yaml.dump(techs, open(os.path.join(operate_dir,'techs.yaml'),'w+'), default_flow_style=False)
     yaml.dump(locations, open(os.path.join(operate_dir,'locations.yaml'),'w+'), default_flow_style=False)
 
-def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
+def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,old_operate_inputs,new_operate_inputs,logger):
     old_model = yaml.safe_load(open(old_results+'/model_results.yaml'))
-    #old_constraints = yaml.safe_load(open(old_inputs+'/custom_math.yaml'))
 
     new_techs = yaml.safe_load(open(new_inputs+'/techs.yaml','r'))
     new_loctechs = yaml.safe_load(open(new_inputs+'/locations.yaml','r'))
     new_model = yaml.safe_load(open(new_inputs+'/model.yaml','r'))
     new_constraints = yaml.safe_load(open(new_inputs+'/custom_math.yaml'))
+
+    if new_operate_inputs and old_operate_inputs:
+        new_operate_techs = yaml.safe_load(open(new_operate_inputs+'/techs.yaml','r'))
+        new_operate_loctechs = yaml.safe_load(open(new_operate_inputs+'/locations.yaml','r'))
+        new_operate_model = yaml.safe_load(open(new_operate_inputs+'/model.yaml','r'))
+        new_operate_constraints = yaml.safe_load(open(new_operate_inputs+'/custom_math.yaml'))
+
+        old_operate_techs = yaml.safe_load(open(old_operate_inputs+'/techs.yaml','r'))
+        old_operate_loctechs = yaml.safe_load(open(old_operate_inputs+'/locations.yaml','r'))
 
     built_techs = {'techs':{},'templates':{}}
     built_loc_techs = {}
@@ -731,62 +739,72 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                 loc_tech = old_model['nodes'][l]['techs'][t]
                 if ('flow_cap_max' in loc_tech or 'storage_cap_max' in loc_tech) or\
                         ('flow_cap_max' in old_tech or 'storage_cap_max' in old_tech):
-                    if loc_tech.get('results',{'flow_cap_equals':0}).get('flow_cap_equals',0) != 0 or\
-                            loc_tech.get('results',{'storage_cap_equals':0}).get('storage_cap_equals',0) != 0:
-                        loc_tech_b = copy.deepcopy(loc_tech)
+                    
+                    # A capex tech will have a min less than max rather than equal. All fixed techs can be ignored
+                    if (loc_tech.get('flow_cap_min',old_tech.get('flow_cap_min',0)) < loc_tech.get('flow_cap_max',old_tech.get('flow_cap_max',0))) or\
+                        (loc_tech.get('storage_cap_min',old_tech.get('storage_cap_min',0)) < loc_tech.get('storage_cap_max',old_tech.get('storage_cap_max',0))):
 
-                        # Record built techs and the total systemwide capacity of those techs to use with flow_cap_max_systemwide
-                        if t in built_techs['techs']:
-                            built_techs['techs'][t] += loc_tech.get('results',{'flow_cap_equals':0}).get('flow_cap_equals',0)
-                        else:
-                            built_techs['techs'][t] = loc_tech.get('results',{'flow_cap_equals':0}).get('flow_cap_equals',0)
+                        # Unbuilt techs will have 0 capacity in results and can be skipped
+                        if loc_tech.get('results',{'flow_cap':0}).get('flow_cap',0) != 0 or\
+                                loc_tech.get('results',{'storage_cap':0}).get('storage_cap',0) != 0:
+                            loc_tech_b = copy.deepcopy(loc_tech)
+                            
+                            # Record built techs and the total systemwide capacity of those techs to use with flow_cap_max_systemwide
+                            if t in built_techs['techs']:
+                                built_techs['techs'][t] += loc_tech.get('results',{'flow_cap':0}).get('flow_cap',0)
+                            else:
+                                built_techs['techs'][t] = loc_tech.get('results',{'flow_cap':0}).get('flow_cap',0)
 
-                        [loc_tech_b.pop(c) for c in ['flow_cap_max', 'storage_cap_max'] if c in loc_tech_b]
-                        if 'flow_cap_equals' in loc_tech['results']:
-                            loc_tech_b['flow_cap_min'] = loc_tech['results']['flow_cap_equals']
-                            loc_tech_b['flow_cap_max'] = loc_tech['results']['flow_cap_equals']
-                        if 'storage_cap_equals' in loc_tech['results']:
-                            loc_tech_b['storage_cap_min'] = loc_tech['results']['storage_cap_equals']
-                            loc_tech_b['storage_cap_max'] = loc_tech['results']['storage_cap_equals']
-                        [loc_tech_b.pop(c) for c in ['cost_flow_cap','cost_interest_rate','cost_storage_cap'] if c in loc_tech_b]
-                        loc_tech_b.pop('results')
+                            [loc_tech_b.pop(c) for c in ['flow_cap_max', 'storage_cap_max'] if c in loc_tech_b]
+                            if 'flow_cap' in loc_tech['results']:
+                                loc_tech_b['flow_cap_min'] = loc_tech['results']['flow_cap']
+                                loc_tech_b['flow_cap_max'] = loc_tech['results']['flow_cap']
+                            if 'storage_cap' in loc_tech['results']:
+                                loc_tech_b['storage_cap_min'] = loc_tech['results']['storage_cap']
+                                loc_tech_b['storage_cap_max'] = loc_tech['results']['storage_cap']
+                            [loc_tech_b.pop(c) for c in ['cost_flow_cap','cost_interest_rate','cost_storage_cap'] if c in loc_tech_b]
+                            loc_tech_b.pop('results')
 
-                        if new_loc_tech:
-                            new_flow_cap_min = new_loc_tech.get('flow_cap_min',new_tech.get('flow_cap_min',0))
-                            new_flow_cap_max = new_loc_tech.get('flow_cap_max',new_tech.get('flow_cap_max',0))
-                            new_storage_cap_min = new_loc_tech.get('storage_cap_min',new_tech.get('storage_cap_min',0))
-                            new_storage_cap_max = new_loc_tech.get('storage_cap_max',new_tech.get('storage_cap_max',0))
-                        else:
-                            new_flow_cap_min = new_tech.get('flow_cap_min',0)
-                            new_flow_cap_max = new_tech.get('flow_cap_max',0)
-                            new_storage_cap_min = new_tech.get('storage_cap_min',0)
-                            new_storage_cap_max = new_tech.get('storage_cap_max',0)
+                            if new_loc_tech:
+                                new_flow_cap_min = new_loc_tech.get('flow_cap_min',new_tech.get('flow_cap_min',0))
+                                new_flow_cap_max = new_loc_tech.get('flow_cap_max',new_tech.get('flow_cap_max',0))
+                                new_storage_cap_min = new_loc_tech.get('storage_cap_min',new_tech.get('storage_cap_min',0))
+                                new_storage_cap_max = new_loc_tech.get('storage_cap_max',new_tech.get('storage_cap_max',0))
+                            else:
+                                new_flow_cap_min = new_tech.get('flow_cap_min',0)
+                                new_flow_cap_max = new_tech.get('flow_cap_max',0)
+                                new_storage_cap_min = new_tech.get('storage_cap_min',0)
+                                new_storage_cap_max = new_tech.get('storage_cap_max',0)
 
-                        if new_loc_tech == None:
-                            new_loc_tech = {}
+                            if new_loc_tech == None:
+                                new_loc_tech = {}
 
-                        if new_flow_cap_min > 0 and new_flow_cap_min-loc_tech['results']['flow_cap_equals'] > 0:
-                            new_loc_tech['flow_cap_min'] = new_flow_cap_min-loc_tech['results']['flow_cap_equals']
-                            if new_loc_tech['flow_cap_min'] < 0:
-                                new_loc_tech['flow_cap_min'] = 0
-                        if new_flow_cap_max != 'inf' and new_flow_cap_max > 0:
-                            new_loc_tech['flow_cap_max'] = new_flow_cap_max-loc_tech['results']['flow_cap_equals']
-                            if new_loc_tech['flow_cap_max'] < 0:
-                                new_loc_tech['flow_cap_max'] = 0
-                        if new_storage_cap_min > 0 and new_storage_cap_min-loc_tech['results']['storage_cap_equals'] > 0:
-                            new_loc_tech['storage_cap_min'] = new_storage_cap_min-loc_tech['results']['storage_cap_equals']
-                            if new_loc_tech['storage_cap_min'] < 0:
-                                new_loc_tech['storage_cap_min'] = 0
-                        if new_storage_cap_max != 'inf' and new_storage_cap_max > 0:
-                            new_loc_tech['storage_cap_max'] = new_storage_cap_max-loc_tech['results']['storage_cap_equals']
-                            if new_loc_tech['storage_cap_max'] < 0:
-                                new_loc_tech['storage_cap_max'] = 0
+                            if new_flow_cap_min > 0 and new_flow_cap_min-loc_tech['results']['flow_cap'] > 0:
+                                new_loc_tech['flow_cap_min'] = new_flow_cap_min-loc_tech['results']['flow_cap']
+                                if new_loc_tech['flow_cap_min'] < 0:
+                                    new_loc_tech['flow_cap_min'] = 0
+                            if new_flow_cap_max != 'inf' and new_flow_cap_max > 0:
+                                new_loc_tech['flow_cap_max'] = new_flow_cap_max-loc_tech['results']['flow_cap']
+                                if new_loc_tech['flow_cap_max'] < 0:
+                                    new_loc_tech['flow_cap_max'] = 0
+                            if new_storage_cap_min > 0 and new_storage_cap_min-loc_tech['results']['storage_cap'] > 0:
+                                new_loc_tech['storage_cap_min'] = new_storage_cap_min-loc_tech['results']['storage_cap']
+                                if new_loc_tech['storage_cap_min'] < 0:
+                                    new_loc_tech['storage_cap_min'] = 0
+                            if new_storage_cap_max != 'inf' and new_storage_cap_max > 0:
+                                new_loc_tech['storage_cap_max'] = new_storage_cap_max-loc_tech['results']['storage_cap']
+                                if new_loc_tech['storage_cap_max'] < 0:
+                                    new_loc_tech['storage_cap_max'] = 0
 
-                        new_loctechs['nodes'][l]['techs'][t] = new_loc_tech
+                            new_loctechs['nodes'][l]['techs'][t] = new_loc_tech
 
-                        built_loc_techs[l+t] = loc_tech_b
+                            built_loc_techs[l+t] = loc_tech_b
 
-                        new_loctechs['nodes'][l]['techs'][t+'_'+str(old_year)] = loc_tech_b
+                            new_loctechs['nodes'][l]['techs'][t+'_'+str(old_year)] = loc_tech_b
+
+                            if old_operate_inputs and new_operate_inputs:
+                                new_operate_loctechs['nodes'][l]['techs'][t+'_'+str(old_year)] = copy.deepcopy(old_operate_loctechs['nodes'][l]['techs'][t])
+
 
     # Transmission (formerly links)
     for l in old_model['techs']:
@@ -799,66 +817,77 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
         new_tech = new_techs['templates'][t]
         new_loc_tech = new_loctechs['techs'][l]
         loc_tech = old_model['techs'][l]
+        # Check if tech has a max flow or storage capacity
         if ('flow_cap_max' in loc_tech or 'storage_cap_max' in loc_tech) or\
                 ('flow_cap_max' in old_tech or 'storage_cap_max' in old_tech):
-            if loc_tech.get('results',{'flow_cap_equals':0}).get('flow_cap_equals',0) != 0 or\
-                    loc_tech.get('results',{'storage_cap_equals':0}).get('storage_cap_equals',0) != 0:
-                loc_tech_b = copy.deepcopy(loc_tech)
+            
+            # A capex tech will have a min less than max rather than equal. All fixed techs can be ignored
+            if (loc_tech.get('flow_cap_min',old_tech.get('flow_cap_min',0)) < loc_tech.get('flow_cap_max',old_tech.get('flow_cap_max',0))) or\
+                (loc_tech.get('storage_cap_min',old_tech.get('storage_cap_min',0)) < loc_tech.get('storage_cap_max',old_tech.get('storage_cap_max',0))):
 
-                # Record built techs and the total systemwide capacity of those techs to use with flow_cap_max_systemwide
-                if t in built_techs['templates']:
-                    built_techs['templates'][t] += loc_tech.get('results',{'flow_cap_equals':0}).get('flow_cap_equals',0)
-                else:
-                    built_techs['templates'][t] = loc_tech.get('results',{'flow_cap_equals':0}).get('flow_cap_equals',0)
+                # Unbuilt techs will have 0 capacity in results and can be skipped
+                if loc_tech.get('results',{'flow_cap':0}).get('flow_cap',0) != 0 or\
+                    loc_tech.get('results',{'storage_cap':0}).get('storage_cap',0) != 0:
+                    loc_tech_b = copy.deepcopy(loc_tech)
 
-                [loc_tech_b.pop(c) for c in ['flow_cap_max', 'storage_cap_max'] if c in loc_tech_b]
-                if 'flow_cap_equals' in loc_tech['results']:
-                    loc_tech_b['flow_cap_min'] = loc_tech['results']['flow_cap_equals']
-                    loc_tech_b['flow_cap_max'] = loc_tech['results']['flow_cap_equals']
-                if 'storage_cap_equals' in loc_tech['results']:
-                    loc_tech_b['storage_cap_min'] = loc_tech['results']['storage_cap_equals']
-                    loc_tech_b['storage_cap_max'] = loc_tech['results']['storage_cap_equals']
-                #[loc_tech_b.pop(c) for c in ['cost_flow_cap','cost_interest_rate','cost_storage_cap'] if c in loc_tech_b]
-                loc_tech_b.pop('results')
+                    # Record built techs and the total systemwide capacity of those techs to use with flow_cap_max_systemwide
+                    if t in built_techs['templates']:
+                        built_techs['templates'][t] += loc_tech.get('results',{'flow_cap':0}).get('flow_cap',0)
+                    else:
+                        built_techs['templates'][t] = loc_tech.get('results',{'flow_cap':0}).get('flow_cap',0)
 
-                if new_loc_tech:
-                    new_flow_cap_min = new_loc_tech.get('flow_cap_min',new_tech.get('flow_cap_min',0))
-                    new_flow_cap_max = new_loc_tech.get('flow_cap_max',new_tech.get('flow_cap_max',0))
-                    new_storage_cap_min = new_loc_tech.get('storage_cap_min',new_tech.get('storage_cap_min',0))
-                    new_storage_cap_max = new_loc_tech.get('storage_cap_max',new_tech.get('storage_cap_max',0))
-                else:
-                    new_flow_cap_min = new_tech.get('flow_cap_min',0)
-                    new_flow_cap_max = new_tech.get('flow_cap_max',0)
-                    new_storage_cap_min = new_tech.get('storage_cap_min',0)
-                    new_storage_cap_max = new_tech.get('storage_cap_max',0)
+                    [loc_tech_b.pop(c) for c in ['flow_cap_max', 'storage_cap_max'] if c in loc_tech_b]
+                    if 'flow_cap' in loc_tech['results']:
+                        loc_tech_b['flow_cap_min'] = loc_tech['results']['flow_cap']
+                        loc_tech_b['flow_cap_max'] = loc_tech['results']['flow_cap']
+                    if 'storage_cap' in loc_tech['results']:
+                        loc_tech_b['storage_cap_min'] = loc_tech['results']['storage_cap']
+                        loc_tech_b['storage_cap_max'] = loc_tech['results']['storage_cap']
+                    #[loc_tech_b.pop(c) for c in ['cost_flow_cap','cost_interest_rate','cost_storage_cap'] if c in loc_tech_b]
+                    loc_tech_b.pop('results')
 
-                if new_loc_tech == None:
-                    new_loc_tech = {}
+                    if new_loc_tech:
+                        new_flow_cap_min = new_loc_tech.get('flow_cap_min',new_tech.get('flow_cap_min',0))
+                        new_flow_cap_max = new_loc_tech.get('flow_cap_max',new_tech.get('flow_cap_max',0))
+                        new_storage_cap_min = new_loc_tech.get('storage_cap_min',new_tech.get('storage_cap_min',0))
+                        new_storage_cap_max = new_loc_tech.get('storage_cap_max',new_tech.get('storage_cap_max',0))
+                    else:
+                        new_flow_cap_min = new_tech.get('flow_cap_min',0)
+                        new_flow_cap_max = new_tech.get('flow_cap_max',0)
+                        new_storage_cap_min = new_tech.get('storage_cap_min',0)
+                        new_storage_cap_max = new_tech.get('storage_cap_max',0)
 
-                if new_flow_cap_min > 0 and new_flow_cap_min-loc_tech['results']['flow_cap_equals'] > 0:
-                    new_loc_tech['flow_cap_min'] = new_flow_cap_min-loc_tech['results']['flow_cap_equals']
-                    if new_loc_tech['flow_cap_min'] < 0:
-                        new_loc_tech['flow_cap_min'] = 0
-                if new_flow_cap_max != 'inf' and new_flow_cap_max > 0:
-                    new_loc_tech['flow_cap_max'] = new_flow_cap_max-loc_tech['results']['flow_cap_equals']
-                    if new_loc_tech['flow_cap_max'] < 0:
-                        new_loc_tech['flow_cap_max'] = 0
-                if new_storage_cap_min > 0 and new_storage_cap_min-loc_tech['results']['storage_cap_equals'] > 0:
-                    new_loc_tech['storage_cap_min'] = new_storage_cap_min-loc_tech['results']['storage_cap_equals']
-                    if new_loc_tech['storage_cap_min'] < 0:
-                        new_loc_tech['storage_cap_min'] = 0
-                if new_storage_cap_max != 'inf' and new_storage_cap_max > 0:
-                    new_loc_tech['storage_cap_max'] = new_storage_cap_max-loc_tech['results']['storage_cap_equals']
-                    if new_loc_tech['storage_cap_max'] < 0:
-                        new_loc_tech['storage_cap_max'] = 0
+                    if new_loc_tech == None:
+                        new_loc_tech = {}
 
-                new_loctechs['techs'][l] = new_loc_tech
+                    if new_flow_cap_min > 0 and new_flow_cap_min-loc_tech['results']['flow_cap'] > 0:
+                        new_loc_tech['flow_cap_min'] = new_flow_cap_min-loc_tech['results']['flow_cap']
+                        if new_loc_tech['flow_cap_min'] < 0:
+                            new_loc_tech['flow_cap_min'] = 0
+                    if new_flow_cap_max != 'inf' and new_flow_cap_max > 0:
+                        new_loc_tech['flow_cap_max'] = new_flow_cap_max-loc_tech['results']['flow_cap']
+                        if new_loc_tech['flow_cap_max'] < 0:
+                            new_loc_tech['flow_cap_max'] = 0
+                    if new_storage_cap_min > 0 and new_storage_cap_min-loc_tech['results']['storage_cap'] > 0:
+                        new_loc_tech['storage_cap_min'] = new_storage_cap_min-loc_tech['results']['storage_cap']
+                        if new_loc_tech['storage_cap_min'] < 0:
+                            new_loc_tech['storage_cap_min'] = 0
+                    if new_storage_cap_max != 'inf' and new_storage_cap_max > 0:
+                        new_loc_tech['storage_cap_max'] = new_storage_cap_max-loc_tech['results']['storage_cap']
+                        if new_loc_tech['storage_cap_max'] < 0:
+                            new_loc_tech['storage_cap_max'] = 0
 
-                built_loc_techs[l+t] = loc_tech_b
+                    new_loctechs['techs'][l] = new_loc_tech
 
-                loc_tech_b['template'] += '_'+str(old_year)
+                    built_loc_techs[l+t] = loc_tech_b
 
-                new_loctechs['techs'][l+'_'+str(old_year)] = loc_tech_b
+                    loc_tech_b['template'] += '_'+str(old_year)
+
+                    new_loctechs['techs'][l+'_'+str(old_year)] = loc_tech_b
+
+                    if old_operate_inputs and new_operate_inputs:
+                        new_operate_loctechs['techs'][l+'_'+str(old_year)] = old_operate_loctechs['techs'][l]
+
 
     for level in built_techs.keys():
         for t in built_techs[level].keys():
@@ -884,8 +913,19 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                             if t in se['expression'] and t+'_'+str(old_year) not in se['expression']:
                                 new_constraints['constraints'][g]['slices'][s][i]['expression'] = se['expression'].replace(t,t+','+t+'_'+str(old_year))
 
-    if os.path.exists(os.path.join(old_inputs,'node_timeseries.csv')):
-        node_ts_df_old = pd.read_csv(os.path.join(old_inputs,'node_timeseries.csv'),header=[0,1,2],index_col=[0])
+            if old_operate_inputs and new_operate_inputs:
+                new_operate_techs[level][t+'_'+str(old_year)] = old_operate_techs[level][t]
+                new_operate_techs[level][t+'_'+str(old_year)]['name'] += ' '+str(old_year)
+                if new_operate_constraints['constraints']:
+                    operate_group_constraints = new_operate_constraints['constraints'].copy()
+                    for g,c in operate_group_constraints.items():
+                        for s,sc in c.get('slices',{}).items():
+                            for i,se in enumerate(sc):
+                                if t in se['expression'] and t+'_'+str(old_year) not in se['expression']:
+                                    new_operate_constraints['constraints'][g]['slices'][s][i]['expression'] = se['expression'].replace(t,t+','+t+'_'+str(old_year))
+
+    if os.path.exists(os.path.join(old_inputs,'techs_nodes_parameters_timeseries.csv')):
+        node_ts_df_old = pd.read_csv(os.path.join(old_inputs,'techs_nodes_parameters_timeseries.csv'),header=[0,1,2],index_col=[0])
         keep_cols = [c[1]+c[0] in built_loc_techs for c in node_ts_df_old.columns]
         node_ts_df_old.columns = pd.MultiIndex.from_tuples([(c[1],c[0]+'_'+str(old_year),c[2]) for c in node_ts_df_old.columns])
         node_ts_df_old = node_ts_df_old.loc[:,keep_cols]
@@ -906,20 +946,20 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                 node_ts_df_old.loc[feb_29_mask] = feb_28
 
         node_ts_df_old.drop(columns=['ts','ts','ts'],inplace=True)
-    
-        if os.path.exists(os.path.join(new_inputs,'node_timeseries.csv')):
-            node_ts_df_new = pd.read_csv(os.path.join(new_inputs,'node_timeseries.csv'),header=[0,1,2],index_col=[0])
+
+        if os.path.exists(os.path.join(new_inputs,'techs_nodes_parameters_timeseries.csv')):
+            node_ts_df_new = pd.read_csv(os.path.join(new_inputs,'techs_nodes_parameters_timeseries.csv'),header=[0,1,2],index_col=[0])
             node_ts_df_new.index = pd.to_datetime(node_ts_df_new.index)
             node_ts_df_new = pd.concat([node_ts_df_new,node_ts_df_old],axis=1)
         else:
-            new_model['data_sources']['Node_Timeseries'] = {'source': 'node_timeseries.csv', 'rows': 'timesteps',
+            new_model['data_sources']['techs_nodes_parameters_timeseries'] = {'source': 'techs_nodes_parameters_timeseries.csv', 'rows': 'timesteps',
                                                                 'columns': ['techs', 'nodes', 'parameters']}
             node_ts_df_new = node_ts_df_old
         node_ts_df_new.index.name = None
-        node_ts_df_new.to_csv(os.path.join(new_inputs,'node_timeseries.csv'))
+        node_ts_df_new.to_csv(os.path.join(new_inputs,'techs_nodes_parameters_timeseries.csv'))
 
-    if os.path.exists(os.path.join(old_inputs,'tech_timeseries.csv')):
-        tech_ts_df_old = pd.read_csv(os.path.join(old_inputs,'tech_timeseries.csv'),header=[0,1],index_col=[0])
+    if os.path.exists(os.path.join(old_inputs,'techs_parameters_timeseries.csv')):
+        tech_ts_df_old = pd.read_csv(os.path.join(old_inputs,'techs_parameters_timeseries.csv'),header=[0,1],index_col=[0])
         keep_cols = [(c[0] in built_techs.get('techs',{}) or c[0] in built_techs.get('templates',{})) for c in tech_ts_df_old.columns]
         tech_ts_df_old.columns = pd.MultiIndex.from_tuples([(c[0]+'_'+str(old_year),c[1]) for c in tech_ts_df_old.columns])
         tech_ts_df_old = tech_ts_df_old.loc[:,keep_cols]
@@ -940,17 +980,17 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                 tech_ts_df_old.loc[feb_29_mask] = feb_28
 
         tech_ts_df_old.drop(columns=['ts','ts'],inplace=True)
-    
-        if os.path.exists(os.path.join(new_inputs,'tech_timeseries.csv')):
-            tech_ts_df_new = pd.read_csv(os.path.join(new_inputs,'tech_timeseries.csv'),header=[0,1],index_col=[0])
+
+        if os.path.exists(os.path.join(new_inputs,'techs_parameters_timeseries.csv')):
+            tech_ts_df_new = pd.read_csv(os.path.join(new_inputs,'techs_parameters_timeseries.csv'),header=[0,1],index_col=[0])
             tech_ts_df_new.index = pd.to_datetime(tech_ts_df_old.index)
             tech_ts_df_new = pd.concat([tech_ts_df_new,tech_ts_df_old],axis=1)
         else:
-            new_model['data_sources']['Tech_Timeseries'] = {'source': 'tech_timeseries.csv', 'rows': 'timesteps',
+            new_model['data_sources']['techs_parameters_timeseries'] = {'source': 'techs_parameters_timeseries.csv', 'rows': 'timesteps',
                                                                 'columns': ['techs', 'parameters']}
             tech_ts_df_new = tech_ts_df_old
         tech_ts_df_new.index.name = None
-        tech_ts_df_new.to_csv(os.path.join(new_inputs,'tech_timeseries.csv'))
+        tech_ts_df_new.to_csv(os.path.join(new_inputs,'techs_parameters_timeseries.csv'))
 
     with open(new_inputs+'/techs.yaml','w') as outfile:
         yaml.dump(new_techs,outfile, default_flow_style=None)
@@ -963,3 +1003,86 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
 
     with open(new_inputs+'/custom_math.yaml', 'w') as outfile:
         yaml.dump(new_constraints,outfile,default_flow_style=None)
+
+    if new_operate_inputs and old_operate_inputs:
+        if os.path.exists(os.path.join(old_operate_inputs,'techs_nodes_parameters_timeseries.csv')):
+            print('Here')
+            node_ts_df_old = pd.read_csv(os.path.join(old_operate_inputs,'techs_nodes_parameters_timeseries.csv'),header=[0,1,2],index_col=[0])
+            keep_cols = [c[1]+c[0] in built_loc_techs for c in node_ts_df_old.columns]
+            print(keep_cols)
+            node_ts_df_old.columns = pd.MultiIndex.from_tuples([(c[1],c[0]+'_'+str(old_year),c[2]) for c in node_ts_df_old.columns])
+            node_ts_df_old = node_ts_df_old.loc[:,keep_cols]
+            node_ts_df_old['ts','ts','ts'] = pd.to_datetime(node_ts_df_old.index)
+            if not calendar.isleap(new_year):
+                feb_29_mask = (node_ts_df_old['ts','ts','ts'].dt.month == 2) & (node_ts_df_old['ts','ts','ts'].dt.day == 29)
+                node_ts_df_old = node_ts_df_old[~feb_29_mask]
+                node_ts_df_old.index = node_ts_df_old['ts','ts','ts'].apply(lambda x: x.replace(year=new_year))
+            elif not calendar.isleap(old_year):
+                node_ts_df_old.index = node_ts_df_old['ts','ts','ts'].apply(lambda x: x.replace(year=new_year))
+
+                # Leap Year Handling (Fill w/ Feb 28th)
+                feb_28_mask = (node_ts_df_old.index.month == 2) & (node_ts_df_old.index.day == 28)
+                feb_29_mask = (node_ts_df_old.index.month == 2) & (node_ts_df_old.index.day == 29)
+                feb_28 = node_ts_df_old.loc[feb_28_mask].values
+                feb_29 = node_ts_df_old.loc[feb_29_mask].values
+                if ((len(feb_29) > 0) & (len(feb_28) > 0)):
+                    node_ts_df_old.loc[feb_29_mask] = feb_28
+
+            node_ts_df_old.drop(columns=['ts','ts','ts'],inplace=True)
+
+            if os.path.exists(os.path.join(new_operate_inputs,'techs_nodes_parameters_timeseries.csv')):
+                node_ts_df_new = pd.read_csv(os.path.join(new_operate_inputs,'techs_nodes_parameters_timeseries.csv'),header=[0,1,2],index_col=[0])
+                node_ts_df_new.index = pd.to_datetime(node_ts_df_new.index)
+                node_ts_df_new = pd.concat([node_ts_df_new,node_ts_df_old],axis=1)
+            else:
+                new_model['data_sources']['techs_nodes_parameters_timeseries'] = {'source': 'techs_nodes_parameters_timeseries.csv', 'rows': 'timesteps',
+                                                                    'columns': ['techs', 'nodes', 'parameters']}
+                node_ts_df_new = node_ts_df_old
+            node_ts_df_new.index.name = None
+            node_ts_df_new.to_csv(os.path.join(new_operate_inputs,'techs_nodes_parameters_timeseries.csv'))
+
+        if os.path.exists(os.path.join(old_operate_inputs,'techs_parameters_timeseries.csv')):
+            tech_ts_df_old = pd.read_csv(os.path.join(old_operate_inputs,'techs_parameters_timeseries.csv'),header=[0,1],index_col=[0])
+            keep_cols = [(c[0] in built_techs.get('techs',{}) or c[0] in built_techs.get('templates',{})) for c in tech_ts_df_old.columns]
+            tech_ts_df_old.columns = pd.MultiIndex.from_tuples([(c[0]+'_'+str(old_year),c[1]) for c in tech_ts_df_old.columns])
+            tech_ts_df_old = tech_ts_df_old.loc[:,keep_cols]
+            tech_ts_df_old['ts','ts'] = pd.to_datetime(tech_ts_df_old.index)
+            if not calendar.isleap(new_year):
+                feb_29_mask = (tech_ts_df_old['ts','ts'].dt.month == 2) & (tech_ts_df_old['ts','ts'].dt.day == 29)
+                tech_ts_df_old = tech_ts_df_old[~feb_29_mask]
+                tech_ts_df_old.index = tech_ts_df_old['ts','ts'].apply(lambda x: x.replace(year=new_year))
+            elif not calendar.isleap(old_year):
+                tech_ts_df_old.index = tech_ts_df_old['ts','ts'].apply(lambda x: x.replace(year=new_year))
+
+                # Leap Year Handling (Fill w/ Feb 28th)
+                feb_28_mask = (tech_ts_df_old.index.month == 2) & (tech_ts_df_old.index.day == 28)
+                feb_29_mask = (tech_ts_df_old.index.month == 2) & (tech_ts_df_old.index.day == 29)
+                feb_28 = tech_ts_df_old.loc[feb_28_mask].values
+                feb_29 = tech_ts_df_old.loc[feb_29_mask].values
+                if ((len(feb_29) > 0) & (len(feb_28) > 0)):
+                    tech_ts_df_old.loc[feb_29_mask] = feb_28
+
+            tech_ts_df_old.drop(columns=['ts','ts'],inplace=True)
+
+            if os.path.exists(os.path.join(new_operate_inputs,'techs_parameters_timeseries.csv')):
+                tech_ts_df_new = pd.read_csv(os.path.join(new_operate_inputs,'techs_parameters_timeseries.csv'),header=[0,1],index_col=[0])
+                tech_ts_df_new.index = pd.to_datetime(tech_ts_df_old.index)
+                tech_ts_df_new = pd.concat([tech_ts_df_new,tech_ts_df_old],axis=1)
+            else:
+                new_model['data_sources']['techs_parameters_timeseries'] = {'source': 'techs_parameters_timeseries.csv', 'rows': 'timesteps',
+                                                                    'columns': ['techs', 'parameters']}
+                tech_ts_df_new = tech_ts_df_old
+            tech_ts_df_new.index.name = None
+            tech_ts_df_new.to_csv(os.path.join(new_operate_inputs,'techs_parameters_timeseries.csv'))
+
+        with open(new_operate_inputs+'/techs.yaml','w') as outfile:
+            yaml.dump(new_operate_techs,outfile, default_flow_style=None)
+
+        with open(new_operate_inputs+'/locations.yaml','w') as outfile:
+            yaml.dump(new_operate_loctechs,outfile,default_flow_style=None)
+
+        with open(new_operate_inputs+'/model.yaml', 'w') as outfile:
+            yaml.dump(new_operate_model,outfile,default_flow_style=None)
+
+        with open(new_operate_inputs+'/custom_math.yaml', 'w') as outfile:
+            yaml.dump(new_operate_constraints,outfile,default_flow_style=None)

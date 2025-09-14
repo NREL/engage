@@ -5,6 +5,7 @@ import logging
 import operator
 import os
 import zipfile
+import copy
 from re import match
 
 from datetime import datetime, timedelta
@@ -222,7 +223,8 @@ def build(request):
 
             if mode == 'plan' and build_operate_run:
 
-                for run_option in run_options:
+                run_options_o = copy.deepcopy(run_options)
+                for run_option in run_options_o:
                     if run_option['name'] == 'mode':
                         run_option['value'] = 'operate'
                 # Create operate run instance
@@ -239,7 +241,7 @@ def build(request):
                     compute_environment=compute_environment,
                     group=groupname,
                     description=notes,
-                    run_options=run_options,
+                    run_options=run_options_o,
                     parent=run,
                 )
 
@@ -352,9 +354,9 @@ def optimize(request):
     # run celery task
     environment = run.compute_environment
     if environment.type == "Celery Worker":
-        if run.group != '':
+        if run.group != '' and run.mode == 'plan':
             chain_runs = [(run.id,model_path,request.user.id)]
-            future_runs = Run.objects.filter(model=model,group=run.group,year__gt=run.year).order_by('year')
+            future_runs = Run.objects.filter(model=model,group=run.group,year__gt=run.year,mode='plan').order_by('year')
             for next_run in future_runs:
                 if next_run.status == task_status.BUILT:
                     logger.info("Found a subsequent gradient model for year %s.",next_run.year)
@@ -429,8 +431,8 @@ def optimize(request):
             run.status = task_status.QUEUED
             run.save()
             payload = {"task_id": response.get("jobId")}
-            if run.group != '':
-                future_runs = Run.objects.filter(group=run.group,year__gt=run.year).order_by('year')
+            if run.group != '' and run.mode == 'plan':
+                future_runs = Run.objects.filter(group=run.group,year__gt=run.year,mode='plan').order_by('year')
                 for next_run in future_runs:
                     if next_run.status == task_status.BUILT:
                         logger.info("Found a subsequent gradient model for year %s.",next_run.year)
