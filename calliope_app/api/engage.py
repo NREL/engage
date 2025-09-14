@@ -10,13 +10,13 @@ ENGAGE_SOLVERS = [
     {
         "name": "appsi_highs",
         "pretty_name": "HiGHS",
-        "order": 1,
+        "order": 2,
         "is_active": True
     },
     {
         "name": "cbc",
         "pretty_name": "CBC",
-        "order": 2,
+        "order": 1,
         "is_active": True
     },
     {

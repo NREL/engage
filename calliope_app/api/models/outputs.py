@@ -214,7 +214,7 @@ class Run(models.Model):
                 meta['carriers_in'].get(carrier, []) + \
                 meta['carriers_out'].get(carrier, [])
             # Fixed Values (Barchart)
-            data['barchart'], locs1 = self.get_static_values(
+            data['barchart'], locs1 = self.get_static_values(carrier,
                 meta, metric, location, soft_filter, hard_filter,cost_class)
             # Variable Values (Timeseries)
             data['timeseries'], locs2 = self.get_variable_values(
@@ -229,7 +229,7 @@ class Run(models.Model):
         response['options']['month'] = meta['months']
         return response
 
-    def get_static_values(self, meta, metric, location,
+    def get_static_values(self, carrier, meta, metric, location,
                           soft_filter, hard_filter, cost_class):
         LABELS = {'Production': 'Capacities',
                   'Consumption': 'Capacities',
@@ -262,6 +262,7 @@ class Run(models.Model):
                 df = self.read_output('inputs_flow_cap.csv')
             else:
                 df = self.read_output('results_flow_cap.csv')
+                df = df[df['carriers'] == carrier]
             df['values'] = df['flow_cap']
             ctx = self.read_output('inputs_flow_cap_max.csv')
             if ctx is not None:

@@ -5,6 +5,7 @@ import logging
 import operator
 import os
 import zipfile
+import copy
 from re import match
 
 from datetime import datetime, timedelta
@@ -42,6 +43,12 @@ logger = logging.getLogger(__name__)
 
 @csrf_protect
 def solvers(request):
+    """
+    Get a list of availible solvers.
+
+    Example:
+    GET: /api/solvers/
+    """
     env_name = request.GET.get("env_name", None)
     if not env_name:
         env_name = "default"
@@ -107,6 +114,7 @@ def build(request):
         for run_option in run_options_raw.keys():
             run_parameter= Run_Parameter.objects.get(pk=int(run_option))
             run_options.append({'root':run_parameter.root,'name':run_parameter.name,'value':run_options_raw[run_option]})
+            
         start_date = request.GET.get("start_date", None)
         end_date = request.GET.get("end_date", None)
         build_operate_run = (request.GET.get("build_operate_run", 'false') == 'true')
@@ -129,7 +137,8 @@ def build(request):
     for run_option in run_options:
         if run_option['name'] == 'mode':
             mode = run_option['value']
-
+            if mode == 'plan':
+                run_option['value'] = 'base'
     try:
         start_date = datetime.strptime(start_date, "%Y-%m-%d")
         end_date = datetime.strptime(end_date,
@@ -220,7 +229,8 @@ def build(request):
 
             if mode == 'plan' and build_operate_run:
 
-                for run_option in run_options:
+                run_options_o = copy.deepcopy(run_options)
+                for run_option in run_options_o:
                     if run_option['name'] == 'mode':
                         run_option['value'] = 'operate'
                 # Create operate run instance
@@ -237,7 +247,7 @@ def build(request):
                     compute_environment=compute_environment,
                     group=groupname,
                     description=notes,
-                    run_options=run_options,
+                    run_options=run_options_o,
                     parent=run,
                 )
 
@@ -350,9 +360,9 @@ def optimize(request):
     # run celery task
     environment = run.compute_environment
     if environment.type == "Celery Worker":
-        if run.group != '':
+        if run.group != '' and run.mode == 'plan':
             chain_runs = [(run.id,model_path,request.user.id)]
-            future_runs = Run.objects.filter(model=model,group=run.group,year__gt=run.year).order_by('year')
+            future_runs = Run.objects.filter(model=model,group=run.group,year__gt=run.year,mode='plan').order_by('year')
             for next_run in future_runs:
                 if next_run.status == task_status.BUILT:
                     logger.info("Found a subsequent gradient model for year %s.",next_run.year)
@@ -427,8 +437,8 @@ def optimize(request):
             run.status = task_status.QUEUED
             run.save()
             payload = {"task_id": response.get("jobId")}
-            if run.group != '':
-                future_runs = Run.objects.filter(group=run.group,year__gt=run.year).order_by('year')
+            if run.group != '' and run.mode == 'plan':
+                future_runs = Run.objects.filter(group=run.group,year__gt=run.year,mode='plan').order_by('year')
                 for next_run in future_runs:
                     if next_run.status == task_status.BUILT:
                         logger.info("Found a subsequent gradient model for year %s.",next_run.year)
