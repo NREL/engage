@@ -4,7 +4,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 1,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
@@ -13,7 +13,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 2,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||elec_cap_vs_surface_om_cost||"
         }
     },
@@ -22,7 +22,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 5,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
@@ -31,7 +31,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 6,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||elec_cap_vs_surface_om_cost||"
         }
     },
@@ -40,7 +40,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 9,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
@@ -49,7 +49,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 10,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||elec_cap_vs_surface_om_cost||"
         }
     },
@@ -58,7 +58,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 11,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
@@ -67,7 +67,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 12,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||elec_cap_vs_surface_om_cost||"
         }
     },
@@ -76,7 +76,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 13,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
@@ -85,7 +85,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 16,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
@@ -94,7 +94,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 19,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
@@ -103,7 +103,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 20,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||elec_cap_vs_surface_om_cost||"
         }
     },
@@ -112,7 +112,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 23,
-            "parameter": 79,
+            "parameter": 35,
             "equation": 0.000853
         }
     },
@@ -121,7 +121,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 25,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
@@ -130,7 +130,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 26,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||elec_cap_vs_surface_om_cost||"
         }
     },
@@ -139,7 +139,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 29,
-            "parameter": 79,
+            "parameter": 35,
             "equation": 0.000853
         }
     },
@@ -148,7 +148,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 31,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
@@ -157,7 +157,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 32,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||elec_cap_vs_surface_om_cost||"
         }
     },
@@ -166,7 +166,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 33,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
@@ -175,7 +175,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 34,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||elec_cap_vs_surface_om_cost||"
         }
     },
@@ -184,7 +184,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 35,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
@@ -193,7 +193,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 36,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||elec_cap_vs_surface_om_cost||"
         }
     },
@@ -202,7 +202,7 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 37,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||therm_cap_vs_reservoir_om_cost||"
         }
     },
@@ -211,116 +211,8 @@
         "model": "template.template_type_loc_tech_param",
         "fields": {
             "template_loc_tech": 38,
-            "parameter": 79,
+            "parameter": 35,
             "equation": "||elec_cap_vs_surface_om_cost||"
-        }
-    },
-    {
-        "pk": 1,
-        "model": "template.template_type_loc_tech_param",
-        "fields": {
-            "template_loc_tech": 1,
-            "parameter": 24,
-            "equation": "True"
-        }
-    },
-    {
-        "pk": 15,
-        "model": "template.template_type_loc_tech_param",
-        "fields": {
-            "template_loc_tech": 5,
-            "parameter": 24,
-            "equation": "True"
-        }
-    },
-    {
-        "pk": 30,
-        "model": "template.template_type_loc_tech_param",
-        "fields": {
-            "template_loc_tech": 9,
-            "parameter": 24,
-            "equation": "True"
-        }
-    },
-    {
-        "pk": 43,
-        "model": "template.template_type_loc_tech_param",
-        "fields": {
-            "template_loc_tech": 11,
-            "parameter": 24,
-            "equation": "True"
-        }
-    },
-    {
-        "pk": 58,
-        "model": "template.template_type_loc_tech_param",
-        "fields": {
-            "template_loc_tech": 13,
-            "parameter": 24,
-            "equation": "True"
-        }
-    },
-    {
-        "pk": 69,
-        "model": "template.template_type_loc_tech_param",
-        "fields": {
-            "template_loc_tech": 16,
-            "parameter": 24,
-            "equation": "True"
-        }
-    },
-    {
-        "pk": 79,
-        "model": "template.template_type_loc_tech_param",
-        "fields": {
-            "template_loc_tech": 19,
-            "parameter": 24,
-            "equation": "True"
-        }
-    },
-    {
-        "pk": 98,
-        "model": "template.template_type_loc_tech_param",
-        "fields": {
-            "template_loc_tech": 25,
-            "parameter": 24,
-            "equation": "True"
-        }
-    },
-    {
-        "pk": 118,
-        "model": "template.template_type_loc_tech_param",
-        "fields": {
-            "template_loc_tech": 31,
-            "parameter": 24,
-            "equation": "True"
-        }
-    },
-    {
-        "pk": 132,
-        "model": "template.template_type_loc_tech_param",
-        "fields": {
-            "template_loc_tech": 33,
-            "parameter": 24,
-            "equation": "True"
-        }
-    },
-    {
-        "pk": 146,
-        "model": "template.template_type_loc_tech_param",
-        "fields": {
-            "template_loc_tech": 35,
-            "parameter": 24,
-            "equation": "True"
-        }
-    },
-    {
-        "pk": 160,
-        "model": "template.template_type_loc_tech_param",
-        "fields": {
-            "template_loc_tech": 37,
-            "parameter": 24,
-            "equation": "True"
         }
     },
     {
@@ -329,7 +221,9 @@
         "fields": {
             "template_loc_tech": 10,
             "parameter": 110,
-            "equation": "||elec_prod_to_therm_ext_ratio||"
+            "equation": "||elec_prod_to_therm_ext_ratio||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -338,7 +232,9 @@
         "fields": {
             "template_loc_tech": 12,
             "parameter": 110,
-            "equation": "||elec_prod_to_therm_ext_ratio||"
+            "equation": "||elec_prod_to_therm_ext_ratio||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -347,7 +243,9 @@
         "fields": {
             "template_loc_tech": 14,
             "parameter": 110,
-            "equation": "||heat_prod_to_therm_ext_ratio||"
+            "equation": "||heat_prod_to_therm_ext_ratio||",
+            "index": ["Heat"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -356,7 +254,9 @@
         "fields": {
             "template_loc_tech": 17,
             "parameter": 110,
-            "equation": "||heat_prod_to_therm_ext_ratio||"
+            "equation": "||heat_prod_to_therm_ext_ratio||",
+            "index": ["Heat"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -383,7 +283,9 @@
         "fields": {
             "template_loc_tech": 32,
             "parameter": 110,
-            "equation": "||elec_prod_to_therm_ext_ratio||"
+            "equation": "||elec_prod_to_therm_ext_ratio||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -392,7 +294,9 @@
         "fields": {
             "template_loc_tech": 34,
             "parameter": 110,
-            "equation": "||elec_prod_to_therm_ext_ratio||"
+            "equation": "||elec_prod_to_therm_ext_ratio||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -401,7 +305,9 @@
         "fields": {
             "template_loc_tech": 36,
             "parameter": 110,
-            "equation": "||elec_prod_to_therm_ext_ratio||"
+            "equation": "||elec_prod_to_therm_ext_ratio||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -410,7 +316,9 @@
         "fields": {
             "template_loc_tech": 38,
             "parameter": 110,
-            "equation": "||elec_prod_to_therm_ext_ratio||"
+            "equation": "||elec_prod_to_therm_ext_ratio||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {

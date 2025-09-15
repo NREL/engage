@@ -6,6 +6,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_delete, pre_save
 from django.db.models import Q
 from django.core.exceptions import ValidationError
+from django.contrib.postgres.fields import ArrayField
 
 from api.models.utils import EngageManager
 
@@ -109,6 +110,9 @@ class Template_Type_Loc_Tech_Param(models.Model):
     template_loc_tech = models.ForeignKey(Template_Type_Loc_Tech, on_delete=models.CASCADE)
     parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE)
     equation = models.CharField(max_length=200)
+    index = ArrayField(models.CharField(max_length=200, blank=True),blank=True,null=True)
+    dim = ArrayField(models.CharField(max_length=200, blank=True),blank=True,null=True)
+    piecewise_dim = models.CharField(max_length=10, blank=True, null=True)
 
     def __str__(self):
         return '%s' % (self.equation)
@@ -121,6 +125,9 @@ class Template_Type_Tech_Param(models.Model):
     template_tech = models.ForeignKey(Template_Type_Tech, on_delete=models.CASCADE)
     parameter = models.ForeignKey(Parameter, on_delete=models.CASCADE)
     equation = models.CharField(max_length=200)
+    index = ArrayField(models.CharField(max_length=200, blank=True),blank=True,null=True)
+    dim = ArrayField(models.CharField(max_length=200, blank=True),blank=True,null=True)
+    piecewise_dim = models.CharField(max_length=10, blank=True, null=True)
 
     def __str__(self):
         return '%s' % (self.equation)

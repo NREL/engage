@@ -237,8 +237,8 @@ def update_template(request):
                 template_type_loc_tech_params = Template_Type_Loc_Tech_Param.objects.filter(template_loc_tech_id=template_loc_tech_id)
 
                 # get input and output carriers
-                units_in_ids = [4,5,70]
-                units_out_ids = [4,6,71]
+                units_in_ids= ParamsManager.get_tagged_params('units_in')
+                units_out_ids= ParamsManager.get_tagged_params('units_out')
                 tech_param_in = Tech_Param.objects.filter(model=model, technology=loc_tech.technology, parameter_id__in=units_in_ids).first()
                 tech_param_out = Tech_Param.objects.filter(model=model, technology=loc_tech.technology, parameter_id__in=units_out_ids).first()
                 rate_unit_in = "kW"
@@ -261,7 +261,6 @@ def update_template(request):
                 # set all custom parameters for the new node
                 for template_type_loc_tech_param in template_type_loc_tech_params: 
                     equation = template_type_loc_tech_param.equation
-
                     # check for variables in equation to replace
                     for name, template_variable in new_template_variables.items():
                         equation = equation.replace('||'+name+'||', template_variable.value)

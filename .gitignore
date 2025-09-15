@@ -170,3 +170,4 @@ data/timeseries/*
 !data/timeseries/f97df022-1dc7-4f59-bb15-3e0d94f4ba9d.csv
 !data/timeseries/dac8030c-c9b5-48db-8550-cc78312ddabb.csv
 calliope_app/scripts/fixtures/parameters.xlsx
+calliope_app/scripts/fixtures/~$parameters.xlsx
