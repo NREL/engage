@@ -43,7 +43,7 @@
         "fields": {
             "template_tech": 2,
             "parameter": 153,
-            "equation": "Heat"
+            "equation": "[\"Heat\"]"
         }
     },
     {
@@ -52,7 +52,7 @@
         "fields": {
             "template_tech": 2,
             "parameter": 150,
-            "equation": "Thermal"
+            "equation": "[\"Thermal\"]"
         }
     },
     {
@@ -61,7 +61,7 @@
         "fields": {
             "template_tech": 2,
             "parameter": 151,
-            "equation": "Power"
+            "equation": "[\"Power\"]"
         }
     },
     {
@@ -135,7 +135,7 @@
         "fields": {
             "template_tech": 6,
             "parameter": 153,
-            "equation": "Heat"
+            "equation": "[\"Heat\"]"
         }
     },
     {
@@ -144,7 +144,7 @@
         "fields": {
             "template_tech": 6,
             "parameter": 150,
-            "equation": "Thermal"
+            "equation": "[\"Thermal\"]"
         }
     },
     {
@@ -153,7 +153,7 @@
         "fields": {
             "template_tech": 6,
             "parameter": 151,
-            "equation": "Power"
+            "equation": "[\"Power\"]"
         }
     },
     {
@@ -371,7 +371,7 @@
         "fields": {
             "template_tech": 20,
             "parameter": 153,
-            "equation": "Heat"
+            "equation": "[\"Heat\"]"
         }
     },
     {
@@ -380,7 +380,7 @@
         "fields": {
             "template_tech": 20,
             "parameter": 150,
-            "equation": "Thermal"
+            "equation": "[\"Thermal\"]"
         }
     },
     {
@@ -389,7 +389,7 @@
         "fields": {
             "template_tech": 20,
             "parameter": 151,
-            "equation": "Power"
+            "equation": "[\"Power\"]"
         }
     },
     {
@@ -499,7 +499,7 @@
         "fields": {
             "template_tech": 26,
             "parameter": 153,
-            "equation": "Heat"
+            "equation": "[\"Heat\"]"
         }
     },
     {
@@ -508,7 +508,7 @@
         "fields": {
             "template_tech": 26,
             "parameter": 150,
-            "equation": "Thermal"
+            "equation": "[\"Thermal\"]"
         }
     },
     {
@@ -517,7 +517,7 @@
         "fields": {
             "template_tech": 26,
             "parameter": 151,
-            "equation": "Power"
+            "equation": "[\"Power\"]"
         }
     },
     {
@@ -786,7 +786,7 @@
         }
     },
     {
-        "pk": 52,
+        "pk": 87,
         "model": "template.template_type_tech_param",
         "fields": {
             "template_tech": 26,
@@ -797,7 +797,7 @@
         }
     },
     {
-        "pk": 52,
+        "pk": 88,
         "model": "template.template_type_tech_param",
         "fields": {
             "template_tech": 26,
@@ -808,7 +808,7 @@
         }
     },
     {
-        "pk": 2,
+        "pk": 89,
         "model": "template.template_type_tech_param",
         "fields": {
             "template_tech": 2,
@@ -819,7 +819,7 @@
         }
     },
     {
-        "pk": 2,
+        "pk": 90,
         "model": "template.template_type_tech_param",
         "fields": {
             "template_tech": 2,
@@ -830,7 +830,7 @@
         }
     },
     {
-        "pk": 12,
+        "pk": 91,
         "model": "template.template_type_tech_param",
         "fields": {
             "template_tech": 6,
@@ -841,7 +841,7 @@
         }
     },
     {
-        "pk": 12,
+        "pk": 92,
         "model": "template.template_type_tech_param",
         "fields": {
             "template_tech": 6,
@@ -849,6 +849,186 @@
             "equation": "||elec_prod_to_therm_ext_ratio||",
             "index": ["Power"],
             "dim": ["carriers"]
+        }
+    },
+    {
+        "pk": 93,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 2,
+            "parameter": 147,
+            "equation": "[\"Thermal\"]"
+        }
+    },
+    {
+        "pk": 94,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 2,
+            "parameter": 149,
+            "equation": "[\"Power\",\"Heat\"]"
+        }
+    },
+    {
+        "pk": 95,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 6,
+            "parameter": 147,
+            "equation": "[\"Thermal\"]"
+        }
+    },
+    {
+        "pk": 96,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 6,
+            "parameter": 149,
+            "equation": "[\"Power\",\"Heat\"]"
+        }
+    },
+    {
+        "pk": 97,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 20,
+            "parameter": 147,
+            "equation": "[\"Thermal\"]"
+        }
+    },
+    {
+        "pk": 98,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 20,
+            "parameter": 149,
+            "equation": "[\"Power\",\"Heat\"]"
+        }
+    },
+    {
+        "pk": 99,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 26,
+            "parameter": 147,
+            "equation": "[\"Thermal\"]"
+        }
+    },
+    {
+        "pk": 100,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 26,
+            "parameter": 149,
+            "equation": "[\"Power\",\"Heat\"]"
+        }
+    },
+    {
+        "pk": 101,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 1,
+            "parameter": 200,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 102,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 5,
+            "parameter": 200,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 103,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 9,
+            "parameter": 200,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 104,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 11,
+            "parameter": 200,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 105,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 13,
+            "parameter": 200,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 106,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 16,
+            "parameter": 200,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 107,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 19,
+            "parameter": 200,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 108,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 25,
+            "parameter": 200,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 109,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 31,
+            "parameter": 200,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 110,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 33,
+            "parameter": 200,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 111,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 35,
+            "parameter": 200,
+            "equation": "Thermal"
+        }
+    },
+    {
+        "pk": 112,
+        "model": "template.template_type_tech_param",
+        "fields": {
+            "template_tech": 37,
+            "parameter": 200,
+            "equation": "Thermal"
         }
     }
 ]
