@@ -222,13 +222,24 @@ def update_template(request):
                     else:
                         value = equation
                         rawValue = equation
-                    Tech_Param.objects.create(
-                        parameter=template_type_tech_param.parameter,
-                        technology=tech,
-                        value=value,
-                        raw_value=rawValue,
-                        model=model,
-                    )
+                    if template_type_tech_param.index and template_type_tech_param.dim:
+                        Tech_Param.objects.create(
+                            parameter=template_type_tech_param.parameter,
+                            technology=tech,
+                            value=value,
+                            raw_value=rawValue,
+                            index=template_type_tech_param.index,
+                            dim=template_type_tech_param.dim,
+                            model=model,
+                        )
+                    else:
+                        Tech_Param.objects.create(
+                            parameter=template_type_tech_param.parameter,
+                            technology=tech,
+                            value=value,
+                            raw_value=rawValue,
+                            model=model,
+                        )
 
         if new_loc_techs is not None:
             ureg = initialize_units()
@@ -237,8 +248,8 @@ def update_template(request):
                 template_type_loc_tech_params = Template_Type_Loc_Tech_Param.objects.filter(template_loc_tech_id=template_loc_tech_id)
 
                 # get input and output carriers
-                units_in_ids = [4,5,70]
-                units_out_ids = [4,6,71]
+                units_in_ids= ParamsManager.get_tagged_params('units_in')
+                units_out_ids= ParamsManager.get_tagged_params('units_out')
                 tech_param_in = Tech_Param.objects.filter(model=model, technology=loc_tech.technology, parameter_id__in=units_in_ids).first()
                 tech_param_out = Tech_Param.objects.filter(model=model, technology=loc_tech.technology, parameter_id__in=units_out_ids).first()
                 rate_unit_in = "kW"
@@ -261,7 +272,6 @@ def update_template(request):
                 # set all custom parameters for the new node
                 for template_type_loc_tech_param in template_type_loc_tech_params: 
                     equation = template_type_loc_tech_param.equation
-
                     # check for variables in equation to replace
                     for name, template_variable in new_template_variables.items():
                         equation = equation.replace('||'+name+'||', template_variable.value)
@@ -274,13 +284,24 @@ def update_template(request):
                         value = equation
                         rawValue = equation
                     
-                    Loc_Tech_Param.objects.create(
-                        parameter=template_type_loc_tech_param.parameter,
-                        loc_tech=loc_tech,
-                        value=value,
-                        raw_value=rawValue,
-                        model=model,
-                    )
+                    if template_type_loc_tech_param.index and template_type_loc_tech_param.dim:
+                        Loc_Tech_Param.objects.create(
+                            parameter=template_type_loc_tech_param.parameter,
+                            loc_tech=loc_tech,
+                            value=value,
+                            raw_value=rawValue,
+                            index=template_type_loc_tech_param.index,
+                            dim=template_type_loc_tech_param.dim,
+                            model=model,
+                        )
+                    else:
+                        Loc_Tech_Param.objects.create(
+                            parameter=template_type_loc_tech_param.parameter,
+                            loc_tech=loc_tech,
+                            value=value,
+                            raw_value=rawValue,
+                            model=model,
+                        )
 
         if template_id:
             comment = "{} updated a template: {} of template type: {}.".format(
@@ -447,7 +468,6 @@ def create_template_loc_techs(template_type_loc_techs, model, name, template_typ
                 template_id=template.id,
                 template_type_loc_tech_id=template_type_loc_tech['id'],
             )
-        print ("new_loc_tech.id " + str(new_loc_tech.id))
         new_loc_techs[template_type_loc_tech['id']] = new_loc_tech
 
     return new_loc_techs

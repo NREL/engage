@@ -33,6 +33,7 @@ import io
 import math
 import os
 import time
+import sys
 from dataclasses import dataclass
 from typing import Union
 
@@ -157,7 +158,6 @@ class Geophires(object):
             logger.info("============================================================================================")
             return dict(), output_file
 
-
         # Sorting and saving to Excel
         df_final = df_final.sort_values(
             by=['Depth (km)', 'Number of Prod Wells', 'Number of Inj Wells'], ascending=[True, True, True]
@@ -172,7 +172,7 @@ class Geophires(object):
         # ######### Mapping of Variable ##########
         # ########################################
         df_line = df_final
-        df_line = df_line.append(pd.Series(0, index=df_line.columns), ignore_index=True)
+        df_line[max(df_line.index)+1] = pd.Series(0, index=df_line.columns)
         # max_stuff = np.max(df_line['Average Reservoir Heat Extraction (MWth)'])
         electric_capacity = safe_extract(df_final, 'Average Electricity Production (MWe)')
         surface_cost = safe_extract(df_final, 'Surface Plant Cost ($M)')

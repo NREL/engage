@@ -115,9 +115,10 @@ class geophires_parametrization_analysis:
         result = self.client.get_geophires_result(GeophiresInputParameters(input_params))
         all_results = result.result
 
+        print(all_results)
         # Define paths for the values we're interested in
         paths = {
-            'Depth (km)': ['ENGINEERING PARAMETERS', 'Well depth (or total length, if not vertical)'],
+            'Depth (km)': ['ENGINEERING PARAMETERS', 'Well depth'],
             'Number of Prod Wells': ['ENGINEERING PARAMETERS', 'Number of Production Wells'],
             'Number of Inj Wells': ['ENGINEERING PARAMETERS', 'Number of Injection Wells'],
             'Flow Rate per Prod Well (kg/sec)': ['ENGINEERING PARAMETERS', 'Flowrate per production well'],
