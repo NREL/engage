@@ -175,18 +175,7 @@ def get_techs_yaml_set(run, scenario_id, year):
                     value = param.value
                 param_list = [parent_type, param.technology.calliope_name]+param_keys
                 
-                if 'multi_index' in param.parameter.tags:
-                    try:
-                        value_l = json.loads(value)
-                    except:
-                        dictify(techs_yaml_set,param_list,value,index,dim)
-                        value_l = []
-                    if 'carrier_multiselect' in param.parameter.tags:
-                        dim = 'carriers'
-                    for v in value_l:
-                        dictify(techs_yaml_set,param_list,'True',v,dim)
-                else:
-                    dictify(techs_yaml_set,param_list,value,index,dim)
+                dictify(techs_yaml_set,param_list,value,index,dim)
     return techs_yaml_set
 
 

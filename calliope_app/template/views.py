@@ -393,7 +393,7 @@ def get_or_create_template_technologies(template_type_techs, model, template_typ
                 new_tech = Technology.objects.create(
                     abstract_tech=abstract_tech,
                     pretty_name=template_type_tech['name'],
-                    name=template_type_tech['name'].replace(' ', '-'),
+                    name=ParamsManager.simplify_name(template_type_tech['name']),
                     model=model,
                     description=template_type_tech['description'],
                     template_type_id=template_type_id,
@@ -405,7 +405,7 @@ def get_or_create_template_technologies(template_type_techs, model, template_typ
                 new_tech = Technology.objects.create(
                     abstract_tech=abstract_tech,
                     pretty_name=template_type_tech['name'],
-                    name=template_type_tech['name'].replace(' ', '-'),
+                    name=ParamsManager.simplify_name(template_type_tech['name']),
                     model=model,
                     description=template_type_tech['description'],
                     template_type_id=template_type_id,
