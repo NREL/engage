@@ -664,7 +664,6 @@ def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
             continue
         r_df = pd.read_csv(os.path.join(outputs_dir,'results_'+results_var+'.csv'))
 
-        
         for l in locations['nodes'].keys():
             if 'techs' in locations['nodes'][l].keys() and locations['nodes'][l]['techs']:
                 for t in locations['nodes'][l]['techs'].keys():
@@ -674,8 +673,11 @@ def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
                     elif locations['nodes'][l]['techs'][t] is None:
                         locations['nodes'][l]['techs'][t] = {}
                     if len(r_df.loc[(r_df['nodes'] == l) & (r_df['techs'] == t)][results_var]) != 0 and techs['techs'][t].get('base_tech') != 'demand':
-                        locations['nodes'][l]['techs'][t][results_var] = float(r_df.loc[(r_df['nodes'] == l) &
-                                                                        (r_df['techs'] == t)][results_var].values[0])  
+                        locations['nodes'][l]['techs'][t][results_var] = float(max(r_df.loc[(r_df['nodes'] == l) &
+                                                                        (r_df['techs'] == t)][results_var].values))  
+                        # Operate mode needs cyclic_storage to be false
+                        if results_var == 'storage_cap':
+                            locations['nodes'][l]['techs'][t]['cyclic_storage'] = False
                         
         for lt in techs['templates'].keys():
             techs['templates'][lt].pop(results_var+'_min', None)
