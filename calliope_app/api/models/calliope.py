@@ -83,7 +83,7 @@ class Run_Parameter(models.Model):
     mode = ArrayField(models.CharField(max_length=20), blank=True, null=True)
     user_visibility = models.BooleanField()
     can_evolve = models.BooleanField(default=False)
-    default_value = models.CharField(max_length=5000)
+    default_value = models.CharField(max_length=10000)
     choices = ArrayField(models.CharField(max_length=20), blank=True, null=True)
     index = ArrayField(
         models.CharField(max_length=200),

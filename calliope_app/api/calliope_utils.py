@@ -175,18 +175,7 @@ def get_techs_yaml_set(run, scenario_id, year):
                     value = param.value
                 param_list = [parent_type, param.technology.calliope_name]+param_keys
                 
-                if 'multi_index' in param.parameter.tags:
-                    try:
-                        value_l = json.loads(value)
-                    except:
-                        dictify(techs_yaml_set,param_list,value,index,dim)
-                        value_l = []
-                    if 'carrier_multiselect' in param.parameter.tags:
-                        dim = 'carriers'
-                    for v in value_l:
-                        dictify(techs_yaml_set,param_list,'True',v,dim)
-                else:
-                    dictify(techs_yaml_set,param_list,value,index,dim)
+                dictify(techs_yaml_set,param_list,value,index,dim)
     return techs_yaml_set
 
 
@@ -675,7 +664,6 @@ def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
             continue
         r_df = pd.read_csv(os.path.join(outputs_dir,'results_'+results_var+'.csv'))
 
-        
         for l in locations['nodes'].keys():
             if 'techs' in locations['nodes'][l].keys() and locations['nodes'][l]['techs']:
                 for t in locations['nodes'][l]['techs'].keys():
@@ -685,8 +673,11 @@ def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
                     elif locations['nodes'][l]['techs'][t] is None:
                         locations['nodes'][l]['techs'][t] = {}
                     if len(r_df.loc[(r_df['nodes'] == l) & (r_df['techs'] == t)][results_var]) != 0 and techs['techs'][t].get('base_tech') != 'demand':
-                        locations['nodes'][l]['techs'][t][results_var] = float(r_df.loc[(r_df['nodes'] == l) &
-                                                                        (r_df['techs'] == t)][results_var].values[0])  
+                        locations['nodes'][l]['techs'][t][results_var] = float(max(r_df.loc[(r_df['nodes'] == l) &
+                                                                        (r_df['techs'] == t)][results_var].values))  
+                        # Operate mode needs cyclic_storage to be false
+                        if results_var == 'storage_cap':
+                            locations['nodes'][l]['techs'][t]['cyclic_storage'] = False
                         
         for lt in techs['templates'].keys():
             techs['templates'][lt].pop(results_var+'_min', None)
