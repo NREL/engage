@@ -139,6 +139,8 @@ def build(request):
             mode = run_option['value']
             if mode == 'plan':
                 run_option['value'] = 'base'
+            elif mode == 'base':
+                mode = 'plan'
     try:
         start_date = datetime.strptime(start_date, "%Y-%m-%d")
         end_date = datetime.strptime(end_date,
