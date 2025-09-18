@@ -160,7 +160,11 @@ def all_tech_params(request):
     for param in multiselect_params:
         dup_tag = ([t for t in param['parameter__tags'] if 'multi_' in t]+[False])[0]
         if dup_tag:
-            for val in json.loads(param['value'].replace("'",'"')):
+            try:
+                vals = json.loads(param['value'].replace("'",'"'))
+            except Exception as e:
+                vals = [param['value']]
+            for val in vals:
                 if 'carrier' in param['parameter__tags']:
                     multiselect_values += [{'dup_tag':dup_tag,'index':[val],'dim':['carriers'],'rate':carriers[val]['rate'],
                                                  'quantity':carriers[val]['quantity']}]
@@ -264,6 +268,9 @@ def all_tech_params(request):
                                   context))[0]
 
     emissions = ParamsManager.emission_categories()
+    print(multiselect_values)
+    print(ParamsManager.get_tagged_params('multi_carrier_in'))
+    print(ParamsManager.get_tagged_params('multi_carrier_out'))
     # Parameters Table
     context = {
         "technology": technology,

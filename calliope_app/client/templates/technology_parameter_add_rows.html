@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
-<tr class="param_row add_param_row_header add_param_row_min param_row_min add_param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}{% if param.dup_tag %} {% if not index %}dup_default hide {% endif %} {{param.dup_tag}}" data-dup-tag={{param.dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %}>
+<tr class="param_row add_param_row_header add_param_row_min param_row_min add_param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}{% if dup_tag %} {% if not index %}dup_default hide {% endif %} {{dup_tag}}" data-dup-tag={{dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %}>
 <td colspan=3 style="background-color: white;"></td>
 <td class="centered">
     <input disabled type="number" class="form-control parameter-year parameter-year-new" placeholder="YYYY" name="edit[parameter_instance][][year]">

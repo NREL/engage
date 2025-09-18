@@ -7,7 +7,7 @@
 {% load static %} 
 {% with -1 as instance_year %}
 <!-- Parameter Year Row -->
-<tr class="param_row add_param_row_header add_param_row_min param_row_min add_param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% elif param.parameter_category in emissions %}table-info{% else %}table-primary{% endif %}{% else %}table-default{% endif %}{% if param.dup_tag %} {% if not index %}dup_default hide {% endif %} {{param.dup_tag}}" data-dup-tag={{param.dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %} data-year={{instance_year}}>
+<tr class="param_row add_param_row_header add_param_row_min param_row_min add_param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% elif param.parameter_category in emissions %}table-info{% else %}table-primary{% endif %}{% else %}table-default{% endif %}{% if dup_tag %} {% if not index %}dup_default hide {% endif %} {{dup_tag}}" data-dup-tag={{dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %} data-year={{instance_year}}>
     <td colspan=3 style="background-color: white;"></td>
     <!-- Year -->
     <td class="">
@@ -26,7 +26,7 @@
     </td>
     <td style="background-color: white"></td>
 </tr>
-<tr class="param_row add_param_row_min param_row_min add_param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} piecewise_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}_year{% if param.dup_tag %} {% if not index %}dup_default hide {% endif %} {{param.dup_tag}}" data-dup-tag={{param.dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %} data-year={{instance_year}}>
+<tr class="param_row add_param_row_min param_row_min add_param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} piecewise_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}_year{% if dup_tag %} {% if not index %}dup_default hide {% endif %} {{dup_tag}}" data-dup-tag={{dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %} data-year={{instance_year}}>
     <td class="centered"><i class="fa fa-info-circle"></i></td>
     <td colspan=2>{% trans "Left column is x values. Right column is y values." %}.</td>
     <td><b>{% trans "Breakpoint" %}:</b></td>
@@ -37,7 +37,7 @@
     </td>
     <td colspan=2></td>
 </tr>
-<tr class="param_row add_param_row_min param_row_min add_param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} piecewise_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}_year {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% elif param.parameter_category in emissions %}table-info{% else %}table-primary{% endif %}{% else %}table-default{% endif %}{% if param.dup_tag %} {% if not index %}dup_default hide {% endif %} {{param.dup_tag}}" data-dup-tag={{param.dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %} data-year={{instance_year}}>
+<tr class="param_row add_param_row_min param_row_min add_param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} piecewise_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}_year {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% elif param.parameter_category in emissions %}table-info{% else %}table-primary{% endif %}{% else %}table-default{% endif %}{% if dup_tag %} {% if not index %}dup_default hide {% endif %} {{dup_tag}}" data-dup-tag={{dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %} data-year={{instance_year}}>
     <td colspan=3 style="background-color: white;"></td>
     <td style="background-color: white;" class="piecewise_breakpoint_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}_year">0</td>
     <!-- X value -->
@@ -81,7 +81,7 @@
     </td>
     <td style="background-color: white"></td>
 </tr>
-<tr class="param_row add_param_row_min add_piecewise_row_min add_param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} add_piecewise_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}_year piecewise_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}_year {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% elif param.parameter_category in emissions %}table-info{% else %}table-primary{% endif %}{% else %}table-default{% endif %}{% if param.dup_tag %} {% if not index %}dup_default hide {% endif %} {{param.dup_tag}}" data-dup-tag={{param.dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %} data-year={{instance_year}}>
+<tr class="param_row add_param_row_min add_piecewise_row_min add_param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} add_piecewise_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}_year piecewise_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}_year {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% elif param.parameter_category in emissions %}table-info{% else %}table-primary{% endif %}{% else %}table-default{% endif %}{% if dup_tag %} {% if not index %}dup_default hide {% endif %} {{dup_tag}}" data-dup-tag={{dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %} data-year={{instance_year}}>
     <td colspan=3 style="background-color: white;"></td>
 
     <td style="background-color: white;" class="piecewise_breakpoint_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}_year"></td>
