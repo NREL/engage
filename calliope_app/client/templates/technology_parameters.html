@@ -52,14 +52,19 @@
 						{% with mvalue.index as index and mvalue.dim as dim and mvalue.rate as rate and mvalue.quantity as quantity and mvalue.dup_tag as dup_tag %}
 							{% for instance_year, instance in param.instances.items|slice:":1" %}
 							{% include "technology_parameter_master_row.html" %}
-							{% include "technology_parameter_year_value_row.html" %}
-							{% include "technology_parameter_add_rows.html" %}
+							{% if param.type == "piecewise" %}
+								{% include "technology_parameter_piecewise_row.html" %}
+								{% include "technology_parameter_piecewise_add_row.html" %}
+							{% else %}
+								{% include "technology_parameter_year_value_row.html" %}
+								{% include "technology_parameter_add_rows.html" %}
+							{% endif %}
 							{% endfor %}
 						{% endwith %}
 					{% endif %}{% endif %}
 				{% endfor %}
 			{% else %}
-				{% with param.index as index and param.dim as dim and multiselect_values|find_param_dup_tag:index as dup_tag %}
+				{% with param.index as index and param.dim as dim and multiselect_values|find_param_dup_tag:param.index as dup_tag %}
 				{% with param.instances|return_first_key as instance_year %}
 				{% with param.instances|return_item:instance_year as instance %}
 				<!-- Parameter Master Row -->

@@ -1715,7 +1715,7 @@ class ParamsManager():
                 'index': param["index"] if 'index' in param.keys() else [],
                 'dim': param["dim"] if 'dim' in param.keys() else [],
                 'piecewise_dim': param['piecewise_dim'] if 'piecewise_dim' in param.keys() else '',
-                'dup_tag': ([t for t in param['parameter__tags'] if 'multi_' in t]+[False]) if (('duplicate' in param['parameter__tags']) or ('multiselect' in param['parameter__tags'])) else [False]
+                'dup_tag': ([t for t in param['parameter__tags'] if 'multi_' in t]) if (('duplicate' in param['parameter__tags']) or ('multiselect' in param['parameter__tags'])) else []
                 }
             data.append(param_dict)
 

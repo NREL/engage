@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load add_commas %}
 {% load return_item %}
+{% load update_units %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -45,7 +46,17 @@
 {% else %}
 <td></td>
 {% endif %}
-<td class="text-sm parameter-units" data-value="{{ param.units }}" raw-value="{{ param.raw_units }}">{{ param.units|safe }}</td>
+{% if param.parameter_id in carrier_out_duplicate %}
+{% with carriers|return_item:index.0 as carrier %}
+<td style="width:80px;" class="text-sm parameter-units" data-value="{{ param.units }}" raw-value="{{ param.raw_units|update_units_out:carrier }}" out_carrier="{{ index.0 }}">{{ param.units|safe }}</td>
+{% endwith %}
+{% elif param.parameter_id in carrier_in_duplicate %}
+{% with carriers|return_item:index.0 as carrier %}
+<td style="width:80px;" class="text-sm parameter-units" data-value="{{ param.units }}" raw-value="{{ param.raw_units|update_units_in:carrier }}" in_carrier="{{ index.0 }}">{{ param.units|safe }}</td>
+{% endwith %}
+{% else %}
+<td style="width:80px;" class="text-sm parameter-units" data-value="{{ param.units }}" raw-value="{{ param.raw_units }}">{{ param.units|safe }}</td>
+{% endif %}
 <td class="centered">
     <button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default transparent parameter-value-remove" title="{% trans 'Remove a row' %}"><i class="fas fa-minus"></i></button>
 </td>
