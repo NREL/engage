@@ -50,8 +50,8 @@
 					{% if mvalue.dup_tag in param.dup_tag %}
 						{% if param.parameter_id not in existing_dupes or mvalue not in existing_dupes|return_item:param.parameter_id %}
 						{% with mvalue.index as index and mvalue.dim as dim and mvalue.rate as rate and mvalue.quantity as quantity and mvalue.dup_tag as dup_tag %}
-							{% for instance_year, instance in param.instances.items|slice:":1" %}
 							{% include "technology_parameter_master_row.html" %}
+							{% for instance_year, instance in param.instances.items|slice:":1" %}
 							{% if param.type == "piecewise" %}
 								{% include "technology_parameter_piecewise_row.html" %}
 								{% include "technology_parameter_piecewise_add_row.html" %}
