@@ -256,12 +256,16 @@ class Model(models.Model):
 
     def carrier_lookup(self):
         carrier_in = Tech_Param.objects.filter(
-            technology__in=self.technologies,
-            parameter__tags__contains=["carrier_in"]
+            Q(technology__in=self.technologies,
+            parameter__tags__contains=["carrier_in"])
+            | Q(technology__in=self.technologies,
+            parameter__tags__contains=["multi_carrier_in", "carrier"])
         )
         carrier_out = Tech_Param.objects.filter(
-            technology__in=self.technologies,
-            parameter__tags__contains=["carrier_out"]
+            Q(technology__in=self.technologies,
+            parameter__tags__contains=["carrier_out"])
+            | Q(technology__in=self.technologies,
+            parameter__tags__contains=["multi_carrier_out", "carrier"])
         )
 
         carrier_ins, carrier_outs = {}, {}
