@@ -27,3 +27,10 @@ def find_param_dup_tag(mvalues, index):
     return None
 
 register.filter('find_param_dup_tag', find_param_dup_tag)
+
+def get_intersection(l1, l2):
+    if l1 and l2 and isinstance(l1, list) and isinstance(l2, list):
+        return list(set(l1) & set(l2))
+    return None
+
+register.filter('get_intersection', get_intersection)
