@@ -9,6 +9,9 @@ urlpatterns = [
     path('upgrade_066/',
          engage_views.apply_upgrade_066,
          name='upgrade_066'),
+     path('upgrade_070_flow_cap_carriers/',
+         engage_views.apply_upgrade_070_flow_cap_carriers,
+         name='upgrade_070_flow_cap_carriers'),
 
     # Models
     path('add_model/',
