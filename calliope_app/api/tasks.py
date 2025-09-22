@@ -871,7 +871,7 @@ def upgrade_070_flow_cap_carriers(*args, **kwargs):
             multi_tag = 'multi_carrier_out'
         else:
             multi_tag = 'multi_carrier_in'
-        if not param.index:
+        if not param.index and param.technology in indexes:
             param.index = indexes[param.technology][multi_tag]
             param.dim = ['carriers']
             param.save()
@@ -882,7 +882,7 @@ def upgrade_070_flow_cap_carriers(*args, **kwargs):
             multi_tag = 'multi_carrier_out'
         else:
             multi_tag = 'multi_carrier_in'
-        if not param.index:
+        if not param.index and param.technology in indexes:
             param.index = indexes[param.loc_tech.technology][multi_tag]
             param.dim = ['carriers']
             param.save()
