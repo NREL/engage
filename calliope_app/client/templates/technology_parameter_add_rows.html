@@ -1,11 +1,12 @@
 {% load i18n %}
 {% load add_commas %}
 {% load return_item %}
+{% load update_units %}
 
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
-<tr class="param_row add_param_row_header add_param_row_min param_row_min add_param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}{% if param.dup_tag %} {% if not index %}dup_default hide {% endif %} {{param.dup_tag}}" data-dup-tag={{param.dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %}>
+<tr class="param_row add_param_row_header add_param_row_min param_row_min add_param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}{% if dup_tag %} {% if not index %}dup_default hide {% endif %} {{dup_tag}}" data-dup-tag={{dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %}>
 <td colspan=3 style="background-color: white;"></td>
 <td class="centered">
     <input disabled type="number" class="form-control parameter-year parameter-year-new" placeholder="YYYY" name="edit[parameter_instance][][year]">
@@ -45,7 +46,17 @@
 {% else %}
 <td></td>
 {% endif %}
-<td class="text-sm parameter-units" data-value="{{ param.units }}" raw-value="{{ param.raw_units }}">{{ param.units|safe }}</td>
+{% if param.parameter_id in carrier_out_duplicate %}
+{% with carriers|return_item:index.0 as carrier %}
+<td style="width:80px;" class="text-sm parameter-units" data-value="{{ param.units }}" raw-value="{{ param.raw_units|update_units_out:carrier }}" out_carrier="{{ index.0 }}">{{ param.units|safe }}</td>
+{% endwith %}
+{% elif param.parameter_id in carrier_in_duplicate %}
+{% with carriers|return_item:index.0 as carrier %}
+<td style="width:80px;" class="text-sm parameter-units" data-value="{{ param.units }}" raw-value="{{ param.raw_units|update_units_in:carrier }}" in_carrier="{{ index.0 }}">{{ param.units|safe }}</td>
+{% endwith %}
+{% else %}
+<td style="width:80px;" class="text-sm parameter-units" data-value="{{ param.units }}" raw-value="{{ param.raw_units }}">{{ param.units|safe }}</td>
+{% endif %}
 <td class="centered">
     <button {% if not can_edit %}disabled{% endif %} tabindex="-1" type="button" class="btn btn-default transparent parameter-value-remove" title="{% trans 'Remove a row' %}"><i class="fas fa-minus"></i></button>
 </td>

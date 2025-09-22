@@ -155,12 +155,16 @@ def all_tech_params(request):
             carriers[carrier] = {'rate':'kW','quantity':'kWh'}
     
     multiselect_params = Tech_Param.objects.filter(technology=technology,
-                                           parameter__tags__contains=['multiselect']).values('value','parameter__tags')
+                                           parameter__tags__contains=['multiselect']).values('parameter__id','value','parameter__tags')
     multiselect_values = []
     for param in multiselect_params:
-        dup_tag = ([t for t in param['parameter__tags'] if 'multi_' in t]+[False])[0]
+        dup_tag = [t for t in param['parameter__tags'] if 'multi_' in t]
         if dup_tag:
-            for val in json.loads(param['value'].replace("'",'"')):
+            try:
+                vals = json.loads(param['value'].replace("'",'"'))
+            except Exception as e:
+                vals = [param['value']]
+            for val in vals:
                 if 'carrier' in param['parameter__tags']:
                     multiselect_values += [{'dup_tag':dup_tag,'index':[val],'dim':['carriers'],'rate':carriers[val]['rate'],
                                                  'quantity':carriers[val]['quantity']}]
@@ -240,7 +244,8 @@ def all_tech_params(request):
         if param['index']:
             if param['parameter_id'] not in existing_dupes.keys():
                 existing_dupes[param['parameter_id']] = []
-            existing_dupes[param['parameter_id']] += [{'dup_tag':param['dup_tag'], 'index':param['index'],'dim':['carriers'],'rate':carriers[param['index'][0]]['rate'],
+            for dup_tag in param['dup_tag']:
+                existing_dupes[param['parameter_id']] += [{'dup_tag':[dup_tag], 'index':param['index'],'dim':['carriers'],'rate':carriers[param['index'][0]]['rate'],
                                                  'quantity':carriers[param['index'][0]]['quantity']}]
     
     carriers = {c:{'name':c,'rate':v['rate'],'quantity':v['quantity']} for c,v in carriers.items()}
@@ -379,13 +384,16 @@ def all_loc_tech_params(request):
                                            parameter__tags__contains=['multiselect']).values('value','parameter__tags')
     multiselect_values = []
     for param in multiselect_params:
-        dup_tag = ([t for t in param['parameter__tags'] if 'multi_' in t]+[False])[0]
+        dup_tag = [t for t in param['parameter__tags'] if 'multi_' in t]
         if dup_tag:
-            for val in json.loads(param['value'].replace("'",'"')):
+            try:
+                vals = json.loads(param['value'].replace("'",'"'))
+            except Exception as e:
+                vals = [param['value']]
+            for val in vals:
                 if 'carrier' in param['parameter__tags']:
                     multiselect_values += [{'dup_tag':dup_tag,'index':[val],'dim':['carriers'],'rate':carriers[val]['rate'],
                                                  'quantity':carriers[val]['quantity']}]
-
     existing_dupes = {}
     # Preprocess parameters to group any piecewise or multi-year parameters to organize frontend table
     param_dict = {}
@@ -458,6 +466,13 @@ def all_loc_tech_params(request):
                 'placeholder': param["placeholder"]
             }]
 
+        if param['index']:
+            if param['parameter_id'] not in existing_dupes.keys():
+                existing_dupes[param['parameter_id']] = []
+            for dup_tag in param['dup_tag']:
+                existing_dupes[param['parameter_id']] += [{'dup_tag':[dup_tag], 'index':param['index'],'dim':['carriers'],'rate':carriers[param['index'][0]]['rate'],
+                                                 'quantity':carriers[param['index'][0]]['quantity']}]
+                
     units_in_ids= ParamsManager.get_tagged_params('units_in')
     units_out_ids= ParamsManager.get_tagged_params('units_out')
 

@@ -327,7 +327,9 @@
         "fields": {
             "template_loc_tech": 1,
             "parameter": 76,
-            "equation": "||therm_cap_vs_reservoir_cost||"
+            "equation": "||therm_cap_vs_reservoir_cost||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -336,7 +338,9 @@
         "fields": {
             "template_loc_tech": 2,
             "parameter": 76,
-            "equation": "||elec_cap_vs_surface_cost||"
+            "equation": "||elec_cap_vs_surface_cost||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -345,7 +349,9 @@
         "fields": {
             "template_loc_tech": 5,
             "parameter": 76,
-            "equation": "||therm_cap_vs_reservoir_cost||"
+            "equation": "||therm_cap_vs_reservoir_cost||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -354,7 +360,9 @@
         "fields": {
             "template_loc_tech": 6,
             "parameter": 76,
-            "equation": "||elec_cap_vs_surface_cost||"
+            "equation": "||elec_cap_vs_surface_cost||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -363,7 +371,9 @@
         "fields": {
             "template_loc_tech": 9,
             "parameter": 76,
-            "equation": "||therm_cap_vs_reservoir_cost||"
+            "equation": "||therm_cap_vs_reservoir_cost||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -372,7 +382,9 @@
         "fields": {
             "template_loc_tech": 10,
             "parameter": 76,
-            "equation": "||elec_cap_vs_surface_cost||"
+            "equation": "||elec_cap_vs_surface_cost||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -381,7 +393,9 @@
         "fields": {
             "template_loc_tech": 11,
             "parameter": 76,
-            "equation": "||therm_cap_vs_reservoir_cost||"
+            "equation": "||therm_cap_vs_reservoir_cost||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -390,7 +404,9 @@
         "fields": {
             "template_loc_tech": 12,
             "parameter": 76,
-            "equation": "||elec_cap_vs_surface_cost||"
+            "equation": "||elec_cap_vs_surface_cost||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -399,7 +415,9 @@
         "fields": {
             "template_loc_tech": 13,
             "parameter": 76,
-            "equation": "||therm_cap_vs_reservoir_cost||"
+            "equation": "||therm_cap_vs_reservoir_cost||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -408,7 +426,9 @@
         "fields": {
             "template_loc_tech": 16,
             "parameter": 76,
-            "equation": "||therm_cap_vs_reservoir_cost||"
+            "equation": "||therm_cap_vs_reservoir_cost||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -417,7 +437,9 @@
         "fields": {
             "template_loc_tech": 19,
             "parameter": 76,
-            "equation": "||therm_cap_vs_reservoir_cost||"
+            "equation": "||therm_cap_vs_reservoir_cost||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -426,7 +448,9 @@
         "fields": {
             "template_loc_tech": 20,
             "parameter": 76,
-            "equation": "||elec_cap_vs_surface_cost||"
+            "equation": "||elec_cap_vs_surface_cost||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -435,7 +459,9 @@
         "fields": {
             "template_loc_tech": 23,
             "parameter": 76,
-            "equation": 511.8
+            "equation": 511.8,
+            "index": ["Cooling"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -444,7 +470,9 @@
         "fields": {
             "template_loc_tech": 25,
             "parameter": 76,
-            "equation": "||therm_cap_vs_reservoir_cost||"
+            "equation": "||therm_cap_vs_reservoir_cost||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -453,7 +481,9 @@
         "fields": {
             "template_loc_tech": 26,
             "parameter": 76,
-            "equation": "||elec_cap_vs_surface_cost||"
+            "equation": "||elec_cap_vs_surface_cost||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -471,7 +501,9 @@
         "fields": {
             "template_loc_tech": 31,
             "parameter": 76,
-            "equation": "||therm_cap_vs_reservoir_cost||"
+            "equation": "||therm_cap_vs_reservoir_cost||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -480,7 +512,9 @@
         "fields": {
             "template_loc_tech": 32,
             "parameter": 76,
-            "equation": "||elec_cap_vs_surface_cost||"
+            "equation": "||elec_cap_vs_surface_cost||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -489,7 +523,9 @@
         "fields": {
             "template_loc_tech": 33,
             "parameter": 76,
-            "equation": "||therm_cap_vs_reservoir_cost||"
+            "equation": "||therm_cap_vs_reservoir_cost||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -498,7 +534,9 @@
         "fields": {
             "template_loc_tech": 34,
             "parameter": 76,
-            "equation": "||elec_cap_vs_surface_cost||"
+            "equation": "||elec_cap_vs_surface_cost||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -507,7 +545,9 @@
         "fields": {
             "template_loc_tech": 35,
             "parameter": 76,
-            "equation": "||therm_cap_vs_reservoir_cost||"
+            "equation": "||therm_cap_vs_reservoir_cost||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -516,7 +556,9 @@
         "fields": {
             "template_loc_tech": 36,
             "parameter": 76,
-            "equation": "||elec_cap_vs_surface_cost||"
+            "equation": "||elec_cap_vs_surface_cost||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -525,7 +567,9 @@
         "fields": {
             "template_loc_tech": 37,
             "parameter": 76,
-            "equation": "||therm_cap_vs_reservoir_cost||"
+            "equation": "||therm_cap_vs_reservoir_cost||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -534,7 +578,9 @@
         "fields": {
             "template_loc_tech": 38,
             "parameter": 76,
-            "equation": "||elec_cap_vs_surface_cost||"
+            "equation": "||elec_cap_vs_surface_cost||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1011,7 +1057,9 @@
         "fields": {
             "template_loc_tech": 1,
             "parameter": 103,
-            "equation": "||max_therm_ext_kwth||"
+            "equation": "||max_therm_ext_kwth||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1020,7 +1068,9 @@
         "fields": {
             "template_loc_tech": 2,
             "parameter": 103,
-            "equation": "||max_elec_gen_kwe||"
+            "equation": "||max_elec_gen_kwe||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1029,7 +1079,9 @@
         "fields": {
             "template_loc_tech": 5,
             "parameter": 103,
-            "equation": "||max_therm_ext_kwth||"
+            "equation": "||max_therm_ext_kwth||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1038,7 +1090,9 @@
         "fields": {
             "template_loc_tech": 6,
             "parameter": 103,
-            "equation": "||max_elec_gen_kwe||"
+            "equation": "||max_elec_gen_kwe||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1047,7 +1101,9 @@
         "fields": {
             "template_loc_tech": 9,
             "parameter": 103,
-            "equation": "||max_therm_ext_kwth||"
+            "equation": "||max_therm_ext_kwth||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1056,7 +1112,9 @@
         "fields": {
             "template_loc_tech": 10,
             "parameter": 103,
-            "equation": "||max_elec_gen_kwe||"
+            "equation": "||max_elec_gen_kwe||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1065,7 +1123,9 @@
         "fields": {
             "template_loc_tech": 11,
             "parameter": 103,
-            "equation": "||max_therm_ext_kwth||"
+            "equation": "||max_therm_ext_kwth||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1074,7 +1134,9 @@
         "fields": {
             "template_loc_tech": 12,
             "parameter": 103,
-            "equation": "||max_elec_gen_kwe||"
+            "equation": "||max_elec_gen_kwe||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1083,7 +1145,9 @@
         "fields": {
             "template_loc_tech": 13,
             "parameter": 103,
-            "equation": "||max_therm_ext_kwth||"
+            "equation": "||max_therm_ext_kwth||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1092,7 +1156,9 @@
         "fields": {
             "template_loc_tech": 16,
             "parameter": 103,
-            "equation": "||max_therm_ext_kwth||"
+            "equation": "||max_therm_ext_kwth||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1101,7 +1167,9 @@
         "fields": {
             "template_loc_tech": 19,
             "parameter": 103,
-            "equation": "||max_therm_ext_kwth||"
+            "equation": "||max_therm_ext_kwth||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1110,7 +1178,9 @@
         "fields": {
             "template_loc_tech": 20,
             "parameter": 103,
-            "equation": "||max_elec_gen_kwe||"
+            "equation": "||max_elec_gen_kwe||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1119,7 +1189,9 @@
         "fields": {
             "template_loc_tech": 25,
             "parameter": 103,
-            "equation": "||max_therm_ext_kwth||"
+            "equation": "||max_therm_ext_kwth||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1128,7 +1200,9 @@
         "fields": {
             "template_loc_tech": 26,
             "parameter": 103,
-            "equation": "||max_elec_gen_kwe||"
+            "equation": "||max_elec_gen_kwe||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1137,7 +1211,9 @@
         "fields": {
             "template_loc_tech": 31,
             "parameter": 103,
-            "equation": "||max_therm_ext_kwth||"
+            "equation": "||max_therm_ext_kwth||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1146,7 +1222,9 @@
         "fields": {
             "template_loc_tech": 32,
             "parameter": 103,
-            "equation": "||max_elec_gen_kwe||"
+            "equation": "||max_elec_gen_kwe||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1155,7 +1233,9 @@
         "fields": {
             "template_loc_tech": 33,
             "parameter": 103,
-            "equation": "||max_therm_ext_kwth||"
+            "equation": "||max_therm_ext_kwth||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1164,7 +1244,9 @@
         "fields": {
             "template_loc_tech": 34,
             "parameter": 103,
-            "equation": "||max_elec_gen_kwe||"
+            "equation": "||max_elec_gen_kwe||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1173,7 +1255,9 @@
         "fields": {
             "template_loc_tech": 35,
             "parameter": 103,
-            "equation": "||max_therm_ext_kwth||"
+            "equation": "||max_therm_ext_kwth||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1182,7 +1266,9 @@
         "fields": {
             "template_loc_tech": 36,
             "parameter": 103,
-            "equation": "||max_elec_gen_kwe||"
+            "equation": "||max_elec_gen_kwe||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1191,7 +1277,9 @@
         "fields": {
             "template_loc_tech": 37,
             "parameter": 103,
-            "equation": "||max_therm_ext_kwth||"
+            "equation": "||max_therm_ext_kwth||",
+            "index": ["Thermal"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1200,7 +1288,9 @@
         "fields": {
             "template_loc_tech": 38,
             "parameter": 103,
-            "equation": "||max_elec_gen_kwe||"
+            "equation": "||max_elec_gen_kwe||",
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1218,7 +1308,9 @@
         "fields": {
             "template_loc_tech": 6,
             "parameter": 107,
-            "equation": 16.6
+            "equation": 16.6,
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1227,7 +1319,9 @@
         "fields": {
             "template_loc_tech": 20,
             "parameter": 107,
-            "equation": 16.6
+            "equation": 16.6,
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {
@@ -1236,7 +1330,9 @@
         "fields": {
             "template_loc_tech": 26,
             "parameter": 107,
-            "equation": 16.6
+            "equation": 16.6,
+            "index": ["Power"],
+            "dim": ["carriers"]
         }
     },
     {

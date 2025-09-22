@@ -256,12 +256,16 @@ class Model(models.Model):
 
     def carrier_lookup(self):
         carrier_in = Tech_Param.objects.filter(
-            technology__in=self.technologies,
-            parameter__tags__contains=["carrier_in"]
+            Q(technology__in=self.technologies,
+            parameter__tags__contains=["carrier_in"])
+            | Q(technology__in=self.technologies,
+            parameter__tags__contains=["multi_carrier_in", "carrier"])
         )
         carrier_out = Tech_Param.objects.filter(
-            technology__in=self.technologies,
-            parameter__tags__contains=["carrier_out"]
+            Q(technology__in=self.technologies,
+            parameter__tags__contains=["carrier_out"])
+            | Q(technology__in=self.technologies,
+            parameter__tags__contains=["multi_carrier_out", "carrier"])
         )
 
         carrier_ins, carrier_outs = {}, {}
@@ -1715,7 +1719,7 @@ class ParamsManager():
                 'index': param["index"] if 'index' in param.keys() else [],
                 'dim': param["dim"] if 'dim' in param.keys() else [],
                 'piecewise_dim': param['piecewise_dim'] if 'piecewise_dim' in param.keys() else '',
-                'dup_tag': ([t for t in param['parameter__tags'] if 'multi_' in t]+[False])[0] if (('duplicate' in param['parameter__tags']) or ('multiselect' in param['parameter__tags'])) else False
+                'dup_tag': ([t for t in param['parameter__tags'] if 'multi_' in t]) if (('duplicate' in param['parameter__tags']) or ('multiselect' in param['parameter__tags'])) else []
                 }
             data.append(param_dict)
 

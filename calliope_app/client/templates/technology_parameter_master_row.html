@@ -7,22 +7,31 @@
 <html lang="en">
 {% load static %}  
 <!-- Parameter Master Row -->
-<tr class="param_header {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% elif param.parameter_category in emissions %}table-info{% else %}table-primary{% endif %}{% else %}table-default{% endif %} {% if param.dup_tag %} {{param.dup_tag}}" data-dup-tag={{param.dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %}>
+<tr class="param_header {% if param.level == level %}{% if param.parameter_category == 'Costs: Monetary' %}table-success{% elif param.parameter_category in emissions %}table-info{% else %}table-primary{% endif %}{% else %}table-default{% endif %} {% if dup_tag %} {{dup_tag}}" data-dup-tag={{dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %}>
     <!-- Favorite Buttons -->
     {% if param.parameter_category == "Costs: Monetary" %}
     <td class="table-success centered"><i {% if not can_edit %}disabled{% endif %} class="fas fa-star" data-toggle="tooltip" data-placement="right" title="{% trans 'Mark parameter as favorite' %}"></i></td>
     <td style="width:250px;" class="table-success">&nbsp;<i class="fas fa-dollar-sign"></i>&nbsp;&nbsp;&nbsp;{{ param.parameter_category }}</td>
+    <td class="table-success">
+        {% if dim %}{% if index %}<span class="text-sm text-capitalize fw-bold"> {{ index.0 }}</span>{% endif %}{% endif %}
+    </td>
     {% elif param.parameter_category in emissions %}
     <td class="table-info centered"><i {% if not can_edit %}disabled{% endif %} class="fas fa-star" data-toggle="tooltip" data-placement="right" title="{% trans 'Mark parameter as favorite' %}"></i></td>
     <td style="width:250px;" class="table-info">&nbsp;<i class="fa-solid fa-smog fa-2xs"></i>&nbsp;&nbsp;&nbsp;{{ param.parameter_category }}</td>
+    <td class="table-info">
+        {% if dim %}{% if index %}<span class="text-sm text-capitalize fw-bold"> {{ index.0 }}</span>{% endif %}{% endif %}
+    </td>
     {% else %}
     <td class="table-primary centered"><i {% if not can_edit %}disabled{% endif %} class="fas fa-star" data-toggle="tooltip" data-placement="right" title="{% trans 'Mark parameter as favorite' %}"></i></td>
     <td style="width:250px;" class="table-primary"><i class="fas fa-link"></i>&nbsp;&nbsp;{{ param.parameter_category }}</td>
+    <td class="table-primary">
+        {% if dim %}{% if index %}<span class="text-sm text-capitalize fw-bold"> {{ index.0 }}</span>{% endif %}{% endif %}
+    </td>
     {% endif %}
     <!-- Parameter Names -->
     <td style="cursor:help;width:450px;" data-toggle="tooltip" data-html="true" data-placement="bottom" title="{{ param.parameter_root }}.{{ param.parameter_name }}: {{ param.parameter_description }}">
         &nbsp;&nbsp;
-        <span class="text-sm"></span><b class="parameter-label">{{ param.parameter_pretty_name }} {% if dim %}{{ dim.0 }}:{% endif %} {% if index %}{{ index.0 }}{% endif %}</b>
+        <span class="text-sm"></span><b class="parameter-label">{{ param.parameter_pretty_name }} </b>
     </td>
     <!-- Parameter Timeseries Indicator -->
     <td style="width:200px;" class="centered">
@@ -156,7 +165,7 @@
     {% endif %}
 </tr>
 {% if param.timeseries != True %}
-<tr class="param_row param_row_min param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}{% if param.dup_tag %} {% if not index %}dup_default hide {% endif %} {{param.dup_tag}}" data-dup-tag={{param.dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %}>
+<tr class="param_row param_row_min param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}{% if dup_tag %} {% if not index %}dup_default hide {% endif %} {{dup_tag}}" data-dup-tag={{dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %}>
     <td class="centered"><i class="fa fa-info-circle"></i></td>
     <td colspan=2>{% trans "This parameter is configured to evolve over multiple years" %}.</td>
     <td><b>{% trans "Year" %}:</b></td>

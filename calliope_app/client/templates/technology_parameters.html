@@ -47,19 +47,24 @@
 			{% endif %}{% endif %}
 			{% if param.dup_tag and not param.index %}
 				{% for mvalue in multiselect_values %}
-					{% if mvalue.dup_tag == param.dup_tag %}
+					{% if mvalue.dup_tag|get_intersection:param.dup_tag %}
 						{% if param.parameter_id not in existing_dupes or mvalue not in existing_dupes|return_item:param.parameter_id %}
-						{% with mvalue.index as index and mvalue.dim as dim and mvalue.rate as rate and mvalue.quantity as quantity %}
-							{% for instance_year, instance in param.instances.items|slice:":1" %}
+						{% with mvalue.index as index and mvalue.dim as dim and mvalue.rate as rate and mvalue.quantity as quantity and mvalue.dup_tag as dup_tag %}
 							{% include "technology_parameter_master_row.html" %}
-							{% include "technology_parameter_year_value_row.html" %}
-							{% include "technology_parameter_add_rows.html" %}
+							{% for instance_year, instance in param.instances.items|slice:":1" %}
+							{% if param.type == "piecewise" %}
+								{% include "technology_parameter_piecewise_row.html" %}
+								{% include "technology_parameter_piecewise_add_row.html" %}
+							{% else %}
+								{% include "technology_parameter_year_value_row.html" %}
+								{% include "technology_parameter_add_rows.html" %}
+							{% endif %}
 							{% endfor %}
 						{% endwith %}
 					{% endif %}{% endif %}
 				{% endfor %}
 			{% else %}
-				{% with param.index as index and param.dim as dim %}
+				{% with param.index as index and param.dim as dim and multiselect_values|find_param_dup_tag:param.index as dup_tag %}
 				{% with param.instances|return_first_key as instance_year %}
 				{% with param.instances|return_item:instance_year as instance %}
 				<!-- Parameter Master Row -->
@@ -68,7 +73,7 @@
 				<!-- Parameter Auxiliary Rows -->
 				{% if param.timeseries == True %}
 					<!-- Timeseries Visualization Row -->
-					<tr class="param_row param_row_min param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} table-default{% if param.dup_tag %} {% if not index %}dup_default hide {% endif %} {{param.dup_tag}}" data-dup-tag={{param.dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %}>
+					<tr class="param_row param_row_min param_row_{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %} table-default{% if dup_tag %} {% if not index %}dup_default hide {% endif %} {{dup_tag}}" data-dup-tag={{dup_tag}}{% else %} "{% endif %} data-param_id={{ param.parameter_id }}{% if index %}{{index.0}} data-index={{index.0}}{% endif %}>
 						<td colspan=8 style="background-color: white;">
 							<div id="chart-{{ param.parameter_id }}{% if index %}{{index.0}}{% endif %}" class="row centered timeseries_viz"></div>
 						</td>

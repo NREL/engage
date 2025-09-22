@@ -9,6 +9,7 @@ import boto3
 import pandas as pd
 import numpy as np
 import yaml
+import json
 from datetime import datetime
 from dateutil.parser import parse as date_parse
 
@@ -19,6 +20,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
+from django.db.models import Q
 
 from api.engage import aws_ses_configured
 from api.models.configuration import Model, Scenario, Scenario_Loc_Tech, \
@@ -808,3 +810,79 @@ def upgrade_066(*args, **kwargs):
         if run.calliope_066_errors == "":
             run.calliope_066_upgraded = True
         run.save()
+
+class CalliopeUpdateTask(Task):
+    """
+    A celery task class for handling success/failure status
+    """
+
+    def on_failure(self, exc, task_id, args, kwargs, einfo):
+        pass
+
+    def on_success(self, retval, task_id, args, kwargs):
+        pass
+
+
+@app.task(
+    base=CalliopeUpdateTask,
+    queue="short_queue",
+    soft_time_limit=(48 * 3600 - 180),
+    time_limit=(48 * 3600),
+    ignore_result=True
+)
+def upgrade_070_flow_cap_carriers(*args, **kwargs):
+    """
+    A celery task for updating carrier parameters and new per-carrier flow_cap params to have correct indexes/dims.
+    """
+
+    primary_carrier_in_id = 146
+    primary_carrier_out_id = 148
+
+    indexes = {}
+    tech_params = Tech_Param.objects.filter(Q(parameter__tags__contains=['multi_carrier_in','multiselect'])|Q(parameter__tags__contains=['multi_carrier_out','multiselect']))
+    for param in tech_params:
+        multi_tag = [t for t in param.parameter.tags if 'multi_' in t][0]
+        if param.technology not in indexes:
+            indexes[param.technology] = {}
+        try:
+            val = json.loads(param.value)
+            indexes[param.technology][multi_tag] = [val[0]]
+        except Exception as e:
+            indexes[param.technology][multi_tag] = [param.value]
+
+    for tech in indexes.keys():
+        if 'multi_carrier_in' in indexes[tech] and not Tech_Param.objects.filter(technology=tech, parameter__id=primary_carrier_in_id).first():
+            Tech_Param.objects.create(
+                model_id=tech.model_id,
+                technology_id=tech.id,
+                parameter_id=primary_carrier_in_id,
+                value=indexes[tech]['multi_carrier_in'][0])
+        if 'multi_carrier_out' in indexes[tech] and not Tech_Param.objects.filter(technology=tech, parameter__id=primary_carrier_out_id).first():
+            Tech_Param.objects.create(
+                model_id=tech.model_id,
+                technology_id=tech.id,
+                parameter_id=primary_carrier_out_id,
+                value=indexes[tech]['multi_carrier_out'][0])
+        
+
+    tech_params = Tech_Param.objects.filter(Q(parameter__tags__contains=['multi_carrier_in','duplicate'])|Q(parameter__tags__contains=['multi_carrier_out','duplicate']))
+    for param in tech_params:
+        if 'multi_tag_out' in param.parameter.tags:
+            multi_tag = 'multi_tag_out'
+        else:
+            multi_tag = 'multi_tag_in'
+        if not param.index:
+            param.index = indexes[param.technology][multi_tag]
+            param.dim = ['carriers']
+            param.save()
+
+    loc_tech_params = Loc_Tech_Param.objects.filter(Q(parameter__tags__contains=['multi_carrier_in','duplicate'])|Q(parameter__tags__contains=['multi_carrier_out','duplicate']))
+    for param in loc_tech_params:
+        if 'multi_tag_out' in param.parameter.tags:
+            multi_tag = 'multi_tag_out'
+        else:
+            multi_tag = 'multi_tag_in'
+        if not param.index:
+            param.index = indexes[param.loc_tech.technology][multi_tag]
+            param.dim = ['carriers']
+            param.save()
