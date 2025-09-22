@@ -867,10 +867,10 @@ def upgrade_070_flow_cap_carriers(*args, **kwargs):
 
     tech_params = Tech_Param.objects.filter(Q(parameter__tags__contains=['multi_carrier_in','duplicate'])|Q(parameter__tags__contains=['multi_carrier_out','duplicate']))
     for param in tech_params:
-        if 'multi_tag_out' in param.parameter.tags:
-            multi_tag = 'multi_tag_out'
+        if 'multi_carrier_out' in param.parameter.tags:
+            multi_tag = 'multi_carrier_out'
         else:
-            multi_tag = 'multi_tag_in'
+            multi_tag = 'multi_carrier_in'
         if not param.index:
             param.index = indexes[param.technology][multi_tag]
             param.dim = ['carriers']
@@ -878,10 +878,10 @@ def upgrade_070_flow_cap_carriers(*args, **kwargs):
 
     loc_tech_params = Loc_Tech_Param.objects.filter(Q(parameter__tags__contains=['multi_carrier_in','duplicate'])|Q(parameter__tags__contains=['multi_carrier_out','duplicate']))
     for param in loc_tech_params:
-        if 'multi_tag_out' in param.parameter.tags:
-            multi_tag = 'multi_tag_out'
+        if 'multi_carrier_out' in param.parameter.tags:
+            multi_tag = 'multi_carrier_out'
         else:
-            multi_tag = 'multi_tag_in'
+            multi_tag = 'multi_carrier_in'
         if not param.index:
             param.index = indexes[param.loc_tech.technology][multi_tag]
             param.dim = ['carriers']
