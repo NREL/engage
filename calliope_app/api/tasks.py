@@ -867,26 +867,26 @@ def upgrade_070_flow_cap_carriers(*args, **kwargs):
 
     tech_params = Tech_Param.objects.filter(Q(parameter__tags__contains=['multi_carrier_in','duplicate'])|Q(parameter__tags__contains=['multi_carrier_out','duplicate']))
     for param in tech_params:
-        if 'multi_carrier_out' in param.parameter.tags:
-            multi_tag = 'multi_carrier_out'
-        elif 'multi_carrier_in' in param.parameter.tags:
-            multi_tag = 'multi_carrier_in'
-        else:
-            continue
         if not param.index and param.technology in indexes:
+            if 'multi_carrier_out' in param.parameter.tags and 'multi_carrier_out' in indexes[param.technology]:
+                multi_tag = 'multi_carrier_out'
+            elif 'multi_carrier_in' in param.parameter.tags and 'multi_carrier_in' in indexes[param.technology]:
+                multi_tag = 'multi_carrier_in'
+            else:
+                continue
             param.index = indexes[param.technology][multi_tag]
             param.dim = ['carriers']
             param.save()
 
     loc_tech_params = Loc_Tech_Param.objects.filter(Q(parameter__tags__contains=['multi_carrier_in','duplicate'])|Q(parameter__tags__contains=['multi_carrier_out','duplicate']))
     for param in loc_tech_params:
-        if 'multi_carrier_out' in param.parameter.tags:
-            multi_tag = 'multi_carrier_out'
-        elif 'multi_carrier_in' in param.parameter.tags:
-            multi_tag = 'multi_carrier_in'
-        else:
-            continue
         if not param.index and param.loc_tech.technology in indexes:
+            if 'multi_carrier_out' in param.parameter.tags and 'multi_carrier_out' in indexes[param.loc_tech.technology]:
+                multi_tag = 'multi_carrier_out'
+            elif 'multi_carrier_in' in param.parameter.tags and 'multi_carrier_in' in indexes[param.loc_tech.technology]:
+                multi_tag = 'multi_carrier_in'
+            else:
+                continue
             param.index = indexes[param.loc_tech.technology][multi_tag]
             param.dim = ['carriers']
             param.save()
