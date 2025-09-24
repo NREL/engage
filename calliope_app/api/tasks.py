@@ -23,8 +23,9 @@ from django.utils.safestring import mark_safe
 from django.db.models import Q
 
 from api.engage import aws_ses_configured
-from api.models.configuration import Model, Scenario, Scenario_Loc_Tech, \
+from api.models.configuration import Model, Scenario, Scenario_Loc_Tech, Scenario_Param, \
     Tech_Param, Loc_Tech_Param, Timeseries_Meta, User_File
+from api.models.calliope import Parameter
 from api.models.outputs import Run
 from api.utils import load_timeseries_from_csv, get_model_logger, zip_folder
 from api.calliope_utils import get_model_yaml_set, get_custom_math_yaml_set, get_location_meta_yaml_set,\
@@ -896,3 +897,58 @@ def upgrade_070_flow_cap_carriers(*args, **kwargs):
             param.index = indexes[param.loc_tech.technology][multi_tag]
             param.dim = ['carriers']
             param.save()
+
+@app.task(
+    base=CalliopeUpdateTask,
+    queue="short_queue",
+    soft_time_limit=(48 * 3600 - 180),
+    time_limit=(48 * 3600),
+    ignore_result=True
+)
+def update_supply_cost_in(*args, **kwargs):
+    """
+    A celery task for updating supply cost_flow_in params to use cost_source_use instead.
+    """
+    cost_source_use_params = Parameter.objects.filter(name='cost_source_use')
+    tech_params = Tech_Param.objects.filter(technology__abstract_tech__name='supply', parameter__name='cost_flow_in')
+    for param in tech_params:
+        new_parameter = cost_source_use_params.filter(category=param.parameter.category).first()
+        param.parameter = new_parameter
+        param.save()
+
+    loc_tech_params = Loc_Tech_Param.objects.filter(loc_tech__technology__abstract_tech__name='supply', parameter__name='cost_flow_in')
+    for param in loc_tech_params:
+        new_parameter = cost_source_use_params.filter(category=param.parameter.category).first()
+        param.parameter = new_parameter
+        param.save()
+    
+class CustomMathUpdateTask(Task):
+    """
+    A celery task class for handling success/failure status
+    """
+
+    def on_failure(self, exc, task_id, args, kwargs, einfo):
+        pass
+
+    def on_success(self, retval, task_id, args, kwargs):
+        pass
+
+
+@app.task(
+    base=CustomMathUpdateTask,
+    queue="short_queue",
+    soft_time_limit=(48 * 3600 - 180),
+    time_limit=(48 * 3600),
+    ignore_result=True
+)
+def update_scenario_math_params(scenario_id, *args, **kwargs):
+    """
+    A celery task for updating the scenario parameters on existing scenarios to new default values.
+    Useful for keeping scenarios up to date with new custom math or calliope versions.
+    """
+    scenario_params = Scenario_Param.objects.filter(scenario_id=scenario_id)
+    for param in scenario_params:
+        if param.value != param.run_parameter.default_value:
+            param.value = param.run_parameter.default_value
+            param.save()
+            

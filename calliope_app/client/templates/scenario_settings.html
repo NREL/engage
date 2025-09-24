@@ -4,7 +4,7 @@
 <html lang="en">
 <div class="col-12">
 <style>
-	#scenario-delete {
+	#scenario-delete, #scenario-refresh {
 		margin-bottom: 10px;
 	}
 	.tooltip-text {
@@ -154,4 +154,5 @@
 
 <div class="col-12 centered">
 	<button id="scenario-delete" {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i>&nbsp;&nbsp;{% trans "Delete Scenario" %}</button>
+	<button id="scenario-refresh" {% if not can_edit %}disabled{% endif %} type="button" class="btn btn-outline-warning btn-sm"><i class="fas fa-refresh"></i>&nbsp;&nbsp;{% trans "Refresh Scenario Settings Defaults" %}</button>
 </div>

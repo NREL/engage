@@ -225,13 +225,33 @@ function get_scenario_configuration() {
 
 				$('#scenario-delete').on('click', function() {
 					var model_uuid = $('#header').data('model_uuid'),
-                    // Here is tto change
-
 						scenario_id = $("#scenario option:selected").data('id');
 					var confirmation = confirm('This will remove all configurations and runs for this scenario.\nAre you sure you want to delete?');
 					if (confirmation) {
 						$.ajax({
 							url: '/' + LANGUAGE_CODE + '/api/delete_scenario/',
+							type: 'POST',
+							data: {
+								'model_uuid': model_uuid,
+								'scenario_id': scenario_id,
+								'csrfmiddlewaretoken': getCookie('csrftoken'),
+							},
+							dataType: 'json',
+							success: function (data) {
+								window.onbeforeunload = null;
+								location.reload();
+							}
+						});
+					};
+				});
+
+                $('#scenario-refresh').on('click', function() {
+					var model_uuid = $('#header').data('model_uuid'),
+						scenario_id = $("#scenario option:selected").data('id');
+					var confirmation = confirm('This will reset all scenaio settings to their default values.\nThis will update the scenario to use new custom math, but may result in losing certain settings such as group constraints.\nAre you sure you want to refresh?');
+					if (confirmation) {
+						$.ajax({
+							url: '/' + LANGUAGE_CODE + '/api/update_scenario_math_params/',
 							type: 'POST',
 							data: {
 								'model_uuid': model_uuid,
