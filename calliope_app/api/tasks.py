@@ -850,6 +850,9 @@ def upgrade_070_flow_cap_carriers(*args, **kwargs):
         except Exception as e:
             indexes[param.technology][multi_tag] = [param.value]
 
+    print(f'{len(indexes.keys())} techs with carriers found')
+    i = 0
+    o = 0
     for tech in indexes.keys():
         if 'multi_carrier_in' in indexes[tech] and not Tech_Param.objects.filter(technology=tech, parameter__id=primary_carrier_in_id).first():
             Tech_Param.objects.create(
@@ -857,14 +860,16 @@ def upgrade_070_flow_cap_carriers(*args, **kwargs):
                 technology_id=tech.id,
                 parameter_id=primary_carrier_in_id,
                 value=indexes[tech]['multi_carrier_in'][0])
+            i+=1
         if 'multi_carrier_out' in indexes[tech] and not Tech_Param.objects.filter(technology=tech, parameter__id=primary_carrier_out_id).first():
             Tech_Param.objects.create(
                 model_id=tech.model_id,
                 technology_id=tech.id,
                 parameter_id=primary_carrier_out_id,
                 value=indexes[tech]['multi_carrier_out'][0])
-        
-
+            o+=1
+    print(f'{i} primary_in params set, {o} primary_out params set.')
+    i = 0
     tech_params = Tech_Param.objects.filter(Q(parameter__tags__contains=['multi_carrier_in','duplicate'])|Q(parameter__tags__contains=['multi_carrier_out','duplicate']))
     for param in tech_params:
         if not param.index and param.technology in indexes:
@@ -877,6 +882,7 @@ def upgrade_070_flow_cap_carriers(*args, **kwargs):
             param.index = indexes[param.technology][multi_tag]
             param.dim = ['carriers']
             param.save()
+            i+=1
 
     loc_tech_params = Loc_Tech_Param.objects.filter(Q(parameter__tags__contains=['multi_carrier_in','duplicate'])|Q(parameter__tags__contains=['multi_carrier_out','duplicate']))
     for param in loc_tech_params:
