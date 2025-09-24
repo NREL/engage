@@ -12,6 +12,9 @@ urlpatterns = [
      path('upgrade_070_flow_cap_carriers/',
          engage_views.apply_upgrade_070_flow_cap_carriers,
          name='upgrade_070_flow_cap_carriers'),
+     path('update_scenario_math_params/',
+         engage_views.apply_update_scenario_math_params,
+         name='update_scenario_math_params'),
 
     # Models
     path('add_model/',

@@ -56,7 +56,7 @@
    "default_value": "{}",
    "choices": "[]",
    "tab": "runs",
-   "mode": "[\"plan\", \"operate\"]"
+   "mode": "[]"
   }
  },
  {
@@ -117,26 +117,6 @@
    "choices": "[]",
    "tab": "scenarios",
    "mode": "[\"plan\", \"operate\"]"
-  }
- },
- {
-  "pk": 13,
-  "model": "api.run_parameter",
-  "fields": {
-   "pretty_name": "Cyclic storage",
-   "pretty_name_fr": "Stockage cyclique",
-   "pretty_name_es": "Almacenamiento c\u00c3\u00adclico",
-   "description": "If True, storage in the last timestep of the timeseries is considered to be the \"previous timestep\" in the first timestep of the timeseries",
-   "description_fr": "Si True, le stockage dans le dernier pas de temps de la s\u00e9rie temporelle est consid\u00e9r\u00e9 comme le \"pas de temps pr\u00e9c\u00e9dent\" dans le premier pas de temps de la s\u00e9rie temporelle",
-   "description_es": "Si es Verdadero, el almacenamiento en el \u00c3\u00baltimo paso de la serie temporal se considera el \"paso de tiempo anterior\" en el primer paso de la serie temporal.",
-   "root": "config.build",
-   "user_visibility": "True",
-   "can_evolve": "False",
-   "name": "cyclic_storage",
-   "default_value": "True",
-   "choices": "[\"True\",\"False\"]",
-   "tab": "scenarios",
-   "mode": "[]"
   }
  },
  {
