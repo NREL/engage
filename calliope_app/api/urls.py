@@ -15,6 +15,9 @@ urlpatterns = [
      path('update_scenario_math_params/',
          engage_views.apply_update_scenario_math_params,
          name='update_scenario_math_params'),
+     path('update_supply_cost_in/',
+         engage_views.apply_update_supply_cost_in,
+         name='update_supply_cost_in'),
 
     # Models
     path('add_model/',
