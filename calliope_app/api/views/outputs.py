@@ -1392,13 +1392,13 @@ def bulk_downloads(request):
     if 'technologies' in request.GET['file_list']:
         techs = Technology.objects.filter(model=model)
         tech_ids = list(techs.values_list('id', flat=True).distinct())
-        param_list = [(json.dumps(k[1]),json.dumps(k[0]),'',k[2]) for k in list(Abstract_Tech_Param.objects.all().values_list('parameter__index','parameter__dim','parameter__name').distinct())]
+        param_list = [(json.dumps(k[1]),json.dumps(k[0]),'','',k[2]) for k in list(Abstract_Tech_Param.objects.all().values_list('parameter__index','parameter__dim','parameter__name').distinct())]
         parameters = Tech_Param.objects.filter(technology_id__in=tech_ids).order_by('-year')
-        tech_list = [('','','',k) for k in ['id','name','pretty_name','base_tech','tag','pretty_tag','calliope_name','description']]
+        tech_list = [('','','','',k) for k in ['id','name','pretty_name','base_tech','tag','pretty_tag','calliope_name','description']]
         techs_l = []
         for t in techs:
-            tech_dict = {('','','',tp):k for tp,k in t.__dict__.items()}
-            tech_dict[('','','','calliope_name')] = t.calliope_name
+            tech_dict = {('','','','',tp):k for tp,k in t.__dict__.items()}
+            tech_dict[('','','','','calliope_name')] = t.calliope_name
             for p in parameters.filter(technology_id=t.id):
                 pname = p.parameter.name
                 if p.parameter.root:
@@ -1408,14 +1408,30 @@ def bulk_downloads(request):
                 else:
                     pyear = ''
                 if p.parameter.index:
-                    pindex = json.dumps(p.parameter.index)
+                    pindex = p.parameter.index
+                else:
+                    pindex = []
+                if p.parameter.dim:
+                    pdims = p.parameter.dim
+                else:
+                    pdims = []
+                if p.index:
+                    pindex+=p.index
+                if p.dim:
+                    pdims+=p.dim
+                if pindex:
+                    pindex = json.dumps(pindex)
                 else:
                     pindex = ''
-                if p.parameter.dim:
-                    pdims = json.dumps(p.parameter.dim)
+                if pdims:
+                    pdims = json.dumps(pdims)
                 else:
                     pdims = ''
-                pcols = (pdims,pindex,pyear,pname)
+                if p.piecewise_dim:
+                    ppiecewise = p.piecewise_dim
+                else:
+                    ppiecewise = ''
+                pcols = (pdims,pindex,pyear,ppiecewise,pname)
                 if pcols not in param_list:
                     param_list.append(pcols)
                 if p.timeseries:
@@ -1427,13 +1443,13 @@ def bulk_downloads(request):
                     tech_dict[pcols] = p.raw_value
                 else:
                     tech_dict[pcols] = p.value
-            [tech_dict.pop(('','','',k)) for k in ['abstract_tech_id','_state','model_id','created','updated','deleted']]
+            [tech_dict.pop(('','','','',k)) for k in ['abstract_tech_id','_state','model_id','created','updated','deleted']]
             techs_l += [tech_dict]
         techs_df = pd.DataFrame(techs_l)
         # Filtering out the existing columns to include first in the reindex keeps filled in data on the left
         param_list = list((set(param_list)|set(tech_list))-set(techs_df.columns))
         param_list.sort(key=operator.itemgetter(3))
-        techs_df = techs_df.reindex(columns=[f for f in [('dim','index','year','parameter')]+list(techs_df.columns)+param_list],fill_value=None)
+        techs_df = techs_df.reindex(columns=[f for f in [('dim','index','year','piecewise_breakpoint','parameter')]+list(techs_df.columns)+param_list],fill_value=None)
         techs_df.columns = pd.MultiIndex.from_tuples(techs_df.columns)
         techs_buff = io.StringIO()
         techs_df.to_csv(techs_buff,index=False)
@@ -1443,18 +1459,18 @@ def bulk_downloads(request):
     if 'loc_techs' in request.GET['file_list']:
         loc_techs = Loc_Tech.objects.filter(model=model)
         loc_tech_ids = list(loc_techs.values_list('id', flat=True).distinct())
-        param_list = [(json.dumps(k[1]),json.dumps(k[0]),'',k[2]) for k in list(Abstract_Tech_Param.objects.all().values_list('parameter__index','parameter__dim','parameter__name').distinct())]
+        param_list = [(json.dumps(k[1]),json.dumps(k[0]),'','',k[2]) for k in list(Abstract_Tech_Param.objects.all().values_list('parameter__index','parameter__dim','parameter__name').distinct())]
         parameters = Loc_Tech_Param.objects.filter(loc_tech_id__in=loc_tech_ids).order_by('-year')
-        loc_tech_list = [('','','',k) for k in ['id','location_1','location_2','technology','tag','calliope_name']]
+        loc_tech_list = [('','','','',k) for k in ['id','location_1','location_2','technology','tag','calliope_name']]
         loc_techs_l = []
         for l in loc_techs:
-            loc_tech_dict = {('','','',tp):k for tp,k in l.__dict__.items()}
-            loc_tech_dict[('','','','location_1')] = l.location_1.pretty_name
+            loc_tech_dict = {('','','','',tp):k for tp,k in l.__dict__.items()}
+            loc_tech_dict[('','','','','location_1')] = l.location_1.pretty_name
             if l.location_2:
-                loc_tech_dict[('','','','location_2')] = l.location_2.pretty_name
-            loc_tech_dict[('','','','technology')] = l.technology.pretty_name
-            loc_tech_dict[('','','','tag')] = l.technology.pretty_tag
-            loc_tech_dict[('','','','calliope_name')] = l.technology.calliope_name
+                loc_tech_dict[('','','','','location_2')] = l.location_2.pretty_name
+            loc_tech_dict[('','','','','technology')] = l.technology.pretty_name
+            loc_tech_dict[('','','','','tag')] = l.technology.pretty_tag
+            loc_tech_dict[('','','','','calliope_name')] = l.technology.calliope_name
             for p in parameters.filter(loc_tech_id=l.id):
                 pname = p.parameter.name
                 if p.parameter.root:
@@ -1464,14 +1480,30 @@ def bulk_downloads(request):
                 else:
                     pyear = ''
                 if p.parameter.index:
-                    pindex = json.dumps(p.parameter.index)
+                    pindex = p.parameter.index
+                else:
+                    pindex = []
+                if p.parameter.dim:
+                    pdims = p.parameter.dim
+                else:
+                    pdims = []
+                if p.index:
+                    pindex+=p.index
+                if p.dim:
+                    pdims+=p.dim
+                if pindex:
+                    pindex = json.dumps(pindex)
                 else:
                     pindex = ''
-                if p.parameter.dim:
-                    pdims = json.dumps(p.parameter.dim)
+                if pdims:
+                    pdims = json.dumps(pdims)
                 else:
                     pdims = ''
-                pcols = (pdims,pindex,pyear,pname)
+                if p.piecewise_dim:
+                    ppiecewise = p.piecewise_dim
+                else:
+                    ppiecewise = ''
+                pcols = (pdims,pindex,pyear,ppiecewise,pname)
                 if pcols not in param_list:
                     param_list.append(pcols)
                 if p.timeseries:
@@ -1486,13 +1518,13 @@ def bulk_downloads(request):
                     loc_tech_dict[pcols] = p.raw_value
                 else:
                     loc_tech_dict[pcols] = p.value
-            [loc_tech_dict.pop(('','','',k)) for k in ['_state','model_id','created','updated','deleted','location_1_id','location_2_id','technology_id']]
+            [loc_tech_dict.pop(('','','','',k)) for k in ['_state','model_id','created','updated','deleted','location_1_id','location_2_id','technology_id']]
             loc_techs_l += [loc_tech_dict]
         loc_techs_df = pd.DataFrame(loc_techs_l)
         # Filtering out the existing columns to include first in the reindex keeps filled in data on the left
         param_list = list((set(param_list)|set(loc_tech_list))-set(loc_techs_df.columns))
         param_list.sort(key=operator.itemgetter(3))
-        loc_techs_df = loc_techs_df.reindex(columns=[f for f in [('dim','index','year','parameter')]+list(loc_techs_df.columns)+param_list],fill_value=None)
+        loc_techs_df = loc_techs_df.reindex(columns=[f for f in [('dim','index','year','piecewise_breakpoint','parameter')]+list(loc_techs_df.columns)+param_list],fill_value=None)
         loc_techs_df.columns = pd.MultiIndex.from_tuples(loc_techs_df.columns)
         loc_techs_buff = io.StringIO()
         loc_techs_df.to_csv(loc_techs_buff,index=False)
