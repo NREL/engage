@@ -910,17 +910,31 @@ def update_supply_cost_in(*args, **kwargs):
     A celery task for updating supply cost_flow_in params to use cost_source_use instead.
     """
     cost_source_use_params = Parameter.objects.filter(name='cost_source_use')
-    tech_params = Tech_Param.objects.filter(technology__abstract_tech__name='supply', parameter__name='cost_flow_in')
+    tech_params = Tech_Param.objects.filter(technology__abstract_tech__name='supply', parameter__name__in=['cost_source_use','cost_flow_in'])
     for param in tech_params:
-        new_parameter = cost_source_use_params.filter(category=param.parameter.category).first()
-        param.parameter = new_parameter
-        param.save()
+        if param.parameter.name == 'cost_flow_in':
+            new_parameter = cost_source_use_params.filter(category=param.parameter.category).first()
+            param.parameter = new_parameter
+            param.index = []
+            param.dim = []
+            param.save()
+        elif param.parameter.name == 'cost_source_use' and param.index:
+            param.index = []
+            param.dim = []
+            param.save()
 
-    loc_tech_params = Loc_Tech_Param.objects.filter(loc_tech__technology__abstract_tech__name='supply', parameter__name='cost_flow_in')
+    loc_tech_params = Loc_Tech_Param.objects.filter(loc_tech__technology__abstract_tech__name='supply', parameter__name__in=['cost_source_use','cost_flow_in'])
     for param in loc_tech_params:
-        new_parameter = cost_source_use_params.filter(category=param.parameter.category).first()
-        param.parameter = new_parameter
-        param.save()
+        if param.parameter.name == 'cost_flow_in':
+            new_parameter = cost_source_use_params.filter(category=param.parameter.category).first()
+            param.parameter = new_parameter
+            param.index = []
+            param.dim = []
+            param.save()
+        elif param.parameter.name == 'cost_source_use' and param.index:
+            param.index = []
+            param.dim = []
+            param.save()
     
 class CustomMathUpdateTask(Task):
     """
