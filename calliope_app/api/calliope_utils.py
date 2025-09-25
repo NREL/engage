@@ -597,7 +597,7 @@ def _write_outputs(model, model_path, ts_only_suffix=None):
         _yaml_outputs(os.path.dirname(model_path),save_outputs)
 
 def _yaml_outputs(inputs_dir, outputs_dir):
-    results_vars = ['flow_cap','storage_cap','area_use','source_cap','purchased_units']
+    results_vars = {'flow_cap':'carriers','storage_cap':None,'area_use':None,'source_cap':None,'purchased_units':None}
     
     model = yaml.load(open(os.path.join(inputs_dir,'model.yaml')), Loader=yaml.FullLoader)
     techs = {}
@@ -618,7 +618,7 @@ def _yaml_outputs(inputs_dir, outputs_dir):
                                 **locations.get(key, {})}
 
     has_outputs = False
-    for results_var in results_vars:
+    for results_var, index in results_vars.items():
         if not os.path.exists(os.path.join(outputs_dir,'results_'+results_var+'.csv')):
             continue
         has_outputs = True
@@ -632,7 +632,11 @@ def _yaml_outputs(inputs_dir, outputs_dir):
                     if 'results' not in combined_model['nodes'][l]['techs'][t]:
                         combined_model['nodes'][l]['techs'][t]['results'] = {}
                     if len(r_df.loc[(r_df['nodes'] == l) & (r_df['techs'] == t)][results_var]) != 0:
-                        combined_model['nodes'][l]['techs'][t]['results'][results_var] = float(r_df.loc[(r_df['nodes'] == l) &
+                        if index:
+                            values = r_df.loc[(r_df['nodes'] == l) & (r_df['techs'] == t)][[index,results_var]]
+                            combined_model['nodes'][l]['techs'][t]['results'][results_var] = {'data':list(values[results_var]),'index':list(values[index]),'dims':[index]}
+                        else:
+                            combined_model['nodes'][l]['techs'][t]['results'][results_var] = float(r_df.loc[(r_df['nodes'] == l) &
                                                                         (r_df['techs'] == t)][results_var].values[0])  
         for l in combined_model['techs'].keys():
             if 'link_from' in combined_model['techs'][l] and 'link_to' in combined_model['techs'][l]:
@@ -643,13 +647,16 @@ def _yaml_outputs(inputs_dir, outputs_dir):
                 if 'results' not in combined_model['techs'][l]:
                     combined_model['techs'][l]['results'] = {}
                 if len(r_df.loc[(r_df['nodes'] == l1) & (r_df['techs'] == l)][results_var]) != 0:
-                    combined_model['techs'][l]['results'][results_var] = float(r_df.loc[(r_df['nodes'] == l1) &
+                    if index:
+                        values = r_df.loc[(r_df['nodes'] == l1) & (r_df['techs'] == l)][[index,results_var]]
+                        combined_model['techs'][l]['results'][results_var] = {'data':list(values[results_var]),'index':list(values[index]),'dims':[index]}
+                    else:
+                        combined_model['techs'][l]['results'][results_var] = float(r_df.loc[(r_df['nodes'] == l1) &
                                                                     (r_df['techs'] == l)][results_var].values[0])
-    if has_outputs:
         yaml.dump(combined_model, open(os.path.join(outputs_dir,'model_results.yaml'),'w+'), default_flow_style=None)
 
 def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
-    results_vars = ['flow_cap','storage_cap','purchased_units'] #'area_use','source_cap',
+    results_vars = {'flow_cap':'carriers','storage_cap':None,'purchased_units':None} #'area_use':None,'source_cap':None,
     
     model = yaml.load(open(os.path.join(operate_dir,'model.yaml')), Loader=yaml.FullLoader)
     techs = {}
@@ -659,7 +666,7 @@ def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
     if os.path.exists(os.path.join(operate_dir,'locations.yaml')):
         locations = yaml.load(open(os.path.join(operate_dir,'locations.yaml')), Loader=yaml.FullLoader)
 
-    for results_var in results_vars:
+    for results_var, index in results_vars.items():
         if not os.path.exists(os.path.join(outputs_dir,'results_'+results_var+'.csv')):
             continue
         r_df = pd.read_csv(os.path.join(outputs_dir,'results_'+results_var+'.csv'))
@@ -673,8 +680,13 @@ def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
                     elif locations['nodes'][l]['techs'][t] is None:
                         locations['nodes'][l]['techs'][t] = {}
                     if len(r_df.loc[(r_df['nodes'] == l) & (r_df['techs'] == t)][results_var]) != 0 and techs['techs'][t].get('base_tech') != 'demand':
-                        locations['nodes'][l]['techs'][t][results_var] = float(max(r_df.loc[(r_df['nodes'] == l) &
-                                                                        (r_df['techs'] == t)][results_var].values))  
+                        if index:
+                            values = r_df.loc[(r_df['nodes'] == l) & (r_df['techs'] == t)][[index,results_var]]
+                            locations['nodes'][l]['techs'][t][results_var] = {'data':list(values[results_var]),'index':list(values[index]),'dims':[index]}
+                        else:
+                            locations['nodes'][l]['techs'][t][results_var] = float(r_df.loc[(r_df['nodes'] == l) &
+                                                                        (r_df['techs'] == t)][results_var].values[0]) 
+                        
                         # Operate mode needs cyclic_storage to be false
                         if results_var == 'storage_cap':
                             locations['nodes'][l]['techs'][t]['cyclic_storage'] = False
@@ -693,7 +705,12 @@ def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
                 if locations['techs'][t] is None:
                     locations['techs'][t] = {}
                 if len(r_df.loc[(r_df['nodes'] == l1) & (r_df['techs'] == t)][results_var]) != 0:
-                    locations['techs'][t][results_var] = float(r_df.loc[(r_df['nodes'] == l1) &
+                    if index:
+                            values = r_df.loc[(r_df['nodes'] == l1) & (r_df['techs'] == t)][[index,results_var]]
+                            print(values)
+                            locations['techs'][t][results_var] = {'data':list(values[results_var]),'index':list(values[index]),'dims':[index]}
+                    else:
+                        locations['techs'][t][results_var] = float(r_df.loc[(r_df['nodes'] == l1) &
                                                                     (r_df['techs'] == t)][results_var].values[0])
     yaml.dump(model, open(os.path.join(operate_dir,'model.yaml'),'w+'), default_flow_style=False)
     yaml.dump(techs, open(os.path.join(operate_dir,'techs.yaml'),'w+'), default_flow_style=False)
