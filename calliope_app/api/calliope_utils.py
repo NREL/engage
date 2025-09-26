@@ -707,7 +707,6 @@ def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
                 if len(r_df.loc[(r_df['nodes'] == l1) & (r_df['techs'] == t)][results_var]) != 0:
                     if index:
                             values = r_df.loc[(r_df['nodes'] == l1) & (r_df['techs'] == t)][[index,results_var]]
-                            print(values)
                             locations['techs'][t][results_var] = {'data':list(values[results_var]),'index':list(values[index]),'dims':[index]}
                     else:
                         locations['techs'][t][results_var] = float(r_df.loc[(r_df['nodes'] == l1) &
@@ -716,7 +715,7 @@ def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
     yaml.dump(techs, open(os.path.join(operate_dir,'techs.yaml'),'w+'), default_flow_style=False)
     yaml.dump(locations, open(os.path.join(operate_dir,'locations.yaml'),'w+'), default_flow_style=False)
 
-def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,old_operate_inputs,new_operate_inputs,logger):
+def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,old_operate_inputs,new_operate_inputs, logger):
     old_model = yaml.safe_load(open(old_results+'/model_results.yaml'))
 
     new_techs = yaml.safe_load(open(new_inputs+'/techs.yaml','r'))
@@ -737,6 +736,8 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,old_opera
     built_techs = {'techs':{},'templates':{}}
     built_loc_techs = {}
 
+    zero_param = {'data':[0]}
+
     for l in old_model['nodes']:
         if 'techs' in old_model['nodes'][l] and old_model['nodes'][l]['techs']:
             for t in old_model['nodes'][l]['techs']:
@@ -746,65 +747,71 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,old_opera
                 new_tech = new_techs['techs'][t]
                 new_loc_tech = new_loctechs['nodes'][l]['techs'][t]
                 loc_tech = old_model['nodes'][l]['techs'][t]
-                if ('flow_cap_max' in loc_tech or 'storage_cap_max' in loc_tech) or\
-                        ('flow_cap_max' in old_tech or 'storage_cap_max' in old_tech):
-                    
+                max_params = {'flow_cap':'flow_cap_max','storage_cap':'storage_cap_max','purchased_units':'purchased_units_max'}
+                min_params = {'flow_cap':'flow_cap_min','storage_cap':'storage_cap_min','purchased_units':'purchased_units_min'}
+                if any([x in loc_tech or x in old_tech for x in max_params.values()]):
                     # A capex tech will have a min less than max rather than equal. All fixed techs can be ignored
-                    if (loc_tech.get('flow_cap_min',old_tech.get('flow_cap_min',0)) < loc_tech.get('flow_cap_max',old_tech.get('flow_cap_max',0))) or\
-                        (loc_tech.get('storage_cap_min',old_tech.get('storage_cap_min',0)) < loc_tech.get('storage_cap_max',old_tech.get('storage_cap_max',0))):
+                    capex_params = {}
+                    for param in max_params.keys():
+                        param_max = loc_tech.get(max_params[param],old_tech.get(max_params[param], None))
+                        param_min = loc_tech.get(min_params[param],old_tech.get(min_params[param], None))
+                        param_result = loc_tech.get('results',{param:False}).get(param,False)
+                        if not param_result:
+                            continue
+                        elif not param_min or not param_max:
+                                capex_params[param] = param_result
+                        elif isinstance(param_max, dict) and 'data' in param_max:
+                            if sum(param_max['data']) > sum(param_min['data']):
+                                capex_params[param] = param_result
+                        else:
+                            if param_max > param_min:
+                                capex_params[param] = param_result
 
+                    for param, param_result in capex_params.items():
+                        if isinstance(param_result, dict) and 'data' in param_result:
+                            built_capacities = dict(zip(param_result['index'],param_result['data']))
+                        else:
+                            built_capacities = {param_result:0}
                         # Unbuilt techs will have 0 capacity in results and can be skipped
-                        if loc_tech.get('results',{'flow_cap':0}).get('flow_cap',0) != 0 or\
-                                loc_tech.get('results',{'storage_cap':0}).get('storage_cap',0) != 0:
+                        if sum(built_capacities.values()) != 0:
                             loc_tech_b = copy.deepcopy(loc_tech)
-                            
-                            # Record built techs and the total systemwide capacity of those techs to use with flow_cap_max_systemwide
-                            if t in built_techs['techs']:
-                                built_techs['techs'][t] += loc_tech.get('results',{'flow_cap':0}).get('flow_cap',0)
-                            else:
-                                built_techs['techs'][t] = loc_tech.get('results',{'flow_cap':0}).get('flow_cap',0)
 
-                            [loc_tech_b.pop(c) for c in ['flow_cap_max', 'storage_cap_max'] if c in loc_tech_b]
-                            if 'flow_cap' in loc_tech['results']:
-                                loc_tech_b['flow_cap_min'] = loc_tech['results']['flow_cap']
-                                loc_tech_b['flow_cap_max'] = loc_tech['results']['flow_cap']
-                            if 'storage_cap' in loc_tech['results']:
-                                loc_tech_b['storage_cap_min'] = loc_tech['results']['storage_cap']
-                                loc_tech_b['storage_cap_max'] = loc_tech['results']['storage_cap']
+                            # Record built techs and the total systemwide capacity of those techs to use with flow_cap_max_systemwide
+                            if t not in built_techs['techs']:
+                                built_techs['techs'][t] = {}
+                            if param not in built_techs['techs'][t]:
+                                built_techs['techs'][t][param] = {}
+                            
+                            for index, value in built_capacities.items():
+                                if index not in built_techs['techs'][t]:
+                                    built_techs['techs'][t][param][index] = value
+                                else:
+                                    built_techs['techs'][t][param][index] += value
+                            
+                            [loc_tech_b.pop(c) for c in [max_params[param], min_params[param]] if c in loc_tech_b]
+                            if param in loc_tech['results']:
+                                loc_tech_b[max_params[param]] = loc_tech['results'][param]
+                                loc_tech_b[min_params[param]] = loc_tech['results'][param]
                             [loc_tech_b.pop(c) for c in ['cost_flow_cap','cost_interest_rate','cost_storage_cap'] if c in loc_tech_b]
                             loc_tech_b.pop('results')
+                            minmax_params = {max_params[param]: param, min_params[param]: param}
+                            for param, result in minmax_params.items():
+                                if new_loc_tech:
+                                    new_param = new_loc_tech.get(param,new_tech.get(param,None))
+                                else:
+                                    new_param = new_tech.get(param,None)
+                                if new_loc_tech is None:
+                                    new_loc_tech = {}
 
-                            if new_loc_tech:
-                                new_flow_cap_min = new_loc_tech.get('flow_cap_min',new_tech.get('flow_cap_min',0))
-                                new_flow_cap_max = new_loc_tech.get('flow_cap_max',new_tech.get('flow_cap_max',0))
-                                new_storage_cap_min = new_loc_tech.get('storage_cap_min',new_tech.get('storage_cap_min',0))
-                                new_storage_cap_max = new_loc_tech.get('storage_cap_max',new_tech.get('storage_cap_max',0))
-                            else:
-                                new_flow_cap_min = new_tech.get('flow_cap_min',0)
-                                new_flow_cap_max = new_tech.get('flow_cap_max',0)
-                                new_storage_cap_min = new_tech.get('storage_cap_min',0)
-                                new_storage_cap_max = new_tech.get('storage_cap_max',0)
-
-                            if new_loc_tech is None:
-                                new_loc_tech = {}
-
-                            if new_flow_cap_min > 0 and new_flow_cap_min-loc_tech['results']['flow_cap'] > 0:
-                                new_loc_tech['flow_cap_min'] = new_flow_cap_min-loc_tech['results']['flow_cap']
-                                if new_loc_tech['flow_cap_min'] < 0:
-                                    new_loc_tech['flow_cap_min'] = 0
-                            if new_flow_cap_max != 'inf' and new_flow_cap_max > 0:
-                                new_loc_tech['flow_cap_max'] = new_flow_cap_max-loc_tech['results']['flow_cap']
-                                if new_loc_tech['flow_cap_max'] < 0:
-                                    new_loc_tech['flow_cap_max'] = 0
-                            if new_storage_cap_min > 0 and new_storage_cap_min-loc_tech['results']['storage_cap'] > 0:
-                                new_loc_tech['storage_cap_min'] = new_storage_cap_min-loc_tech['results']['storage_cap']
-                                if new_loc_tech['storage_cap_min'] < 0:
-                                    new_loc_tech['storage_cap_min'] = 0
-                            if new_storage_cap_max != 'inf' and new_storage_cap_max > 0:
-                                new_loc_tech['storage_cap_max'] = new_storage_cap_max-loc_tech['results']['storage_cap']
-                                if new_loc_tech['storage_cap_max'] < 0:
-                                    new_loc_tech['storage_cap_max'] = 0
-
+                                if new_param:
+                                    if isinstance(new_param, dict) and 'data' in new_param:
+                                        new_param_dims = new_param['dims']
+                                        new_param_values = dict(zip(new_param['index'],new_param['data']))
+                                        for index, value in new_param_values.items():
+                                            new_param_values[index] -= built_capacities.get(index, 0)
+                                        new_loc_tech[param] = {'data':[x if x >= 0 else 0 for x in new_param_values.values()],'index':list(new_param_values.keys()),'dims':new_param_dims}
+                                    elif param in loc_tech['results']:
+                                        new_loc_tech[param] = max([new_param-loc_tech['results'][result],0])
                             new_loctechs['nodes'][l]['techs'][t] = new_loc_tech
 
                             built_loc_techs[l+t] = loc_tech_b
@@ -813,7 +820,6 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,old_opera
 
                             if old_operate_inputs and new_operate_inputs:
                                 new_operate_loctechs['nodes'][l]['techs'][t+'_'+str(old_year)] = copy.deepcopy(old_operate_loctechs['nodes'][l]['techs'][t])
-
 
     # Transmission (formerly links)
     for l in old_model['techs']:
@@ -827,64 +833,72 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,old_opera
         new_loc_tech = new_loctechs['techs'][l]
         loc_tech = old_model['techs'][l]
         # Check if tech has a max flow or storage capacity
-        if ('flow_cap_max' in loc_tech or 'storage_cap_max' in loc_tech) or\
-                ('flow_cap_max' in old_tech or 'storage_cap_max' in old_tech):
+        max_params = {'flow_cap':'flow_cap_max','storage_cap':'storage_cap_max','purchased_units':'purchased_units_max'}
+        min_params = {'flow_cap':'flow_cap_min','storage_cap':'storage_cap_min','purchased_units':'purchased_units_min'}
+        if any([x in loc_tech or x in old_tech for x in max_params.values()]):
+            # A capex tech will have a min less than max rather than equal. All fixed techs can be ignored
+            capex_params = {}
+            for param in max_params.keys():
+                param_max = loc_tech.get(max_params[param],old_tech.get(max_params[param], None))
+                param_min = loc_tech.get(min_params[param],old_tech.get(min_params[param], None))
+                param_result = loc_tech.get('results',{param:False}).get(param,False)
+                if not param_result:
+                    continue
+                elif not param_min or not param_max:
+                        capex_params[param] = param_result
+                elif isinstance(param_max, dict) and 'data' in param_max:
+                    if sum(param_max['data']) > sum(param_min['data']):
+                        capex_params[param] = param_result
+                else:
+                    if param_max > param_min:
+                        capex_params[param] = param_result
             
             # A capex tech will have a min less than max rather than equal. All fixed techs can be ignored
-            if (loc_tech.get('flow_cap_min',old_tech.get('flow_cap_min',0)) < loc_tech.get('flow_cap_max',old_tech.get('flow_cap_max',0))) or\
-                (loc_tech.get('storage_cap_min',old_tech.get('storage_cap_min',0)) < loc_tech.get('storage_cap_max',old_tech.get('storage_cap_max',0))):
-
+            for param, param_result in capex_params.items():
+                if isinstance(param_result, dict) and 'data' in param_result:
+                    built_capacities = dict(zip(param_result['index'],param_result['data']))
+                else:
+                    built_capacities = {param_result:0}
                 # Unbuilt techs will have 0 capacity in results and can be skipped
-                if loc_tech.get('results',{'flow_cap':0}).get('flow_cap',0) != 0 or\
-                    loc_tech.get('results',{'storage_cap':0}).get('storage_cap',0) != 0:
+                if sum(built_capacities.values()) != 0:
                     loc_tech_b = copy.deepcopy(loc_tech)
 
                     # Record built techs and the total systemwide capacity of those techs to use with flow_cap_max_systemwide
-                    if t in built_techs['templates']:
-                        built_techs['templates'][t] += loc_tech.get('results',{'flow_cap':0}).get('flow_cap',0)
-                    else:
-                        built_techs['templates'][t] = loc_tech.get('results',{'flow_cap':0}).get('flow_cap',0)
-
-                    [loc_tech_b.pop(c) for c in ['flow_cap_max', 'storage_cap_max'] if c in loc_tech_b]
-                    if 'flow_cap' in loc_tech['results']:
-                        loc_tech_b['flow_cap_min'] = loc_tech['results']['flow_cap']
-                        loc_tech_b['flow_cap_max'] = loc_tech['results']['flow_cap']
-                    if 'storage_cap' in loc_tech['results']:
-                        loc_tech_b['storage_cap_min'] = loc_tech['results']['storage_cap']
-                        loc_tech_b['storage_cap_max'] = loc_tech['results']['storage_cap']
-                    #[loc_tech_b.pop(c) for c in ['cost_flow_cap','cost_interest_rate','cost_storage_cap'] if c in loc_tech_b]
+                    if t not in built_techs['templates']:
+                        built_techs['templates'][t] = {}
+                    if param not in built_techs['templates'][t]:
+                        built_techs['templates'][t][param] = {}
+                    
+                    for index, value in built_capacities.items():
+                        if index not in built_techs['templates'][t]:
+                            built_techs['templates'][t][param][index] = value
+                        else:
+                            built_techs['templates'][t][param][index] += value
+                    
+                    [loc_tech_b.pop(c) for c in [max_params[param], min_params[param]] if c in loc_tech_b]
+                    if param in loc_tech['results']:
+                        loc_tech_b[max_params[param]] = loc_tech['results'][param]
+                        loc_tech_b[min_params[param]] = loc_tech['results'][param]
+                    [loc_tech_b.pop(c) for c in ['cost_flow_cap','cost_interest_rate','cost_storage_cap'] if c in loc_tech_b]
                     loc_tech_b.pop('results')
+                    minmax_params = {max_params[param]: param, min_params[param]: param}
+                    for param, result in minmax_params.items():
+                        if new_loc_tech:
+                            new_param = new_loc_tech.get(param,new_tech.get(param,None))
+                        else:
+                            new_param = new_tech.get(param,None)
+                        if new_loc_tech is None:
+                            new_loc_tech = {}
 
-                    if new_loc_tech:
-                        new_flow_cap_min = new_loc_tech.get('flow_cap_min',new_tech.get('flow_cap_min',0))
-                        new_flow_cap_max = new_loc_tech.get('flow_cap_max',new_tech.get('flow_cap_max',0))
-                        new_storage_cap_min = new_loc_tech.get('storage_cap_min',new_tech.get('storage_cap_min',0))
-                        new_storage_cap_max = new_loc_tech.get('storage_cap_max',new_tech.get('storage_cap_max',0))
-                    else:
-                        new_flow_cap_min = new_tech.get('flow_cap_min',0)
-                        new_flow_cap_max = new_tech.get('flow_cap_max',0)
-                        new_storage_cap_min = new_tech.get('storage_cap_min',0)
-                        new_storage_cap_max = new_tech.get('storage_cap_max',0)
-
-                    if new_loc_tech is None:
-                        new_loc_tech = {}
-
-                    if new_flow_cap_min > 0 and new_flow_cap_min-loc_tech['results']['flow_cap'] > 0:
-                        new_loc_tech['flow_cap_min'] = new_flow_cap_min-loc_tech['results']['flow_cap']
-                        if new_loc_tech['flow_cap_min'] < 0:
-                            new_loc_tech['flow_cap_min'] = 0
-                    if new_flow_cap_max != 'inf' and new_flow_cap_max > 0:
-                        new_loc_tech['flow_cap_max'] = new_flow_cap_max-loc_tech['results']['flow_cap']
-                        if new_loc_tech['flow_cap_max'] < 0:
-                            new_loc_tech['flow_cap_max'] = 0
-                    if new_storage_cap_min > 0 and new_storage_cap_min-loc_tech['results']['storage_cap'] > 0:
-                        new_loc_tech['storage_cap_min'] = new_storage_cap_min-loc_tech['results']['storage_cap']
-                        if new_loc_tech['storage_cap_min'] < 0:
-                            new_loc_tech['storage_cap_min'] = 0
-                    if new_storage_cap_max != 'inf' and new_storage_cap_max > 0:
-                        new_loc_tech['storage_cap_max'] = new_storage_cap_max-loc_tech['results']['storage_cap']
-                        if new_loc_tech['storage_cap_max'] < 0:
-                            new_loc_tech['storage_cap_max'] = 0
+                        if new_param:
+                            if isinstance(new_param, dict) and 'data' in new_param:
+                                new_param_dims = new_param['dims']
+                                new_param_values = dict(zip(new_param['index'],new_param['data']))
+                                for index, value in new_param_values.items():
+                                    new_param_values[index] -= built_capacities.get(index, 0)
+                                new_loc_tech[param] = {'data':[x if x >= 0 else 0 for x in new_param_values.values()],'index':list(new_param_values.keys()),'dims':new_param_dims}
+                            elif param in loc_tech['results']:
+                                new_loc_tech[param] = max([new_param-loc_tech['results'][result],0])
 
                     new_loctechs['techs'][l] = new_loc_tech
 
@@ -900,38 +914,40 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,old_opera
 
     for level in built_techs.keys():
         for t in built_techs[level].keys():
-            tech = old_model[level][t]
-            tech_b = copy.deepcopy(tech)
+            for param in built_techs[level][t].keys():
+                tech = old_model[level][t]
+                tech_b = copy.deepcopy(tech)
 
-            # Handle systemwide energy cap gradient
-            if 'flow_cap_max_systemwide' in new_techs[level][t]:
-                new_techs[level][t]['flow_cap_max_systemwide'] = max([new_techs[level][t]['flow_cap_max_systemwide']-built_techs[level][t],0])
-            
-            [tech_b.pop(c) for c in ['flow_cap_max', 'storage_cap_max'] if c in tech_b]
-            #[tech_b.pop(c) for c in ['cost_flow_cap','cost_interest_rate','cost_storage_cap'] if c in tech_b]
-            
-            tech_b['name'] += ' '+str(old_year)
+                # Handle systemwide energy cap gradient
+                if f'{param}_max_systemwide' in new_techs[level][t]:
+                    new_techs[level][t][f'{param}_max_systemwide'] = max([new_techs[level][t][f'{param}_max_systemwide']-built_techs[level][t],0])
+                
+                if f'{param}_max' in tech_b:
+                    tech_b.pop(f'{param}_max')
+                #[tech_b.pop(c) for c in ['cost_flow_cap','cost_interest_rate','cost_storage_cap'] if c in tech_b]
+                
+                tech_b['name'] += ' '+str(old_year)
 
-            new_techs[level][t+'_'+str(old_year)] = tech_b
+                new_techs[level][t+'_'+str(old_year)] = tech_b
 
-            if new_constraints['constraints']:
-                group_constraints = new_constraints['constraints'].copy()
-                for g,c in group_constraints.items():
-                    for s,sc in c.get('slices',{}).items():
-                        for i,se in enumerate(sc):
-                            if t in se['expression'] and t+'_'+str(old_year) not in se['expression']:
-                                new_constraints['constraints'][g]['slices'][s][i]['expression'] = se['expression'].replace(t,t+','+t+'_'+str(old_year))
-
-            if old_operate_inputs and new_operate_inputs:
-                new_operate_techs[level][t+'_'+str(old_year)] = old_operate_techs[level][t]
-                new_operate_techs[level][t+'_'+str(old_year)]['name'] += ' '+str(old_year)
-                if new_operate_constraints['constraints']:
-                    operate_group_constraints = new_operate_constraints['constraints'].copy()
-                    for g,c in operate_group_constraints.items():
+                if new_constraints['constraints']:
+                    group_constraints = new_constraints['constraints'].copy()
+                    for g,c in group_constraints.items():
                         for s,sc in c.get('slices',{}).items():
                             for i,se in enumerate(sc):
                                 if t in se['expression'] and t+'_'+str(old_year) not in se['expression']:
-                                    new_operate_constraints['constraints'][g]['slices'][s][i]['expression'] = se['expression'].replace(t,t+','+t+'_'+str(old_year))
+                                    new_constraints['constraints'][g]['slices'][s][i]['expression'] = se['expression'].replace(t,t+','+t+'_'+str(old_year))
+
+                if old_operate_inputs and new_operate_inputs:
+                    new_operate_techs[level][t+'_'+str(old_year)] = old_operate_techs[level][t]
+                    new_operate_techs[level][t+'_'+str(old_year)]['name'] += ' '+str(old_year)
+                    if new_operate_constraints['constraints']:
+                        operate_group_constraints = new_operate_constraints['constraints'].copy()
+                        for g,c in operate_group_constraints.items():
+                            for s,sc in c.get('slices',{}).items():
+                                for i,se in enumerate(sc):
+                                    if t in se['expression'] and t+'_'+str(old_year) not in se['expression']:
+                                        new_operate_constraints['constraints'][g]['slices'][s][i]['expression'] = se['expression'].replace(t,t+','+t+'_'+str(old_year))
 
     for key, ts_file in old_model.get('data_tables',{}).items():
         num_keys = len(ts_file['columns'])
