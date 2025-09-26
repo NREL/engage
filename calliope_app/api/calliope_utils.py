@@ -734,7 +734,7 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,old_opera
         old_operate_model = yaml.safe_load(open(old_operate_inputs+'/model.yaml','r'))
 
     built_techs = {'techs':{},'templates':{}}
-    built_loc_techs = {}
+    built_loc_techs = {'techs':{},'links':{}}
 
     zero_param = {'data':[0]}
 
@@ -814,7 +814,7 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,old_opera
                                         new_loc_tech[param] = max([new_param-loc_tech['results'][result],0])
                             new_loctechs['nodes'][l]['techs'][t] = new_loc_tech
 
-                            built_loc_techs[l+t] = loc_tech_b
+                            built_loc_techs['techs'][t+l] = loc_tech_b
 
                             new_loctechs['nodes'][l]['techs'][t+'_'+str(old_year)] = loc_tech_b
 
@@ -902,7 +902,7 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,old_opera
 
                     new_loctechs['techs'][l] = new_loc_tech
 
-                    built_loc_techs[l+t] = loc_tech_b
+                    built_loc_techs['links'][l] = loc_tech_b
 
                     loc_tech_b['template'] += '_'+str(old_year)
 
@@ -956,9 +956,9 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,old_opera
         node_col = ts_file['columns'].index('nodes') if 'nodes' in ts_file['columns'] else None
         tech_col = ts_file['columns'].index('techs') if 'techs' in ts_file['columns'] else None
         if node_col is not None and tech_col is not None:
-            keep_cols = [c[tech_col]+c[node_col] in built_loc_techs for c in ts_df_old.columns]
+            keep_cols = [c[tech_col]+c[node_col] in built_loc_techs['techs'] for c in ts_df_old.columns]
         elif tech_col is not None:
-            keep_cols = [(c[tech_col] in built_techs.get('techs',{}) or c[tech_col] in built_techs.get('templates',{})) for c in ts_df_old.columns]
+            keep_cols = [(c[tech_col] in built_techs['techs'] or c[tech_col] in built_techs['templates'] or c[tech_col] in built_loc_techs['links']) for c in ts_df_old.columns]
         ts_df_old.columns = pd.MultiIndex.from_tuples([tuple([c[x]+f'_{str(old_year)}' if x == tech_col else c[x] for x in range(0,num_keys)]) for c in ts_df_old.columns])
         ts_df_old = ts_df_old.loc[:,keep_cols]
         if ts_df_old.empty:
@@ -1013,9 +1013,9 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,old_opera
             node_col = ts_file['columns'].index('nodes') if 'nodes' in ts_file['columns'] else None
             tech_col = ts_file['columns'].index('techs') if 'techs' in ts_file['columns'] else None
             if node_col is not None and tech_col is not None:
-                keep_cols = [c[tech_col]+c[node_col] in built_loc_techs for c in ts_df_old.columns]
+                keep_cols = [c[tech_col]+c[node_col] in built_loc_techs['techs'] for c in ts_df_old.columns]
             elif tech_col is not None:
-                keep_cols = [(c[tech_col] in built_techs.get('techs',{}) or c[tech_col] in built_techs.get('templates',{})) for c in ts_df_old.columns]
+                keep_cols = [(c[tech_col] in built_techs['techs'] or c[tech_col] in built_techs['templates'] or c[tech_col] in built_loc_techs['links']) for c in ts_df_old.columns]
             ts_df_old.columns = pd.MultiIndex.from_tuples([tuple([c[x]+f'_{str(old_year)}' if x == tech_col else c[x] for x in range(0,num_keys)]) for c in ts_df_old.columns])
             ts_df_old = ts_df_old.loc[:,keep_cols]
             if ts_df_old.empty:
