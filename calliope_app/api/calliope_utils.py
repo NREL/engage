@@ -159,7 +159,7 @@ def get_techs_yaml_set(run, scenario_id, year):
             param_name = param.parameter.name
             if param.piecewise_dim:
                 param_name = f'{param_name}_{param.piecewise_dim[0]}'
-                dim += ['breakpoint']
+                dim += ['breakpoints']
                 index += [int(param.piecewise_dim[1:])]
             unique_param = param.parameter.root+'.'+param_name+str(index)+str(dim)
             
@@ -236,7 +236,7 @@ def get_loc_techs_yaml_set(run, scenario_id, year):
             param_name = param.parameter.name
             if param.piecewise_dim:
                 param_name = f'{param_name}_{param.piecewise_dim[0]}'
-                dim += ['breakpoint']
+                dim += ['breakpoints']
                 index += [int(param.piecewise_dim[1:])]
             unique_param = param.parameter.root+'.'+param_name+str(index)+str(dim)
             if unique_param not in unique_params:
@@ -657,7 +657,8 @@ def _yaml_outputs(inputs_dir, outputs_dir):
 
 def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
     results_vars = {'flow_cap':'carriers','storage_cap':None,'purchased_units':None} #'area_use':None,'source_cap':None,
-    
+    zero_capacity_nodes = {'techs':{},'templates':{}}
+
     model = yaml.load(open(os.path.join(operate_dir,'model.yaml')), Loader=yaml.FullLoader)
     techs = {}
     locations = {}
@@ -666,6 +667,7 @@ def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
     if os.path.exists(os.path.join(operate_dir,'locations.yaml')):
         locations = yaml.load(open(os.path.join(operate_dir,'locations.yaml')), Loader=yaml.FullLoader)
 
+    results_vars = {x:results_vars[x] for x in results_vars.keys() if os.path.exists(os.path.join(outputs_dir,'results_'+x+'.csv'))}
     for results_var, index in results_vars.items():
         if not os.path.exists(os.path.join(outputs_dir,'results_'+results_var+'.csv')):
             continue
@@ -679,18 +681,34 @@ def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
                         locations['nodes'][l]['techs'][t].pop(results_var+'_max', None)
                     elif locations['nodes'][l]['techs'][t] is None:
                         locations['nodes'][l]['techs'][t] = {}
-                    if len(r_df.loc[(r_df['nodes'] == l) & (r_df['techs'] == t)][results_var]) != 0 and techs['techs'][t].get('base_tech') != 'demand':
+                    if techs['techs'][t].get('base_tech') == 'demand':
+                        continue
+                    elif len(r_df.loc[(r_df['nodes'] == l) & (r_df['techs'] == t)][results_var]) != 0:
                         if index:
                             values = r_df.loc[(r_df['nodes'] == l) & (r_df['techs'] == t)][[index,results_var]]
-                            locations['nodes'][l]['techs'][t][results_var] = {'data':list(values[results_var]),'index':list(values[index]),'dims':[index]}
+                            if sum(values[results_var]) > 0:
+                                locations['nodes'][l]['techs'][t][results_var] = {'data':list(values[results_var]),'index':list(values[index]),'dims':[index]}
+                            else:
+                                if (l,t) not in zero_capacity_nodes['techs']:
+                                    zero_capacity_nodes['techs'][(l,t)] = []
+                                zero_capacity_nodes['techs'][(l,t)].append(results_var)
                         else:
-                            locations['nodes'][l]['techs'][t][results_var] = float(r_df.loc[(r_df['nodes'] == l) &
-                                                                        (r_df['techs'] == t)][results_var].values[0]) 
+                            value = float(r_df.loc[(r_df['nodes'] == l) & (r_df['techs'] == t)][results_var].values[0])
+                            if value > 0:
+                                locations['nodes'][l]['techs'][t][results_var] = value 
+                            else:
+                                if (l,t) not in zero_capacity_nodes['techs']:
+                                    zero_capacity_nodes['techs'][(l,t)] = []
+                                zero_capacity_nodes['techs'][(l,t)].append(results_var)
                         
                         # Operate mode needs cyclic_storage to be false
                         if results_var == 'storage_cap':
                             locations['nodes'][l]['techs'][t]['cyclic_storage'] = False
-                        
+                    else:
+                        if (l,t) not in zero_capacity_nodes['techs']:
+                            zero_capacity_nodes['techs'][(l,t)] = []
+                        zero_capacity_nodes['techs'][(l,t)].append(results_var)
+                
         for lt in techs['templates'].keys():
             techs['templates'][lt].pop(results_var+'_min', None)
             techs['templates'][lt].pop(results_var+'_max', None)
@@ -706,11 +724,45 @@ def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
                     locations['techs'][t] = {}
                 if len(r_df.loc[(r_df['nodes'] == l1) & (r_df['techs'] == t)][results_var]) != 0:
                     if index:
-                            values = r_df.loc[(r_df['nodes'] == l1) & (r_df['techs'] == t)][[index,results_var]]
+                        values = r_df.loc[(r_df['nodes'] == l1) & (r_df['techs'] == t)][[index,results_var]]
+                        if sum(values[results_var]) > 0:
                             locations['techs'][t][results_var] = {'data':list(values[results_var]),'index':list(values[index]),'dims':[index]}
+                        else:
+                            if t not in zero_capacity_nodes['templates']:
+                                zero_capacity_nodes['templates'][t] = []
+                            zero_capacity_nodes['templates'][t].append(results_var)
                     else:
-                        locations['techs'][t][results_var] = float(r_df.loc[(r_df['nodes'] == l1) &
-                                                                    (r_df['techs'] == t)][results_var].values[0])
+                        value = float(r_df.loc[(r_df['nodes'] == l1) & (r_df['techs'] == t)][results_var].values[0])
+                        if value > 0:
+                            locations['techs'][t][results_var] = value
+                        else:
+                            if t not in zero_capacity_nodes['templates']:
+                                zero_capacity_nodes['templates'][t] = []
+                            zero_capacity_nodes['techs'][t].append(results_var)
+                else:
+                    if t not in zero_capacity_nodes['templates']:
+                        zero_capacity_nodes['templates'][t] = []
+                    zero_capacity_nodes['templates'][t].append(results_var)
+
+    zero_capacity_nodes['techs'] = {z:zero_capacity_nodes['techs'][z] for z in zero_capacity_nodes['techs'].keys() if set(zero_capacity_nodes['techs'][z]) == set(results_vars.keys())}
+    # Need to remove any node timeseries to prevent Calliope errors
+    for key, ts_file in model.get('data_tables',{}).items():
+        node_col = ts_file['columns'].index('nodes') if 'nodes' in ts_file['columns'] else None
+        tech_col = ts_file['columns'].index('techs') if 'techs' in ts_file['columns'] else None
+        if node_col is not None and tech_col is not None:
+            ts_df = pd.read_csv(os.path.join(operate_dir,ts_file['data']),header=list(range(0, len(ts_file['columns']))),index_col=[0])
+            keep_cols = [(c[node_col], c[tech_col]) not in zero_capacity_nodes['techs'] for c in ts_df.columns]
+            ts_df = ts_df.loc[:,keep_cols]
+            ts_df.to_csv(os.path.join(operate_dir,ts_file['data']))
+    
+    # Remove nodes with 0 in all capacities/variables to clean model
+    for loc_tech, var_list in zero_capacity_nodes['techs'].items():
+        locations['nodes'][loc_tech[0]]['techs'].pop(loc_tech[1])
+    
+    for tech, var_list in zero_capacity_nodes['templates'].items():
+        if set(var_list) == set(results_vars.keys()):
+            locations['techs'].pop(tech)
+
     yaml.dump(model, open(os.path.join(operate_dir,'model.yaml'),'w+'), default_flow_style=False)
     yaml.dump(techs, open(os.path.join(operate_dir,'techs.yaml'),'w+'), default_flow_style=False)
     yaml.dump(locations, open(os.path.join(operate_dir,'locations.yaml'),'w+'), default_flow_style=False)
@@ -1009,7 +1061,7 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,old_opera
         for key, ts_file in old_operate_model.get('data_tables',{}).items():
             num_keys = len(ts_file['columns'])
             ts_index = tuple(['ts']*num_keys)
-            ts_df_old = pd.read_csv(os.path.join(old_inputs,ts_file['data']),header=list(range(0, num_keys)),index_col=[0])
+            ts_df_old = pd.read_csv(os.path.join(old_operate_inputs,ts_file['data']),header=list(range(0, num_keys)),index_col=[0])
             node_col = ts_file['columns'].index('nodes') if 'nodes' in ts_file['columns'] else None
             tech_col = ts_file['columns'].index('techs') if 'techs' in ts_file['columns'] else None
             if node_col is not None and tech_col is not None:
@@ -1037,9 +1089,8 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,old_opera
                     ts_df_old.loc[feb_29_mask] = feb_28
 
             ts_df_old.drop(columns=[ts_index],inplace=True)
-
             if os.path.exists(os.path.join(new_operate_inputs,ts_file['data'])):
-                ts_df_new = pd.read_csv(os.path.join(new_inputs,ts_file['data']),header=list(range(0, num_keys)),index_col=[0])
+                ts_df_new = pd.read_csv(os.path.join(new_operate_inputs,ts_file['data']),header=list(range(0, num_keys)),index_col=[0])
                 ts_df_new.index = pd.to_datetime(ts_df_new.index)
                 ts_df_new = pd.concat([ts_df_new,ts_df_old],axis=1)
             else:
