@@ -679,6 +679,7 @@ def _operate_outputs(inputs_dir, outputs_dir, operate_dir, logger):
                     if locations['nodes'][l]['techs'][t]:
                         locations['nodes'][l]['techs'][t].pop(results_var+'_min', None)
                         locations['nodes'][l]['techs'][t].pop(results_var+'_max', None)
+                        locations['nodes'][l]['techs'][t].pop('cost_'+results_var, None)
                     elif locations['nodes'][l]['techs'][t] is None:
                         locations['nodes'][l]['techs'][t] = {}
                     if techs['techs'][t].get('base_tech') == 'demand':

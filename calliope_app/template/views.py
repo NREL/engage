@@ -292,6 +292,7 @@ def update_template(request):
                             raw_value=rawValue,
                             index=template_type_loc_tech_param.index,
                             dim=template_type_loc_tech_param.dim,
+                            piecewise_dim=template_type_loc_tech_param.piecewise_dim,
                             model=model,
                         )
                     else:
@@ -300,6 +301,7 @@ def update_template(request):
                             loc_tech=loc_tech,
                             value=value,
                             raw_value=rawValue,
+                            piecewise_dim=template_type_loc_tech_param.piecewise_dim,
                             model=model,
                         )
 
