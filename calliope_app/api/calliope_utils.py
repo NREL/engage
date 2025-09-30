@@ -368,7 +368,7 @@ def dictify(target, keys, value, index=None, dim=None, update=False, simplify=Tr
             target[keys[-1]]['dims'] = dim
 
         if dim != target[keys[-1]]['dims']:
-            raise ValueError('Error with indexed parameter: {}. Dimensions do not match. {} vs {}'.format(keys[-1],dim,target[keys[-1]]['dims']))
+            raise ValueError('Error with indexed parameter: {}. Dimensions do not match. {} vs {}'.format('.'.join(keys),dim,target[keys[-1]]['dims']))
         
         target[keys[-1]]['data'] += [value]
         target[keys[-1]]['index'] += [index]
