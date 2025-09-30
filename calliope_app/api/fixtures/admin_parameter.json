@@ -1761,7 +1761,7 @@
       "is_essential": "False",
       "is_carrier": "False",
       "choices": "[]",
-      "tags": "[\"plan_mode\",\"operate_mode\"]",
+      "tags": "[\"duplicate\",\"multi_carrier_out\",\"plan_mode\",\"operate_mode\"]",
       "index": "[\"co2e\"]",
       "dim": "[\"costs\"]"
     },
@@ -1787,7 +1787,7 @@
       "is_essential": "False",
       "is_carrier": "False",
       "choices": "[]",
-      "tags": "[\"plan_mode\",\"operate_mode\"]",
+      "tags": "[\"duplicate\",\"multi_carrier_out\",\"plan_mode\",\"operate_mode\"]",
       "index": "[\"co2e\"]",
       "dim": "[\"costs\"]"
     },
