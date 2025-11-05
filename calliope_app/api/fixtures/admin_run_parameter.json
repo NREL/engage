@@ -333,7 +333,7 @@
    "user_visibility": "False",
    "can_evolve": "False",
    "name": "constraints",
-   "default_value": "{\"balance_conversion\": {\"description\": \"Recreate v0.6 conversion plus functionality. Override balance_conversion to tie just in_group_1 and out_group_1 together.\", \"equations\": [{\"expression\": \"sum(flow_out_inc_eff,over=carriers) == sum(flow_in_inc_eff,over=carriers)\", \"where\": \"NOT any(flow_in_cplus_group_1, over=carriers) AND NOT any(flow_out_cplus_group_1, over=carriers)\"}, {\"expression\": \"sum(flow_in_cplus_group_1,over=carriers) == sum(flow_out_cplus_group_1,over=carriers)\", \"where\": \"any(flow_in_cplus_group_1, over=carriers) AND any(flow_out_cplus_group_1, over=carriers)\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\"], \"where\": \"base_tech==conversion AND NOT include_storage==true\"}, \"balance_in_group_2\": {\"description\": \"Recreate v0.6 conversion plus functionality. Tie in_group_1 and in_group_2 together.\", \"equations\": [{\"expression\": \"sum(flow_in_cplus_group_1,over=carriers) == sum(flow_in_cplus_group_2,over=carriers)\", \"where\": \"any(flow_in_cplus_group_2, over=carriers) AND any(flow_in_cplus_group_2, over=carriers)\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\"]}, \"balance_in_group_3\": {\"description\": \"Recreate v0.6 conversion plus functionality. Tie in_group_1 and in_group_3 together.\", \"equations\": [{\"expression\": \"sum(flow_in_cplus_group_1,over=carriers) == sum(flow_in_cplus_group_3,over=carriers)\", \"where\": \"any(flow_in_cplus_group_1, over=carriers) AND any(flow_in_cplus_group_3, over=carriers)\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\"]}, \"balance_out_group_2\": {\"description\": \"Recreate v0.6 conversion plus functionality. Tie out_group_1 and in_group_2 together.\", \"equations\": [{\"expression\": \"sum(flow_out_cplus_group_1,over=carriers) == sum(flow_out_cplus_group_2,over=carriers)\", \"where\": \"any(flow_out_cplus_group_1, over=carriers) AND any(flow_out_cplus_group_2, over=carriers)\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\"]}, \"balance_out_group_3\": {\"description\": \"Recreate v0.6 conversion plus functionality. Tie out_group_1 and in_group_3 together.\", \"equations\": [{\"expression\": \"sum(flow_out_cplus_group_1,over=carriers) == sum(flow_out_cplus_group_3,over=carriers)\", \"where\": \"any(flow_out_cplus_group_1, over=carriers) AND any(flow_out_cplus_group_3, over=carriers)\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\"]}}",
+   "default_value": "{\"balance_conversion\": {\"description\": \"Recreate v0.6 conversion plus functionality. Override balance_conversion to tie just in_group_1 and out_group_1 together for conversion plus.\", \"equations\": [{\"expression\": \"sum(flow_out_inc_eff,over=carriers) == sum(flow_in_inc_eff,over=carriers)\", \"where\": \"NOT any(flow_in_cplus_group_1,over=carriers) AND NOT any(flow_out_cplus_group_1,over=carriers)\"}, {\"expression\": \"sum(flow_in_cplus_group_1,over=carriers) == sum(flow_out_cplus_group_1,over=carriers)\", \"where\": \"any(flow_in_cplus_group_1,over=carriers) AND any(flow_out_cplus_group_1,over=carriers)\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\"], \"where\": \"base_tech==conversion AND NOT include_storage==true\"}, \"balance_in_group_2\": {\"description\": \"Recreate v0.6 conversion plus functionality. Tie in_group_1 and in_group_2 together.\", \"equations\": [{\"expression\": \"sum(flow_in_cplus_group_1,over=carriers) == sum(flow_in_cplus_group_2,over=carriers)\", \"where\": \"any(flow_in_cplus_group_2,over=carriers) AND any(flow_in_cplus_group_2,over=carriers)\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\"]}, \"balance_in_group_3\": {\"description\": \"Recreate v0.6 conversion plus functionality. Tie in_group_1 and in_group_3 together.\", \"equations\": [{\"expression\": \"sum(flow_in_cplus_group_1,over=carriers) == sum(flow_in_cplus_group_3,over=carriers)\", \"where\": \"any(flow_in_cplus_group_1,over=carriers) AND any(flow_in_cplus_group_3,over=carriers)\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\"]}, \"balance_out_group_2\": {\"description\": \"Recreate v0.6 conversion plus functionality. Tie out_group_1 and in_group_2 together.\", \"equations\": [{\"expression\": \"sum(flow_out_cplus_group_1,over=carriers) == sum(flow_out_cplus_group_2,over=carriers)\", \"where\": \"any(flow_out_cplus_group_1,over=carriers) AND any(flow_out_cplus_group_2,over=carriers)\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\"]}, \"balance_out_group_3\": {\"description\": \"Recreate v0.6 conversion plus functionality. Tie out_group_1 and in_group_3 together.\", \"equations\": [{\"expression\": \"sum(flow_out_cplus_group_1,over=carriers) == sum(flow_out_cplus_group_3,over=carriers)\", \"where\": \"any(flow_out_cplus_group_1,over=carriers) AND any(flow_out_cplus_group_3,over=carriers)\"}], \"foreach\": [\"nodes\", \"techs\", \"timesteps\"]}, \"planning_reserve_requirement\": {\"description\": \"Ensure that a minimum amount of capacity is available for planning reserves.\", \"equations\": [{\"expression\": \"sum(flow_cap * cap_value, over=[nodes, techs]) >= (1 + planning_reserve_margin) * (sum(sink_use_equals, over=[nodes,techs]) + sum(sink_use_min, over=[nodes,techs]))\"}], \"foreach\": [\"timesteps\", \"carriers\"], \"title\": \"Planning reserve requirement\", \"where\": \"planning_reserve_margin\"}}",
    "choices": "[]",
    "tab": "scenarios",
    "mode": "[\"plan\"]"
@@ -393,7 +393,7 @@
    "user_visibility": "False",
    "can_evolve": "False",
    "name": "parameters",
-   "default_value": "{\"cost_flow_cap_piecewise_x\": {\"default\": 0, \"description\": \"X breakpoint values of a SOS2 piecewise linear constraint for technology capital cost. X values are the nameplate at that breakpoint. Set as value between 0 (no capacity) and the max capacity of the tech.\", \"title\": \"Piecewise efficiency curve x values.\", \"unit\": \"power.\"}, \"cost_flow_cap_piecewise_y\": {\"default\": 0, \"description\": \"Y breakpoint values of a SOS2 piecewise linear constraint for capacity costs. Y values are the total capital cost ($) at the capacity corresponding x value. Set as the total costs (multiply by the X capacity value if you have a $/kW).\", \"title\": \"Piecewise capital cost curve y values.\", \"unit\": \"cost.\"}, \"cost_source_use\": {\"default\": 0, \"description\": \"Cost per unit of `source_use` in each timestep.\", \"resample_method\": \"mean\", \"title\": \"Source use cost.\", \"unit\": \"$\\\\frac{\\\\{cost}}{\\\\text{energy}}$\"}}",
+   "default_value": "{\"cost_flow_cap_piecewise_x\": {\"default\": 0, \"description\": \"X breakpoint values of a SOS2 piecewise linear constraint for technology capital cost. X values are the nameplate at that breakpoint. Set as value between 0 (no capacity) and the max capacity of the tech.\", \"title\": \"Piecewise efficiency curve x values.\", \"unit\": \"power.\"}, \"cost_flow_cap_piecewise_y\": {\"default\": 0, \"description\": \"Y breakpoint values of a SOS2 piecewise linear constraint for capacity costs. Y values are the total capital cost ($) at the capacity corresponding x value. Set as the total costs (multiply by the X capacity value if you have a $/kW).\", \"title\": \"Piecewise capital cost curve y values.\", \"unit\": \"cost.\"}, \"cost_source_use\": {\"default\": 0, \"description\": \"Cost per unit of `source_use` in each timestep.\", \"resample_method\": \"mean\", \"title\": \"Source use cost.\", \"unit\": \"$\\\\frac{\\\\{cost}}{\\\\text{energy}}$\"}, \"cap_value\": {\"default\": 0, \"resample_method\": \"mean\", \"title\": \"Capacity value\", \"description\": \"Fraction of a technologies capacity that is applicable to a planning reserve. Defaults to 1 for  fully dispatchable technologies, but may be lower for variable resources or storage technologies. There are several methods of calculating capacity value based on the dispatchability and systemwide installed capacity of a technology.\", \"unit\": \"unitless.\"}, \"planning_reserve_margin\": {\"default\": 0, \"resample_method\": \"mean\", \"title\": \"Planning reserve margin\", \"description\": \"Reserve margin as % of load that must be on the system. The model will need to have enough rated capacity (factoring in capacity values) to meet (1 + planning_reserve_margin)*100 % of peak load.\", \"unit\": \"unitless.\"}}",
    "choices": "[]",
    "tab": "scenarios",
    "mode": "[\"plan\"]"
@@ -618,6 +618,65 @@
    "tab": "scenarios",
    "mode": "[\"operate\"]"
   }
+ },
+ {
+  "pk": 43,
+  "model": "api.run_parameter",
+  "fields": {
+   "pretty_name": "Calculate capacity values",
+   "pretty_name_fr": "",
+   "pretty_name_es": "",
+   "description": "Automtically calculate capacity values for supply technologies based on their availability profiles. Options: 'Capacity Factor' - uses average capacity factor during peak demand periods; 'None' - do not calculate capacity values.",
+   "description_fr": "",
+   "description_es": "",
+   "root": "",
+   "user_visibility": "True",
+   "can_evolve": "False",
+   "name": "calculate_capacity_values",
+   "default_value": "Capacity Factor",
+   "choices": "[\"None\",\"Capacity Factor\"]",
+   "tab": "scenarios",
+   "mode": "[]"
+  }
+ },
+ {
+  "pk": 44,
+  "model": "api.run_parameter",
+  "fields": {
+   "pretty_name": "Peak demand time periods",
+   "pretty_name_fr": "",
+   "pretty_name_es": "",
+   "description": "Number of peak demand timesteps to use when calculating capacity values.",
+   "description_fr": "",
+   "description_es": "",
+   "root": "",
+   "user_visibility": "True",
+   "can_evolve": "False",
+   "name": "peak_demand_time_periods",
+   "default_value": "100",
+   "choices": "[]",
+   "tab": "scenarios",
+   "mode": "[]"
+  }
+ },
+ {
+  "pk": 45,
+  "model": "api.run_parameter",
+  "fields": {
+   "pretty_name": "Planning reserve margin",
+   "pretty_name_fr": "",
+   "pretty_name_es": "",
+   "description": "Percent above peak load that must be met with built capacity. E.g., a reserve margin of 0.15 requires that built capacity (factoring in capacity values) be at least 115% of peak load.",
+   "description_fr": "",
+   "description_es": "",
+   "root": "data_definitions",
+   "user_visibility": "True",
+   "can_evolve": "False",
+   "name": "planning_reserve_margin",
+   "default_value": "",
+   "choices": "[]",
+   "tab": "scenarios",
+   "mode": "[\"plan\"]"
+  }
  }
-
 ]
