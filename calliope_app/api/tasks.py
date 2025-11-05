@@ -27,11 +27,11 @@ from api.models.configuration import Model, Scenario, Scenario_Loc_Tech, Scenari
     Tech_Param, Loc_Tech_Param, Timeseries_Meta, User_File
 from api.models.calliope import Parameter
 from api.models.outputs import Run
+        
 from api.utils import load_timeseries_from_csv, get_model_logger, zip_folder
 from api.calliope_utils import get_model_yaml_set, get_custom_math_yaml_set, get_location_meta_yaml_set,\
                         get_techs_yaml_set, get_loc_techs_yaml_set,get_carriers_yaml_set,\
-                        run_basic, run_clustered, apply_gradient, _operate_outputs
-from api.calliope_utils import run_basic, run_clustered, apply_gradient
+                        run_basic, run_clustered, apply_gradient, _operate_outputs, calculate_capacity_values
 from batch.managers import AWSBatchJobManager 
 from taskmeta.models import CeleryTask, BatchTask, batch_task_status
 
@@ -223,6 +223,14 @@ def build_model(inputs_path, run_id, model_uuid, scenario_id,
     scenario = Scenario.objects.get(id=scenario_id)
     ts_files = build_model_csv(model, scenario, start_date, end_date, inputs_path, run.timestep, run.mode) # returns node_param.csv location and tech_param location...
     build_model_yaml(run, scenario_id, start_date, inputs_path, ts_files)
+    calculate_cap_values = Scenario_Param.objects.filter(scenario_id=scenario_id, run_parameter__name="calculate_capacity_values").first()
+    if calculate_cap_values and calculate_cap_values.value == "Capacity Factor":
+        num_timesteps = Scenario_Param.objects.filter(scenario_id=scenario_id, run_parameter__name="peak_demand_time_periods").first()
+        if num_timesteps and num_timesteps.value.isdigit():
+            num_timesteps = int(num_timesteps.value)
+        else:
+            num_timesteps = 100
+        calculate_capacity_values(inputs_path, num_timesteps)
     return inputs_path
 
 def build_model_yaml(run, scenario_id, start_date, inputs_path, ts_files):
