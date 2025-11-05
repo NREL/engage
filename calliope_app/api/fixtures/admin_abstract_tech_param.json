@@ -4759,5 +4759,50 @@
       "parameter_id": "205",
       "default_value": ""
     }
+  },
+  {
+    "pk": 530,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "1",
+      "parameter_id": "206",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 531,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "4",
+      "parameter_id": "206",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 532,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "5",
+      "parameter_id": "206",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 533,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "6",
+      "parameter_id": "206",
+      "default_value": ""
+    }
+  },
+  {
+    "pk": 534,
+    "model": "api.abstract_tech_param",
+    "fields": {
+      "abstract_tech_id": "7",
+      "parameter_id": "206",
+      "default_value": ""
+    }
   }
 ]

@@ -633,7 +633,7 @@
    "user_visibility": "True",
    "can_evolve": "False",
    "name": "calculate_capacity_values",
-   "default_value": "Capacity Factor",
+   "default_value": "None",
    "choices": "[\"None\",\"Capacity Factor\"]",
    "tab": "scenarios",
    "mode": "[]"
