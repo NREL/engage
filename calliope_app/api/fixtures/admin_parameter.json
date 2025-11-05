@@ -5250,5 +5250,31 @@
       "dim": "[\"costs\"]"
     },
     "model": "api.parameter"
+  },
+  {
+    "pk": 206,
+    "fields": {
+      "category": "Constraints: Technology",
+      "category_fr": "Contraintes: Technologie",
+      "category_es": "Limitaciones: Tecnología",
+      "pretty_name": "Reserve capacity value",
+      "pretty_name_fr": "Valeur de la capacité de réserve",
+      "pretty_name_es": "Valor de capacidad de reserva",
+      "description": "Calliope: cap_value | Percent of the capacity of a technology that can contribute to a planning reserve margin. Engage will automatically calculate this value for technologies if the Scenario option for Calculate capacity values is used, but manually setting this paramter will override the automatic value. Defaults to 0 for non-generation technology archetypes.",
+      "description_fr": "Calliope: cap_value | Pourcentage de la capacité d'une technologie pouvant contribuer à une marge de réserve de planification. Engage calculera automatiquement cette valeur pour les technologies si l'option Scénario pour Calculer les valeurs de capacité est utilisée, mais la définition manuelle de ce paramètre remplacera la valeur automatique. La valeur par défaut est 0 pour les archétypes technologiques sans génération.",
+      "description_es": "Calliope: cap_value | Porcentaje de la capacidad de una tecnología que puede contribuir a un margen de reserva de planificación. Engage calculará automáticamente este valor para las tecnologías si se utiliza la opción Escenario para Calcular valores de capacidad, pero configurar manualmente este parámetro anulará el valor automático. El valor predeterminado es 0 para arquetipos de tecnología que no son de generación.",
+      "root": "",
+      "name": "cap_value",
+      "timeseries_enabled": "False",
+      "is_systemwide": "False",
+      "units": "%",
+      "is_essential": "False",
+      "is_carrier": "False",
+      "choices": "[]",
+      "tags": "[\"duplicate\",\"multi_carrier_out\",\"plan_mode\"]",
+      "index": "[]",
+      "dim": "[]"
+    },
+    "model": "api.parameter"
   }
 ]

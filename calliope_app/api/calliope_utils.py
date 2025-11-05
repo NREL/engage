@@ -1133,7 +1133,7 @@ def calculate_capacity_values(inputs_dir, num_timesteps):
         param_col = ts_file['columns'].index('parameters') if 'parameters' in ts_file['columns'] else None
         ts_files[ts_file['data']] = {'df':ts_df,'node_col':node_col,'tech_col':tech_col,'param_col':param_col}
     
-    # Iterate through locations and technologies to assign cap_values
+    # Iterate through locations and technologies to aggregate demand time series
     demand_ts = pd.DataFrame()
     for loc_name, loc in locations['nodes'].items():
         if 'techs' not in loc or not loc['techs']:
@@ -1175,43 +1175,66 @@ def calculate_capacity_values(inputs_dir, num_timesteps):
             continue
         for tech_name, loc_tech in loc['techs'].items():
             tech = techs['techs'].get(tech_name,{})
-            if tech['base_tech'] != 'supply' or (loc_tech and 'cap_value' in loc_tech) or 'cap_value' in tech:
+            if tech['base_tech'] not in ['supply','conversion']:
                 continue
-
-            carrier = tech['carrier_out']
-            if carrier in demand_ts.columns:
-                ts_file_name = None
-                ts_file_col = None
-                for file_name, ts_file in ts_files.items():
-                    # Using maximum and equals source use to capture curtailable and non-curtailable technologies
-                    for source_use_var in ['source_use_max','source_use_equals']:
-                        if ts_file['tech_col'] is not None and ts_file['param_col'] is not None and ts_file['node_col'] is not None:
-                            col_dict = {ts_file['node_col']:loc_name, ts_file['tech_col']:tech_name, ts_file['param_col']:source_use_var}
-                            check_col = tuple(col_dict[x] for x in sorted(col_dict.keys()))
-                            if check_col and check_col in ts_file['df'].columns:
-                                ts_file_col = check_col
-                                ts_file_name = file_name
-                                break
-                        elif ts_file['tech_col'] is not None and ts_file['param_col'] is not None:
-                            col_dict = {ts_file['tech_col']:tech_name, ts_file['param_col']:source_use_var}
-                            check_col = tuple(col_dict[x] for x in sorted(col_dict.keys()))
-                            if check_col and check_col in ts_file['df'].columns:
-                                ts_file_col = check_col
-                                ts_file_name = file_name
-                
-                if ts_file_col and ts_file_name:
-                    # Calculate cap_value as average capcity factor during top demand hours
-                    peak_demand = demand_ts.nlargest(num_timesteps, carrier).index
-                    cap_value = float(ts_files[ts_file_name]['df'][ts_file_col].loc[peak_demand].mean())
-                    if loc_tech is None:
-                        locations['nodes'][loc_name]['techs'][tech_name] = {}
-                    locations['nodes'][loc_name]['techs'][tech_name]['cap_value'] = cap_value
-                else:
-                    # Assume fully dispatchable if no source_use timeseries found
-                    cap_value = 1.0
-                    if loc_tech is None:
-                        locations['nodes'][loc_name]['techs'][tech_name] = {}
-                    locations['nodes'][loc_name]['techs'][tech_name]['cap_value'] = cap_value
+            
+            carriers = tech['carrier_out']
+            if not isinstance(tech['carrier_out'],list):
+                carriers = [carriers]
+            for carrier in carriers:
+                if (loc_tech and 'cap_value' in loc_tech and carrier in loc_tech['cap_value']['index']) or ('cap_value' in tech and tech['cap_value']['index']):
+                    continue
+                if carrier in demand_ts.columns:
+                    ts_file_name = None
+                    ts_file_col = None
+                    if tech['base_tech'] == 'supply':
+                        # Only supply techs can have variable resource
+                        for file_name, ts_file in ts_files.items():
+                            # Using maximum and equals source use to capture curtailable and non-curtailable technologies
+                            for source_use_var in ['source_use_max','source_use_equals']:
+                                if ts_file['tech_col'] is not None and ts_file['param_col'] is not None and ts_file['node_col'] is not None:
+                                    col_dict = {ts_file['node_col']:loc_name, ts_file['tech_col']:tech_name, ts_file['param_col']:source_use_var}
+                                    check_col = tuple(col_dict[x] for x in sorted(col_dict.keys()))
+                                    if check_col and check_col in ts_file['df'].columns:
+                                        ts_file_col = check_col
+                                        ts_file_name = file_name
+                                        break
+                                elif ts_file['tech_col'] is not None and ts_file['param_col'] is not None:
+                                    col_dict = {ts_file['tech_col']:tech_name, ts_file['param_col']:source_use_var}
+                                    check_col = tuple(col_dict[x] for x in sorted(col_dict.keys()))
+                                    if check_col and check_col in ts_file['df'].columns:
+                                        ts_file_col = check_col
+                                        ts_file_name = file_name
+                    
+                    if ts_file_col and ts_file_name:
+                        peak_demand = demand_ts.nlargest(num_timesteps, carrier).index
+                        cap_value = float(ts_files[ts_file_name]['df'][ts_file_col].loc[peak_demand].mean())
+                        if loc_tech is None:
+                            locations['nodes'][loc_name]['techs'][tech_name] = {}
+                        source_unit = locations['nodes'][loc_name]['techs'][tech_name].get('source_unit', tech.get('source_unit','absolute'))
+                        # Convert cap_value to per unit of installed capacity if applicable
+                        if source_unit == 'absolute':
+                            flow_cap_min = locations['nodes'][loc_name]['techs'][tech_name].get('flow_cap_min', tech.get('flow_cap_min',1))
+                            if flow_cap_min > 0:
+                                cap_value /= flow_cap_min
+                        elif source_unit == 'per_area' and 'area_use_min' in locations['nodes'][loc_name]['techs'][tech_name]:
+                            area_use_min = locations['nodes'][loc_name]['techs'][tech_name].get('area_use_min', tech.get('area_use_min',1))
+                            if area_use_min > 0:
+                                cap_value /= area_use_min
+                        if 'cap_value' in locations['nodes'][loc_name]['techs'][tech_name] and 'data' in locations['nodes'][loc_name]['techs'][tech_name]['cap_value']:
+                            locations['nodes'][loc_name]['techs'][tech_name]['cap_value']['data'] += [cap_value]
+                            locations['nodes'][loc_name]['techs'][tech_name]['cap_value']['index'] += [carrier]
+                        else:
+                            locations['nodes'][loc_name]['techs'][tech_name]['cap_value'] = {'data':[cap_value],'index':[carrier],'dims':['carriers']}
+                    else:
+                        cap_value = 1.0
+                        if loc_tech is None:
+                            locations['nodes'][loc_name]['techs'][tech_name] = {}
+                        if 'cap_value' in locations['nodes'][loc_name]['techs'][tech_name] and 'data' in locations['nodes'][loc_name]['techs'][tech_name]['cap_value']:
+                            locations['nodes'][loc_name]['techs'][tech_name]['cap_value']['data'] += [cap_value]
+                            locations['nodes'][loc_name]['techs'][tech_name]['cap_value']['index'] += [carrier]
+                        else:
+                            locations['nodes'][loc_name]['techs'][tech_name]['cap_value'] = {'data':[cap_value],'index':[carrier],'dims':['carriers']}
 
 
     with open(inputs_dir+'/locations.yaml','w') as outfile:
