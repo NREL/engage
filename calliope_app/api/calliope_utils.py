@@ -1182,7 +1182,7 @@ def calculate_capacity_values(inputs_dir, num_timesteps):
             if not isinstance(tech['carrier_out'],list):
                 carriers = [carriers]
             for carrier in carriers:
-                if (loc_tech and 'cap_value' in loc_tech and carrier in loc_tech['cap_value']['index']) or ('cap_value' in tech and loc_tech['cap_value']['index']):
+                if (loc_tech and 'cap_value' in loc_tech and carrier in loc_tech['cap_value']['index']) or ('cap_value' in tech and tech['cap_value']['index']):
                     continue
                 if carrier in demand_ts.columns:
                     ts_file_name = None
