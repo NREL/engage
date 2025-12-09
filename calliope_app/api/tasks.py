@@ -460,7 +460,7 @@ class CalliopeModelRunTask(Task):
         if not recipient_list:
             return
         send_mail(
-            subject="NREL ENGAGE NOTIFICATION",
+            subject="NLR ENGAGE NOTIFICATION",
             message=message,
             from_email=settings.AWS_SES_FROM_EMAIL,
             recipient_list=recipient_list
@@ -497,7 +497,7 @@ class CalliopeModelRunTask(Task):
         if not recipient_list:
             return
         send_mail(
-            subject="NREL ENGAGE NOTIFICATION",
+            subject="NLR ENGAGE NOTIFICATION",
             message=message,
             from_email=settings.AWS_SES_FROM_EMAIL,
             recipient_list=recipient_list

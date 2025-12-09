@@ -12,7 +12,7 @@ make a valiation, response, close and/or assign it to a milestone.
 
 Pull Requests
 -------------
-We are welcome to any contribution from outside of NREL, the contributions can make this web tool better.
+We are welcome to any contribution from outside of NLR, the contributions can make this web tool better.
 Please follow the following steps to contribute to this project.
 
 1. Fork this repository to your account.
@@ -21,7 +21,7 @@ Please follow the following steps to contribute to this project.
 4. Test your feature branch by using Django test framework.
 5. Update documentation if necessary.
 6. Create a pull request to our ``dev`` branch.
-7. NREL reviews, tests and merges the pull request.
+7. NLR reviews, tests and merges the pull request.
 
 .. Note::
 

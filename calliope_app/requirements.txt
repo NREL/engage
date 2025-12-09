@@ -10,7 +10,7 @@ django-modeltranslation==0.18.12
 django_ratelimit>=4.1.0
 flower>=2.0.1
 
-# NREL packages
+# NLR packages
 nrel-pysam>=5.1.0
 # Geophires installed in Dockerfile
 # git+https://github.com/NREL/GEOPHIRES-X.git#egg=geophires-x

@@ -45,7 +45,7 @@ Create a folder ``.envs`` in the root directory of project, then within ``.envs`
     # Mapbox
     MAPBOX_TOKEN=
 
-    # NREL PVWatts & PySAM API
+    # NLR PVWatts & PySAM API
     NREL_API_EMAIL=
     NREL_API_KEY=
 
@@ -54,8 +54,8 @@ Must obtain a mapbox token for accessing the Mapbox basemap resources.To obtain 
 please refer to `get-started-tokens-api <https://docs.mapbox.com/help/tutorials/get-started-tokens-api/>`_.
 
 # PVWatts is used to import PV solar capacity factor timeseries in the Locations tab of the user interface. 
-Must obtain a PVWatts token for accessing the NREL API resources. 
-To obtain a ``NREL_API_KEY``, please refer to NRREL's `api-key <https://developer.nrel.gov/docs/api-key/>`_.
+Must obtain a PVWatts token for accessing the NLR API resources. 
+To obtain a ``NREL_API_KEY``, please refer to NLR's `api-key <https://developer.nrel.gov/docs/api-key/>`_.
 
 The following environment variables about `AWS SES` are optional.
 

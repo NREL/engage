@@ -10,7 +10,7 @@ requirements = ['Click>=7.0',]
 test_requirements = []
 
 setup(
-    author="NREL",
+    author="NLR",
     author_email='engage@nrel.gov',
     python_requires='>=3.8',
     classifiers=[

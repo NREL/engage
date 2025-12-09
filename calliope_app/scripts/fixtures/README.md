@@ -1,4 +1,4 @@
-# NREL Engage Fixture Scripts: 
+# NLR Engage Fixture Scripts: 
 These scripts are used to update fixtures, mainly admin tables for Engage. The examples committed are for the Admin Parameters table but it could be altered for any fixture. It is recommended to keep the pk keys in place, especially for admin tables as to not alter existing data.
 
 ## convert_to_excel.py
