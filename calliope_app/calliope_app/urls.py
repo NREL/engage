@@ -20,7 +20,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 
-admin.site.site_header = 'NREL\'s Calliope Admin'
+admin.site.site_header = 'NLR\'s Calliope Admin'
 
 urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),

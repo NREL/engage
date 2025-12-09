@@ -84,7 +84,7 @@ class User_Profile(models.Model):
         message = render_to_string("registration/user_activation.txt", context)
         try:
             send_mail(
-                subject="NREL ENGAGE Registration",
+                subject="NLR ENGAGE Registration",
                 message=message,
                 from_email=settings.AWS_SES_FROM_EMAIL,
                 recipient_list=[email]

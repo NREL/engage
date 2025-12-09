@@ -573,7 +573,7 @@ msgid "Sincerely"
 msgstr ""
 
 #: client/templates/registration/pw_reset_email.html:12
-msgid "The NREL Engage Team"
+msgid "The NLR Engage Team"
 msgstr ""
 
 #: client/templates/registration/pw_reset_form.html:13

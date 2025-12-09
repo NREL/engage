@@ -148,7 +148,7 @@ LOCALE_PATHS = (
     os.path.join(ROOT_DIR, 'locale'),
 )
 
-## NREL API Key
+## NLR API Key
 NREL_API_EMAIL = env.str("NREL_API_EMAIL", "")
 NREL_API_KEY = env.str("NREL_API_KEY", "")
 
