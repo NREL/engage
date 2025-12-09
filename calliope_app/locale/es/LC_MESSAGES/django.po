@@ -942,8 +942,8 @@ msgid "Sincerely"
 msgstr "Atentamente"
 
 #: client/templates/registration/pw_reset_email.html:12
-msgid "The NREL Engage Team"
-msgstr "El equipo Engage de NREL"
+msgid "The NLR Engage Team"
+msgstr "El equipo Engage de NLR"
 
 #: client/templates/registration/pw_reset_form.html:13
 msgid ""

@@ -8,4 +8,4 @@ Your model, "{{ model_name }}", has run SUCCESSFULLY. Please check the results i
 https://engage.nrel.gov/{{ model_uuid }}/runs/
 
 Sincerely,
-The NREL Engage Team
+The NLR Engage Team

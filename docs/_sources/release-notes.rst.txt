@@ -1,7 +1,7 @@
 Release Notes
 =============
 
-Engage project is released with milestones. NREL will tend to solve issues and merge PRs to a future release where necessary.
+Engage project is released with milestones. NLR will tend to solve issues and merge PRs to a future release where necessary.
 An issue being tagged under a particular release milestone should not be taken as any kind of guarantee of being shipped in immediate
 release, please observe the release notes below.
 

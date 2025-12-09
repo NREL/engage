@@ -443,7 +443,7 @@ def delete_run(request):
 @csrf_protect
 def publish_run(request):
     """
-    Publish a scenario run to Cambium (https://cambium.nrel.gov/)
+    Publish a scenario run to the Scenario Viewer (https://scenarioviewer.nrel.gov/)
 
     Parameters:
     model_uuid (uuid): required
