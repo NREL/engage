@@ -421,6 +421,13 @@ def get_or_create_template_technologies(template_type_techs, model, template_typ
                 value=abstract_tech.name,
             )
 
+            Tech_Param.objects.create(
+                model=model,
+                technology=new_tech,
+                parameter_id=Parameter.objects.filter(name='name').first().id,
+                value=template_type_tech['name'],
+            )
+
             new_technologies[template_type_tech['id']] = new_tech
 
     return new_technologies

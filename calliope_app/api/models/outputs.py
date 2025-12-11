@@ -118,7 +118,7 @@ class Run(models.Model):
         #remotes = self.read_output('inputs_lookup_remotes.csv')
         #remotes = remotes['techs'].unique()
         #meta['remotes'] = list(remotes)
-        meta['transmissions'] = parents['transmission']
+        meta['transmissions'] = parents.get('transmission',[])
         # Demands
         meta['demands'] = parents['demand']
         # Months
