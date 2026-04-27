@@ -1,10 +1,13 @@
 """
 Django settings for production deployment
 """
-from .base import *  # noqa
+import ssl
 import sys
 
+from .base import *  # noqa
+
 env = environ.Env()
+
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -162,3 +165,9 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE if USE_TZ else None
 CELERY_TRACK_STARTED = True
 CELERYD_CONCURRENCY = 2
+CELERY_BROKER_USE_SSL = {
+    "ssl_cert_reqs": ssl.CERT_REQUIRED
+}
+CELERY_REDIS_BACKEND_USE_SSL = {
+    "ssl_cert_reqs": ssl.CERT_REQUIRED
+}
