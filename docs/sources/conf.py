@@ -19,7 +19,7 @@
 
 project = 'Engage'
 copyright = '2020, Alliance for Sustainable Energy, LLC'
-author = 'NREL'
+author = 'NLR'
 
 # The full version, including alpha/beta/rc tags
 release = '0.1.0'

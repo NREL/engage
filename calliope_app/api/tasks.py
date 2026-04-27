@@ -469,7 +469,8 @@ class CalliopeModelRunTask(Task):
 
         timeout_message = "Run Timeout! TimeLimit=%s seconds." % self.time_limit
         exc = timeout_message if str(exc) == "SoftTimeLimitExceeded()" else exc
-        logger.error("{!r}".format(str(exc)))
+        logger.exception(exc)
+        #logger.error("{!r}".format(str(exc)))
 
         # Add pretty error to the log
         for key in self.clean_msg_dict:

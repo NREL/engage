@@ -152,10 +152,10 @@ def run_plan(
 
             # NOTE: pyomo==6.7.0 opt does not have name attribute
             # Disable this for use 'appsi_highs' solver, which does not have 'persistent' in name.
-            # if "persistent" in opt.name and persistent is True:
-            #     results.attrs["objective_function_value"] = opt.get_model_attr("ObjVal")
-            # else:
-            results.attrs["objective_function_value"] = backend_model.obj()
+            if "appsi_highs" not in solver and  "persistent" in opt.name and persistent is True:
+                results.attrs["objective_function_value"] = opt.get_model_attr("ObjVal")
+            else:
+                results.attrs["objective_function_value"] = backend_model.obj()
         else:
             results = xr.Dataset(attrs={"termination_condition": termination})
 

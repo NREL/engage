@@ -1,8 +1,8 @@
-# NREL Engage: A [Calliope](https://github.com/calliope-project/calliope) Web Environment for Collaborative Energy Systems Modeling and Planning
+# NLR Engage: A [Calliope](https://github.com/calliope-project/calliope) Web Environment for Collaborative Energy Systems Modeling and Planning
 
-Engage is a free, open-access energy system planning tool that allows multiple users/stakeholders to develop and collaborate on capacity expansion models. The tool, developed at the National Renewable Energy Laboratory (NREL), provides a collaborative and easy-to-use interface built on Calliope, a multi-scale energy systems modeling framework.
+Engage is a free, open-access energy system planning tool that allows multiple users/stakeholders to develop and collaborate on capacity expansion models. The tool, developed at the National Laboratory of the Rockies (NLR), provides a collaborative and easy-to-use interface built on Calliope, a multi-scale energy systems modeling framework.
 
-- Visit the NREL hosted webtool at https://engage.nrel.gov/
+- Visit the NLR hosted webtool at https://engage.nrel.gov/
 
 
 ## Requirements

@@ -3,19 +3,20 @@ This module contains support functions and libraries used in
 interfacing with Calliope.
 """
 
-import os
-import yaml
-import shutil
-from calliope import Model as CalliopeModel
-import pandas as pd
-import json
-import copy
 import calendar
+import copy
+import json
+import logging
+import os
+import shutil
+
+import calliope
+import pandas as pd
+import yaml
+from calliope import Model as CalliopeModel
 
 from api.models.configuration import Scenario_Param, Scenario_Loc_Tech, \
-    Location, Tech_Param, Loc_Tech_Param, Loc_Tech, Scenario, Carrier
-from api.models.outputs import Run
-import logging
+    Location, Tech_Param, Loc_Tech_Param, Loc_Tech, Scenario
 
 
 logger = logging.getLogger(__name__)
@@ -36,7 +37,7 @@ def get_model_yaml_set(run, scenario_id, year):
         # NOTE: deprecated run parameter in the database
         if unique_param == "run.objective_options":
             continue
-        
+
         if unique_param not in unique_params:
             # If parameter hasn't been set, add to Return List
             unique_params.append(unique_param)
@@ -164,7 +165,7 @@ def get_loc_techs_yaml_set(scenario_id, year):
                     value = float(param.value) / 100
                 else:
                     value = param.value
-                    
+
                 param_list = [parent_type, location, 'techs',
                               param.loc_tech.technology.calliope_name]+\
                               unique_param.split('.')
@@ -173,7 +174,7 @@ def get_loc_techs_yaml_set(scenario_id, year):
 
 def get_carriers_yaml_set(scenario_id):
     model = Scenario.objects.get(id=scenario_id).model
-    
+
     carriers_yaml_set = {}
     for carrier in model.carriers.all():
         carriers_yaml_set[carrier.name] = {'rate':carrier.rate_unit,'quantity':carrier.quantity_unit}
@@ -229,6 +230,11 @@ def run_basic(model_path, logger):
     model = CalliopeModel(config=model_path)
     logger.info(model.info())
     logger.info(model._model_data.coords.get("techs_non_transmission", []))
+
+    # NOTE: with log_to_console=True, the model run would get hanging if error happened.
+    if model.run_config['solver'] == 'appsi_highs':
+        model.run_config['solver_options'] = {'log_to_console': False}
+
     model.run()
     _write_outputs(model, model_path)
     return model.results.termination_condition
@@ -241,6 +247,11 @@ def run_clustered(model_path, idx, logger):
     _set_subset_time(model_path)
     _set_capacities(model_path)
     model = CalliopeModel(config=model_path)
+
+    # NOTE: with log_to_console=True, the model run would get hanging if error happened.
+    if model.run_config['solver'] == 'appsi_highs':
+        model.run_config['solver_options'] = {'log_to_console': False}
+
     model.run()
     _write_outputs(model, model_path)
     if model.results.termination_condition != 'optimal':
@@ -272,7 +283,7 @@ def run_clustered(model_path, idx, logger):
 def _set_clustering(model_path, on=False, k=14):
     # Read
     with open(model_path) as file:
-        model_yaml = yaml.load(file, Loader=yaml.FullLoader)
+        model_yaml = yaml.safe_load(file)
     # Update
     if on is True:
         time = {}
@@ -292,7 +303,7 @@ def _set_clustering(model_path, on=False, k=14):
 def _set_subset_time(model_path, start_time=None, end_time=None):
     # Read
     with open(model_path) as file:
-        model_yaml = yaml.load(file, Loader=yaml.FullLoader)
+        model_yaml = yaml.safe_load(file)
     # Update
     if start_time is not None:
         subset_time = [start_time, end_time]
@@ -309,7 +320,7 @@ def _set_capacities(model_path, ignore_techs=[],
     # ---- UPDATE MODEL REFERENCE
     # Read
     with open(model_path) as file:
-        model_yaml = yaml.load(file, Loader=yaml.FullLoader)
+        model_yaml = yaml.safe_load(file)
     # Update Model Settings
     if capacity is None:
         model_yaml['import'] = ['techs.yaml', 'locations.yaml']
@@ -324,7 +335,7 @@ def _set_capacities(model_path, ignore_techs=[],
     # Read
     locations_path = model_path.replace('model.yaml', 'locations.yaml')
     with open(locations_path) as file:
-        locations_yaml = yaml.load(file, Loader=yaml.FullLoader)
+        locations_yaml = yaml.safe_load(file)
     # Update Locations Settings
     for loc, loc_data in locations_yaml['locations'].items():
         if 'techs' not in loc_data:
@@ -441,9 +452,9 @@ def _yaml_outputs(model_path, outputs_dir):
     results_var = {'energy_cap':'results_energy_cap.csv','storage_cap':'results_storage_cap.csv'}
     inputs_dir = os.path.join(base_path, 'inputs')
 
-    model = yaml.load(open(os.path.join(inputs_dir,'model.yaml')), Loader=yaml.FullLoader)
-    model.update(yaml.load(open(os.path.join(inputs_dir,'locations.yaml')), Loader=yaml.FullLoader))
-    model.update(yaml.load(open(os.path.join(inputs_dir,'techs.yaml')), Loader=yaml.FullLoader))
+    model = yaml.safe_load(open(os.path.join(inputs_dir,'model.yaml'),'r'))
+    model.update(yaml.safe_load(open(os.path.join(inputs_dir,'locations.yaml'),'r')))
+    model.update(yaml.safe_load(open(os.path.join(inputs_dir,'techs.yaml'),'r')))
 
     has_outputs = False
     for v in results_var.keys():
@@ -482,127 +493,148 @@ def _yaml_outputs(model_path, outputs_dir):
         yaml.dump(model, open(os.path.join(outputs_dir,'model_results.yaml'),'w+'), default_flow_style=False)
 
 def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
-    old_model = yaml.safe_load(open(old_results+'/model_results.yaml'))
+    old_model = yaml.safe_load(open(os.path.join(old_results,'model_results.yaml'),'r'))
 
-    new_techs = yaml.safe_load(open(new_inputs+'/techs.yaml','r'))
-    new_loctechs = yaml.safe_load(open(new_inputs+'/locations.yaml','r'))
-    new_model = yaml.safe_load(open(new_inputs+'/model.yaml','r'))
+    new_techs = yaml.safe_load(open(os.path.join(new_inputs,'techs.yaml'),'r'))
+    new_loctechs = yaml.safe_load(open(os.path.join(new_inputs,'locations.yaml'),'r'))
+    new_model = yaml.safe_load(open(os.path.join(new_inputs,'model.yaml'),'r'))
 
-    built_tech_names = []
+    built_tech_names = {}
     built_techs = {}
     built_loc_techs = {}
 
-    for l in old_model['locations']:
-        if 'techs' in old_model['locations'][l]:
-            for t in old_model['locations'][l]['techs']:
-                old_tech = old_model['techs'][t]
-                new_tech = new_techs['techs'][t]
-                new_loc_tech = new_loctechs['locations'][l]['techs'][t]
-                loc_tech = old_model['locations'][l]['techs'][t]
-                if ('energy_cap_max' in loc_tech.get('constraints',{}) or 'storage_cap_max' in loc_tech.get('constraints',{})) or\
-                        ('energy_cap_max' in old_tech.get('constraints',{}) or 'storage_cap_max' in old_tech.get('constraints',{})):
-                    if loc_tech.get('results',{'energy_cap_equals':0}).get('energy_cap_equals',0) != 0 or\
-                            loc_tech.get('results',{'storage_cap_equals':0}).get('storage_cap_equals',0) != 0:
-                        loc_tech_b = copy.deepcopy(loc_tech)
-                        built_tech_names.append(t)
+    for loc_type in ['locations','links']:
+        for l in old_model[loc_type]:
+            if 'techs' in old_model[loc_type][l]:
+                for t in old_model[loc_type][l]['techs']:
+                    old_tech = old_model['techs'][t]
+                    if t not in new_techs['techs']:
+                        continue
+                    new_tech = new_techs['techs'][t]
+                    new_loc_tech = new_loctechs[loc_type][l]['techs'][t]
+                    loc_tech = old_model[loc_type][l]['techs'][t]
+                    if ('energy_cap_max' in loc_tech.get('constraints',{}) or 'storage_cap_max' in loc_tech.get('constraints',{})) or\
+                            ('energy_cap_max' in old_tech.get('constraints',{}) or 'storage_cap_max' in old_tech.get('constraints',{})):
+                        if loc_tech.get('results',{'energy_cap_equals':0}).get('energy_cap_equals',0) != 0 or\
+                                loc_tech.get('results',{'storage_cap_equals':0}).get('storage_cap_equals',0) != 0:
+                            loc_tech_b = copy.deepcopy(loc_tech)
 
-                        if 'constraints' in loc_tech_b:
-                            [loc_tech_b['constraints'].pop(c) for c in ['energy_cap_max', 'storage_cap_max'] if c in loc_tech_b['constraints']]
-                        else:
-                            loc_tech_b['constraints'] = {}
-                        if 'energy_cap_equals' in loc_tech['results']:
-                            loc_tech_b['constraints']['energy_cap_equals'] = loc_tech['results']['energy_cap_equals']
-                        if 'storage_cap_equals' in loc_tech['results']:
-                            loc_tech_b['constraints']['storage_cap_equals'] = loc_tech['results']['storage_cap_equals']
-                        cost_classes = [c for c in loc_tech_b.keys() if 'costs.' in c]
-                        for cost in cost_classes:
-                            [loc_tech_b[cost].pop(c) for c in ['energy_cap','interest_rate','storage_cap'] if c in loc_tech_b[cost]]
-                        loc_tech_b.pop('results')
+                            # Record built techs and the total systemwide capacity of those techs to use with energy_cap_max_systemwide
+                            if t in built_tech_names:
+                                built_tech_names[t] += loc_tech.get('results',{'energy_cap_equals':0}).get('energy_cap_equals',0)
+                            else:
+                                built_tech_names[t] = loc_tech.get('results',{'energy_cap_equals':0}).get('energy_cap_equals',0)
 
-                        if new_loc_tech and 'constraints' in new_loc_tech:
-                            new_energy_cap_min = new_loc_tech['constraints'].get('energy_cap_min',new_tech.get('constraints',{}).get('energy_cap_min',0))
-                            new_energy_cap_max = new_loc_tech['constraints'].get('energy_cap_max',new_tech.get('constraints',{}).get('energy_cap_max',0))
-                            new_storage_cap_min = new_loc_tech['constraints'].get('storage_cap_min',new_tech.get('constraints',{}).get('storage_cap_min',0))
-                            new_storage_cap_max = new_loc_tech['constraints'].get('storage_cap_max',new_tech.get('constraints',{}).get('storage_cap_max',0))
-                        else:
-                            new_energy_cap_min = new_tech.get('constraints',{}).get('energy_cap_min',0)
-                            new_energy_cap_max = new_tech.get('constraints',{}).get('energy_cap_max',0)
-                            new_storage_cap_min = new_tech.get('constraints',{}).get('storage_cap_min',0)
-                            new_storage_cap_max = new_tech.get('constraints',{}).get('storage_cap_max',0)
+                            if 'constraints' in loc_tech_b:
+                                [loc_tech_b['constraints'].pop(c) for c in ['energy_cap_max', 'storage_cap_max'] if c in loc_tech_b['constraints']]
+                            else:
+                                loc_tech_b['constraints'] = {}
+                            if 'energy_cap_equals' in loc_tech['results']:
+                                loc_tech_b['constraints']['energy_cap_equals'] = loc_tech['results']['energy_cap_equals']
+                            if 'storage_cap_equals' in loc_tech['results']:
+                                loc_tech_b['constraints']['storage_cap_equals'] = loc_tech['results']['storage_cap_equals']
+                                if 'energy_cap_per_storage_cap_equals' in loc_tech_b['constraints']:
+                                    loc_tech_b['constraints'].pop('energy_cap_per_storage_cap_equals')
+                            cost_classes = [c for c in loc_tech_b.keys() if 'costs.' in c]
+                            for cost in cost_classes:
+                                [loc_tech_b[cost].pop(c) for c in ['energy_cap','interest_rate','storage_cap'] if c in loc_tech_b[cost]]
+                            loc_tech_b.pop('results')
 
-                        if new_loc_tech == None:
+                            if new_loc_tech and 'constraints' in new_loc_tech:
+                                new_energy_cap_min = new_loc_tech['constraints'].get('energy_cap_min',new_tech.get('constraints',{}).get('energy_cap_min',0))
+                                new_energy_cap_max = new_loc_tech['constraints'].get('energy_cap_max',new_tech.get('constraints',{}).get('energy_cap_max',0))
+                                new_storage_cap_min = new_loc_tech['constraints'].get('storage_cap_min',new_tech.get('constraints',{}).get('storage_cap_min',0))
+                                new_storage_cap_max = new_loc_tech['constraints'].get('storage_cap_max',new_tech.get('constraints',{}).get('storage_cap_max',0))
+                            else:
+                                new_energy_cap_min = new_tech.get('constraints',{}).get('energy_cap_min',0)
+                                new_energy_cap_max = new_tech.get('constraints',{}).get('energy_cap_max',0)
+                                new_storage_cap_min = new_tech.get('constraints',{}).get('storage_cap_min',0)
+                                new_storage_cap_max = new_tech.get('constraints',{}).get('storage_cap_max',0)
+
+                            if new_loc_tech == None:
                                 new_loc_tech = {}
-                        if 'constraints' not in new_loc_tech:
+                            if 'constraints' not in new_loc_tech:
                                 new_loc_tech['constraints'] = {}
 
-                        if new_energy_cap_min > 0 and new_energy_cap_min-loc_tech['results']['energy_cap_equals'] > 0:
-                            new_loc_tech['constraints']['energy_cap_min'] = new_energy_cap_min-loc_tech['results']['energy_cap_equals']
-                            if new_loc_tech['constraints']['energy_cap_min'] < 0:
-                                new_loc_tech['constraints']['energy_cap_min'] = 0
-                        if new_energy_cap_max != 'inf' and new_energy_cap_max > 0:
-                            new_loc_tech['constraints']['energy_cap_max'] = new_energy_cap_max-loc_tech['results']['energy_cap_equals']
-                            if new_loc_tech['constraints']['energy_cap_max'] < 0:
-                                new_loc_tech['constraints']['energy_cap_max'] = 0
-                        if new_storage_cap_min > 0 and new_storage_cap_min-loc_tech['results']['storage_cap_equals'] > 0:
-                            new_loc_tech['constraints']['storage_cap_min'] = new_storage_cap_min-loc_tech['results']['storage_cap_equals']
-                            if new_loc_tech['constraints']['storage_cap_min'] < 0:
-                                new_loc_tech['constraints']['storage_cap_min'] = 0
-                        if new_storage_cap_max != 'inf' and new_storage_cap_max > 0:
-                            new_loc_tech['constraints']['storage_cap_max'] = new_storage_cap_max-loc_tech['results']['storage_cap_equals']
-                            if new_loc_tech['constraints']['storage_cap_max'] < 0:
-                                new_loc_tech['constraints']['storage_cap_max'] = 0
+                            if new_energy_cap_min > 0 and new_energy_cap_min-loc_tech['results']['energy_cap_equals'] > 0:
+                                new_loc_tech['constraints']['energy_cap_min'] = new_energy_cap_min-loc_tech['results']['energy_cap_equals']
+                                if new_loc_tech['constraints']['energy_cap_min'] < 0:
+                                    new_loc_tech['constraints']['energy_cap_min'] = 0
+                            if new_energy_cap_max != 'inf' and new_energy_cap_max > 0:
+                                new_loc_tech['constraints']['energy_cap_max'] = new_energy_cap_max-loc_tech['results']['energy_cap_equals']
+                                if new_loc_tech['constraints']['energy_cap_max'] < 0:
+                                    new_loc_tech['constraints']['energy_cap_max'] = 0
+                            if new_storage_cap_min > 0 and new_storage_cap_min-loc_tech['results']['storage_cap_equals'] > 0:
+                                new_loc_tech['constraints']['storage_cap_min'] = new_storage_cap_min-loc_tech['results']['storage_cap_equals']
+                                if new_loc_tech['constraints']['storage_cap_min'] < 0:
+                                    new_loc_tech['constraints']['storage_cap_min'] = 0
+                            if new_storage_cap_max != 'inf' and new_storage_cap_max > 0:
+                                new_loc_tech['constraints']['storage_cap_max'] = new_storage_cap_max-loc_tech['results']['storage_cap_equals']
+                                if new_loc_tech['constraints']['storage_cap_max'] < 0:
+                                    new_loc_tech['constraints']['storage_cap_max'] = 0
 
-                        new_loctechs['locations'][l]['techs'][t] = new_loc_tech                        
-                        for x in loc_tech_b:
-                            for y in loc_tech_b[x].keys():
-                                # Copy over timeseries files for old techs, updating year to match new year
-                                if 'file=' in str(loc_tech_b[x][y]):
-                                    filename=loc_tech_b[x][y].replace('file=','').replace('.csv:value','')
-                                    ts_df = pd.read_csv(old_inputs+'/'+filename+'.csv')
-                                    ts_df['Unnamed: 0'] = pd.to_datetime(ts_df['Unnamed: 0'])
-                                    freq = pd.infer_freq(ts_df['Unnamed: 0'])
-                                    if not calendar.isleap(new_year):
-                                        feb_29_mask = (ts_df['Unnamed: 0'].dt.month == 2) & (ts_df['Unnamed: 0'].dt.day == 29)
-                                        ts_df = ts_df[~feb_29_mask]
-                                        ts_df.index = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
-                                        ts_df.drop(columns=['Unnamed: 0'], inplace=True)
-                                    elif not calendar.isleap(old_year):
-                                        ts_df.index = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
-                                        ts_df.drop(columns=['Unnamed: 0'], inplace=True)
-                                        idx = pd.date_range(ts_df.index.min(),ts_df.index.max(),freq=freq)
-                                        ts_df = ts_df.reindex(idx, fill_value=0)
+                            new_loctechs[loc_type][l]['techs'][t] = new_loc_tech
+                            for x in loc_tech_b:
+                                for y in loc_tech_b[x].keys():
+                                    try:
+                                        # Copy over timeseries files for old techs, updating year to match new year
+                                        if 'file=' in loc_tech_b[x][y]:
+                                            filename=loc_tech_b[x][y].replace('file=','').replace('.csv:value','')
+                                            ts_df = pd.read_csv(old_inputs+'/'+filename+'.csv')
+                                            ts_df['Unnamed: 0'] = pd.to_datetime(ts_df['Unnamed: 0'])
+                                            freq = pd.infer_freq(ts_df['Unnamed: 0'])
+                                            if not calendar.isleap(new_year):
+                                                feb_29_mask = (ts_df['Unnamed: 0'].dt.month == 2) & (ts_df['Unnamed: 0'].dt.day == 29)
+                                                ts_df = ts_df[~feb_29_mask]
+                                                ts_df.index = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                                                ts_df.drop(columns=['Unnamed: 0'], inplace=True)
+                                            elif not calendar.isleap(old_year):
+                                                ts_df.index = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                                                ts_df.drop(columns=['Unnamed: 0'], inplace=True)
+                                                idx = pd.date_range(ts_df.index.min(),ts_df.index.max(),freq=freq)
+                                                ts_df = ts_df.reindex(idx, fill_value=0)
 
-                                        # Leap Year Handling (Fill w/ Feb 28th)
-                                        feb_28_mask = (ts_df.index.month == 2) & (ts_df.index.day == 28)
-                                        feb_29_mask = (ts_df.index.month == 2) & (ts_df.index.day == 29)
-                                        feb_28 = ts_df.loc[feb_28_mask, 'value'].values
-                                        feb_29 = ts_df.loc[feb_29_mask, 'value'].values
-                                        if ((len(feb_29) > 0) & (len(feb_28) > 0)):
-                                            ts_df.loc[feb_29_mask, 'value'] = feb_28
-                                    else:
-                                        ts_df.index = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
-                                        ts_df.drop(columns=['Unnamed: 0'], inplace=True)
-                                    ts_df.index.name = None
-                                    ts_df.to_csv(os.path.join(new_inputs,filename+'-'+str(old_year)+'.csv'),index=True)
-                                    loc_tech_b[x][y] = 'file='+filename+'-'+str(old_year)+'.csv:value'
+                                                # Leap Year Handling (Fill w/ Feb 28th)
+                                                feb_28_mask = (ts_df.index.month == 2) & (ts_df.index.day == 28)
+                                                feb_29_mask = (ts_df.index.month == 2) & (ts_df.index.day == 29)
+                                                feb_28 = ts_df.loc[feb_28_mask, 'value'].values
+                                                feb_29 = ts_df.loc[feb_29_mask, 'value'].values
+                                                if ((len(feb_29) > 0) & (len(feb_28) > 0)):
+                                                    ts_df.loc[feb_29_mask, 'value'] = feb_28
+                                            else:
+                                                ts_df.index = ts_df['Unnamed: 0'].apply(lambda x: x.replace(year=new_year))
+                                                ts_df.drop(columns=['Unnamed: 0'], inplace=True)
+                                            ts_df.index.name = None
+                                            ts_df.to_csv(os.path.join(new_inputs,filename+'-'+str(old_year)+'.csv'),index=True)
+                                            loc_tech_b[x][y] = 'file='+filename+'-'+str(old_year)+'.csv:value'
+                                    except TypeError:
+                                        continue
 
-                        if l not in built_loc_techs:
-                            built_loc_techs[l] = {}
-                        built_loc_techs[l][t+'_'+str(old_year)] = loc_tech_b
+                            if l not in built_loc_techs:
+                                built_loc_techs[l] = {}
+                            built_loc_techs[l][t+'_'+str(old_year)] = loc_tech_b
 
-                        new_loctechs['locations'][l]['techs'][t+'_'+str(old_year)] = loc_tech_b
-    for t in built_tech_names:
+                            new_loctechs[loc_type][l]['techs'][t+'_'+str(old_year)] = loc_tech_b
+    
+    for t in built_tech_names.keys():
         tech = old_model['techs'][t]
-
         tech_b = copy.deepcopy(tech)
+
+        # Handle systemwide energy cap gradient
+        if 'constraints' in new_techs['techs'][t]:
+            if 'energy_cap_max_systemwide' in new_techs['techs'][t]['constraints']:
+                new_techs['techs'][t]['constraints']['energy_cap_max_systemwide'] = max([new_techs['techs'][t]['constraints']['energy_cap_max_systemwide']-built_tech_names[t],0])
+            if 'energy_cap_equals_systemwide' in new_techs['techs'][t]['constraints']:
+                new_techs['techs'][t]['constraints']['energy_cap_max_systemwide'] = max([new_techs['techs'][t]['constraints']['energy_cap_equals_systemwide']-built_tech_names[t],0])
+        
         if 'constraints' in tech_b:
-            [tech_b['constraints'].pop(c) for c in ['energy_cap_max', 'storage_cap_max'] if c in tech_b['constraints']]
+            [tech_b['constraints'].pop(c) for c in ['energy_cap_max', 'storage_cap_max','energy_cap_per_storage_cap_equals'] if c in tech_b['constraints']]
         cost_classes = [c for c in tech_b.keys() if 'costs.' in c]
         for cost in cost_classes:
             [tech_b[cost].pop(c) for c in ['energy_cap','interest_rate','storage_cap'] if c in tech_b[cost]]
             if len(tech_b[cost].keys()) == 0:
                 tech_b.pop(cost)
-        
+
         tech_b['essentials']['name'] += ' '+str(old_year)
 
         for x in tech_b:
@@ -657,11 +689,11 @@ def apply_gradient(old_inputs,old_results,new_inputs,old_year,new_year,logger):
                 if t in c.get('techs_rhs',[]) and t+'_'+str(old_year) not in c.get('techs',[]):
                     new_model['group_constraints'][g]['techs_rhs'].append(t+'_'+str(old_year))
 
-    with open(new_inputs+'/techs.yaml','w') as outfile:
+    with open(os.path.join(new_inputs,'techs.yaml'),'w') as outfile:
         yaml.dump(new_techs,outfile,default_flow_style=False)
 
-    with open(new_inputs+'/locations.yaml','w') as outfile:
+    with open(os.path.join(new_inputs,'locations.yaml'),'w') as outfile:
         yaml.dump(new_loctechs,outfile,default_flow_style=False)
 
-    with open(new_inputs+'/model.yaml', 'w') as outfile:
+    with open(os.path.join(new_inputs,'model.yaml'), 'w') as outfile:
         yaml.dump(new_model,outfile,default_flow_style=False)

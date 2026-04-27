@@ -786,11 +786,11 @@ function activate_scenario_settings() {
 	});
 
     $('#settings_weights_import_data').on('click', function() {
-        dialogObj["monetary"] = $("#monetary").val();
-        dialogObj["co2"] = $("#co2").val();
-        dialogObj["ch4"] = $("#ch4").val();
-        dialogObj["n2o"] = $("#n2o").val();
-        dialogObj["co2e"] = $("#co2e").val();
+        dialogObj["monetary"] = !isNaN(parseFloat($("#monetary").val())) ? parseFloat($("#monetary").val()) : $("#monetary").val();
+        dialogObj["co2"] = !isNaN(parseFloat($("#co2").val())) ? parseFloat($("#co2").val()) : $("#co2").val();
+        dialogObj["ch4"] = !isNaN(parseFloat($("#ch4").val())) ? parseFloat($("#ch4").val()) : $("#ch4").val();
+        dialogObj["n2o"] = !isNaN(parseFloat($("#n2o").val())) ? parseFloat($("#n2o").val()) : $("#n2o").val();
+        dialogObj["co2e"] = !isNaN(parseFloat($("#co2e").val())) ? parseFloat($("#co2e").val()) : $("#co2e").val();        
 
         $('textarea[name="edit' + dialogInputId + '"]').text(JSON.stringify(dialogObj, undefined, 2));
         $('#scenario_weights_json_form').hide();
