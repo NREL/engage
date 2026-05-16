@@ -16,6 +16,12 @@ urlpatterns = [
         name='password'
     ),
     path(
+        'settings/user/',
+        views.user_view,
+        name='password'
+    ),
+
+    path(
         'user_activation/<activation_uuid>',
         views.user_activation,
         name='user_activation'
