@@ -1088,7 +1088,7 @@ def upload_techs(request):
                                 if pyear:
                                     p_dict['year'] = pyear
                                 if pindex and pdims:
-                                    p_dict.update({'year':pyear,'index':pindex,'dim':pdims})
+                                    p_dict.update({'index':pindex,'dim':pdims})
                                 update_dict['edit']['parameter_instance'].append(p_dict)
                             except Exception as e:
                                 logging.exception('Error converting units for parameter {} with value {} and target units {}.'.format(p.name,v,p_units))
