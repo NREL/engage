@@ -1058,6 +1058,7 @@ class Tech_Param(models.Model):
                 comments += 'Updated parameter {} value: "{}" to "{}". '.format(
                     Parameter.objects.get(id=key).name, old_val, raw_value)
         if 'timeseries' in data:
+            # Timeseries parameters should be a list of dicts with keys: id (optional), parameter_id, value, year (optional), index (optional), dim (optional)
             for value_dict in data['timeseries']:
                 if 'id' in value_dict:
                     parameter_instance = cls.objects.filter(
@@ -1076,9 +1077,9 @@ class Tech_Param(models.Model):
                         cls.objects.create(
                             model_id=technology.model_id,
                             technology_id=technology.id,
-                            parameter_id=key,
-                            value=ParamsManager.clean_str_val(value),
-                            timeseries_meta_id=value,
+                            parameter_id=value_dict['parameter_id'],
+                            value=ParamsManager.clean_str_val(value_dict['value']),
+                            timeseries_meta_id=value_dict['value'],
                             timeseries=True,
                             index=value_dict['index'],
                             dim=value_dict['dim'])
@@ -1086,12 +1087,13 @@ class Tech_Param(models.Model):
                         cls.objects.create(
                             model_id=technology.model_id,
                             technology_id=technology.id,
-                            parameter_id=key,
-                            value=ParamsManager.clean_str_val(value),
-                            timeseries_meta_id=value,
+                            parameter_id=value_dict['parameter_id'],
+                            value=ParamsManager.clean_str_val(value_dict['value']),
+                            timeseries_meta_id=value_dict['value'],
                             timeseries=True)
-                    comments += 'Added new timeseries parameter instance for {}. '.format(key)
+                    comments += 'Added new timeseries parameter instance for {}. '.format(value_dict['parameter_id'])
         if 'parameter_instance' in data:
+            # Parameter instances should be a list of dicts with keys: id (optional), parameter_id, value, year (optional), index (optional), dim (optional), breakpoint (optional)
             for value_dict in data['parameter_instance']:
                 if 'id' in value_dict:
                     parameter_instance = cls.objects.filter(
