@@ -1335,9 +1335,9 @@ class Loc_Tech_Param(models.Model):
                         cls.objects.create(
                             model_id=loc_tech.model_id,
                             loc_tech_id=loc_tech.id,
-                            parameter_id=key,
-                            value=ParamsManager.clean_str_val(value),
-                            timeseries_meta_id=value,
+                            parameter_id=value_dict['parameter_id'],
+                            value=ParamsManager.clean_str_val(value_dict['value']),
+                            timeseries_meta_id=value_dict['value'],
                             timeseries=True,
                             index=value_dict['index'],
                             dim=value_dict['dim'])
@@ -1345,11 +1345,11 @@ class Loc_Tech_Param(models.Model):
                         cls.objects.create(
                             model_id=loc_tech.model_id,
                             loc_tech_id=loc_tech.id,
-                            parameter_id=key,
-                            value=ParamsManager.clean_str_val(value),
-                            timeseries_meta_id=value,
+                            parameter_id=value_dict['parameter_id'],
+                            value=ParamsManager.clean_str_val(value_dict['value']),
+                            timeseries_meta_id=value_dict['value'],
                             timeseries=True)
-                    comments += 'Added new timeseries parameter instance for {}. '.format(key)
+                    comments += 'Added new timeseries parameter instance for {}. '.format(value_dict['parameter_id'])
 
         if 'parameter_instance' in data:
             for value_dict in data['parameter_instance']:

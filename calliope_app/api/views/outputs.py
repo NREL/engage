@@ -917,32 +917,32 @@ def upload_techs(request):
                         parameter_id=Parameter.objects.filter(name='name').first().id,
                         value=row[('','','','pretty_name')],
                     )
-                update_dict = {'edit':{'parameter_instance':[],'timeseries':[]},'essentials':{}}
                 # Grab in/out carriers and their units
                 units_in_ids= ParamsManager.get_tagged_params('units_in')
                 units_out_ids= ParamsManager.get_tagged_params('units_out')
                 units_in_names = Parameter.objects.filter(id__in=units_in_ids).values_list('name', flat=True)
-                primary_carrier_in_names = [row[c] for c in units_in_names if c in row]
+                primary_carrier_in_names = [row[('','','',c)] for c in units_in_names if ('','','',c) in row]
                 units_out_names = Parameter.objects.filter(id__in=units_out_ids).values_list('name', flat=True)
-                primary_carrier_out_names = [row[c] for c in units_out_names if (c in row and not pd.isnull(row[c]))]
-                
+                primary_carrier_out_names = [row[('','','',c)] for c in units_out_names if ('','','',c) in row]
+
                 if primary_carrier_in_names:
                     primary_carrier_in = primary_carrier_in_names[0]
                 else:
                     primary_carrier_in = None
 
-                if primary_carrier_in_names:
+                if primary_carrier_out_names:
                     primary_carrier_out = primary_carrier_out_names[0]
                 else:
                     primary_carrier_out = None
 
                 multi_carrier_in_ids = ParamsManager.get_tagged_params('multi_carrier_in')
                 carrier_in_names = Parameter.objects.filter(id__in=multi_carrier_in_ids).values_list('name', flat=True)
-                carrier_in_names = [row[c] for c in carrier_in_names if c in row]
+                carrier_in_names = [row[('','','',c)] for c in carrier_in_names if ('','','',c) in row]
                 multi_carrier_out_ids = ParamsManager.get_tagged_params('multi_carrier_out')
                 carrier_out_names = Parameter.objects.filter(id__in=multi_carrier_out_ids).values_list('name', flat=True)
-                carrier_out_names = [row[c] for c in carrier_out_names if (c in row and not pd.isnull(row[c]))]
+                carrier_out_names = [row[('','','',c)] for c in carrier_out_names if ('','','',c) in row]
 
+                update_dict = {'edit':{'parameter_instance':[],'timeseries':[]},'essentials':{}}
                 for f,v in row.items():
                     if pd.isnull(v):
                         continue
@@ -1052,6 +1052,18 @@ def upload_techs(request):
                             update_dict['edit']['timeseries'].append({'parameter_id': p.pk,'value': existing.id, 'index': pindex,'dim': pdims})
                         else:
                             update_dict['edit']['timeseries'].append({'parameter_id': p.pk,'value': existing.id})
+                    # Timeseries params (based on name)
+                    elif str(v).startswith('ts='):
+                        tsname = v.split('=')[1]
+                        existing = Timeseries_Meta.objects.filter(model=model,
+                                                name=tsname).first()
+                        if not existing:
+                            context['logs'].append(str(i)+'- Tech '+str(row[('','','','technology')])+': Column '+f[3]+' missing timeseries "' + tsname + '". Parameter skipped.')
+                            continue
+                        if pindex and pdims:
+                            update_dict['edit']['timeseries'].append({'parameter_id': p.pk,'value': existing.id, 'index': pindex,'dim': pdims})
+                        else:
+                            update_dict['edit']['timeseries'].append({'parameter_id': p.pk,'value': existing.id})
                     else:
                         if p.units in noconv_units:
                             p_dict = {'parameter_id': p.pk,'value': v}
@@ -1063,6 +1075,7 @@ def upload_techs(request):
                         else:
                             try:
                                 # Check for indexed carriers to pull units from, otherwise fall back to primary carriers, and then default units if carriers aren't found
+                                carrier_data = None
                                 in_rate = out_rate = 'kW'
                                 in_quantity = out_quantity = 'kWh'
                                 if primary_carrier_in in carriers:
@@ -1075,13 +1088,15 @@ def upload_techs(request):
                                     out_quantity = carrier_data['quantity_unit']
                                 if pindex and pdims and 'carriers' in pdims:
                                     if pindex[pdims.index('carriers')] in carriers:
-                                        carrier_data = carriers[pindex[pdims.index('carriers')]]
-                                        if pindex[pdims.index('carriers')] in carrier_in_names:
-                                            in_rate = carrier_data['rate_unit']
-                                            in_quantity = carrier_data['quantity_unit']
-                                        if pindex[pdims.index('carriers')] in carrier_out_names:
-                                            out_rate = carrier_data['rate_unit']
-                                            out_quantity = carrier_data['quantity_unit']
+                                        carrier_data = pindex[pdims.index('carriers')]
+                                    if pdims == 'carriers' and pindex in carriers:
+                                        carrier_data = pindex
+                                    if carrier_data and carrier_data in carrier_in_names:
+                                        in_rate = carriers[carrier_data]['rate_unit']
+                                        in_quantity = carriers[carrier_data]['quantity_unit']
+                                    if carrier_data and carrier_data in carrier_out_names:
+                                        out_rate = carriers[carrier_data]['rate_unit']
+                                        out_quantity = carriers[carrier_data]['quantity_unit']
                                     
                                 p_units = p.units.replace('[[in_rate]]',in_rate).replace('[[in_quantity]]',in_quantity).replace('[[out_rate]]',out_rate).replace('[[out_quantity]]',out_quantity)
                                 p_dict = {'parameter_id': p.pk,'value': convert_units(ureg,v,p_units)}
@@ -1160,6 +1175,8 @@ def upload_loctechs(request):
         df[('','','','loc')] = df[('','','','location_1')].apply(lambda x: ParamsManager.simplify_name(str(x)))
 
         ureg = initialize_units()
+        # Grab carrier units for validation and conversion
+        carriers = {carrier.name: {'quantity_unit': carrier.quantity_unit, 'rate_unit': carrier.rate_unit} for carrier in Carrier.objects.filter(model=model)}
 
         for i,row in df.iterrows():
             try:
@@ -1169,7 +1186,7 @@ def upload_loctechs(request):
                 technology = Technology.objects.filter(**tech_Q).first()
                 if technology == None:
                     tech_Q['name'] = tech_Q.pop('pretty_name')
-                    technology = Technology.objects.filter(tech_Q).first()
+                    technology = Technology.objects.filter(**tech_Q).first()
                     if technology == None:
                         if pd.isnull(row[('','','','tag')]):
                             context['logs'].append(str(i)+'- Tech '+str(row[('','','','technology')])+' missing. Skipped.')
@@ -1184,42 +1201,33 @@ def upload_loctechs(request):
                 carrier_out_param = Tech_Param.objects.filter(technology=technology, parameter_id__in=units_out_ids).first()
 
                 if carrier_in_param:
-                    carrier_in = Carrier.objects.filter(model=model,name=carrier_in_param.value)
-                    if carrier_in:
-                        carrier_in = carrier_in.first()
-                        in_rate = carrier_in.rate_unit
-                        in_quantity = carrier_in.quantity_unit
-                    else:
-                        in_rate = 'kW'
-                        in_quantity = 'kWh'
+                    primary_carrier_in = carrier_in_param.value
                 else:
-                    in_rate = 'kW'
-                    in_quantity = 'kWh'
-
+                    primary_carrier_in = None
+                
                 if carrier_out_param:
-                    carrier_out = Carrier.objects.filter(model=model,name=carrier_out_param.value)
-                    if carrier_out:
-                        carrier_out = carrier_out.first()
-                        out_rate = carrier_out.rate_unit
-                        out_quantity = carrier_out.quantity_unit
-                    else:
-                        out_rate = 'kW'
-                        out_quantity = 'kWh'
+                    primary_carrier_out = carrier_out_param.value
                 else:
-                    out_rate = 'kW'
-                    out_quantity = 'kWh'
+                    primary_carrier_out = None
+
+                multi_carrier_in_ids = ParamsManager.get_tagged_params('multi_carrier_in')
+                multi_carrier_in_param = Tech_Param.objects.filter(technology=technology, parameter_id__in=multi_carrier_in_ids).first()
+                carrier_in_names = multi_carrier_in_param.value if multi_carrier_in_param else []
+                multi_carrier_out_ids = ParamsManager.get_tagged_params('multi_carrier_out')
+                multi_carrier_out_param = Tech_Param.objects.filter(technology=technology, parameter_id__in=multi_carrier_out_ids).first()
+                carrier_out_names = multi_carrier_out_param.value if multi_carrier_out_param else []
 
                 location = Location.objects.filter(model_id=model.id,pretty_name=row[('','','','location_1')]).first()
-                if location==None:
+                if location is None:
                     location = Location.objects.filter(model_id=model.id,name=row[('','','','location_1')]).first()
-                    if location==None:
+                    if location is None:
                         context['logs'].append(str(i)+'- Location '+str(row[('','','','location_1')])+' missing. Skipped.')
                         continue
                 if Abstract_Tech.objects.filter(id=technology.abstract_tech_id).first().name == 'transmission':
                     location_2 = Location.objects.filter(model_id=model.id,pretty_name=row[('','','','location_2')]).first()
-                    if location_2==None:
+                    if location_2 is None:
                         location_2 = Location.objects.filter(model_id=model.id,name=row[('','','','location_2')]).first()
-                        if location_2==None:
+                        if location_2 is None:
                             context['logs'].append(str(i)+'- Location 2 '+str(row[('','','','location_2')])+' missing. Skipped.')
                             continue
                     if 'id' not in row.keys() or pd.isnull(row[('','','','id')]):
@@ -1256,7 +1264,7 @@ def upload_loctechs(request):
                         loctech.save()
                         Loc_Tech_Param.objects.filter(model_id=model.id,loc_tech_id=loctech.id).delete()
 
-                update_dict = {'edit':{'parameter':{},'timeseries':{}},'add':{},'essentials':{}}
+                update_dict = {'edit':{'parameter_instance':[],'timeseries':[]},'essentials':{}}
                 for f,v in row.items():
                     if pd.isnull(v):
                         continue
@@ -1264,6 +1272,8 @@ def upload_loctechs(request):
                     pyear = f[2]
                     if not match('[0-9]{4}',pyear):
                         pyear = None
+
+                    params = list(Abstract_Tech_Param.objects.filter(abstract_tech_id=technology.abstract_tech_id).values_list('parameter',flat=True))
 
                     param_Q = {}
                     pname = f[3].rsplit('.',1)
@@ -1275,17 +1285,47 @@ def upload_loctechs(request):
                     else:
                         param_Q['name'] = pname[0]
 
-                    if pindex:
-                        param_Q['index'] = json.loads(pindex)
-                    if pdims:
-                        param_Q['dim'] = json.loads(pdims)
+                    if pindex and json.loads(pindex) != ['']:
+                        pindex = json.loads(pindex)
+                        param_Q['index'] = pindex
+                    if pdims and json.loads(pdims) != ['']:
+                        pdims = json.loads(pdims)
+                        param_Q['dim'] = pdims
+
+                    param_Q['id__in'] = params
 
                     p = Parameter.objects.filter(**param_Q).first()
                     if p is None:
+                        if 'index' in param_Q:
+                            # Hunt for parameters with matching name and root, but ignore index and dim to find potential duplicates that would apply to this parameter value update
+                            param_Q_2 = copy.deepcopy(param_Q)
+                            param_Q_2.pop('index')
+                            if 'dim' in param_Q_2:
+                                param_Q_2.pop('dim')
+                            p_options = Parameter.objects.filter(**param_Q_2)
+                            if p_options.first() is None:
+                                context['logs'].append(str(i)+'- Tech '+str(row[('','','','pretty_name')])+': No parameter found for column '+f[3]+' with query '+str(param_Q)+'. Skipped.')
+                                continue
+                            # Loop through potential duplicate parameters to find one with partially matching index and dim that is also tagged as a duplicate.
+                            for p_o in p_options:
+                                if any([p_o.index[idx] not in param_Q['index'] or p_o.dim[idx] not in param_Q['dim'] for idx in range(len(p_o.index))]):
+                                    continue
+                                elif 'duplicate' not in p_o.tags:
+                                    context['logs'].append(str(i)+'- Tech '+str(row[('','','','pretty_name')])+': Parameter found for column '+f[3]+' with query '+str(param_Q)+', but it is not marked as a duplicate. Skipped.')
+                                    break
+                                else:
+                                    p = p_o
+                                    pindex = [idx for idx in pindex if idx not in p_o.index][0]
+                                    pdims = [dim for dim in pdims if dim not in p_o.dim][0]
+                                    break
+                        else:
+                            continue
+                    else:
+                        pindex = None
+                        pdims = None
+
+                    if p is None:
                         continue
-                    # Essential params
-                    if p.is_essential:
-                        update_dict['essentials'][p.pk] = v
 
                     # Timeseries params
                     elif str(v).startswith('file='):
@@ -1296,7 +1336,7 @@ def upload_loctechs(request):
 
                         file = User_File.objects.filter(model=model, filename='user_files/'+filename)
                         if not file:
-                            context['logs'].append(str(i)+'- Tech '+str(row[('','','','technology')])+': Column '+f[3]+' missing file "' + filename + '" for timeseries. Parameter skipped.')
+                            context['logs'].append(str(i)+'- LocTech '+str(row[('','','','location_1')])+': '+str(row[('','','','technology')])+': Column '+f[3]+' missing file "' + filename + '" for timeseries. Parameter skipped.')
                             continue
 
                         existing = Timeseries_Meta.objects.filter(model=model,
@@ -1328,49 +1368,63 @@ def upload_loctechs(request):
                                 existing.save()
                             except Exception as e:
                                 context['logs'].append(e)
-                        update_dict['edit']['timeseries'][p.pk] = existing.id
+                        if pindex and pdims:
+                            update_dict['edit']['timeseries'].append({'parameter_id': p.pk,'value': existing.id, 'index': pindex,'dim': pdims})
+                        else:
+                            update_dict['edit']['timeseries'].append({'parameter_id': p.pk,'value': existing.id})
                     # Timeseries params (based on name)
                     elif str(v).startswith('ts='):
                         tsname = v.split('=')[1]
                         existing = Timeseries_Meta.objects.filter(model=model,
                                                 name=tsname).first()
                         if not existing:
-                            context['logs'].append(str(i)+'- Tech '+str(row[('','','','technology')])+': Column '+f[3]+' missing timeseries "' + tsname + '". Parameter skipped.')
+                            context['logs'].append(str(i)+'- LocTech '+str(row[('','','','location_1')])+': '+str(row[('','','','technology')])+': Column '+f[3]+' missing timeseries "' + tsname + '". Parameter skipped.')
                             continue
-                        update_dict['edit']['timeseries'][p.pk] = existing.id
+                        if pindex and pdims:
+                            update_dict['edit']['timeseries'].append({'parameter_id': p.pk,'value': existing.id, 'index': pindex,'dim': pdims})
+                        else:
+                            update_dict['edit']['timeseries'].append({'parameter_id': p.pk,'value': existing.id})
                     else:
                         if p.units in noconv_units:
+                            p_dict = {'parameter_id': p.pk,'value': v}
                             if pyear:
-                                if p.pk not in update_dict['add']:
-                                    update_dict['add'][p.pk] = {'year':[],'value':[]}
-                                if p.pk in update_dict['edit']['parameter']:
-                                    update_dict['add'][p.pk]['year'].append('0')
-                                    update_dict['add'][p.pk]['value'].append(update_dict['edit']['parameter'][p.pk])
-                                    update_dict['edit']['parameter'].pop(p.pk)
-                                update_dict['add'][p.pk]['year'].append(pyear)
-                                update_dict['add'][p.pk]['value'].append(v)
-                            elif p.pk in update_dict['add']:
-                                update_dict['add'][p.pk]['year'].append('0')
-                                update_dict['add'][p.pk]['value'].append(v)
-                            else:
-                                update_dict['edit']['parameter'][p.pk] = v
+                                p_dict['year'] = pyear
+                            if pindex and pdims:
+                                p_dict.update({'year':pyear,'index':pindex,'dim':pdims})
+                            update_dict['edit']['parameter_instance'].append(p_dict)
                         else:
                             try:
+                                # Check for indexed carriers to pull units from, otherwise fall back to primary carriers, and then default units if carriers aren't found
+                                carrier_data = None
+                                in_rate = out_rate = 'kW'
+                                in_quantity = out_quantity = 'kWh'
+                                if primary_carrier_in in carriers:
+                                    carrier_data = carriers[primary_carrier_in]
+                                    in_rate = carrier_data['rate_unit']
+                                    in_quantity = carrier_data['quantity_unit']
+                                if primary_carrier_out in carriers:
+                                    carrier_data = carriers[primary_carrier_out]
+                                    out_rate = carrier_data['rate_unit']
+                                    out_quantity = carrier_data['quantity_unit']
+                                if pindex and pdims and 'carriers' in pdims:
+                                    if pindex[pdims.index('carriers')] in carriers:
+                                        carrier_data = pindex[pdims.index('carriers')]
+                                    if pdims == 'carriers' and pindex in carriers:
+                                        carrier_data = pindex
+                                    if carrier_data and carrier_data in carrier_in_names:
+                                        in_rate = carriers[carrier_data]['rate_unit']
+                                        in_quantity = carriers[carrier_data]['quantity_unit']
+                                    if carrier_data and carrier_data in carrier_out_names:
+                                        out_rate = carriers[carrier_data]['rate_unit']
+                                        out_quantity = carriers[carrier_data]['quantity_unit']
+
                                 p_units = p.units.replace('[[in_rate]]',in_rate).replace('[[in_quantity]]',in_quantity).replace('[[out_rate]]',out_rate).replace('[[out_quantity]]',out_quantity)
+                                p_dict = {'parameter_id': p.pk,'value': convert_units(ureg,v,p_units)}
                                 if pyear:
-                                    if p.pk not in update_dict['add']:
-                                        update_dict['add'][p.pk] = {'year':[],'value':[]}
-                                    if p.pk in update_dict['edit']['parameter']:
-                                        update_dict['add'][p.pk]['year'].append('0')
-                                        update_dict['add'][p.pk]['value'].append(update_dict['edit']['parameter'][p.pk])
-                                        update_dict['edit']['parameter'].pop(p.pk)
-                                    update_dict['add'][p.pk]['year'].append(pyear)
-                                    update_dict['add'][p.pk]['value'].append(convert_units(ureg,v,p_units))
-                                elif p.pk in update_dict['add']:
-                                    update_dict['add'][p.pk]['year'].append('0')
-                                    update_dict['add'][p.pk]['value'].append(v)
-                                else:
-                                    update_dict['edit']['parameter'][p.pk] = convert_units(ureg,v,p_units)
+                                    p_dict['year'] = pyear
+                                if pindex and pdims:
+                                    p_dict.update({'index':pindex,'dim':pdims})
+                                update_dict['edit']['parameter_instance'].append(p_dict)
                             except Exception as e:
                                 context['logs'].append(str(i)+'- Tech '+str(row[('','','','technology')])+': Column '+f[3]+' '+str(e)+'. Error converting units. Parameter skipped.')
                                 continue
