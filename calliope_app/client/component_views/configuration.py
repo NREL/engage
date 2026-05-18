@@ -583,9 +583,15 @@ def timeseries_view(request):
             end_date = max_date + timedelta(days=1)
         timeseries = timeseries[timeseries.index < end_date]
 
-    if len(timeseries) > 8784:  # hours in one year
-        # get max value for each day
-        timeseries = timeseries.resample('D').max()
+    timeseries2 = timeseries.copy()
+    # Resample timeseries if too long for frontend to handle
+    for ts in ['D','2D','W','2W','M','Y']:
+        if len(timeseries2) > 8784:  # hours in one year
+            # get max value for each timestamp
+            timeseries2 = timeseries.resample(ts).max()
+        else:
+            timeseries = timeseries2
+            break
 
     timeseries_contains_nan = bool(timeseries.isna().any().any()) or bool(timeseries.datetime.isna().any().any())
     if timeseries_contains_nan:
