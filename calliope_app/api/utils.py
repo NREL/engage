@@ -289,7 +289,7 @@ class DateTrunc(Func):
 def initialize_units():
     ureg = pint.UnitRegistry()
     ureg.define('percent = 0.01 = percentage')
-    ureg.define('MMBTU = 1000000 BTU = mmbtu = mbtu')
+    ureg.define('MMBTU = 1000000 BTU = mmbtu = mbtu = MMBtu')
     ureg.define('Calorie = 1000 calorie = Calories')
     ureg.define('dollar = 1 = dollars')
     ureg.define('cent = .01 dollar = cent = cents')
