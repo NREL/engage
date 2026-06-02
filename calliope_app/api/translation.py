@@ -1,6 +1,6 @@
 from modeltranslation.translator import translator, TranslationOptions
 
-from api.models.calliope import Parameter, Abstract_Tech, Run_Parameter
+from api.models.calliope import Parameter, Abstract_Tech, Run_Parameter, Group_Constraint
 from api.models.engage import Help_Guide
 
 
@@ -23,8 +23,13 @@ class RunParameterTranslationOptions(TranslationOptions):
     
     fields = ("pretty_name", "description")
 
+class Group_ConstraintTranslationOptions(TranslationOptions):
+    
+    fields = ("pretty_name", "description")
+
 
 translator.register(Help_Guide, HelpGuideTranslationOptions)
 translator.register(Parameter, ParameterTranslationOptions)
 translator.register(Abstract_Tech, AbstractTechTranslationOptions)
+translator.register(Group_Constraint, Group_ConstraintTranslationOptions)
 translator.register(Run_Parameter, RunParameterTranslationOptions)
