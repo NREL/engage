@@ -3,7 +3,7 @@
 Created on Wed Dec  6 10:34:04 2017
 @author: kbeckers
 @source: https://github.com/kfbeckers/GEOPHIRES
-@license: https://github.com/NREL/GEOPHIRES-v2/blob/master/LICENSE
+@license: https://github.com/NatLabRockies/GEOPHIRES-v2/blob/master/LICENSE
 
 Interated on Apr 24 2023 10:00:01
 @engage: Jianli Gu
