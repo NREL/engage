@@ -119,7 +119,7 @@ Timeseries Data
 ---------------
 
 You may need sample timeseries data for development, please checkout them here - 
-`sample timeseries data <https://github.com/NREL/engage/docs/resources/calliope-063/sampe-timeseries-data/>`_.
+`sample timeseries data <https://github.com/NatLabRockies/engage/docs/resources/calliope-063/sampe-timeseries-data/>`_.
 
 
 Calliope References
@@ -136,7 +136,7 @@ Example Models
 ~~~~~~~~~~~~~~
 
 The example models at national and urban scale can be find here - 
-`example models <https://github.com/NREL/engage/docs/resources/calliope-063/example_models/>`_.
+`example models <https://github.com/NatLabRockies/engage/docs/resources/calliope-063/example_models/>`_.
 
 
 Commandlines
