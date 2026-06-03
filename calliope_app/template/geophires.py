@@ -339,7 +339,7 @@ def geophires_request(request):
         payload = {
             "status": "FAILURE",
             "message": "Failed to run geophires task, please reconfig and try again. ' \
-                'If any concerns, please contact admin at engage@nrel.gov ' \
+                'If any concerns, please contact admin at engage@nlr.gov ' \
                 'regarding this error: {}".format(str(e)),
         }
 

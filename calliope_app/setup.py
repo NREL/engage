@@ -11,7 +11,7 @@ test_requirements = []
 
 setup(
     author="NLR",
-    author_email='engage@nrel.gov',
+    author_email='engage@nlr.gov',
     python_requires='>=3.8',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
@@ -33,7 +33,7 @@ setup(
     name='nrel-engage',
     packages=find_packages(include=['.', '.*']),
     tests_require=test_requirements,
-    url='https://github.com/NREL/engage',
+    url='https://github.com/NatLabRockies/engage',
     version=__version__,
     zip_safe=False,
 )

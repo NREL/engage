@@ -1,7 +1,7 @@
 NLR Deployment
 ===============
 
-NLR provides a hosted Enage application, please visit https://engage.nrel.gov/.
+NLR provides a hosted Enage application, please visit https://engage.nlr.gov/.
 
 Any contributions to this project in repo will be reviewed, merged and finally deployed 
 into NLR host.

@@ -2,7 +2,7 @@
 
 Engage is a free, open-access energy system planning tool that allows multiple users/stakeholders to develop and collaborate on capacity expansion models. The tool, developed at the National Laboratory of the Rockies (NLR), provides a collaborative and easy-to-use interface built on Calliope, a multi-scale energy systems modeling framework.
 
-- Visit the NLR hosted webtool at https://engage.nrel.gov/
+- Visit the NLR hosted webtool at https://engage.nlr.gov/
 
 
 ## Requirements
@@ -14,10 +14,10 @@ Engage is a free, open-access energy system planning tool that allows multiple u
 
 Please refer to the documentation to setup development environment,
 
-https://nrel.github.io/engage
+https://natlabrockies.github.io/engage
 
 and the developer guide to contribute to Enage project.
 
 ## License
 BSD 3-Clause License
-https://github.com/NREL/engage/blob/master/LICENSE
+https://github.com/NatLabRockies/engage/blob/master/LICENSE
