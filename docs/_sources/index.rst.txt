@@ -14,7 +14,7 @@ The tool, developed at the National Laboratory of the Rockies (NLR), provides
 a collaborative and easy-to-use interface built on Calliope, a multi-scale energy 
 systems modeling framework.
 
-Please visit the NLR hosted webtool at https://engage.nrel.gov/.
+Please visit the NLR hosted webtool at https://engage.nlr.gov/.
 
 .. toctree::
    :maxdepth: 2

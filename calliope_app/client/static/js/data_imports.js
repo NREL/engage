@@ -132,7 +132,7 @@ function request_pvwatts(location_id, lat, lon, tilt, azimuth, response) {
 
 	if (nrel_api_key != undefined) {
 		$.ajax({
-			url: 'https://developer.nrel.gov/api/pvwatts/v6.json?format=json&array_type=1&module_type=0&losses=10&system_capacity=1&timeframe=hourly',
+			url: 'https://developer.nlr.gov/api/pvwatts/v6.json?format=json&array_type=1&module_type=0&losses=10&system_capacity=1&timeframe=hourly',
 			type: 'GET',
 			data: data,
 			dataType: 'json',

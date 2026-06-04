@@ -3,7 +3,7 @@ Contributing to Engage
 
 Issue Tracking
 --------------
-We welcome bug reports, feature requests and pull requests through Engage's `Github issue tracker <https://github.com/NREL/Engage/issues>`_.
+We welcome bug reports, feature requests and pull requests through Engage's `Github issue tracker <https://github.com/NatLabRockies/Engage/issues>`_.
 
 The issues submitted via the issue tracker corresponds to a specific action with a well-defined completion state:
 Bugfix, New Feature, Documentation Update, Code Clean-up. After an issue ticket is opened, a member of Engage team will give it an initial classification,

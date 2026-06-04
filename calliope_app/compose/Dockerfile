@@ -34,7 +34,7 @@ RUN pip install -r requirements.txt
 RUN pip install -r requirements-dev.txt
 
 # Install Geophires
-RUN pip install git+https://github.com/NREL/GEOPHIRES-X.git#egg=geophires-x
+RUN pip install git+https://github.com/NatLabRockies/GEOPHIRES-X.git#egg=geophires-x
 
 # Install Calliope v0.7
 RUN pip install calliope==0.7.0.dev7

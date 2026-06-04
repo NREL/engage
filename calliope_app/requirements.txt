@@ -13,7 +13,7 @@ flower>=2.0.1
 # NLR packages
 nrel-pysam>=5.1.0
 # Geophires installed in Dockerfile
-# git+https://github.com/NREL/GEOPHIRES-X.git#egg=geophires-x
+# git+https://github.com/NatLabRockies/GEOPHIRES-X.git#egg=geophires-x
 
 # Util packages
 psycopg2-binary==2.9.9

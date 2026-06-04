@@ -310,7 +310,7 @@ def build(request):
         logger.exception(e)
         payload = {
             "status": "Failed",
-            "message": "Please contact admin at engage@nrel.gov ' \
+            "message": "Please contact admin at engage@nlr.gov ' \
             'regarding this error: {}".format(
                 str(e)
             ),
@@ -538,7 +538,7 @@ def delete_run(request):
 @csrf_protect
 def publish_run(request):
     """
-    Publish a scenario run to Cambium Scenario Viewer (https://scenarioviewer.nrel.gov/)
+    Publish a scenario run to Cambium Scenario Viewer (https://scenarioviewer.nlr.gov/)
 
     Parameters:
     model_uuid (uuid): required
