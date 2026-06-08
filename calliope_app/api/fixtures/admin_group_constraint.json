@@ -5,7 +5,13 @@
     "fields": {
       "name": "demand_share_min",
       "pretty_name": "Demand Share Min",
+      "pretty_name_fr": "Part de la demande minimale",
+      "pretty_name_es": "Participación mínima de demanda",
+      "pretty_name_pt": "Participação de demanda mínima",
       "description": "Minimum share of carrier demand met from a set of technologies across a set of locations, on average over the entire model period.<br><br>Equation: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, timesteps, carriers_lhs]) >= sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * value_1",
+      "description_fr": "Part minimale de la demande du transporteur satisfaite par un ensemble de technologies sur un ensemble de lieux, en moyenne sur toute la période du modèle.<br><br>Équation : sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, timesteps, carriers_lhs]) >= sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * value_1",
+      "description_es": "Participación mínima de la demanda del transportador atendida por un conjunto de tecnologías en un conjunto de ubicaciones, en promedio durante todo el periodo del modelo.<br><br>Ecuación: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, timesteps, carriers_lhs]) >= sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * value_1",
+      "description_pt": "Participação mínima da demanda do transportador atendida por um conjunto de tecnologias em um conjunto de locais, em média ao longo de todo o período do modelo.<br><br>Equação: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, timesteps, carriers_lhs]) >= sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * value_1",
       "equations": [
         {
           "expression": "sum(flow_out_non_transmission_techs[||techs_lhs||||nodes_lhs||||carriers_lhs||], over=[nodes, techs, timesteps, carriers]) >= $total_demand_share"
@@ -88,7 +94,13 @@
     "fields": {
       "name": "demand_share_max",
       "pretty_name": "Demand Share Max",
+      "pretty_name_fr": "Part de la demande maximale",
+      "pretty_name_es": "Participación máxima de demanda",
+      "pretty_name_pt": "Participação de demanda máxima",
       "description": "Maximum share of carrier demand met from a set of technologies across a set of locations, on average over the entire model period.",
+      "description_fr": "Part maximale de la demande du transporteur satisfaite par un ensemble de technologies sur un ensemble de lieux, en moyenne sur toute la période du modèle.",
+      "description_es": "Participación máxima de la demanda del transportador atendida por un conjunto de tecnologías en un conjunto de ubicaciones, en promedio durante todo el periodo del modelo.",
+      "description_pt": "Participação máxima da demanda do transportador atendida por um conjunto de tecnologias em um conjunto de locais, em média ao longo de todo o período do modelo.",
       "equations": [
         {
           "expression": "sum(flow_out_non_transmission_techs[||techs_lhs||||nodes_lhs||||carriers_lhs||], over=[nodes, techs, timesteps, carriers]) <= $total_demand_share"
@@ -171,7 +183,13 @@
     "fields": {
       "name": "demand_share_equals",
       "pretty_name": "Demand Share Equals",
+      "pretty_name_fr": "Part de la demande égale",
+      "pretty_name_es": "Participación de demanda igual",
+      "pretty_name_pt": "Participação de demanda igual",
       "description": "Share of carrier demand met from a set of technologies across a set of locations, on average over the entire model period. NOTE: This forces the share to be exactly the same in each timestep, which may lead to infeasible models.<br><br>Equation: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, timesteps, carriers_lhs]) == sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * value_1",
+      "description_fr": "Part de la demande du transporteur satisfaite par un ensemble de technologies sur un ensemble de lieux, en moyenne sur toute la période du modèle. REMARQUE : cela force la part à être exactement la même à chaque pas de temps, ce qui peut conduire à des modèles infaisables.<br><br>Équation : sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, timesteps, carriers_lhs]) == sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * value_1",
+      "description_es": "Participación de la demanda del transportador atendida por un conjunto de tecnologías en un conjunto de ubicaciones, en promedio durante todo el periodo del modelo. OBS: Esto obliga a que la participación sea exactamente igual en cada paso de tiempo, lo que puede llevar a modelos infactibles.<br><br>Ecuación: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, timesteps, carriers_lhs]) == sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * value_1",
+      "description_pt": "Participação da demanda do transportador atendida por um conjunto de tecnologias em um conjunto de locais, em média ao longo de todo o período do modelo. OBS: Isso força a participação a ser exatamente a mesma em cada passo de tempo, o que pode levar a modelos infactíveis.<br><br>Equação: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, timesteps, carriers_lhs]) == sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * value_1",
       "equations": [
         {
           "expression": "sum(flow_out_non_transmission_techs[||techs_lhs||||nodes_lhs||||carriers_lhs||], over=[nodes, techs, timesteps, carriers]) == $total_demand_share"
@@ -254,7 +272,13 @@
     "fields": {
       "name": "demand_share_per_timestep_min",
       "pretty_name": "Demand Share Per Timestep Min",
+      "pretty_name_fr": "Part de la demande minimale par pas de temps",
+      "pretty_name_es": "Participación mínima de demanda por paso de tiempo",
+      "pretty_name_pt": "Participação de demanda por passo de tempo mínima",
       "description": "Minimum share of carrier demand met from a set of technologies across a set of locations, in each individual timestep. NOTE: This forces the share to be the same in each timestep, which may lead to infeasible models.<br><br>Equation: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) >= sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_fr": "Part minimale de la demande du transporteur satisfaite par un ensemble de technologies sur un ensemble de lieux, à chaque pas de temps individuel. REMARQUE : cela force la part à être la même à chaque pas de temps, ce qui peut conduire à des modèles infaisables.<br><br>Équation : sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) >= sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_es": "Participación mínima de la demanda del transportador atendida por un conjunto de tecnologías en un conjunto de ubicaciones, en cada paso de tiempo individual. OBS: Esto obliga a que la participación sea la misma en cada paso de tiempo, lo que puede llevar a modelos infactibles.<br><br>Ecuación: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) >= sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_pt": "Participação mínima da demanda do transportador atendida por um conjunto de tecnologias em um conjunto de locais, em cada passo de tempo individual. OBS: Isso força a participação a ser a mesma em cada passo de tempo, o que pode levar a modelos infactíveis.<br><br>Equação: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) >= sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
       "for_each": "timesteps",
       "equations": [
         {
@@ -338,7 +362,13 @@
     "fields": {
       "name": "demand_share_per_timestep_max",
       "pretty_name": "Demand Share Per Timestep Max",
+      "pretty_name_fr": "Part de la demande maximale par pas de temps",
+      "pretty_name_es": "Participación máxima de demanda por paso de tiempo",
+      "pretty_name_pt": "Participação de demanda por passo de tempo máxima",
       "description": "Maximum share of carrier demand met from a set of technologies across a set of locations, in each individual timestep.<br><br>Equation: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) <= sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_fr": "Part maximale de la demande du transporteur satisfaite par un ensemble de technologies sur un ensemble de lieux, à chaque pas de temps individuel.<br><br>Équation : sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) <= sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_es": "Participación máxima de la demanda del transportador atendida por un conjunto de tecnologías en un conjunto de ubicaciones, en cada paso de tiempo individual.<br><br>Ecuación: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) <= sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_pt": "Participação máxima da demanda do transportador atendida por um conjunto de tecnologias em um conjunto de locais, em cada passo de tempo individual.<br><br>Equação: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) <= sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
       "for_each": "timesteps",
       "equations": [
         {
@@ -422,7 +452,13 @@
     "fields": {
       "name": "demand_share_per_timestep_equals",
       "pretty_name": "Demand Share Per Timestep Equals",
+      "pretty_name_fr": "Part de la demande égale par pas de temps",
+      "pretty_name_es": "Participación de demanda por paso de tiempo igual",
+      "pretty_name_pt": "Participação de demanda por passo de tempo igual",
       "description": "Minimum share of carrier demand met from a set of technologies across a set of locations, in each individual timestep. NOTE: This forces the share to be the same in each timestep, which may lead to infeasible models.<br><br>Equation: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) == sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_fr": "Part de la demande du transporteur satisfaite par un ensemble de technologies sur un ensemble de lieux, à chaque pas de temps individuel. REMARQUE : cela force la part à être la même à chaque pas de temps, ce qui peut conduire à des modèles infaisables.<br><br>Équation : sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) == sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_es": "Participación de la demanda del transportador atendida por un conjunto de tecnologías en un conjunto de ubicaciones, en cada paso de tiempo individual. OBS: Esto obliga a que la participación sea la misma en cada paso de tiempo, lo que puede llevar a modelos infactibles.<br><br>Ecuación: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) == sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_pt": "Participação da demanda do transportador atendida por um conjunto de tecnologias em um conjunto de locais, em cada passo de tempo individual. OBS: Isso força a participação a ser a mesma em cada passo de tempo, o que pode levar a modelos infactíveis.<br><br>Equação: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) == sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
       "for_each": "timesteps",
       "equations": [
         {
@@ -506,7 +542,13 @@
     "fields": {
       "name": "flow_out_share_max",
       "pretty_name": "Flow Out Share Max",
+      "pretty_name_fr": "Part de flux sortant maximale",
+      "pretty_name_es": "Participación máxima de salida de flujo",
+      "pretty_name_pt": "Participação de saída de fluxo máxima",
       "description": "Maximum share of carrier production met from a set of technologies across a set of locations, on average over the entire model period.<br><br>Equation: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, timesteps, carriers_lhs]) <= sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * value_1",
+      "description_fr": "Part maximale de la production du transporteur satisfaite par un ensemble de technologies sur un ensemble de lieux, en moyenne sur toute la période du modèle.<br><br>Équation : sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, timesteps, carriers_lhs]) <= sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * value_1",
+      "description_es": "Participación máxima de la producción del transportador atendida por un conjunto de tecnologías en un conjunto de ubicaciones, en promedio durante todo el periodo del modelo.<br><br>Ecuación: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, timesteps, carriers_lhs]) <= sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * value_1",
+      "description_pt": "Participação máxima da produção do transportador atendida por um conjunto de tecnologias em um conjunto de locais, em média ao longo de todo o período do modelo.<br><br>Equação: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, timesteps, carriers_lhs]) <= sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * value_1",
       "equations": [
         {
           "expression": "sum(flow_out_non_transmission_techs[||techs_lhs||||nodes_lhs||||carriers_lhs||], over=[nodes, techs, timesteps, carriers]) <= $total_flow_out_share"
@@ -589,7 +631,13 @@
     "fields": {
       "name": "flow_out_share_min",
       "pretty_name": "Flow Out Share Min",
+      "pretty_name_fr": "Part de flux sortant minimale",
+      "pretty_name_es": "Participación mínima de salida de flujo",
+      "pretty_name_pt": "Participação de saída de fluxo mínima",
       "description": "Minimum share of carrier production met from a set of technologies across a set of locations, on average over the entire model period.<br><br>Equation: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, timesteps, carriers_lhs]) >= sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * value_1",
+      "description_fr": "Part minimale de la production du transporteur satisfaite par un ensemble de technologies sur un ensemble de lieux, en moyenne sur toute la période du modèle.<br><br>Équation : sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, timesteps, carriers_lhs]) >= sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * value_1",
+      "description_es": "Participación mínima de la producción del transportador atendida por un conjunto de tecnologías en un conjunto de ubicaciones, en promedio durante todo el periodo del modelo.<br><br>Ecuación: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, timesteps, carriers_lhs]) >= sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * value_1",
+      "description_pt": "Participação mínima da produção do transportador atendida por um conjunto de tecnologias em um conjunto de locais, em média ao longo de todo o período do modelo.<br><br>Equação: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, timesteps, carriers_lhs]) >= sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * value_1",
       "equations": [
         {
           "expression": "sum(flow_out_non_transmission_techs[||techs_lhs||||nodes_lhs||||carriers_lhs||], over=[nodes, techs, timesteps, carriers]) >= $total_flow_out_share"
@@ -672,7 +720,13 @@
     "fields": {
       "name": "flow_out_share_equals",
       "pretty_name": "Flow Out Share Equals",
+      "pretty_name_fr": "Part de flux sortant égale",
+      "pretty_name_es": "Participación de salida de flujo igual",
+      "pretty_name_pt": "Participação de saída de fluxo igual",
       "description": "Share of carrier production met from a set of technologies across a set of locations, on average over the entire model period. NOTE: This forces the share to be the same in each timestep, which may lead to infeasible models.<br><br>Equation: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, timesteps, carriers_lhs]) == sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * value_1",
+      "description_fr": "Part de la production du transporteur satisfaite par un ensemble de technologies sur un ensemble de lieux, en moyenne sur toute la période du modèle. REMARQUE : cela force la part à être la même à chaque pas de temps, ce qui peut conduire à des modèles infaisables.<br><br>Équation : sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, timesteps, carriers_lhs]) == sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * value_1",
+      "description_es": "Participación de la producción del transportador atendida por un conjunto de tecnologías en un conjunto de ubicaciones, en promedio durante todo el periodo del modelo. OBS: Esto obliga a que la participación sea la misma en cada paso de tiempo, lo que puede llevar a modelos infactibles.<br><br>Ecuación: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, timesteps, carriers_lhs]) == sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * value_1",
+      "description_pt": "Participação da produção do transportador atendida por um conjunto de tecnologias em um conjunto de locais, em média ao longo de todo o período do modelo. OBS: Isso força a participação a ser a mesma em cada passo de tempo, o que pode levar a modelos infactíveis.<br><br>Equação: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, timesteps, carriers_lhs]) == sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * value_1",
       "equations": [
         {
           "expression": "sum(flow_out_non_transmission_techs[||techs_lhs||||nodes_lhs||||carriers_lhs||], over=[nodes, techs, timesteps, carriers]) == $total_flow_out_share"
@@ -755,7 +809,13 @@
     "fields": {
       "name": "flow_out_share_per_timestep_min",
       "pretty_name": "Flow Out Share Per Timestep Min",
+      "pretty_name_fr": "Part de flux sortant minimale par pas de temps",
+      "pretty_name_es": "Participación mínima de salida de flujo por paso de tiempo",
+      "pretty_name_pt": "Participação de saída de fluxo por passo de tempo mínima",
       "description": "Minimum share of carrier production met from a set of technologies across a set of locations, in each individual timestep.<br><br>Equation: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) >= sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_fr": "Part minimale de la production du transporteur satisfaite par un ensemble de technologies sur un ensemble de lieux, à chaque pas de temps individuel.<br><br>Équation : sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) >= sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_es": "Participación mínima de la producción del transportador atendida por un conjunto de tecnologías en un conjunto de ubicaciones, en cada paso de tiempo individual.<br><br>Ecuación: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) >= sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_pt": "Participação mínima da produção do transportador atendida por um conjunto de tecnologias em um conjunto de locais, em cada passo de tempo individual.<br><br>Equação: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) >= sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
       "for_each": "timesteps",
       "equations": [
         {
@@ -839,7 +899,13 @@
     "fields": {
       "name": "flow_out_share_per_timestep_max",
       "pretty_name": "Flow Out Share Per Timestep Max",
+      "pretty_name_fr": "Part de flux sortant maximale par pas de temps",
+      "pretty_name_es": "Participación máxima de salida de flujo por paso de tiempo",
+      "pretty_name_pt": "Participação de saída de fluxo por passo de tempo máxima",
       "description": "Maximum share of carrier production met from a set of technologies across a set of locations, in each individual timestep.<br><br>Equation: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) <= sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_fr": "Part maximale de la production du transporteur satisfaite par un ensemble de technologies sur un ensemble de lieux, à chaque pas de temps individuel.<br><br>Équation : sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) <= sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_es": "Participación máxima de la producción del transportador atendida por un conjunto de tecnologías en un conjunto de ubicaciones, en cada paso de tiempo individual.<br><br>Ecuación: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) <= sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_pt": "Participação máxima da produção do transportador atendida por um conjunto de tecnologias em um conjunto de locais, em cada passo de tempo individual.<br><br>Equação: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) <= sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
       "for_each": "timesteps",
       "equations": [
         {
@@ -923,7 +989,13 @@
     "fields": {
       "name": "flow_out_share_per_timestep_equals",
       "pretty_name": "Flow Out Share Per Timestep Equals",
+      "pretty_name_fr": "Part de flux sortant égale par pas de temps",
+      "pretty_name_es": "Participación de salida de flujo por paso de tiempo igual",
+      "pretty_name_pt": "Participação de saída de fluxo por passo de tempo igual",
       "description": "Share of carrier production met from a set of technologies across a set of locations, in each individual timestep. NOTE: This forces the share to be the same in each timestep, which may lead to infeasible models.<br><br>Equation: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) == sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_fr": "Part de la production du transporteur satisfaite par un ensemble de technologies sur un ensemble de lieux, à chaque pas de temps individuel. REMARQUE : cela force la part à être la même à chaque pas de temps, ce qui peut conduire à des modèles infaisables.<br><br>Équation : sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) == sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_es": "Participación de la producción del transportador atendida por un conjunto de tecnologías en un conjunto de ubicaciones, en cada paso de tiempo individual. OBS: Esto obliga a que la participación sea la misma en cada paso de tiempo, lo que puede llevar a modelos infactibles.<br><br>Ecuación: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) == sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_pt": "Participação da produção do transportador atendida por um conjunto de tecnologias em um conjunto de locais, em cada passo de tempo individual. OBS: Isso força a participação a ser a mesma em cada passo de tempo, o que pode levar a modelos infactíveis.<br><br>Equação: sum(flow_out_non_transmission_techs, over=[nodes_lhs, techs_lhs, carriers_lhs]) == sum(flow_out_non_transmission_techs, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
       "for_each": "timesteps",
       "equations": [
         {
@@ -1007,7 +1079,13 @@
     "fields": {
       "name": "net_import_share_min",
       "pretty_name": "Net Import Share Min",
+      "pretty_name_fr": "Part d’importation nette minimale",
+      "pretty_name_es": "Participación mínima de importación neta",
+      "pretty_name_pt": "Participação de importação líquida mínima",
       "description": "Minimum share of demand met from transmission technologies into a set of locations, on average over the entire model period. All transmission technologies of the chosen carrier are added automatically so left hand side technologies must thus not be defined explicitly.<br><br>Equation: sum(flow_out_non_transmission_techs, over=[nodes_lhs, timesteps, carriers_lhs]) <= sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * (1 - value_1)",
+      "description_fr": "Part minimale de la demande satisfaite par les technologies de transmission vers un ensemble de lieux, en moyenne sur toute la période du modèle. Toutes les technologies de transmission du transporteur choisi sont ajoutées automatiquement, donc les technologies du côté gauche ne doivent pas être définies explicitement.<br><br>Équation : sum(flow_out_non_transmission_techs, over=[nodes_lhs, timesteps, carriers_lhs]) <= sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * (1 - value_1)",
+      "description_es": "Participación mínima de la demanda atendida por tecnologías de transmisión en un conjunto de ubicaciones, en promedio durante todo el periodo del modelo. Todas las tecnologías de transmisión del transportador elegido se agregan automáticamente, por lo que no deben definirse explícitamente tecnologías en el lado izquierdo.<br><br>Ecuación: sum(flow_out_non_transmission_techs, over=[nodes_lhs, timesteps, carriers_lhs]) <= sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * (1 - value_1)",
+      "description_pt": "Participação mínima da demanda atendida por tecnologias de transmissão em um conjunto de locais, em média ao longo de todo o período do modelo. Todas as tecnologias de transmissão do transportador escolhido são adicionadas automaticamente, por isso tecnologias do lado esquerdo não devem ser definidas explicitamente.<br><br>Equação: sum(flow_out_non_transmission_techs, over=[nodes_lhs, timesteps, carriers_lhs]) <= sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * (1 - value_1)",
       "equations": [
         {
           "expression": "sum(flow_out_non_transmission_techs[||nodes_lhs||||carriers_lhs||], over=[nodes, techs, timesteps, carriers]) <= $total_flow_out_share"
@@ -1082,7 +1160,13 @@
     "fields": {
       "name": "net_import_share_max",
       "pretty_name": "Net Import Share Max",
+      "pretty_name_fr": "Part d’importation nette maximale",
+      "pretty_name_es": "Participación máxima de importación neta",
+      "pretty_name_pt": "Participação de importação líquida máxima",
       "description": "Maximum share of demand met from transmission technologies into a set of locations, on average over the entire model period. All transmission technologies of the chosen carrier are added automatically so left hand side technologies must thus not be defined explicitly.<br><br>Equation: sum(flow_out_non_transmission_techs, over=[nodes_lhs, timesteps, carriers_lhs]) >= sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * (1 - value_1)",
+      "description_fr": "Part maximale de la demande satisfaite par les technologies de transmission vers un ensemble de lieux, en moyenne sur toute la période du modèle. Toutes les technologies de transmission du transporteur choisi sont ajoutées automatiquement, donc les technologies du côté gauche ne doivent pas être définies explicitement.<br><br>Équation : sum(flow_out_non_transmission_techs, over=[nodes_lhs, timesteps, carriers_lhs]) >= sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * (1 - value_1)",
+      "description_es": "Participación máxima de la demanda atendida por tecnologías de transmisión en un conjunto de ubicaciones, en promedio durante todo el periodo del modelo. Todas las tecnologías de transmisión del transportador elegido se agregan automáticamente, por lo que no deben definirse explícitamente tecnologías en el lado izquierdo.<br><br>Ecuación: sum(flow_out_non_transmission_techs, over=[nodes_lhs, timesteps, carriers_lhs]) >= sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * (1 - value_1)",
+      "description_pt": "Participação máxima da demanda atendida por tecnologias de transmissão em um conjunto de locais, em média ao longo de todo o período do modelo. Todas as tecnologias de transmissão do transportador escolhido são adicionadas automaticamente, por isso tecnologias do lado esquerdo não devem ser definidas explicitamente.<br><br>Equação: sum(flow_out_non_transmission_techs, over=[nodes_lhs, timesteps, carriers_lhs]) >= sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * (1 - value_1)",
       "equations": [
         {
           "expression": "sum(flow_out_non_transmission_techs[||nodes_lhs||||carriers_lhs||], over=[nodes, techs, timesteps, carriers]) >= $total_flow_out_share"
@@ -1157,7 +1241,13 @@
     "fields": {
       "name": "net_import_share_equals",
       "pretty_name": "Net Import Share Equals",
+      "pretty_name_fr": "Part d’importation nette égale",
+      "pretty_name_es": "Participación de importación neta igual",
+      "pretty_name_pt": "Participação de importação líquida igual",
       "description": "Share of demand met from transmission technologies into a set of locations, on average over the entire model. All transmission technologies of the chosen carrier are added automatically so left hand side technologies must thus not be defined explicitly. NOTE: This forces the share to be the same in each timestep, which may lead to infeasible models.<br><br>Equation: sum(flow_out_non_transmission_techs, over=[nodes_lhs, timesteps, carriers_lhs]) == sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * (1 - value_1)",
+      "description_fr": "Part de la demande satisfaite par les technologies de transmission vers un ensemble de lieux, en moyenne sur toute la période du modèle. Toutes les technologies de transmission du transporteur choisi sont ajoutées automatiquement, donc les technologies du côté gauche ne doivent pas être définies explicitement. REMARQUE : cela force la part à être la même à chaque pas de temps, ce qui peut conduire à des modèles infaisables.<br><br>Équation : sum(flow_out_non_transmission_techs, over=[nodes_lhs, timesteps, carriers_lhs]) == sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * (1 - value_1)",
+      "description_es": "Participación de la demanda atendida por tecnologías de transmisión en un conjunto de ubicaciones, en promedio durante todo el periodo del modelo. Todas las tecnologías de transmisión del transportador elegido se agregan automáticamente, por lo que no deben definirse explícitamente tecnologías en el lado izquierdo. OBS: Esto obliga a que la participación sea la misma en cada paso de tiempo, lo que puede llevar a modelos infactibles.<br><br>Ecuación: sum(flow_out_non_transmission_techs, over=[nodes_lhs, timesteps, carriers_lhs]) == sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * (1 - value_1)",
+      "description_pt": "Participação da demanda atendida por tecnologias de transmissão em um conjunto de locais, em média ao longo de todo o modelo. Todas as tecnologias de transmissão do transportador escolhido são adicionadas automaticamente, por isso tecnologias do lado esquerdo não devem ser definidas explicitamente. OBS: Isso força a participação a ser a mesma em cada passo de tempo, o que pode levar a modelos infactíveis.<br><br>Equação: sum(flow_out_non_transmission_techs, over=[nodes_lhs, timesteps, carriers_lhs]) == sum(flow_in_demand_techs, over=[nodes_rhs, techs_rhs, timesteps, carriers_rhs]) * (1 - value_1)",
       "equations": [
         {
           "expression": "sum(flow_out_non_transmission_techs[||nodes_lhs||||carriers_lhs||], over=[nodes, techs, timesteps, carriers]) == $total_flow_out_share"
@@ -1232,7 +1322,13 @@
     "fields": {
       "name": "flow_out_min",
       "pretty_name": "Flow Out Min",
+      "pretty_name_fr": "Flux sortant minimal",
+      "pretty_name_es": "Salida de flujo mínima",
+      "pretty_name_pt": "Saída de fluxo mínima",
       "description": "Minimum absolute sum of supplied energy (flow_out) over all timesteps for a set of technologies across a set of locations.<br><br>Equation: sum(flow_out_non_transmission_techs, over=[nodes, techs, timesteps, carriers]) >= value_1",
+      "description_fr": "Somme absolue minimale d’énergie fournie (flow_out) sur tous les pas de temps pour un ensemble de technologies sur un ensemble de lieux.<br><br>Équation : sum(flow_out_non_transmission_techs, over=[nodes, techs, timesteps, carriers]) >= value_1",
+      "description_es": "Suma absoluta mínima de energía suministrada (flow_out) a lo largo de todos los pasos de tiempo para un conjunto de tecnologías en un conjunto de ubicaciones.<br><br>Ecuación: sum(flow_out_non_transmission_techs, over=[nodes, techs, timesteps, carriers]) >= value_1",
+      "description_pt": "Soma absoluta mínima de energia fornecida (flow_out) ao longo de todos os passos de tempo para um conjunto de tecnologias em um conjunto de locais.<br><br>Equação: sum(flow_out_non_transmission_techs, over=[nodes, techs, timesteps, carriers]) >= value_1",
       "equations": [
         {
           "expression": "sum(flow_out_non_transmission_techs[||techs||||nodes||||carriers||], over=[nodes, techs, timesteps, carriers]) >= $value_1"
@@ -1283,7 +1379,13 @@
     "fields": {
       "name": "flow_out_max",
       "pretty_name": "Flow Out Max",
+      "pretty_name_fr": "Flux sortant maximal",
+      "pretty_name_es": "Salida de flujo máxima",
+      "pretty_name_pt": "Saída de fluxo máxima",
       "description": "Maximum absolute sum of supplied energy (flow_out) over all timesteps for a set of technologies across a set of locations.<br><br>Equation: sum(flow_out_non_transmission_techs, over=[nodes, techs, timesteps, carriers]) <= value_1",
+      "description_fr": "Somme absolue maximale d’énergie fournie (flow_out) sur tous les pas de temps pour un ensemble de technologies sur un ensemble de lieux.<br><br>Équation : sum(flow_out_non_transmission_techs, over=[nodes, techs, timesteps, carriers]) <= value_1",
+      "description_es": "Suma absoluta máxima de energía suministrada (flow_out) a lo largo de todos los pasos de tiempo para un conjunto de tecnologías en un conjunto de ubicaciones.<br><br>Ecuación: sum(flow_out_non_transmission_techs, over=[nodes, techs, timesteps, carriers]) <= value_1",
+      "description_pt": "Soma absoluta máxima de energia fornecida (flow_out) ao longo de todos os passos de tempo para um conjunto de tecnologias em um conjunto de locais.<br><br>Equação: sum(flow_out_non_transmission_techs, over=[nodes, techs, timesteps, carriers]) <= value_1",
       "equations": [
         {
           "expression": "sum(flow_out_non_transmission_techs[||techs||||nodes||||carriers||], over=[nodes, techs, timesteps, carriers]) <= $value_1"
@@ -1334,7 +1436,13 @@
     "fields": {
       "name": "flow_out_equals",
       "pretty_name": "Flow Out Equals",
+      "pretty_name_fr": "Flux sortant égal",
+      "pretty_name_es": "Salida de flujo igual",
+      "pretty_name_pt": "Saída de fluxo igual",
       "description": "Exact absolute sum of supplied energy (flow_out) over all timesteps for a set of technologies across a set of locations. NOTE: This forces the sum to be exact, which may lead to infeasible models.<br><br>Equation: sum(flow_out_non_transmission_techs, over=[nodes, techs, timesteps, carriers]) == value_1",
+      "description_fr": "Somme absolue exacte d’énergie fournie (flow_out) sur tous les pas de temps pour un ensemble de technologies sur un ensemble de lieux. REMARQUE : cela force la somme à être exacte, ce qui peut conduire à des modèles infaisables.<br><br>Équation : sum(flow_out_non_transmission_techs, over=[nodes, techs, timesteps, carriers]) == value_1",
+      "description_es": "Suma absoluta exacta de energía suministrada (flow_out) a lo largo de todos los pasos de tiempo para un conjunto de tecnologías en un conjunto de ubicaciones. OBS: Esto obliga a que la suma sea exacta, lo que puede llevar a modelos infactibles.<br><br>Ecuación: sum(flow_out_non_transmission_techs, over=[nodes, techs, timesteps, carriers]) == value_1",
+      "description_pt": "Soma absoluta exata de energia fornecida (flow_out) ao longo de todos os passos de tempo para um conjunto de tecnologias em um conjunto de locais. OBS: Isso força a soma a ser exata, o que pode levar a modelos infactíveis.<br><br>Equação: sum(flow_out_non_transmission_techs, over=[nodes, techs, timesteps, carriers]) == value_1",
       "equations": [
         {
           "expression": "sum(flow_out_non_transmission_techs[||techs||||nodes||||carriers||], over=[nodes, techs, timesteps, carriers]) == $value_1"
@@ -1385,7 +1493,13 @@
     "fields": {
       "name": "flow_in_min",
       "pretty_name": "Flow In Min",
+      "pretty_name_fr": "Flux entrant minimal",
+      "pretty_name_es": "Entrada de flujo mínima",
+      "pretty_name_pt": "Entrada de fluxo mínima",
       "description": "Minimum sum of consumed energy (flow_in) over all timesteps for a set of conversion/demand technologies across a set of locations.<br><br>Equation: sum(flow_in, over=[nodes, techs, timesteps, carriers]) >= value_1",
+      "description_fr": "Somme minimale d’énergie consommée (flow_in) sur tous les pas de temps pour un ensemble de technologies de conversion/demande sur un ensemble de lieux.<br><br>Équation : sum(flow_in, over=[nodes, techs, timesteps, carriers]) >= value_1",
+      "description_es": "Suma mínima de energía consumida (flow_in) a lo largo de todos los pasos de tiempo para un conjunto de tecnologías de conversión/demanda en un conjunto de ubicaciones.<br><br>Ecuación: sum(flow_in, over=[nodes, techs, timesteps, carriers]) >= value_1",
+      "description_pt": "Soma mínima de energia consumida (flow_in) ao longo de todos os passos de tempo para um conjunto de tecnologias de conversão/demanda em um conjunto de locais.<br><br>Equação: sum(flow_in, over=[nodes, techs, timesteps, carriers]) >= value_1",
       "equations": [
         {
           "expression": "sum(flow_in[||techs||||nodes||||carriers||], over=[nodes, techs, timesteps, carriers]) >= $value_1"
@@ -1436,7 +1550,13 @@
     "fields": {
       "name": "flow_in_max",
       "pretty_name": "Flow In Max",
+      "pretty_name_fr": "Flux entrant maximal",
+      "pretty_name_es": "Entrada de flujo máxima",
+      "pretty_name_pt": "Entrada de fluxo máxima",
       "description": "Maximum sum of consumed energy (flow_in) over all timesteps for a set of conversion/demand technologies across a set of locations.<br><br>Equation: sum(flow_in, over=[nodes, techs, timesteps, carriers]) <= value_1",
+      "description_fr": "Somme maximale d’énergie consommée (flow_in) sur tous les pas de temps pour un ensemble de technologies de conversion/demande sur un ensemble de lieux.<br><br>Équation : sum(flow_in, over=[nodes, techs, timesteps, carriers]) <= value_1",
+      "description_es": "Suma máxima de energía consumida (flow_in) a lo largo de todos los pasos de tiempo para un conjunto de tecnologías de conversión/demanda en un conjunto de ubicaciones.<br><br>Ecuación: sum(flow_in, over=[nodes, techs, timesteps, carriers]) <= value_1",
+      "description_pt": "Soma máxima de energia consumida (flow_in) ao longo de todos os passos de tempo para um conjunto de tecnologias de conversão/demanda em um conjunto de locais.<br><br>Equação: sum(flow_in, over=[nodes, techs, timesteps, carriers]) <= value_1",
       "equations": [
         {
           "expression": "sum(flow_in[||techs||||nodes||||carriers||], over=[nodes, techs, timesteps, carriers]) <= $value_1"
@@ -1487,7 +1607,13 @@
     "fields": {
       "name": "flow_in_equals",
       "pretty_name": "Flow In Equals",
+      "pretty_name_fr": "Flux entrant égal",
+      "pretty_name_es": "Entrada de flujo igual",
+      "pretty_name_pt": "Entrada de fluxo igual",
       "description": "Exact sum of consumed energy (flow_in) over all timesteps for a set of conversion/demand technologies across a set of locations. NOTE: This forces the sum to be exact, which may lead to infeasible models.<br><br>Equation: sum(flow_in, over=[nodes, techs, timesteps, carriers]) == value_1",
+      "description_fr": "Somme exacte d’énergie consommée (flow_in) sur tous les pas de temps pour un ensemble de technologies de conversion/demande sur un ensemble de lieux. REMARQUE : cela force la somme à être exacte, ce qui peut conduire à des modèles infaisables.<br><br>Équation : sum(flow_in, over=[nodes, techs, timesteps, carriers]) == value_1",
+      "description_es": "Suma exacta de energía consumida (flow_in) a lo largo de todos los pasos de tiempo para un conjunto de tecnologías de conversión/demanda en un conjunto de ubicaciones. OBS: Esto obliga a que la suma sea exacta, lo que puede llevar a modelos infactibles.<br><br>Ecuación: sum(flow_in, over=[nodes, techs, timesteps, carriers]) == value_1",
+      "description_pt": "Soma exata de energia consumida (flow_in) ao longo de todos os passos de tempo para um conjunto de tecnologias de conversão/demanda em um conjunto de locais. OBS: Isso força a soma a ser exata, o que pode levar a modelos infactíveis.<br><br>Equação: sum(flow_in, over=[nodes, techs, timesteps, carriers]) == value_1",
       "equations": [
         {
           "expression": "sum(flow_in[||techs||||nodes||||carriers||], over=[nodes, techs, timesteps, carriers]) == $value_1"
@@ -1538,7 +1664,13 @@
     "fields": {
       "name": "cost_max",
       "pretty_name": "Cost Max",
+      "pretty_name_fr": "Coût maximal",
+      "pretty_name_es": "Costo máximo",
+      "pretty_name_pt": "Custo máximo",
       "description": "Maximum total cost from a set of technologies across a set of locations. This is the cost that the model balances which includes variable costs, O&M costs, and the first year ammortized investment costs, but does not include total overnight capital costs.<br><br>Equation: sum(cost, over=[nodes, techs, costs]) <= value_1",
+      "description_fr": "Coût total maximal d’un ensemble de technologies sur un ensemble de lieux. C’est le coût que le modèle équilibre, qui inclut les coûts variables, les coûts d’exploitation et de maintenance et les coûts d’investissement amortis de la première année, mais n’inclut pas les coûts totaux de capital nocturne.<br><br>Équation : sum(cost, over=[nodes, techs, costs]) <= value_1",
+      "description_es": "Costo total máximo de un conjunto de tecnologías en un conjunto de ubicaciones. Este es el costo que el modelo equilibra, que incluye costos variables, costos de O&M y los costos de inversión amortizados en el primer año, pero no incluye costos totales de capital nocturno.<br><br>Ecuación: sum(cost, over=[nodes, techs, costs]) <= value_1",
+      "description_pt": "Custo total máximo de um conjunto de tecnologias em um conjunto de locais. Este é o custo que o modelo equilibra, que inclui custos variáveis, custos de O&M e os custos de investimento amortizados no primeiro ano, mas não inclui custos totais de capital noturno.<br><br>Equação: sum(cost, over=[nodes, techs, costs]) <= value_1",
       "equations": [
         {
           "expression": "sum(cost[||techs||||nodes||||costs||], over=[nodes, techs, costs]) <= $value_1"
@@ -1589,7 +1721,13 @@
     "fields": {
       "name": "cost_min",
       "pretty_name": "Cost Min",
+      "pretty_name_fr": "Coût minimal",
+      "pretty_name_es": "Costo mínimo",
+      "pretty_name_pt": "Custo mínimo",
       "description": "Minimum total cost from a set of technologies across a set of locations. This is the cost that the model balances which includes variable costs, O&M costs, and the first year ammortized investment costs, but does not include total overnight capital costs.<br><br>Equation: sum(cost, over=[nodes, techs, costs]) >= value_1",
+      "description_fr": "Coût total minimal d’un ensemble de technologies sur un ensemble de lieux. C’est le coût que le modèle équilibre, qui inclut les coûts variables, les coûts d’exploitation et de maintenance et les coûts d’investissement amortis de la première année, mais n’inclut pas les coûts totaux de capital nocturne.<br><br>Équation : sum(cost, over=[nodes, techs, costs]) >= value_1",
+      "description_es": "Costo total mínimo de un conjunto de tecnologías en un conjunto de ubicaciones. Este es el costo que el modelo equilibra, que incluye costos variables, costos de O&M y los costos de inversión amortizados en el primer año, pero no incluye costos totales de capital nocturno.<br><br>Ecuación: sum(cost, over=[nodes, techs, costs]) >= value_1",
+      "description_pt": "Custo total mínimo de um conjunto de tecnologias em um conjunto de locais. Este é o custo que o modelo equilibra, que inclui custos variáveis, custos de O&M e os custos de investimento amortizados no primeiro ano, mas não inclui custos totais de capital noturno.<br><br>Equação: sum(cost, over=[nodes, techs, costs]) >= value_1",
       "equations": [
         {
           "expression": "sum(cost[||techs||||nodes||||costs||], over=[nodes, techs, costs]) >= $value_1"
@@ -1640,7 +1778,13 @@
     "fields": {
       "name": "cost_equals",
       "pretty_name": "Cost Equals",
+      "pretty_name_fr": "Coût égal",
+      "pretty_name_es": "Costo igual",
+      "pretty_name_pt": "Custo igual",
       "description": "Total cost from a set of technologies across a set of locations must equal given value. This is the cost that the model balances which includes variable costs, O&M costs, and the first year ammortized investment costs, but does not include total overnight capital costs. NOTE: This forces the cost to be exact which may lead to infeasible models.<br><br>Equation: sum(cost, over=[nodes, techs, costs]) == value_1",
+      "description_fr": "Le coût total d’un ensemble de technologies sur un ensemble de lieux doit être égal à la valeur donnée. C’est le coût que le modèle équilibre, qui inclut les coûts variables, les coûts d’exploitation et de maintenance et les coûts d’investissement amortis de la première année, mais n’inclut pas les coûts totaux de capital nocturne. REMARQUE : cela force le coût à être exact, ce qui peut conduire à des modèles infaisables.<br><br>Équation : sum(cost, over=[nodes, techs, costs]) == value_1",
+      "description_es": "El costo total de un conjunto de tecnologías en un conjunto de ubicaciones debe ser igual al valor dado. Este es el costo que el modelo equilibra, que incluye costos variables, costos de O&M y los costos de inversión amortizados en el primer año, pero no incluye costos totales de capital nocturno. OBS: Esto obliga a que el costo sea exacto, lo que puede llevar a modelos infactibles.<br><br>Ecuación: sum(cost, over=[nodes, techs, costs]) == value_1",
+      "description_pt": "O custo total de um conjunto de tecnologias em um conjunto de locais deve ser igual ao valor dado. Este é o custo que o modelo equilibra, que inclui custos variáveis, custos de O&M e os custos de investimento amortizados no primeiro ano, mas não inclui custos totais de capital noturno. OBS: Isso força o custo a ser exato, o que pode levar a modelos infactíveis.<br><br>Equação: sum(cost, over=[nodes, techs, costs]) == value_1",
       "equations": [
         {
           "expression": "sum(cost[||techs||||nodes||||costs||], over=[nodes, techs, costs]) == $value_1"
@@ -1691,7 +1835,13 @@
     "fields": {
       "name": "cost_var_max",
       "pretty_name": "Cost Var Max",
+      "pretty_name_fr": "Coût variable maximal",
+      "pretty_name_es": "Costo variable máximo",
+      "pretty_name_pt": "Custo variável máximo",
       "description": "Maximum variable cost from a set of technologies across a set of locations. The variable cost includes flow_in/source_use, flow_out and export costs.<br><br>Equation: sum(cost_operation_variable, over=[nodes, techs, timesteps, costs]) <= value_1",
+      "description_fr": "Coût variable maximal d’un ensemble de technologies sur un ensemble de lieux. Le coût variable inclut flow_in/source_use, flow_out et les coûts d’exportation.<br><br>Équation : sum(cost_operation_variable, over=[nodes, techs, timesteps, costs]) <= value_1",
+      "description_es": "Costo variable máximo de un conjunto de tecnologías en un conjunto de ubicaciones. El costo variable incluye flow_in/source_use, flow_out y costos de exportación.<br><br>Ecuación: sum(cost_operation_variable, over=[nodes, techs, timesteps, costs]) <= value_1",
+      "description_pt": "Custo variável máximo de um conjunto de tecnologias em um conjunto de locais. O custo variável inclui flow_in/source_use, flow_out e custos de exportação.<br><br>Equação: sum(cost_operation_variable, over=[nodes, techs, timesteps, costs]) <= value_1",
       "equations": [
         {
           "expression": "sum(cost_operation_variable[||techs||||nodes||||costs||], over=[nodes, techs, timesteps, costs]) <= $value_1"
@@ -1742,7 +1892,13 @@
     "fields": {
       "name": "cost_var_min",
       "pretty_name": "Cost Var Min",
+      "pretty_name_fr": "Coût variable minimal",
+      "pretty_name_es": "Costo variable mínimo",
+      "pretty_name_pt": "Custo variável mínimo",
       "description": "Minimum variable cost from a set of technologies across a set of locations. The variable cost includes flow_in/source_use, flow_out and export costs.<br><br>Equation: sum(cost_operation_variable, over=[nodes, techs, timesteps, costs]) >= value_1",
+      "description_fr": "Coût variable minimal d’un ensemble de technologies sur un ensemble de lieux. Le coût variable inclut flow_in/source_use, flow_out et les coûts d’exportation.<br><br>Équation : sum(cost_operation_variable, over=[nodes, techs, timesteps, costs]) >= value_1",
+      "description_es": "Costo variable mínimo de un conjunto de tecnologías en un conjunto de ubicaciones. El costo variable incluye flow_in/source_use, flow_out y costos de exportación.<br><br>Ecuación: sum(cost_operation_variable, over=[nodes, techs, timesteps, costs]) >= value_1",
+      "description_pt": "Custo variável mínimo de um conjunto de tecnologias em um conjunto de locais. O custo variável inclui flow_in/source_use, flow_out e custos de exportação.<br><br>Equação: sum(cost_operation_variable, over=[nodes, techs, timesteps, costs]) >= value_1",
       "equations": [
         {
           "expression": "sum(cost_operation_variable[||techs||||nodes||||costs||], over=[nodes, techs, timesteps, costs]) >= $value_1"
@@ -1793,7 +1949,13 @@
     "fields": {
       "name": "cost_var_equals",
       "pretty_name": "Cost Var Equals",
+      "pretty_name_fr": "Coût variable égal",
+      "pretty_name_es": "Costo variable igual",
+      "pretty_name_pt": "Custo variável igual",
       "description": "Variable cost from a set of technologies across a set of locations must equal given value. The variable cost includes flow_in/source_use, flow_out and export costs. NOTE: This forces the cost to be exact which may lead to infeasible models.<br><br>Equation: sum(cost_operation_variable, over=[nodes, techs, timesteps, costs]) == value_1",
+      "description_fr": "Le coût variable d’un ensemble de technologies sur un ensemble de lieux doit être égal à la valeur donnée. Le coût variable inclut flow_in/source_use, flow_out et les coûts d’exportation. REMARQUE : cela force le coût à être exact, ce qui peut conduire à des modèles infaisables.<br><br>Équation : sum(cost_operation_variable, over=[nodes, techs, timesteps, costs]) == value_1",
+      "description_es": "El costo variable de un conjunto de tecnologías en un conjunto de ubicaciones debe ser igual al valor dado. El costo variable incluye flow_in/source_use, flow_out y costos de exportación. OBS: Esto obliga a que el costo sea exacto, lo que puede llevar a modelos infactibles.<br><br>Ecuación: sum(cost_operation_variable, over=[nodes, techs, timesteps, costs]) == value_1",
+      "description_pt": "O custo variável de um conjunto de tecnologias em um conjunto de locais deve ser igual ao valor dado. O custo variável inclui flow_in/source_use, flow_out e custos de exportação. OBS: Isso força o custo a ser exato, o que pode levar a modelos infactíveis.<br><br>Equação: sum(cost_operation_variable, over=[nodes, techs, timesteps, costs]) == value_1",
       "equations": [
         {
           "expression": "sum(cost_operation_variable[||techs||||nodes||||costs||], over=[nodes, techs, timesteps, costs]) == $value_1"
@@ -1844,7 +2006,13 @@
     "fields": {
       "name": "cost_investment_max",
       "pretty_name": "Cost Investment Max",
+      "pretty_name_fr": "Investissement maximal",
+      "pretty_name_es": "Inversión máxima",
+      "pretty_name_pt": "Investimento máximo",
       "description": "Maximum investment cost from a set of technologies across a set of locations. This is the total overnight capital cost of the installed capacity of the technologies (including flow_cap, storage_cap, source_cap, and area_use costs), not the first year ammortized cost that the model balances.<br><br>Equation: sum(cost_investment, over=[nodes, techs, costs]) <= value_1",
+      "description_fr": "Coût d’investissement maximal d’un ensemble de technologies sur un ensemble de lieux. C’est le coût total de capital nocturne de la capacité installée des technologies (y compris les coûts de flow_cap, storage_cap, source_cap et area_use), et non le coût amorti de la première année que le modèle équilibre.<br><br>Équation : sum(cost_investment, over=[nodes, techs, costs]) <= value_1",
+      "description_es": "Costo máximo de inversión de un conjunto de tecnologías en un conjunto de ubicaciones. Este es el costo total de capital nocturno de la capacidad instalada de las tecnologías (incluyendo costos de flow_cap, storage_cap, source_cap y area_use), no el costo amortizado del primer año que el modelo equilibra.<br><br>Ecuación: sum(cost_investment, over=[nodes, techs, costs]) <= value_1",
+      "description_pt": "Custo de investimento máximo de um conjunto de tecnologias em um conjunto de locais. Este é o custo total de capital noturno da capacidade instalada das tecnologias (incluindo custos de flow_cap, storage_cap, source_cap e area_use), não o custo amortizado do primeiro ano que o modelo equilibra.<br><br>Equação: sum(cost_investment, over=[nodes, techs, costs]) <= value_1",
       "equations": [
         {
           "expression": "sum(cost_investment[||techs||||nodes||||costs||], over=[nodes, techs, costs]) <= $value_1"
@@ -1895,7 +2063,13 @@
     "fields": {
       "name": "cost_investment_min",
       "pretty_name": "Cost Investment Min",
+      "pretty_name_fr": "Investissement minimal",
+      "pretty_name_es": "Inversión mínima",
+      "pretty_name_pt": "Investimento mínimo",
       "description": "Minimum investment cost from a set of technologies across a set of locations. This is the total overnight capital cost of the installed capacity of the technologies (including flow_cap, storage_cap, source_cap, and area_use costs), not the first year ammortized cost that the model balances.<br><br>Equation: sum(cost_investment, over=[nodes, techs, costs]) >= value_1",
+      "description_fr": "Coût d’investissement minimal d’un ensemble de technologies sur un ensemble de lieux. C’est le coût total de capital nocturne de la capacité installée des technologies (y compris les coûts de flow_cap, storage_cap, source_cap et area_use), et non le coût amorti de la première année que le modèle équilibre.<br><br>Équation : sum(cost_investment, over=[nodes, techs, costs]) >= value_1",
+      "description_es": "Costo mínimo de inversión de un conjunto de tecnologías en un conjunto de ubicaciones. Este es el costo total de capital nocturno de la capacidad instalada de las tecnologías (incluyendo costos de flow_cap, storage_cap, source_cap y area_use), no el costo amortizado del primer año que el modelo equilibra.<br><br>Ecuación: sum(cost_investment, over=[nodes, techs, costs]) >= value_1",
+      "description_pt": "Custo de investimento mínimo de um conjunto de tecnologias em um conjunto de locais. Este é o custo total de capital noturno da capacidade instalada das tecnologias (incluindo custos de flow_cap, storage_cap, source_cap e area_use), não o custo amortizado do primeiro ano que o modelo equilibra.<br><br>Equação: sum(cost_investment, over=[nodes, techs, costs]) >= value_1",
       "equations": [
         {
           "expression": "sum(cost_investment[||techs||||nodes||||costs||], over=[nodes, techs, costs]) >= $value_1"
@@ -1946,7 +2120,13 @@
     "fields": {
       "name": "cost_investment_equals",
       "pretty_name": "Cost Investment Equals",
+      "pretty_name_fr": "Investissement égal",
+      "pretty_name_es": "Inversión igual",
+      "pretty_name_pt": "Investimento igual",
       "description": "Investment cost from a set of technologies across a set of locations must equal given value. This is the total overnight capital cost of the installed capacity of the technologies (including flow_cap, storage_cap, source_cap, and area_use costs), not the first year ammortized cost that the model balances. NOTE: This forces the cost to be exact which may lead to infeasible models.<br><br>Equation: sum(cost_investment, over=[nodes, techs, costs]) == value_1",
+      "description_fr": "Le coût d’investissement d’un ensemble de technologies sur un ensemble de lieux doit être égal à la valeur donnée. C’est le coût total de capital nocturne de la capacité installée des technologies (y compris les coûts de flow_cap, storage_cap, source_cap et area_use), et non le coût amorti de la première année que le modèle équilibre. REMARQUE : cela force le coût à être exact, ce qui peut conduire à des modèles infaisables.<br><br>Équation : sum(cost_investment, over=[nodes, techs, costs]) == value_1",
+      "description_es": "El costo de inversión de un conjunto de tecnologías en un conjunto de ubicaciones debe ser igual al valor dado. Este es el costo total de capital nocturno de la capacidad instalada de las tecnologías (incluyendo costos de flow_cap, storage_cap, source_cap y area_use), no el costo amortizado del primer año que el modelo equilibra. OBS: Esto obliga a que el costo sea exacto, lo que puede llevar a modelos infactibles.<br><br>Ecuación: sum(cost_investment, over=[nodes, techs, costs]) == value_1",
+      "description_pt": "O custo de investimento de um conjunto de tecnologias em um conjunto de locais deve ser igual ao valor dado. Este é o custo total de capital noturno da capacidade instalada das tecnologias (incluindo custos de flow_cap, storage_cap, source_cap e area_use), não o custo amortizado do primeiro ano que o modelo equilibra. OBS: Isso força o custo a ser exato, o que pode levar a modelos infactíveis.<br><br>Equação: sum(cost_investment, over=[nodes, techs, costs]) == value_1",
       "equations": [
         {
           "expression": "sum(cost_investment[||techs||||nodes||||costs||], over=[nodes, techs, costs]) == $value_1"
@@ -1997,7 +2177,13 @@
     "fields": {
       "name": "flow_cap_share_min",
       "pretty_name": "Flow Cap Share Min",
+      "pretty_name_fr": "Part de capacité de flux minimale",
+      "pretty_name_es": "Participación mínima de capacidad de flujo",
+      "pretty_name_pt": "Participação de capacidade de fluxo mínima",
       "description": "Minimum share of installed capacity from a set of technologies across a set of locations. NOTE: Technologies with multiple carriers (including base conversion) have a flow_cap variable for each carrier, so specifying the carriers on both sides is recommended to avoid double counting. If carriers are not specified, the constraint will apply to the sum of flow_cap across all carriers for the specified technologies and locations.<br><br>Equation: sum(flow_cap, over=[nodes_lhs, techs_lhs, carriers_lhs]) >= sum(flow_cap, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_fr": "Part minimale de la capacité installée d’un ensemble de technologies sur un ensemble de lieux. REMARQUE : les technologies avec plusieurs transporteurs (y compris la conversion de base) ont une variable flow_cap pour chaque transporteur, donc il est recommandé de spécifier les transporteurs des deux côtés pour éviter le double comptage. Si les transporteurs ne sont pas spécifiés, la contrainte s’appliquera à la somme de flow_cap sur tous les transporteurs pour les technologies et lieux spécifiés.<br><br>Équation : sum(flow_cap, over=[nodes_lhs, techs_lhs, carriers_lhs]) >= sum(flow_cap, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_es": "Participación mínima de la capacidad instalada de un conjunto de tecnologías en un conjunto de ubicaciones. OBS: Las tecnologías con múltiples transportadores (incluida la conversión base) tienen una variable flow_cap para cada transportador, por lo que es recomendable especificar los transportadores en ambos lados para evitar doble contabilización. Si no se especifican transportadores, la restricción se aplicará a la suma de flow_cap en todos los transportadores para las tecnologías y ubicaciones especificadas.<br><br>Ecuación: sum(flow_cap, over=[nodes_lhs, techs_lhs, carriers_lhs]) >= sum(flow_cap, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_pt": "Participação mínima da capacidade instalada de um conjunto de tecnologias em um conjunto de locais. OBS: Tecnologias com múltiplos transportadores (incluindo conversão base) têm uma variável flow_cap para cada transportador, então especificar os transportadores em ambos os lados é recomendado para evitar dupla contagem. Se os transportadores não forem especificados, a restrição será aplicada à soma de flow_cap em todos os transportadores para as tecnologias e locais especificados.<br><br>Equação: sum(flow_cap, over=[nodes_lhs, techs_lhs, carriers_lhs]) >= sum(flow_cap, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
       "equations": [
         {
           "expression": "sum(flow_cap[||techs_lhs||||nodes_lhs||||carriers_lhs||], over=[nodes, techs, carriers]) >= $total_flow_cap_share"
@@ -2080,7 +2266,13 @@
     "fields": {
       "name": "flow_cap_share_max",
       "pretty_name": "Flow Cap Share Max",
+      "pretty_name_fr": "Part de capacité de flux maximale",
+      "pretty_name_es": "Participación máxima de capacidad de flujo",
+      "pretty_name_pt": "Participação de capacidade de fluxo máxima",
       "description": "Maximum share of installed capacity from a set of technologies across a set of locations. NOTE: Technologies with multiple carriers (including base conversion) have a flow_cap variable for each carrier, so specifying the carriers on both sides is recommended to avoid double counting. If carriers are not specified, the constraint will apply to the sum of flow_cap across all carriers for the specified technologies and locations.<br><br>Equation: sum(flow_cap, over=[nodes_lhs, techs_lhs, carriers_lhs]) <= sum(flow_cap, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_fr": "Part maximale de la capacité installée d’un ensemble de technologies sur un ensemble de lieux. REMARQUE : les technologies avec plusieurs transporteurs (y compris la conversion de base) ont une variable flow_cap pour chaque transporteur, donc il est recommandé de spécifier les transporteurs des deux côtés pour éviter le double comptage. Si les transporteurs ne sont pas spécifiés, la contrainte s’appliquera à la somme de flow_cap sur tous les transporteurs pour les technologies et lieux spécifiés.<br><br>Équation : sum(flow_cap, over=[nodes_lhs, techs_lhs, carriers_lhs]) <= sum(flow_cap, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_es": "Participación máxima de la capacidad instalada de un conjunto de tecnologías en un conjunto de ubicaciones. OBS: Las tecnologías con múltiples transportadores (incluida la conversión base) tienen una variable flow_cap para cada transportador, por lo que es recomendable especificar los transportadores en ambos lados para evitar doble contabilización. Si no se especifican transportadores, la restricción se aplicará a la suma de flow_cap en todos los transportadores para las tecnologías y ubicaciones especificadas.<br><br>Ecuación: sum(flow_cap, over=[nodes_lhs, techs_lhs, carriers_lhs]) <= sum(flow_cap, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_pt": "Participação máxima da capacidade instalada de um conjunto de tecnologias em um conjunto de locais. OBS: Tecnologias com múltiplos transportadores (incluindo conversão base) têm uma variável flow_cap para cada transportador, então especificar os transportadores em ambos os lados é recomendado para evitar dupla contagem. Se os transportadores não forem especificados, a restrição será aplicada à soma de flow_cap em todos os transportadores para as tecnologias e locais especificados.<br><br>Equação: sum(flow_cap, over=[nodes_lhs, techs_lhs, carriers_lhs]) <= sum(flow_cap, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
       "equations": [
         {
           "expression": "sum(flow_cap[||techs_lhs||||nodes_lhs||||carriers_lhs||], over=[nodes, techs, carriers]) <= $total_flow_cap_share"
@@ -2163,7 +2355,13 @@
     "fields": {
       "name": "flow_cap_share_equals",
       "pretty_name": "Flow Cap Share Equals",
+      "pretty_name_fr": "Part de capacité de flux égale",
+      "pretty_name_es": "Participación de capacidad de flujo igual",
+      "pretty_name_pt": "Participação de capacidade de fluxo igual",
       "description": "Exact share of installed capacity from a set of technologies across a set of locations. NOTE: Technologies with multiple carriers (including base conversion) have a flow_cap variable for each carrier, so specifying the carriers on both sides is recommended to avoid double counting. If carriers are not specified, the constraint will apply to the sum of flow_cap across all carriers for the specified technologies and locations.<br>This constraint forces the share to be exact, which may lead to infeasible models.<br><br>Equation: sum(flow_cap, over=[nodes_lhs, techs_lhs, carriers_lhs]) == sum(flow_cap, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_fr": "Part exacte de la capacité installée d’un ensemble de technologies sur un ensemble de lieux. REMARQUE : les technologies avec plusieurs transporteurs (y compris la conversion de base) ont une variable flow_cap pour chaque transporteur, donc il est recommandé de spécifier les transporteurs des deux côtés pour éviter le double comptage. Si les transporteurs ne sont pas spécifiés, la contrainte s’appliquera à la somme de flow_cap sur tous les transporteurs pour les technologies et lieux spécifiés.<br>Cette contrainte force la part à être exacte, ce qui peut conduire à des modèles infaisables.<br><br>Équation : sum(flow_cap, over=[nodes_lhs, techs_lhs, carriers_lhs]) == sum(flow_cap, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_es": "Participación exacta de la capacidad instalada de un conjunto de tecnologías en un conjunto de ubicaciones. OBS: Las tecnologías con múltiples transportadores (incluida la conversión base) tienen una variable flow_cap para cada transportador, por lo que es recomendable especificar los transportadores en ambos lados para evitar doble contabilización. Si no se especifican transportadores, la restricción se aplicará a la suma de flow_cap en todos los transportadores para las tecnologías y ubicaciones especificadas.<br>Esta restricción obliga a que la participación sea exacta, lo que puede llevar a modelos infactibles.<br><br>Ecuación: sum(flow_cap, over=[nodes_lhs, techs_lhs, carriers_lhs]) == sum(flow_cap, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
+      "description_pt": "Participação exata da capacidade instalada de um conjunto de tecnologias em um conjunto de locais. OBS: Tecnologias com múltiplos transportadores (incluindo conversão base) têm uma variável flow_cap para cada transportador, então especificar os transportadores em ambos os lados é recomendado para evitar dupla contagem. Se os transportadores não forem especificados, a restrição será aplicada à soma de flow_cap em todos os transportadores para as tecnologias e locais especificados.<br>Esta restrição força a participação a ser exata, o que pode levar a modelos infactíveis.<br><br>Equação: sum(flow_cap, over=[nodes_lhs, techs_lhs, carriers_lhs]) == sum(flow_cap, over=[nodes_rhs, techs_rhs, carriers_rhs]) * value_1",
       "equations": [
         {
           "expression": "sum(flow_cap[||techs_lhs||||nodes_lhs||||carriers_lhs||], over=[nodes, techs, carriers]) == $total_flow_cap_share"
@@ -2246,7 +2444,13 @@
     "fields": {
       "name": "flow_cap_min",
       "pretty_name": "Flow Cap Min",
+      "pretty_name_fr": "Capacité de flux minimale",
+      "pretty_name_es": "Capacidad de flujo mínima",
+      "pretty_name_pt": "Capacidade de fluxo mínima",
       "description": "Minimum installed capacity from a set of technologies across a set of locations. NOTE: Technologies with multiple carriers (including base conversion) have a flow_cap variable for each carrier, so specifying the carriers is recommended to avoid double counting. If carriers are not specified, the constraint will apply to the sum of flow_cap across all carriers for the specified technologies and locations.<br><br>Equation: sum(flow_cap, over=[nodes, techs, carriers]) >= value_1",
+      "description_fr": "Capacité installée minimale d’un ensemble de technologies sur un ensemble de lieux. REMARQUE : les technologies avec plusieurs transporteurs (y compris la conversion de base) ont une variable flow_cap pour chaque transporteur, donc il est recommandé de spécifier les transporteurs pour éviter le double comptage. Si les transporteurs ne sont pas spécifiés, la contrainte s’appliquera à la somme de flow_cap sur tous les transporteurs pour les technologies et lieux spécifiés.<br><br>Équation : sum(flow_cap, over=[nodes, techs, carriers]) >= value_1",
+      "description_es": "Capacidad instalada mínima de un conjunto de tecnologías en un conjunto de ubicaciones. OBS: Las tecnologías con múltiples transportadores (incluida la conversión base) tienen una variable flow_cap para cada transportador, por lo que es recomendable especificar los transportadores para evitar doble contabilización. Si no se especifican transportadores, la restricción se aplicará a la suma de flow_cap en todos los transportadores para las tecnologías especificadas y ubicaciones.<br><br>Ecuación: sum(flow_cap, over=[nodes, techs, carriers]) >= value_1",
+      "description_pt": "Capacidade instalada mínima de um conjunto de tecnologias em um conjunto de locais. OBS: Tecnologias com múltiplos transportadores (incluindo conversão base) têm uma variável flow_cap para cada transportador, então especificar os transportadores é recomendado para evitar dupla contagem. Se os transportadores não forem especificados, a restrição será aplicada à soma de flow_cap em todos os transportadores para as tecnologias especificadas e locais.<br><br>Equação: sum(flow_cap, over=[nodes, techs, carriers]) >= value_1",
       "equations": [
         {
           "expression": "sum(flow_cap[||techs||||nodes||||carriers||], over=[nodes, techs, carriers]) >= $value_1"
@@ -2297,7 +2501,13 @@
     "fields": {
       "name": "flow_cap_max",
       "pretty_name": "Flow Cap Max",
+      "pretty_name_fr": "Capacité de flux maximale",
+      "pretty_name_es": "Capacidad de flujo máxima",
+      "pretty_name_pt": "Capacidade de fluxo máxima",
       "description": "Maximum installed capacity from a set of technologies across a set of locations. NOTE: Technologies with multiple carriers (including base conversion) have a flow_cap variable for each carrier, so specifying the carriers is recommended to avoid double counting. If carriers are not specified, the constraint will apply to the sum of flow_cap across all carriers for the specified technologies and locations.<br><br>Equation: sum(flow_cap, over=[nodes, techs, carriers]) <= value_1",
+      "description_fr": "Capacité installée maximale d’un ensemble de technologies sur un ensemble de lieux. REMARQUE : les technologies avec plusieurs transporteurs (y compris la conversion de base) ont une variable flow_cap pour chaque transporteur, donc il est recommandé de spécifier les transporteurs pour éviter le double comptage. Si les transporteurs ne sont pas spécifiés, la contrainte s’appliquera à la somme de flow_cap sur tous les transporteurs pour les technologies et lieux spécifiés.<br><br>Équation : sum(flow_cap, over=[nodes, techs, carriers]) <= value_1",
+      "description_es": "Capacidad instalada máxima de un conjunto de tecnologías en un conjunto de ubicaciones. OBS: Las tecnologías con múltiples transportadores (incluida la conversión base) tienen una variable flow_cap para cada transportador, por lo que es recomendable especificar los transportadores para evitar doble contabilización. Si no se especifican transportadores, la restricción se aplicará a la suma de flow_cap en todos los transportadores para las tecnologías especificadas y ubicaciones.<br><br>Ecuación: sum(flow_cap, over=[nodes, techs, carriers]) <= value_1",
+      "description_pt": "Capacidade instalada máxima de um conjunto de tecnologias em um conjunto de locais. OBS: Tecnologias com múltiplos transportadores (incluindo conversão base) têm uma variável flow_cap para cada transportador, então especificar os transportadores é recomendado para evitar dupla contagem. Se os transportadores não forem especificados, a restrição será aplicada à soma de flow_cap em todos os transportadores para as tecnologias especificadas e locais.<br><br>Equação: sum(flow_cap, over=[nodes, techs, carriers]) <= value_1",
       "equations": [
         {
           "expression": "sum(flow_cap[||techs||||nodes||||carriers||], over=[nodes, techs, carriers]) <= $value_1"
@@ -2348,7 +2558,13 @@
     "fields": {
       "name": "flow_cap_equals",
       "pretty_name": "Flow Cap Equals",
+      "pretty_name_fr": "Capacité de flux égale",
+      "pretty_name_es": "Capacidad de flujo igual",
+      "pretty_name_pt": "Capacidade de fluxo igual",
       "description": "Exact installed capacity from a set of technologies across a set of locations. NOTE: Technologies with multiple carriers (including base conversion) have a flow_cap variable for each carrier, so specifying the carriers is recommended to avoid double counting. If carriers are not specified, the constraint will apply to the sum of flow_cap across all carriers for the specified technologies and locations.<br>This constraint forces the capacity to be exact, which may lead to infeasible models.<br><br>Equation: sum(flow_cap, over=[nodes, techs, carriers]) == value_1",
+      "description_fr": "Capacité installée exacte d’un ensemble de technologies sur un ensemble de lieux. REMARQUE : les technologies avec plusieurs transporteurs (y compris la conversion de base) ont une variable flow_cap pour chaque transporteur, donc il est recommandé de spécifier les transporteurs pour éviter le double comptage. Si les transporteurs ne sont pas spécifiés, la contrainte s’appliquera à la somme de flow_cap sur tous les transporteurs pour les technologies et lieux spécifiés.<br>Cette contrainte force la capacité à être exacte, ce qui peut conduire à des modèles infaisables.<br><br>Équation : sum(flow_cap, over=[nodes, techs, carriers]) == value_1",
+      "description_es": "Capacidad instalada exacta de un conjunto de tecnologías en un conjunto de ubicaciones. OBS: Las tecnologías con múltiples transportadores (incluida la conversión base) tienen una variable flow_cap para cada transportador, por lo que es recomendable especificar los transportadores para evitar doble contabilización. Si no se especifican transportadores, la restricción se aplicará a la suma de flow_cap en todos los transportadores para las tecnologías especificadas y ubicaciones.<br>Esta restricción obliga a que la capacidad sea exacta, lo que puede llevar a modelos infactibles.<br><br>Ecuación: sum(flow_cap, over=[nodes, techs, carriers]) == value_1",
+      "description_pt": "Capacidade instalada exata de um conjunto de tecnologias em um conjunto de locais. OBS: Tecnologias com múltiplos transportadores (incluindo conversão base) têm uma variável flow_cap para cada transportador, então especificar os transportadores é recomendado para evitar dupla contagem. Se os transportadores não forem especificados, a restrição será aplicada à soma de flow_cap em todos os transportadores para as tecnologias especificadas e locais.<br>Esta restrição força a capacidade a ser exata, o que pode levar a modelos infactíveis.<br><br>Equação: sum(flow_cap, over=[nodes, techs, carriers]) == value_1",
       "equations": [
         {
           "expression": "sum(flow_cap[||techs||||nodes||||carriers||], over=[nodes, techs, carriers]) == $value_1"
@@ -2399,7 +2615,13 @@
     "fields": {
       "name": "area_use_min",
       "pretty_name": "Area Use Min",
+      "pretty_name_fr": "Usage d’espace minimal",
+      "pretty_name_es": "Uso de área mínimo",
+      "pretty_name_pt": "Uso de área mínimo",
       "description": "Minimum resource area used by a set of technologies across a set of locations.<br><br>Equation: sum(area_use, over=[nodes, techs]) >= value_1",
+      "description_fr": "Usage minimal de la surface de ressource par un ensemble de technologies sur un ensemble de lieux.<br><br>Équation : sum(area_use, over=[nodes, techs]) >= value_1",
+      "description_es": "Uso mínimo de área de recurso por un conjunto de tecnologías en un conjunto de ubicaciones.<br><br>Ecuación: sum(area_use, over=[nodes, techs]) >= value_1",
+      "description_pt": "Uso mínimo de área de recurso por um conjunto de tecnologias em um conjunto de locais.<br><br>Equação: sum(area_use, over=[nodes, techs]) >= value_1",
       "equations": [
         {
           "expression": "sum(area_use[||techs||||nodes||], over=[nodes, techs]) >= $value_1"
@@ -2442,7 +2664,13 @@
     "fields": {
       "name": "area_use_max",
       "pretty_name": "Area Use Max",
+      "pretty_name_fr": "Usage d’espace maximal",
+      "pretty_name_es": "Uso de área máximo",
+      "pretty_name_pt": "Uso de área máximo",
       "description": "Maximum resource area used by a set of technologies across a set of locations.<br><br>Equation: sum(area_use, over=[nodes, techs]) <= value_1",
+      "description_fr": "Usage maximal de la surface de ressource par un ensemble de technologies sur un ensemble de lieux.<br><br>Équation : sum(area_use, over=[nodes, techs]) <= value_1",
+      "description_es": "Uso máximo de área de recurso por un conjunto de tecnologías en un conjunto de ubicaciones.<br><br>Ecuación: sum(area_use, over=[nodes, techs]) <= value_1",
+      "description_pt": "Uso máximo de área de recurso por um conjunto de tecnologias em um conjunto de locais.<br><br>Equação: sum(area_use, over=[nodes, techs]) <= value_1",
       "equations": [
         {
           "expression": "sum(area_use[||techs||||nodes||], over=[nodes, techs]) <= $value_1"
@@ -2485,7 +2713,13 @@
     "fields": {
       "name": "area_use_equals",
       "pretty_name": "Area Use Equals",
+      "pretty_name_fr": "Usage d’espace égal",
+      "pretty_name_es": "Uso de área igual",
+      "pretty_name_pt": "Uso de área igual",
       "description": "Exact resource area used by a set of technologies across a set of locations. NOTE: This forces the area use to be exact, which may lead to infeasible models.<br><br>Equation: sum(area_use, over=[nodes, techs]) == value_1",
+      "description_fr": "Usage exact de la surface de ressource par un ensemble de technologies sur un ensemble de lieux. REMARQUE : cela force l’usage de la surface à être exact, ce qui peut conduire à des modèles infaisables.<br><br>Équation : sum(area_use, over=[nodes, techs]) == value_1",
+      "description_es": "Uso exacto de área de recurso por un conjunto de tecnologías en un conjunto de ubicaciones. OBS: Esto obliga a que el uso de área sea exacto, lo que puede llevar a modelos infactibles.<br><br>Ecuación: sum(area_use, over=[nodes, techs]) == value_1",
+      "description_pt": "Uso exato de área de recurso por um conjunto de tecnologias em um conjunto de locais. OBS: Isso força o uso de área a ser exato, o que pode levar a modelos infactíveis.<br><br>Equação: sum(area_use, over=[nodes, techs]) == value_1",
       "equations": [
         {
           "expression": "sum(area_use[||techs||||nodes||], over=[nodes, techs]) == $value_1"
@@ -2528,7 +2762,13 @@
     "fields": {
       "name": "storage_cap_min",
       "pretty_name": "Storage Cap Min",
+      "pretty_name_fr": "Capacité de stockage minimale",
+      "pretty_name_es": "Capacidad de almacenamiento mínima",
+      "pretty_name_pt": "Capacidade de armazenamento mínima",
       "description": "Minimum installed storage capacity from a set of technologies across a set of locations.<br><br>Equation: sum(storage_cap, over=[nodes, techs]) >= value_1",
+      "description_fr": "Capacité de stockage installée minimale d’un ensemble de technologies sur un ensemble de lieux.<br><br>Équation : sum(storage_cap, over=[nodes, techs]) >= value_1",
+      "description_es": "Capacidad de almacenamiento instalada mínima de un conjunto de tecnologías en un conjunto de ubicaciones.<br><br>Ecuación: sum(storage_cap, over=[nodes, techs]) >= value_1",
+      "description_pt": "Capacidade de armazenamento instalada mínima de um conjunto de tecnologias em um conjunto de locais.<br><br>Equação: sum(storage_cap, over=[nodes, techs]) >= value_1",
       "equations": [
         {
           "expression": "sum(storage_cap[||techs||||nodes||], over=[nodes, techs]) >= $value_1"
@@ -2571,7 +2811,13 @@
     "fields": {
       "name": "storage_cap_max",
       "pretty_name": "Storage Cap Max",
+      "pretty_name_fr": "Capacité de stockage maximale",
+      "pretty_name_es": "Capacidad de almacenamiento máxima",
+      "pretty_name_pt": "Capacidade de armazenamento máxima",
       "description": "Maximum installed storage capacity from a set of technologies across a set of locations.<br><br>Equation: sum(storage_cap, over=[nodes, techs]) <= value_1",
+      "description_fr": "Capacité de stockage installée maximale d’un ensemble de technologies sur un ensemble de lieux.<br><br>Équation : sum(storage_cap, over=[nodes, techs]) <= value_1",
+      "description_es": "Capacidad de almacenamiento instalada máxima de un conjunto de tecnologías en un conjunto de ubicaciones.<br><br>Ecuación: sum(storage_cap, over=[nodes, techs]) <= value_1",
+      "description_pt": "Capacidade de armazenamento instalada máxima de um conjunto de tecnologias em um conjunto de locais.<br><br>Equação: sum(storage_cap, over=[nodes, techs]) <= value_1",
       "equations": [
         {
           "expression": "sum(storage_cap[||techs||||nodes||], over=[nodes, techs]) <= $value_1"
@@ -2614,7 +2860,13 @@
     "fields": {
       "name": "storage_cap_equals",
       "pretty_name": "Storage Cap Equals",
+      "pretty_name_fr": "Capacité de stockage égale",
+      "pretty_name_es": "Capacidad de almacenamiento igual",
+      "pretty_name_pt": "Capacidade de armazenamento igual",
       "description": "Exact installed storage capacity from a set of technologies across a set of locations. NOTE: This forces the capacity to be exact, which may lead to infeasible models.<br><br>Equation: sum(storage_cap, over=[nodes, techs]) == value_1",
+      "description_fr": "Capacité de stockage installée exacte d’un ensemble de technologies sur un ensemble de lieux. REMARQUE : cela force la capacité à être exacte, ce qui peut conduire à des modèles infaisables.<br><br>Équation : sum(storage_cap, over=[nodes, techs]) == value_1",
+      "description_es": "Capacidad de almacenamiento instalada exacta de un conjunto de tecnologías en un conjunto de ubicaciones. OBS: Esto obliga a que la capacidad sea exacta, lo que puede llevar a modelos infactibles.<br><br>Ecuación: sum(storage_cap, over=[nodes, techs]) == value_1",
+      "description_pt": "Capacidade de armazenamento instalada exata de um conjunto de tecnologias em um conjunto de locais. OBS: Isso força a capacidade a ser exata, o que pode levar a modelos infactíveis.<br><br>Equação: sum(storage_cap, over=[nodes, techs]) == value_1",
       "equations": [
         {
           "expression": "sum(storage_cap[||techs||||nodes||], over=[nodes, techs]) == $value_1"
