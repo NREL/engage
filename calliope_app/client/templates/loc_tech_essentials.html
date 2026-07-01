@@ -39,7 +39,7 @@
 		<div class="col-3">
 			<b>{% trans "New Locations" %}:</b>
 		</div>
-		{% if technology.abstract_tech.pretty_name == 'Transmission' %}
+		{% if technology.abstract_tech.name == "transmission" %}
 		<div class="col-3 no-pad">
 			<div class="form-group">
 			  <select {% if not can_edit %}disabled{% endif %} class="form-control" id="loc_tech-add-1">
