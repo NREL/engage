@@ -7,11 +7,13 @@ django-crispy-forms==1.14.0
 django-environ>=0.4.5
 django-modeltranslation==0.18.12
 flower>=2.0.1
+gunicorn==21.2.0
 nrel-pysam==3.0.2
 pint==0.21
 psycopg2-binary==2.9.3
 pyyaml==6.0
 requests>=2.21.0
+whitenoise==6.6.0
 
 pyutilib>=6.0.0
 # amqp==2.6.1

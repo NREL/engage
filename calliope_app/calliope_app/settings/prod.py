@@ -75,6 +75,24 @@ TEMPLATES[0]["OPTIONS"]["loaders"] = [  # noqa F405
     )
 ]
 
+# STATIC
+# ------------------------------------------------------------------------------
+# DEBUG is False here, so Django no longer serves STATIC_ROOT itself. WhiteNoise
+# serves it from inside the gunicorn process, which keeps a single-container
+# deployment from needing a separate web server in front of it.
+MIDDLEWARE.insert(  # noqa F405
+    MIDDLEWARE.index("django.middleware.security.SecurityMiddleware") + 1,  # noqa F405
+    "whitenoise.middleware.WhiteNoiseMiddleware"
+)
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage"
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"
+    }
+}
+
 # Gunicorn
 # ------------------------------------------------------------------------------
 INSTALLED_APPS += ["gunicorn"]  # noqa F405
@@ -165,9 +183,14 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE if USE_TZ else None
 CELERY_TRACK_STARTED = True
 CELERYD_CONCURRENCY = 2
+# TLS to the broker. Managed brokers (ElastiCache in transit-encryption mode)
+# require it; a plain redis container on the same host cannot speak it at all,
+# and leaving this on against one fails every worker connection. Defaults to on
+# so existing deployments are unchanged.
+_CELERY_USE_SSL = env.bool("CELERY_BROKER_USE_SSL", default=True)
 CELERY_BROKER_USE_SSL = {
     "ssl_cert_reqs": ssl.CERT_REQUIRED
-}
+} if _CELERY_USE_SSL else None
 CELERY_REDIS_BACKEND_USE_SSL = {
     "ssl_cert_reqs": ssl.CERT_REQUIRED
-}
+} if _CELERY_USE_SSL else None
