@@ -185,6 +185,11 @@ def build(request):
                 run_parameter= Run_Parameter.objects.get(pk=int(id))
                 run.run_options.append({'root':run_parameter.root,'name':run_parameter.name,'value':parameters[id]})
 
+            # Persist before dispatching. build_model re-reads this Run from
+            # the database, so anything still only in memory is invisible to it
+            # -- and the worker can begin before the save below lands.
+            run.save()
+
             # Celery task
             async_result = build_model.apply_async(
                 kwargs={
