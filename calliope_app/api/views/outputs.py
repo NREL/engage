@@ -122,7 +122,7 @@ def build(request):
         try:
             compute_environment = ComputeEnvironment.objects.get(name=run_env)
         except ComputeEnvironment.DoesNotExist:
-            compute_environment = ComputeEnvironment.objects.filter(is_default=True).first(0)
+            compute_environment = ComputeEnvironment.objects.filter(is_default=True).first()
 
         timestamp = datetime.now().strftime("%Y-%m-%d %H%M%S").lower().replace(" ", "-")
         if not years:
