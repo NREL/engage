@@ -26,6 +26,10 @@ RUN apt-get update -y --fix-missing \
     git \
     && rm -rf /var/lib/apt/lists/*
 
+# Django's production logging config (settings/prod.py) writes to this path.
+# Nothing creates it at runtime, so the directory must exist in the image.
+RUN mkdir -p /opt/python/log
+
 # install python packages
 WORKDIR /www
 COPY requirements.txt requirements-dev.txt /www/

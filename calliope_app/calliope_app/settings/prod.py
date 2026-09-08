@@ -51,9 +51,17 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-ssl-redirect
 SECURE_SSL_REDIRECT = env.bool("DJANGO_SECURE_SSL_REDIRECT", default=True)
 # https://docs.djangoproject.com/en/dev/ref/settings/#session-cookie-secure
-SESSION_COOKIE_SECURE = True
+# Secure cookies are only sent over HTTPS. That is correct for a real
+# deployment, but makes login impossible on a plain-HTTP instance -- the
+# browser withholds the CSRF cookie and every form submission 403s. Both
+# default to True so existing deployments are unchanged; only an explicitly
+# insecure test instance turns them off.
+SESSION_COOKIE_SECURE = env.bool("DJANGO_SESSION_COOKIE_SECURE", default=True)
 # https://docs.djangoproject.com/en/dev/ref/settings/#csrf-cookie-secure
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = env.bool("DJANGO_CSRF_COOKIE_SECURE", default=True)
+# Origins Django will accept form posts from, e.g. https://engage.example.org
+# or http://1.2.3.4:8000 when running without TLS.
+CSRF_TRUSTED_ORIGINS = env.list("DJANGO_CSRF_TRUSTED_ORIGINS", default=[])
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-hsts-include-subdomains
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool("DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS", default=True)
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-hsts-preload
@@ -74,6 +82,24 @@ TEMPLATES[0]["OPTIONS"]["loaders"] = [  # noqa F405
         ],
     )
 ]
+
+# STATIC
+# ------------------------------------------------------------------------------
+# DEBUG is False here, so Django no longer serves STATIC_ROOT itself. WhiteNoise
+# serves it from inside the gunicorn process, which keeps a single-container
+# deployment from needing a separate web server in front of it.
+MIDDLEWARE.insert(  # noqa F405
+    MIDDLEWARE.index("django.middleware.security.SecurityMiddleware") + 1,  # noqa F405
+    "whitenoise.middleware.WhiteNoiseMiddleware"
+)
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage"
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"
+    }
+}
 
 # Gunicorn
 # ------------------------------------------------------------------------------
@@ -165,9 +191,14 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE if USE_TZ else None
 CELERY_TRACK_STARTED = True
 CELERYD_CONCURRENCY = 2
+# TLS to the broker. Managed brokers (ElastiCache in transit-encryption mode)
+# require it; a plain redis container on the same host cannot speak it at all,
+# and leaving this on against one fails every worker connection. Defaults to on
+# so existing deployments are unchanged.
+_CELERY_USE_SSL = env.bool("CELERY_BROKER_USE_SSL", default=True)
 CELERY_BROKER_USE_SSL = {
     "ssl_cert_reqs": ssl.CERT_REQUIRED
-}
+} if _CELERY_USE_SSL else None
 CELERY_REDIS_BACKEND_USE_SSL = {
     "ssl_cert_reqs": ssl.CERT_REQUIRED
-}
+} if _CELERY_USE_SSL else None
