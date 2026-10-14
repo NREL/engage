@@ -364,7 +364,7 @@ class TechnologyTestCase(TestCase):
 
     def test_calliope_name__tag(self):
         self.tech.tag = "my-tech-tag"
-        s = "{}-{}".format(self.tech.name, self.tech.tag)
+        s = "{}_{}".format(self.tech.name, self.tech.tag)
         self.assertEqual(self.tech.calliope_name, s)
 
     def test_color__no_tech_param(self):

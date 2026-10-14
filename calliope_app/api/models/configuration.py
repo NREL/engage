@@ -22,6 +22,8 @@ import numpy as np
 import re
 import os
 import json
+import html
+import unicodedata
 from copy import deepcopy
 
 logging.basicConfig(
@@ -1769,6 +1771,12 @@ class ParamsManager():
     def simplify_name(name):
         simple_name = name.strip().replace(" ", "_")
         simple_name = re.sub(r"\W+", "", simple_name)
+        # Normalize any special characters to their closest ASCII equivalent
+        unescaped_str = html.unescape(simple_name)
+        normalized = unicodedata.normalize('NFKD', unescaped_str)
+        unescaped_str = "".join(c for c in normalized if not unicodedata.combining(c))
+        simple_name = html.escape(unescaped_str)
+
         return simple_name
 
     @staticmethod
