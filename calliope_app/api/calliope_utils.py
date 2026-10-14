@@ -321,62 +321,66 @@ def dictify(target, keys, value):
 # This version of the function uses index and dimension values to create/add to a Calliope indexed parameter (introduced in v0.7)
 # Multiple Engage parameter records can be added to the same indexed parameter in the YAML
 def dictify(target, keys, value, index=None, dim=None, update=False, simplify=True):
-    # Build the nested dict structure (if neccessary) by adding any
-    # nested keys in the list before the final key/value pair
-    # Strip out/skip any entries with an empty key
-    keys = [k for k in keys if k != '']
-    if len(keys) > 1:
-        for key in keys[:-1]:
-            if key not in target.keys():
-                target[key] = {}
-            target = target[key]
+    try:
+        # Build the nested dict structure (if neccessary) by adding any
+        # nested keys in the list before the final key/value pair
+        # Strip out/skip any entries with an empty key
+        keys = [k for k in keys if k != '']
+        if len(keys) > 1:
+            for key in keys[:-1]:
+                if key not in target.keys():
+                    target[key] = {}
+                target = target[key]
 
-    # Handle blank, T/F, float, and JSON string values
-    # As of Calliope 0.6.8 all "False" values should be set to none/null
-    if value == "":
-            value = None
-    elif value == 'True':
-            value = True
-    elif value == 'False':
-            value = False
-    else:
-        # Try converting string to JSON object or float before saving as flat string
-        try:
-            string = value.replace(", ", ",")
-            for char in ['\'', '“', '”', '‘', '’']:
-                string = string.replace(char, '\"')
-            value = json.loads(string)
-        except Exception:
+        # Handle blank, T/F, float, and JSON string values
+        # As of Calliope 0.6.8 all "False" values should be set to none/null
+        if value == "":
+                value = None
+        elif value == 'True':
+                value = True
+        elif value == 'False':
+                value = False
+        else:
+            # Try converting string to JSON object or float before saving as flat string
             try:
-                value = float(value)
-            except ValueError:
-                value = value
+                string = value.replace(", ", ",")
+                for char in ['\'', '“', '”', '‘', '’']:
+                    string = string.replace(char, '\"')
+                value = json.loads(string)
+            except Exception:
+                try:
+                    value = float(value)
+                except ValueError:
+                    value = value
 
-    if simplify and type(value) == list and len(value) == 1:
-        value = value[0]
-    if index and dim:
-        if len(index) == 1:
-            index = index[0]
-        if len(dim) == 1:
-            dim = dim[0]
+        if simplify and type(value) == list and len(value) == 1:
+            value = value[0]
+        if index and dim:
+            if len(index) == 1:
+                index = index[0]
+            if len(dim) == 1:
+                dim = dim[0]
 
-        if keys[-1] not in target:
-            target[keys[-1]] = {}
-        if 'data' not in target[keys[-1]]:
-            target[keys[-1]]['data'] = []
-            target[keys[-1]]['index'] = []
-            target[keys[-1]]['dims'] = dim
+            if keys[-1] not in target:
+                target[keys[-1]] = {}
+            if 'data' not in target[keys[-1]]:
+                target[keys[-1]]['data'] = []
+                target[keys[-1]]['index'] = []
+                target[keys[-1]]['dims'] = dim
 
-        if dim != target[keys[-1]]['dims']:
-            raise ValueError('Error with indexed parameter: {}. Dimensions do not match. {} vs {}'.format('.'.join(keys),dim,target[keys[-1]]['dims']))
-        
-        target[keys[-1]]['data'] += [value]
-        target[keys[-1]]['index'] += [index]
-    elif update and target.get(keys[-1], {}):
-        target[keys[-1]] = {**target[keys[-1]], **value}
-    else:
-        target[keys[-1]] = value
-    
+            if dim != target[keys[-1]]['dims']:
+                raise ValueError('Error with indexed parameter: {}. Dimensions do not match. {} vs {}'.format('.'.join(keys),dim,target[keys[-1]]['dims']))
+            
+            target[keys[-1]]['data'] += [value]
+            target[keys[-1]]['index'] += [index]
+        elif update and target.get(keys[-1], {}):
+            if value:
+                target[keys[-1]] = {**target[keys[-1]], **value}
+        else:
+            target[keys[-1]] = value
+    except Exception as e:
+        raise ValueError('Error with parameter: {}. Index: {}, Dimensions: {} Error: {}'.format('.'.join(keys), index, dim, e))
+
 
 def stringify(param_list):
     param_list = [str(x) for x in param_list]
