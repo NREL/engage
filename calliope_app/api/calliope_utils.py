@@ -374,7 +374,8 @@ def dictify(target, keys, value, index=None, dim=None, update=False, simplify=Tr
             target[keys[-1]]['data'] += [value]
             target[keys[-1]]['index'] += [index]
         elif update and target.get(keys[-1], {}):
-            target[keys[-1]] = {**target[keys[-1]], **value}
+            if value:
+                target[keys[-1]] = {**target[keys[-1]], **value}
         else:
             target[keys[-1]] = value
     except Exception as e:
